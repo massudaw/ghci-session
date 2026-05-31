@@ -1,0 +1,23 @@
+.github/workflows/ci.yaml
+  s_8194a7ba457148::t_ca54634756bfd1 27-30
+  s_8194a7ba457148::t_d08be67a8635f4 43
+validate_golden_tests.sh
+  s_8194a7ba457148::t_c4e1bf99a50669 64
+  s_8194a7ba457148::t_ebdec1dfaa9546 71-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "bfd182ee8fe72c0b14d2d8177168a18922e0444a",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
