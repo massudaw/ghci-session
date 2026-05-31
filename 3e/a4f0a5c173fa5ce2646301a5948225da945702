@@ -1,0 +1,14 @@
+run_golden_tests.sh
+  h_fd5809635b36a3 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "3ea4f0a5c173fa5ce2646301a5948225da945702",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
