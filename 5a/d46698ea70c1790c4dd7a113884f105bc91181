@@ -1,0 +1,20 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "5ad46698ea70c1790c4dd7a113884f105bc91181",
+  "prompts": {
+    "ce70e7164eb2279b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db522694-aef1-46da-8433-55ca7012e0b5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>",
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
