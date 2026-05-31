@@ -1,0 +1,27 @@
+INPUT_IMPROVEMENTS_PROPOSAL.md
+  ai_agent 1-461
+INPUT_IMPROVEMENTS_SUMMARY.md
+  ai_agent 1-201
+MULTIDOMAIN_INTEGRATION.md
+  s_8194a7ba457148::t_f371ce6c7e74dd 3,5-7,9,11-12,14-19,21-25,27,29,31-35,37-39,41,44,47-48,50-61,63-64,66,68,71-73,75,78-80,82-86,88-89,91,98-109,111,113-117
+pending_tasks/surface_direction_bool_fix.md
+  ai_agent 1-212
+sprinkler-solver-0.1.0.1-inplace
+  ai_agent 1-164
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "0581c1e28272a542e1954ac001f05bcbe4ad059f",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
