@@ -1,0 +1,91 @@
+src/Examples/ModelJouleHeating.hs
+  ai_agent 1-118
+golden/ModelJouleHeating/status.txt
+  ai_agent 1
+src/Model/JouleHeating.hs
+  ai_agent 1-51
+src/Model/TempDependentJouleHeating.hs
+  ai_agent 1-88
+example/Main.hs
+  s_8194a7ba457148::t_fc82f92a842129 19,68
+  s_8194a7ba457148::t_0d17274fbf7da4 20,69
+  s_8194a7ba457148::t_798ba6261934c8 21,70
+  ai_agent 22-23,47-48,71-72
+golden/ModelThermoElectric/equations.txt
+  ai_agent 1-11
+golden/ModelJouleHeating/solutions.txt
+  ai_agent 1-15
+src/Examples/ModelCoupledDemo.hs
+  s_8194a7ba457148::t_72a3d2e466fb3b 1,3-7,9-10,12,15,17,19,26,31-41,43-44,46,48-51,55-59,63-65,76-78,81-83,88-89,67
+  s_8194a7ba457148::t_4f323c4fc8788f 2
+  s_8194a7ba457148::t_5d1416f02175fc 8
+  s_8194a7ba457148::t_9f6aa70e5f595a 11
+  s_8194a7ba457148::t_fc3c7b8f4de7db 13-14,16,18,20-25,27-29,45,52-53,62,66,68-71,73-74,79-80,84,86-87
+  ai_agent 30,42,47,60-61,75,85
+golden/ModelThermoElectric/status.txt
+  ai_agent 1
+golden/ModelJouleHeating/equations.txt
+  ai_agent 1-15
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_3f837d429f83c1 24
+  s_8194a7ba457148::t_a84b89a73b3375 25
+  s_8194a7ba457148::t_fc82f92a842129 78
+  s_8194a7ba457148::t_0d17274fbf7da4 79
+  s_8194a7ba457148::t_24e6d6c623d36a 26
+  s_8194a7ba457148::t_798ba6261934c8 27,80
+  ai_agent 28-29,81-82
+src/Examples/ModelThermoElectric.hs
+  ai_agent 1-111
+src/Model.hs
+  s_8194a7ba457148::t_88976a6c57bcd0 1
+  s_8194a7ba457148::t_dfb947fbb40da3 2,4-6,8-33,40,42-48,50-51,54-58,60-62,64-66,68-75,77-94,96-118,120,213-218,222-226,228-259,261-264,268-290,302-303,305-306,308-312,314-335,337-339,341-343,345-350,354,358-359,361-363,366,369,381-386,121,133,177-178,180-181,191,196-199,144,152,174,297,157,160,163,166,169
+  s_8194a7ba457148::t_77f2df22d901a8 3
+  s_8194a7ba457148::t_e2e0987673a1c7 34
+  s_8194a7ba457148::t_03ee4513adf9e4 52
+  s_8194a7ba457148::t_8b4dcb4611d6b9 59,63,67,76,95,227
+  s_8194a7ba457148::t_57082ed1adfaa7 265-267
+  s_8194a7ba457148::t_262a242f8df082 304,307
+  s_8194a7ba457148::t_f21a480d1f301a 313
+  s_8194a7ba457148::t_7dd7d4d58993bb 355-356
+  s_8194a7ba457148::t_11a616606dd61f 387
+  s_8194a7ba457148::t_50b832eea8e920 35,38-39
+  s_8194a7ba457148::t_8823e1d9d7381b 119,122,126-128,187,190,194-195,200-207
+  s_8194a7ba457148::t_2249cb83422f69 135-136
+  s_8194a7ba457148::t_7ccfcf81a8d1ad 140-141
+  s_8194a7ba457148::t_a0edb8d3e7ac99 208
+  s_8194a7ba457148::t_fbd693f19a5cd9 336
+  s_8194a7ba457148::t_b44415fee0b0d3 340,372-376,380
+  s_8194a7ba457148::t_d2ddba7f0875fe 36-37
+  s_8194a7ba457148::t_32bcb02e948224 49,53
+  s_8194a7ba457148::t_f6a860e6e3a5b0 123-125,129-132,137,139,142-143,145-149,170-173,179,182-186,188-189,192-193,209-212,219-221
+  s_8194a7ba457148::t_6ab34cd4d47c8d 134,138,150-151
+  s_8194a7ba457148::t_900e255f865a24 175-176
+  s_8194a7ba457148::t_c159036f81baec 260
+  s_8194a7ba457148::t_01513f4ef596ed 291-294,296,299-301
+  s_8194a7ba457148::t_767800381616e7 295,298
+  s_8194a7ba457148::t_98ab209f6a9338 344,351-353,357,364-365,367-368,370-371,377-379
+  ai_agent 7,41,153-156,158-159,161-162,164-165,167-168
+run_golden_tests.sh
+  s_8194a7ba457148::t_1dd8488b267b5c 20
+  s_8194a7ba457148::t_986267aee7560e 21
+  s_8194a7ba457148::t_d6705c4e6b3104 22
+  ai_agent 23-24
+golden/ModelThermoElectric/solutions.txt
+  ai_agent 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "6e835d8ccc9a79e5bf0961a8cb7bd97786e91c4a",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

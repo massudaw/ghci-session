@@ -1,0 +1,36 @@
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_3f837d429f83c1 24
+  s_8194a7ba457148::t_a84b89a73b3375 25
+  s_8194a7ba457148::t_fc82f92a842129 74
+  s_8194a7ba457148::t_0d17274fbf7da4 76
+example/Main.hs
+  s_8194a7ba457148::t_fc82f92a842129 19,64
+  s_8194a7ba457148::t_0d17274fbf7da4 21,66
+golden/ModelSeebeckValidation/status.txt
+  s_8194a7ba457148::t_986267aee7560e 1
+golden/ModelSeebeckValidation/solutions.txt
+  s_8194a7ba457148::t_986267aee7560e 1-9
+run_golden_tests.sh
+  s_8194a7ba457148::t_1dd8488b267b5c 20
+  s_8194a7ba457148::t_986267aee7560e 22
+src/Examples/ModelSeebeckValidation.hs
+  s_8194a7ba457148::t_d63452470bf3d4 1-27,29,35-41,65-111
+golden/ModelSeebeckValidation/equations.txt
+  s_8194a7ba457148::t_986267aee7560e 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "0abc5acdaa25ece4676b4ba8b2802ed74b892031",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
