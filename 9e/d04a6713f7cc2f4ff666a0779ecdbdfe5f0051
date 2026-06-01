@@ -1,0 +1,107 @@
+src/Examples/MagneticCircuit.hs
+  s_8194a7ba457148::t_0217f5c7ea7cec 57
+  s_8194a7ba457148::t_499c2ae228f1db 1-25,29-39,46-56,58,60,62-77
+  s_8194a7ba457148::t_f31b7cb773eb16 42-45
+  s_8194a7ba457148::t_566238f52614e3 26-28,40-41,59,61
+src/Grid.hs
+  s_cbca348ec95650::t_6391f80f7eeeb5 80
+  s_cbca348ec95650::t_727496efab8de5 67
+golden/ModelSolenoidActuator/status.txt
+  s_8194a7ba457148::t_23836dabbfc5c6 1
+golden/ModelMagneticTransient/solutions.txt
+  s_8194a7ba457148::t_141821927c1e99 1-29
+golden/MagneticCircuit/equations.txt
+  s_8194a7ba457148::t_141821927c1e99 1-4
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_7309bd07e701d9 127
+  s_8194a7ba457148::t_b424960c667aff 128-129
+golden/ModelMagneticTransient/transient.txt
+  s_8194a7ba457148::t_141821927c1e99 1-8
+golden/ModelElectroMagneticValve/equations.txt
+  s_cbca348ec95650::t_13f55abc0a04cd 1-8
+golden/ModelElectroMagneticValve/status.txt
+  s_cbca348ec95650::t_13f55abc0a04cd 1
+src/Model/MagnetoMechanicalCoupling.hs
+  s_cbca348ec95650::t_e2c25c001a859d 65,67
+  s_8194a7ba457148::t_eb405cd77ef338 59-64,66
+src/Examples/ModelElectroMagneticValve.hs
+  s_cbca348ec95650::t_dc5ca092cb357b 64
+  s_cbca348ec95650::t_93ed24d82f8ae2 8,36
+  s_cbca348ec95650::t_195ace39e2b7f7 26
+  s_cbca348ec95650::t_8b52182e3a1bd4 28,37,54
+  s_cbca348ec95650::t_669cd5f71c61b4 7,9-16,44,49,52
+  s_cbca348ec95650::t_61fa2a984fd0d1 21-23,27,29-35,55-63
+  s_cbca348ec95650::t_8290c014b2fb3c 39-43,45-48,50-51,53
+golden/ModelSolenoidActuator/equations.txt
+  s_8194a7ba457148::t_23836dabbfc5c6 1-18
+golden/ModelMagneticTransient/status.txt
+  s_8194a7ba457148::t_141821927c1e99 1
+src/Project.hs
+  s_cbca348ec95650::t_316c9164bcc052 495-510
+golden/ModelElectroMagneticValve/solutions.txt
+  s_cbca348ec95650::t_13f55abc0a04cd 1-8
+src/Examples/ModelSolenoidActuator.hs
+  s_8194a7ba457148::t_2e38607d944cce 1-153
+example/Main.hs
+  s_8194a7ba457148::t_2ae2bc988f3355 139
+  s_8194a7ba457148::t_44868389c10040 140-141
+  s_8194a7ba457148::t_6b51a2559ae7f7 45
+  s_8194a7ba457148::t_67f3ef928cee49 91
+  s_8194a7ba457148::t_cdde0012e26d31 46-47
+  s_8194a7ba457148::t_f9e0b1d5b63827 92-93
+golden/ModelMagneticTransient/equations.txt
+  s_8194a7ba457148::t_141821927c1e99 1-8
+run_golden_tests.sh
+  s_8194a7ba457148::t_3947093e789f6b 47-48
+  s_8194a7ba457148::t_af855729775946 46
+golden/MagneticCircuit/status.txt
+  s_8194a7ba457148::t_141821927c1e99 1
+golden/ModelSolenoidActuator/solutions.txt
+  s_8194a7ba457148::t_23836dabbfc5c6 1-18
+src/Examples/ModelMagneticTransient.hs
+  s_8194a7ba457148::t_cb6481eff5e0fe 142-154,158,161-162
+  s_8194a7ba457148::t_593fa9e026aba0 1-118,120-123,125-141,155-157,159-160,163-170
+  s_8194a7ba457148::t_c09a3bfa2fa0eb 119,124
+src/Magnetic.hs
+  s_8194a7ba457148::t_b43ed2735d90a7 82-88
+  s_8194a7ba457148::t_3ab11aa3b4079e 34-35
+  s_cbca348ec95650::t_4516ebbfdb710c 99,106,112
+  s_cbca348ec95650::t_f14a771cd56d17 103,105,107-109,111
+  s_cbca348ec95650::t_fd3e50af2a47ec 104,110
+src/NDomain.hs
+  s_cbca348ec95650::t_c019e4ca757310 40
+  s_cbca348ec95650::t_1b7914003c0fbe 131
+  s_cbca348ec95650::t_fd13abcf64a64b 133,135-138
+  s_cbca348ec95650::t_df2596b0a09591 1
+  s_cbca348ec95650::t_09a0db96ca7292 39
+  s_cbca348ec95650::t_28b53c7f2d5bb5 121-123,128
+  s_cbca348ec95650::t_3fff88259253a9 8
+  s_cbca348ec95650::t_5a5f167182fdee 118-120,124-127,129-130
+  s_cbca348ec95650::t_677221aab58eec 132,134
+golden/MagneticCircuit/solutions.txt
+  s_8194a7ba457148::t_141821927c1e99 1-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "9ed04a6713f7cc2f4ff666a0779ecdbdfe5f0051",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_cbca348ec95650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ed4ec03-8f6f-47d6-8899-a4d8bfdc5161",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
