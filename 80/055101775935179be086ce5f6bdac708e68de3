@@ -1,0 +1,37 @@
+src/Model/ElectroPneumaticCoupling.hs
+  s_8194a7ba457148::t_41f6fa5d1f3a5c 1-62
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_00d58fc21bcc41 39,108
+golden/ModelElectroPneumatic/equations.txt
+  s_8194a7ba457148::t_631ddbe64742f5 1-7
+src/Examples/ModelElectroPneumatic.hs
+  s_8194a7ba457148::t_6f0b98a0afdd39 1-70
+src/Pneumatic.hs
+  s_8194a7ba457148::t_e43c358a1e76e9 110-111
+  s_8194a7ba457148::t_3617cdd272c340 103-104
+  s_8194a7ba457148::t_c1f5f1bef3a805 166-168,174-182
+example/Main.hs
+  s_8194a7ba457148::t_00d58fc21bcc41 37,73,111
+golden/ModelElectroPneumatic/solutions.txt
+  s_8194a7ba457148::t_631ddbe64742f5 1-7
+run_golden_tests.sh
+  s_8194a7ba457148::t_631ddbe64742f5 38
+golden/ModelElectroPneumatic/status.txt
+  s_8194a7ba457148::t_631ddbe64742f5 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "80055101775935179be086ce5f6bdac708e68de3",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
