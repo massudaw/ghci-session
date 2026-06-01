@@ -1,0 +1,34 @@
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_6d64eb03457441 179-186,188
+  s_8194a7ba457148::t_ff9fcf1e7db4b3 39
+  s_8194a7ba457148::t_1a285c83875f32 187
+example/ForceOscillator.hs
+  s_8194a7ba457148::t_22285355a76111 1-17,20-62
+  s_8194a7ba457148::t_374bb159b81a7f 18-19
+src/Force.hs
+  s_8194a7ba457148::t_783aa2ad1c858d 204
+  s_8194a7ba457148::t_4e48a0844a1f07 475-479
+  s_8194a7ba457148::t_b1ca4864a1855e 422-474,481-490
+  s_8194a7ba457148::t_a813d85c0d2dbf 385-386,397-399,401-402
+  s_8194a7ba457148::t_d46c90e3835ff1 480
+src/ForceDynamic.hs
+  s_8194a7ba457148::t_8c286f32f0f338 1-24,27-86
+  s_8194a7ba457148::t_cdf9000926a0e4 25
+  s_8194a7ba457148::t_b05bb7cb41ec7f 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "df91671c60e48e0ca71077becf2680b49e36a71a",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
