@@ -1,0 +1,36 @@
+src/ForceDynamic.hs
+  s_8194a7ba457148::t_264928dac68ee4 47-49,52-65,67-69,76,78,81-82,88,93,98,103,114,116,119,121,131-132,134,140,142
+  s_8194a7ba457148::t_feeafa600b10ab 26-27
+src/Model.hs
+  s_8194a7ba457148::t_1f1b444c042c30 419
+  s_8194a7ba457148::t_dfd6c5ea8c8b58 76-79
+  s_8194a7ba457148::t_535b303703d0f6 42
+example/ModelMotorInertia.hs
+  s_8194a7ba457148::t_d8b10acfab50d7 33
+  s_8194a7ba457148::t_906b37906e7b2e 99-100
+  s_8194a7ba457148::t_76b5325b93b075 78
+  s_8194a7ba457148::t_270914bea32620 101
+src/Domains.hs
+  s_8194a7ba457148::t_684d9b148c3678 50
+  s_8194a7ba457148::t_acda60cfee6846 88-98
+src/Force.hs
+  s_8194a7ba457148::t_bd064ffda20ec8 162-166
+  s_8194a7ba457148::t_c970d283530789 441-442,455-456,459,461,464-466,474-475,478
+  s_8194a7ba457148::t_8c0426fc5d1a91 116-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "8e3eac9e13a2a13544948ae5818005dc908c69c7",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
