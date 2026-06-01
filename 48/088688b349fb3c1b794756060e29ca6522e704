@@ -1,0 +1,68 @@
+src/Examples/ModelReactionHeating.hs
+  s_8194a7ba457148::t_3092e9d3482008 1-74
+golden/ChemicalReactor/status.txt
+  s_8194a7ba457148::t_dcd905d634f075 1
+src/Model/ElectrolysisCoupling.hs
+  s_8194a7ba457148::t_faa91e482b58b3 1-64
+src/Model.hs
+  s_8194a7ba457148::t_e6422c5579401a 57
+  s_8194a7ba457148::t_3ff13fbc04951c 204
+golden/ModelElectrolysis/solutions.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1-7
+golden/ChemicalReactor/equations.txt
+  s_8194a7ba457148::t_dcd905d634f075 1-2
+src/Examples/ModelElectrolysis.hs
+  s_8194a7ba457148::t_6a8136d3f394ea 1-77
+golden/ChemicalReactor/solutions.txt
+  s_8194a7ba457148::t_dcd905d634f075 1-2
+run_golden_tests.sh
+  s_8194a7ba457148::t_f9f988e14e5bfb 50-51
+  s_8194a7ba457148::t_1335b67541274e 49
+golden/ModelReactionHeating/status.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1
+golden/ModelElectrolysis/status.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1
+src/Chemical.hs
+  s_8194a7ba457148::t_8caa9566f8981f 116,118
+  s_8194a7ba457148::t_2b3bf4a97f8207 1
+  s_8194a7ba457148::t_845c450513c643 2-115,117,119-121,123-198
+  s_8194a7ba457148::t_08cead945a3717 122
+example/Main.hs
+  s_8194a7ba457148::t_14e326069ba8d7 49-50
+  s_8194a7ba457148::t_08010dfbe93248 148
+  s_8194a7ba457148::t_549fb4131f10d2 149-150
+  s_8194a7ba457148::t_8dcf877a71097f 98-99
+  s_8194a7ba457148::t_7de52b1e76aaee 97
+  s_8194a7ba457148::t_653209bd0602a9 48
+src/Model/ReactionHeatingCoupling.hs
+  s_8194a7ba457148::t_c6dd0b3701d4d3 1-66
+src/Examples/ChemicalReactor.hs
+  s_8194a7ba457148::t_133c81085ae3f8 1-58
+golden/ModelReactionHeating/equations.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1-5
+golden/ModelReactionHeating/solutions.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1-5
+golden/ModelElectrolysis/equations.txt
+  s_8194a7ba457148::t_6f4a7c0c605496 1-7
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_891e33ad0d514c 133
+  s_8194a7ba457148::t_d68a8ae64d8e3a 49-50
+  s_8194a7ba457148::t_723b72b7fba05a 54
+  s_8194a7ba457148::t_daa81069398e02 134-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "48088688b349fb3c1b794756060e29ca6522e704",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
