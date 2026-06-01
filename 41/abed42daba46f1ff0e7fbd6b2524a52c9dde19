@@ -1,0 +1,57 @@
+golden/ModelMultiStageThermalTransient/equations.txt
+  s_af2aba5de8a5c3::t_6d2ff448cbd205 1-7
+  s_af2aba5de8a5c3::t_baee443d42bc9e 9-15
+sprinkler-solver.cabal
+  s_af2aba5de8a5c3::t_9fcdc0023eb08a 127-129
+example/Main.hs
+  s_af2aba5de8a5c3::t_0769e6c2016884 45-47
+  s_af2aba5de8a5c3::t_fb3e6322570ed2 139-141
+  s_af2aba5de8a5c3::t_6ef7d0a6d07376 91-93
+golden/ForceOscillator/transient.txt
+  s_af2aba5de8a5c3::t_6d2ff448cbd205 1-11
+golden/ModelRLCTransient/transient.txt
+  s_af2aba5de8a5c3::t_6d2ff448cbd205 1-9
+golden/ForceOscillator/equations.txt
+  s_af2aba5de8a5c3::t_baee443d42bc9e 1-15
+src/Transient.hs
+  s_af2aba5de8a5c3::t_88a9d1011921b3 29-31
+  s_af2aba5de8a5c3::t_94e8333f055d2d 112-125,131-142
+golden/ModelMultiStageThermalTransient/transient.txt
+  s_af2aba5de8a5c3::t_6d2ff448cbd205 1-7
+run_golden_tests.sh
+  s_af2aba5de8a5c3::t_b596f05c6fdf88 80,87
+  s_af2aba5de8a5c3::t_8c2ff4736700e0 75-78,81
+  s_af2aba5de8a5c3::t_a481bcfb334380 47-49
+  s_af2aba5de8a5c3::t_46f5ef82816f85 72
+golden/ModelMagneticTransient/equations.txt
+  s_af2aba5de8a5c3::t_99e6241e14f3a0 9
+golden/ModelMultiStageThermalTransient/solutions.txt
+  s_af2aba5de8a5c3::t_6d2ff448cbd205 1-7
+src/Examples/ForceOscillator.hs
+  s_af2aba5de8a5c3::t_9283fe67ec56c4 68
+validate_golden_tests.sh
+  s_af2aba5de8a5c3::t_c4f8ea9f219106 110-113,116
+  s_af2aba5de8a5c3::t_96cfbd654c3a13 115,121
+golden/ModelMultiStageThermalTransient/status.txt
+  s_af2aba5de8a5c3::t_9e3b9bbf657153 1
+golden/ModelRLCTransient/equations.txt
+  s_af2aba5de8a5c3::t_baee443d42bc9e 1-7
+golden/ForceOscillator/status.txt
+  s_af2aba5de8a5c3::t_f8f33e1945c173 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "41abed42daba46f1ff0e7fbd6b2524a52c9dde19",
+  "prompts": {},
+  "sessions": {
+    "s_af2aba5de8a5c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ed49617-2dd9-4ac4-974e-f4ab7dfa7e64",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
