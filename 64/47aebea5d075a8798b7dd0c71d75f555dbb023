@@ -1,0 +1,24 @@
+src/Examples/ModelMagneticTransient.hs
+  s_8194a7ba457148::t_e03862f43eaeb8 140-141,146-147,152
+  s_8194a7ba457148::t_fea286c67213bc 46,49
+  s_8194a7ba457148::t_a7ba1846984dca 144-145,151
+src/Transient.hs
+  s_8194a7ba457148::t_2a35b27ba04c27 241-260,269,271
+  s_8194a7ba457148::t_86d18d5dc1eb79 272-275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "6447aebea5d075a8798b7dd0c71d75f555dbb023",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
