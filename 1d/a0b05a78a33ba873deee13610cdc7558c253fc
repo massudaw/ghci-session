@@ -1,0 +1,33 @@
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_f6ad128c422aba 40,110
+golden/ModelPneumaticDissipation/equations.txt
+  s_8194a7ba457148::t_829186217cc3d2 1-4
+golden/ModelPneumaticDissipation/solutions.txt
+  s_8194a7ba457148::t_829186217cc3d2 1-4
+run_golden_tests.sh
+  s_8194a7ba457148::t_829186217cc3d2 39
+src/Model/PneumaticDissipationCoupling.hs
+  s_8194a7ba457148::t_5a5630e4f19fde 1-72
+golden/ModelPneumaticDissipation/status.txt
+  s_8194a7ba457148::t_829186217cc3d2 1
+src/Examples/ModelPneumaticDissipation.hs
+  s_8194a7ba457148::t_d58bd04626763c 1-66
+example/Main.hs
+  s_8194a7ba457148::t_f6ad128c422aba 38,75,114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "1da0b05a78a33ba873deee13610cdc7558c253fc",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
