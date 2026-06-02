@@ -1,0 +1,35 @@
+golden/ModelOttoCycle/equations.txt
+  s_8194a7ba457148::t_3959f0e9b83b5d 1-20
+golden/ModelOttoCycle/transient.txt
+  s_8194a7ba457148::t_3959f0e9b83b5d 1-15
+golden/ModelOttoCycle/solutions.txt
+  s_8194a7ba457148::t_3959f0e9b83b5d 1-9
+example/Main.hs
+  s_8194a7ba457148::t_0a5891b4b8f32a 30,146
+src/Examples/ModelOttoCycle.hs
+  s_8194a7ba457148::t_23410f5b9bce95 1-47,50-66,71-103,106-132
+  s_8194a7ba457148::t_9470268e635abc 104-105
+  s_8194a7ba457148::t_eee1507f7112ff 48-49,67-70
+golden/ModelOttoCycle/status.txt
+  s_8194a7ba457148::t_3959f0e9b83b5d 1
+run_golden_tests.sh
+  s_8194a7ba457148::t_3959f0e9b83b5d 61
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_0a5891b4b8f32a 125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "d8fe20f3dab2f1eddbe8472c1b2bc53642ce24aa",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
