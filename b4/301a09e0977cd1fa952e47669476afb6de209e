@@ -1,0 +1,48 @@
+src/Model/StrayLosses.hs
+  s_af2aba5de8a5c3::t_b9a4bf32f7608a 1-74
+src/Model/SpeedDependentCooling.hs
+  s_af2aba5de8a5c3::t_e387afed8cf3d9 1-93
+sprinkler-solver.cabal
+  s_af2aba5de8a5c3::t_079fb5840311dd 42
+  s_af2aba5de8a5c3::t_8d33c6adf561ca 43-44
+src/Examples/ModelRotationalMotorMagnetic.hs
+  s_af2aba5de8a5c3::t_757b274926090d 35
+  s_af2aba5de8a5c3::t_031aa9d072cfc0 211,213,215-216,218,221,223
+  s_af2aba5de8a5c3::t_2a3b510b5ee542 31-32
+  s_af2aba5de8a5c3::t_e4fe7f5a79a3e9 298-301,311-314
+  s_af2aba5de8a5c3::t_7ce9d0fb6f869f 204-210
+  s_af2aba5de8a5c3::t_a949a2b4d03323 76,78-79,81
+  s_af2aba5de8a5c3::t_9e953a6040d7ec 212,214,219-220
+  s_af2aba5de8a5c3::t_cfd75e02e65f30 276,278-279
+  s_af2aba5de8a5c3::t_fd58d89b3c897b 217
+  s_af2aba5de8a5c3::t_2bd8e9ba01b76e 30
+  s_af2aba5de8a5c3::t_3a5a18f7ba9f71 164-165,167-190
+  s_af2aba5de8a5c3::t_5a086634f1af00 281,284
+  s_af2aba5de8a5c3::t_e2f5092b692191 309
+  s_af2aba5de8a5c3::t_0032784596c16c 159
+  s_af2aba5de8a5c3::t_e5d7dc8caf4f64 45
+  s_af2aba5de8a5c3::t_02b96050b0c609 46-47
+  s_af2aba5de8a5c3::t_0c6135cc6b90f0 73-75,77,80,83
+  s_af2aba5de8a5c3::t_0082c0eb7275a7 273
+src/Model/InductanceSaturation.hs
+  s_af2aba5de8a5c3::t_3c5e8c12df2f42 1-25,27-59,61-74,76,81-87
+  s_af2aba5de8a5c3::t_fbb07881080fdb 26
+  s_af2aba5de8a5c3::t_a83af4a7c3d457 75,77-80
+  s_af2aba5de8a5c3::t_6d1a5891a9dd35 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "b4301a09e0977cd1fa952e47669476afb6de209e",
+  "prompts": {},
+  "sessions": {
+    "s_af2aba5de8a5c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ed49617-2dd9-4ac4-974e-f4ab7dfa7e64",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
