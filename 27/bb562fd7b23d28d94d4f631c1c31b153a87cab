@@ -1,0 +1,39 @@
+src/ThermoGas.hs
+  s_8194a7ba457148::t_db6e58d1d134c3 9-10,12,17,20-25,27-28,38,40,48-49,53-54,57-58,63-67,72,81,83,86,89,93-94,96-97,102,105,109,111-115,117-122,125-132,137-138,141-143
+golden/GasChamberHeating/equations.txt
+  s_8194a7ba457148::t_d166004286034d 1-3
+golden/GasCompression/transient.txt
+  s_8194a7ba457148::t_d166004286034d 1-8
+golden/GasCompression/status.txt
+  s_8194a7ba457148::t_d166004286034d 1
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_66b7c147be3f58 144
+src/Examples/GasCompression.hs
+  s_8194a7ba457148::t_76c78ff1575836 1-78
+src/Examples/GasChamberHeating.hs
+  s_8194a7ba457148::t_f2b17f89bd0dcb 32,35
+  s_8194a7ba457148::t_55bf42ebe26f87 61,64
+  s_8194a7ba457148::t_99cd42ccaa356c 51
+example/Main.hs
+  s_8194a7ba457148::t_66b7c147be3f58 55,109,165
+golden/GasCompression/equations.txt
+  s_8194a7ba457148::t_d166004286034d 1-3
+run_golden_tests.sh
+  s_8194a7ba457148::t_d166004286034d 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "27bb562fd7b23d28d94d4f631c1c31b153a87cab",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
