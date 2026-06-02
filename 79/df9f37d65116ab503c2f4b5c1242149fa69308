@@ -1,0 +1,36 @@
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_37e2ee13db407a 59
+  s_8194a7ba457148::t_f9b0ab56e670a5 139
+src/Examples/ModelNeuronSpike.hs
+  s_8194a7ba457148::t_d36ef40da2bf65 1-77
+golden/ModelNeuronSpike/solutions.txt
+  s_8194a7ba457148::t_e76ba28a7e683e 1-2
+golden/ModelNeuronSpike/status.txt
+  s_8194a7ba457148::t_e76ba28a7e683e 1
+src/Bioelectric.hs
+  s_8194a7ba457148::t_4445f05ee38400 1-131
+example/Main.hs
+  s_8194a7ba457148::t_f9b0ab56e670a5 52,103,156
+golden/ModelNeuronSpike/equations.txt
+  s_8194a7ba457148::t_e76ba28a7e683e 1-5
+golden/ModelNeuronSpike/transient.txt
+  s_8194a7ba457148::t_e76ba28a7e683e 1-15
+run_golden_tests.sh
+  s_8194a7ba457148::t_e76ba28a7e683e 54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "79df9f37d65116ab503c2f4b5c1242149fa69308",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
