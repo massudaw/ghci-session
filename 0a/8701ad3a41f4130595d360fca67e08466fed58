@@ -1,0 +1,43 @@
+src/Examples/ModelGovernorPI.hs
+  s_8194a7ba457148::t_9001637aaa9d79 1-94
+src/Model.hs
+  s_8194a7ba457148::t_5057bfc1322b37 60,210
+src/Signal.hs
+  s_8194a7ba457148::t_26cb871146004e 2-107
+  s_8194a7ba457148::t_9d93b98cbd595f 1
+golden/ModelGovernorPI/transient.txt
+  s_8194a7ba457148::t_89bcb4d8c29350 1-12
+run_golden_tests.sh
+  s_8194a7ba457148::t_89bcb4d8c29350 64
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_2f906595ebec10 131
+  s_8194a7ba457148::t_79af5498870561 44
+  s_8194a7ba457148::t_5057bfc1322b37 70
+src/Model/SpeedGovernorPI.hs
+  s_8194a7ba457148::t_7f1e467787efd1 38
+  s_8194a7ba457148::t_d896f461037dc9 59-60
+  s_8194a7ba457148::t_40c797416211df 68-72,80-84
+  s_8194a7ba457148::t_a0d1ebcc3cae7e 1-37,39-58,61-67,73-79,85-93
+golden/ModelGovernorPI/status.txt
+  s_8194a7ba457148::t_89bcb4d8c29350 1
+golden/ModelGovernorPI/equations.txt
+  s_8194a7ba457148::t_89bcb4d8c29350 1-7
+example/Main.hs
+  s_8194a7ba457148::t_2f906595ebec10 33,152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "0a8701ad3a41f4130595d360fca67e08466fed58",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
