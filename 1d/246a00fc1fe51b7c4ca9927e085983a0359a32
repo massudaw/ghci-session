@@ -1,0 +1,35 @@
+example/Main.hs
+  s_8194a7ba457148::t_b8a74baeaa66c1 54,107,162
+golden/GasChamberHeating/equations.txt
+  s_8194a7ba457148::t_c28f6f91ec55b4 1-2
+src/Examples/GasChamberHeating.hs
+  s_8194a7ba457148::t_7df377f201bfd8 49-52
+  s_8194a7ba457148::t_4dd67d6a75272b 1-48,53-74
+golden/GasChamberHeating/transient.txt
+  s_8194a7ba457148::t_c28f6f91ec55b4 1-8
+src/ThermoGas.hs
+  s_8194a7ba457148::t_e4e1149b619aed 1-131
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_b8a74baeaa66c1 143
+  s_8194a7ba457148::t_8de24287025761 61
+golden/GasChamberHeating/status.txt
+  s_8194a7ba457148::t_c28f6f91ec55b4 1
+run_golden_tests.sh
+  s_8194a7ba457148::t_c28f6f91ec55b4 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "1d246a00fc1fe51b7c4ca9927e085983a0359a32",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
