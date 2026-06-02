@@ -1,0 +1,31 @@
+golden/ModelThermoEngine/equations.txt
+  s_8194a7ba457148::t_b7c406a41a4f42 1,14,16-28,32,50-64
+src/Examples/ModelThermoEngine.hs
+  s_8194a7ba457148::t_772b3618921ec4 158,160
+  s_8194a7ba457148::t_7dc68698a88fe3 110
+  s_8194a7ba457148::t_3f0e610193c16b 53-54
+  s_8194a7ba457148::t_9168f21d73c999 16,19,23,27,29-31
+  s_8194a7ba457148::t_66ef5f13ea405f 45
+  s_8194a7ba457148::t_d2a2d9b6cf355e 76-79
+  s_8194a7ba457148::t_9c2654616df684 99-102
+  s_8194a7ba457148::t_f702182b1640b4 114,119-120
+  s_8194a7ba457148::t_d4f268c4e2453c 151,153
+golden/ModelThermoEngine/transient.txt
+  s_8194a7ba457148::t_b7c406a41a4f42 3-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "afe1e2c1bbce8daac83484beb1c55cb74e623129",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
