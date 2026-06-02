@@ -1,0 +1,37 @@
+golden/ModelThermostat/transient.txt
+  s_8194a7ba457148::t_ff5b357dd7e6a3 1-11
+example/Main.hs
+  s_8194a7ba457148::t_bef6f4202f3685 34,154
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_09d13c199d1f56 45
+  s_8194a7ba457148::t_bef6f4202f3685 133
+src/Model/PIControl.hs
+  s_8194a7ba457148::t_cb3408adc0cde2 2-5,7-94,106-111,122-124,126
+  s_8194a7ba457148::t_92bd5c933cec10 1
+  s_8194a7ba457148::t_eef10eca758282 6
+  s_8194a7ba457148::t_905a277eddd84b 95-105,112-121,125
+golden/ModelThermostat/equations.txt
+  s_8194a7ba457148::t_ff5b357dd7e6a3 1-5
+src/Examples/ModelThermostat.hs
+  s_8194a7ba457148::t_0f114dd31b9153 1-97
+run_golden_tests.sh
+  s_8194a7ba457148::t_ff5b357dd7e6a3 65
+golden/ModelThermostat/status.txt
+  s_8194a7ba457148::t_ff5b357dd7e6a3 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "49b5c5d236c5e4dd36e8a7ee8797ac676c66ad47",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
