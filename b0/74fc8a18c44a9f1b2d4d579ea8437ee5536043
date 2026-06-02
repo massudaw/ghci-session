@@ -1,0 +1,34 @@
+src/Examples/ModelGovernor.hs
+  s_8194a7ba457148::t_d680996835db77 1-43,46-51,56-96
+  s_8194a7ba457148::t_30bc492ae137ff 44-45,52-55
+golden/ModelGovernor/equations.txt
+  s_8194a7ba457148::t_a4a9dff6338557 1-5
+golden/ModelGovernor/transient.txt
+  s_8194a7ba457148::t_a4a9dff6338557 1-12
+src/Model/SpeedGovernor.hs
+  s_8194a7ba457148::t_5073a22ad23708 1-75
+run_golden_tests.sh
+  s_8194a7ba457148::t_a4a9dff6338557 63
+golden/ModelGovernor/status.txt
+  s_8194a7ba457148::t_a4a9dff6338557 1
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_98e46b9ec6d64f 43,128
+example/Main.hs
+  s_8194a7ba457148::t_98e46b9ec6d64f 32,150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "b074fc8a18c44a9f1b2d4d579ea8437ee5536043",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
