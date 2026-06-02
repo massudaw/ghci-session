@@ -1,0 +1,58 @@
+src/Model/GasPistonForce.hs
+  s_8194a7ba457148::t_97614aa58f56ef 1-57
+golden/GasChamberHeating/equations.txt
+  s_8194a7ba457148::t_707b8a131af898 2-5
+golden/GasCompression/equations.txt
+  s_8194a7ba457148::t_707b8a131af898 2-5
+src/Examples/GasChamberHeating.hs
+  s_8194a7ba457148::t_c97243ec1b5cb0 49-50
+  s_8194a7ba457148::t_40cb9572feffa7 33,36
+  s_8194a7ba457148::t_29f6617efda46c 27
+sprinkler-solver.cabal
+  s_8194a7ba457148::t_e4078aed619d4a 56-57
+  s_8194a7ba457148::t_4eebc4c4c413ce 149
+src/ThermoGas.hs
+  s_8194a7ba457148::t_273dc3375e5f5d 149-151,154-156
+  s_8194a7ba457148::t_e05c6696dfc09d 68-69
+  s_8194a7ba457148::t_d408fa1ed43b1c 120,126-128,130
+  s_8194a7ba457148::t_bd1523f6cde491 91-99
+golden/GasCompression/solutions.txt
+  s_8194a7ba457148::t_707b8a131af898 1-3
+src/Model.hs
+  s_8194a7ba457148::t_e4078aed619d4a 59,208
+golden/GasChamberHeating/transient.txt
+  s_8194a7ba457148::t_707b8a131af898 3
+golden/GasChamberHeating/solutions.txt
+  s_8194a7ba457148::t_707b8a131af898 1-3
+src/Model/PistonGasVolume.hs
+  s_8194a7ba457148::t_671eed96650cc6 1-74,76
+  s_8194a7ba457148::t_a6f588db60710c 75
+src/Examples/ModelGasPiston.hs
+  s_8194a7ba457148::t_54c3d4ccafe089 33
+  s_8194a7ba457148::t_25e0be80655ddb 105-109
+  s_8194a7ba457148::t_b91b80b895d66a 1-6,22-23,25-32,34,38,41-59,63-69,71,73,80-84,93-94
+  s_8194a7ba457148::t_014a0e4084e2bc 118,123-125
+  s_8194a7ba457148::t_f4fa09025bd8bf 7-21,24,35-37,39-40,60-62,70,72,74-79,85-92,95-104,110-117,119-122,126-134
+example/Main.hs
+  s_8194a7ba457148::t_4eebc4c4c413ce 57,84,141,170
+src/Examples/GasCompression.hs
+  s_8194a7ba457148::t_8115fe60eb7a8d 37,40
+  s_8194a7ba457148::t_1b5792b7ef6596 53-54
+  s_8194a7ba457148::t_56e8506f64b1f8 31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "8c29e4481b9525372d45da019897e68f6dc4c72c",
+  "prompts": {},
+  "sessions": {
+    "s_8194a7ba457148": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
