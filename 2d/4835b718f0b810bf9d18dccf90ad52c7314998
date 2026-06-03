@@ -1,0 +1,21 @@
+golden/ModelRotationalMotorMagnetic/equations.txt
+  s_975d324ce45749::t_af2bdde1ed0193 1-2,18-33
+golden/ModelRotationalMotorMagnetic/transient.txt
+  s_975d324ce45749::t_af2bdde1ed0193 1-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "2d4835b718f0b810bf9d18dccf90ad52c7314998",
+  "prompts": {},
+  "sessions": {
+    "s_975d324ce45749": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "24d2bd8e-c6eb-44d8-8922-0e4aecccca8d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
