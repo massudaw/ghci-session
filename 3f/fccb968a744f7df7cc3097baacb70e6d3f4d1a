@@ -1,0 +1,14 @@
+src/Model/RackPinionCoupling.hs
+  h_fd5809635b36a3 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "3ffccb968a744f7df7cc3097baacb70e6d3f4d1a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
