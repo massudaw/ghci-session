@@ -1,0 +1,146 @@
+golden/ModelThermoacousticEngine/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,6-7
+golden/ModelConcentrationCell/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,6-7
+golden/ModelReactionHeating/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,4-5
+golden/ModelRotationalMotor/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+src/Project.hs
+  s_e0200a7c50dc5d::t_52a53fd0a226d9 534
+src/Equation.hs
+  s_e0200a7c50dc5d::t_f633f6eb3d9a21 20
+  s_e0200a7c50dc5d::t_f0de4638e5409d 326-372
+golden/ModelRocket/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,12-15
+golden/ModelPneumaticCompressor/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,4-6
+golden/ModelRotationalTranslational/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,14-17
+golden_extract_lib.sh
+  s_e0200a7c50dc5d::t_aed0e1528f1c5c 39
+golden/ModelRocketFeed/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9-12
+golden/ModelHydraulicAirDuct/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/CircuitRLC/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelHydraulicTransient/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelCoupledDemo/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,4-6
+golden/ElectricCircuit/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/MagneticCircuit/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ForceSimple/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9,15,26,36,46,84
+golden/ModelHydraulicPipeNetwork/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/GasCompression/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ThermalCircuit/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/GasChamberHeating/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelPneumaticAccumulator/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5
+golden/ModelClosedLoopEnergyCycle/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-6,8-11,21-27,29-32
+golden/ModelThermoEngine/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,14-23,30-34
+golden/ModelGasPiston/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-8
+golden/ModelPneumaticPiston/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-5
+golden/ModelMagneticSaturable/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelSliderCrank/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,14-17
+golden/ModelMultiStageThermalTransient/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelThermoElectric/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-8
+golden/ModelSeebeckValidation/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-8
+golden/ChemicalReactor/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelAcousticHeating/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-6
+golden/ModelMotorBackEMF/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-6
+golden/ModelNeuronSpike/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+src/Domains.hs
+  s_e0200a7c50dc5d::t_b6eac3d02aef88 127,129,131
+  s_e0200a7c50dc5d::t_f8b216b5faa69b 121-126,128,130,132
+golden/ModelRocketPressureFed/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,12-15
+golden/ModelPeltierCoupled/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+golden/ModelChemicalTransient/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1
+golden/ModelCombustionEngine/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,17-20
+golden/ModelElectroMechanical/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-5
+golden/ModelDCMotorCTMS/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,7-9
+golden/ModelPiezoelectric/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-9
+golden/ModelACConditioner/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-7,21-24
+golden/ModelBattery/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-8,12-14
+golden/ModelRocketTransient/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9-12
+golden/ThermalSourceCircuit/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9
+golden/ModelElectrolysis/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+src/Model.hs
+  s_e0200a7c50dc5d::t_18d22c252b96c8 426-428
+  s_e0200a7c50dc5d::t_b1f5253bad29ae 603-605
+  s_e0200a7c50dc5d::t_441c95367093d6 454-456
+  s_e0200a7c50dc5d::t_da05a6d0537593 342-346
+golden/ModelSolenoidActuator/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9-12,16-18
+golden/ModelPneumaticDissipation/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-6
+golden/ModelPiezoActuator/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-5
+golden/ModelElectroMagneticValve/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+golden/ModelJouleHeating/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,8-13
+golden/ModelLoudspeaker/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+golden/ModelPneumaticGasSpring/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,3-6
+golden/ModelThermalExpansion/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,12-17,33-34
+golden/ModelFluidThermal/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,13-20
+golden/ModelElectroPneumatic/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+golden/ModelMagneticTransient/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,5-7
+golden/ModelDCPump/solutions.txt
+  s_e0200a7c50dc5d::t_9fb23d1ecfe558 1,9-11,14-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "8a2c6be64d31e086f24c177db8b72e7a4102358d",
+  "prompts": {},
+  "sessions": {
+    "s_e0200a7c50dc5d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "90a36494-cbb9-49f0-b1d1-609461f4d056",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
