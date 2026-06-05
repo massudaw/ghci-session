@@ -1,0 +1,188 @@
+golden/ModelOttoCycle/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 5
+sprinkler-solver.cabal
+  s_e0200a7c50dc5d::t_37ba54ff348652 94,132
+src/Examples/ModelMotorBackEMF.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,31,48,94,108,129
+src/Examples/ModelSolenoidActuator.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,54,70,127
+src/Examples/ModelLiftRegen.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 36,56,146,199
+src/Acoustic.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11
+src/Model/MotorSpeedDrivenCompressor.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 36,72,76,79,85,102,107,145,156-157,167-168,202,214-215,232-233
+src/Model/ElectrolysisCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,33,51,63
+src/Model/JouleHeating.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 24,39,50
+src/Model/RotationalMotorCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 29,52,64
+golden/ModelPneumaticSuspension/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 24
+src/Examples/ModelACConditioner.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 60,80,311
+src/Model/InductanceSaturation.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 29,49,52,56,61,77-78
+golden/ModelRocketTransient/transient.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 41
+src/Examples/ModelCoupledDemo.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 18,20,38,47,71,77
+example/Main.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,94,99-101,103,113,125,131,133,135,160
+src/Examples/InputAPIDemo.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 7,41,75
+golden/ModelRocketTransient/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1,27,53
+src/Model/Seebeck.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 16,26,34,42,44,46
+src/Model/HybridControlSwitch.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 21,47-48,51,57,63
+src/Domains.hs
+  s_e0200a7c50dc5d::t_3f5f72f4f867e8 53-54
+  s_e0200a7c50dc5d::t_5590752edc3296 106-107,109-110
+  s_e0200a7c50dc5d::t_8da3a07f9e4057 12,15
+example/TestElectric.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 1-10
+src/Examples/ModelPiezoelectric.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,15,23,35,74,79
+src/Examples/ModelElectroMagneticValve.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 19,30,49
+src/Examples/ModelThermoElectric.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,41,50,87,93
+src/Examples/ElectricCircuit.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 1-51
+src/Model/MotorBackEMFCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 39,72,75,81,100
+src/Model/TempDependentJouleHeating.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 28,47,49,52,56,64
+src/Model.hs
+  s_e0200a7c50dc5d::t_70e48a81a4a3a0 586-588
+  s_e0200a7c50dc5d::t_37ba54ff348652 19,64,211
+golden/ModelGasPiston/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 11,40
+src/Examples/ModelElectrolysis.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 7,9,25,33,60,65
+src/Examples/ModelMagneticTransient.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,51,64,90,104
+src/Model/ThermalElectricVSD.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 38,58,61,68,83
+golden/ModelRocketFeed/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1
+golden/ModelRocketLiftoff/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1,35
+golden/ModelThermostat/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 7
+src/Model/PiezoSensorCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 25,44,48,50
+src/Examples/ModelLoudspeaker.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 7,9,23,31,57,62
+src/Model/ElectroPneumaticCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,30,49,61
+src/Model/BatteryCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 16,27,47,49,52
+src/Model/ElectroMechanicalBackEMF.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 20,45,67,69,74,81
+src/Model/TimeControlledSwitch.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 21,42-43,46,52,55
+golden/ModelGovernorPI/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 8
+src/Examples/ModelDCPump.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 25,50,94,132
+golden/ModelRocketLiftoff/transient.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 43
+src/Electric.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 1-399
+src/Examples/ModelClosedLoopEnergyCycle.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 32,66,132,152,157,162,168,173,202
+src/Backend/Graphviz.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 4,108
+src/Examples/ModelPiezoActuator.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,22,32,62,67
+src/Backend/CSG.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 21,176
+src/Model/PiezoActuatorCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 23,47,56-57
+golden/ElectricCircuit/status.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1
+src/Model/ElectroacousticCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,34,52,64
+src/Examples/ModelBattery.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,21,36,74
+golden/ModelRocketPressureFed/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1
+golden/ModelThermoEngine/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 16,63
+src/Examples/ModelJouleHeating.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,34,43,91,97
+src/Examples/ModelElectroMechanical.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,22,32,62,67
+run_golden_tests.sh
+  s_e0200a7c50dc5d::t_37ba54ff348652 16
+src/Examples/ModelDCMotorCTMS.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 42,58,96,134
+golden/ElectricCircuit/solutions.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1-30
+src/Model/ElectroMagneticInduction.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 17,31,48,50,54,59
+src/Model/NernstCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 23-24,38,57,59,62
+src/Examples/ModelMotorInertia.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 11,17,27,39,67
+src/Examples/CircuitRLC.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 8,16
+src/Examples/ModelRotationalMotor.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 23,40,67,100
+src/Model/Peltier.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 16,26,42,61
+src/Model/RotationalMotorBackEMF.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 19,34,55,57,61,68
+src/Examples/ModelRLCTransient.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 26,37
+src/Examples/ModelSeebeckValidation.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 18,21,31,39,67,72
+src/Model/RotationalMotorMagneticBackEMF.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 18,28,49,54,58,63
+src/Examples/ModelPeltierCoupled.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,21,30,58,63
+src/Model/SinusoidalSignal.hs
+  s_e0200a7c50dc5d::t_9281758ac984dd 30
+  s_e0200a7c50dc5d::t_85a7e1ccfce51e 55,57
+src/Model/ElectroMagneticCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 27,44,56
+src/MultiDomain.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 294,299,342,348,438,445,449,565,580-581,599-600
+src/Model/RotationalMotorMagnetic.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 28,49,66
+golden/ModelRocket/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1
+src/Examples/ModelElectroPneumatic.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 7,10,20,29,54,59
+src/Examples/ModelConcentrationCell.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 10,24,32,57,62
+src/Examples/ModelRotationalMotorMagnetic.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 37,51,198,248
+src/Model/ElectroMechanicalCoupling.hs
+  s_e0200a7c50dc5d::t_37ba54ff348652 36,60,72
+src/Model/PIControl.hs
+  s_e0200a7c50dc5d::t_568a4d3628b6f1 38
+  s_e0200a7c50dc5d::t_3d8e46b0128e42 73,75
+golden/ElectricCircuit/equations.txt
+  s_e0200a7c50dc5d::t_8e9dcc4886e4c1 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "34c64cac8533b014d1aee3272dd93eba75cf8931",
+  "prompts": {},
+  "sessions": {
+    "s_e0200a7c50dc5d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "90a36494-cbb9-49f0-b1d1-609461f4d056",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
