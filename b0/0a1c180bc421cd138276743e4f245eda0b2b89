@@ -1,0 +1,25 @@
+example/SaoJorge.hs
+  s_c8b9499502bf20::t_4969296cc35d95 3,11
+src/Examples/ModelSaoJorge.hs
+  s_c8b9499502bf20::t_b82be1cf72da19 41-42
+  s_c8b9499502bf20::t_e7e207fdd230fa 39
+  s_c8b9499502bf20::t_8b8ea894f4d6a2 1-38,40,43-146
+sprinkler-solver.cabal
+  s_c8b9499502bf20::t_027d9e8e71c6f5 150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "b00a1c180bc421cd138276743e4f245eda0b2b89",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
