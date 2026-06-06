@@ -1,0 +1,60 @@
+golden/ModelCombustionEngine/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 10-16
+golden/ModelSaoJorge/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 7-1104
+golden/ModelHydraulicPipeNetwork/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 7
+golden/ModelSolenoidActuator/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 13-14
+src/Equation.hs
+  s_c8b9499502bf20::t_e5e1006a6324f9 416-417
+  s_c8b9499502bf20::t_f9ee684e8f31ea 401,412-415
+golden/ModelDCMotorCTMS/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 11-18
+golden/ModelHydraulicTransient/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 7
+golden/ModelSliderCrank/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 9-10
+golden/ModelACConditioner/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 16-29
+golden/ModelNeuronSpike/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 6
+golden/ModelHydraulicAirDuct/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 7-8
+golden/ModelFluidThermal/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 10-11
+golden/ModelThermoElectric/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 11
+golden/ModelClosedLoopEnergyCycle/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 22-44
+golden/ModelPneumaticGasSpring/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 10-20
+golden/ModelRotationalTranslational/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 10-19
+golden/ModelThermoEngine/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 14-16
+golden/ModelGasPiston/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 9-19
+golden/GasChamberHeating/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 6
+golden/ModelMagneticSaturable/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 7
+golden/ModelMotorBackEMF/residuals.txt
+  s_c8b9499502bf20::t_f2250eff7693a2 10-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "0e49b15bcc52c112ff20db941b84123e95bdbf33",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
