@@ -1,0 +1,14 @@
+cabal.project
+  h_fd5809635b36a3 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "66a2fe06a2c2a5742895e0feeeb3ea0b36204a94",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
