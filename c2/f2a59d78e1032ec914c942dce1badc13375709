@@ -1,0 +1,21 @@
+src/Examples/ModelSaoJorge.hs
+  s_c8b9499502bf20::t_4eca8bb2872747 21
+  s_c8b9499502bf20::t_32f9edafc2ea04 39
+  s_c8b9499502bf20::t_8df8ecbff8f800 124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "c2f2a59d78e1032ec914c942dce1badc13375709",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
