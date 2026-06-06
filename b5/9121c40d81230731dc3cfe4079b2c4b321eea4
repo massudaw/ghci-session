@@ -1,0 +1,24 @@
+src/Examples/ModelSaoJorge.hs
+  s_c8b9499502bf20::t_0a7abe0ce2dcf0 24
+  s_c8b9499502bf20::t_c3489290377c64 156,160
+golden/ModelSaoJorge/residuals.txt
+  s_c8b9499502bf20::t_270ef508a1ba44 2-3,5-6
+golden/ModelSaoJorge/solutions.txt
+  s_c8b9499502bf20::t_270ef508a1ba44 2-1099
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "b59121c40d81230731dc3cfe4079b2c4b321eea4",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
