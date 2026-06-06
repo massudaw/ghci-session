@@ -1,0 +1,69 @@
+src/Backend/CSG.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 211,253,260,263,266,272
+src/Project.hs
+  s_c8b9499502bf20::t_18e5b643965265 127-130,151-152,154-155,157-158,160-161,163-164,278-279
+  s_c8b9499502bf20::t_5180653a215adf 51,133,149
+  s_c8b9499502bf20::t_0de1f31684c458 135-143,145-146
+  s_c8b9499502bf20::t_dce8f8bb100538 488,490-491
+  s_c8b9499502bf20::t_4e0b35ee77163f 399,401
+  s_c8b9499502bf20::t_f4adb56427d94b 388,390,392,394,417-418,420,422,425-427,441
+  s_c8b9499502bf20::t_40824ef8fed55b 132,148,167,259-260,372-373,375-378,382,384,479,481-482,493-495
+src/Element.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 68,70,81,83,93-95,97-98,101-102,120,144-145,241-244,275,280-282,284-285,335,339,346,359-364,370-372,375,439-440,444-446,448-449,451,454,462,464-467,469,481,501-502,504,508,510-512,514,556-557
+example/TestCSGBackend.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 19-20,23-24
+src/Backend/Mecha.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 64,67,79,83,87-88
+example/CSGViewerTest.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 22,25
+src/Examples/InputAPIDemo.hs
+  s_c8b9499502bf20::t_b8758b9cdef598 67
+  s_c8b9499502bf20::t_40824ef8fed55b 62,68
+src/Backend/Diagram.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 41,44
+src/Examples/ModelDCPump.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 74-75,79
+src/Examples/ModelHydraulicPipeNetwork.hs
+  s_c8b9499502bf20::t_b8758b9cdef598 25
+  s_c8b9499502bf20::t_40824ef8fed55b 44
+src/Examples/ModelHydraulicTransient.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 52
+src/Examples/ModelHydraulicAirDuct.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 33
+src/Lint.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 11,22,75-82
+src/Hydraulic.hs
+  s_c8b9499502bf20::t_de940d57ffb158 31-33,39-41,48,57,157,159-160,165-169,175-176,181,183,186,188,193-194,197-200,202,205-206,218,220,222,224,226,228,234,237-239,247,258-260,262-264,266-267,269-270,272-274,276-280,282-284,287,290,292-293,296,300-304,306-307,322-324,326-327,329-330,336,338,343,348,350-351,353,356,358
+example/Simple.hs
+  s_c8b9499502bf20::t_18e5b643965265 31,38-39,44,49-50,66-67
+  s_c8b9499502bf20::t_40824ef8fed55b 30,43
+src/Examples/ModelFluidThermal.hs
+  s_c8b9499502bf20::t_b8758b9cdef598 69
+  s_c8b9499502bf20::t_40824ef8fed55b 55,70-72
+example/SaoJorge.hs
+  s_c8b9499502bf20::t_18e5b643965265 58,61-62,65,69,82-83,105-106,109
+  s_c8b9499502bf20::t_b8758b9cdef598 33
+  s_c8b9499502bf20::t_40824ef8fed55b 45,53
+src/Examples/ModelExcavatorArm.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 103,109
+src/Tee.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 34,37-38,48,78,84,116,122,128,146-147,162-163
+src/Backend/DXF.hs
+  s_c8b9499502bf20::t_40824ef8fed55b 117-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "7763924d17d5728da1a148b0922d52968a918320",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
