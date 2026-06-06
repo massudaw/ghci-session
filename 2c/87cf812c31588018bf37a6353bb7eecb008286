@@ -1,0 +1,21 @@
+src/Hydraulic.hs
+  s_c8b9499502bf20::t_13e91864c7302d 3,28-32,45,58,63-64,70-77,87,95-98,100-107,114-115,118,122,145-224,236,238,246-255,263-266,284-286,301-303,315-331,335,341-344,352-356,367,369-378,388-390,405-408,416-417,425-436,447-455,459,463-501,503-504,506-535,537-539,541-544
+example/SaoJorge.hs
+  s_c8b9499502bf20::t_423ca9dc4bb064 54,58,61-62,65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "2c87cf812c31588018bf37a6353bb7eecb008286",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
