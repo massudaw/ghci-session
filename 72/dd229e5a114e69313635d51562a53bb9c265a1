@@ -1,0 +1,19 @@
+regionName.csv
+  s_c8b9499502bf20::t_d7ba56f1b61856 3-5,22,27-29,31,38,44-46,48-50,54-115,120-121,123-126,128-132,134-136,138-140,142-144,146,148-150,152-161,163-165,167-177,179-181,183-190,192-194,196-200,202-204,206-246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "72dd229e5a114e69313635d51562a53bb9c265a1",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
