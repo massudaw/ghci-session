@@ -1,0 +1,25 @@
+sprinkler-solver.cabal
+  s_c8b9499502bf20::t_ee958fe698171d 23
+src/Backend/Diagram.hs
+  s_c8b9499502bf20::t_a8ba794f11af04 12
+src/Hydraulic.hs
+  s_c8b9499502bf20::t_6f1940d07a24b0 29
+src/Hydraulic/Tee.hs
+  s_c8b9499502bf20::t_f04e69592a0c41 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "8d30cbcdd3ab3d80189182d326a1a833158d9851",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
