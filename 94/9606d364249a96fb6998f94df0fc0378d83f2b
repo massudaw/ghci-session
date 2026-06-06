@@ -1,0 +1,27 @@
+golden/ModelSaoJorge/solutions.txt
+  s_c8b9499502bf20::t_7e071e1462c906 1-1099
+golden/ModelSaoJorge/equations.txt
+  s_c8b9499502bf20::t_7e071e1462c906 1-1100
+golden/ModelSaoJorge/status.txt
+  s_c8b9499502bf20::t_7e071e1462c906 1
+run_golden_tests.sh
+  s_c8b9499502bf20::t_7a54dfb7992582 34
+golden/ModelSaoJorge/residuals.txt
+  s_c8b9499502bf20::t_7e071e1462c906 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "949606d364249a96fb6998f94df0fc0378d83f2b",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
