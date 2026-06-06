@@ -1,0 +1,59 @@
+src/Equation.hs
+  s_c8b9499502bf20::t_3952e236ea9360 412,414-419
+golden/ModelDCMotorCTMS/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 11-23
+golden/ModelSaoJorge/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 7-1106
+golden/ModelACConditioner/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 16-33
+golden/ModelPneumaticGasSpring/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 10-24
+golden/ModelThermoEngine/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 14-18
+golden/ModelGasPiston/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 9-22
+golden/ModelHydraulicAirDuct/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 7-9
+golden/ModelRotationalTranslational/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 10-23
+golden/ModelFluidThermal/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 10-12
+golden/ModelSolenoidActuator/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 13-16
+golden/ModelThermoElectric/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 11-12
+golden/ModelNeuronSpike/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 6-7
+golden/ModelClosedLoopEnergyCycle/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 22-57
+golden/ModelHydraulicTransient/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 7-8
+golden/ModelHydraulicPipeNetwork/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 7-8
+golden/ModelMagneticSaturable/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 7-8
+golden/ModelSliderCrank/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 9-11
+golden/GasChamberHeating/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 6-7
+golden/ModelMotorBackEMF/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 10-24
+golden/ModelCombustionEngine/residuals.txt
+  s_c8b9499502bf20::t_47c6a4889bc104 10-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "a84161739cbc21831ec886e00ca7606e33e64eb4",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
