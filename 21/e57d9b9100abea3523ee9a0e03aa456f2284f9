@@ -1,0 +1,92 @@
+src/Examples/ModelExcavatorArm.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 33
+  s_c8b9499502bf20::t_a229a04fb0b991 31-32
+  s_c8b9499502bf20::t_118184c69c89e7 30
+example/Simple.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 16
+src/Model/HydraulicCylinderCoupling.hs
+  s_c8b9499502bf20::t_dfd248af08d230 38
+  s_c8b9499502bf20::t_52a8ed82c0391d 37
+example/TestCSGBackend.hs
+  s_c8b9499502bf20::t_dfd248af08d230 6
+src/Project.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 37
+src/Examples/ModelDCPump.hs
+  s_c8b9499502bf20::t_a229a04fb0b991 28-29
+  s_c8b9499502bf20::t_1aefa002b4950f 30
+  s_c8b9499502bf20::t_118184c69c89e7 27
+src/Hydraulic/Element.hs
+  s_c8b9499502bf20::t_6d8ea9e5a48b84 12
+example/CSGViewerTest.hs
+  s_c8b9499502bf20::t_16e6b2272907a1 2
+src/Examples/ModelFluidThermal.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 30
+  s_c8b9499502bf20::t_118184c69c89e7 27
+  s_c8b9499502bf20::t_a229a04fb0b991 28-29
+src/Tee.hs
+  s_c8b9499502bf20::t_b78e0be437d1f7 13
+src/Backend/DXF.hs
+  s_c8b9499502bf20::t_f853ceff7447bc 19
+src/Backend/CSG.hs
+  s_c8b9499502bf20::t_f853ceff7447bc 22-23
+src/Model/PumpPressureCoupling.hs
+  s_c8b9499502bf20::t_52a8ed82c0391d 30
+  s_c8b9499502bf20::t_dfd248af08d230 31
+src/Hydraulic.hs
+  s_c8b9499502bf20::t_e81091c8c651f0 22
+example/SaoJorge.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 16
+src/Model/BuoyancyCoupling.hs
+  s_c8b9499502bf20::t_dfd248af08d230 26
+  s_c8b9499502bf20::t_52a8ed82c0391d 25
+src/Examples/ModelHydraulicAirDuct.hs
+  s_c8b9499502bf20::t_4beea588228f4d 23
+  s_c8b9499502bf20::t_1aefa002b4950f 24
+  s_c8b9499502bf20::t_118184c69c89e7 22
+src/Examples/ModelHydraulicTransient.hs
+  s_c8b9499502bf20::t_4beea588228f4d 41
+  s_c8b9499502bf20::t_1aefa002b4950f 42
+  s_c8b9499502bf20::t_118184c69c89e7 40
+src/Backend/Diagram.hs
+  s_c8b9499502bf20::t_f853ceff7447bc 5
+src/Backend/Mecha.hs
+  s_c8b9499502bf20::t_d5eaf99dfc3560 16
+  s_c8b9499502bf20::t_904f4ceb1b4481 17
+src/Model/AdvectiveCoupling.hs
+  s_c8b9499502bf20::t_dfd248af08d230 26
+  s_c8b9499502bf20::t_52a8ed82c0391d 25
+src/Examples/InputAPIDemo.hs
+  s_c8b9499502bf20::t_dfd248af08d230 8
+src/Model/PumpTorqueCoupling.hs
+  s_c8b9499502bf20::t_dfd248af08d230 31
+  s_c8b9499502bf20::t_52a8ed82c0391d 30
+src/Lint.hs
+  s_c8b9499502bf20::t_ba10b73da56432 11
+src/Examples/ModelHydraulicPipeNetwork.hs
+  s_c8b9499502bf20::t_4beea588228f4d 34
+  s_c8b9499502bf20::t_1aefa002b4950f 35
+  s_c8b9499502bf20::t_118184c69c89e7 33
+sprinkler-solver.cabal
+  s_c8b9499502bf20::t_50f46385b32b54 21-22
+src/Model.hs
+  s_c8b9499502bf20::t_1aefa002b4950f 66
+src/Model/ConvectiveCoupling.hs
+  s_c8b9499502bf20::t_52a8ed82c0391d 25
+  s_c8b9499502bf20::t_dfd248af08d230 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "21e57d9b9100abea3523ee9a0e03aa456f2284f9",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
