@@ -1,0 +1,21 @@
+example/Main.hs
+  s_c8b9499502bf20::t_6bb12e70badd33 106
+  s_c8b9499502bf20::t_63c78e8d972d85 29
+  s_c8b9499502bf20::t_9de3f0e0a2c7c3 180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "579a92f2bf18ceae126dcb2f0f50c72112c8da1a",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
