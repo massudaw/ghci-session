@@ -1,0 +1,143 @@
+golden/ModelCombustionEngine/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelThermalExpansion/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-14
+golden/ModelPneumaticPiston/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/GasCompression/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-5
+golden/ModelElectroPneumatic/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelPiezoActuator/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelRocketPressureFed/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelHydraulicPipeNetwork/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelElectrolysis/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelNeuronSpike/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-5
+golden/ModelRocketTransient/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelChemicalTransient/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelRotationalMotor/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+src/Equation.hs
+  s_e0200a7c50dc5d::t_b4a38ea8a589eb 373-391,393-401,406-407,411
+  s_e0200a7c50dc5d::t_c0506c3317a054 392,408
+  s_e0200a7c50dc5d::t_0313261477b4bd 402-405,409-410
+golden/ModelSliderCrank/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelHydraulicAirDuct/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelLoudspeaker/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelCoupledDemo/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelThermoacousticEngine/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelPneumaticAccumulator/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelMotorBackEMF/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelReactionHeating/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ChemicalReactor/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelFluidThermal/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ElectricCircuit/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelPiezoelectric/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ThermalCircuit/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ThermalSourceCircuit/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-12
+golden/ModelGasPiston/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/MagneticCircuit/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/CircuitRLC/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelMultiStageThermalTransient/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelPneumaticCompressor/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-12
+golden/ModelPeltierCoupled/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelHydraulicTransient/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+golden/ModelSeebeckValidation/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelClosedLoopEnergyCycle/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-21
+golden/ModelBattery/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-13
+golden/ModelAcousticHeating/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelSolenoidActuator/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-12
+golden/ModelThermoEngine/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-13
+run_golden_tests.sh
+  s_e0200a7c50dc5d::t_1a9b08abe19ebc 118-120
+golden/ModelConcentrationCell/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelElectroMagneticValve/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+golden/ModelMagneticTransient/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+golden/ModelRotationalTranslational/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelElectroMechanical/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelRocket/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-7
+golden/ModelDCPump/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-14
+golden/ModelPneumaticDissipation/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-8
+golden/ModelDCMotorCTMS/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+golden/GasChamberHeating/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-5
+golden_extract_lib.sh
+  s_e0200a7c50dc5d::t_b016a33f1641a0 39
+  s_e0200a7c50dc5d::t_108a329a06fee9 51-61
+golden/ModelACConditioner/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-15
+golden/ModelPneumaticGasSpring/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelMagneticSaturable/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-6
+src/Project.hs
+  s_e0200a7c50dc5d::t_22d3967aa6829a 535,537
+  s_e0200a7c50dc5d::t_edbe26a14115c4 536
+golden/ForceSimple/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-35
+golden/ModelRocketFeed/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-9
+golden/ModelJouleHeating/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+golden/ModelThermoElectric/residuals.txt
+  s_e0200a7c50dc5d::t_745b949c709189 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "db1f9fee551207fb3b8e7bd9317832087fd39f94",
+  "prompts": {},
+  "sessions": {
+    "s_e0200a7c50dc5d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "90a36494-cbb9-49f0-b1d1-609461f4d056",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
