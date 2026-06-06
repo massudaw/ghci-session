@@ -1,0 +1,26 @@
+golden/ModelHydraulicPipeNetwork/equations.txt
+  h_fd5809635b36a3 2-10
+cabal.project
+  s_20c16a057d091e::t_c2767ce70752e4 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "f0de9df8aecdf52ed38086c7c896916f4314de80",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_20c16a057d091e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57a53b34-0de8-49ab-b339-0b2a19a97e70",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
