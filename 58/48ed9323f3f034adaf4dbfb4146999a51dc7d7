@@ -1,0 +1,37 @@
+golden/ModelSimple/status.txt
+  s_c8b9499502bf20::t_ad27e8a3c648ce 1
+sprinkler-solver.cabal
+  s_c8b9499502bf20::t_69135d1b8c3a27 151
+example/Main.hs
+  s_c8b9499502bf20::t_4ddc255219fd01 30
+  s_c8b9499502bf20::t_bfa7e3581519f5 183
+  s_c8b9499502bf20::t_a7d9885105e62b 108
+golden/ModelSimple/solutions.txt
+  s_c8b9499502bf20::t_ad27e8a3c648ce 1-28
+src/Examples/ModelSimple.hs
+  s_c8b9499502bf20::t_bfd3bcbcb3fa10 1-80
+run_golden_tests.sh
+  s_c8b9499502bf20::t_7e01c47b167c10 35
+golden/ModelSimple/residuals.txt
+  s_c8b9499502bf20::t_ad27e8a3c648ce 1-35
+example/Simple.hs
+  s_c8b9499502bf20::t_df152e806cfa91 3,11
+golden/ModelSimple/equations.txt
+  s_c8b9499502bf20::t_ad27e8a3c648ce 1-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "5848ed9323f3f034adaf4dbfb4146999a51dc7d7",
+  "prompts": {},
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
