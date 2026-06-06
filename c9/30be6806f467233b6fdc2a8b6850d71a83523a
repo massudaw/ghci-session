@@ -1,0 +1,80 @@
+src/Pneumatic.hs
+  s_c8b9499502bf20::t_de774b83e75c63 15
+src/Examples/ModelHydraulicAirDuct.hs
+  s_c8b9499502bf20::t_de774b83e75c63 31
+src/Thermal.hs
+  s_c8b9499502bf20::t_de774b83e75c63 369-370
+src/Model/AdvectiveCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 47,53,87
+src/Examples/ModelDCPump.hs
+  s_c8b9499502bf20::t_de774b83e75c63 52,96,134
+example/SaoJorge.hs
+  s_c8b9499502bf20::t_de774b83e75c63 121
+src/Hydraulic/Tee.hs
+  s_c8b9499502bf20::t_de774b83e75c63 127,133
+src/Hydraulic.hs
+  s_c8b9499502bf20::t_de774b83e75c63 86-88,90,93,96-97,201-202,235,263,272,280,291,304,341,366,421,460,469,482-485,499-504,517
+src/Model/HydraulicCylinderCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 12,62,70,79-80
+src/MultiDomain.hs
+  s_c8b9499502bf20::t_de774b83e75c63 27,253,255,437,453
+src/Project.hs
+  s_c8b9499502bf20::t_de774b83e75c63 50,126,129,151,154,157,160,163,166,169,176,199,256,281,299,336
+src/Backend/Diagram.hs
+  s_c8b9499502bf20::t_de774b83e75c63 49
+src/Electric.hs
+  s_c8b9499502bf20::t_de774b83e75c63 250-251
+src/Model/PumpPressureCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 48,50,54-55,60,68-69,76
+src/Model/PumpTorqueCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 48,55,60,70,77
+src/Hydraulic/Element.hs
+  s_c8b9499502bf20::t_de774b83e75c63 31,35,39,43,47,51,204,257,302,306,309,312,316,322,332,340,362,369,377,382,387,392,397,402,407,412,417
+src/Examples/ModelExcavatorArm.hs
+  s_c8b9499502bf20::t_de774b83e75c63 47,130,149,172,198
+src/Backend/DXF.hs
+  s_c8b9499502bf20::t_de774b83e75c63 115-116,120
+src/Model.hs
+  s_c8b9499502bf20::t_de774b83e75c63 213
+src/Examples/ModelHydraulicPipeNetwork.hs
+  s_c8b9499502bf20::t_de774b83e75c63 24,42
+src/Backend/Mecha.hs
+  s_c8b9499502bf20::t_de774b83e75c63 16,61-62,81,90-91,140
+src/Lint.hs
+  s_c8b9499502bf20::t_de774b83e75c63 11,13
+src/Examples/InputAPIDemo.hs
+  s_c8b9499502bf20::t_de774b83e75c63 59
+src/Examples/ModelHydraulicTransient.hs
+  s_c8b9499502bf20::t_de774b83e75c63 30,51,92
+example/TestCSGBackend.hs
+  s_c8b9499502bf20::t_de774b83e75c63 17
+src/Model/BuoyancyCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 48,51,55
+src/Backend/CSG.hs
+  s_c8b9499502bf20::t_de774b83e75c63 208-209
+src/Model/ConvectiveCoupling.hs
+  s_c8b9499502bf20::t_de774b83e75c63 49,61,64,68,70
+src/Examples/ModelFluidThermal.hs
+  s_c8b9499502bf20::t_de774b83e75c63 39,102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "c930be6806f467233b6fdc2a8b6850d71a83523a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
