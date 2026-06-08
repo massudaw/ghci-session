@@ -1,0 +1,25 @@
+src/Energy.hs
+  s_2a5d067e457b3e::t_c69f6566ff73bc 46-49
+  s_2a5d067e457b3e::t_516362cc706b99 136,139,143-146
+  s_2a5d067e457b3e::t_5aa1c48fa9552e 97-101
+  s_2a5d067e457b3e::t_4bf0ae567b3da4 114-123,126,129,131-134
+src/Examples/ModelEnergyBalanceDemo.hs
+  s_2a5d067e457b3e::t_4ad9de11549659 50,52,54
+  s_2a5d067e457b3e::t_63a35c2abbf4d4 47-49,51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "063c0065edc370a1fd322a2dfccb6e06f30db00a",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
