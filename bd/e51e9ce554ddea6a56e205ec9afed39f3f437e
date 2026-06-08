@@ -1,0 +1,97 @@
+golden/ModelACConditioner/equations.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 26-32,34-35,37,39,41-42,44,71-77,79-80,82,84,86-87,89
+golden/ModelACConditioner/solutions.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 2-6,9,15-18,30-31
+golden/ModelEnergyBalanceDemo/equations.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 12-14
+golden/ModelSolenoidActuator/residuals.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 2-4,9-10
+golden/ModelRocketFeed/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 8,10-11,13
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_9776e39854880d 62
+  s_2a5d067e457b3e::t_807e6e91cb68ce 573-574
+  s_2a5d067e457b3e::t_a3529f415a0e59 321-324
+  s_2a5d067e457b3e::t_22583e669999fa 572
+  s_2a5d067e457b3e::t_f499c9a60701fc 83
+  s_2a5d067e457b3e::t_6053e8a9cd3abf 603-607
+  s_2a5d067e457b3e::t_692fe17ec7c453 609-615
+  s_2a5d067e457b3e::t_c19adb8e6aa6bd 200-207
+  s_2a5d067e457b3e::t_c848950185be0b 263-269
+  s_2a5d067e457b3e::t_0de10b9398d34b 171,179,185
+  s_2a5d067e457b3e::t_270d762edd24e8 408-414,418-421,423-426
+  s_2a5d067e457b3e::t_f15c8d7f660751 70
+  s_2a5d067e457b3e::t_232884d0f79cb3 404-407,415,422,430
+golden/ModelACConditioner/transient.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 1-13,25-31
+golden/ModelBattery/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 5
+golden/ModelRocketTransient/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 3
+golden/ModelThermalExpansion/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 3
+golden/ModelMagneticTransient/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 10
+golden/ModelElectroPneumatic/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 2
+golden/ModelPiezoActuator/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 8-9,11
+golden/ModelFluidThermal/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 23
+golden/ModelSolenoidActuator/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 3,7-9,21
+golden/ModelPneumaticPiston/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 9-11
+golden/ModelSliderCrank/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 3-4,6-7,9-10
+golden/ModelPneumaticAccumulator/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 2
+src/Energy.hs
+  s_2a5d067e457b3e::t_88f6e473525401 116-118,121
+  s_2a5d067e457b3e::t_963a758bbbab3e 132-133,139-141
+  s_2a5d067e457b3e::t_46509be8791777 134-135
+  s_2a5d067e457b3e::t_ff060746fae8a0 166-170
+golden/ModelEnergyBalanceDemo/solutions.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 11-13
+golden/ForceSimple/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 2-7,9-12,34,45,47-48,50-51,69-74
+golden/ModelThermoEngine/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 24
+golden/MagneticCircuit/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 2
+golden/ModelRotationalMotor/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 5
+golden/ModelACConditioner/residuals.txt
+  s_2a5d067e457b3e::t_f7bfaa2c06b946 2-4,7,9,11-13,15,24-25,27,29-32,39-40,45-49,51-52,56
+  s_2a5d067e457b3e::t_dea12ca55c1049 43-44,59
+golden/ModelCombustionEngine/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 7
+golden/ModelRocket/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 3,6,8,13
+golden/ModelRocketPressureFed/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 8,13,20
+golden/ModelElectroMechanical/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 9-11
+golden/ForceSimple/equations.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 14-20,22
+golden/ModelElectroMagneticValve/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 10
+golden/ModelDCPump/solutions.txt
+  s_2a5d067e457b3e::t_dea12ca55c1049 12,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "bde51e9ce554ddea6a56e205ec9afed39f3f437e",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
