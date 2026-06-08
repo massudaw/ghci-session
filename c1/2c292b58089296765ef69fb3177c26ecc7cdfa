@@ -1,0 +1,40 @@
+src/Model/BearingFrictionPower.hs
+  s_2a5d067e457b3e::t_6a1e06369fc444 1-27,29-65,67,70-78
+  s_2a5d067e457b3e::t_8306964099b99a 28
+  s_2a5d067e457b3e::t_8b84a962f4843b 66,68-69
+golden/ModelACConditioner/equations.txt
+  s_2a5d067e457b3e::t_c36c779e6bb1dc 26-34,36,38,40-41,43,45,47-48,50,77-85,87,89,91-92,94,96,98-99,101
+golden/ModelACConditioner/transient.txt
+  s_2a5d067e457b3e::t_c36c779e6bb1dc 1-13,25-31
+golden/ModelACConditioner/solutions.txt
+  s_2a5d067e457b3e::t_c36c779e6bb1dc 2-7,13,19-22,34-35
+golden/ModelACConditioner/residuals.txt
+  s_2a5d067e457b3e::t_c36c779e6bb1dc 2-4,7,9,11-12,15,26-27,29,31-34,41-42,50-53,59-60
+sprinkler-solver.cabal
+  s_2a5d067e457b3e::t_19d16fc3773c40 89
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_9703ee72730d17 342-348
+  s_2a5d067e457b3e::t_ff715f341e6e67 272-273,277-282
+  s_2a5d067e457b3e::t_7f4c5f959bbfef 70
+  s_2a5d067e457b3e::t_a4bc6a0efd8bbc 173,182,190
+  s_2a5d067e457b3e::t_4ec4cb377e91b5 85
+  s_2a5d067e457b3e::t_48f567991446fe 596-600
+  s_2a5d067e457b3e::t_e402d7e9d1c023 629-640
+  s_2a5d067e457b3e::t_c0e3e79db7efcf 205,209-210,212,215-216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "c12c292b58089296765ef69fb3177c26ecc7cdfa",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
