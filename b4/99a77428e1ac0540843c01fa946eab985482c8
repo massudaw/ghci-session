@@ -1,0 +1,40 @@
+golden/ModelACConditioner/solutions.txt
+  s_2a5d067e457b3e::t_bc4b4220330291 2-6,11,17-20,32-33
+golden/ModelACConditioner/transient.txt
+  s_2a5d067e457b3e::t_bc4b4220330291 1-13,25-32
+sprinkler-solver.cabal
+  s_2a5d067e457b3e::t_e37763c769a2f9 94
+golden/ModelACConditioner/equations.txt
+  s_2a5d067e457b3e::t_bc4b4220330291 26-33,35,37-38,40,42,44-45,47,74-81,83,85-86,88,90,92-93,95
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_af87271474366b 172,175,179-181,187-188
+  s_2a5d067e457b3e::t_47c313b9d53c7b 84
+  s_2a5d067e457b3e::t_26da44a0e4fd76 268-276
+  s_2a5d067e457b3e::t_1c4e7d52a4f51e 328,330-334
+  s_2a5d067e457b3e::t_942bc3f591519c 615-628
+  s_2a5d067e457b3e::t_c5113844966ac9 72
+  s_2a5d067e457b3e::t_e5c5f9120cddfd 203-207,209-212
+  s_2a5d067e457b3e::t_e7bf3adfffdcc1 583-586
+golden/ModelACConditioner/residuals.txt
+  s_2a5d067e457b3e::t_bc4b4220330291 2-4,7,9,11-12,14,25-26,28,30-33,40-41,48-51,55-56
+src/Model/VoltageSourcePower.hs
+  s_2a5d067e457b3e::t_0f9e0949d44386 68
+  s_2a5d067e457b3e::t_4de1c6146d9c47 1-61,63-67,69-72
+  s_2a5d067e457b3e::t_73714659a59d9c 62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b499a77428e1ac0540843c01fa946eab985482c8",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
