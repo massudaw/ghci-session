@@ -1,0 +1,27 @@
+src/Model/ThermalDissipationPaths.hs
+  s_2a5d067e457b3e::t_4481ba128f6181 87-127
+  s_2a5d067e457b3e::t_7fc6ca14d94bcf 13-14,17
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_24725912efc20f 233-238
+  s_2a5d067e457b3e::t_29c346802b1202 86-99
+  s_2a5d067e457b3e::t_d794a1163bee74 697-698,700-704
+  s_2a5d067e457b3e::t_a67ebff075ce8b 653-654
+  s_2a5d067e457b3e::t_3af7a0b10f1dd5 387-397
+  s_2a5d067e457b3e::t_a81c9fd524ace9 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b3908f6d953a115db9c52987110ef5380e15c890",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
