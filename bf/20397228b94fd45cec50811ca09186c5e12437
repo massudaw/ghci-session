@@ -1,0 +1,43 @@
+src/Model/ThermalDissipationPaths.hs
+  s_2a5d067e457b3e::t_1f69cb205da506 1-4,6-9,12-26,34,51,54,71,74
+  s_2a5d067e457b3e::t_f424354f632eb8 5,10-11,28-33,48-50,52-53,68-70,72-73
+  s_2a5d067e457b3e::t_906c35190bf85c 45
+  s_2a5d067e457b3e::t_299dc806283741 27,35-44,46-47,55-67,75-85
+src/Model/ThermalLinkPower.hs
+  s_2a5d067e457b3e::t_46b00f7f13f800 1-75
+golden/ModelACConditioner/solutions.txt
+  s_2a5d067e457b3e::t_eff138bea0ce8d 2-12,19,25-28,40-41
+golden/ModelACConditioner/equations.txt
+  s_2a5d067e457b3e::t_eff138bea0ce8d 26-41,43,45,47,49-50,52,54,56-57,59,86-101,103,105,107,109-110,112,114,116-117,119
+golden/ModelACConditioner/residuals.txt
+  s_2a5d067e457b3e::t_eff138bea0ce8d 2-4,7,9,11-15,18,20,29-30,32,34-37,44-45,54-63,65,71-72,76
+golden/ModelACConditioner/transient.txt
+  s_2a5d067e457b3e::t_eff138bea0ce8d 1-13,25,31-34
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_e9a32da7359c8d 86
+  s_2a5d067e457b3e::t_f6300fcf2b7cc0 623-625
+  s_2a5d067e457b3e::t_fc71ce1281d0cd 658-660,662,668-671
+  s_2a5d067e457b3e::t_a995912c578ccd 367,369
+  s_2a5d067e457b3e::t_62e9c3b99b97ec 72
+  s_2a5d067e457b3e::t_9fd550a8820b7b 355-366,368,370
+  s_2a5d067e457b3e::t_7304f5d7e685c7 219-223
+sprinkler-solver.cabal
+  s_2a5d067e457b3e::t_fc3b1bd68f76d9 96
+  s_2a5d067e457b3e::t_400950f340c578 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "bf20397228b94fd45cec50811ca09186c5e12437",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
