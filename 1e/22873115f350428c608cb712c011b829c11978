@@ -1,0 +1,32 @@
+golden/ModelEnergyBalanceDemo/solutions.txt
+  s_2a5d067e457b3e::t_5e1837164b9283 13
+golden/ModelEnergyBalanceDemo/residuals.txt
+  s_2a5d067e457b3e::t_5e1837164b9283 10,26
+src/Model/ThermalDissipationPower.hs
+  s_2a5d067e457b3e::t_f5b0b55c890190 1-77
+golden/ModelEnergyBalanceDemo/equations.txt
+  s_2a5d067e457b3e::t_5e1837164b9283 14-15
+sprinkler-solver.cabal
+  s_2a5d067e457b3e::t_ee4b7ed23fb6fe 92
+src/Examples/ModelEnergyBalanceDemo.hs
+  s_2a5d067e457b3e::t_20e19c7893bc5a 40
+  s_2a5d067e457b3e::t_625f81ecad16ab 79-80
+  s_2a5d067e457b3e::t_ff8f6bead6b609 47
+  s_2a5d067e457b3e::t_4ecaddef20fc5c 125-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1e22873115f350428c608cb712c011b829c11978",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
