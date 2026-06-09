@@ -1,0 +1,21 @@
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_953f65c01b14af 19-22
+  s_2a5d067e457b3e::t_0d7d2b423524fe 80-85,87-90,92-95
+  s_2a5d067e457b3e::t_beed4443fee6fa 79,86,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9e0ccb13d88d19d64265eb0562def15014587165",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
