@@ -1,0 +1,21 @@
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_8af7e0d079c0ba 125-127,130-132
+  s_2a5d067e457b3e::t_448ca8c6e9c8e8 35
+  s_2a5d067e457b3e::t_f83a767a4e2426 189-190,239,242,246-248,251,273,275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "ed25a838add22bd85e4a6386828041c30a422c17",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
