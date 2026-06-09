@@ -1,0 +1,30 @@
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_d2be94a3c5a8d7 35
+  s_2a5d067e457b3e::t_39c33b9499867c 128
+  s_2a5d067e457b3e::t_5f87735d4980b8 135
+  s_2a5d067e457b3e::t_d8a008acd27de7 142
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_9899aaf0fec740 10-11,13-14,16-17,19,25,27,32,34-43
+  s_2a5d067e457b3e::t_8554a573b8d3b5 18
+  s_2a5d067e457b3e::t_22a8c1df29d267 23-24
+  s_2a5d067e457b3e::t_47d2b7543a93b0 48-52
+src/NDomain.hs
+  s_2a5d067e457b3e::t_5153a6a8844134 143-155
+  s_2a5d067e457b3e::t_b571610614aeec 42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "0dc45dce9cae28c5c425c8d834c824f4795e9184",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
