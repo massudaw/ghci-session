@@ -1,0 +1,20 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_4edaf543ea5970 81
+  s_2a5d067e457b3e::t_d325d0650a48bd 516
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "83a8fda2e510354041b811444dcd17d38143fcd2",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
