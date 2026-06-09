@@ -1,0 +1,36 @@
+src/Model.hs
+  s_2a5d067e457b3e::t_fec6464dd21115 585
+  s_2a5d067e457b3e::t_07ae4f2eb7b748 584
+src/Input.hs
+  s_2a5d067e457b3e::t_24858101a4d544 37
+  s_2a5d067e457b3e::t_50ae42099b56e2 73-80
+  s_2a5d067e457b3e::t_63ef8d813ac71b 126
+  s_2a5d067e457b3e::t_d6c328323c8cc3 106-112
+  s_2a5d067e457b3e::t_31462cfc8dacfa 38
+  s_2a5d067e457b3e::t_10723ab6165af9 12-13
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_1cf45a801a3d7f 273
+  s_2a5d067e457b3e::t_ecf4308f5326d4 296
+  s_2a5d067e457b3e::t_3b1fd3533c9163 763-766
+src/Domains.hs
+  s_2a5d067e457b3e::t_049b0c507fb79d 66
+  s_2a5d067e457b3e::t_441f620b0f62ed 67-68
+  s_2a5d067e457b3e::t_00d32f76d052be 495
+  s_2a5d067e457b3e::t_f190087bd66a22 494
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "816cb20e7eb4715136c2eb23c7d9fae832095960",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
