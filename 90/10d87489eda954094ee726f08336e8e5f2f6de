@@ -1,0 +1,30 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_d7453575b5cbdf 302-305,377-379,391-392
+  s_2a5d067e457b3e::t_2062713971f9d6 562-563,565,567,569-571
+src/Equation.hs
+  s_2a5d067e457b3e::t_220722c7176200 347
+  s_2a5d067e457b3e::t_6d8b0a5653c289 393
+  s_2a5d067e457b3e::t_cb5095d8313d98 174
+  s_2a5d067e457b3e::t_0fb7dfa5e41daf 399
+  s_2a5d067e457b3e::t_3154f249239543 183
+  s_2a5d067e457b3e::t_d9911d554acd3f 343
+src/Examples/ModelEnergyBalanceDemo.hs
+  s_2a5d067e457b3e::t_b4ccae5fc35262 53-54
+  s_2a5d067e457b3e::t_b37a1482c100df 69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9010d87489eda954094ee726f08336e8e5f2f6de",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
