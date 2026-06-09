@@ -1,0 +1,28 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_449f0265b9b3cf 392-394
+  s_2a5d067e457b3e::t_c2e64fbbdfa606 623-624
+  s_2a5d067e457b3e::t_adf2e6b355e704 738
+  s_2a5d067e457b3e::t_72f1e223436e49 493-494,496-497,499-500
+  s_2a5d067e457b3e::t_f56dfe66701d21 412-415,419-422,426-429
+  s_2a5d067e457b3e::t_5107e4dd2a44f2 396,399,403,409,416,423,430,436,442
+  s_2a5d067e457b3e::t_5b49ffb3faa0aa 627
+  s_2a5d067e457b3e::t_ab7a7406d72a89 651-652
+  s_2a5d067e457b3e::t_3df92af81026e1 620-622,645-649
+  s_2a5d067e457b3e::t_83a7103e3accbf 210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "352c32c5d11bf0435000aaf9af4d7dfce8fea390",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
