@@ -1,0 +1,33 @@
+src/Equation.hs
+  s_2a5d067e457b3e::t_5fe2b7fdf0529d 178,182-184
+  s_2a5d067e457b3e::t_d798c82c8f9d05 397-400
+  s_2a5d067e457b3e::t_2782d87d350eb9 345-348
+src/Domains.hs
+  s_2a5d067e457b3e::t_5e3b78ca6c7666 68-69
+  s_2a5d067e457b3e::t_acaf78a5765f14 497
+src/Input.hs
+  s_2a5d067e457b3e::t_44c155034e0e9c 39
+  s_2a5d067e457b3e::t_b0809a82de4495 120-126
+  s_2a5d067e457b3e::t_71a51bdb89f5d7 15
+  s_2a5d067e457b3e::t_ffa550715349a5 134
+src/Examples/ModelEnergyBalanceDemo.hs
+  s_2a5d067e457b3e::t_730bace6d4d5f9 69
+src/Model.hs
+  s_2a5d067e457b3e::t_6ecd1468c628f7 586
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "97cab0c8759551f276ed6995d0427db44834e6e9",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
