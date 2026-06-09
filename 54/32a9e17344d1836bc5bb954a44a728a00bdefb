@@ -1,0 +1,37 @@
+src/NDomain.hs
+  s_2a5d067e457b3e::t_e2516b3319658b 145-150
+  s_2a5d067e457b3e::t_64ec81d51289a2 143-144,159
+  s_2a5d067e457b3e::t_29d23462628850 151-158
+  s_2a5d067e457b3e::t_74d0ec3142a95b 10
+  s_2a5d067e457b3e::t_5181e2b152a9fa 142
+  s_2a5d067e457b3e::t_b60c073a87c741 42
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_9ae7bcf10e81b2 27-28
+  s_2a5d067e457b3e::t_395246652d9b5d 1-26,29-51
+sprinkler-solver.cabal
+  s_2a5d067e457b3e::t_5b0a7ff8c4f356 27
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_95b2ada073a275 36
+  s_2a5d067e457b3e::t_ba29db4d948969 43,45
+  s_2a5d067e457b3e::t_2332ea1047bbff 119
+  s_2a5d067e457b3e::t_a7fdc0afd62120 229,232-233,236-238
+  s_2a5d067e457b3e::t_93e5d0d7b25815 230-231
+  s_2a5d067e457b3e::t_c368ebd3c8ea67 6
+  s_2a5d067e457b3e::t_943eba0669131a 234-235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "5432a9e17344d1836bc5bb954a44a728a00bdefb",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
