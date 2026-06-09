@@ -1,0 +1,31 @@
+golden/ModelEnergyBalanceDemo/equations.txt
+  s_2a5d067e457b3e::t_e109e59b53018f 12-15,17
+src/Examples/ModelEnergyBalanceDemo.hs
+  s_2a5d067e457b3e::t_fc7c95e6db185c 53-54
+  s_2a5d067e457b3e::t_3a23833865700a 50-52
+src/Equation.hs
+  s_2a5d067e457b3e::t_a5f618db1e27c3 317,319,322,324,329,333-341
+  s_2a5d067e457b3e::t_c04593bb9cdc0a 367,369-371,377-392,398,404,406
+  s_2a5d067e457b3e::t_46613014ae5ab3 148,152-154
+  s_2a5d067e457b3e::t_5b11a05793da73 197,201-203
+  s_2a5d067e457b3e::t_6f40700c12460b 186,190-192
+  s_2a5d067e457b3e::t_a5165cdebf51a3 169,173-175
+golden/ModelEnergyBalanceDemo/solutions.txt
+  s_2a5d067e457b3e::t_e109e59b53018f 11-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "758c204cfeb6d1d1ea76d62321da233d68a4a964",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
