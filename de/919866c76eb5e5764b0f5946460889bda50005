@@ -1,0 +1,37 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_0f950cae491355 82
+  s_2a5d067e457b3e::t_c4707950abe3d8 800
+  s_2a5d067e457b3e::t_0c949b67e3fd1d 81
+  s_2a5d067e457b3e::t_618840d9fbba15 802
+src/EnergyAudit.hs
+  s_2a5d067e457b3e::t_e327ee1d22ea40 89
+  s_2a5d067e457b3e::t_e730566267b26a 107
+  s_2a5d067e457b3e::t_a0a12b4c9edab9 148
+  s_2a5d067e457b3e::t_0363dbaa1a9241 141,144
+  s_2a5d067e457b3e::t_14bb58062516d3 150-151
+  s_2a5d067e457b3e::t_fd5709a6500427 117
+  s_2a5d067e457b3e::t_0b3c47e36b46bc 126-136,145
+  s_2a5d067e457b3e::t_a424f3c272ac32 146-147,149
+  s_2a5d067e457b3e::t_a96ad6383eaa13 3-8
+  s_2a5d067e457b3e::t_6afdcb7a08b65b 30
+  s_2a5d067e457b3e::t_d1b151871c4096 41
+  s_2a5d067e457b3e::t_503ca081eb7e42 1,9-12,14-15,17-18,24-29,33-37,40,45-49,51-52,55,57-59,83-88,90-97,99-106,108-116,118-125,137-140,142-143
+  s_2a5d067e457b3e::t_7c1ce7b01a1388 42-43
+  s_2a5d067e457b3e::t_782a1d006883fd 98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "de919866c76eb5e5764b0f5946460889bda50005",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
