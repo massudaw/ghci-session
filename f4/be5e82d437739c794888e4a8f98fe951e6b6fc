@@ -1,0 +1,27 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_048bbff78359de 560-562
+  s_2a5d067e457b3e::t_14e5e5d31ff2b6 77
+  s_2a5d067e457b3e::t_49d1580ab1eed9 223
+  s_2a5d067e457b3e::t_f6320d76c974e9 522
+  s_2a5d067e457b3e::t_3ded2a5c3c5c13 296,303
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_399088cde4dce4 34
+  s_2a5d067e457b3e::t_672555619d7cca 97,107
+  s_2a5d067e457b3e::t_0bafa24d72316c 124,132
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "f4be5e82d437739c794888e4a8f98fe951e6b6fc",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
