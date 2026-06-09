@@ -1,0 +1,23 @@
+src/Domains.hs
+  s_2a5d067e457b3e::t_721aae17b4fbd1 46
+  s_2a5d067e457b3e::t_22d8593536048c 369-386
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_c20cae2a50a798 90
+  s_2a5d067e457b3e::t_3f6307d26c2201 234-235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "4ff0ec6ac2a5e1a503c5377c19fa693bcc1cf731",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
