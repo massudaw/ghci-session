@@ -1,0 +1,28 @@
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_16af3f4d84d8aa 220
+  s_2a5d067e457b3e::t_8bf339e4178a1e 290-291
+  s_2a5d067e457b3e::t_6c6e67308d893b 221
+  s_2a5d067e457b3e::t_55f428946f09b9 122,125-128,132,134-135,139,141-142
+  s_2a5d067e457b3e::t_36a727b2f9d153 133,140
+  s_2a5d067e457b3e::t_9dbba0fd40d378 89-90,93-94
+  s_2a5d067e457b3e::t_e87715d98d86d6 171-172,297
+  s_2a5d067e457b3e::t_28d7153c5f3a69 193-195,222,254,257,261-263,288
+  s_2a5d067e457b3e::t_f35c6e102f0840 219,223
+  s_2a5d067e457b3e::t_9244f193661aac 266-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "bdbcc3c75a6fcccc0748e51e7b3e6b86655027cb",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
