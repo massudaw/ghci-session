@@ -1,0 +1,19 @@
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_4a67003af0158a 156,159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "5e0e81e02fe7d3d533a4e86936b5929a1ead1b39",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
