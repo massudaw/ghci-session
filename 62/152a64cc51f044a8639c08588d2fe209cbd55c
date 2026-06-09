@@ -1,0 +1,47 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_733b3060369ac7 412
+  s_2a5d067e457b3e::t_12ec825056fcac 409
+  s_2a5d067e457b3e::t_2d0b8eab96ef56 426
+  s_2a5d067e457b3e::t_e79ffaef027a39 391,400,403,406
+  s_2a5d067e457b3e::t_314f430780eb54 255
+  s_2a5d067e457b3e::t_fa22134457500e 397
+  s_2a5d067e457b3e::t_420ed36ba689cf 420
+  s_2a5d067e457b3e::t_467f9f65457084 423
+  s_2a5d067e457b3e::t_312e11635ff952 464
+  s_2a5d067e457b3e::t_9b6cea7f003b5d 394
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_091aaa36cea7b1 4
+  s_2a5d067e457b3e::t_53bcf828c2e5ca 32,35,38-39
+  s_2a5d067e457b3e::t_9630c86c1f4608 124-143,147,149-152,154-155,157-160,162-168
+  s_2a5d067e457b3e::t_1bc1b4c8c4d54b 170-187
+  s_2a5d067e457b3e::t_162416441812b0 144-146,148,153,156,161
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_4b41ff1d242a2e 123-124
+  s_2a5d067e457b3e::t_43582b2441226e 127
+golden/ModelACConditioner/equations.txt
+  s_2a5d067e457b3e::t_bb4522339c72ce 2,4-5,9-15,20,22-23,25,49,53,55-56,58,60,62-63,65,68,70-71,75-81,86,88-89,91,93-102,115,119,121-122,124,126,128-129,131
+golden/ModelRocketLiftoff/equations.txt
+  s_2a5d067e457b3e::t_2e4f9e0a69c145 2-5,8,10-18,31,35-36,43-46,49,51-59,72,76-77
+golden/ModelRocketLiftoff/transient.txt
+  s_2a5d067e457b3e::t_2e4f9e0a69c145 3-14,20-32,49-70
+golden/ModelACConditioner/solutions.txt
+  s_2a5d067e457b3e::t_bb4522339c72ce 21,24,26-27,30-32,42,44-46,49
+golden/ModelACConditioner/transient.txt
+  s_2a5d067e457b3e::t_bb4522339c72ce 71-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "62152a64cc51f044a8639c08588d2fe209cbd55c",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
