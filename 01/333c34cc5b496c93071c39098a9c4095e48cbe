@@ -1,0 +1,35 @@
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_ccc57cafcaa77f 275-278
+  s_2a5d067e457b3e::t_7441e5c487d9d8 33
+  s_2a5d067e457b3e::t_33eaacc0f7ba5e 236-241,249,270
+  s_2a5d067e457b3e::t_6c874f4721473e 242-244,268
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_88ad870c56f5d9 30-32,42,47
+  s_2a5d067e457b3e::t_0c447b75e70cad 34,38
+  s_2a5d067e457b3e::t_d8c3e0c75dabc6 236-253,290-300,302-303
+  s_2a5d067e457b3e::t_9df0ee7f91cdd8 33,35-37
+  s_2a5d067e457b3e::t_b5e611029ad129 209,214-215,219-220,222-227,232-234
+  s_2a5d067e457b3e::t_017cf2000ae111 52
+  s_2a5d067e457b3e::t_cf99b3b56e02d9 210-213,216-218,221,228-231,235
+  s_2a5d067e457b3e::t_a08317ecf59e84 254-289,304
+  s_2a5d067e457b3e::t_3ca0043b151e8e 301
+golden/ModelRocketLiftoff/transient.txt
+  s_2a5d067e457b3e::t_3fc29efd82e377 1-14,47-70
+  s_2a5d067e457b3e::t_ab630d3c6939c8 71-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "01333c34cc5b496c93071c39098a9c4095e48cbe",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
