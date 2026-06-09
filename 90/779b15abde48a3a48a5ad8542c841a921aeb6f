@@ -1,0 +1,36 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_53ee77247c7fa1 609-614
+  s_2a5d067e457b3e::t_a18f9b6171b3b2 608
+  s_2a5d067e457b3e::t_7feb5cea2b98e3 104
+  s_2a5d067e457b3e::t_fccca39b1a505d 235-236
+  s_2a5d067e457b3e::t_8d6eaeba67f863 248
+  s_2a5d067e457b3e::t_e4c65505ec05d3 89
+  s_2a5d067e457b3e::t_299086a6df6f0d 6
+  s_2a5d067e457b3e::t_d561ad08919c87 254
+  s_2a5d067e457b3e::t_7f132bf63360ab 78
+  s_2a5d067e457b3e::t_bcbf922dec5638 399
+  s_2a5d067e457b3e::t_a1c234c5d63d6d 604-605
+  s_2a5d067e457b3e::t_579e1e31cbcbcb 589-598,615,617-618,620,622
+  s_2a5d067e457b3e::t_2fcf166cf7f9ca 242
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_21866099a2b82e 230
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_fe976ce19a22a8 25-26
+  s_2a5d067e457b3e::t_616f1bd4736454 56-58,63,67-68,70-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "90779b15abde48a3a48a5ad8542c841a921aeb6f",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
