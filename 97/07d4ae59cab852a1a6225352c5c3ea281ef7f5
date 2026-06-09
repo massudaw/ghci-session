@@ -1,0 +1,23 @@
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_c52949fb73973e 516-524
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_66132cc714eaef 82,87,92,97,102,107
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_15602face07126 223
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9707d4ae59cab852a1a6225352c5c3ea281ef7f5",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
