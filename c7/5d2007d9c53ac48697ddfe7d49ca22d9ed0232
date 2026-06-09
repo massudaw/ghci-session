@@ -1,0 +1,29 @@
+src/NDomain/Slot.hs
+  s_2a5d067e457b3e::t_e4b69c8e884790 123-124,126-127,130-132,134,136-137,140-142,144,146-147,150-152,154,156-157,160-162
+src/Examples/ModelACConditioner.hs
+  s_2a5d067e457b3e::t_0359d956f5cde6 465
+  s_2a5d067e457b3e::t_288d5b48f7b303 421,424,427
+  s_2a5d067e457b3e::t_a57635db43a65f 392,395,397-398,401,404,407,409-410,412-413
+src/Examples/ModelRocketLiftoff.hs
+  s_2a5d067e457b3e::t_b9c12992e1b264 133-135
+  s_2a5d067e457b3e::t_c6868c25c9183b 125,128
+  s_2a5d067e457b3e::t_28e618ada23fc6 129
+  s_2a5d067e457b3e::t_a07128a3829bd5 20
+  s_2a5d067e457b3e::t_f545e3ec319d78 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "c75d2007d9c53ac48697ddfe7d49ca22d9ed0232",
+  "prompts": {},
+  "sessions": {
+    "s_2a5d067e457b3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b891dd5c-b9e0-4447-b338-fa1f1944bdad",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
