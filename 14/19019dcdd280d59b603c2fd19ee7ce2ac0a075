@@ -1,0 +1,101 @@
+src/Model/EvaporationCoupling.hs
+  s_54c9952fc1f6e6::t_ea349873a6e0d3 87
+  s_54c9952fc1f6e6::t_3f8dc9f4a84250 46
+src/Model/IdealGasEOS.hs
+  s_54c9952fc1f6e6::t_a8884d289f76d5 44
+  s_54c9952fc1f6e6::t_76f74555e560bc 93-99
+  s_54c9952fc1f6e6::t_00726c27575bc6 85
+  s_54c9952fc1f6e6::t_73fd17c7aafc37 1-43,45-75,77-81,83-84,86-92
+  s_54c9952fc1f6e6::t_ec0b42f8eb6eda 76,82
+src/Model/PartialPressureReaction.hs
+  s_54c9952fc1f6e6::t_aaab889aeb97f3 1-53,55-95,97-113
+  s_54c9952fc1f6e6::t_e02a5aaa9e1889 54
+  s_54c9952fc1f6e6::t_81944be569cae3 96
+src/Model/StreamComposition.hs
+  s_54c9952fc1f6e6::t_04c8c8a2f46a3e 120
+  s_54c9952fc1f6e6::t_62c5dec94a0f79 1-51,53-110,112-114,116,118-119,121,123-125,127-128
+  s_54c9952fc1f6e6::t_de071429a475d2 111,115,117,122
+  s_54c9952fc1f6e6::t_3c4ec8b0b6a08b 52
+  s_54c9952fc1f6e6::t_a24ca327c8c5b7 126
+  s_54c9952fc1f6e6::t_22115c3451a383 129-130
+sprinkler-solver.cabal
+  s_54c9952fc1f6e6::t_230965c2ea2d91 47
+  s_54c9952fc1f6e6::t_616c6fc9929996 44-46
+  s_54c9952fc1f6e6::t_947ad0e28af5d6 233
+src/Model/ValveFlow.hs
+  s_54c9952fc1f6e6::t_5bb22863d13c08 1-37,39-115
+  s_54c9952fc1f6e6::t_a3b75ace48230b 38
+  s_54c9952fc1f6e6::t_820e66645e394c 116-119
+src/Examples/ModelTES.hs
+  s_54c9952fc1f6e6::t_5e1289bc2de52b 11,13,23,25
+  s_54c9952fc1f6e6::t_5c2d42c813dae2 42,45
+  s_54c9952fc1f6e6::t_77eed15d9592b6 12,15,21,30-31,33-34,36-39,53,56-57,59,61-62,66,71,75-76,80,84
+  s_54c9952fc1f6e6::t_0f52c8f16c5a06 14
+  s_54c9952fc1f6e6::t_d9bb30fa5e294a 22
+  s_54c9952fc1f6e6::t_c5e13b8066d93b 65,70,82-83,86-87,89
+  s_54c9952fc1f6e6::t_9420b451569e8c 54
+  s_54c9952fc1f6e6::t_7a06b97b98304d 24,60
+  s_54c9952fc1f6e6::t_a9d4b6e404000c 1-10,17-20,26-28,35,48,73-74,77-79
+  s_54c9952fc1f6e6::t_6ef92f4ae2f67d 47,49-52
+  s_54c9952fc1f6e6::t_f95559950e8434 67,72
+  s_54c9952fc1f6e6::t_3c288a67b93c5e 55,58
+  s_54c9952fc1f6e6::t_99148e2d969eef 29,32,40,63-64,68-69,81,85,88,90
+  s_54c9952fc1f6e6::t_8579a2c56637a2 16
+  s_54c9952fc1f6e6::t_ab57dcbf5edb21 41,43-44,46
+src/Mixture.hs
+  s_54c9952fc1f6e6::t_1b703776b0651c 199
+  s_54c9952fc1f6e6::t_a93d22f2a0458a 286
+  s_54c9952fc1f6e6::t_e14621bb510703 211-212,220-221,227-229
+  s_54c9952fc1f6e6::t_9ec7d4737ebb51 290,293,296
+  s_54c9952fc1f6e6::t_6328cd805d3b6f 3,5
+  s_54c9952fc1f6e6::t_9dbba15919a4b0 46,131,137-138,140,142,186,191,195,197-198,235-236,247,274,281-282,318
+  s_54c9952fc1f6e6::t_fd31b986f9ac85 125-130,132-135,139,141,143-145,157-161
+  s_54c9952fc1f6e6::t_a3c43ba0d60d62 171,177
+  s_54c9952fc1f6e6::t_300957cbadd4ff 136
+  s_54c9952fc1f6e6::t_34e4fe8b5fab21 196
+  s_54c9952fc1f6e6::t_0dc55bf8f165a5 364-371
+  s_54c9952fc1f6e6::t_a3d48deba439c4 312-317,319-326
+  s_735ef81461c9f2::t_7b3072881d86ad 62,156,170,214-215,218-219,275-280,283,287-288,291,295,297,359-363
+  s_54c9952fc1f6e6::t_ad9d09a22a8ab9 63
+  s_54c9952fc1f6e6::t_4169a20b406bb7 237-238,246,248,255,257,292,294
+  s_54c9952fc1f6e6::t_4d2cf0b39bf2a5 258-261
+example/Main.hs
+  s_54c9952fc1f6e6::t_0a3e721a8ef58c 164
+  s_54c9952fc1f6e6::t_9154259b13106f 251
+  s_54c9952fc1f6e6::t_7b24c793993bd1 86
+src/Model/MixtureAdvectionCoupling.hs
+  s_54c9952fc1f6e6::t_5ae43518dc20c8 35
+  s_54c9952fc1f6e6::t_23fb2e8645ba84 72
+src/Model/MixtureReactionCoupling.hs
+  s_54c9952fc1f6e6::t_25ff3110324cca 51
+  s_54c9952fc1f6e6::t_11c359b605bcca 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1419019dcdd280d59b603c2fd19ee7ce2ac0a075",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_735ef81461c9f2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bb0eff9-bc4f-4c22-a2ac-26b828304f6d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
