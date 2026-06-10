@@ -1,0 +1,56 @@
+src/Model/MixtureAdvectionCoupling.hs
+  s_735ef81461c9f2::t_5181bc4f9b712b 51
+  s_735ef81461c9f2::t_58fea943ca5866 31
+  s_735ef81461c9f2::t_ad8cf9074e900e 5,13,21,27,35,40,43-45,47-48,50,52,54-55,58,69,71
+src/Model.hs
+  s_735ef81461c9f2::t_486801d36fe0f3 252
+src/Model/EvaporationCoupling.hs
+  s_735ef81461c9f2::t_dc3ce825c5a43b 5,12-15,21-32,38,42-44,46,50-52,62,64-65,67-70,73-74,77-78,82,84,86,89,100-103
+  s_735ef81461c9f2::t_af144a8d2bd894 18,53,60-61,71
+src/Mixture.hs
+  s_735ef81461c9f2::t_176f3e9c86360a 1-2,5-6,8,10,12-13,15-16,18-20,23-24,27-31,35,38-40,44-52,64-66,74-102,104-111,113-118,123,126-127,129-136,144,148-153,155-157,179,183-185,193-196,204,209,220,227,250,258
+  s_735ef81461c9f2::t_5181bc4f9b712b 103,112,146,192,219,242
+  s_735ef81461c9f2::t_58fea943ca5866 68,70
+  s_735ef81461c9f2::t_249eb2f6a2e4e1 251,255,259,263,267,271
+  s_735ef81461c9f2::t_3a08e31a5381f1 147
+src/Examples/ModelFertilizerThermal.hs
+  s_735ef81461c9f2::t_41f3045c00ea91 126-127,129
+  s_735ef81461c9f2::t_249eb2f6a2e4e1 179,182-183,197,204-205,216
+  s_735ef81461c9f2::t_ec946ed32e990d 262,267,282-283,287,294
+  s_735ef81461c9f2::t_a4523fd642d6c1 128
+  s_735ef81461c9f2::t_167af613b2f56b 105-113,115,118,272
+  s_735ef81461c9f2::t_c581e8cb0ec38c 187,189-190,194-196
+  s_735ef81461c9f2::t_f64ae26a669f06 18-23,25-32,46-47,53,55-59,72,81,310-313
+  s_735ef81461c9f2::t_e1ab1e6ef24ecf 172-178,180-181,185-186,188,193,202-203,236,242-251,253-261,274-278
+  s_735ef81461c9f2::t_a9fce823f50488 169-171,184
+golden/ModelFertilizerThermal/solutions.txt
+  s_735ef81461c9f2::t_f64ae26a669f06 2-4,6-10,13-20,22-28,30-108,110-117,120-125,128-142
+golden/ModelFertilizerThermal/equations.txt
+  s_735ef81461c9f2::t_f64ae26a669f06 14,18-86,88-91,93-95,97-106,108-110,112,114,116-118,120-121,123-127,129-153
+src/Model/MixtureReactionCoupling.hs
+  s_735ef81461c9f2::t_5181bc4f9b712b 74
+  s_735ef81461c9f2::t_06356c04dac48e 5,12-14,17,21-31,39,45,51,55-62,65-67,69-70,72-73,75,77-78,80-81,85,87,89,100-108,110-114
+  s_735ef81461c9f2::t_58fea943ca5866 49
+golden/ModelFertilizerThermal/energy.txt
+  s_735ef81461c9f2::t_f64ae26a669f06 3-10,14-18,20-22
+src/Model/MixtureLinkPower.hs
+  s_735ef81461c9f2::t_2072d21d091d2e 5,13,21-25,32-33,36,40,43-44,47-48,51-53,55,72
+golden/ModelFertilizerThermal/residuals.txt
+  s_735ef81461c9f2::t_f64ae26a669f06 4,16,19,77-80,102-105,139-140,162,168-172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "197847635a659c6eb9b4d0abb7ce39a13185fe92",
+  "prompts": {},
+  "sessions": {
+    "s_735ef81461c9f2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bb0eff9-bc4f-4c22-a2ac-26b828304f6d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
