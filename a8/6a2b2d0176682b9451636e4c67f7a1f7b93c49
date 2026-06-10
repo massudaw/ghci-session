@@ -1,0 +1,174 @@
+golden/ModelFertilizerPlant/solutions.txt
+  s_735ef81461c9f2::t_f17863c083bae9 1-10
+golden/ModelFertilizerThermal/solutions.txt
+  s_735ef81461c9f2::t_f02d1df9c6d964 106
+  s_735ef81461c9f2::t_13c4c9ec504052 1
+  s_735ef81461c9f2::t_a949ccbdd248a2 6
+  s_735ef81461c9f2::t_8f1bf55f8f7a8e 2-5,8,10-20,22-28,30-100,102-104,107-129
+  s_735ef81461c9f2::t_ddd7a1c2480043 7,21
+  s_735ef81461c9f2::t_efaa237e054455 9,29,101,105
+src/Model/MixtureReactionCoupling.hs
+  s_735ef81461c9f2::t_383b1f36bf6047 23-25
+  s_735ef81461c9f2::t_bbcbf21e3c982b 1-21,29-42,45-68
+  s_735ef81461c9f2::t_e384a663c1fe9d 22,26-28,43-44,69-94
+sprinkler-solver.cabal
+  s_735ef81461c9f2::t_3b90dc33f1854d 43
+  s_735ef81461c9f2::t_24f70cc6994ad0 37
+  s_735ef81461c9f2::t_d1f5478c2e4195 39-42
+  s_735ef81461c9f2::t_9ee35957ad5614 202
+  s_735ef81461c9f2::t_606a1b859e0286 35
+  s_735ef81461c9f2::t_0762aafc7a0032 201
+  s_735ef81461c9f2::t_694da9cab034d2 36
+  s_735ef81461c9f2::t_afd2757fddee44 203
+  s_735ef81461c9f2::t_03164c6e0071bf 38
+src/Model/MixtureLinkPower.hs
+  s_735ef81461c9f2::t_ce3ef8c281bdb6 11-12,14-16,18,20-22,30,37-38,43
+  s_735ef81461c9f2::t_8391e4d97dcb8c 53-54,62-64,67
+  s_735ef81461c9f2::t_2817e846ff5edd 1-10,13,17,19,23-29,31-36,39-42,44-52,55-61,65-66,68
+golden/ModelFertilizerPlant/equations.txt
+  s_735ef81461c9f2::t_f17863c083bae9 1-11
+src/Domains.hs
+  s_735ef81461c9f2::t_eacb3289fd0fb0 378-379,382,385-386
+golden/ModelFertilizerTransient/equations.txt
+  s_735ef81461c9f2::t_bbaf90164aece0 1-73
+src/Model/SpeciesAdvectionCoupling.hs
+  s_735ef81461c9f2::t_a6a7aa88cc7c78 52
+  s_735ef81461c9f2::t_8c1740f0b290fc 53
+  s_735ef81461c9f2::t_e00a2d85967aa1 78,81-82
+  s_735ef81461c9f2::t_96bb8a59be86e2 33-38
+  s_735ef81461c9f2::t_fbfaf7fceeaad8 1-32,39-51,54-77,79-80,84-95
+  s_735ef81461c9f2::t_292743db13538c 83
+example/Main.hs
+  s_735ef81461c9f2::t_7e6bb3413bb97b 59
+  s_735ef81461c9f2::t_9a29dd63479bcf 221
+  s_735ef81461c9f2::t_498d2aa83bfc07 222
+  s_735ef81461c9f2::t_7624e94af2c07c 60
+  s_735ef81461c9f2::t_d1911fe4c69656 138
+  s_735ef81461c9f2::t_29b32deb4eb871 223
+  s_735ef81461c9f2::t_b10004fb65f2c2 137
+  s_735ef81461c9f2::t_a0c170ac9a43b9 136
+  s_735ef81461c9f2::t_2dbbd9cadc8af0 58
+src/Model/TrimCoolerCoupling.hs
+  s_735ef81461c9f2::t_0b5ecb463814ac 1-93
+golden/ModelFertilizerTransient/transient.txt
+  s_735ef81461c9f2::t_ddd7a1c2480043 34
+  s_735ef81461c9f2::t_bbaf90164aece0 1-33,35-41
+src/Examples/ModelFertilizerTransient.hs
+  s_735ef81461c9f2::t_38dce6b60bae7a 39
+  s_735ef81461c9f2::t_badd2bad158216 28-29
+  s_735ef81461c9f2::t_83778abebb6d81 1-27,30-38,40-195,197-206
+  s_735ef81461c9f2::t_23117bb177acd2 196
+src/Examples/ModelFertilizerPlant.hs
+  s_735ef81461c9f2::t_547f80580ed404 1-78
+golden/ModelFertilizerPlant/status.txt
+  s_735ef81461c9f2::t_f17863c083bae9 1
+run_golden_tests.sh
+  s_735ef81461c9f2::t_fba1151c6ea6c9 55
+  s_735ef81461c9f2::t_802527554c4e1e 56
+  s_735ef81461c9f2::t_bbaf90164aece0 57
+golden/ModelFertilizerPlant/residuals.txt
+  s_735ef81461c9f2::t_f17863c083bae9 1-17
+src/Mixture.hs
+  s_735ef81461c9f2::t_51132d93ca7e67 1-207
+src/Project.hs
+  s_735ef81461c9f2::t_8b38328aafc97e 539
+golden_extract_lib.sh
+  s_735ef81461c9f2::t_240b3e4286750d 73-74,77
+src/Model/ArrheniusReactionCoupling.hs
+  s_735ef81461c9f2::t_35094a31366b97 67-70
+  s_735ef81461c9f2::t_ef4a4296e45047 41
+  s_735ef81461c9f2::t_437fcb86505083 1-40,42-66,71-102
+src/Examples/ModelFertilizerThermal.hs
+  s_735ef81461c9f2::t_1cbcc38026b3db 231-233,236
+  s_735ef81461c9f2::t_b34fc2a61dc7d5 256-257,261,263-269
+  s_735ef81461c9f2::t_492b9dea2840e2 205-206
+  s_735ef81461c9f2::t_2532a7d56abd95 77,80,85-86,94,98,104,108
+  s_735ef81461c9f2::t_68040e5d1ec755 78
+  s_735ef81461c9f2::t_a270428e82ced9 90
+  s_735ef81461c9f2::t_62590ae5667fbc 243-247
+  s_735ef81461c9f2::t_a244be9dc47b20 294
+  s_735ef81461c9f2::t_0e9eb02d40da3c 279,288-293,295
+  s_735ef81461c9f2::t_b5287e7ffa2efb 5
+  s_735ef81461c9f2::t_e3c11ec1291f96 33-37,47-52,54-58
+  s_735ef81461c9f2::t_7129c9d5eb143e 64-67
+  s_735ef81461c9f2::t_5fc259d0abddc4 101
+  s_735ef81461c9f2::t_46b7352020381b 59,62-63,68-69
+  s_735ef81461c9f2::t_b0ab7e0e5ae1bf 74
+  s_735ef81461c9f2::t_f7af3bf6878762 119,124-129,131-138
+  s_735ef81461c9f2::t_4df3a8fbd54ed5 215-216
+  s_735ef81461c9f2::t_696d273fe4f798 223-228
+  s_735ef81461c9f2::t_b56504dbb31767 143-149
+  s_735ef81461c9f2::t_ad8e669112eb55 280
+  s_735ef81461c9f2::t_e10f0ce91f04c8 284,286-287
+  s_735ef81461c9f2::t_2aa84b1250946c 204
+  s_735ef81461c9f2::t_f57c1f9e2841b7 1-4,6-7,12,17,22,42,46,53,75-76,84,87-89,96,105,107,109-118,120-123,142,184,276-278,281-283,296
+  s_735ef81461c9f2::t_fde658197d4940 196-203,207-213,217
+  s_735ef81461c9f2::t_cafe4b18ba6428 242,273-275
+  s_735ef81461c9f2::t_92e3aecabe1e9f 164,170-176
+  s_735ef81461c9f2::t_7e8c793b26e87f 95
+  s_735ef81461c9f2::t_67eaa2e2bb1cf9 139-141
+  s_735ef81461c9f2::t_65d2aca47e571d 8-11,13-16,18-21,23-32,38-41,43-44,60-61,70-73,79,83,91-93,99-100,103,106,150-163,165-169,187-188,194,218-222,229-230,234-235,237-241,249,254-255,258-260,262,285
+  s_735ef81461c9f2::t_6569abb0379ae8 102
+  s_735ef81461c9f2::t_cda486f3e73479 81-82
+  s_735ef81461c9f2::t_8a762e1277eabe 185-186,189-192,195
+  s_735ef81461c9f2::t_9d2a66ec1b6de1 248,250-253
+  s_735ef81461c9f2::t_1aaec20f7451e1 270-272
+  s_735ef81461c9f2::t_c9e64881ffad89 214
+  s_735ef81461c9f2::t_42877f1b046388 97
+  s_735ef81461c9f2::t_d970e7b9bda7fa 177-183
+  s_735ef81461c9f2::t_4c172d6fb21a24 130
+  s_735ef81461c9f2::t_8fd16b6b136d2a 45
+  s_735ef81461c9f2::t_23b0ea9e4eff21 193
+golden/ModelFertilizerTransient/residuals.txt
+  s_735ef81461c9f2::t_bbaf90164aece0 1-46
+golden/ModelFertilizerTransient/solutions.txt
+  s_735ef81461c9f2::t_bbaf90164aece0 1-32
+src/Model.hs
+  s_735ef81461c9f2::t_c391a41c5b0f63 71
+  s_735ef81461c9f2::t_ba2da92b834afb 252
+src/Model/EvaporationCoupling.hs
+  s_735ef81461c9f2::t_5b29e0df7a03ea 1-94
+src/Model/MixtureAdvectionCoupling.hs
+  s_735ef81461c9f2::t_eb3ad3b21a961c 1-70
+  s_735ef81461c9f2::t_db694ee5b50f7e 71
+golden/ModelFertilizerThermal/energy.txt
+  s_735ef81461c9f2::t_df1e845853b728 1-2,13,15,17-18
+  s_735ef81461c9f2::t_8f1bf55f8f7a8e 3-12,14,16,19-22
+src/Model/ChemicalLinkPower.hs
+  s_735ef81461c9f2::t_63934fda26fab3 1-73
+golden/ModelFertilizerThermal/equations.txt
+  s_735ef81461c9f2::t_ddd7a1c2480043 79,84
+  s_735ef81461c9f2::t_8f1bf55f8f7a8e 1-78,80-83,85-98,100-106,108-110,112-119,121-124,126-140
+  s_735ef81461c9f2::t_13c4c9ec504052 99
+  s_735ef81461c9f2::t_efaa237e054455 107,120,125
+  s_735ef81461c9f2::t_a949ccbdd248a2 111
+golden/ModelFertilizerThermal/status.txt
+  s_735ef81461c9f2::t_f02d1df9c6d964 1
+src/Chemical.hs
+  s_735ef81461c9f2::t_3b13fcbb93fd79 155-157
+golden/ModelFertilizerTransient/status.txt
+  s_735ef81461c9f2::t_bbaf90164aece0 1
+golden/ModelFertilizerThermal/residuals.txt
+  s_735ef81461c9f2::t_ddd7a1c2480043 10,27-29,36-38,80-81,98-99,103-106,134,145,147
+  s_735ef81461c9f2::t_f02d1df9c6d964 1,5-6,20-26,32-35,41-45,78-79,101-102,140,146,148
+  s_735ef81461c9f2::t_13c4c9ec504052 11-12,107-114,118-121,127-129
+  s_735ef81461c9f2::t_a949ccbdd248a2 115,130
+  s_735ef81461c9f2::t_8f1bf55f8f7a8e 2-4,9,14-17,30-31,39,73-76,94-97,100,116-117,122-125,131-133,136-138
+  s_735ef81461c9f2::t_efaa237e054455 7-8,13,18-19,40,46-72,77,82-93,126,135,139,141-144,149-159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "a86a2b2d0176682b9451636e4c67f7a1f7b93c49",
+  "prompts": {},
+  "sessions": {
+    "s_735ef81461c9f2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bb0eff9-bc4f-4c22-a2ac-26b828304f6d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
