@@ -1,0 +1,94 @@
+src/Examples/ModelTES.hs
+  s_735ef81461c9f2::t_0db0c4f7639beb 122,126,255-258
+  s_735ef81461c9f2::t_576e2fde2157ea 32-33,240-245
+  s_54c9952fc1f6e6::t_ef6c0bd39a6f40 49
+  s_735ef81461c9f2::t_2962803d1a98cb 127
+  s_54c9952fc1f6e6::t_a5f1aaff75ef70 34-35
+  s_54c9952fc1f6e6::t_d03d7dadc79189 9-15,28-31,38-40,43,45-48,52-62,65-68,70-72,75-86,90-114,116-118,120-121,124-125,128-197,200-203,207-213,216-239,246-254,259-295
+  s_54c9952fc1f6e6::t_b9690ffc8ecda8 41,44
+  s_735ef81461c9f2::t_42412af58a9e7b 115,119,123
+golden/ModelACConditioner/energy.txt
+  s_54c9952fc1f6e6::t_c806e4aaa26775 1-19
+src/Model/ValvePositionPI.hs
+  s_54c9952fc1f6e6::t_655ae3910f06b3 2
+  s_54c9952fc1f6e6::t_8e5d89fcad0da9 37
+  s_735ef81461c9f2::t_3b28171f4edbb0 57-60,80
+  s_54c9952fc1f6e6::t_d51d5fdf624a82 1,3-11,17-18,20,22-24,26,28-29,44,48-50,52-56,61,63-64,66-69,76-78
+  s_54c9952fc1f6e6::t_46dce18cc01a3a 12-16,19,25,27,30-36,38-43,45-47,51,62,65,70-75,79
+  s_54c9952fc1f6e6::t_274f1329d8eaf0 21
+src/Domains.hs
+  s_735ef81461c9f2::t_8fc8e178bd37f2 269-308
+src/Model/ValveFlow.hs
+  s_735ef81461c9f2::t_2962803d1a98cb 74-76,78
+  s_54c9952fc1f6e6::t_6065b9fd6b13ba 82,101-109
+  s_54c9952fc1f6e6::t_c9c1ebd133f79d 50-51
+  s_54c9952fc1f6e6::t_dcc29b57172320 24,39,42,44,56,58
+  s_735ef81461c9f2::t_9f7c0c91ac4f10 90
+  s_54c9952fc1f6e6::t_76f5ab1036f4f5 93,95
+  s_735ef81461c9f2::t_26967debecfc71 15,57,80-81,110-111,115-116
+  s_54c9952fc1f6e6::t_8a1658ecf2c62c 13,26,45-46,52,85,88-89,91-92,94,96,98-99
+  s_54c9952fc1f6e6::t_309d61d5207a5a 18
+  s_735ef81461c9f2::t_42412af58a9e7b 40-41,68-73,77,79
+  s_735ef81461c9f2::t_6169b1766685b1 59-63,112-114
+  s_735ef81461c9f2::t_87a57c262d1d0e 65-66
+src/Model.hs
+  s_735ef81461c9f2::t_3c234a9691c012 55,58,280-294,326-341,348-351,354-361,377-380,677-679,728-732,739-741,744,751-752,758,765,772,780,786,805,824
+  s_735ef81461c9f2::t_11ec20d5614521 680
+  s_735ef81461c9f2::t_f4bf621cc31ba9 363
+  s_735ef81461c9f2::t_97351e29d6ca07 681-708
+  s_735ef81461c9f2::t_997847b83c6180 342-347,352-353,362,381-384,794-796,809-818,831
+src/Transient.hs
+  s_735ef81461c9f2::t_5b77327c885ca2 217-218,232,236,304-306,342-343,352-354,357-358,369,371,374,383-385,408,410,458-459,468,473,475
+golden/ModelRocketLiftoff/energy.txt
+  s_54c9952fc1f6e6::t_c806e4aaa26775 1-16
+src/Examples/ModelSliderCrank.hs
+  s_735ef81461c9f2::t_5cac03c6f3af9c 113-114
+  s_735ef81461c9f2::t_05302e04655d68 111
+sprinkler-solver.cabal
+  s_54c9952fc1f6e6::t_795cfadc6fdd57 48
+  s_54c9952fc1f6e6::t_0f8de7b798a62f 49
+src/Model/PhaseBlock.hs
+  s_54c9952fc1f6e6::t_952046469916cb 26
+  s_54c9952fc1f6e6::t_8c774f93f96a47 69-70
+  s_54c9952fc1f6e6::t_3f2c91eac954c0 32
+  s_54c9952fc1f6e6::t_d3be545d3f7a3d 1,3-25,27-31,33-68,71
+  s_54c9952fc1f6e6::t_26f654ba41e1b5 2
+src/Equation.hs
+  s_735ef81461c9f2::t_8fc8e178bd37f2 208-218,240,244,259,263,280,288,290-291,298,305
+src/Examples/ModelCombustionEngine.hs
+  s_735ef81461c9f2::t_11ca73b97c132a 126-127
+  s_735ef81461c9f2::t_5cac03c6f3af9c 123-124
+  s_735ef81461c9f2::t_05302e04655d68 121
+src/NDomain/Slot.hs
+  s_735ef81461c9f2::t_fb65d7e0511fc0 23,29,43,52,196-222
+  s_735ef81461c9f2::t_955a61c11df024 74-75,77-78,93-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "34fbabbec7842163d6e849527d6eb2b051514771",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_735ef81461c9f2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bb0eff9-bc4f-4c22-a2ac-26b828304f6d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
