@@ -1,0 +1,52 @@
+src/Model/ValvePositionPI.hs
+  s_54c9952fc1f6e6::t_0f02787041e823 49-51
+  s_54c9952fc1f6e6::t_fba54fdfd27e83 80-84,89-90,93
+  s_e77da5f9c7ebf1::t_8c964553059991 85-88
+src/Model/ValveFlow.hs
+  s_e77da5f9c7ebf1::t_841a7a913d7df8 26-30
+  s_e77da5f9c7ebf1::t_073d7cf1a2863f 102-112
+  s_e77da5f9c7ebf1::t_abd957e268d8dd 124
+src/Model/TEFullReaction.hs
+  s_e77da5f9c7ebf1::t_452d53399b286c 90-93,102-104,113-115,124
+  s_e77da5f9c7ebf1::t_3b8b124627fa76 178-179,181
+src/Examples/ModelTEFull.hs
+  s_54c9952fc1f6e6::t_673b03f40da4e5 136-137,155-156,184,187
+  s_54c9952fc1f6e6::t_87bb86fc52aa29 256,262-263
+  s_54c9952fc1f6e6::t_2e0cb163248f29 233-234
+  s_54c9952fc1f6e6::t_c8746194500b7a 192-193
+  s_54c9952fc1f6e6::t_7856416a6c9386 217
+  s_54c9952fc1f6e6::t_dcefdf13051c84 96-97,105-108,110,112,115,119
+  s_54c9952fc1f6e6::t_06a5d191289952 170
+  s_54c9952fc1f6e6::t_77fd1e5e51dd4a 171-172
+  s_e77da5f9c7ebf1::t_452d53399b286c 191,216
+  s_54c9952fc1f6e6::t_055e286b071c4c 167
+  s_e77da5f9c7ebf1::t_a7f361b776eb21 123,158,161,164,173
+  s_54c9952fc1f6e6::t_196b33a0a903e4 252,261,265
+  s_54c9952fc1f6e6::t_1fd2abb9974d37 132-134
+  s_54c9952fc1f6e6::t_fae1e351753d38 9,11-18,20-21
+  s_e77da5f9c7ebf1::t_d27cf465bad54e 138,185,213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "6b74e76aa65fc0fecdffd336677c85dda4dd80f0",
+  "prompts": {},
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
