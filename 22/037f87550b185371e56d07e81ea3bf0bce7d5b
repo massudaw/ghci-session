@@ -1,0 +1,32 @@
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_1028f8549d3f46 7-23,48-54,58-74,76-77,79,82-88,91-133,135-150,152-167,169,171,173,175-177,179,181-183,185-188,195,206,218-219,241-243,245-246,248,252-257
+  s_e77da5f9c7ebf1::t_c0c9cda39b0de5 200,203,205
+  s_e77da5f9c7ebf1::t_0237c7c3428cb9 201,204
+  s_e77da5f9c7ebf1::t_0535871d28b47a 247,249
+  s_e77da5f9c7ebf1::t_ad408952096b2a 237
+  s_e77da5f9c7ebf1::t_96c1feacac4c74 178
+  s_e77da5f9c7ebf1::t_81fd3fc3ab51c1 168,170,172,174,180,196-199,202
+  s_e77da5f9c7ebf1::t_493cf37cb1a485 184
+src/Model/ValveFlow.hs
+  s_e77da5f9c7ebf1::t_40216961060384 22
+  s_e77da5f9c7ebf1::t_c046212d86498c 96-97
+  s_e77da5f9c7ebf1::t_deee08c5bd7c24 116-122
+  s_e77da5f9c7ebf1::t_eca02782910275 31,38
+  s_e77da5f9c7ebf1::t_21cf91ba999a89 85-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "22037f87550b185371e56d07e81ea3bf0bce7d5b",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
