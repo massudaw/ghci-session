@@ -1,0 +1,74 @@
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_a82b87314e6822 45-50
+  s_e77da5f9c7ebf1::t_30f5a59225ed20 8,96-97
+  s_e77da5f9c7ebf1::t_9daa92f14c1099 94,98-99
+  s_e77da5f9c7ebf1::t_8e46ebd63a25ea 68
+  s_e77da5f9c7ebf1::t_7a95a9d113a649 110-111,113
+  s_e77da5f9c7ebf1::t_15f3783a88552e 129
+  s_e77da5f9c7ebf1::t_fb167f324c902e 140-146
+  s_e77da5f9c7ebf1::t_5cbc630b0efcc7 44,51
+  s_e77da5f9c7ebf1::t_10ddda870590a6 178,193,201
+  s_54c9952fc1f6e6::t_9a28201acda674 52
+  s_e77da5f9c7ebf1::t_d5d8f5a1ded672 160
+src/Model/TEFullReaction.hs
+  s_e77da5f9c7ebf1::t_4ca420ffdc46f5 183-189,192
+src/Transient.hs
+  s_e77da5f9c7ebf1::t_0062ad0e9284c0 67-68,71-77,88-89
+  s_54c9952fc1f6e6::t_2e3ea4d486a61f 461
+  s_54c9952fc1f6e6::t_05049bc9b29091 36-37,39
+  s_54c9952fc1f6e6::t_f42ec7725a927a 465
+  s_e77da5f9c7ebf1::t_4bac5c1132da8c 514-516
+  s_54c9952fc1f6e6::t_071b37dac62edc 379-380
+  s_54c9952fc1f6e6::t_44f9262f4734d4 526-528,544-547
+  s_e77da5f9c7ebf1::t_dc0a24e01a7fd0 529-543
+  s_54c9952fc1f6e6::t_a6ced0dfeb6171 353-378,381-382,385-389,392-396
+  s_e77da5f9c7ebf1::t_0c685ebc7368da 452-456,458-459
+  s_54c9952fc1f6e6::t_b8534d4ab7f2ff 462-464,466-484,488
+  s_e77da5f9c7ebf1::t_a47eb38939d2d7 460
+  s_54c9952fc1f6e6::t_b5f5ecb68b9ab6 383-384,390-391
+src/Model/ValveFlow.hs
+  s_e77da5f9c7ebf1::t_9c920952fc13c4 91-94
+src/Model/ValvePositionPI.hs
+  s_e77da5f9c7ebf1::t_566c6be9663c5c 33-34,42
+  s_e77da5f9c7ebf1::t_86c4d073134b40 35,43
+  s_e77da5f9c7ebf1::t_b21bce2fcf2bdd 25
+src/Mixture.hs
+  s_54c9952fc1f6e6::t_79e5725ec6b7d4 199
+  s_e77da5f9c7ebf1::t_b675e6a8f13d1c 141,143-144,147-148,152-154
+  s_e77da5f9c7ebf1::t_ea8f5d7460962e 223
+  s_e77da5f9c7ebf1::t_69b049ae4c095b 331
+  s_e77da5f9c7ebf1::t_dadc2f001ed018 338-341,344-346
+  s_e77da5f9c7ebf1::t_f165e1f8a2d4e4 342-343,347
+  s_e77da5f9c7ebf1::t_5e3cb76b236161 467-473,477,479
+  s_e77da5f9c7ebf1::t_84f53de9ac9845 474,476
+  s_e77da5f9c7ebf1::t_59061e270b1a3d 227-231
+  s_e77da5f9c7ebf1::t_e78802fc2d1227 181-185
+  s_e77da5f9c7ebf1::t_2c35f22ce32f11 400,409-413
+  s_54c9952fc1f6e6::t_ab4510cb5fb38c 475
+  s_54c9952fc1f6e6::t_fe7cabe1c2ed8b 478,480
+  s_e77da5f9c7ebf1::t_f3ba65bbc5e22a 388-393,416-418,420
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "e6cd1d317c1962c9783456afd1736449289cdf20",
+  "prompts": {},
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
