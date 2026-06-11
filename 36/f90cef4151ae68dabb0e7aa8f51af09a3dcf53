@@ -1,0 +1,29 @@
+src/Model/UtilityDuty.hs
+  s_e77da5f9c7ebf1::t_da3c287750e079 1-80
+src/Model/ValvePositionPI.hs
+  s_e77da5f9c7ebf1::t_a1a3e216fee59d 25,36,45
+src/Mixture.hs
+  s_e77da5f9c7ebf1::t_fa316815baaef8 62,191-194,226,272-276,315-318,408-410,534,537-539,564-567
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_c6fd1367ef5b7f 290-309,313-314,316-317,319-321,323-327,331,334-342,345,347-365
+  s_e77da5f9c7ebf1::t_cd0129b810e788 25
+  s_e77da5f9c7ebf1::t_6849b3e5933d35 33,45,90-92,94-100,109-112,142-144,162-168,209-227,236,275-277
+sprinkler-solver.cabal
+  s_e77da5f9c7ebf1::t_a147e0b28d5466 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "36f90cef4151ae68dabb0e7aa8f51af09a3dcf53",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
