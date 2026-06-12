@@ -1,0 +1,28 @@
+src/Model/ValveFlow.hs
+  s_54c9952fc1f6e6::t_144d3992947317 142-157
+src/Examples/ModelTEFull.hs
+  s_54c9952fc1f6e6::t_ae2ed2b54b2d95 338
+  s_54c9952fc1f6e6::t_f9dc5e5a4ead9d 151,153
+  s_54c9952fc1f6e6::t_42ac2d4f9f1392 147-150,154
+  s_54c9952fc1f6e6::t_c4cede19f97436 152
+golden/ModelTEFull/equations.txt
+  s_54c9952fc1f6e6::t_5559213740dc27 182-189,512-519,663-689
+golden/ModelTEFull/transient.txt
+  s_54c9952fc1f6e6::t_5559213740dc27 3-29,33-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "a77c7940716f70f9b4e5bf1d0cd349207fc33675",
+  "prompts": {},
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
