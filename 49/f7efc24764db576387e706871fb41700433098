@@ -1,0 +1,32 @@
+golden/ModelTEFull/transient.txt
+  s_54c9952fc1f6e6::t_55c302b4543ef9 32-49
+src/Examples/ModelTEFull.hs
+  s_54c9952fc1f6e6::t_f75591c398aa6a 147-153,201,203,205
+  s_54c9952fc1f6e6::t_5de72faa918b1e 163-166
+  s_54c9952fc1f6e6::t_c48187f23b0873 460,464-465,467,471-482,486,489-497,499-500,502-510,512-519,521
+  s_54c9952fc1f6e6::t_b7b4cf3dea7988 484
+src/Mixture.hs
+  s_54c9952fc1f6e6::t_128a0d42a59fc2 591,612
+  s_54c9952fc1f6e6::t_bd59b543d3133d 269-272
+  s_54c9952fc1f6e6::t_042ffcb6a813b7 765-774
+  s_54c9952fc1f6e6::t_145ef5c549db48 522-524,533-546
+  s_54c9952fc1f6e6::t_c24388f928aedc 753
+  s_54c9952fc1f6e6::t_a74e137763a376 74
+  s_54c9952fc1f6e6::t_a8368990aab24c 292
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "49f7efc24764db576387e706871fb41700433098",
+  "prompts": {},
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
