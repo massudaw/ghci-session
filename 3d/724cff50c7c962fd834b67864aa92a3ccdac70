@@ -1,0 +1,49 @@
+src/Model/UtilityDuty.hs
+  s_54c9952fc1f6e6::t_fcb16ea964f511 35
+  s_54c9952fc1f6e6::t_7c28726d82cb5d 40-43
+  s_54c9952fc1f6e6::t_fd354522b35ab1 82-94
+golden/ModelTEFull/transient.txt
+  s_54c9952fc1f6e6::t_ee0a3949fb5702 3-29,40-49
+  s_54c9952fc1f6e6::t_d4ca4cf52e98d5 32-39
+src/Examples/ModelTEFull.hs
+  s_54c9952fc1f6e6::t_0768b028bebb8b 40,53
+  s_54c9952fc1f6e6::t_512f33c9c51fd6 315,318,321
+  s_54c9952fc1f6e6::t_f71ffb0e7a6bf2 322-324
+  s_54c9952fc1f6e6::t_60b873d595c59a 404
+  s_54c9952fc1f6e6::t_66bc8939740b37 47
+  s_54c9952fc1f6e6::t_8be17f0a31c866 325
+  s_54c9952fc1f6e6::t_85a6d90544c54a 224
+  s_54c9952fc1f6e6::t_4be59415ca8fe7 500-503,505
+  s_54c9952fc1f6e6::t_104bfa42ad4c91 401-402
+src/Model.hs
+  s_54c9952fc1f6e6::t_24aeb0572d0ae8 178
+src/Mixture.hs
+  s_54c9952fc1f6e6::t_3d49561f76b84c 775
+src/Model/CompressorHeating.hs
+  s_54c9952fc1f6e6::t_1822a7aa0a194b 70
+  s_54c9952fc1f6e6::t_be2915358173d6 1-11,13,21-27,29,32-33,36,38-39,41,44-46,53,55,57-60,63-64
+  s_54c9952fc1f6e6::t_d6da80ce86cb52 34-35,54,56,61,65-66
+  s_54c9952fc1f6e6::t_046d7d81e7ea3f 28,30-31
+  s_54c9952fc1f6e6::t_4af6923fc4bd35 12,14-20,37,62,67-69
+  s_54c9952fc1f6e6::t_3389afb0989c8f 42-43
+  s_54c9952fc1f6e6::t_7225b1969c531a 47-52
+  s_54c9952fc1f6e6::t_2993e5972bd314 40
+sprinkler-solver.cabal
+  s_54c9952fc1f6e6::t_538b534b458c1c 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "3d724cff50c7c962fd834b67864aa92a3ccdac70",
+  "prompts": {},
+  "sessions": {
+    "s_54c9952fc1f6e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48e3e6ec-5b53-48a0-905d-3771747abe74",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
