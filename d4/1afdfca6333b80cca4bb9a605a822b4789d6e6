@@ -1,0 +1,29 @@
+src/Mixture.hs
+  s_e77da5f9c7ebf1::t_92b91d27cbbd24 159-163,165,478-485,604-609,611,627,654-678
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_d43f258582296b 486-488,490-492,525,533
+  s_e77da5f9c7ebf1::t_66ba5bcc6b4a7d 134-143,147-149,168-171
+  s_e77da5f9c7ebf1::t_4967ef66226a4c 249,377,512-513,521-524
+src/Model/CompressorHeating.hs
+  s_e77da5f9c7ebf1::t_66ba5bcc6b4a7d 14-16,53
+src/Model/TEFullReaction.hs
+  s_e77da5f9c7ebf1::t_4967ef66226a4c 94,105,116,125
+golden/ModelTEFull/transient.txt
+  s_e77da5f9c7ebf1::t_f83d7be8fa4adb 2-29,32-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "d41afdfca6333b80cca4bb9a605a822b4789d6e6",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
