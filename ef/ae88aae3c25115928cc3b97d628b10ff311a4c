@@ -1,0 +1,41 @@
+golden/ModelTEFull/equations.txt
+  s_e77da5f9c7ebf1::t_fd46217e40aa09 133-137,142-146,151-155,157-159,161,306,317,321,462-466,471-475,480-484,486-488,490,635,646,650,660-687
+src/Model/ValvePositionPI.hs
+  s_e77da5f9c7ebf1::t_1251c1729911bd 1
+  s_e77da5f9c7ebf1::t_edc0f31860cab8 28
+  s_e77da5f9c7ebf1::t_77c7af9735f543 54,58,64-68,85-118,128-132,143
+src/Signal.hs
+  s_e77da5f9c7ebf1::t_8d4a0da6bcdac0 93-96,98-100
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_db518f1279fbc4 387-411,413-429,431-432,434-442,444
+  s_e77da5f9c7ebf1::t_daeb881d1262d7 201
+  s_e77da5f9c7ebf1::t_3b71e5af665d7d 232
+  s_e77da5f9c7ebf1::t_604134716b66e0 62-69,71-73,76-79,185,202,207,212,310,412
+  s_e77da5f9c7ebf1::t_311eec6ed9adb6 218,223,226,235,238,241,246,248,250
+  s_e77da5f9c7ebf1::t_1bba1764367ed8 101-104,106,255,430,433
+  s_e77da5f9c7ebf1::t_fdf8d2a740c384 443
+  s_e77da5f9c7ebf1::t_4fd38ba6947d1f 198,206,211
+golden/ModelTEFull/transient.txt
+  s_e77da5f9c7ebf1::t_fd46217e40aa09 2-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "efae88aae3c25115928cc3b97d628b10ff311a4c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
