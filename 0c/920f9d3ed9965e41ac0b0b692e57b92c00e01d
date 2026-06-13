@@ -1,0 +1,27 @@
+golden/ModelTEFull/transient.txt
+  s_e77da5f9c7ebf1::t_a054992d1069e7 3-29,32-49,51-71
+golden/ModelTEFull/equations.txt
+  s_e77da5f9c7ebf1::t_a054992d1069e7 158-159,167-168,176-177,185-186,191-194,396-422
+TE_FULL_MODEL_SPEC.md
+  s_e77da5f9c7ebf1::t_b7caf3d33ef2ee 36-37,39-41,49-55
+  s_e77da5f9c7ebf1::t_1ee6cd59b90f6f 272-282
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_3c48c50e74347d 88-92
+  s_e77da5f9c7ebf1::t_f3c6e7d79462af 512,610-611
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "0c920f9d3ed9965e41ac0b0b692e57b92c00e01d",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
