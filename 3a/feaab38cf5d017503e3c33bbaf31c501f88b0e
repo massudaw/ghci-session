@@ -1,0 +1,34 @@
+golden/ModelTEFull/transient.txt
+  s_e77da5f9c7ebf1::t_5d098de1f1bf59 3-29,32-49,52-71
+src/Model/ValveFlow.hs
+  s_e77da5f9c7ebf1::t_468b87f21cb1ac 40-44
+  s_e77da5f9c7ebf1::t_f346f6c5584460 53
+  s_e77da5f9c7ebf1::t_e856ef2db98f68 164-175
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_95a8302df8564e 601
+  s_e77da5f9c7ebf1::t_a2462f2f78ffc9 344-348,357-359,379-380,382-383
+  s_e77da5f9c7ebf1::t_3c75cf2c46cb81 133-134,181,186,222-223,235-237,246,250,277-280,292-296
+  s_e77da5f9c7ebf1::t_1ae46aa506e459 411-412
+  s_e77da5f9c7ebf1::t_c9b444b4a3c924 381
+TE_FULL_MODEL_SPEC.md
+  s_e77da5f9c7ebf1::t_8a952fb7b705c9 21,23-26,212-224,247
+  s_e77da5f9c7ebf1::t_faee69d967f37a 253,255-266
+golden/ModelTEFull/equations.txt
+  s_e77da5f9c7ebf1::t_5d098de1f1bf59 1,42-208,210-344,346-392,396-422
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "3afeaab38cf5d017503e3c33bbaf31c501f88b0e",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
