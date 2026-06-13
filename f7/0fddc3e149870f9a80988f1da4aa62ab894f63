@@ -1,0 +1,28 @@
+golden/ModelTEFull/transient.txt
+  s_e77da5f9c7ebf1::t_927c2c31a92e6d 2-29,32-49,52-68,70-71
+src/Model/CompressorHeating.hs
+  s_e77da5f9c7ebf1::t_2d999328a62c14 56-60,62,66-67,69-76
+  s_e77da5f9c7ebf1::t_e155706d90b802 29-31
+TE_FULL_MODEL_SPEC.md
+  s_e77da5f9c7ebf1::t_51767e7058e7d5 21,161-164,233-241
+src/Examples/ModelTEFull.hs
+  s_e77da5f9c7ebf1::t_41aa723f235273 138-141,342,582-585,589-592
+golden/ModelTEFull/equations.txt
+  s_e77da5f9c7ebf1::t_927c2c31a92e6d 291,330-357
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "f70fddc3e149870f9a80988f1da4aa62ab894f63",
+  "prompts": {},
+  "sessions": {
+    "s_e77da5f9c7ebf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8af3065-2ee2-4d02-95ca-51d98c4d8a8c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
