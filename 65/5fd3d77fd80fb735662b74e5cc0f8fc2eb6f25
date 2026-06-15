@@ -1,0 +1,84 @@
+src/Solver/SymbolicDAE.hs
+  s_a860f352215d6e::t_451afc8146b529 343-347,351-353,355,357-367
+  s_a860f352215d6e::t_414f093997c12a 368-369
+  s_a860f352215d6e::t_a886a54aee66d8 283-284
+  s_a860f352215d6e::t_8ff5ff5079c31b 338-339
+  s_a860f352215d6e::t_901b0c51ef1c28 295-300,302-337,340-342,348-350,354,356
+  s_a860f352215d6e::t_8945ee25420c63 98
+golden/ModelRLCTransient/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 4
+golden/VasicekSwapExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 3-57,62-116
+golden/RoomAirConditioningExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 3,5,8-16
+golden/ModelPneumaticCompressor/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 7,9,11
+golden/ModelElectroPneumatic/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2
+golden/BermudanSwaptionExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 3-201,206-404,408-606,611-809,813-1011,1016-1214,1218-1416,1421-1619,1623-1821,1826-2024
+golden/ModelMagneticTransient/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2,7,9,17,22,24,27
+golden/SwaptionExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 3-201,206-404,409-607,612-810,815-1013,1018-1216,1221-1419,1424-1622
+golden/MagneticCircuit/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 4-6
+golden/RoomConvectionExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 2-25
+golden/ModelElectrolysis/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2
+golden/ModelTES/equations.txt
+  s_a860f352215d6e::t_2b32853362ae12 19-22,24,58,60-61,68-70
+golden/ModelMultiStageThermalTransient/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2,4,6,12,14,16
+golden/HeatEquationExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 21-40,82-101
+golden/ModelFertilizerThermal/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2-12,14,18-20,63-82,88-89,106,114,126-127,134-136,138-141,143-146,148-151,153
+golden/ModelFertilizerTransient/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 5-10,12-14,27-28,42-47
+golden/ModelGasPiston/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 6,29,45
+golden/ModelConcentrationCell/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 3
+golden/ModelSliderCrank/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 9-14,16,19,29-34,42,45
+golden/ModelSolenoidActuator/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2,7,9,13-14
+golden/ModelLoudspeaker/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 2,7
+golden/ModelThermoacousticEngine/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 4
+golden/ModelPneumaticGasSpring/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 5-6,15,27-28,43,45
+golden/ForceOscillator/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 6
+golden/CantileverBeam3D/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 2-3,5-13
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 17,26,28,31,35,69,84,86,89,93,95
+golden/ModelRotationalMotorMagnetic/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 24,26,28,31-33,36,38,42,44
+golden/ModelPneumaticDissipation/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 8
+golden/ModelAcousticHeating/equations.txt
+  s_a860f352215d6e::t_3d48dd4894d6c9 6
+golden/AmericanOptionExample/equations.txt
+  s_a860f352215d6e::t_2ed4c77c8a72bc 3-61,65-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "655fd3d77fd80fb735662b74e5cc0f8fc2eb6f25",
+  "prompts": {},
+  "sessions": {
+    "s_a860f352215d6e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a72a578-5038-4e63-b494-8ab7f8e9935f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
