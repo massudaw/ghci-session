@@ -1,0 +1,24 @@
+src/Financial.hs
+  s_a860f352215d6e::t_cb0664968ec15f 110,265-269,274-277,287,297,304-305,313,318,320-322,350,387
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "d382956c66a5a39a93ad3c12409ff3fefc7f8247",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_a860f352215d6e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a72a578-5038-4e63-b494-8ab7f8e9935f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
