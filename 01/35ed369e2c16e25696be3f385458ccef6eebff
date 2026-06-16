@@ -1,0 +1,29 @@
+src/Examples/PendulumTransient.hs
+  s_a860f352215d6e::t_afddace84c066c 27
+  s_a860f352215d6e::t_770b858f48104b 59-62
+src/Transient.hs
+  s_a860f352215d6e::t_c1128135b4014e 664
+  s_a860f352215d6e::t_6a666d284cadff 74-80
+  s_a860f352215d6e::t_8ed896372a6e0b 97-99
+  s_a860f352215d6e::t_88ece9315d9b3f 672,674-685
+  s_a860f352215d6e::t_4b302d7f6f8241 21
+  s_a860f352215d6e::t_d0472dba02cea4 96
+  s_a860f352215d6e::t_7d545467848d59 123
+  s_a860f352215d6e::t_0007d11db11cf0 58-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "0135ed369e2c16e25696be3f385458ccef6eebff",
+  "prompts": {},
+  "sessions": {
+    "s_a860f352215d6e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a72a578-5038-4e63-b494-8ab7f8e9935f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
