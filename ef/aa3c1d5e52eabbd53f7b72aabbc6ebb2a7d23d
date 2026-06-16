@@ -1,0 +1,14 @@
+.gitignore
+  h_fd5809635b36a3 17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "efaa3c1d5e52eabbd53f7b72aabbc6ebb2a7d23d",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
