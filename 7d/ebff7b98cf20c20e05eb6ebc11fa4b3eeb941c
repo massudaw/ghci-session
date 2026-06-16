@@ -1,0 +1,14 @@
+src/Transient.hs
+  h_fd5809635b36a3 7,18,33,56-57,80,104,264-283,287-298,344,637-704
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "7debff7b98cf20c20e05eb6ebc11fa4b3eeb941c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
