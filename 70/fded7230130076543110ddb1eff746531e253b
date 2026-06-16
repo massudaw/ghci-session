@@ -1,0 +1,68 @@
+src/Solver/Pantelides.hs
+  s_a860f352215d6e::t_b237a7acf65e33 57-78,81-82
+PDE_SOLVER_INTERFACE.md
+  s_a860f352215d6e::t_e818afe70b236b 198,221-224,226
+src/Examples/GenericSparseTransient.hs
+  s_a860f352215d6e::t_e818afe70b236b 36,77-78
+sprinkler-solver.cabal
+  s_a860f352215d6e::t_7a3fc52e21c61d 137,278
+example/Main.hs
+  s_a860f352215d6e::t_7a3fc52e21c61d 112,320
+src/Pendulum.hs
+  s_a860f352215d6e::t_e818afe70b236b 1-142
+golden/PendulumTransient/transient.txt
+  s_a860f352215d6e::t_c74d27f1ec8cad 1-10
+src/Transient.hs
+  h_fd5809635b36a3 20,64-70,85,112,274,286-288,539,542,655,702
+  s_a860f352215d6e::t_bd38f19661d110 654
+  s_a860f352215d6e::t_8af163a6b6ad76 113
+  s_a860f352215d6e::t_b0dda5afbbe7d5 662-675
+  s_a860f352215d6e::t_ec8bf623a51f18 280
+  s_a860f352215d6e::t_5b3b80d091d03f 289
+  s_a860f352215d6e::t_28bf6f50bc2db1 86-89
+run_golden_tests.sh
+  s_a860f352215d6e::t_c74d27f1ec8cad 62,134,136-138,171-173
+src/Solver/SymbolicDAE.hs
+  s_a860f352215d6e::t_46efb01b40ca4a 1449
+test/Spec.hs
+  s_a860f352215d6e::t_e818afe70b236b 21,23,247,253,299,304,347,352
+src/Examples/PendulumTransient.hs
+  s_a860f352215d6e::t_01b0406b7d67d5 37
+  s_a860f352215d6e::t_4de15599a8847b 1-23,25-36,38-67,69-86
+  s_a860f352215d6e::t_4ca6a9b77a47d2 68
+  s_a860f352215d6e::t_49af5a7846075f 24
+golden/PendulumTransient/status.txt
+  s_a860f352215d6e::t_c74d27f1ec8cad 1
+src/Solver/SymbolicPreSys.hs
+  s_a860f352215d6e::t_e818afe70b236b 271-287
+src/Examples/PantelidesDAE.hs
+  s_a860f352215d6e::t_1ce1316d9ec567 47
+  s_a860f352215d6e::t_9baf189c46d7be 397
+  s_a860f352215d6e::t_b43d4ab99e60fe 407-410
+  s_a860f352215d6e::t_8350103c68924a 437
+  s_a860f352215d6e::t_e2da084d2207f5 427-428
+  s_a860f352215d6e::t_b3f80a444a6b90 411-412
+.gitignore
+  h_fd5809635b36a3 19-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "70fded7230130076543110ddb1eff746531e253b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_a860f352215d6e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3a72a578-5038-4e63-b494-8ab7f8e9935f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
