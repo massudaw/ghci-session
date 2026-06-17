@@ -1,0 +1,56 @@
+ml/plot_rollouts.py
+  s_80bf743ae63405::t_108556d41832e4 46
+example/MotorDataGenerator.hs
+  h_fd5809635b36a3 1-234
+ml/jepa_train.py
+  s_80bf743ae63405::t_f188c3521e4e8b 807
+  s_80bf743ae63405::t_8aabcc18586594 661,665
+  s_80bf743ae63405::t_7af7c02b269d5f 344-352
+  s_80bf743ae63405::t_f62f95da01bc52 1100-1104
+  s_80bf743ae63405::t_ed5d182b27b98d 518-523
+  s_80bf743ae63405::t_173083b779e05d 660,662,664
+  s_80bf743ae63405::t_5c3f60df13e662 573-577,579-593
+  s_80bf743ae63405::t_e979da72f8514d 910
+  s_80bf743ae63405::t_ce68b5b7c4c9cc 947,949,951
+  s_80bf743ae63405::t_7645cc32360b5a 1105-1109
+  s_80bf743ae63405::t_9e101bc83316b5 418-440,444-478
+  s_80bf743ae63405::t_da02acdd9e8f37 617-621,627,633
+  s_80bf743ae63405::t_bfa97a38ac50fe 400-407
+  s_80bf743ae63405::t_946f856990fd10 625
+  s_80bf743ae63405::t_e9180ff296e431 443
+  s_80bf743ae63405::t_affe8a4f8c36a7 1089-1093
+  s_80bf743ae63405::t_bc3e49507fbbaf 663
+  s_80bf743ae63405::t_aa95ee9c16eebc 615-616,622-624,626,628
+  s_80bf743ae63405::t_22ccb1a83498cb 907,909,911
+  s_80bf743ae63405::t_80213209a6997a 578
+  s_80bf743ae63405::t_06fb98ee94e118 721-725
+  s_80bf743ae63405::t_5bd49bbfe77e4c 874-885
+  s_80bf743ae63405::t_c312a6259c3f9f 408-412
+  s_80bf743ae63405::t_a99fd7b9a1db45 948,952
+  s_80bf743ae63405::t_84f55fe498adde 950
+  s_80bf743ae63405::t_cca7dbb9195cdb 801-806,808-822
+  s_80bf743ae63405::t_87c22160bd4b5b 908,912-917
+.gitignore
+  h_fd5809635b36a3 22-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "91c8bc46f7cd0d0fc4e5818fd6baeb9b01f7ca91",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80bf743ae63405": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ba3419d-dd39-4a89-b231-6153141e2708",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
