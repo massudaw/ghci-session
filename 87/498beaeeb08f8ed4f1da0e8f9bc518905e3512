@@ -1,0 +1,82 @@
+src/Solver/SymbolicDAE.hs
+  s_80bf743ae63405::t_7e3332f5a0a879 115-118,121
+  s_80bf743ae63405::t_b1657d376ea596 86
+  s_80bf743ae63405::t_33433c62f0ff4a 305-307
+  s_80bf743ae63405::t_65aafbca3fc323 104-114,119-120,122-123
+  s_80bf743ae63405::t_38aa776e6c39bb 31
+  s_80bf743ae63405::t_5ea43aae51808f 1019-1035,1037-1089
+  s_80bf743ae63405::t_875d806c606162 920
+  s_80bf743ae63405::t_5ee15cea4514e2 232-241
+  s_80bf743ae63405::t_19112237ea7ccb 3
+  s_80bf743ae63405::t_522c6bb78c04eb 19-20
+  s_80bf743ae63405::t_dad4aeed59e5f1 953-955
+  s_80bf743ae63405::t_61555f5e9e194e 827
+  s_80bf743ae63405::t_0fbba2cedc03dd 4
+  s_80bf743ae63405::t_6cf899b3f417d0 1011-1014
+  s_80bf743ae63405::t_5528f0ca6a5fe6 1190-1198
+  s_80bf743ae63405::t_7bb55905a51e8d 1154
+  s_80bf743ae63405::t_b655e476af2e14 29
+  s_80bf743ae63405::t_64ddde5d305b84 1091-1098
+  s_80bf743ae63405::t_4ddeb645a79bd9 1128
+  s_80bf743ae63405::t_3ef1ec33deaca7 892
+sprinkler-solver.cabal
+  s_80bf743ae63405::t_b01533f3ce4bd5 226
+  s_80bf743ae63405::t_cd2f89f481d2e1 227
+run_golden_tests.sh
+  s_80bf743ae63405::t_8247582de37792 60
+  s_80bf743ae63405::t_d30d79b0a171ec 61
+src/Solver/Pantelides.hs
+  s_80bf743ae63405::t_a7d22cbc1b24b1 113,115-130
+  s_80bf743ae63405::t_cd64104f3eed90 102-110,112,131-147
+  s_80bf743ae63405::t_53707fd2e25b91 180-185,192
+  s_80bf743ae63405::t_f65c483b4cfac1 84
+example/Main.hs
+  s_80bf743ae63405::t_cd2f89f481d2e1 63,274
+  s_80bf743ae63405::t_a96549bf24134f 273
+  s_80bf743ae63405::t_d68423054cf480 62
+src/Examples/ModelFertilizerDAE.hs
+  s_80bf743ae63405::t_1f9665822386aa 130,135
+  s_80bf743ae63405::t_a068daf993552d 1-37,39-42,44-109,112,115,119-125,127,129,131,134,136,141,147,153
+  s_80bf743ae63405::t_bf13d7926a5155 110-111,113-114,116-118,126,128,132-133,137-140,142-146,148-152,154-157
+  s_80bf743ae63405::t_3f3cd940e8997e 38,43
+src/Solver/SymbolicPreSys.hs
+  s_80bf743ae63405::t_9d95fa0323a0ea 98-106
+  s_80bf743ae63405::t_5cfab5199b82a0 156-161,164-165
+src/Model.hs
+  s_80bf743ae63405::t_6ac747bb992bfd 531
+  s_80bf743ae63405::t_4eb5316b8bc872 498-503
+  s_80bf743ae63405::t_f3ad9d564274d5 604-610
+  s_80bf743ae63405::t_58a32847212364 797
+src/Energy.hs
+  s_80bf743ae63405::t_420f6c6b24b96f 114-126
+golden/CondPantelidesTest/status.txt
+  s_80bf743ae63405::t_1f90add9fcca27 1
+src/Examples/CondPantelidesTest.hs
+  s_80bf743ae63405::t_98e51a830b2fbf 47
+  s_80bf743ae63405::t_f82d38734754b4 14
+  s_80bf743ae63405::t_90705630d2be6d 22
+  s_80bf743ae63405::t_3a53e963b5bf23 1-13,15-21,23-46,48-92
+src/Transient.hs
+  s_80bf743ae63405::t_ba46368d8d49d2 348
+  s_80bf743ae63405::t_8c396d0beaccbf 396
+  s_80bf743ae63405::t_1ade49dc74f873 141
+  s_80bf743ae63405::t_8f5ac792adec72 111-116
+  s_80bf743ae63405::t_e5fe5b59c45bc5 350-388,391-395,397-399
+  s_80bf743ae63405::t_91846e90f759ad 871
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "87498beaeeb08f8ed4f1da0e8f9bc518905e3512",
+  "prompts": {},
+  "sessions": {
+    "s_80bf743ae63405": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ba3419d-dd39-4a89-b231-6153141e2708",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
