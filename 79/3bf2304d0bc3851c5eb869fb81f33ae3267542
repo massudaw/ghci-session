@@ -1,0 +1,24 @@
+test/Spec.hs
+  s_91adb54f2ca136::t_f5c5c21b9f1bbd 539-543,546-548,552,554,556-571
+  s_91adb54f2ca136::t_176c87e633c79c 580-586
+  s_91adb54f2ca136::t_14207f53e800a6 703,707-711,716-745
+  s_91adb54f2ca136::t_43ea2e8d4fc9db 2
+  s_91adb54f2ca136::t_a178347096096e 577-578
+  s_91adb54f2ca136::t_176c60f03f24f5 656,660-669
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "793bf2304d0bc3851c5eb869fb81f33ae3267542",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
