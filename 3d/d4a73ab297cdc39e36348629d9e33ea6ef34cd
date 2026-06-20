@@ -1,0 +1,44 @@
+sprinkler-solver.cabal
+  s_91adb54f2ca136::t_0ea46ca6210e90 172,285-286,329,331
+  s_91adb54f2ca136::t_7a02438cd664d3 330,332
+src/Transient.hs
+  s_91adb54f2ca136::t_7726126b8207cc 384
+  s_91adb54f2ca136::t_b905b899fa75c0 842
+  s_91adb54f2ca136::t_0ea46ca6210e90 72,85,351,380,831,841,848,926,946-954
+  s_91adb54f2ca136::t_64f3a6e13c9fd1 859
+src/Examples/IDADAE.hs
+  s_91adb54f2ca136::t_0ea46ca6210e90 1-121
+.github/workflows/ci.yaml
+  s_91adb54f2ca136::t_0ea46ca6210e90 45
+src/Examples/IDATransient.hs
+  s_91adb54f2ca136::t_0ea46ca6210e90 1-101
+.gitignore
+  s_91adb54f2ca136::t_0ea46ca6210e90 26-29
+src/Solver/IDA.hs
+  s_91adb54f2ca136::t_0ea46ca6210e90 1-440
+src/Solver/SymbolicDAE.hs
+  s_91adb54f2ca136::t_0ea46ca6210e90 35
+example/Main.hs
+  s_91adb54f2ca136::t_0ea46ca6210e90 117-118,214-215,333-334
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "3dd4a73ab297cdc39e36348629d9e33ea6ef34cd",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
