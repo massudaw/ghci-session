@@ -1,0 +1,63 @@
+src/Model/ValveFlow.hs
+  s_80bf743ae63405::t_4b9c0aa5c46ec7 24,112,124
+src/Model/CompressorHeating.hs
+  s_80bf743ae63405::t_5a4879d382e749 26,69,74
+src/Examples/ModelSimple2.hs
+  s_80bf743ae63405::t_d4c0f36703a9c1 45
+  s_80bf743ae63405::t_05d182ef117cfc 1
+src/Model.hs
+  s_80bf743ae63405::t_1464aef1b3bad2 299,315,334,352
+  s_80bf743ae63405::t_2f8d5c0b9e1827 679
+  s_80bf743ae63405::t_faa487fca9a48f 455,467,481
+  s_80bf743ae63405::t_3ff0cf2e48fac1 505
+src/Domains.hs
+  s_80bf743ae63405::t_594e3ec9cea356 68-69
+  s_80bf743ae63405::t_55cde27112cf06 145
+  s_80bf743ae63405::t_f7fa4eb2304fa1 291
+  s_80bf743ae63405::t_3c50ade29fe30f 137-141,143-144
+  s_80bf743ae63405::t_2dc185d8f4d3f3 142
+src/Examples/ModelSaoJorge.hs
+  s_80bf743ae63405::t_d4c0f36703a9c1 161
+  s_80bf743ae63405::t_05d182ef117cfc 1
+src/Project.hs
+  s_80bf743ae63405::t_17b161dc677e37 498-501,503,506
+  s_80bf743ae63405::t_48344697e21e26 517
+src/Examples/ModelSimple.hs
+  s_80bf743ae63405::t_05d182ef117cfc 1
+  s_80bf743ae63405::t_d4c0f36703a9c1 80
+src/Mixture.hs
+  s_80bf743ae63405::t_706e761ea079db 177,183
+  s_80bf743ae63405::t_2b2debdfa4fb25 565-566
+  s_80bf743ae63405::t_ce036d2c508a5d 595
+  s_80bf743ae63405::t_4ffb210edb0e2b 535
+  s_80bf743ae63405::t_46127726cbcb8d 186,192
+  s_80bf743ae63405::t_2d1b81d88bcbb8 557-563
+src/Solver/SelectivePantelides.hs
+  s_80bf743ae63405::t_7014da8b7b61d3 247-252,254,259,261-263
+src/Transient.hs
+  h_fd5809635b36a3 142
+  s_80bf743ae63405::t_2b94274f30c1ad 860-863,865
+golden/ModelTEFull/equations.txt
+  s_80bf743ae63405::t_400212e50d76aa 154,158-163,167-172,176-181,185-189,191-195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "e26d054b1a43ba33decb1e646ba9701ad4892d16",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80bf743ae63405": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ba3419d-dd39-4a89-b231-6153141e2708",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
