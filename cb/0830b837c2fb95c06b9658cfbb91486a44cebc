@@ -1,0 +1,37 @@
+test/Spec.hs
+  s_91adb54f2ca136::t_908505a336a2d6 44
+  s_91adb54f2ca136::t_8bad5ff76e77ff 593-601,603-639,641-642
+  s_91adb54f2ca136::t_7df3985c2be41d 882-884
+  s_91adb54f2ca136::t_cc75f6a072788e 2
+  s_91adb54f2ca136::t_6519f7d4212294 871-873,877,894-898
+  s_91adb54f2ca136::t_dfc5abea7e82ed 592,810-821,825,830-831,833,835-870,874-876,878-879,881,891,899
+  s_91adb54f2ca136::t_65c28098723d07 3
+  s_91adb54f2ca136::t_d2a94752d7f44c 45
+  s_91adb54f2ca136::t_8fbb955c31ae04 885-886,888-890
+  s_91adb54f2ca136::t_5f0f5553154891 822-824,829,832,834
+  s_91adb54f2ca136::t_37612a57586547 892-893
+  s_91adb54f2ca136::t_08e313ba155928 766-775
+  s_91adb54f2ca136::t_68d3c7213505ec 880
+  s_91adb54f2ca136::t_a580e4809e810c 602
+  s_91adb54f2ca136::t_a30e2fa1b5b09b 826-828
+  s_91adb54f2ca136::t_91e6051a5efd48 887
+  s_91adb54f2ca136::t_17a258f04126ea 640
+sprinkler-solver.cabal
+  s_91adb54f2ca136::t_27152a26525282 482
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "cb0830b837c2fb95c06b9658cfbb91486a44cebc",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
