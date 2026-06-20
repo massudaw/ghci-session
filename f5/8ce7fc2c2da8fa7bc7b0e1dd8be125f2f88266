@@ -1,0 +1,32 @@
+src/Solver/Sparse.hs
+  s_91adb54f2ca136::t_4e0e36d4919e40 342,352
+  s_91adb54f2ca136::t_814a3ffbf2baa9 341,351
+  s_91adb54f2ca136::t_324fc8c31a5176 343,348-349,353
+src/Transient.hs
+  s_91adb54f2ca136::t_627fd3ce1679e1 385-386,388-390
+  s_91adb54f2ca136::t_6e5aff449a4b81 408
+  s_91adb54f2ca136::t_54d11aff9199c3 144
+  s_91adb54f2ca136::t_17e15e185d33de 387,391
+src/Model/CompressorHeating.hs
+  s_91adb54f2ca136::t_da133bf00f6eb3 27
+  s_91adb54f2ca136::t_2203790849d703 68
+src/Model/UtilityDuty.hs
+  s_91adb54f2ca136::t_ad6a9ab9c65830 93-94
+  s_91adb54f2ca136::t_2cd78cfda7bc0e 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "f58ce7fc2c2da8fa7bc7b0e1dd8be125f2f88266",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
