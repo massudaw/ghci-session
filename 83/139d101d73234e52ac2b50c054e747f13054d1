@@ -1,0 +1,47 @@
+sprinkler-solver.cabal
+  s_91adb54f2ca136::t_6498f6c81431f6 480
+  s_91adb54f2ca136::t_7bbf4a7def4e81 481
+test/Spec.hs
+  s_91adb54f2ca136::t_565d644c96258b 241-243,247
+  s_91adb54f2ca136::t_8ce882ff509b75 425
+  s_91adb54f2ca136::t_bed9edcabe1027 427
+  s_91adb54f2ca136::t_039ef985c447e5 540-541,547,551
+  s_91adb54f2ca136::t_333a364263e09a 624-642,645-646
+  s_91adb54f2ca136::t_e8ba829a524a67 237-240,244-246
+  s_91adb54f2ca136::t_94a872bb908db2 424,461-462,499
+  s_91adb54f2ca136::t_b497cbe83aa3a5 391-422,428-440,442-443,446-447,449-453,455-460,463-498,501-529
+  s_91adb54f2ca136::t_a4eb29d6a8b67f 33
+  s_91adb54f2ca136::t_55e1f141f73902 29-30,34
+  s_91adb54f2ca136::t_a40655793ac234 276
+  s_91adb54f2ca136::t_77c5b8bf5fc902 423
+  s_91adb54f2ca136::t_0c02930bfeda9b 441,444-445,448
+  s_91adb54f2ca136::t_36d95d0a1371f4 500
+  s_91adb54f2ca136::t_d556d73ddfb9b1 530-539,542-546,548-550,552-569,591-623,644,647,650-659,661-663,665-667,669-670,673-679
+  s_91adb54f2ca136::t_30efc66756c48d 570-571,573-580
+  s_91adb54f2ca136::t_d421078504b6aa 327
+  s_91adb54f2ca136::t_447eb3e3043cb1 572,581-590
+  s_91adb54f2ca136::t_d5b95b4df8ad6b 375
+  s_91adb54f2ca136::t_ee2832daf12511 426
+  s_91adb54f2ca136::t_d1067fc3c6c902 454
+  s_91adb54f2ca136::t_56c2e1ec7fd723 643,648-649
+  s_91adb54f2ca136::t_badf952d5cc2f0 660,664,668
+  s_91adb54f2ca136::t_3144c7071c0d58 31-32
+  s_91adb54f2ca136::t_51d71eef9c77c3 671-672
+  s_91adb54f2ca136::t_6589d102719c59 35-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "83139d101d73234e52ac2b50c054e747f13054d1",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
