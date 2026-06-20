@@ -1,0 +1,30 @@
+src/Model/PumpTorqueCoupling.hs
+  h_fd5809635b36a3 29,65,98
+validate_golden_tests.sh
+  s_80bf743ae63405::t_824b19a7fb7630 89-91
+  s_80bf743ae63405::t_e773b18da04801 92-98
+src/Transient.hs
+  s_80bf743ae63405::t_e90f98665c508a 300,302
+  s_80bf743ae63405::t_6c971d1c180c77 301
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "6f49339e484f55bd4567283660453e182b01da37",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_80bf743ae63405": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ba3419d-dd39-4a89-b231-6153141e2708",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
