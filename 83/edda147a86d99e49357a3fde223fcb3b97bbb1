@@ -1,0 +1,45 @@
+src/Examples/ModelTEFull.hs
+  s_91adb54f2ca136::t_3e53f521fca8d1 47
+src/Transient.hs
+  s_91adb54f2ca136::t_fe9372085f888e 879-883,887
+test/Spec.hs
+  s_91adb54f2ca136::t_19dcf8e3579cb3 851-853
+  s_91adb54f2ca136::t_ea594ff02a8c12 862-864
+  s_91adb54f2ca136::t_00763a95e91530 700-714
+  s_91adb54f2ca136::t_3dd3dbe18bddd5 850,867,874,891
+  s_91adb54f2ca136::t_797b0410e1403f 574-583
+  s_91adb54f2ca136::t_ebf1a4c9bfbcff 955
+  s_91adb54f2ca136::t_d5ea746bb07d3b 770-775
+  s_91adb54f2ca136::t_cf1bd72f081b2a 716-721
+  s_91adb54f2ca136::t_56ef6ee050d502 694
+  s_91adb54f2ca136::t_319d06ae314958 782,786,790,794,798,802,806
+  s_91adb54f2ca136::t_8f530f54165c22 858
+  s_91adb54f2ca136::t_f376dc597d7c24 854-857,859-861,865-866,871
+  s_91adb54f2ca136::t_ec5b328a5cd4cb 869
+  s_91adb54f2ca136::t_bced7a1d699f58 550
+  s_91adb54f2ca136::t_14f37e38975f5c 449
+  s_91adb54f2ca136::t_0ae5ced81c75fb 726-728,731
+  s_91adb54f2ca136::t_88ead78e05dbb1 563,566,570,573
+  s_91adb54f2ca136::t_2ddf54d9cac5dc 741
+  s_91adb54f2ca136::t_6024e6014618fe 868,870,872-873
+  s_91adb54f2ca136::t_69fe87d9240da4 597
+  s_91adb54f2ca136::t_c7a5373574d1b3 680,844
+src/Solver/Sparse.hs
+  s_91adb54f2ca136::t_5c78eb7bd6327a 341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "83edda147a86d99e49357a3fde223fcb3b97bbb1",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
