@@ -1,0 +1,16 @@
+src/Transient.hs
+  h_fd5809635b36a3 914-918
+run_golden_tests.sh
+  h_fd5809635b36a3 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "0e657a26648cf17bf4506693b8c56bc36804972e",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
