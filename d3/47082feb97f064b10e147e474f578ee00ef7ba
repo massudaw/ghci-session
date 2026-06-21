@@ -1,0 +1,26 @@
+src/Solver/SymbolicPreSys.hs
+  s_91adb54f2ca136::t_45f5f46af447c3 106
+src/Solver/SymbolicDAE.hs
+  s_91adb54f2ca136::t_92e1f4cb19a0a5 32,34
+  s_91adb54f2ca136::t_601bdb238f0a38 790-795,806-810,821,830-906
+  s_91adb54f2ca136::t_545596a6e1d93f 1451
+  s_91adb54f2ca136::t_1a2485a8d8f5f7 796-805,811-820,822-829
+  s_91adb54f2ca136::t_13885bc0e67fba 1583
+  s_91adb54f2ca136::t_9224107d73a6e1 1441
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "d347082feb97f064b10e147e474f578ee00ef7ba",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
