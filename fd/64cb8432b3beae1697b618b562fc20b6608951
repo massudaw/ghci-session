@@ -1,0 +1,30 @@
+src/Solver/SymbolicDAE.hs
+  s_91adb54f2ca136::t_20f3fd1c7ed923 236-271
+  s_91adb54f2ca136::t_f826301f284104 31-36
+  s_91adb54f2ca136::t_39a1ccd4f0311e 217-235
+  s_91adb54f2ca136::t_f052eb9dba4673 37
+src/Transient.hs
+  s_91adb54f2ca136::t_9dd3e97c000338 882
+  s_91adb54f2ca136::t_bea03cdbd740a3 874-875
+  s_91adb54f2ca136::t_d63f69c232b30a 863
+  s_91adb54f2ca136::t_98e413fa7a5945 400
+  s_91adb54f2ca136::t_841ccfa62df85b 159
+  s_91adb54f2ca136::t_0c0cc15a422edc 883-885
+  s_91adb54f2ca136::t_acb93699c3cdae 120-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "fd64cb8432b3beae1697b618b562fc20b6608951",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
