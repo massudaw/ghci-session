@@ -1,0 +1,22 @@
+src/Solver/SymbolicDAE.hs
+  s_91adb54f2ca136::t_17c3aefc5b84a3 1685
+  s_91adb54f2ca136::t_bbc12632af1d2b 1606,1610-1630
+  s_91adb54f2ca136::t_e3f387112eb965 45
+  s_91adb54f2ca136::t_c291e8034694ee 1678-1680,1682-1684
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "a5a0e6b984fc3bbddfe248f707820970c6e5a1df",
+  "prompts": {},
+  "sessions": {
+    "s_91adb54f2ca136": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e0d27e0e-ed71-4250-8838-c0b63381213e",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
