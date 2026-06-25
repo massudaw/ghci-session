@@ -1,0 +1,21 @@
+src/Transient.hs
+  s_0af1e60eda6fc9::t_fab65451baf843 228-241
+  s_0af1e60eda6fc9::t_22c18e5058c997 213-219
+  s_0af1e60eda6fc9::t_5c237907d28ecf 201-202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "fb074e86061aab5ab73be1b5a8291374989a453f",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
