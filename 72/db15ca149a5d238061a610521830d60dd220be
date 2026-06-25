@@ -1,0 +1,54 @@
+golden/HeatEquationExample/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 6-8
+golden/ModelRotationalTranslational/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 6-7
+golden/HeatEquationExample/equations.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 147-149
+golden/ModelPneumaticSuspension/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 4-18
+golden/ModelSliderCrank/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 8-11
+golden/ModelThermoEngine/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 14-15,17
+golden/ModelRLCTransient/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 4
+golden/ModelACConditioner/energy.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 9-10,13,15
+golden/ModelExcavatorArm/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 9,11
+src/Transient.hs
+  s_0af1e60eda6fc9::t_67e9b74e61d530 213-215
+  s_0af1e60eda6fc9::t_7a0a39c65df161 176
+  s_0af1e60eda6fc9::t_0bdbfd3cf25401 160
+  s_0af1e60eda6fc9::t_89ea2b9a50787c 154-157
+  s_0af1e60eda6fc9::t_835cf6558e06b6 179-192
+  s_0af1e60eda6fc9::t_239564cd552e2d 240-242
+golden/ModelBattery/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 4-13
+golden/ModelOttoCycle/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 6
+golden/ModelACConditioner/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 4-13,23,33-34,37,40,44-45,76-77,80,82
+golden/ModelMotorBackEMF/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 6-7
+golden/ModelLiftRegen/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 4-18
+golden/ModelCombustionEngine/transient.txt
+  s_0af1e60eda6fc9::t_2a49f0ea3886ae 9-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "72db15ca149a5d238061a610521830d60dd220be",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
