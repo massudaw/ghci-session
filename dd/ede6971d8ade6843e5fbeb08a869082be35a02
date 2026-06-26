@@ -1,0 +1,24 @@
+src/Solver/IDA.hs
+  s_0af1e60eda6fc9::t_02aacdb837ad57 365-373,375
+src/Solver/SymbolicDAE.hs
+  s_0af1e60eda6fc9::t_2a7ef886811150 48
+  s_0af1e60eda6fc9::t_e3f15e9c16115d 1967-1968,1970
+  s_0af1e60eda6fc9::t_82f9daf6781bd7 1932-1966,1969,1971-1991,1996-2097
+  s_0af1e60eda6fc9::t_7576af0561aaf5 1992-1995
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "ddede6971d8ade6843e5fbeb08a869082be35a02",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
