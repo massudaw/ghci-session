@@ -1,0 +1,37 @@
+golden/ModelExcavatorArm/transient.txt
+  s_0af1e60eda6fc9::t_44be69ed450e18 9,11
+golden/ModelTEFull/transient.txt
+  s_0af1e60eda6fc9::t_44be69ed450e18 41-42,57
+golden/ModelMotorBackEMF/transient.txt
+  s_0af1e60eda6fc9::t_44be69ed450e18 6
+src/Solver/Kron.hs
+  s_0af1e60eda6fc9::t_f82ac09f544aed 148-151,155,162-175
+  s_0af1e60eda6fc9::t_e0978a87fc418e 27
+  s_0af1e60eda6fc9::t_1c44c12bcabfe6 152,157-160,176-177
+  s_0af1e60eda6fc9::t_835d1ae5f05b18 21
+  s_0af1e60eda6fc9::t_cac6e0762ab0a0 153-154,156,161
+golden/ModelRLCTransient/transient.txt
+  s_0af1e60eda6fc9::t_44be69ed450e18 4
+golden/ModelLiftRegen/transient.txt
+  s_0af1e60eda6fc9::t_44be69ed450e18 4-18
+src/Transient.hs
+  s_0af1e60eda6fc9::t_d96b25481c551d 80
+  s_0af1e60eda6fc9::t_3989d0f6440b73 1187
+  s_0af1e60eda6fc9::t_143a933ccc2c9a 1192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "e4c5a31e4cbbb095892fcbc8d76c65ecc803ab43",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
