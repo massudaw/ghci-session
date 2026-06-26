@@ -1,0 +1,21 @@
+src/Solver/IDA.hs
+  s_0af1e60eda6fc9::t_9f5bfd1de7581b 407-414,422-425,427
+  s_0af1e60eda6fc9::t_912eb91e327172 415-421,426,429-436,438-439,441-451
+  s_0af1e60eda6fc9::t_df29fba9234319 465-466
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "55daa7f921108de163b351724f600daf53a6b168",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
