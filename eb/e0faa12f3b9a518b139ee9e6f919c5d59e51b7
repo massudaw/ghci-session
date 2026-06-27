@@ -1,0 +1,56 @@
+example/EvalBench.hs
+  s_0af1e60eda6fc9::t_e62b1e4f4a56e5 1-2,4-18,24-25,27-30,32-77,110-112
+  s_0af1e60eda6fc9::t_3be3ae311c9190 90-98
+  s_0af1e60eda6fc9::t_d1102d7b14ff50 19-23
+  s_0af1e60eda6fc9::t_2100a36d9e6ce3 26
+  s_0af1e60eda6fc9::t_fcf750ae4ce8ab 78-89,109,113-130
+  s_0af1e60eda6fc9::t_f024178bd3c1bd 99-108
+  s_0af1e60eda6fc9::t_1caf7d1e28f6fa 3
+  s_0af1e60eda6fc9::t_39cec473960a6e 31
+golden/ModelTEFull/transient.txt
+  s_0af1e60eda6fc9::t_3839abd5689dbf 39,41,57
+sprinkler-solver.cabal
+  s_0af1e60eda6fc9::t_afdc957fad24a8 377-385
+src/Solver/SymbolicDAE.hs
+  s_0af1e60eda6fc9::t_7170897aa2b798 1092-1095,1110-1119,1125,1129,1142-1143,1154,1158
+  s_0af1e60eda6fc9::t_380ca0da72ba09 1121,1123,1127,1131-1133,1136-1141,1144-1150
+  s_0af1e60eda6fc9::t_e2a8c4b5e4d948 1313-1350,1353-1355,1359-1386,1388,1391-1400
+  s_0af1e60eda6fc9::t_9d6349bfaecaa9 75-77
+  s_0af1e60eda6fc9::t_f992a79a505d17 33
+  s_0af1e60eda6fc9::t_675caf8b5d3897 73-74
+  s_0af1e60eda6fc9::t_1760dc36fdd316 1088-1091,1096-1109,1120,1122,1124,1126,1128,1130,1134-1135,1151-1153,1155-1157
+src/Solver/IDA.hs
+  s_0af1e60eda6fc9::t_7a4ca5f80422b2 893
+  s_0af1e60eda6fc9::t_615dc7f5de3090 481-494
+  s_0af1e60eda6fc9::t_a2094793051382 731-738
+  s_0af1e60eda6fc9::t_498ee1cb6d1fe0 2
+  s_0af1e60eda6fc9::t_ce5ed1434448f7 857
+  s_0af1e60eda6fc9::t_dcc8ff4ed9ed8a 81
+  s_0af1e60eda6fc9::t_7f645e8ebbb1f2 58-60,67
+  s_0af1e60eda6fc9::t_8bd314bbf28811 448-453,456-462,468,471-475,477-479
+  s_0af1e60eda6fc9::t_5e313105b549ab 49,53-56
+  s_0af1e60eda6fc9::t_9f5bae85d2b847 309-345,360-422,424-428,430-447,454-455,463-467,469-470,476,480,495-498
+  s_0af1e60eda6fc9::t_1de08f8f41609f 833-847,850,853-854
+  s_0af1e60eda6fc9::t_b6f7dc1ec51dae 911
+  s_0af1e60eda6fc9::t_3aa9c91018c998 423,429,775,781
+  s_0af1e60eda6fc9::t_a773c954212ea0 867,869,873
+  s_0af1e60eda6fc9::t_87684c16e282e5 74
+  s_0af1e60eda6fc9::t_f9a8d35375bca6 882,884
+  s_0af1e60eda6fc9::t_3b3c848c4b8f97 346-359
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ebe0faa12f3b9a518b139ee9e6f919c5d59e51b7",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
