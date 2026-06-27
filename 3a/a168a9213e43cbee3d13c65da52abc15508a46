@@ -1,0 +1,162 @@
+golden/ModelClosedLoopEnergyCycle/selective_report.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 20
+golden/ModelMultiStageThermalTransient/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-6
+src/Transient.hs
+  s_0af1e60eda6fc9::t_9fe5eb0aab4a5f 1024
+  s_0af1e60eda6fc9::t_515d207e41faef 494
+  s_0af1e60eda6fc9::t_9b2a3eca7b0300 957
+  s_0af1e60eda6fc9::t_7f2e2f78f5a3c6 1173-1174
+  s_0af1e60eda6fc9::t_43ca8886262e42 222
+  s_0af1e60eda6fc9::t_23fa26da085c6b 1031
+  s_0af1e60eda6fc9::t_0213289b639577 177-182
+golden/ModelClosedLoopEnergyCycle/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+golden/DigitalOptionExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 5,8
+golden/ModelACConditioner/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 69-71
+golden/GasCompression/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+src/Solver/IDA.hs
+  s_0af1e60eda6fc9::t_0f9aae2fb25944 380,392
+  s_0af1e60eda6fc9::t_983e370754c017 216-220
+  s_0af1e60eda6fc9::t_d8a25f3079c7cc 381-385,391
+  s_0af1e60eda6fc9::t_f919e9b882cc32 252
+golden/ModelRotationalTranslational/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+golden/ModelTEFull/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 432,480,484-510
+golden/ModelPneumaticGasSpring/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-16
+golden/BlackScholesPutExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 6
+golden/ModelDiodeClamp/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-10
+golden/ModelFertilizerTransient/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-21,25,32
+golden/BermudanSwaptionExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 402,811,1220,1700,2098,2128,2130-2132
+golden/BlackScholesPutExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 67,149
+golden/SwaptionExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 401,426,811,852,1220,1278,1703-1704
+golden/HeatEquationExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 6-8,12,16
+golden/HelmholtzResonator/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-10
+golden/OptionVegaExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 5,7-9,14-19
+golden/DigitalOptionExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 66,148,151
+golden/ModelBouncingBall/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-16
+golden/ModelGovernorPI/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-12
+golden/VasicekSwapExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 142,146,149
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 132
+golden/BlackScholesExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 8
+golden/ModelThermostat/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-11
+golden/ModelMotorBackEMF/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+golden/OptionGreeksExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 66
+golden/FXDynamicHedgingExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 184,250
+golden/ModelRelaxationOsc/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-13
+golden/ModelThermoEngine/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-17
+golden/ModelDCMotorCTMS/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 3-6
+golden/VasicekSwapExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 5,9,12,19,22
+golden/BlackScholesExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 66,151
+golden/ModelChemicalTransient/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-7
+golden/ModelRLCTransient/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-6
+golden/ModelExcavatorArm/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-13
+golden/ModelFreewheel/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8,10
+golden/AmericanOptionExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 6-9
+golden/OptionVegaExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 66,219,378,434,436-438
+golden/BermudanSwaptionExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 3,5-7
+golden/HeatEquationExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 147-149
+golden/BermudanSwaptionExample/selective_report.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 80
+golden/ModelGovernor/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-12
+golden/ModelCombustionEngine/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-15
+golden/ModelPneumaticAccumulator/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 3-42
+golden/ModelRotationalInertia/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+golden/ModelRotationalMotor/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8
+golden/ModelSliderCrank/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-11
+golden/ModelTEFull/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 3-29,32-49,52-71
+golden/ModelOttoCycle/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-15
+golden/AmericanOptionExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 126,210-213
+golden/ModelTES/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 111-115
+golden/ModelRotationalMotorMagnetic/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-17,19
+golden/FXOptionHedgingExample/equations.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 184
+golden/PendulumTransient/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-9
+golden/SwaptionExample/selective_report.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 80
+golden/FXOptionHedgingExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 17,21
+golden/ModelMotorInertia/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-9
+golden/ModelTES/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-8,11,13
+golden/ModelNeuronSpike/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-15
+golden/ModelLiftRegen/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-18
+golden/FXDynamicHedgingExample/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 7
+golden/ModelGasPiston/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-13
+golden/ModelDCPump/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-9
+golden/ModelTEFull/selective_report.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 40,88
+golden/ForceOscillator/transient.txt
+  s_0af1e60eda6fc9::t_1fc1bdd2d38f07 4-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "3aa168a9213e43cbee3d13c65da52abc15508a46",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
