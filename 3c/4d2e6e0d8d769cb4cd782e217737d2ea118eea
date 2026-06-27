@@ -1,0 +1,20 @@
+src/Solver/SymbolicDAE.hs
+  s_0af1e60eda6fc9::t_c1330bd4fbb318 1226-1229
+  s_0af1e60eda6fc9::t_f2dec470b2bcca 1114-1116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "3c4d2e6e0d8d769cb4cd782e217737d2ea118eea",
+  "prompts": {},
+  "sessions": {
+    "s_0af1e60eda6fc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7dafc0f3-cef6-4b56-b264-fc9416657405",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
