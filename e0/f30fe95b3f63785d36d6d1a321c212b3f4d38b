@@ -1,0 +1,56 @@
+src/JIT/CopyPatch.hs
+  s_4c6b0c50988459::t_e0eb8c11d5735f 497
+  s_4c6b0c50988459::t_215f84d1768512 38
+  s_4c6b0c50988459::t_ce6f169830ef2f 356-381
+  s_4c6b0c50988459::t_ed113797ef3cf8 64-65,68
+  s_4c6b0c50988459::t_d86c9ee1b956c5 477-496
+  s_4c6b0c50988459::t_cc135ff8474c96 426,428,431,440-443,446
+  s_4c6b0c50988459::t_3ec8b0b121a001 75
+  s_4c6b0c50988459::t_f7e35f0a2f486f 450-476
+  s_4c6b0c50988459::t_13abe63c4d4e32 39
+  s_4c6b0c50988459::t_d0722e9b2f1a9f 353-355,383-401
+  s_4c6b0c50988459::t_d3f9c9e40be348 382
+  s_4c6b0c50988459::t_809da5391f9e75 74
+src/Solver/IDA.hs
+  s_4c6b0c50988459::t_dbe14263b85be5 1102-1103,1105-1126
+  s_4c6b0c50988459::t_0f4507a7f8d95b 92
+  s_4c6b0c50988459::t_b2b86561dea661 1104,1127-1129,1133
+  s_4c6b0c50988459::t_cc303ca3f6aa59 1284-1296
+  s_4c6b0c50988459::t_436edcdf36b4f6 802
+  s_4c6b0c50988459::t_a65b4908a6b451 66
+  s_4c6b0c50988459::t_4ee4026e739bb6 62
+  s_4c6b0c50988459::t_8f6c9f48718998 965-968,976,978
+  s_4c6b0c50988459::t_e210437b42cfc8 1072,1074-1076,1083-1084,1086
+  s_4c6b0c50988459::t_e28536f2ee7bcd 1073,1079-1082
+src/Transient.hs
+  s_4c6b0c50988459::t_e230a8a924f80f 1150-1153
+  s_4c6b0c50988459::t_3c6c285a222876 1175
+src/JIT/Compiler.hs
+  s_4c6b0c50988459::t_256d4248739128 65-71,82-83
+  s_4c6b0c50988459::t_0a95802687988c 212,215-216,219,231-236,243-244,246,249-250,255,271-272,274-276,278-282,284-286
+  s_4c6b0c50988459::t_953b364fefb096 56,59
+  s_4c6b0c50988459::t_e6cfb0d5f8e020 237-242,245,247-248,254,256,270,273
+  s_4c6b0c50988459::t_db0af5a8d8890e 260-269
+  s_4c6b0c50988459::t_d16f05544dae10 277,283
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "e0f30fe95b3f63785d36d6d1a321c212b3f4d38b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_4c6b0c50988459": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3659c9b-f02c-469f-a555-0280b11b5036",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
