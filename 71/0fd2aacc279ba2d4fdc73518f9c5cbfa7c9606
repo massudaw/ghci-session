@@ -1,0 +1,75 @@
+src/JIT/Stencil/ARM64.hs
+  s_4c6b0c50988459::t_fe53b9ad46ae5a 6-8,10-14,17,30,33,35,43,49-50,54,56-57,59-62,64-67,69-71,73-75,77-79,81-83,86,89,93,101,103-106,108-109,112-114,116-119,123,127-128,130-131,139-143,145-146,172-193,195-269,271-277,293-300,303
+  s_4c6b0c50988459::t_6564d619c00686 52-53
+  s_4c6b0c50988459::t_0ade2bcfdc2d43 270
+  s_4c6b0c50988459::t_fe4db4b92ecb31 283-290
+  s_4c6b0c50988459::t_6e605b76dd3205 16
+  s_4c6b0c50988459::t_1f6f2e51425729 125
+  s_4c6b0c50988459::t_32753369b8a9bd 102,107,121
+  s_4c6b0c50988459::t_a2fb7848cda191 122
+stencils/compile_stencil.sh
+  s_4c6b0c50988459::t_1bfd10df8c5a8b 3-15
+  s_4c6b0c50988459::t_18b57b528577e8 1-2
+stencils/stencil_iload.c
+  s_4c6b0c50988459::t_8e25603d0b1345 1-14
+src/JIT/Compiler.hs
+  s_4c6b0c50988459::t_808ee4eb121e4e 198-200,202-203,207-208
+  s_4c6b0c50988459::t_27ba413894040b 73
+  s_4c6b0c50988459::t_bc0fa5e320c1f9 215
+stencils/extract_text.py
+  s_4c6b0c50988459::t_47abe58358b569 1-62
+src/Examples/JITTest.hs
+  s_4c6b0c50988459::t_d020886e35c83d 133-135
+  s_4c6b0c50988459::t_29e472b29d0881 53-118
+  s_4c6b0c50988459::t_df7fd6765e6595 142
+src/JIT/CopyPatch.hs
+  s_4c6b0c50988459::t_e5957f73ff1ad6 153-154,158-160,162-169,171-180
+  s_4c6b0c50988459::t_000081c7ea82dc 36
+  s_4c6b0c50988459::t_9bf43eddc466b9 280-281,284-290,298,310
+  s_4c6b0c50988459::t_fbfed49e811960 348,364-366
+  s_4c6b0c50988459::t_fcd28c5ab5f181 58
+  s_4c6b0c50988459::t_bbf39796685934 68
+  s_4c6b0c50988459::t_510d8b29285323 353-354,359-363
+  s_4c6b0c50988459::t_60fa016beb9924 260
+  s_4c6b0c50988459::t_6d64efe01f86a4 313,316-347,349-352,355-358
+  s_4c6b0c50988459::t_280c6f644e3775 276,308
+  s_4c6b0c50988459::t_e77d16b867145a 102-104
+  s_4c6b0c50988459::t_4cba0f4db5a090 55
+  s_4c6b0c50988459::t_f3c5eb46131d9b 52
+  s_4c6b0c50988459::t_92ec1440f591a3 62
+  s_4c6b0c50988459::t_649d2305f77f62 261,269-270,274
+  s_4c6b0c50988459::t_1f4622d7f53a33 63
+  s_4c6b0c50988459::t_4dadf2446e7781 84-88
+  s_4c6b0c50988459::t_3914d41c4d709b 367-385
+  s_4c6b0c50988459::t_bcd63b9b4501f6 37
+  s_4c6b0c50988459::t_cc8eb338045945 42-43
+  s_4c6b0c50988459::t_e8618279c57283 386
+src/JIT/Stencil/X86_64.hs
+  s_4c6b0c50988459::t_88f6631444b2ab 91-98
+  s_4c6b0c50988459::t_8333596fa37249 6
+src/Transient.hs
+  h_fd5809635b36a3 222
+stencils/stencil_iload.bin
+  s_4c6b0c50988459::t_5441f9928a23eb 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "710fd2aacc279ba2d4fdc73518f9c5cbfa7c9606",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_4c6b0c50988459": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3659c9b-f02c-469f-a555-0280b11b5036",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
