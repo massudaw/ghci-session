@@ -1,0 +1,26 @@
+src/Transient.hs
+  s_87221a8b1e9b82::t_428418c8e4e716 508
+  s_87221a8b1e9b82::t_835f470c50f809 1034
+  s_87221a8b1e9b82::t_cf9446614ec506 241
+  s_87221a8b1e9b82::t_a063b9c3139e06 1185-1194,1196-1201
+  s_87221a8b1e9b82::t_ed007e84282839 1047
+  s_87221a8b1e9b82::t_5029fa61544c77 971
+  s_87221a8b1e9b82::t_0ef1e05804e29b 1195
+  s_87221a8b1e9b82::t_7db34686dbe801 147-154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ce95a35ba5cb2fa9f4c8b21fb940cd3b174fb977",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
