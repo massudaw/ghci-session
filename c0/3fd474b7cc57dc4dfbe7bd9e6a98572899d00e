@@ -1,0 +1,75 @@
+golden/BlackScholesExample/solver_audit.txt
+  s_87221a8b1e9b82::t_e9daf618e3afac 1-6
+validate_golden_tests.sh
+  s_87221a8b1e9b82::t_b5e20187713dc0 123
+  s_87221a8b1e9b82::t_2a8867c355fae8 225-228
+  s_87221a8b1e9b82::t_093f2ff016f91b 191-204
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_f87aa672b472dd 150
+golden/ModelDCMotorCTMS/solver_audit.txt
+  s_87221a8b1e9b82::t_e9daf618e3afac 1-6
+golden_extract_lib.sh
+  s_87221a8b1e9b82::t_6dfaee072360a9 153-157
+  s_87221a8b1e9b82::t_a4dac3c7af1afa 29,35-48
+  s_87221a8b1e9b82::t_ba6b1fa6f5a098 49-50
+src/Solver/SolverAudit.hs
+  s_87221a8b1e9b82::t_355a1dae77dbca 111-132
+  s_87221a8b1e9b82::t_6c4c2a7a85429c 26
+golden/ModelRelayBank/solver_audit.txt
+  s_87221a8b1e9b82::t_e9daf618e3afac 1-6
+golden/ModelRelayReactor/solver_audit.txt
+  s_87221a8b1e9b82::t_e9daf618e3afac 1-6
+src/Transient.hs
+  s_87221a8b1e9b82::t_304303308ddb35 1286-1288
+  s_87221a8b1e9b82::t_2dc70ad087fd5e 1270-1274,1282,1289-1290
+  s_87221a8b1e9b82::t_66cdac4f1d6dcd 1283-1285
+  s_87221a8b1e9b82::t_cdea8ca8beb84c 82
+golden/AmericanOptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_927137722d13fe 1-6
+golden/BermudanSwaptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_ead3bfe4929af9 1-30
+golden/HeatEquationExample/solver_audit.txt
+  s_87221a8b1e9b82::t_50671cf90b37c3 1-6
+golden/ModelClosedLoopEnergyCycle/solver_audit.txt
+  s_87221a8b1e9b82::t_93d201b55625f7 1-6
+golden/ModelHydraulicTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_5682f606159053 1-5
+golden/ModelMagneticTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_400e7da0f520c1 1-5
+golden/ModelMotorBackEMF/solver_audit.txt
+  s_87221a8b1e9b82::t_4cabd8894eb169 1-6
+golden/ModelMotorInertia/solver_audit.txt
+  s_87221a8b1e9b82::t_c080aec6bd490c 1-6
+golden/ModelPneumaticAccumulator/solver_audit.txt
+  s_87221a8b1e9b82::t_0360f2f83ce097 1-6
+golden/ModelPneumaticGasSpring/solver_audit.txt
+  s_87221a8b1e9b82::t_b284eb12ea6bed 1-6
+golden/ModelRotationalInertia/solver_audit.txt
+  s_87221a8b1e9b82::t_d99de972e0de8c 1-6
+golden/ModelRotationalMotor/solver_audit.txt
+  s_87221a8b1e9b82::t_2a0dbe16d92b23 1-6
+golden/ModelRotationalTranslational/solver_audit.txt
+  s_87221a8b1e9b82::t_8d3adba2eddc89 1-6
+golden/ModelTES/solver_audit.txt
+  s_87221a8b1e9b82::t_263d62ae298052 1-6
+golden/SwaptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_26769db52882d9 1-24
+golden/VasicekSwapExample/solver_audit.txt
+  s_87221a8b1e9b82::t_488b66b4984902 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c03fd474b7cc57dc4dfbe7bd9e6a98572899d00e",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
