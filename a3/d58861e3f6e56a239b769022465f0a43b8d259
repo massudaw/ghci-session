@@ -1,0 +1,33 @@
+docs/jit/JIT_PHASE2_STRUCTURAL.md
+  s_87221a8b1e9b82::t_c93339ef09b8ce 3-17
+docs/jit/JIT_PHASE4_COPYPATCH.md
+  s_87221a8b1e9b82::t_8852ab76ed07f8 3-33
+docs/jit/JIT_DESIGN.md
+  s_87221a8b1e9b82::t_ab4ad7715fd2d8 92-93
+  s_87221a8b1e9b82::t_7cab8df7ad0d31 190-203
+  s_87221a8b1e9b82::t_3394246cbbb899 209-213,215,217-222,224,227-232
+  s_87221a8b1e9b82::t_fd498b7eaf1cf5 3-44
+  s_87221a8b1e9b82::t_39c0badd92a88a 153-162,165-167
+  s_87221a8b1e9b82::t_e735635d7a85a2 135-137,139,141-144
+  s_87221a8b1e9b82::t_f3da66b18fbf86 168
+docs/jit/JIT_PHASE1_TAPE.md
+  s_87221a8b1e9b82::t_a72af3b8338f38 3-15
+docs/jit/JIT_PHASE3_CAS.md
+  s_87221a8b1e9b82::t_38e054e1e4d9b5 3-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "a3d58861e3f6e56a239b769022465f0a43b8d259",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
