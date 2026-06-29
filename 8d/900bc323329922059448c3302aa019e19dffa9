@@ -1,0 +1,23 @@
+golden/ModelFertilizerTransient/equations.txt
+  s_87221a8b1e9b82::t_3bd08aeed79f9d 74-93
+golden/ModelFertilizerTransient/transient.txt
+  s_87221a8b1e9b82::t_86e4fa967d0a24 4-21,25,32
+golden/PendulumTransient/transient.txt
+  s_87221a8b1e9b82::t_456472b453f181 4-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "8d900bc323329922059448c3302aa019e19dffa9",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
