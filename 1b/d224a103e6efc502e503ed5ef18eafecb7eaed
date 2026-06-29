@@ -1,0 +1,24 @@
+src/Solver/SelectivePantelides.hs
+  s_87221a8b1e9b82::t_c88b0bd8e322e3 43-45
+  s_87221a8b1e9b82::t_ea3e4c2203c329 337-411
+src/Examples/SelectivePantelidesTest.hs
+  s_87221a8b1e9b82::t_bcc436a8f63113 51,53
+  s_87221a8b1e9b82::t_b10690ec6577e7 361-410
+  s_87221a8b1e9b82::t_2dbd316281eae2 26-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1bd224a103e6efc502e503ed5ef18eafecb7eaed",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
