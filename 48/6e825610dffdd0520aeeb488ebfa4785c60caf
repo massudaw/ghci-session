@@ -1,0 +1,30 @@
+src/Examples/ModelBouncingBallDamped.hs
+  s_87221a8b1e9b82::t_1ff72c181acd95 80-83
+  s_87221a8b1e9b82::t_ac682d176474fb 1-79,85-122
+  s_87221a8b1e9b82::t_2363177c6732f0 84
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_16c1714cc780f5 71
+  s_87221a8b1e9b82::t_34d0932bc834a0 276
+example/Main.hs
+  s_87221a8b1e9b82::t_fff1d154de00aa 318
+  s_87221a8b1e9b82::t_15f7412a594361 90
+src/Model/CompliantContact.hs
+  s_87221a8b1e9b82::t_d13c5a7fb4380a 79-83
+  s_87221a8b1e9b82::t_2d14eb94b850c9 1-78,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "486e825610dffdd0520aeeb488ebfa4785c60caf",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
