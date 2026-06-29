@@ -1,0 +1,22 @@
+src/Examples/JITTest.hs
+  s_87221a8b1e9b82::t_6ce12b4e2ab02b 448
+  s_87221a8b1e9b82::t_9df58e4979af84 139
+src/JIT/CopyPatch.hs
+  s_87221a8b1e9b82::t_874838f7e5c4f2 258,263-267,269
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c6490c61860411e81686789e98deb27459170c2a",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
