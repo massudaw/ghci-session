@@ -1,0 +1,40 @@
+src/Solver/IDA.hs
+  s_87221a8b1e9b82::t_f1efe6b0e9b351 1339,1344-1347
+  s_87221a8b1e9b82::t_0702ec265def5e 1539
+  s_87221a8b1e9b82::t_adeb4dd45cd3c1 1551-1552,1562,1566
+  s_87221a8b1e9b82::t_88f1fa5ee4bfad 95
+  s_87221a8b1e9b82::t_bc6a4550c793ef 1112,1115
+  s_87221a8b1e9b82::t_d4801792f6b4fc 675
+  s_87221a8b1e9b82::t_adbe0c4823fdd7 667
+  s_87221a8b1e9b82::t_6a0873470db004 1671-1672,1683-1685
+  s_87221a8b1e9b82::t_9a5d85f4391781 1389-1394
+  s_87221a8b1e9b82::t_080ed5fcbca7c2 1681-1682,1686-1687
+  s_87221a8b1e9b82::t_f868c2af5c51b5 1340-1343,1348-1349
+src/Transient.hs
+  s_87221a8b1e9b82::t_a8ed7ed006c15c 57-58
+  s_87221a8b1e9b82::t_c6037c82cc08fe 81-82
+  s_87221a8b1e9b82::t_d98b607c3bd3a2 1171-1175
+  s_87221a8b1e9b82::t_247be2913b42fd 1261-1263,1266-1283
+  s_87221a8b1e9b82::t_301a4233802725 1214-1217
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_d98c37cfd0e27e 188
+src/Solver/SolverAudit.hs
+  s_87221a8b1e9b82::t_a5a8b41f0532a2 74-76,84-85,88-91,95-104
+  s_87221a8b1e9b82::t_95f3743cbe639b 1-73,77-83,86-87,92-94,105-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "5f41ae5a5d88c2fcabce81cea4020d478914fb4f",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
