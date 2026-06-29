@@ -1,0 +1,30 @@
+src/JIT/Engine.hs
+  s_87221a8b1e9b82::t_cd53bf6c1eae86 116-117
+src/JIT/Schedule.hs
+  s_87221a8b1e9b82::t_60908c8c7911df 124-128,132,134,139,147-148,151-152
+  s_87221a8b1e9b82::t_7018d820e47b44 39
+  s_87221a8b1e9b82::t_c73a93e6f92a02 80-81
+src/JIT/Compiler.hs
+  s_87221a8b1e9b82::t_07d4cf5d54f7eb 124
+  s_87221a8b1e9b82::t_0b4980531d0da6 146,148
+  s_87221a8b1e9b82::t_f987a93b47fa29 172-176,179
+src/Solver/IDA.hs
+  s_87221a8b1e9b82::t_030fd24f6cd32e 805-808
+  s_87221a8b1e9b82::t_5a1d47de3ac767 91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "67a1b4a307196da26f013899d73a7c1b359be946",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
