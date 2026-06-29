@@ -1,0 +1,21 @@
+src/Examples/JITTest.hs
+  s_87221a8b1e9b82::t_8587deaffabf58 494-542
+  s_87221a8b1e9b82::t_ad419ee5de1f29 16,22,27,30
+  s_87221a8b1e9b82::t_15c706057ceec7 145-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "3b2e8fe58631381bdb398e877c914ddc0e725318",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
