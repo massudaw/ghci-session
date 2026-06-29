@@ -1,0 +1,23 @@
+src/Solver/HybridDAE.hs
+  s_87221a8b1e9b82::t_dac35fe9225a27 145
+  s_87221a8b1e9b82::t_63a461505d4c70 174,178
+  s_87221a8b1e9b82::t_64e19799f0ba34 139-144,147-157
+  s_87221a8b1e9b82::t_ff30772008dd1d 25
+  s_87221a8b1e9b82::t_2996764168baf3 208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "d75d327b40f907a0d0fa93ed609e4cd24e3f15de",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
