@@ -1,0 +1,33 @@
+src/Solver/HybridDAE.hs
+  s_87221a8b1e9b82::t_811a4ed250b7b2 150-163
+  s_87221a8b1e9b82::t_1f3b9d87a363b7 25,30-31
+golden/ModelRelayBank/status.txt
+  s_87221a8b1e9b82::t_1080cd10e91035 1
+example/Main.hs
+  s_87221a8b1e9b82::t_655e854afc38d9 322
+  s_87221a8b1e9b82::t_56debf6de38b72 92
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_bd36248c75c884 103
+golden/ModelRelayBank/transient.txt
+  s_87221a8b1e9b82::t_1080cd10e91035 1-11
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_aa95ad1af415af 280
+src/Examples/ModelRelayBank.hs
+  s_87221a8b1e9b82::t_63f42a20b029e0 1-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "39f6cf52c1d320df4fc4c11bcb136408f8b02938",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
