@@ -1,0 +1,40 @@
+src/Transient.hs
+  s_87221a8b1e9b82::t_c8b348eb0cf238 77,79
+  s_87221a8b1e9b82::t_fbbea137885807 1175-1182,1184
+src/Solver/SymbolicDAE.hs
+  s_87221a8b1e9b82::t_6ceee4ad9a6de0 1625-1661
+  s_87221a8b1e9b82::t_0e67342b9b86fa 49
+src/Solver/HybridDAE.hs
+  s_87221a8b1e9b82::t_88a78c4573fa1e 23,28,34,37,39
+  s_87221a8b1e9b82::t_b1943864d5fc7b 38
+  s_87221a8b1e9b82::t_e745fca1e42739 236-269,275-281,283-310,316-318,320-325,334-335
+  s_87221a8b1e9b82::t_ad4551ff66207c 270-274,282
+  s_87221a8b1e9b82::t_b0f53c41c18950 311-315,319,326-333
+  s_87221a8b1e9b82::t_accf4aa3076662 27
+src/Solver/IDA.hs
+  s_87221a8b1e9b82::t_58cb4fd09ab77a 95
+  s_87221a8b1e9b82::t_3d52322f12db36 1458,1464-1491
+  s_87221a8b1e9b82::t_47e885a631aa70 1404,1408-1433
+  s_87221a8b1e9b82::t_7d1ffeafb9c4ec 92
+  s_87221a8b1e9b82::t_a6a5b62153080f 1508-1512
+  s_87221a8b1e9b82::t_d13584895cfa33 1339-1363,1365,1367-1369,1373-1386,1388-1403,1405-1407,1434-1457,1459-1463,1492-1507,1513-1563,1565-1572
+  s_87221a8b1e9b82::t_67c8efd71a4e98 1364,1366,1370-1372
+  s_87221a8b1e9b82::t_55cbbdc714aa07 1387
+  s_87221a8b1e9b82::t_11f17b8b1505aa 51,1564
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ae6c68be35752638ad2cc769139a1eb47ea8a22d",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
