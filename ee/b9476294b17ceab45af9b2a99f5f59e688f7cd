@@ -1,0 +1,28 @@
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_d498064227aa8a 66
+src/JIT/Sectioned.hs
+  s_87221a8b1e9b82::t_885ac06a169724 31
+  s_87221a8b1e9b82::t_5e7c8bd4191476 157-175
+golden/JITTest/status.txt
+  s_87221a8b1e9b82::t_3e3498e3d29484 1
+src/Examples/JITTest.hs
+  s_87221a8b1e9b82::t_a6cd559e0fadfc 37
+  s_87221a8b1e9b82::t_f7f36f2ad1358c 145,147
+  s_87221a8b1e9b82::t_bb8742d38b83ba 496-552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "eeb9476294b17ceab45af9b2a99f5f59e688f7cd",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
