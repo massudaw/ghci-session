@@ -1,0 +1,24 @@
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_9b193c9a3b565f 333
+src/Examples/SelectivePantelidesTest.hs
+  s_87221a8b1e9b82::t_0279bb62aed400 26,28-30
+  s_87221a8b1e9b82::t_f77faddfeeb21e 41-143,145
+  s_87221a8b1e9b82::t_eb1e77a41f1144 144
+  s_87221a8b1e9b82::t_ffdb610cc19e3a 160,162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e293fb5b277f69668703e941be056049a65807f4",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
