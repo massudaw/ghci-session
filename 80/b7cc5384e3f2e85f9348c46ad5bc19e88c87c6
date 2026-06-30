@@ -1,0 +1,35 @@
+golden/ModelPneumaticSuspension/solver_audit.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 2-4,6
+golden/ModelACConditioner/equations.txt
+  s_87221a8b1e9b82::t_dd58936a2c8728 71
+golden/ModelPneumaticSuspension/transient.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 4-18
+golden/ModelACConditioner/energy.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 9-10,13,15
+golden/ModelACConditioner/solver_audit.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 2-4,6
+src/Transient.hs
+  s_87221a8b1e9b82::t_22c7f76769189f 1308-1316,1323-1332,1334-1335
+golden/ModelACConditioner/transient.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 4-13,23,33-34,37,40,44-45,76-77,80,82
+golden/ModelBattery/transient.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 4-13
+golden/ModelBattery/solver_audit.txt
+  s_87221a8b1e9b82::t_c65a016ff2a23b 2-4,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "80b7cc5384e3f2e85f9348c46ad5bc19e88c87c6",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
