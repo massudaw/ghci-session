@@ -1,0 +1,26 @@
+src/Solver/HybridDAE.hs
+  s_87221a8b1e9b82::t_3c33e590053902 187-192,388-390,405
+  s_87221a8b1e9b82::t_ab3079fc504dc7 293-295
+  s_87221a8b1e9b82::t_caf263f26aa466 403
+  s_87221a8b1e9b82::t_b8aeead3da8654 186
+  s_87221a8b1e9b82::t_90699337d41387 64-74
+  s_87221a8b1e9b82::t_3216ed192b0e0f 333
+golden/ModelRelayReactor/transient.txt
+  s_87221a8b1e9b82::t_04b0673ca8eedd 4-13,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "48b836fca3ca4ef189c3cdd9f5bc0e2befdf1222",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
