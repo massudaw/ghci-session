@@ -1,0 +1,32 @@
+src/JIT/Sectioned.hs
+  s_87221a8b1e9b82::t_a0de5c69bd092b 56-57
+  s_87221a8b1e9b82::t_b099e143d69097 165-174,180
+  s_87221a8b1e9b82::t_645f62ebc7ea15 95-101,103-107,111,114,117-118,123-124
+  s_87221a8b1e9b82::t_81786e398538c6 2
+  s_87221a8b1e9b82::t_87a5648d1cbbfc 46
+  s_87221a8b1e9b82::t_7fdaf5e55718b6 192-193
+  s_87221a8b1e9b82::t_aae1dab4e55554 32
+src/Solver/IDA.hs
+  s_87221a8b1e9b82::t_929b007c4fc8d8 712-714,716
+  s_87221a8b1e9b82::t_29f8fcbd709c44 733-734
+  s_87221a8b1e9b82::t_7a890d413602a2 1401,1406
+  s_87221a8b1e9b82::t_1adf81daf8461e 97
+  s_87221a8b1e9b82::t_709f4ab3d52f62 1931-1938,1940
+  s_87221a8b1e9b82::t_0c360e480136c7 1892,1898
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b4a748752e7f9a4483ddeb7aa169f44f51574532",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
