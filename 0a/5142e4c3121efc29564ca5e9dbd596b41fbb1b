@@ -1,0 +1,27 @@
+golden/IDAPendulum/solver_audit.txt
+  s_87221a8b1e9b82::t_0feb3356ca0d79 1-11
+validate_golden_tests.sh
+  s_87221a8b1e9b82::t_0c66a41b11f7ba 98
+golden/IDAPendulum/transient.txt
+  s_87221a8b1e9b82::t_0feb3356ca0d79 1-12
+golden/IDAPendulum/status.txt
+  s_87221a8b1e9b82::t_0feb3356ca0d79 1
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_8ecf977723877c 71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "0a5142e4c3121efc29564ca5e9dbd596b41fbb1b",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
