@@ -1,0 +1,21 @@
+src/JIT/Stencil/ARM64.hs
+  s_194c7cc87fd00f::t_39793a6b0ebc21 189-192,194-200,202-204
+  s_194c7cc87fd00f::t_f79dfccec0fa8d 207,210-213,223-263
+  s_194c7cc87fd00f::t_32a9d16c75dccc 101,103-104,106-114,117-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "5f5026a02d4fbfb6c6c7f5187d077aed3707d9fd",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
