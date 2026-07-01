@@ -1,0 +1,27 @@
+src/Examples/ModelTEFullBench.hs
+  s_194c7cc87fd00f::t_0eb46f016babe4 1-30,34-50
+  s_194c7cc87fd00f::t_905489352a61b6 31-33
+src/Solver/IDA.hs
+  s_194c7cc87fd00f::t_7e441e76926844 715-722
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_a299743109ecd3 255
+example/Main.hs
+  s_194c7cc87fd00f::t_298946c30ddd74 136
+  s_194c7cc87fd00f::t_b1e139155e5c35 307
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "c95a8f7ef7c2cbe9b27e59b3f3f0ac3a0b92db31",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
