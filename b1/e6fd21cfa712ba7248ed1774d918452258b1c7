@@ -1,0 +1,34 @@
+golden/ModelBeamStress/solver_audit.txt
+  s_87221a8b1e9b82::t_c0769f215db658 2,6
+src/Examples/ModelLadderStress.hs
+  s_87221a8b1e9b82::t_9a697a87379efd 39-40,79-80
+src/Examples/ModelMassSpringStress.hs
+  s_87221a8b1e9b82::t_3937d4f3f04d66 37-38
+  s_87221a8b1e9b82::t_33278790e51ad3 78-79
+src/Examples/ModelBeamStress.hs
+  s_87221a8b1e9b82::t_9a697a87379efd 32-33,73-74
+golden/ModelFrameStress/solver_audit.txt
+  s_87221a8b1e9b82::t_c0769f215db658 2,6
+golden/ModelMassSpringStress/solver_audit.txt
+  s_87221a8b1e9b82::t_c0769f215db658 2,6
+src/Examples/ModelFrameStress.hs
+  s_87221a8b1e9b82::t_9a697a87379efd 37-38,83-84
+golden/ModelLadderStress/solver_audit.txt
+  s_87221a8b1e9b82::t_c0769f215db658 2,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "b1e6fd21cfa712ba7248ed1774d918452258b1c7",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
