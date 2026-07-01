@@ -1,0 +1,22 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_78a956a833f87b 345-346
+src/Solver/SymbolicDAE.hs
+  s_194c7cc87fd00f::t_96276e6ccd565f 62-64
+  s_194c7cc87fd00f::t_a2c85c6359b166 194-202,204-205,213,220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "9f367d7497800cee2b0792847a87a3cfac1de618",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
