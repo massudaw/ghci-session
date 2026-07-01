@@ -1,0 +1,35 @@
+golden/ModelACStress/transient.txt
+  s_87221a8b1e9b82::t_f71fbea32f79ce 1-9
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_a0c75c47580d62 282
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_9a880ca5e07260 106
+golden/ModelACStress/solver_audit.txt
+  s_87221a8b1e9b82::t_f71fbea32f79ce 1-6
+src/Examples/ModelACStress.hs
+  s_87221a8b1e9b82::t_f7219a2c925cc9 123
+  s_87221a8b1e9b82::t_90ce786ed3e27a 33,38
+  s_87221a8b1e9b82::t_c296edb9405d81 1-32,34-37,39-101,103-115,117-122,127,133-134,141
+  s_87221a8b1e9b82::t_d4338f4faa7cc5 102,116,124-126,128-132,135-140
+golden/ModelACStress/status.txt
+  s_87221a8b1e9b82::t_f71fbea32f79ce 1
+example/Main.hs
+  s_87221a8b1e9b82::t_70c3db6ee5c2d4 325
+  s_87221a8b1e9b82::t_aeca2d112e57a1 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "700b0249e3ecb671a9c435802a1f5aaa3376a3d4",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
