@@ -1,0 +1,48 @@
+src/Solver/HybridDAE.hs
+  s_87221a8b1e9b82::t_5df82f69553df0 189-190
+  s_87221a8b1e9b82::t_cb84dc7c11a2a4 180
+  s_87221a8b1e9b82::t_15112f73dbb4e1 146-147
+  s_87221a8b1e9b82::t_d74a34bb878796 20
+  s_87221a8b1e9b82::t_1b3decccbc7d7f 119,127-128,131-136
+  s_87221a8b1e9b82::t_2589617b528b76 266
+src/Examples/ModelBouncingBallDamped.hs
+  s_87221a8b1e9b82::t_07e9a1fc1ea42e 47,90
+src/Model/ScheduledCooler.hs
+  s_87221a8b1e9b82::t_07e9a1fc1ea42e 18
+src/Examples/HybridGroupedTest.hs
+  s_87221a8b1e9b82::t_817e25442f2e20 60-64
+  s_87221a8b1e9b82::t_d34d229089a789 3,6,12-16,26,31,44,52,56-59,66-69,71,74-75
+src/Examples/ModelRelayReactor.hs
+  s_87221a8b1e9b82::t_07e9a1fc1ea42e 10
+src/Examples/IDADAE.hs
+  s_87221a8b1e9b82::t_342524e15ac7ab 33,378,432
+  s_87221a8b1e9b82::t_f3cb17913c8859 363,368
+  s_87221a8b1e9b82::t_424cc69b030d1b 355
+src/Examples/ModelRelayBank.hs
+  s_87221a8b1e9b82::t_07e9a1fc1ea42e 20
+src/Transient.hs
+  s_87221a8b1e9b82::t_fd91bfde85ae0d 145,149-153
+  s_87221a8b1e9b82::t_64fa718920cb2a 562
+  s_87221a8b1e9b82::t_c0a0ea68bfb46e 1025
+  s_87221a8b1e9b82::t_29fc5da5e6730a 1100
+  s_87221a8b1e9b82::t_f2fe47b7609d9e 1274-1276,1283,1285-1289,1294
+  s_87221a8b1e9b82::t_11d3ec91e13747 1396-1398,1405
+  s_87221a8b1e9b82::t_f6182ef3260e75 80
+  s_87221a8b1e9b82::t_fd635309c9931b 1232
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "16140910bb4569336cc8761a77f9a678ae066409",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
