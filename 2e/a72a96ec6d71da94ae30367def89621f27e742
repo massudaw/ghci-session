@@ -1,0 +1,33 @@
+golden/ModelDCPump/equations.txt
+  s_87221a8b1e9b82::t_70c2d02c99efeb 12-13,41,71
+src/Solver/SymbolicDAE.hs
+  s_87221a8b1e9b82::t_0823b09d932dbd 182-190
+golden/ModelBouncingBall/equations.txt
+  s_87221a8b1e9b82::t_59edf319b2a018 15-18
+golden/ModelDCPump/selective_report.txt
+  s_87221a8b1e9b82::t_70c2d02c99efeb 11
+golden/ModelHydraulicAirDuct/equations.txt
+  s_87221a8b1e9b82::t_696721139274f3 2-3
+golden/ModelHydraulicTransient/equations.txt
+  s_87221a8b1e9b82::t_27c51bc40cab8a 4
+golden/ModelSimple/equations.txt
+  s_87221a8b1e9b82::t_1c172351fdc385 11-12,15
+golden/ModelSimple2/equations.txt
+  s_87221a8b1e9b82::t_eb55c2068035f6 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "2ea72a96ec6d71da94ae30367def89621f27e742",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
