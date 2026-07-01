@@ -1,0 +1,153 @@
+golden/ModelThermoEngine/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 7,15-16
+golden/ModelTEFull/selective_report.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 40-44
+golden/IDAPendulum/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelBattery/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/OptionGreeksExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelGovernorPI/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelChemicalTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelRotationalInertia/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelPneumaticAccumulator/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/PendulumTransient/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 4-9
+golden/ModelOttoCycle/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 6
+golden/ModelLiftRegen/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 6-13,15-18
+golden/ModelMotorBackEMF/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 7
+golden/ModelThermoEngine/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/HeatEquationExample/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 6-8
+golden/ModelMotorBackEMF/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelMultiStageThermalTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelNeuronSpike/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ForceOscillator/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/OptionVegaExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelRLCTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelGasPiston/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/GasChamberHeating/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/PendulumTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/AmericanOptionExample/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 6-9
+golden/ModelPneumaticSuspension/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 8,10,13,17
+golden/ModelGovernor/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+src/Transient.hs
+  s_87221a8b1e9b82::t_8957e4c46b8be1 244
+golden/ModelMotorInertia/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelPneumaticGasSpring/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/FXDynamicHedgingExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/BlackScholesPutExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/HeatEquationExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelRotationalMotorMagnetic/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelDCPump/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelRotationalTranslational/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 6-7
+golden/ModelTEFull/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelTEFull/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 14,57
+golden/ModelFertilizerTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelACConditioner/equations.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 69
+golden/ModelPneumaticSuspension/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelLiftRegen/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelSliderCrank/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/BlackScholesExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelSliderCrank/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 8-11
+golden/SwaptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/HelmholtzResonator/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/GasCompression/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelCombustionEngine/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelTEFull/equations.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 432-436
+golden/ModelRotationalTranslational/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/AmericanOptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/FXOptionHedgingExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelACConditioner/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelDCPump/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 10
+golden/ModelExcavatorArm/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 14
+golden/ModelCombustionEngine/transient.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 9-15
+golden/ModelMagneticTransient/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,5-6
+golden/ModelOttoCycle/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/VasicekSwapExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/BermudanSwaptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelClosedLoopEnergyCycle/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelExcavatorArm/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelRotationalMotor/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/DigitalOptionExample/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelThermostat/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelTES/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+golden/ModelDCMotorCTMS/solver_audit.txt
+  s_87221a8b1e9b82::t_8268f776a2a430 2,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "e5490a62431a714bdefe1e6ef855a2915f90bfc0",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
