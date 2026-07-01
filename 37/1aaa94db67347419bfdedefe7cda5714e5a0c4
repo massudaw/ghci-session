@@ -1,0 +1,21 @@
+validate_golden_tests.sh
+  s_87221a8b1e9b82::t_93169b41571658 114-119
+  s_87221a8b1e9b82::t_682086e1cf81c7 127
+  s_87221a8b1e9b82::t_2d2936f006b220 208-215
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "371aaa94db67347419bfdedefe7cda5714e5a0c4",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
