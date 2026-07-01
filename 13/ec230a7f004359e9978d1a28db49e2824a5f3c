@@ -1,0 +1,20 @@
+src/Solver/SelectivePantelides.hs
+  s_ebe551e8aa9b77::t_a8ae35fc63f1ab 60,62
+  s_ebe551e8aa9b77::t_ecf5826badda3d 371,376-385,389-434
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "13ec230a7f004359e9978d1a28db49e2824a5f3c",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
