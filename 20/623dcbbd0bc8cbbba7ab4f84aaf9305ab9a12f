@@ -1,17 +1,33 @@
 src/Domains.hs
-  s_8194a7ba457148::t_bb85ae5003d466 3
+  s_87221a8b1e9b82::t_a7c610c38f5436 3,149-178
+src/Examples/ModelMotorBackEMF.hs
+  s_c8b9499502bf20::t_b2344f60f9d7dd 30,45,76-83,90,93,96,135-137,142-149,152-154,164-166,170-171
+src/Force.hs
+  s_87221a8b1e9b82::t_6fd3b57c7c2c72 204-206
+src/Model.hs
+  s_87221a8b1e9b82::t_9305d0ff80e007 48,305-320,332-333,344,369,380-396,504-512
+src/Transient.hs
+  s_87221a8b1e9b82::t_6c2474cdfcaf5e 17-19,26,28-32,137-238
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.2",
+  "git_ai_version": "1.6.5",
   "base_commit_sha": "20623dcbbd0bc8cbbba7ab4f84aaf9305ab9a12f",
   "prompts": {},
   "sessions": {
-    "s_8194a7ba457148": {
+    "s_87221a8b1e9b82": {
       "agent_id": {
         "tool": "claude",
-        "id": "5df231c3-b63a-4aec-b0cf-ae93558a09a2",
-        "model": "claude-opus-4-8"
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_c8b9499502bf20": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "36fe05ee-58a8-4553-8586-717f7a98bad4",
+        "model": "unknown"
       },
       "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
     }
