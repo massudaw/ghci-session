@@ -1,0 +1,21 @@
+src/Hydraulic.hs
+  s_87221a8b1e9b82::t_9de5350a962f53 229-235
+golden/ModelHydraulicTransient/equations.txt
+  s_87221a8b1e9b82::t_44ba588be7465d 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "d4dac6180ca945d6f60f78fa2b8a7f44d6d79eff",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
