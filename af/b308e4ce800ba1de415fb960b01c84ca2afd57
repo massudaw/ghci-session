@@ -1,0 +1,35 @@
+example/Main.hs
+  s_87221a8b1e9b82::t_86a47a16916cee 97,333
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_86a47a16916cee 287
+src/Examples/ModelLadderStress.hs
+  s_87221a8b1e9b82::t_95244d2e85732a 1-104
+golden/ModelLadderStress/equations.txt
+  s_87221a8b1e9b82::t_b0af703e623472 1-56
+golden/ModelLadderStress/selective_report.txt
+  s_87221a8b1e9b82::t_bebb52fda3d194 1-20
+golden/ModelLadderStress/solver_audit.txt
+  s_87221a8b1e9b82::t_e2d9e4315a805a 1-6
+golden/ModelLadderStress/status.txt
+  s_87221a8b1e9b82::t_9add5d1b0b80c2 1
+golden/ModelLadderStress/transient.txt
+  s_87221a8b1e9b82::t_d29dddddb82828 1-9
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_575be5088b576b 110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "afb308e4ce800ba1de415fb960b01c84ca2afd57",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
