@@ -1,0 +1,24 @@
+src/JIT/CopyPatch.hs
+  s_ebe551e8aa9b77::t_5fb24502680a1a 70
+  s_ebe551e8aa9b77::t_ebb879189d524f 454-522,531,533
+  s_ebe551e8aa9b77::t_62ddeddfe8b0f7 61
+  s_ebe551e8aa9b77::t_e97b4781635440 603,605
+  s_ebe551e8aa9b77::t_9dc6812cf608d7 561,566,570-573
+  s_ebe551e8aa9b77::t_daabc8c3b9239a 72,74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "90e46b80f4b6bf97537c1ee93a15e3d2c0fb9ee4",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
