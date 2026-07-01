@@ -1,0 +1,31 @@
+golden/ModelThermalPlateStress/status.txt
+  s_87221a8b1e9b82::t_8f88f0a286f3f4 1
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_4b1c614a183ff0 283
+example/Main.hs
+  s_87221a8b1e9b82::t_4b1c614a183ff0 94,327
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_fecacaa1b4869c 107
+src/Examples/ModelThermalPlateStress.hs
+  s_87221a8b1e9b82::t_7a9a73b1cc3c90 1-139
+golden/ModelThermalPlateStress/solver_audit.txt
+  s_87221a8b1e9b82::t_8f88f0a286f3f4 1-6
+golden/ModelThermalPlateStress/transient.txt
+  s_87221a8b1e9b82::t_8f88f0a286f3f4 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "fa37127f08a4b34fc668048824b6a2bfb44763a6",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
