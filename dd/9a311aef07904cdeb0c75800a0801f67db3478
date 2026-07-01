@@ -1,0 +1,37 @@
+src/JIT/Stencil/ARM64.hs
+  s_194c7cc87fd00f::t_8dc57e56539b3d 277-282
+  s_194c7cc87fd00f::t_2fb2b4542bf5b4 59-65,69-72
+  s_194c7cc87fd00f::t_6146e3eeddc4a7 235
+  s_194c7cc87fd00f::t_6b16a3d5c1a302 302-304
+  s_194c7cc87fd00f::t_b21a3179dea2ef 73
+src/JIT/CopyPatch.hs
+  s_194c7cc87fd00f::t_065668eafdfa6d 268-269
+  s_194c7cc87fd00f::t_1a21f82b3baaa3 386-389
+src/JIT/Tape.hs
+  s_194c7cc87fd00f::t_907e6e095b90a3 522-523
+  s_194c7cc87fd00f::t_1b83d7da1da463 205-206
+  s_194c7cc87fd00f::t_d3b4e295780e2a 120-124
+  s_194c7cc87fd00f::t_8f0f2727a38115 172
+  s_194c7cc87fd00f::t_ba19e81e6d13c4 243-245,247-255,262-264,266-273,276-284,286,288,290,292
+src/JIT/Stencil/X86_64.hs
+  s_194c7cc87fd00f::t_62453b13ca8add 91-93,100-112
+  s_194c7cc87fd00f::t_c55cf6ab325f62 131
+  s_194c7cc87fd00f::t_a6f4d4cf0650ac 113-114
+  s_194c7cc87fd00f::t_7dc9c0235cd87b 121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "dd9a311aef07904cdeb0c75800a0801f67db3478",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
