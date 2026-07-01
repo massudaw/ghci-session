@@ -1,0 +1,23 @@
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_d10039ac5ae526 289
+example/Main.hs
+  s_87221a8b1e9b82::t_d10039ac5ae526 99,337
+src/Examples/ModelFrameStress.hs
+  s_87221a8b1e9b82::t_28e7890d4b0627 1-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "47375299f1f95fe81fb1395c81a3b3b5aa6c4e8b",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
