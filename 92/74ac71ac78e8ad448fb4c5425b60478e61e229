@@ -1,0 +1,35 @@
+src/Examples/ModelBeamStress.hs
+  s_87221a8b1e9b82::t_6977a0a5937db6 1-101
+example/Main.hs
+  s_87221a8b1e9b82::t_f6868745274d3a 98,335
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_f6868745274d3a 288
+golden/ModelBeamStress/equations.txt
+  s_87221a8b1e9b82::t_1ed47bf7b77cc4 1-81
+golden/ModelBeamStress/selective_report.txt
+  s_87221a8b1e9b82::t_2040bd25295d67 1-20
+golden/ModelBeamStress/solver_audit.txt
+  s_87221a8b1e9b82::t_6c7119925a03f5 1-6
+golden/ModelBeamStress/status.txt
+  s_87221a8b1e9b82::t_7bbf23f93e03f2 1
+golden/ModelBeamStress/transient.txt
+  s_87221a8b1e9b82::t_724a25204bae5a 1-8
+run_golden_tests.sh
+  s_87221a8b1e9b82::t_d2e9b93a3384ec 111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "9274ac71ac78e8ad448fb4c5425b60478e61e229",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
