@@ -1,0 +1,20 @@
+src/Examples/ModelFrameStress.hs
+  s_87221a8b1e9b82::t_4642039b021618 89
+  s_87221a8b1e9b82::t_694fc128f34d59 106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "84490772a18e65259d1c8ca5709d9b88c5c9e5fc",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
