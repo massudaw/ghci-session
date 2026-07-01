@@ -1,0 +1,28 @@
+sprinkler-solver.cabal
+  s_87221a8b1e9b82::t_9a041e3bd0bfdb 70
+src/Examples/ModelContactArrayStress.hs
+  s_87221a8b1e9b82::t_ef1fb46e644de4 1-4,6-7,9-10,12-19,21-24,26-27,30-32,36,38,40-48,50,52-76,80-91,93-94,96-102,104-105,107-109,111-116,118-122
+golden/ModelContactArrayStress/transient.txt
+  s_87221a8b1e9b82::t_94c7985cbb8ed1 1-19
+golden/ModelContactArrayStress/solver_audit.txt
+  s_87221a8b1e9b82::t_94c7985cbb8ed1 1-6
+src/Model/LockClutchCoupling.hs
+  s_87221a8b1e9b82::t_405bfa61b3393f 41
+  s_87221a8b1e9b82::t_324aaf15fb0a34 1-40,42-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "c272cf86d05173dfe46336249073531bc8a36b43",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
