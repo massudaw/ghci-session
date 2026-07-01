@@ -1,0 +1,25 @@
+golden/ModelTEFull/selective_report.txt
+  s_87221a8b1e9b82::t_cc2f6b190d2fdf 40
+golden_extract_lib.sh
+  s_87221a8b1e9b82::t_763b89d23bb840 127-132
+golden/ModelTEFull/equations.txt
+  s_87221a8b1e9b82::t_cc2f6b190d2fdf 434-435
+validate_golden_tests.sh
+  s_87221a8b1e9b82::t_4644be4673ce32 98-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "dab89b35f45c85442700ef10e4c6adcb9c151175",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
