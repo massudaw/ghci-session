@@ -1,0 +1,68 @@
+src/Force.hs
+  s_87221a8b1e9b82::t_8550736aa0189e 134,202
+  s_87221a8b1e9b82::t_89a6ab561cf5f2 86-97
+  s_87221a8b1e9b82::t_b05ae197122356 255
+  s_87221a8b1e9b82::t_8227f1ad7d9601 275
+  s_87221a8b1e9b82::t_de777732c58860 99-105,116
+  s_87221a8b1e9b82::t_26750b7c731f7a 203-216
+  s_87221a8b1e9b82::t_7c2a5d9f08a640 249
+  s_87221a8b1e9b82::t_c0b9b93cabe49a 536-537,545-554,556-559,561
+  s_87221a8b1e9b82::t_0e87d3459223f4 98
+  s_87221a8b1e9b82::t_17723a24a905d8 250
+golden/ModelRocketLiftoff/equations.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 8,43,46,50,54-56,62,73,108,111,115,119-121,127
+golden/ModelRocketLiftoff/transient.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 63-70,73,90-93
+golden/ModelExcavatorArm/solver_audit.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 4
+golden/ModelLiftRegen/transient.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 16-18
+golden/ModelRocketLiftoff/selective_report.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 2,6,10-12,18,22,26,30-32,38
+golden/ModelLiftRegen/equations.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 32,68,71,75,79-81,87
+golden/ModelRocketLiftoff/solver_audit.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 4
+golden/ModelRocketLiftoff/energy.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 13-16
+golden/ModelExcavatorArm/equations.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 9,33-35,37,41,45-47,53
+golden/ModelBeamContactStress/transient.txt
+  s_87221a8b1e9b82::t_70155d425aa1e2 4-9
+golden/ModelBeamContactStress/solver_audit.txt
+  s_87221a8b1e9b82::t_70155d425aa1e2 3
+golden/ModelLiftRegen/selective_report.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 2,6,10-12,18
+golden/ModelLiftRegen/solver_audit.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 4
+golden/ModelExcavatorArm/selective_report.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 2,6,10-12,18
+golden/ModelFrictionSlide/solver_audit.txt
+  s_87221a8b1e9b82::t_70155d425aa1e2 4
+golden/ModelExcavatorArm/transient.txt
+  s_87221a8b1e9b82::t_7f2e9e9c246834 4-13
+golden/ModelFrictionSlide/transient.txt
+  s_87221a8b1e9b82::t_70155d425aa1e2 4-9
+src/Examples/ModelBeamContactStress.hs
+  s_87221a8b1e9b82::t_7f2e9e9c246834 52
+  s_87221a8b1e9b82::t_1eddc118e0e4f3 5-6,8-14,16-17
+  s_87221a8b1e9b82::t_65e36eb2693e5e 67,76,109
+  s_87221a8b1e9b82::t_b57775b8402270 96-102
+  s_87221a8b1e9b82::t_91f4fdd84dd53c 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.5",
+  "base_commit_sha": "1156bb26c623f0eba62bf1993cac9686f101a228",
+  "prompts": {},
+  "sessions": {
+    "s_87221a8b1e9b82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b83b7325-c819-4af8-8fe0-904dcddd3c89",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
