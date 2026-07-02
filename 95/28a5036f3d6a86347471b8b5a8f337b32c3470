@@ -1,0 +1,30 @@
+src/Examples/ModelSupervisedCooling.hs
+  s_ebe551e8aa9b77::t_6d4d67bad8b86b 88
+src/Solver/Temporal.hs
+  s_ebe551e8aa9b77::t_1b4b322e0d1047 51,53-55,58,393-394
+  s_ebe551e8aa9b77::t_76433352299c4f 45,210-212,361-378,382,384-392
+src/Solver/Kron.hs
+  s_ebe551e8aa9b77::t_1b4b322e0d1047 19
+src/Transient.hs
+  s_ebe551e8aa9b77::t_6d4d67bad8b86b 84,1164-1169,1188-1194
+golden/ModelSupervisedCooling/selective_report.txt
+  s_ebe551e8aa9b77::t_bf43513265d3eb 1-20
+golden/ModelSupervisedCooling/equations.txt
+  s_ebe551e8aa9b77::t_bf43513265d3eb 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "9528a5036f3d6a86347471b8b5a8f337b32c3470",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
