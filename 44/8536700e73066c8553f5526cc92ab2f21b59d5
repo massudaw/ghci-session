@@ -1,0 +1,30 @@
+src/Solver/HybridDAE.hs
+  s_194c7cc87fd00f::t_3e640ee8acc56e 174,182-185,191,223,280,287-288,290
+example/Main.hs
+  s_194c7cc87fd00f::t_c194db884dfa48 122,240,378
+src/Examples/FireSprinklerGridExample.hs
+  s_194c7cc87fd00f::t_55ca376384c70b 1-32,34-39,41-199,210-262
+  s_194c7cc87fd00f::t_3e60abfdd400d0 33,40,200-209
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_c194db884dfa48 323
+golden/FireSprinklerGridExample/status.txt
+  s_194c7cc87fd00f::t_7be24290a92a97 1
+run_golden_tests.sh
+  s_194c7cc87fd00f::t_dcf721370c6caf 136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "448536700e73066c8553f5526cc92ab2f21b59d5",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
