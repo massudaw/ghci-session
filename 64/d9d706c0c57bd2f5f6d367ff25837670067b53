@@ -1,0 +1,26 @@
+src/Transient.hs
+  s_ebe551e8aa9b77::t_0ee788d6dd77be 84,1028
+src/Solver/Temporal.hs
+  s_ebe551e8aa9b77::t_164d626fbe47e7 40-41,47,121,124-152,219-229,232,236,410
+  s_ebe551e8aa9b77::t_0ee788d6dd77be 74,259-267,369-371,376-379,444-500,504-505
+src/Examples/TemporalControlTest.hs
+  s_ebe551e8aa9b77::t_0289b1f3bbbbd0 124
+  s_ebe551e8aa9b77::t_0ee788d6dd77be 109-110,112-114,122-123,125,127
+  s_ebe551e8aa9b77::t_7c591c09cbf619 111,115-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "64d9d706c0c57bd2f5f6d367ff25837670067b53",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
