@@ -1,0 +1,36 @@
+src/Project.hs
+  s_194c7cc87fd00f::t_e79a5af6052d43 533-554,560-563,565-566,568-569,571-572,575-577,586-591
+src/Examples/BlackScholesSupport.hs
+  s_194c7cc87fd00f::t_e79a5af6052d43 18,36-38,112-137
+  s_194c7cc87fd00f::t_a2e56c9d05e6b3 138
+src/Examples/FXAccumulatorExample.hs
+  s_194c7cc87fd00f::t_9fbf66136befd6 32-34,101-102,104,110,148
+  s_194c7cc87fd00f::t_ca97544ae09092 69
+  s_194c7cc87fd00f::t_cf2ec337f230e6 1-31,35-68,70-100,103,105-109,111-147,149-153
+example/Main.hs
+  s_194c7cc87fd00f::t_85657f161f5377 120,236,372
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_9a1ed808cc0437 321
+golden/FXAccumulatorExample/solver_audit.txt
+  s_194c7cc87fd00f::t_270afedae49cc9 1-6
+golden/FXAccumulatorExample/status.txt
+  s_194c7cc87fd00f::t_84668d251e1445 1
+run_golden_tests.sh
+  s_194c7cc87fd00f::t_74a6cc796b69fb 134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "3dc9699c593057b147c5c70a1aad2b2e1305c45a",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
