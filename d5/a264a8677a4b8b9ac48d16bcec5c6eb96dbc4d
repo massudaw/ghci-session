@@ -1,0 +1,26 @@
+src/Transient.hs
+  s_ebe551e8aa9b77::t_9982de4114f62e 1114-1122,1132
+validate_jit_parity.sh
+  s_ebe551e8aa9b77::t_f2c617336ff44b 1-9,11-12,17-19,21-23
+  s_ebe551e8aa9b77::t_6858c06476febd 10,13-16,20
+validate_golden_tests.sh
+  s_ebe551e8aa9b77::t_6858c06476febd 164-169
+.github/workflows/ci.yaml
+  s_ebe551e8aa9b77::t_91769ccba2372f 130-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d5a264a8677a4b8b9ac48d16bcec5c6eb96dbc4d",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
