@@ -1,0 +1,80 @@
+src/Examples/ModelSaoJorge.hs
+  s_ebe551e8aa9b77::t_fe2ddd24b8666c 25
+src/Solver/SymbolicDAE.hs
+  s_ebe551e8aa9b77::t_f01ab96dbd80c0 22,118,189,343-346,421
+  s_ebe551e8aa9b77::t_179c0edf9b332e 452,510,558,610,983,1066,1111,1177,1206,1240,1334,1421-1422,1445,1506,1547,1589,1606,1610,1658,1725,1757,1806,1949-1955,2547,2586,2618
+src/JIT/Tape.hs
+  s_ebe551e8aa9b77::t_527bac51f71030 69,118,171,204,416,520
+src/Solver/SelectivePantelides.hs
+  s_ebe551e8aa9b77::t_94a5ed8d58045b 179,237,339,454
+src/Project.hs
+  s_ebe551e8aa9b77::t_8b98f4bfe11bc5 49
+  s_ebe551e8aa9b77::t_8f99b00aa4f3f3 50
+  s_ebe551e8aa9b77::t_dab512d9609294 5
+  s_ebe551e8aa9b77::t_06f73ccd4312f4 51-52
+  s_ebe551e8aa9b77::t_f17d2f44f1b2f2 600
+  s_ebe551e8aa9b77::t_294c647d89de48 48,55-56,563-599,607-608,610-627
+  s_ebe551e8aa9b77::t_763a8d95368d7a 53
+  s_ebe551e8aa9b77::t_fbc91a3e51b1b9 54,601-605
+  s_ebe551e8aa9b77::t_4c0db336a19484 609
+  s_ebe551e8aa9b77::t_fea587f26ac010 606,628
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_fdfb815f98faf4 55
+  s_ebe551e8aa9b77::t_5eb64edf68ff84 48-54
+  s_ebe551e8aa9b77::t_1949afd25997f6 1175-1180
+src/JIT/jit_math.c
+  s_ebe551e8aa9b77::t_527bac51f71030 21
+src/JIT/Stencil/X86_64.hs
+  s_ebe551e8aa9b77::t_527bac51f71030 89-90,133,142
+  s_ebe551e8aa9b77::t_6ac719fea3eae1 45
+src/JIT/Stencil/ARM64.hs
+  s_ebe551e8aa9b77::t_527bac51f71030 208,247,278,333
+src/Solver/Kron.hs
+  s_ebe551e8aa9b77::t_527bac51f71030 33,74,100
+src/JIT/jit_trampoline.c
+  s_ebe551e8aa9b77::t_4d2321878389bf 291-314,316,330-365
+  s_ebe551e8aa9b77::t_8940438546553d 28,315,317-319,329
+  s_ebe551e8aa9b77::t_2310db86f9b78b 320-328
+sprinkler-solver.cabal
+  s_ebe551e8aa9b77::t_603e2247e0c71a 189
+  s_ebe551e8aa9b77::t_32d33150150d57 383,389
+src/JIT/CAS.hs
+  s_ebe551e8aa9b77::t_527bac51f71030 32,77,153
+src/JIT/CopyPatch.hs
+  s_ebe551e8aa9b77::t_8163712ac587e3 80,421
+  s_ebe551e8aa9b77::t_527bac51f71030 267,384
+src/Solver/KINSOL.hs
+  s_ebe551e8aa9b77::t_4c0db336a19484 76,136-137
+  s_ebe551e8aa9b77::t_86b6f9d66f9fb7 52
+  s_ebe551e8aa9b77::t_fdfb815f98faf4 1-51,53-75,77-135
+golden/ModelACConditioner/equations.txt
+  s_ebe551e8aa9b77::t_fdf7f673786e3b 59,126,140
+golden/ModelFertilizerThermal/equations.txt
+  s_ebe551e8aa9b77::t_bfc066457f6e14 120-121,126-127
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_ebe551e8aa9b77::t_8acfb02ea2bfc2 2-6
+golden/ModelHydraulicTransient/equations.txt
+  s_ebe551e8aa9b77::t_1181119d37df2e 2-4,15-17,28-30
+golden/ModelSaoJorge/equations.txt
+  s_ebe551e8aa9b77::t_16cc1ff28bee18 2-6,18-21,33-36,48-51,63-66,78-81,93-96,108-111,123-126,138-141,153-156,168-171,183-186,198-201,213-216,228-231,243-246,258-261,273-276,288-291,303-306,318-321,333-336,348-351,363-366,378-381,393-406
+golden/ModelSimple/equations.txt
+  s_ebe551e8aa9b77::t_3ca3c7486b8396 2-15
+golden/ModelSimple2/equations.txt
+  s_ebe551e8aa9b77::t_ad6b34fe153e89 2-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "16c2e68eddb228eb0bb8ee0120786d7deb9e2cf1",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
