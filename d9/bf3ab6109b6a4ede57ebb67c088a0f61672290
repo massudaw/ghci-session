@@ -1,0 +1,36 @@
+src/Thermal.hs
+  s_194c7cc87fd00f::t_7a2fa7c4726a6f 113-120,370,398-399
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_e84e1f4cef44ea 88,103,109,111,125-126,250-269
+  s_194c7cc87fd00f::t_aae112f7f4015d 110
+  s_194c7cc87fd00f::t_66ecf17f7fa080 102
+src/Backend/CSG.hs
+  s_194c7cc87fd00f::t_0086946f765edf 165-170
+src/Hydraulic/Element.hs
+  s_194c7cc87fd00f::t_d4586071e68e05 254-260,266
+golden/ModelFireSprinkler/solver_audit.txt
+  s_194c7cc87fd00f::t_0a418102a2ad87 4,6
+src/Model/FireSprinklerCoupling.hs
+  s_194c7cc87fd00f::t_e1b87ca06460e1 12-14,16-17,19-24,26-28,30-33,53-58,67,75-85,88-109,129-140
+src/Hydraulic.hs
+  s_194c7cc87fd00f::t_a5eeb195b4393d 244-250,262
+src/Backend/Mecha.hs
+  s_194c7cc87fd00f::t_1032734b306a6d 138-140
+  s_194c7cc87fd00f::t_395bc39541ce9b 89-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d9bf3ab6109b6a4ede57ebb67c088a0f61672290",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
