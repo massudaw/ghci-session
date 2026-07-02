@@ -1,0 +1,40 @@
+src/Backend/ModelMecha.hs
+  s_194c7cc87fd00f::t_4686f366329486 29,34-36,40-41,46-47,55-60,69-74,84-89
+src/Position.hs
+  s_194c7cc87fd00f::t_ed322d8e8b3d88 325-327,329
+  s_194c7cc87fd00f::t_862c0254fff983 323
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_d3d8eee8dcf70a 318-322,328-329,341-342
+  s_194c7cc87fd00f::t_b3cb84f3cf51c1 51,301-308
+src/NDomain.hs
+  s_194c7cc87fd00f::t_5a4a22c179422f 59-65
+src/Backend/Mecha.hs
+  s_194c7cc87fd00f::t_9d7bab683be816 104-110,150-153
+  s_194c7cc87fd00f::t_c91002a6014e68 27
+  s_194c7cc87fd00f::t_aebe67d69dbb12 16
+src/Backend/CSG.hs
+  s_194c7cc87fd00f::t_aebe67d69dbb12 24
+  s_194c7cc87fd00f::t_c91002a6014e68 170-172
+  s_194c7cc87fd00f::t_4686f366329486 291-297
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "282f0c3cc2a5a53b378745bf75db57f48de98de4",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
