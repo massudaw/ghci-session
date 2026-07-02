@@ -1,0 +1,30 @@
+src/JIT/Sectioned.hs
+  s_194c7cc87fd00f::t_622b37297b8584 183-184
+  s_194c7cc87fd00f::t_405977f32724b9 181
+  s_194c7cc87fd00f::t_23fde2e253c90c 185,187-188,192-194
+  s_194c7cc87fd00f::t_4a1ffd9d0dd72d 191
+  s_194c7cc87fd00f::t_e3c792b81f3e64 186,189-190,195
+  s_194c7cc87fd00f::t_896ecee40eb94d 40-41
+src/Examples/JITStencilBench.hs
+  s_194c7cc87fd00f::t_9b2688042d268d 127
+src/JIT/Tape.hs
+  s_194c7cc87fd00f::t_033e64669f1936 70-71
+  s_194c7cc87fd00f::t_9fa1d5dc8f6b04 61-63
+  s_194c7cc87fd00f::t_2fca9cfa909565 428-547
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "2b96b31c9dda4ddc41926990a6ecc33a951536b4",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
