@@ -1,0 +1,22 @@
+src/Solver/Kron.hs
+  s_ebe551e8aa9b77::t_6b9bdf0eeb0f12 27,30-34,197-203,210,212-252,254-289
+  s_ebe551e8aa9b77::t_74f9482adc2424 39
+src/Transient.hs
+  s_ebe551e8aa9b77::t_6b9bdf0eeb0f12 1188-1191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "1d339b32019a62698d8fde88a7481b4ea28fcfe7",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
