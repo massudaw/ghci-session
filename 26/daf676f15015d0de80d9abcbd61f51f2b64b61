@@ -1,0 +1,24 @@
+src/Model.hs
+  s_ebe551e8aa9b77::t_7147aec7b74fde 395-416,418,426,453-454
+src/Model/BounceCoupling.hs
+  s_ebe551e8aa9b77::t_7147aec7b74fde 91-95,99,101
+src/Domains.hs
+  s_ebe551e8aa9b77::t_4a8feaba38b8c8 22,172-179
+  s_ebe551e8aa9b77::t_28450be4aca9a4 180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "26daf676f15015d0de80d9abcbd61f51f2b64b61",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
