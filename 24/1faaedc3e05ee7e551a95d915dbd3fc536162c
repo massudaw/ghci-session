@@ -1,0 +1,21 @@
+src/Solver/Temporal.hs
+  s_ebe551e8aa9b77::t_54664171006880 361-372,378-381,384,387-388
+golden/ModelSupervisedCooling/equations.txt
+  s_ebe551e8aa9b77::t_2718b41404bef1 14-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "241faaedc3e05ee7e551a95d915dbd3fc536162c",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
