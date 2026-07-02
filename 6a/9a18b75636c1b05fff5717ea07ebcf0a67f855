@@ -1,0 +1,33 @@
+src/Transient.hs
+  s_ebe551e8aa9b77::t_9ca461fc079cca 775
+src/Examples/ModelSaoJorge.hs
+  s_ebe551e8aa9b77::t_66239f09780661 26,162
+  s_ebe551e8aa9b77::t_f7057e5b6e5930 25
+src/Solver/Sparse.hs
+  s_ebe551e8aa9b77::t_5d73462c0bca4c 93-99,103,367-371,373-374,376-388
+  s_ebe551e8aa9b77::t_1a560decf42be2 533
+  s_ebe551e8aa9b77::t_1b8dcda550ef31 42,534-548,562
+src/Project.hs
+  s_ebe551e8aa9b77::t_20eabd19a03a5d 6
+  s_ebe551e8aa9b77::t_1a560decf42be2 46,553-560,562-572,575-576,586-591
+  s_ebe551e8aa9b77::t_e2348a612819e1 561
+  s_ebe551e8aa9b77::t_f7057e5b6e5930 573-574
+  s_ebe551e8aa9b77::t_3daae55851efa1 577-585
+  s_ebe551e8aa9b77::t_202c74d589a3d2 592
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "6a9a18b75636c1b05fff5717ea07ebcf0a67f855",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
