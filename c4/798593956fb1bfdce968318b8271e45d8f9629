@@ -1,0 +1,34 @@
+src/Examples/TemporalControlTest.hs
+  s_ebe551e8aa9b77::t_d455d10500da38 99-100,103-104
+  s_ebe551e8aa9b77::t_2af079f6c713dc 1-98,101-102,105-112
+src/Solver/SelectivePantelides.hs
+  s_ebe551e8aa9b77::t_174e56ee6d10a9 40
+golden/TemporalControlTest/status.txt
+  s_ebe551e8aa9b77::t_c8bcbef55aebd6 1
+run_golden_tests.sh
+  s_ebe551e8aa9b77::t_c8bcbef55aebd6 68
+src/Solver/Temporal.hs
+  s_ebe551e8aa9b77::t_a57503433c4785 124,126,133,135,141,143
+  s_ebe551e8aa9b77::t_d360fed288539f 1-123,125,127-132,134,136-140,142,144-328
+sprinkler-solver.cabal
+  s_ebe551e8aa9b77::t_e41deff48c9c8a 256
+  s_ebe551e8aa9b77::t_a57503433c4785 196
+example/Main.hs
+  s_ebe551e8aa9b77::t_e41deff48c9c8a 134,306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "c4798593956fb1bfdce968318b8271e45d8f9629",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
