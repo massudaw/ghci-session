@@ -1,0 +1,43 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_2598d63763ada0 301-304,308
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_98a89c3dd55f2c 364,367
+  s_194c7cc87fd00f::t_8e8efcae85daef 50,131,217
+  s_194c7cc87fd00f::t_decc5814206e95 43,51,54-55,82-83,92-102,104-105,113,121,123-126,128-130,132-167,169-172
+  s_194c7cc87fd00f::t_b486cca0126129 52-53,239-248,250-252,314,317,320,335,340,343,346,360,362,366
+  s_194c7cc87fd00f::t_20c5bd644f0f4e 219,221-238,256-261,267,296-297,309-312,316,318
+  s_194c7cc87fd00f::t_9ebfb191990624 336,341-342,344,354,365
+golden/ModelSimple/equations.txt
+  s_194c7cc87fd00f::t_2c7d479949f2c5 11-12,15
+golden/ModelSaoJorge/equations.txt
+  s_194c7cc87fd00f::t_2c7d479949f2c5 2-3,396,404,406
+src/Hydraulic.hs
+  s_194c7cc87fd00f::t_6f96144bfd2497 244-251
+golden/ModelFireSprinkler/solver_audit.txt
+  s_194c7cc87fd00f::t_2c7d479949f2c5 4,6
+src/Backend/CSG.hs
+  s_194c7cc87fd00f::t_98a89c3dd55f2c 270-273
+golden/ModelSimple2/equations.txt
+  s_194c7cc87fd00f::t_2c7d479949f2c5 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "d01bcf19fe465d0b5411297c467092778e6ef859",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
