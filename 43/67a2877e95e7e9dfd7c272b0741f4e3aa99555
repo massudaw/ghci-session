@@ -1,0 +1,186 @@
+src/Transient.hs
+  s_ebe551e8aa9b77::t_102e8520e31cdf 1289-1292
+  s_ebe551e8aa9b77::t_533f7c7624e2b5 1311,1313-1315,1317,1321,1329
+  s_ebe551e8aa9b77::t_938c4dccdd676c 1206
+  s_ebe551e8aa9b77::t_586245edc0f21f 511,514
+golden/ModelTEFull/transient.txt
+  s_ebe551e8aa9b77::t_72d0e39a2a31e9 40
+src/Solver/HybridDAE.hs
+  s_ebe551e8aa9b77::t_abc088b2d24184 119
+  s_ebe551e8aa9b77::t_764c8f23e3e44e 25
+  s_ebe551e8aa9b77::t_d25852b14ea9a7 228-235,237
+src/Solver/SolverAudit.hs
+  s_ebe551e8aa9b77::t_85976e66603b83 38-41
+  s_ebe551e8aa9b77::t_58b93389bb15e8 72
+  s_ebe551e8aa9b77::t_906a6b5aed2678 130-133,137,140,142-143
+  s_ebe551e8aa9b77::t_96a7b3d080196d 88-91,93,98,104-105,109-111
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_25c4278ddbd647 715-716,724
+  s_ebe551e8aa9b77::t_8babc1de8ecbda 1149
+golden/ModelClosedLoopEnergyCycle/solver_audit.txt
+  s_ebe551e8aa9b77::t_8c622442394d26 5-6
+golden/ModelCombustionEngine/solver_audit.txt
+  s_ebe551e8aa9b77::t_c8c713482d0ecf 5-6
+golden/ModelCombustionEngine/transient.txt
+  s_ebe551e8aa9b77::t_1f481d5049a44b 15
+golden/ModelContactArrayStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_7ccf6ded9ccd7b 2,5-15
+golden/ModelDCMotorCTMS/solver_audit.txt
+  s_ebe551e8aa9b77::t_11f4fb3ec6cc58 5-6
+golden/ModelDCPump/solver_audit.txt
+  s_ebe551e8aa9b77::t_d890d889204665 5-6
+golden/ModelDiodeClamp/solver_audit.txt
+  s_ebe551e8aa9b77::t_e48290d8167de6 5-6
+golden/ModelDiodeClamp/transient.txt
+  s_ebe551e8aa9b77::t_1acf0d1e0e75c4 10
+golden/ModelExcavatorArm/solver_audit.txt
+  s_ebe551e8aa9b77::t_07d35ee97f87c6 5-6
+golden/ModelFertilizerAdaptive/solver_audit.txt
+  s_ebe551e8aa9b77::t_c2e75b23c1a2d1 5-6
+golden/ModelFertilizerDAE/solver_audit.txt
+  s_ebe551e8aa9b77::t_0e3424ac94e8f8 5-6
+golden/ModelFertilizerTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_0dd716a9997090 5-6
+golden/ModelFrameStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_92904104196499 5-6
+golden/ModelFreewheel/solver_audit.txt
+  s_ebe551e8aa9b77::t_68fbaae44e0ace 5-6
+golden/ModelFrictionSlide/solver_audit.txt
+  s_ebe551e8aa9b77::t_c4c099e7d1b345 5-6
+golden/ModelGasPiston/solver_audit.txt
+  s_ebe551e8aa9b77::t_bcf1d09962ac95 5-6
+golden/ModelGovernor/solver_audit.txt
+  s_ebe551e8aa9b77::t_36b63d53a91ca6 5-6
+golden/ModelGovernorPI/solver_audit.txt
+  s_ebe551e8aa9b77::t_4863da0755154c 5-6
+golden/ModelLadderStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_a417f366df119e 5-6
+golden/ModelLiftRegen/solver_audit.txt
+  s_ebe551e8aa9b77::t_80b643a1e5e293 5-6
+golden/ModelLiftRegen/transient.txt
+  s_ebe551e8aa9b77::t_9c95f4d0d7c542 9-11,15-18
+golden/ModelMagneticTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_3e72f08423f09b 5-6
+golden/ModelMassSpringStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_02f933fef10c3a 5-6
+golden/ModelMotorBackEMF/solver_audit.txt
+  s_ebe551e8aa9b77::t_89ab4f8d16a539 5-6
+golden/ModelMotorInertia/solver_audit.txt
+  s_ebe551e8aa9b77::t_fa1390dd069074 5-6
+golden/ModelMultiStageThermalTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_845afb97261e2a 5-6
+golden/ModelNeuronSpike/solver_audit.txt
+  s_ebe551e8aa9b77::t_8901d69c8e1116 5-6
+golden/ModelOttoCycle/solver_audit.txt
+  s_ebe551e8aa9b77::t_fcef6e807c0099 5-6
+golden/ModelPneumaticAccumulator/solver_audit.txt
+  s_ebe551e8aa9b77::t_8341ad86d0ef88 5-6
+golden/ModelPneumaticGasSpring/solver_audit.txt
+  s_ebe551e8aa9b77::t_caf3d9df98c256 5-6
+golden/ModelPneumaticSuspension/solver_audit.txt
+  s_ebe551e8aa9b77::t_cd6993cee2086b 5-6
+golden/ModelPneumaticSuspension/transient.txt
+  s_ebe551e8aa9b77::t_b125a03200aef9 16-18
+golden/ModelRLCTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_c6082b82ea3ce6 5-6
+golden/ModelRelaxationOsc/solver_audit.txt
+  s_ebe551e8aa9b77::t_27876ddde8f1a9 5-6
+golden/ModelRelayBank/solver_audit.txt
+  s_ebe551e8aa9b77::t_0dbbd0047eed35 5-6
+golden/ModelRelayReactor/solver_audit.txt
+  s_ebe551e8aa9b77::t_4baed6342f45c6 5-6
+golden/ModelRotationalInertia/solver_audit.txt
+  s_ebe551e8aa9b77::t_577960cd80120d 5-6
+golden/ModelRotationalMotor/solver_audit.txt
+  s_ebe551e8aa9b77::t_a9acf52efcd59e 5-6
+golden/ModelRotationalMotorMagnetic/solver_audit.txt
+  s_ebe551e8aa9b77::t_ad5ff3c943cc76 5-6
+golden/ModelRotationalTranslational/solver_audit.txt
+  s_ebe551e8aa9b77::t_1555dd8c8d8597 5-6
+golden/ModelSliderCrank/solver_audit.txt
+  s_ebe551e8aa9b77::t_63fe29c0431800 5-6
+golden/ModelTEFull/solver_audit.txt
+  s_ebe551e8aa9b77::t_95aa4bf51aa187 5-6
+golden/ModelTES/solver_audit.txt
+  s_ebe551e8aa9b77::t_0631574157f946 5-6
+golden/ModelThermalPlateStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_c5997b367cd558 5-6
+golden/ModelThermoEngine/solver_audit.txt
+  s_ebe551e8aa9b77::t_fcd00db7b1d5ac 5-6
+golden/ModelThermoEngine/transient.txt
+  s_ebe551e8aa9b77::t_2480d241cd47e7 7-8,10-17
+golden/ModelThermostat/solver_audit.txt
+  s_ebe551e8aa9b77::t_bcdea073ec7a50 5-6
+golden/OptionGreeksExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_c7387c7b4b52c7 5-6
+golden/OptionVegaExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_acbe995d83ec8b 5-6
+golden/PendulumTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_b8b783866a33c3 5-6
+golden/PendulumTransient/transient.txt
+  s_ebe551e8aa9b77::t_2eca5c29a2a4d7 4-9
+golden/SwaptionExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_2e37394f7ad452 5-6
+golden/VasicekSwapExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_44951293ff3498 5-6
+golden/AmericanOptionExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_0113b97c32856a 5-6
+golden/BermudanSwaptionExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_ce56df62309583 5-6
+golden/BlackScholesExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_9678c402847d0e 5-6
+golden/BlackScholesPutExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_28c288191438da 5-6
+golden/DigitalOptionExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_484d7814e95c87 5-6
+golden/FXDynamicHedgingExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_8f8215c519c955 5-6
+golden/FXOptionHedgingExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_04261ba36157bf 5-6
+golden/ForceOscillator/solver_audit.txt
+  s_ebe551e8aa9b77::t_18fb6ffd2d840c 5-6
+golden/GasChamberHeating/solver_audit.txt
+  s_ebe551e8aa9b77::t_9d35af58a7f667 5-6
+golden/GasCompression/solver_audit.txt
+  s_ebe551e8aa9b77::t_05a987080073d7 5-6
+golden/HeatEquationExample/solver_audit.txt
+  s_ebe551e8aa9b77::t_4166b5b891564a 5-6
+golden/HelmholtzResonator/solver_audit.txt
+  s_ebe551e8aa9b77::t_b2805c6dc9b2d1 5-6
+golden/IDAPendulum/solver_audit.txt
+  s_ebe551e8aa9b77::t_30fe929a88c211 5-6
+golden/ModelACConditioner/solver_audit.txt
+  s_ebe551e8aa9b77::t_5627bc2c82f81a 5-6
+golden/ModelACStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_decba2ffe9c6e7 5-6
+golden/ModelBattery/solver_audit.txt
+  s_ebe551e8aa9b77::t_b0150c874ed661 5-6
+golden/ModelBeamContactStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_5c176080d9f533 2,5-17
+golden/ModelBeamContactStress/transient.txt
+  s_ebe551e8aa9b77::t_c825d62c98741a 6
+golden/ModelBeamStress/solver_audit.txt
+  s_ebe551e8aa9b77::t_24499ffc844e23 5-6
+golden/ModelBouncingBall/solver_audit.txt
+  s_ebe551e8aa9b77::t_728b287d1a1752 5-6
+golden/ModelBouncingBallDamped/solver_audit.txt
+  s_ebe551e8aa9b77::t_f7d1e284bd824d 5-6
+golden/ModelChemicalTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_1a638639c93b2e 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "4367a2877e95e7e9dfd7c272b0741f4e3aa99555",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
