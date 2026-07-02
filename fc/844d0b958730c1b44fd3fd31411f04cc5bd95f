@@ -1,0 +1,31 @@
+src/Examples/ModelRocketLiftoff.hs
+  s_ebe551e8aa9b77::t_8f3196cb8a988b 225,261
+src/Examples/ModelRocketTransient.hs
+  s_ebe551e8aa9b77::t_8f3196cb8a988b 192,224
+golden/ModelRocketLiftoff/energy.txt
+  s_ebe551e8aa9b77::t_34e6d43d391791 4-6,8-10,13-16
+golden/ModelRocketLiftoff/solver_audit.txt
+  s_ebe551e8aa9b77::t_3c53178beaba3b 2,5-12
+golden/ModelRocketLiftoff/transient.txt
+  s_ebe551e8aa9b77::t_d2be05ce68057a 4-21,56-77,80-81,88-90,92-94,97-100
+golden/ModelRocketTransient/solver_audit.txt
+  s_ebe551e8aa9b77::t_9f31aebfe0eb81 2,5-12
+golden/ModelRocketTransient/transient.txt
+  s_ebe551e8aa9b77::t_456b13c60bf197 4-8,10-14,43-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "fc844d0b958730c1b44fd3fd31411f04cc5bd95f",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
