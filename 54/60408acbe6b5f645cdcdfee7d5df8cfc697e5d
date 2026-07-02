@@ -1,0 +1,20 @@
+src/JIT/jit_trampoline.c
+  s_194c7cc87fd00f::t_718df014ba49bb 42-80,91-92,113,170,189,272,276,291,295,452,478,597,601
+  s_194c7cc87fd00f::t_e1502c0fceb39e 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "5460408acbe6b5f645cdcdfee7d5df8cfc697e5d",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
