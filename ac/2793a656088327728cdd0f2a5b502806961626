@@ -1,0 +1,49 @@
+src/Transient.hs
+  s_ebe551e8aa9b77::t_667b23edd6cbf7 1188-1197
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_ef4bd40bed738d 847
+  s_ebe551e8aa9b77::t_bc8d375a13409d 1021-1024
+  s_ebe551e8aa9b77::t_c44ee5fb23713b 668,670-674,680-681,684-686
+  s_ebe551e8aa9b77::t_5f1bbe7b89f88b 958-962,964-968
+  s_ebe551e8aa9b77::t_8dd3b087a38c22 1057-1058
+  s_ebe551e8aa9b77::t_5c7c2b3ed4b0ab 844-846
+  s_ebe551e8aa9b77::t_65c0233d78e509 260-261
+  s_ebe551e8aa9b77::t_b2e53f17ae17f5 963,969-970
+  s_ebe551e8aa9b77::t_dbee42ac90f0f9 1028
+  s_ebe551e8aa9b77::t_62d607c87cb6dd 1054-1056
+  s_ebe551e8aa9b77::t_7d46d7775532b4 848-852,854-855
+  s_ebe551e8aa9b77::t_7a201bbbd2e129 241
+  s_ebe551e8aa9b77::t_95027c93e83938 254-258
+  s_ebe551e8aa9b77::t_80a6ba8c2f1ad3 682
+src/JIT/jit_trampoline.c
+  s_ebe551e8aa9b77::t_c745e1bb249b8c 17-18
+  s_ebe551e8aa9b77::t_4fa3848e7d647f 170,172,174-180,182
+  s_ebe551e8aa9b77::t_63ea0d4f577803 34-35
+  s_ebe551e8aa9b77::t_45f2876d54a6d7 156-157,161-162,166,185-191,193,199-200
+  s_ebe551e8aa9b77::t_930029ffb50080 163-165,167
+  s_ebe551e8aa9b77::t_7d027d834193d2 29
+  s_ebe551e8aa9b77::t_7c6077710f1dcb 36-37
+  s_ebe551e8aa9b77::t_be52a378bfa2b8 76-78,82,91-92,94,100
+  s_ebe551e8aa9b77::t_ca20874d4a69d4 171,173
+  s_ebe551e8aa9b77::t_c0d0b4f5994596 254-255,263-265
+  s_ebe551e8aa9b77::t_edc0cd93e95cea 168-169,184
+  s_ebe551e8aa9b77::t_9dcab81fe8b4ab 181,183
+  s_ebe551e8aa9b77::t_052e12e405a1c3 83-89,95-98
+  s_ebe551e8aa9b77::t_aece3fd053e0a6 256,261-262
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "ac2793a656088327728cdd0f2a5b502806961626",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
