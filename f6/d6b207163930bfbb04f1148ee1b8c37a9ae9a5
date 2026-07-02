@@ -1,0 +1,23 @@
+src/Project.hs
+  s_ebe551e8aa9b77::t_7c5d62be62917a 55,616-619
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_5dad2c30c54d9c 55
+src/Solver/KINSOL.hs
+  s_ebe551e8aa9b77::t_7c5d62be62917a 12,17-18,21,34,76-78,93-94,114-129,134-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "f6d6b207163930bfbb04f1148ee1b8c37a9ae9a5",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
