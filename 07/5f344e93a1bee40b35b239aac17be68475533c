@@ -1,0 +1,28 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_7bb12cc78a07d6 17
+  s_194c7cc87fd00f::t_69342d92b140cd 7,777-930
+  s_194c7cc87fd00f::t_71f3ba74dc1375 931
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_47feabd821c106 39,338-341,344-350,352-353
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "075f344e93a1bee40b35b239aac17be68475533c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
