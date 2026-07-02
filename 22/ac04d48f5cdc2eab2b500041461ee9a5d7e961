@@ -1,0 +1,35 @@
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_c3b391dd4bdaf7 104,253-260,262-267,757-760,766,788-806,810-815,1008
+  s_ebe551e8aa9b77::t_ff4ec0af61a08d 337-345,386
+  s_ebe551e8aa9b77::t_da3d4001e32d2b 978-984,1185-1222,1224-1294
+  s_ebe551e8aa9b77::t_7567f327510045 46
+  s_ebe551e8aa9b77::t_60c2618f3f799a 102
+  s_ebe551e8aa9b77::t_81d1f2abd782ef 60,103,1223
+  s_ebe551e8aa9b77::t_c97ef115431cd6 261
+src/Transient.hs
+  s_ebe551e8aa9b77::t_8528efd64af6fe 1200-1211,1246-1247
+src/Solver/HybridDAE.hs
+  s_ebe551e8aa9b77::t_4582619a172587 25
+  s_ebe551e8aa9b77::t_db8fe42c437ea7 35-36
+  s_ebe551e8aa9b77::t_35919715156fc2 120-125
+  s_ebe551e8aa9b77::t_aae4813ffe6117 195,197-205,251
+src/JIT/jit_trampoline.c
+  s_ebe551e8aa9b77::t_ea461e63609129 417,483,534,545-546
+  s_ebe551e8aa9b77::t_71348fa413253c 366-416,418-482,484-533,535-544,547-553
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "22ac04d48f5cdc2eab2b500041461ee9a5d7e961",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
