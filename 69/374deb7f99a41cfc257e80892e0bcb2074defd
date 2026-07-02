@@ -1,0 +1,23 @@
+src/JIT/Stencil/ARM64.hs
+  s_ebe551e8aa9b77::t_644e94dddc06e5 26
+  s_ebe551e8aa9b77::t_57c8886aa9e9e9 52
+  s_ebe551e8aa9b77::t_16977b2a05b55f 38-42,44-50
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_cc1ab21a190102 1056-1058
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "69374deb7f99a41cfc257e80892e0bcb2074defd",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
