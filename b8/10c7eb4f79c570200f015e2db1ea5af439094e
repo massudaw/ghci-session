@@ -1,0 +1,63 @@
+golden/ModelFluidThermal/equations.txt
+  s_ebe551e8aa9b77::t_f432288b56010c 6
+golden/ModelFluidThermal/residuals.txt
+  s_ebe551e8aa9b77::t_388f39d4b890ec 2-3,9,33-34
+golden/ModelFluidThermal/solutions.txt
+  s_ebe551e8aa9b77::t_14b026ced02f18 17-23
+golden/ModelHydraulicAirDuct/equations.txt
+  s_ebe551e8aa9b77::t_e9465e46a61cdc 5-6
+golden/ModelHydraulicAirDuct/residuals.txt
+  s_ebe551e8aa9b77::t_75c5d1c35cff37 2-5,11-12
+golden/ModelHydraulicAirDuct/solutions.txt
+  s_ebe551e8aa9b77::t_2af0464fac52fa 2-6,8-11
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_ebe551e8aa9b77::t_0b69213ae41667 2-9
+golden/ModelHydraulicPipeNetwork/residuals.txt
+  s_ebe551e8aa9b77::t_0f151950ebe041 2-3,5,12
+golden/ModelHydraulicPipeNetwork/solutions.txt
+  s_ebe551e8aa9b77::t_99d7fc8c9709bd 2,4,6-9,11,15-16
+golden/ModelHydraulicTransient/equations.txt
+  s_ebe551e8aa9b77::t_0bff3ef0a5f7a7 2-4,6,15-17,19,28-30
+golden/ModelHydraulicTransient/residuals.txt
+  s_ebe551e8aa9b77::t_0f7c550573b93c 3-4,12
+golden/ModelHydraulicTransient/solutions.txt
+  s_ebe551e8aa9b77::t_cfc67a6f22b43a 2-5,7-8,10-11
+golden/ModelHydraulicTransient/transient.txt
+  s_ebe551e8aa9b77::t_4edb4a3d51654a 4-33
+golden/ModelSaoJorge/equations.txt
+  s_ebe551e8aa9b77::t_efce3e2b739118 1-1101
+golden/ModelSaoJorge/residuals.txt
+  s_ebe551e8aa9b77::t_8584a4edcf492e 1-1106
+golden/ModelSaoJorge/solutions.txt
+  s_ebe551e8aa9b77::t_a8c5472eb1e848 1-1099
+golden/ModelSaoJorge/status.txt
+  s_ebe551e8aa9b77::t_5edd8e89252f14 1
+golden/ModelSimple/equations.txt
+  s_ebe551e8aa9b77::t_bf597c14987b7a 2-15
+golden/ModelSimple/solutions.txt
+  s_ebe551e8aa9b77::t_8afdd8d78e0e50 14-16,26,28
+golden/ModelSimple2/equations.txt
+  s_ebe551e8aa9b77::t_0386992525eac5 2-4
+run_golden_tests.sh
+  s_ebe551e8aa9b77::t_507c9e83f12583 97
+src/Hydraulic.hs
+  s_ebe551e8aa9b77::t_68e211ffcc3df8 310,312-321,358
+src/Hydraulic/Tee.hs
+  s_ebe551e8aa9b77::t_927f705386f18d 145-147,152-176,183-195,197-204
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "b810c7eb4f79c570200f015e2db1ea5af439094e",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
