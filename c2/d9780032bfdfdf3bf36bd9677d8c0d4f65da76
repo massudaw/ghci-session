@@ -1,0 +1,21 @@
+src/Solver/IDA.hs
+  s_ebe551e8aa9b77::t_50c46d25ac3223 791-793
+validate_jit_parity.sh
+  s_ebe551e8aa9b77::t_a283d09bbf3979 10,14-17,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "c2d9780032bfdfdf3bf36bd9677d8c0d4f65da76",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
