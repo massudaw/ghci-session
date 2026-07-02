@@ -1,0 +1,30 @@
+CLAUDE.md
+  s_194c7cc87fd00f::t_640f497f5405b9 96
+DOMAINS.md
+  s_194c7cc87fd00f::t_640f497f5405b9 7-38
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_87c9ab4f41b2d1 239-241,312,338,352
+src/Position.hs
+  s_194c7cc87fd00f::t_87c9ab4f41b2d1 233-239,241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0df5ad43e34fca73798bde68fc3b21f98da2f7ab",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
