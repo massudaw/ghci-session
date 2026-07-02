@@ -1,0 +1,27 @@
+src/Project.hs
+  s_ebe551e8aa9b77::t_b5fd2ff28fb54f 606-616
+golden/ModelSaoJorge/equations.txt
+  s_ebe551e8aa9b77::t_d85f4f413e82fc 1101
+golden/ModelSaoJorge/solutions.txt
+  s_ebe551e8aa9b77::t_d85f4f413e82fc 697,1088,1090,1092,1094,1096,1098
+src/Solver/KINSOL.hs
+  s_ebe551e8aa9b77::t_693d99c47f38a9 53,86-87,96-97,99-100,120-124,132-133
+src/Examples/ModelSaoJorge.hs
+  s_ebe551e8aa9b77::t_8a833893287655 25,161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "4b3feb7e08a3e6827963167c0b2b340a78f45419",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
