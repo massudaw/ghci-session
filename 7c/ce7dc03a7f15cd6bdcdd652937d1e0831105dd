@@ -1,0 +1,33 @@
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_26d3b7b2cb08a6 98-100,102-104
+  s_194c7cc87fd00f::t_9af7d094fa73bf 94,133
+  s_194c7cc87fd00f::t_ff44c8c0c0e0c2 57,90,112,135-136,181,253-255
+src/Backend/Mecha.hs
+  s_194c7cc87fd00f::t_c779c60140703f 19,152-166
+golden/ModelFireSprinkler/solver_audit.txt
+  s_194c7cc87fd00f::t_9af7d094fa73bf 4,6
+src/Model/FireSprinklerCoupling.hs
+  s_194c7cc87fd00f::t_ff44c8c0c0e0c2 19-27,52,80,90-101,107,114,117-118
+  s_194c7cc87fd00f::t_befbaa52b7ef94 119
+src/Signal.hs
+  s_194c7cc87fd00f::t_1f718956833d67 26,42-44,98-103,127-130
+src/Backend/CSG.hs
+  s_194c7cc87fd00f::t_c779c60140703f 21,288-296
+  s_194c7cc87fd00f::t_a74b2e33f7700c 297-299
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "7cce7dc03a7f15cd6bdcdd652937d1e0831105dd",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
