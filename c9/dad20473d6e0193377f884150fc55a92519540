@@ -1,0 +1,23 @@
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_ec405ef799459c 38-42,291-331
+  s_194c7cc87fd00f::t_b6ec01bf586f44 332
+src/Backend/ModelMecha.hs
+  s_194c7cc87fd00f::t_6421422d734887 16-20,24-25,27,32,37,41-42,58-67
+  s_194c7cc87fd00f::t_e85a26e4fa94e6 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "c9dad20473d6e0193377f884150fc55a92519540",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
