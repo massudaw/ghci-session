@@ -1,0 +1,21 @@
+src/JIT/Compiler.hs
+  s_194c7cc87fd00f::t_59ce7f45736c63 305-311,314,316,318-320
+  s_194c7cc87fd00f::t_800e543466a570 85-86,88-89,221-222,225,227,230-231,234-253
+  s_194c7cc87fd00f::t_a901b27f4af774 254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d416d7c48ac455941b8943d8ded23827bf5ec9d5",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
