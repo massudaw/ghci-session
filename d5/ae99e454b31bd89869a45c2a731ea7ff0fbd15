@@ -1,0 +1,38 @@
+golden/ModelTEFull/equations.txt
+  s_194c7cc87fd00f::t_4b64b3f9fd90ac 432
+golden/ModelTEFull/selective_report.txt
+  s_194c7cc87fd00f::t_4b64b3f9fd90ac 40
+run_golden_tests.sh
+  s_194c7cc87fd00f::t_18fd88d433a153 162-165,167-168,173,176,181,185
+validate_golden_tests.sh
+  s_194c7cc87fd00f::t_fda36fac2b98cb 304,308,310
+  s_194c7cc87fd00f::t_f3404d3b47ffbb 183-184,186-187
+golden/ModelRocketLiftoff/transient.txt
+  s_194c7cc87fd00f::t_4b64b3f9fd90ac 13
+src/Solver/HybridDAE.hs
+  s_194c7cc87fd00f::t_cb816ce7523f8a 1
+  s_194c7cc87fd00f::t_cb88473ca3f178 25
+  s_194c7cc87fd00f::t_568e2238d71d17 192-202,208
+  s_194c7cc87fd00f::t_46a4f3ff40a9be 273
+src/Solver/IDA.hs
+  s_194c7cc87fd00f::t_c764adf0523452 1196-1198,1203
+  s_194c7cc87fd00f::t_fdadd7ad67ff9f 649-654,656
+  s_194c7cc87fd00f::t_6460d22254534f 1016,1022-1024
+  s_194c7cc87fd00f::t_b0f0184d6d79b8 1191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d5ae99e454b31bd89869a45c2a731ea7ff0fbd15",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
