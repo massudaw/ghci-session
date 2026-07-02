@@ -1,0 +1,19 @@
+src/Solver/KINSOL.hs
+  s_ebe551e8aa9b77::t_56a9dbc1d88b1b 155-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "c9ab72d8dfa5d9bfd76dffdf37cf51acb740c538",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
