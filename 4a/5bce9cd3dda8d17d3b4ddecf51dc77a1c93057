@@ -1,0 +1,30 @@
+golden/OptionVegaExample/solutions.txt
+  s_ebe551e8aa9b77::t_334f63386be845 63-122,124-183
+src/Project.hs
+  s_ebe551e8aa9b77::t_d156326702f8b3 561-562,585,619-621,623-625,627-638,657,659-660
+  s_ebe551e8aa9b77::t_52e574faaa5e2a 570-579,586,607-618,622,639-655,658
+  s_ebe551e8aa9b77::t_75ccb9d735f28d 555-560
+  s_ebe551e8aa9b77::t_5cd628c82171dd 626
+golden/ModelSimple/solutions.txt
+  s_ebe551e8aa9b77::t_334f63386be845 15-28
+golden/ModelSaoJorge/equations.txt
+  s_ebe551e8aa9b77::t_334f63386be845 1101
+golden/ModelSaoJorge/solutions.txt
+  s_ebe551e8aa9b77::t_334f63386be845 697-698
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "4a5bce9cd3dda8d17d3b4ddecf51dc77a1c93057",
+  "prompts": {},
+  "sessions": {
+    "s_ebe551e8aa9b77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ad56fda-042f-42b8-b1a1-b71b82c0b46d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
