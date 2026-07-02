@@ -1,0 +1,22 @@
+src/JIT/Tape.hs
+  s_194c7cc87fd00f::t_9876a187291361 490-491
+  s_194c7cc87fd00f::t_198ced346f6b23 435-436,438-439
+  s_194c7cc87fd00f::t_dd3d7bfa0349d6 442-447,449,451-452,454-480
+  s_194c7cc87fd00f::t_bf8f8b97de7f2f 453
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "2244eaac2d1d6c94439a966a67e9388b7b0c7853",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
