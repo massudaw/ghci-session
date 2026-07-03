@@ -1,0 +1,35 @@
+src/Model/SuspensionCoupling.hs
+  s_194c7cc87fd00f::t_21ae88a4ac6399 85
+  s_194c7cc87fd00f::t_76c686385e39d0 1-35,37-84,86-113,115-123
+  s_194c7cc87fd00f::t_b364c167f3123e 36,114
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_b364c167f3123e 337
+src/Examples/ModelHybridVehicle.hs
+  s_194c7cc87fd00f::t_7bdd75687d0bf3 30
+  s_194c7cc87fd00f::t_91a1f5292c8925 93-107
+  s_194c7cc87fd00f::t_76fb08579844ec 120-125
+  s_194c7cc87fd00f::t_64e09ba491f7d9 44-52
+  s_194c7cc87fd00f::t_2f954fe707f030 141-157,167,171-178,181-183,185-190
+  s_194c7cc87fd00f::t_b02bf25fff9386 232,240-244
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "b790a58fb31d82c63a2f26631776c6b4c553e363",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
