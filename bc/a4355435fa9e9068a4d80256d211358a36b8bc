@@ -1,0 +1,30 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_456cf8a93c9e60 1617-1621
+src/Examples/ModelCarSim.hs
+  s_194c7cc87fd00f::t_5f42b6cd21a6bd 145-149,155-157
+  s_194c7cc87fd00f::t_a7eae978439954 168
+  s_194c7cc87fd00f::t_dc66c81f418409 189,200-205,208-212
+  s_194c7cc87fd00f::t_588dc08b518801 267
+  s_194c7cc87fd00f::t_a8ab002952079e 125-134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bca4355435fa9e9068a4d80256d211358a36b8bc",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
