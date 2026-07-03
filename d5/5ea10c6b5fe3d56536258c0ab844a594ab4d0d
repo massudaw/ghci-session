@@ -1,0 +1,29 @@
+src/Model/FireSprinklerCoupling.hs
+  s_194c7cc87fd00f::t_60ad309131068d 150-155
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_60ad309131068d 1015-1016,1114-1119,1265
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_60ad309131068d 33-34,293-294,297-308,314
+  s_194c7cc87fd00f::t_c813166bfbfba4 296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d55ea10c6b5fe3d56536258c0ab844a594ab4d0d",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
