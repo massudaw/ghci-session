@@ -1,0 +1,30 @@
+src/Backend/CSG.hs
+  s_194c7cc87fd00f::t_07cdbd54b226d1 14-15
+src/Examples/ModelHybridVehicle.hs
+  s_194c7cc87fd00f::t_dd7d29b95c6963 102-110,114,118-120,128-130,135,137,139,141-142,144-145
+  s_194c7cc87fd00f::t_4ce568a0b3b307 121,127
+  s_194c7cc87fd00f::t_ade75b79cff2af 179-201
+  s_194c7cc87fd00f::t_9a8f5aa93d87fc 24,37-41
+  s_194c7cc87fd00f::t_015b08c2b38e30 111-113,115-117,122-126,131-134,136,138,140,143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e68d9f0f16ac0c07af22dd85c4a0405f9752aa3c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
