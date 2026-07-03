@@ -1,0 +1,42 @@
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_b36ac0db0f5ec5 39-42,60-61,257-273,275-276,278
+  s_194c7cc87fd00f::t_fb934284e8fc07 274
+  s_194c7cc87fd00f::t_cfa2dca8a56208 277
+  s_194c7cc87fd00f::t_cb891f2a1d8ccf 279
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_961cd75290b79d 425-428
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_03ca47b7b61395 8,987-996,998-1000,1002-1041,1045-1057,1059-1060,1062,1068-1069,1071-1074,1084-1105,1111-1120,1122,1124-1128,1145-1163,1165,1167-1169,1174-1204,1206-1213
+  s_194c7cc87fd00f::t_cfa2dca8a56208 997,1001,1042-1044,1058,1061,1063-1067,1070,1075-1083,1106-1110,1121,1123,1129-1144,1164,1166,1170-1173,1205
+  s_194c7cc87fd00f::t_c680bac99667d8 1214-1218
+src/Transient.hs
+  s_194c7cc87fd00f::t_652a8cf82cbdc1 79,1022-1030,1032-1037,1304-1309
+  s_194c7cc87fd00f::t_93754c250d6221 1031
+  s_194c7cc87fd00f::t_7aa976c18118c6 21,971-999
+src/Solver/HybridDAE.hs
+  s_194c7cc87fd00f::t_c00801f4b47297 22,100-115,127-135
+  s_194c7cc87fd00f::t_328e52b5d5e48d 157-159,171-174,259-268,272-288
+  s_194c7cc87fd00f::t_cfa2dca8a56208 269-271
+  s_194c7cc87fd00f::t_341e5b33bf2e6f 289
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "03e02324bbf7bc155d40ce3226952f34ec125703",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
