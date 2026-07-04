@@ -1,0 +1,30 @@
+src/Solver/UnionCompile.hs
+  s_b267f9ac75e258::t_c29f0e6a4ba0ab 172-174
+  s_b267f9ac75e258::t_9fa2ed9bd05d32 62-66,71,74,77,79-80
+  s_b267f9ac75e258::t_db116155e6df01 175-317,320-323
+  s_b267f9ac75e258::t_f54753d76827d3 318-319
+  s_b267f9ac75e258::t_b1ac6ce4ef119d 90-92
+src/Examples/UnionGroupsAnalysis.hs
+  s_b267f9ac75e258::t_ffa6f455e66c5a 19
+  s_b267f9ac75e258::t_2d161bcd67e5f8 74-81,125
+  s_b267f9ac75e258::t_ab78d0ad214297 85-86,91-93,111-123
+  s_b267f9ac75e258::t_dbed42332460b0 17,23
+  s_b267f9ac75e258::t_3f8a913a38fb49 82-84,87-90,94-110,124
+  s_b267f9ac75e258::t_7cc90ba274d723 21-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "5fcfd915076633b38fca0aad5a3dec1107c7c44d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
