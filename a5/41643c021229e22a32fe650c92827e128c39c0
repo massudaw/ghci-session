@@ -1,0 +1,29 @@
+golden/ModelRelaxationOsc/transient.txt
+  s_b267f9ac75e258::t_91174b3620b060 8-13
+validate_jit_parity.sh
+  s_b267f9ac75e258::t_7525d4ab529e7e 18-23,30
+src/Model.hs
+  s_b267f9ac75e258::t_c100e0611116bc 42-43
+  s_b267f9ac75e258::t_412fa928c097d4 406-431
+  s_b267f9ac75e258::t_1e8bc8108bd586 371-380,383-386
+src/Model/CrowbarDiodeCoupling.hs
+  s_b267f9ac75e258::t_b65d8b6d6ddfe6 75-85
+src/Examples/ModelBouncingBall.hs
+  s_b267f9ac75e258::t_18ace6ec84e4a2 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "a541643c021229e22a32fe650c92827e128c39c0",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
