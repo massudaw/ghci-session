@@ -1,0 +1,24 @@
+src/JIT/jit_trampoline.c
+  s_b267f9ac75e258::t_3ecd3d28da5919 606-635
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_0ba492556c9891 1198-1205,1209-1214,1221-1230
+  s_b267f9ac75e258::t_45cbfe0566a7a4 1206-1208
+  s_b267f9ac75e258::t_3fc5d652e1934a 268-273
+  s_b267f9ac75e258::t_5887d9f60e098c 1215-1220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "539acc823d074bbc04c22c10a95a2bb300e4988f",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
