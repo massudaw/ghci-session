@@ -1,0 +1,25 @@
+example/Main.hs
+  s_b267f9ac75e258::t_57e85538a772df 373
+  s_b267f9ac75e258::t_be109019762474 102
+src/Examples/GroupSwitchDemoNativeShared2.hs
+  s_b267f9ac75e258::t_ef6151bf046d7e 95-104,106-113,119,125
+  s_b267f9ac75e258::t_99648b7841b5e9 1-94,105,114-118,120-124,126-182
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_e2767e7e2ce9b2 317
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "adeaeeac73e1ca5a84292b77d9487168a3c3ed29",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
