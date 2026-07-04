@@ -1,0 +1,31 @@
+src/Solver/PatternAudit.hs
+  s_b267f9ac75e258::t_1b211a01752bfd 37-44
+src/Examples/GroupSwitchDemo.hs
+  s_b267f9ac75e258::t_ddde5dc6b92a83 32,34
+  s_b267f9ac75e258::t_884d02d92de3c0 1-31,33,35-146
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_2e946b8603996f 58-67
+  s_b267f9ac75e258::t_9425bae1f577df 908-909
+  s_b267f9ac75e258::t_c7fcd7b39ff3c4 255-261
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_05bcc73384f18d 310
+example/Main.hs
+  s_b267f9ac75e258::t_e9d2836fd9bd1f 97
+  s_b267f9ac75e258::t_f5624c8a0408ff 362
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "83643c2f50ff59fa91eb809e90dba21091220c3d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
