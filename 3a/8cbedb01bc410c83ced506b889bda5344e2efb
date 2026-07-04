@@ -1,0 +1,26 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_fb9fe1b9e3d1ff 13-20,22-25,27-28
+  s_194c7cc87fd00f::t_6d5bf0115fe372 77,86-88,96-100
+  s_194c7cc87fd00f::t_686c883d22d1fa 149-151,161-166,177-178,184-190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3a8cbedb01bc410c83ced506b889bda5344e2efb",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
