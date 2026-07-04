@@ -1,0 +1,24 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_60219bfee8f02b 313
+src/Examples/GroupSwitchDemoNativeTable.hs
+  s_b267f9ac75e258::t_b36916b46cc088 1-187
+example/Main.hs
+  s_b267f9ac75e258::t_8731894321d0c8 100
+  s_b267f9ac75e258::t_5f0c5f38596333 368
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ce45d2c6063359b14f19e6229c6b26c30f673801",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
