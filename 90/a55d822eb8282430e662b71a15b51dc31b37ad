@@ -1,0 +1,34 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_6ecdd125fbb6f1 434-446
+  s_b267f9ac75e258::t_37fb9aa0c0908b 196
+src/JIT/jit_trampoline.c
+  s_b267f9ac75e258::t_5705362a070701 164-165,182
+  s_b267f9ac75e258::t_f5b0b8e9e4bdd2 32-72
+  s_b267f9ac75e258::t_94bb22b2e62b77 249
+  s_b267f9ac75e258::t_f8fda33f8b0b6f 205-206
+src/Solver/EvalProfile.hs
+  s_b267f9ac75e258::t_9acbf118a97d6c 1-19,21-65
+  s_b267f9ac75e258::t_ac945c27c47eb7 20
+example/EvalSolveProfile.hs
+  s_b267f9ac75e258::t_0f15b32b20ada4 1-34,37-88,96-113,119-133
+  s_b267f9ac75e258::t_43dfa97761ec6f 89-95
+  s_b267f9ac75e258::t_43ff597acddeba 35
+  s_b267f9ac75e258::t_4f50763c74ffbe 114-118
+  s_b267f9ac75e258::t_bae9625c994eae 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "90a55d822eb8282430e662b71a15b51dc31b37ad",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
