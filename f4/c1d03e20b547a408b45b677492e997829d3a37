@@ -1,0 +1,25 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_48cf78b12269a2 211
+src/Examples/UnionGroupsAnalysis.hs
+  s_b267f9ac75e258::t_e630157dc979ab 11,19-20
+  s_b267f9ac75e258::t_2a001327ab7398 45-58
+src/Solver/UnionCompile.hs
+  s_b267f9ac75e258::t_923ce0faa48dd2 1-16,38-115
+  s_b267f9ac75e258::t_d69542cd5e7c5f 17-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "f4c1d03e20b547a408b45b677492e997829d3a37",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
