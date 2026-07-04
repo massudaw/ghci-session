@@ -1,0 +1,24 @@
+src/Solver/UnionCompile.hs
+  s_b267f9ac75e258::t_a30d3b622a975c 86-87,89-115,142-146,150
+  s_b267f9ac75e258::t_1c17412de85679 33-61
+  s_b267f9ac75e258::t_c5727098c79ac7 65
+src/Examples/UnionGroupsAnalysis.hs
+  s_b267f9ac75e258::t_4f9970da0f0223 59-70
+  s_b267f9ac75e258::t_5b416bf36abc30 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e767b63f1c13d77d36a5e8e8f553db8cbfd6ff4d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
