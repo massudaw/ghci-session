@@ -1,0 +1,33 @@
+src/Model/HybridControllerCoupling.hs
+  s_194c7cc87fd00f::t_d049717bc099b5 95
+  s_194c7cc87fd00f::t_93b7960471aaa6 1-94,96-114
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_df3f92448990b6 350
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_487f62a49451e6 242,248-256
+  s_194c7cc87fd00f::t_3408c911f74cf2 290,294,301-305,311-313,315-319
+  s_194c7cc87fd00f::t_df3f92448990b6 56,74,85,87,89-90,164-171
+  s_194c7cc87fd00f::t_d4078362851832 18-23,91
+  s_194c7cc87fd00f::t_d8e55309ecd5f0 257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "cbb3d145dd7e81b0b1d43aee26a129304f50310f",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
