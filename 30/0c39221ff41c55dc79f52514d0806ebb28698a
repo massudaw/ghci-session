@@ -1,0 +1,34 @@
+src/Examples/ForceQuarterCar.hs
+  s_194c7cc87fd00f::t_b57e648f9e50d6 40,45
+  s_194c7cc87fd00f::t_9a3dfe282824a5 96,105,107,110-111,113-120,122-123
+  s_194c7cc87fd00f::t_7e46379c8d2505 124-125
+  s_194c7cc87fd00f::t_4eb13df5ba2637 58-62
+src/Force.hs
+  s_194c7cc87fd00f::t_04b87b5c6f6621 138
+  s_194c7cc87fd00f::t_0e488d0633c878 314
+  s_194c7cc87fd00f::t_2e298a90d5f28a 322,331,600
+  s_194c7cc87fd00f::t_dc5de5b336e22f 119
+  s_194c7cc87fd00f::t_1c71867131b01b 538,544-560
+  s_194c7cc87fd00f::t_95d54056aa5f36 340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "300c39221ff41c55dc79f52514d0806ebb28698a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
