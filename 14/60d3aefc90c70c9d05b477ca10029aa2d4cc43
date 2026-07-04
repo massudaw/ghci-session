@@ -1,0 +1,33 @@
+src/Model/RoadForceCoupling.hs
+  s_194c7cc87fd00f::t_fc8d39b65cda31 1-72
+src/Examples/ModelCarForce.hs
+  s_194c7cc87fd00f::t_788de8971a0ef4 133
+  s_194c7cc87fd00f::t_17db4b2191e4e4 30,39
+  s_194c7cc87fd00f::t_f2d4650602df82 8-14,16-18
+  s_194c7cc87fd00f::t_4ad2746083b89a 106-107,111,115-120,122-126,128-129,131-132,134-135
+  s_194c7cc87fd00f::t_bb3ba83b759b56 69-76,81-85
+  s_194c7cc87fd00f::t_732aefc0ce619b 127
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_ba05885e8e4efd 347
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "1460d3aefc90c70c9d05b477ca10029aa2d4cc43",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

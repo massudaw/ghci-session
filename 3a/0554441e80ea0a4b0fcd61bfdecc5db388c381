@@ -1,0 +1,40 @@
+example/Main.hs
+  s_194c7cc87fd00f::t_c011cc09a172ca 122,376
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_3365b8bb8aebee 334
+  s_194c7cc87fd00f::t_75c23d8ac2bb54 336
+src/Examples/ModelHybridVehicle.hs
+  s_194c7cc87fd00f::t_b2d5a9b1633951 73-74
+  s_194c7cc87fd00f::t_3365b8bb8aebee 31-32,105
+  s_194c7cc87fd00f::t_6ceb7c5b842baa 54,102
+  s_194c7cc87fd00f::t_841ff764082d6f 1-30,33-53,55-57,59,61-72,75-101,103-104,106-131
+  s_194c7cc87fd00f::t_3eac903c869968 58,60
+src/Model/HEVCoupling.hs
+  s_194c7cc87fd00f::t_cbe6e23632a9f2 59
+  s_194c7cc87fd00f::t_2be20d7e8543a3 92,99-103,105-106
+  s_194c7cc87fd00f::t_dc42af1a622c90 1-58,60-91,93-98,104,108-147
+  s_194c7cc87fd00f::t_b2d5a9b1633951 107
+cabal.project.freeze
+  s_194c7cc87fd00f::t_c6541b12ca260d 1-201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3a0554441e80ea0a4b0fcd61bfdecc5db388c381",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

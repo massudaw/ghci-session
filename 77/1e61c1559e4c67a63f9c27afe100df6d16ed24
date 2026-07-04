@@ -1,0 +1,33 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_03a6250d7e0f23 165
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_9633e25923c796 300
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_e86e769a8c33e8 46-47,1011-1015,1045,1310-1349
+  s_194c7cc87fd00f::t_889f8d9197d7ce 1417
+  s_194c7cc87fd00f::t_2ebdee53c0c51b 44-45,48,1359-1416,1418-1469
+  s_194c7cc87fd00f::t_2e8c2a9cb75474 1350,1470
+src/Rendering/OpenGL/HUDFont.hs
+  s_194c7cc87fd00f::t_97ff5b7013b5b9 1-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "771e61c1559e4c67a63f9c27afe100df6d16ed24",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

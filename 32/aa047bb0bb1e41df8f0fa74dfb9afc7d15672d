@@ -1,0 +1,30 @@
+src/Examples/ModelCarForce.hs
+  s_194c7cc87fd00f::t_45494387a305fc 32
+  s_194c7cc87fd00f::t_2b6bf0bad2b64b 95-106,109-112
+  s_194c7cc87fd00f::t_2aa53490d52063 24
+  s_194c7cc87fd00f::t_5d56ba3ae70dfe 128-133
+  s_194c7cc87fd00f::t_4c814223eaaadb 139
+  s_194c7cc87fd00f::t_1b6b193fa70584 107-108
+  s_194c7cc87fd00f::t_5f28782a7213d5 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "32aa047bb0bb1e41df8f0fa74dfb9afc7d15672d",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

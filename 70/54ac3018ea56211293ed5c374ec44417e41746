@@ -1,0 +1,38 @@
+src/Model/FireSprinklerCoupling.hs
+  s_194c7cc87fd00f::t_852a627579711e 187-260,262-269
+  s_194c7cc87fd00f::t_27e7da70ddece7 261
+  s_194c7cc87fd00f::t_11e6d4f699b765 40,44,50
+src/Model.hs
+  s_194c7cc87fd00f::t_aba514103adb69 461-462
+  s_194c7cc87fd00f::t_5b80fb536874d9 305-317
+  s_194c7cc87fd00f::t_a3aaf5618ce481 950-955
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_49de8e1bd1f8f3 532-533
+  s_194c7cc87fd00f::t_4688c1215f07f3 62-63,94,97-101,104-105,107-109,259-264
+  s_194c7cc87fd00f::t_7b7cd89c23ee84 183-192,203
+  s_194c7cc87fd00f::t_0b95e575bd8c52 121
+  s_194c7cc87fd00f::t_0c8dbfbc08f73d 252-257,527-529,535
+  s_194c7cc87fd00f::t_6bacd82354f28d 332-337
+  s_194c7cc87fd00f::t_c16b2439b2cffa 368-371,488-491,521-523,530
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7054ac3018ea56211293ed5c374ec44417e41746",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

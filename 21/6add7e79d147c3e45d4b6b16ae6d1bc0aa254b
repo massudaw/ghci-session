@@ -1,0 +1,42 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_47eadd65c7235a 38,1236
+  s_194c7cc87fd00f::t_99b5b471e82f9e 9,1000-1011,1014-1015,1066,1068-1069,1110-1114,1127-1129,1141-1143,1146-1169,1171,1225-1235,1237,1239
+  s_194c7cc87fd00f::t_b27247d41a27a7 1016-1018,1022,1209
+  s_194c7cc87fd00f::t_ea7062514274a8 1133-1135,1144-1145
+  s_194c7cc87fd00f::t_f3d7b79108f7fc 1248,1259
+  s_194c7cc87fd00f::t_df6dcafee11d9e 1067
+  s_194c7cc87fd00f::t_4a861c60c4a7d3 1130-1132,1136-1140
+  s_194c7cc87fd00f::t_bb06930f69d8b7 20
+  s_194c7cc87fd00f::t_3dc17a651c61bd 29
+src/Solver/HybridDAE.hs
+  s_194c7cc87fd00f::t_086a328b3f4413 112-114,134,273-281
+  s_194c7cc87fd00f::t_4061054eeeb515 116-117,133,162-163,177-178,268,271-272,295,302
+src/Transient.hs
+  s_194c7cc87fd00f::t_086a328b3f4413 1314-1315
+  s_194c7cc87fd00f::t_fc3f3e9900beac 980-981,985,996,1034-1035,1307-1313,1316-1318
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_b27247d41a27a7 40,271-273,276-279,287,296
+  s_194c7cc87fd00f::t_797d113338f2f8 39,266-270,282-286,289,292
+  s_194c7cc87fd00f::t_b5d5124aa1450a 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "216add7e79d147c3e45d4b6b16ae6d1bc0aa254b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

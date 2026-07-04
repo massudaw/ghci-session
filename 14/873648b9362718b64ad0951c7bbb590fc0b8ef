@@ -1,0 +1,35 @@
+src/Model/AxleSuspensionCoupling.hs
+  s_194c7cc87fd00f::t_f60c4ad392dc9b 1-142
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_f0be426b49832e 340
+src/Examples/ModelCarSim.hs
+  s_194c7cc87fd00f::t_bdd5e30134da6a 179-186
+  s_194c7cc87fd00f::t_4a7f4713d73dda 119-124
+  s_194c7cc87fd00f::t_f6fb75105ddc60 45-49
+  s_194c7cc87fd00f::t_93bc39fa766db6 132-135,148-153,156-166,168-174
+  s_194c7cc87fd00f::t_fbcade365a47e0 26
+  s_194c7cc87fd00f::t_e2f9e13d46ae01 202,212,232-233
+  s_194c7cc87fd00f::t_8fbe9cd80f5a5c 85-88,90-100,102
+  s_194c7cc87fd00f::t_4639c0075bb648 89,101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "14873648b9362718b64ad0951c7bbb590fc0b8ef",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

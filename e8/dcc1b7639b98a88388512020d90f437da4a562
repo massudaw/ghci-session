@@ -1,0 +1,47 @@
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_d953dc310269c4 452-468,471-481,483-484,486-490,493-504
+  s_194c7cc87fd00f::t_41f80ad4f76d93 314-333,335-338,340-345,348
+  s_194c7cc87fd00f::t_5178d7798bad90 298-302
+  s_194c7cc87fd00f::t_929b73caca0cd2 311,334
+  s_194c7cc87fd00f::t_f285f7b909b00e 285-291,297,303-307,309-310,312-313,346-347,349-353,358-360,364-365,368,370,372
+  s_194c7cc87fd00f::t_86f54a70e38951 367,369
+  s_194c7cc87fd00f::t_c7127fa6d5869e 485,491-492
+  s_194c7cc87fd00f::t_610dffe99e5dfa 284
+  s_194c7cc87fd00f::t_d4af387db19052 361-363,371
+  s_194c7cc87fd00f::t_f486a3a31d0202 249-261,264-283,366
+  s_194c7cc87fd00f::t_e9d6776e7670be 308
+  s_194c7cc87fd00f::t_333a835e00f4fc 263
+  s_194c7cc87fd00f::t_fe6622392987ed 224,262,292-296,354-357,469-470
+  s_194c7cc87fd00f::t_d937f48279e509 339
+  s_194c7cc87fd00f::t_eeef01ce452131 482
+  s_194c7cc87fd00f::t_22dc80dcecf6a1 512-515
+src/Model/FireSprinklerCoupling.hs
+  s_194c7cc87fd00f::t_16138994c733f3 329-335
+  s_194c7cc87fd00f::t_04caf4d1ab742f 293-294,296
+  s_194c7cc87fd00f::t_e92689633e5fc6 295,297
+  s_194c7cc87fd00f::t_9c7ebf64f2393b 251-254,258-262,266
+  s_194c7cc87fd00f::t_287d032d450989 267
+  s_194c7cc87fd00f::t_012cbdff25a582 300-302,304
+  s_194c7cc87fd00f::t_fe6622392987ed 316
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e8dcc1b7639b98a88388512020d90f437da4a562",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

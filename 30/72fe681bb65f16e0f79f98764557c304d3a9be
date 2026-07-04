@@ -1,0 +1,26 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_86e78dd80d2368 20-22
+cabal.project
+  s_194c7cc87fd00f::t_86e78dd80d2368 45-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3072fe681bb65f16e0f79f98764557c304d3a9be",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

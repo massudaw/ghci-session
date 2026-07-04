@@ -1,0 +1,41 @@
+src/JIT/Sectioned.hs
+  s_194c7cc87fd00f::t_6c5365a6923a8b 222
+golden/ModelRadiationArrayStress/status.txt
+  s_194c7cc87fd00f::t_f7f8cfacd38829 1
+golden/ModelRadiationArrayStress/transient.txt
+  s_194c7cc87fd00f::t_f7f8cfacd38829 1-14
+src/Examples/ModelRadiationArrayStress.hs
+  s_194c7cc87fd00f::t_7b5776dd4a57d4 33,90-92
+  s_194c7cc87fd00f::t_d9c7bba9ce5d74 1-31,34-35,37-49,58-59,61,67,70-76,78-82,85-87,89,93-98,100-107,111-114
+  s_194c7cc87fd00f::t_1df0ad4e884804 32
+  s_194c7cc87fd00f::t_057104640668f3 88
+  s_194c7cc87fd00f::t_9e999b654e702e 36
+  s_194c7cc87fd00f::t_9f23a2dfb590f7 84
+  s_194c7cc87fd00f::t_1410968dcc149f 60,83,99
+  s_194c7cc87fd00f::t_09d251c5fab734 62-66,68-69
+  s_194c7cc87fd00f::t_be889ab611684c 50-57,77,108-110
+run_golden_tests.sh
+  s_194c7cc87fd00f::t_f7f8cfacd38829 119
+example/Main.hs
+  s_194c7cc87fd00f::t_5ef43ccc612e33 102,352
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_5ef43ccc612e33 301
+src/Examples/ModelTEFullBench.hs
+  s_194c7cc87fd00f::t_320abeff0f62f1 44-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.8",
+  "base_commit_sha": "d9764cfe452b0930b77b792644e5290b0cab7613",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

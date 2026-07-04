@@ -1,0 +1,27 @@
+src/Position.hs
+  s_194c7cc87fd00f::t_6e180e2499d5b5 234-244,255,269
+  s_194c7cc87fd00f::t_719691585769fc 264
+  s_194c7cc87fd00f::t_27f4ac837ac292 245-253,256-263,265-268
+  s_194c7cc87fd00f::t_ac41f166c14dff 254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "a9de970f6c9f1b6da03a1ed1f9ae0eef0f826e26",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

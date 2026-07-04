@@ -1,0 +1,30 @@
+src/Examples/ForceCar.hs
+  s_194c7cc87fd00f::t_0e068f5ba046ba 98
+  s_194c7cc87fd00f::t_3b930c3c1b50cb 36-37
+  s_194c7cc87fd00f::t_588d52b8ace1f7 63,67-73,75-86
+src/Examples/CarParts.hs
+  s_194c7cc87fd00f::t_2f6874edf87a05 21,24,27-28
+  s_194c7cc87fd00f::t_19d140cf2a0201 47-53,58,64-66
+  s_194c7cc87fd00f::t_380e4c4c58d871 77-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "034d2e03e61242bc3a3441dc09d5b5d7794ff115",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_a293dcdfa5a004 336
+src/Examples/ForceQuarterCar.hs
+  s_194c7cc87fd00f::t_a959e92992eefd 1-120
+example/Main.hs
+  s_194c7cc87fd00f::t_a293dcdfa5a004 124,380
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "82e5987be658424cf265f6c4888133faa01eb441",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

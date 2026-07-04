@@ -1,0 +1,29 @@
+src/Examples/ModelHybridVehicle.hs
+  s_194c7cc87fd00f::t_4018d5557dfbc3 264,268
+  s_194c7cc87fd00f::t_369269ba06d9c8 130-131,133-135
+  s_194c7cc87fd00f::t_4f9b1f2c41acd0 160-164,166-167,179-188,191-199,202-203
+  s_194c7cc87fd00f::t_817970aff50634 98-110,112
+src/Model/SuspensionCoupling.hs
+  s_194c7cc87fd00f::t_08da083e7755f3 12-15,17-23,25-28,37,48-59,62,64,79-81,86,88,91-95,99-100,102,104-137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7091fea27b30e6966d6b305be098dc4cbc3daafa",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

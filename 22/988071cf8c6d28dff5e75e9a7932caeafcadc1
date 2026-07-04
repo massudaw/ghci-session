@@ -1,0 +1,25 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_bfed0af653ee24 906-910
+  s_194c7cc87fd00f::t_01dcde4575f420 267-274,297,824,900
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "22988071cf8c6d28dff5e75e9a7932caeafcadc1",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
