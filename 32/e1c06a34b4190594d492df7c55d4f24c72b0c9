@@ -1,0 +1,29 @@
+example/Main.hs
+  s_b267f9ac75e258::t_badae0dff201bd 101
+  s_b267f9ac75e258::t_c2fb8f1648a316 370
+src/Examples/GroupSwitchDemoNativeRoot.hs
+  s_b267f9ac75e258::t_22a737c7e2ce74 150
+  s_b267f9ac75e258::t_f776424698ec5b 1-19,21-136,138-149,151-185
+  s_b267f9ac75e258::t_66e587641dbdb3 20
+  s_b267f9ac75e258::t_252b04ebfc6513 137
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_a951dbef181c71 314
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_217c1a73fa7c9d 67,72-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "32e1c06a34b4190594d492df7c55d4f24c72b0c9",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
