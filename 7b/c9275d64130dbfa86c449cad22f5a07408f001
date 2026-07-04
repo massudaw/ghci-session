@@ -1,0 +1,32 @@
+src/Examples/ForceCar.hs
+  s_194c7cc87fd00f::t_e45ce14893f20c 89,91-93
+  s_194c7cc87fd00f::t_f199bdaa12cae4 74,76-77
+  s_194c7cc87fd00f::t_c024e953ea3bf6 37
+  s_194c7cc87fd00f::t_5ffbfcf96f97cd 66-68,71,75,78-79
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_6300b26a2d09fd 338
+src/Examples/CarParts.hs
+  s_194c7cc87fd00f::t_a9e11bfc375b85 1,3-65
+  s_194c7cc87fd00f::t_bd01e2ed7c210d 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7bc9275d64130dbfa86c449cad22f5a07408f001",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
