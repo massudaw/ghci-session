@@ -1,0 +1,40 @@
+src/Model/BatterySoCCoupling.hs
+  s_194c7cc87fd00f::t_acaa2045379451 1-68,70-80
+  s_194c7cc87fd00f::t_8a423bd2fd9776 69
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_52b386da1e84ac 349
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_02f169834ec147 275-276
+  s_194c7cc87fd00f::t_c47631054f2347 108-112,118,123,125
+  s_194c7cc87fd00f::t_6aaf0ca50de289 320-321,330-331
+  s_194c7cc87fd00f::t_b356e12d6ff472 262,264-266
+  s_194c7cc87fd00f::t_f61abe493bee71 246,286
+  s_194c7cc87fd00f::t_d4dccc69fee05e 213-218
+  s_194c7cc87fd00f::t_52b386da1e84ac 52,70,78,80-81,137-138,141-142
+  s_194c7cc87fd00f::t_74111026d3a3d4 14-19
+  s_194c7cc87fd00f::t_101f68b46e88ad 277-279
+src/Model/ThrottleVoltageCoupling.hs
+  s_194c7cc87fd00f::t_f406eaa59187ca 12-20,22-23,37-39,53-56,58-59,65-70
+  s_194c7cc87fd00f::t_a671eee1a09c08 60-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "c860b73e8a9eec4d8868192597753e4e3ec89fa2",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
