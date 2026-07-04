@@ -1,0 +1,29 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_3023529273644d 297,299-300
+  s_194c7cc87fd00f::t_81002b0c02a37b 162,164
+  s_194c7cc87fd00f::t_0c12d64b4aa580 88
+  s_194c7cc87fd00f::t_06f2ad19ecaf37 18,20-22
+  s_194c7cc87fd00f::t_978a885adbbb98 86-87,89
+  s_194c7cc87fd00f::t_45de8d30831a38 148-161,163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bd7b1279b10721bf81a6d5537a005108ce8ea018",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
