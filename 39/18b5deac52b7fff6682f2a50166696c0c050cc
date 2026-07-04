@@ -1,0 +1,28 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_7c464d6595a0ac 341
+src/Examples/ModelCarForceStress.hs
+  s_194c7cc87fd00f::t_451b440847a0ba 1-104
+example/Main.hs
+  s_194c7cc87fd00f::t_7c464d6595a0ac 128,388
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3918b5deac52b7fff6682f2a50166696c0c050cc",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
