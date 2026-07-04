@@ -1,0 +1,36 @@
+src/Model/VectoredVoltageCoupling.hs
+  s_194c7cc87fd00f::t_df304db2530785 1-68
+src/Examples/ModelTorqueVector.hs
+  s_194c7cc87fd00f::t_5e5acf9921acf7 36-37
+  s_194c7cc87fd00f::t_36e2c9d358bdfb 3
+  s_194c7cc87fd00f::t_804bfd873888da 1-2,4-35,38-50,52-108,110-115,117-125,128-134
+  s_194c7cc87fd00f::t_4536610f3f7a1b 51,109,116
+  s_194c7cc87fd00f::t_4f6ab45573355a 126-127
+src/Model/YawVectorCoupling.hs
+  s_194c7cc87fd00f::t_07a80663a76d16 1-66
+example/Main.hs
+  s_194c7cc87fd00f::t_52b4f26096d6e3 130,392
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_52b4f26096d6e3 343,352-353
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "5f9ca74612c2bc2b24d08d37eaa0d8ee40755a9c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
