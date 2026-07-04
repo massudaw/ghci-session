@@ -1,0 +1,27 @@
+src/Position.hs
+  s_194c7cc87fd00f::t_9d003ac600810e 118-141
+src/Examples/CarParts.hs
+  s_194c7cc87fd00f::t_298502bb39167b 21-22,27
+  s_194c7cc87fd00f::t_5817a56a3591d2 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "f3011429630e3ba3e542bd9b1e1afb5985677c67",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
