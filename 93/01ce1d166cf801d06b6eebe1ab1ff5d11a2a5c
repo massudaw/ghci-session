@@ -1,0 +1,39 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_92a08def40d54d 347
+src/Model/CarDriveGripCoupling.hs
+  s_194c7cc87fd00f::t_c5b2df5c53e77e 103-108,110-113,115-118
+  s_194c7cc87fd00f::t_f53bdb44c124fa 83
+  s_194c7cc87fd00f::t_706490abba1cad 32
+  s_194c7cc87fd00f::t_c4e2d6faa212b5 50
+  s_194c7cc87fd00f::t_8cbed6726c7ba1 1-31,33-49,51-82,84-102,109,114,119-139
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_c47a73387f61e9 8-10,12-22
+  s_194c7cc87fd00f::t_52657e16499cc9 114
+  s_194c7cc87fd00f::t_d96bb0073ad0a3 168-173
+  s_194c7cc87fd00f::t_e2ff2ac0302a02 116-119,123,126
+  s_194c7cc87fd00f::t_92a08def40d54d 39,56
+  s_194c7cc87fd00f::t_6569d74e637a79 106-110,112-113,115
+  s_194c7cc87fd00f::t_19568c8cc85fa7 143,146-147
+  s_194c7cc87fd00f::t_c87ee881a6f51e 216,219-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "9301ce1d166cf801d06b6eebe1ab1ff5d11a2a5c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
