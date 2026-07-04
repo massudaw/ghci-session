@@ -1,0 +1,31 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_1bcc45f3e997fd 72
+  s_194c7cc87fd00f::t_3a4d8ae0ab9aa5 1-33,35-71,73-109,111-165
+  s_194c7cc87fd00f::t_d0de3cb0681c56 110
+  s_194c7cc87fd00f::t_e82bf09e89816f 34
+example/Main.hs
+  s_194c7cc87fd00f::t_d53a1e816d0d17 129,390
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_d53a1e816d0d17 342
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "8a09bc1a1681d26921ed38170ab4530f8d149e8f",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
