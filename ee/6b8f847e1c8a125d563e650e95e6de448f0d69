@@ -1,0 +1,25 @@
+src/Examples/GroupPatternAnalysis.hs
+  s_b267f9ac75e258::t_6c0b24325e18d9 62-76,82-85,89-93
+  s_b267f9ac75e258::t_aef4ea25bb52d5 22,31-34
+  s_b267f9ac75e258::t_e038b5c51e576e 94-142
+src/Solver/PatternAudit.hs
+  s_b267f9ac75e258::t_7232d7583d1018 29-30,33-35,37-43
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_901934a7d8a4a9 891
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ee6b8f847e1c8a125d563e650e95e6de448f0d69",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
