@@ -1,0 +1,20 @@
+src/Transient.hs
+  s_b267f9ac75e258::t_8da70db36797f9 1239-1255
+  s_b267f9ac75e258::t_1b0e9dd324e3d0 1285-1291
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4bcc70425e3dbecd79c76e6a1a8657bb26962d25",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
