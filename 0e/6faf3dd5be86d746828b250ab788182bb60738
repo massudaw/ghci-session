@@ -1,0 +1,33 @@
+example/Main.hs
+  s_b267f9ac75e258::t_34ba3836e9eb8a 366
+  s_b267f9ac75e258::t_c39207e893c28e 99
+src/Solver/PatternAudit.hs
+  s_b267f9ac75e258::t_51050e01381217 29
+  s_b267f9ac75e258::t_587987d23ca697 46-49
+src/Examples/GroupPatternAnalysis.hs
+  s_b267f9ac75e258::t_3d89e810d0ab71 95-104
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_30c6eb2e89b3cb 70
+  s_b267f9ac75e258::t_3f15135630f30a 71
+  s_b267f9ac75e258::t_76947b7313f10c 913
+src/Examples/GroupSwitchDemoNativeJac.hs
+  s_b267f9ac75e258::t_3bd9ef8d9f8432 1-177
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_3afe9ea0469ae2 312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0e6faf3dd5be86d746828b250ab788182bb60738",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
