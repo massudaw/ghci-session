@@ -1,0 +1,30 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_7711859bd39ce4 311
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_9c1b0a6fc11c1f 68-69
+example/Main.hs
+  s_b267f9ac75e258::t_3269a25ade48f9 364
+  s_b267f9ac75e258::t_a68a1dfdb7dd54 98
+src/Examples/GroupSwitchDemoNative.hs
+  s_b267f9ac75e258::t_6a8e1e279421b1 40
+  s_b267f9ac75e258::t_8ad851b88b3cf5 30-31
+  s_b267f9ac75e258::t_00446a23031a1f 120,145
+  s_b267f9ac75e258::t_432de493d972bd 1-29,32-39,41-54,60,63-119,121-144,146-184
+  s_b267f9ac75e258::t_0fa16409f3fbc9 55-59,61-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ad312b2bf3cb20a67653353e325c4cd8e7eb4f75",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
