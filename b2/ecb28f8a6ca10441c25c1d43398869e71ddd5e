@@ -1,0 +1,33 @@
+src/Solver/PatternAudit.hs
+  s_b267f9ac75e258::t_11f975bacb1ce6 1-57
+src/Examples/ModelRatchetLimitCycle.hs
+  s_b267f9ac75e258::t_1caf2905b392da 23
+src/Examples/GroupPatternAnalysis.hs
+  s_b267f9ac75e258::t_a7a6d6913ba1aa 1-25,27-39,41-72
+  s_b267f9ac75e258::t_c7226de66a3f6f 26,40
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_89396109916b4a 889-891
+  s_b267f9ac75e258::t_002e0f9288f777 103
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_c94a917dced8c5 209
+  s_b267f9ac75e258::t_1078a8d8c6b52e 309
+example/Main.hs
+  s_b267f9ac75e258::t_679ac5e607a8e5 360
+  s_b267f9ac75e258::t_7191e04e3ee519 96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "b2ecb28f8a6ca10441c25c1d43398869e71ddd5e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
