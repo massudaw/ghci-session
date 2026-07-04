@@ -1,0 +1,27 @@
+src/Examples/ModelCarSim.hs
+  s_194c7cc87fd00f::t_a9404d9af13563 165,167,169-177,180-184
+  s_194c7cc87fd00f::t_b61d8609c27f36 247
+  s_194c7cc87fd00f::t_e678f6c7bf90d2 317
+  s_194c7cc87fd00f::t_4d4b0dbae7bc94 135-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4bb0baa49532f4aaba347bc988442a4d1befc6a8",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
