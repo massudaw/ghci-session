@@ -1,0 +1,29 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_c8b74ce9990272 443
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_f01ae20955ac8b 219-226
+  s_b267f9ac75e258::t_1ec65bfb326ab6 1182-1186
+  s_b267f9ac75e258::t_18023978b46189 1478
+  s_b267f9ac75e258::t_a550c60d861d16 1495-1496
+  s_b267f9ac75e258::t_56e370f367396d 1203-1205,1207
+  s_b267f9ac75e258::t_510df320526106 405-411
+  s_b267f9ac75e258::t_e79231e7680764 990-993,997,1002
+src/Transient.hs
+  s_b267f9ac75e258::t_974b67754ea7bb 1214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d7df5299452fa6a9659be1025a5f920ce4dfccde",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
