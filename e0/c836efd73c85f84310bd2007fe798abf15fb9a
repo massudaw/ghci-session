@@ -1,0 +1,27 @@
+src/Solver/Kron.hs
+  s_b267f9ac75e258::t_262634320f9a95 159-164,166-185,192
+  s_b267f9ac75e258::t_36a61f6110414a 266-275
+  s_b267f9ac75e258::t_d7c8e9765f468b 194-265,276-280
+  s_b267f9ac75e258::t_34e8c91728ecb7 309
+  s_b267f9ac75e258::t_982d0fd5d420fc 35
+  s_b267f9ac75e258::t_62422a732b374f 193,281-308,310-328
+src/Solver/BLT.hs
+  s_b267f9ac75e258::t_a16e7ef2384de0 27
+  s_b267f9ac75e258::t_f49174e32cdd36 88-120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e0c836efd73c85f84310bd2007fe798abf15fb9a",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
