@@ -1,0 +1,31 @@
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_cc27e95a40cdad 91
+src/Examples/RatchetDirectSegmentTest.hs
+  s_b267f9ac75e258::t_db95326d4e0e62 65-76
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_35c28e46ef8291 91-92
+  s_b267f9ac75e258::t_c1f66dd1b70080 62
+  s_b267f9ac75e258::t_c25c454e0df013 315-320
+  s_b267f9ac75e258::t_1a10d2004f1ff0 321-349
+src/Solver/UnionCompile.hs
+  s_b267f9ac75e258::t_e18805246cf21e 326
+  s_b267f9ac75e258::t_21143ce01e3262 133,138-154,178-181,185
+  s_b267f9ac75e258::t_3a4504a7a14510 217,221-228
+  s_b267f9ac75e258::t_769a3eed07a2b0 316
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "887f41c8f06ca9b58370a6b2e481ebbb448caeb9",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
