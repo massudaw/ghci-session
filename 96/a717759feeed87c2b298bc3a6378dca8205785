@@ -1,0 +1,49 @@
+src/Solver/HybridDAE.hs
+  s_b267f9ac75e258::t_d8f3a545b883ec 173-174,178-195
+  s_b267f9ac75e258::t_f689c1f55c4ff7 254-262
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_728fb6c4129578 116-117
+src/Solver/UnionCompile.hs
+  s_b267f9ac75e258::t_ad440d1b1dfeb8 72,79
+  s_b267f9ac75e258::t_b23630213f890d 92-102,108-126
+  s_b267f9ac75e258::t_d9df760f9007cb 347-352,354,360,367-368
+  s_b267f9ac75e258::t_12546b7fdcd12b 208-214,216,219-221
+  s_b267f9ac75e258::t_e5a31a962f77e1 127
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_bc938093a435ed 49-51
+  s_b267f9ac75e258::t_40204c40dee1d8 60
+  s_b267f9ac75e258::t_c231c6c9fcdf03 876
+  s_b267f9ac75e258::t_7553cb22c1c7b7 889
+  s_b267f9ac75e258::t_066f003f08da04 852-875,877-888,890-928
+  s_b267f9ac75e258::t_b6e380c194cee1 1134
+  s_b267f9ac75e258::t_a0618bcade698a 1023
+  s_b267f9ac75e258::t_f5590684b303d4 1110-1120,1123-1124,1126-1133,1135
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_5041da4281a9d9 73,85-86,98
+  s_b267f9ac75e258::t_6c0e86ac3eef5a 106-119
+  s_b267f9ac75e258::t_2ec5297447e5b0 53
+  s_b267f9ac75e258::t_b05cce0eacb4ec 65
+  s_b267f9ac75e258::t_afbbfc11ae30da 191
+  s_b267f9ac75e258::t_5898d61347cf8e 328-331,342-354
+  s_b267f9ac75e258::t_ea5ccc5c428b3f 120-136
+  s_b267f9ac75e258::t_31ddaee46f1bf5 332-341
+  s_b267f9ac75e258::t_3c81d92275422c 493
+  s_b267f9ac75e258::t_b41b2a78acfb66 77-78
+  s_b267f9ac75e258::t_ac4500b693a38b 253-258,261-269,274,276-278,282-284
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "96a717759feeed87c2b298bc3a6378dca8205785",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
