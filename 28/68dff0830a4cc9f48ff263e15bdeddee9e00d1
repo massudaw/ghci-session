@@ -1,0 +1,27 @@
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_4c41a26c37426a 68
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_521de15ab8d34b 38
+  s_b267f9ac75e258::t_9c69346cbcf4f5 310
+  s_b267f9ac75e258::t_15dd28c7bf2e43 298-304,306-308
+  s_b267f9ac75e258::t_3e8fa1c730f141 62-63
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_2f5d11c20fe612 267-276
+  s_b267f9ac75e258::t_ae2a89f087cf49 67-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2868dff0830a4cc9f48ff263e15bdeddee9e00d1",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
