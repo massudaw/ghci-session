@@ -1,0 +1,49 @@
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_d43587ac7cdda9 267-268
+  s_b267f9ac75e258::t_23051b8969eaeb 1405-1419
+  s_b267f9ac75e258::t_66db5efa50651f 55
+  s_b267f9ac75e258::t_00c330afb5da01 66
+  s_b267f9ac75e258::t_b415e0c3dfcfbc 1420-1443
+src/Examples/RatchetJitRepro.hs
+  s_b267f9ac75e258::t_31209c93c154da 1-62
+example/Main.hs
+  s_b267f9ac75e258::t_411b9f01f83c8a 105
+  s_b267f9ac75e258::t_20d53a3657ca5e 378
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_b924ff30592329 322
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_17977403a7a537 222-223
+  s_b267f9ac75e258::t_d02e00957d7c71 383-384
+  s_b267f9ac75e258::t_4903510dcb9364 244-245
+  s_b267f9ac75e258::t_5d4463ee2146a4 382
+  s_b267f9ac75e258::t_6282de3e9bdf34 60
+  s_b267f9ac75e258::t_5ee710c51cb05b 372-375,379-380
+  s_b267f9ac75e258::t_a76b760168d9a0 298,300-339,356-361
+  s_b267f9ac75e258::t_d9fc096a2df6e1 225-226
+  s_b267f9ac75e258::t_3750b98584d604 362-371
+  s_b267f9ac75e258::t_56328b57e7eb1b 62
+  s_b267f9ac75e258::t_88a54680db60cc 376-378
+  s_b267f9ac75e258::t_0c031a64b76c11 381
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_aa48e3c777d71d 114-126,137,141-143,145-150,157-162
+  s_b267f9ac75e258::t_aa4974a2a12ea5 127-136,138-140,144,151-153,155-156
+  s_b267f9ac75e258::t_8c501a5a2b8c33 154
+  s_b267f9ac75e258::t_c961eb1812f5b7 201-206
+  s_b267f9ac75e258::t_37bdfc71617f5a 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7b74fcbe515e32b93d5f87d8b1c81fde7ece9103",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
