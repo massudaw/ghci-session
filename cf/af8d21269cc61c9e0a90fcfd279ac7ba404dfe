@@ -1,0 +1,22 @@
+src/Examples/RatchetCompilePathDiff.hs
+  s_b267f9ac75e258::t_c8066b29c5b76d 22,26,28,37,39
+  s_b267f9ac75e258::t_68511b335e8f3e 27
+  s_b267f9ac75e258::t_84b9f4f5e0323a 115-128,130-146
+  s_b267f9ac75e258::t_bf4c2bb78396e0 129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "cfaf8d21269cc61c9e0a90fcfd279ac7ba404dfe",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
