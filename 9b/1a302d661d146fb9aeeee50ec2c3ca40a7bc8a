@@ -1,0 +1,28 @@
+src/Solver/HybridDAE.hs
+  s_b267f9ac75e258::t_56a6bff0f9420f 45
+  s_b267f9ac75e258::t_a50c33afb33a34 162-215
+  s_b267f9ac75e258::t_3c85d2f557995a 41-44
+  s_b267f9ac75e258::t_64aa6526e880cb 217-234
+src/Solver/HybridTypes.hs
+  s_b267f9ac75e258::t_ff9058b8d671a3 1-30
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_ede3e2bb5feab5 204
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_ec35b9a24b518a 51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "9b1a302d661d146fb9aeeee50ec2c3ca40a7bc8a",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
