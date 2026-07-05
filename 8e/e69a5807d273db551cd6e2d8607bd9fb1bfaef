@@ -1,0 +1,23 @@
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_de2896bc8b03c5 199-205,207
+  s_b267f9ac75e258::t_010abd1ab7db95 37
+src/Solver/HybridDAE.hs
+  s_b267f9ac75e258::t_48c7bd0a6350bf 172-186
+  s_b267f9ac75e258::t_1e755de3f32caa 171
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "8ee69a5807d273db551cd6e2d8607bd9fb1bfaef",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
