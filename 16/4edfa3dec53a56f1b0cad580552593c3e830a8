@@ -1,0 +1,23 @@
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_41f06af333d19c 170,172
+  s_b267f9ac75e258::t_d913125cde84e8 2-24,27-29,32-34,45,51-52,67-69,71-80,82-137,139-168,171,173-174,182,194-223
+  s_b267f9ac75e258::t_710d01cae8b674 44
+  s_b267f9ac75e258::t_47b6dc4942c189 81
+  s_b267f9ac75e258::t_17fbd2b4d496bb 138,169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "164edfa3dec53a56f1b0cad580552593c3e830a8",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
