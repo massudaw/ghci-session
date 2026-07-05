@@ -1,0 +1,65 @@
+src/Examples/UnionGroupsAnalysis.hs
+  s_b267f9ac75e258::t_a16e6894386709 46
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_f74faa5707b0de 320
+  s_b267f9ac75e258::t_092f756c0b0bc4 212
+example/Main.hs
+  s_b267f9ac75e258::t_f6550c5c83a3df 376
+  s_b267f9ac75e258::t_01953e3f92e095 104
+src/Solver/UnionGroups.hs
+  s_b267f9ac75e258::t_5e3c57f8aa68f4 24
+  s_b267f9ac75e258::t_f94e7860de22c9 45,53-60
+  s_b267f9ac75e258::t_bb00c5b079512c 124
+  s_b267f9ac75e258::t_146a89c06c9937 137,147
+  s_b267f9ac75e258::t_b9cc6a2d1d7b6d 61
+src/Solver/UnionSession.hs
+  s_b267f9ac75e258::t_315ea84c986ee7 107-122
+  s_b267f9ac75e258::t_2c22514a6a373e 45
+  s_b267f9ac75e258::t_35573f09e2edb4 1-35,37,46-49,51-53,55-106,123-137,142-173,175-176,179,181,185-186,188,190-210,213-214,217,219-220,228-233,283-286,289-290,317-325,327-332
+  s_b267f9ac75e258::t_7392c455acb9c3 36,39-41,44,54,138-141,174,180,182-184,187,189,218,287-288,326,333-337
+  s_b267f9ac75e258::t_86335f45e07f3f 177-178
+  s_b267f9ac75e258::t_c4c93b90a2a640 211-212
+  s_b267f9ac75e258::t_5d023704a32a10 221-227
+  s_b267f9ac75e258::t_9f183894484504 215-216
+  s_b267f9ac75e258::t_30db04d558d03d 239-241,244-262
+  s_b267f9ac75e258::t_295b555c8fd52d 263-275
+  s_b267f9ac75e258::t_ed270a87c8412a 279
+  s_b267f9ac75e258::t_242b6061296732 291-300
+  s_b267f9ac75e258::t_022dc7920059e6 42-43
+  s_b267f9ac75e258::t_df8c7a05b000c8 301-316
+  s_b267f9ac75e258::t_57db510c70fb5d 38
+  s_b267f9ac75e258::t_714b90831f380d 50
+  s_b267f9ac75e258::t_56085f647aa842 234-238,242-243,282
+  s_b267f9ac75e258::t_e24e77634d447f 276-278,280-281
+src/Transient.hs
+  s_b267f9ac75e258::t_1dccc321f1d84e 46
+  s_b267f9ac75e258::t_8474ac0fdfc0e0 45
+  s_b267f9ac75e258::t_d6f74dd70f99aa 971-994
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_5619e19b21413b 1331-1335
+  s_b267f9ac75e258::t_1896c27ca29416 67
+src/Examples/UnionSessionValidate.hs
+  s_b267f9ac75e258::t_aea09e375dae69 1-13,15-20,23,26,29-31,34-73,109-137
+  s_b267f9ac75e258::t_108de26ce7624d 74-108
+  s_b267f9ac75e258::t_1c4cf70222cdf0 24
+  s_b267f9ac75e258::t_de524bfd130efe 21-22,33
+  s_b267f9ac75e258::t_c356708d9f54c3 25
+  s_b267f9ac75e258::t_5a09a99212bc8e 27-28,32
+  s_b267f9ac75e258::t_01a9e37fa4cf89 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "1c04414460e7761a7720eb6dcd7c51331407dcfb",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
