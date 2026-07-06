@@ -1,0 +1,100 @@
+golden/ModelCombustionEngine/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 12
+golden/ModelThermoElectric/residuals.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-4,9,24-25
+golden/BermudanSwaptionExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-202,204-404,406-606,608-808,810-1010
+golden/ModelBattery/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 5
+golden/ModelHydraulicTransient/residuals.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-3,5,11
+golden/GasChamberHeating/residuals.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-5,7
+golden/ModelThermoElectric/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 7-13
+golden/FXOptionHedgingExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 82-86,100-102,104-110
+golden/ModelFertilizerDAE/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 23
+golden/PendulumTransient/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 4-9
+golden/GasChamberHeating/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 3
+golden/BlackScholesPutExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 36-58
+golden/ModelNeuronSpike/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-3
+golden/ModelRotationalMotor/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 5,8
+golden/SwaptionExample/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 418-618
+src/Equation.hs
+  s_194c7cc87fd00f::t_2421c71d8520e5 430,436-444
+  s_194c7cc87fd00f::t_70b0d59864f1a3 445
+golden/ModelPiezoelectric/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 13-16,20-21,23
+golden/FXDynamicHedgingExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 82-86,100-102,104-110
+golden/ModelElectroMechanical/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 9-11
+golden/GasChamberHeating/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2
+golden/AmericanOptionExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 36-58
+golden/HeatEquationExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-6,10-13,21-22,24,27,29,31-32,34-40,45-54
+golden/ModelDiodeClamp/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 10
+golden/ModelElectroMagneticValve/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 10
+golden/ModelElectroPneumatic/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2
+golden/AmericanOptionExample/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 6-9
+golden/ModelFrameStress/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 4
+golden/ModelNeuronSpike/residuals.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-5,7
+golden/ModelNeuronSpike/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 3-5,7-9,11-15
+golden/ModelPneumaticSuspension/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 13
+golden/MagneticCircuit/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2
+golden/ModelRocketLiftoff/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 75-76
+golden/ModelThermoEngine/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 8,10-11,13-17
+golden/SwaptionExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-202,204-404,406-606,608-808
+golden/ModelPiezoActuator/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 8,12
+golden/ModelPneumaticPiston/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 7,9-11
+golden/ForceSimple/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 34,42,44,47-52,67,70-71,74
+golden/ModelFertilizerTransient/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 23
+golden/ModelLiftRegen/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 9,12-13,15-18
+golden/ModelTEFull/transient.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 8,11,40-41,57
+golden/VasicekSwapExample/solutions.txt
+  s_194c7cc87fd00f::t_11e26ed56a6bbc 2-7,9-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7811993bf4eef23aa3b9ef007fcffb6efa1b2cca",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
