@@ -1,0 +1,96 @@
+example/Main.hs
+  s_b267f9ac75e258::t_bfe831bf9ce924 149
+  s_b267f9ac75e258::t_c734f05426d515 324
+  s_b267f9ac75e258::t_c4ba6ad69a889c 148
+  s_b267f9ac75e258::t_431ef1b7a0309e 325
+src/JIT/jit_nvector_simd.c
+  s_b267f9ac75e258::t_f0ce2d720f0c24 2-5,38-57
+  s_b267f9ac75e258::t_759d1ccbc0997e 136-146
+  s_b267f9ac75e258::t_efed3c256b3e20 8-11
+  s_b267f9ac75e258::t_a2097af21e9f79 70-85,111-135,162,165-170,173-174,176-194,213
+  s_b267f9ac75e258::t_498c90d604c412 12-28
+  s_b267f9ac75e258::t_ee8c9c43f2c4d2 163-164,171-172,175,195-205,211
+  s_b267f9ac75e258::t_0eefe8755b0e38 295-308
+  s_b267f9ac75e258::t_cb573504e0b231 32
+  s_b267f9ac75e258::t_0d68fd4857926d 31
+  s_b267f9ac75e258::t_f50098b3e518b5 222-294,309-310,315-317
+  s_b267f9ac75e258::t_d599a96afc90e4 6-7
+  s_b267f9ac75e258::t_ca03c588ae3e72 151
+  s_b267f9ac75e258::t_2730ac49619479 318-321
+  s_b267f9ac75e258::t_8345f5b40cd8f2 1,29-30,33-37,58-69,93-110,147-150,152-161,206-210,212,214-221,311-314,322-323
+  s_b267f9ac75e258::t_c4ae81c522f959 86-92
+src/JIT/jit_trampoline.c
+  s_b267f9ac75e258::t_e63d56df8310b2 521-529
+  s_b267f9ac75e258::t_c780746986521d 617-643,645-647,659-664,666-667,672-676
+  s_b267f9ac75e258::t_1d1fe3557edaff 657
+  s_b267f9ac75e258::t_27c3f9c6523c5a 644,648-656,658,665,668-671
+  s_b267f9ac75e258::t_37afd5c0effbd6 555-569
+  s_b267f9ac75e258::t_a126fcfc81ecc1 705-706,719
+golden/ModelRelaxationOsc/selective_report.txt
+  s_b267f9ac75e258::t_9a24c532999ca1 20
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_7e560c8d38a01a 438-439
+  s_b267f9ac75e258::t_69e601c0d61919 202-203,216-218
+  s_b267f9ac75e258::t_b893cee4dc66a1 131-144,155-160,163-166,172-173,195-199
+  s_b267f9ac75e258::t_2edadd3b85f6ce 31
+  s_b267f9ac75e258::t_b77273485bf273 245
+  s_b267f9ac75e258::t_e0cc3fabe39e83 98-105
+  s_b267f9ac75e258::t_ca51631f3112f5 307,323,333,335-336,338-339,344-345,350-352,365
+  s_b267f9ac75e258::t_57f211675d1e36 200
+src/Model/CrowbarDiodeCoupling.hs
+  s_b267f9ac75e258::t_0c87eca8090d4e 1,16-22,27-69,86,94-100,113-124,127-129,131-135,137-148
+  s_b267f9ac75e258::t_90593b85c4ff51 90
+  s_b267f9ac75e258::t_665842dc363dcd 91
+golden/ModelRelaxationOsc/transient.txt
+  s_b267f9ac75e258::t_9a24c532999ca1 5-13
+golden/ModelRelaxationOsc/equations.txt
+  s_b267f9ac75e258::t_9a24c532999ca1 12-14,34
+src/Examples/NVectorSIMDTest.hs
+  s_b267f9ac75e258::t_08478e5c9a0946 6-10
+  s_b267f9ac75e258::t_72761dd0d61bf5 19,21,24,76-82,84-90,96-107,109,112-120,123-124,126,128,130-131,133,137-138,207-221
+  s_b267f9ac75e258::t_c7d02cdc102b92 142-205
+  s_b267f9ac75e258::t_37e551832e3921 1-5,11-18,25-43,59-75,83,91-95,108,110-111,121-122,125,127,129,132,134-136,139-141,206
+  s_b267f9ac75e258::t_4f13bc2f613ff5 20,22-23,44-58
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_75c6ecab63767b 1652
+  s_b267f9ac75e258::t_f44752ce70df56 205-207,209-218
+  s_b267f9ac75e258::t_5d852dfda16d54 999
+  s_b267f9ac75e258::t_9f8b62ccc15050 113
+  s_b267f9ac75e258::t_a373d3b66772c8 363
+  s_b267f9ac75e258::t_d5edbf06a1d5f0 125-126
+  s_b267f9ac75e258::t_ba13a853b3373c 57
+  s_b267f9ac75e258::t_d0ef4732ba52d4 1600-1609,1613-1618
+  s_b267f9ac75e258::t_e1789686f93739 1676
+  s_b267f9ac75e258::t_f35291e9572bde 208,219-220
+  s_b267f9ac75e258::t_c0b68f58a0e133 131
+  s_b267f9ac75e258::t_413aa47c99f5c9 1165-1183
+  s_b267f9ac75e258::t_b4ab13973f1ad7 1318
+src/Solver/ICRepair.hs
+  s_b267f9ac75e258::t_b5517dfbbcb345 1-108
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_d3109754a97d86 276
+  s_b267f9ac75e258::t_1b445bf6376259 190
+  s_b267f9ac75e258::t_bc61337a0cd30a 461
+  s_b267f9ac75e258::t_21fa7c4dda0527 275
+golden/ModelRelaxationOsc/solver_audit.txt
+  s_b267f9ac75e258::t_9a24c532999ca1 4,6
+src/Examples/ICRepairTest.hs
+  s_b267f9ac75e258::t_06cbba2c805061 84-91
+  s_b267f9ac75e258::t_881f3deb67e11a 1-83,92-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "20b32f2d88d6ce7e06589afd71263498fa19d464",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
