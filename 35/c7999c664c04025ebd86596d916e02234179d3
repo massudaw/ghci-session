@@ -1,0 +1,21 @@
+golden/ModelCarDrive/equations.txt
+  s_194c7cc87fd00f::t_489ca22350b3d0 168,179
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_434a517d6da106 153,318
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "35c7999c664c04025ebd86596d916e02234179d3",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
