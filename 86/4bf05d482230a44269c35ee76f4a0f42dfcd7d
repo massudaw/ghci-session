@@ -1,0 +1,74 @@
+src/Project.hs
+  s_b267f9ac75e258::t_aeb00b4f7e7a0b 53
+src/JIT/Schedule.hs
+  s_b267f9ac75e258::t_d025cedd58f26f 79-84
+  s_b267f9ac75e258::t_9241e439efa4c3 5-11,13-20,22
+docs/jit/JIT_DESIGN.md
+  s_b267f9ac75e258::t_7739ba5cb71b2e 9
+  s_b267f9ac75e258::t_f37815736a33a9 294-346
+  s_b267f9ac75e258::t_0f14231c5e5392 150-152,160-167
+  s_b267f9ac75e258::t_b657330c4f11e9 3-8,10-11,15-18,20-23,25-29,33,37-38,41-44,48,52,54-60,62,65,68,70-74,80-140,144,148-149,153-159,168-175,180-192,195-198,202,204,206-210,213-214,226-229,233,252-253,281,347-377
+  s_b267f9ac75e258::t_986bc84cdd44bd 256-280
+  s_b267f9ac75e258::t_92beb22d49cea3 282-293
+  s_b267f9ac75e258::t_8afd931e82b8df 215-225,230-232,234-251,254-255
+  s_b267f9ac75e258::t_2228f08a11b5fe 176-179
+src/JIT/TapeOptimize.hs
+  s_b267f9ac75e258::t_ba26365d51b6ae 1-43,50-51,61-81,84
+  s_b267f9ac75e258::t_83d837c00698b6 44-49,52-60,82-83
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_9843ed99bc3700 195-198
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_01825b331e452d 394,407-408
+  s_b267f9ac75e258::t_471ce8f4ed4d09 439,446-450,458-461
+  s_b267f9ac75e258::t_a0bbf39dced85a 340-341
+  s_b267f9ac75e258::t_6bde029d83ff51 313,318
+  s_b267f9ac75e258::t_80f72be4911fd0 60,62
+  s_b267f9ac75e258::t_18ca14e3941b53 131-154
+  s_b267f9ac75e258::t_f57cbf807283b2 222-229,232-247,249-268,270,272
+  s_b267f9ac75e258::t_7e2bcb47e7e44e 55,61
+  s_b267f9ac75e258::t_e2e0dd3cd404cd 382
+  s_b267f9ac75e258::t_c3cd6b66cc08fe 98-101,103-104,106-119
+  s_b267f9ac75e258::t_9a2dd7ce11b634 180,195,201
+  s_b267f9ac75e258::t_9826e0e65a74a3 39,52-53,67
+src/JIT/Tape.hs
+  s_b267f9ac75e258::t_0e571cf840cb15 49-51
+  s_b267f9ac75e258::t_98792d468c0d03 559-572,576-577
+src/JIT/Compiler.hs
+  s_b267f9ac75e258::t_ef04fd098c7040 172-177,179-183,186,192,195-197
+  s_b267f9ac75e258::t_dd0ad4bb9744ee 6-12,27,33,36
+  s_b267f9ac75e258::t_92a30179c903ad 39,42,44-51
+  s_b267f9ac75e258::t_8d6ff7475ad2a7 249-252,259-267,270-280
+  s_b267f9ac75e258::t_b005d503e00731 94
+  s_b267f9ac75e258::t_7f28953ab831ec 236-241,243-248,258,284-285
+  s_b267f9ac75e258::t_398381762a6688 223
+  s_b267f9ac75e258::t_0f5df4e3914b5e 315
+  s_b267f9ac75e258::t_fe4e4c70cb634f 329-330,332,339-341,346-348,357,362
+  s_b267f9ac75e258::t_d98a4cac66ee46 78
+  s_b267f9ac75e258::t_122b64850043bd 53,57-59,61
+  s_b267f9ac75e258::t_b64f5233324dec 74-76,79
+  s_b267f9ac75e258::t_34d30d75a30d3e 92-93
+  s_b267f9ac75e258::t_632acf14b6f00d 242,255,257,268-269,283,286
+src/JIT/CopyPatch.hs
+  s_b267f9ac75e258::t_552fc55493be86 368-398,408-410
+  s_b267f9ac75e258::t_91eebcd9ca2392 47-49
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_51555fc29cd723 132
+src/Examples/JITTest.hs
+  s_b267f9ac75e258::t_2fa3ad2c6d981d 11-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "864bf05d482230a44269c35ee76f4a0f42dfcd7d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
