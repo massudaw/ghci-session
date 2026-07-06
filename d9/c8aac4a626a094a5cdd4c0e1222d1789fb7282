@@ -1,0 +1,116 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_e1b73fe7c8b831 277-278
+  s_194c7cc87fd00f::t_6636965344a624 426,437-438
+  s_194c7cc87fd00f::t_98d93a9166d24f 10-12,31-37
+  s_194c7cc87fd00f::t_4b18029a491e73 69-70,80,91-92,114-116,118,130-131
+  s_194c7cc87fd00f::t_3be8106fd28ab9 362,364-365
+  s_194c7cc87fd00f::t_17c9bf0c3e7901 375-376,378,380-384
+  s_194c7cc87fd00f::t_798c74796a16f7 117
+  s_194c7cc87fd00f::t_7208542efbbcfe 72,181
+  s_194c7cc87fd00f::t_57ed4d538e98b2 178-180,182-184,205-207,213-215
+  s_194c7cc87fd00f::t_2bdf2862982ef0 310-315
+  s_194c7cc87fd00f::t_177e2d597e906f 48
+  s_194c7cc87fd00f::t_80f1e5fbd1be57 351,355
+  s_194c7cc87fd00f::t_799eb867f88535 6
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_4b18029a491e73 365
+src/Model/ThermalDerateCoupling.hs
+  s_194c7cc87fd00f::t_7d2c4e1d285641 66-69
+  s_194c7cc87fd00f::t_ecad298d4a4c1a 1-65,70-83
+golden/MagneticCircuit/solutions.txt
+  s_194c7cc87fd00f::t_99edb3a949e20a 2
+golden/ModelElectroMagneticValve/solutions.txt
+  s_194c7cc87fd00f::t_4c37f6dd777636 10
+golden/ModelElectroMechanical/solutions.txt
+  s_194c7cc87fd00f::t_d454892166cdea 9-11
+golden/ModelElectroPneumatic/solutions.txt
+  s_194c7cc87fd00f::t_2c3d9d85c35f33 2
+golden/ModelFertilizerDAE/solutions.txt
+  s_194c7cc87fd00f::t_f2df8eb3aa8616 23
+golden/ModelFertilizerTransient/solutions.txt
+  s_194c7cc87fd00f::t_65ed23ab229a6e 23
+golden/ModelHydraulicTransient/residuals.txt
+  s_194c7cc87fd00f::t_4769e438c39729 2-3,5,11
+golden/ModelPneumaticPiston/solutions.txt
+  s_194c7cc87fd00f::t_0c30bf96a1a981 7,9-11
+golden/ModelRotationalMotor/solutions.txt
+  s_194c7cc87fd00f::t_c5f8e1242a0dd7 5,8
+golden/AmericanOptionExample/solutions.txt
+  s_194c7cc87fd00f::t_2b221e9acdc647 36-58
+golden/AmericanOptionExample/transient.txt
+  s_194c7cc87fd00f::t_7529d3f34aa77f 6-9
+golden/BermudanSwaptionExample/solutions.txt
+  s_194c7cc87fd00f::t_cb3c9493e62c93 2-202,204-404,406-606,608-808,810-1010
+golden/BlackScholesPutExample/solutions.txt
+  s_194c7cc87fd00f::t_bf50664b62683f 36-58
+golden/FXDynamicHedgingExample/solutions.txt
+  s_194c7cc87fd00f::t_420bd4160986be 82-86,100-102,104-110
+golden/FXOptionHedgingExample/solutions.txt
+  s_194c7cc87fd00f::t_177712bd2e827f 82-86,100-102,104-110
+golden/ForceSimple/solutions.txt
+  s_194c7cc87fd00f::t_524c240b2bddd2 34,42,44,47-52,67,70-71,74
+golden/GasChamberHeating/residuals.txt
+  s_194c7cc87fd00f::t_aef7afccc3d840 2-5,7
+golden/GasChamberHeating/solutions.txt
+  s_194c7cc87fd00f::t_3010dc65f4c77b 2
+golden/GasChamberHeating/transient.txt
+  s_194c7cc87fd00f::t_632a267b741761 3
+golden/HeatEquationExample/solutions.txt
+  s_194c7cc87fd00f::t_a0f4ef688fda13 2-6,10-13,21-22,24,27,29,31-32,34-40,45-54
+golden/ModelBattery/solutions.txt
+  s_194c7cc87fd00f::t_704446801663c9 5
+golden/ModelCombustionEngine/transient.txt
+  s_194c7cc87fd00f::t_8c7538c1c071bc 12
+golden/ModelDiodeClamp/transient.txt
+  s_194c7cc87fd00f::t_ea5e6e5549e49b 10
+golden/ModelFrameStress/transient.txt
+  s_194c7cc87fd00f::t_9f8ce7de9f41bb 4
+golden/ModelLiftRegen/transient.txt
+  s_194c7cc87fd00f::t_6ab99210354dbc 9,12-13,15-18
+golden/ModelNeuronSpike/residuals.txt
+  s_194c7cc87fd00f::t_4186e9a0bda69c 2-5,7
+golden/ModelNeuronSpike/solutions.txt
+  s_194c7cc87fd00f::t_fa5640891187d6 2-3
+golden/ModelNeuronSpike/transient.txt
+  s_194c7cc87fd00f::t_a55c95ac497aa6 3-5,7-9,11-15
+golden/ModelPiezoActuator/solutions.txt
+  s_194c7cc87fd00f::t_19b345faa8a245 8,12
+golden/ModelPiezoelectric/solutions.txt
+  s_194c7cc87fd00f::t_71bbae74c29efe 13-16,20-21,23
+golden/ModelPneumaticSuspension/transient.txt
+  s_194c7cc87fd00f::t_1ca6532f40f893 13
+golden/ModelRocketLiftoff/transient.txt
+  s_194c7cc87fd00f::t_3903ef6c48c551 75-76
+golden/ModelTEFull/transient.txt
+  s_194c7cc87fd00f::t_21b2d8f64fd033 8,11,40-41,57
+golden/ModelThermoElectric/residuals.txt
+  s_194c7cc87fd00f::t_1a50de1ff8d57c 2-4,9,24-25
+golden/ModelThermoElectric/solutions.txt
+  s_194c7cc87fd00f::t_156c3bbcbedaec 7-13
+golden/ModelThermoEngine/transient.txt
+  s_194c7cc87fd00f::t_eea726367b6a16 8,10-11,13-17
+golden/PendulumTransient/transient.txt
+  s_194c7cc87fd00f::t_1ff0c39b125347 4-9
+golden/SwaptionExample/solutions.txt
+  s_194c7cc87fd00f::t_005edd1dfc59c6 2-202,204-404,406-606,608-808
+golden/SwaptionExample/transient.txt
+  s_194c7cc87fd00f::t_7b939c232b1347 418-618
+golden/VasicekSwapExample/solutions.txt
+  s_194c7cc87fd00f::t_76afdf9dd209e0 2-7,9-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d9c8aac4a626a094a5cdd4c0e1222d1789fb7282",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
