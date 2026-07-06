@@ -1,0 +1,33 @@
+src/Model/PropThrustCoupling.hs
+  s_194c7cc87fd00f::t_84956958d9530c 1-67,74-87
+  s_194c7cc87fd00f::t_708b00cb123dcf 68-73
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_e4712a5951908c 356,369
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_3561fce1c1ded6 32-35
+  s_194c7cc87fd00f::t_ed49de262776c5 133
+  s_194c7cc87fd00f::t_d6448f97b2e2d2 85
+  s_194c7cc87fd00f::t_264ffb0f105051 114-117
+  s_194c7cc87fd00f::t_0f688e26734eb7 51
+  s_194c7cc87fd00f::t_959fca773eff2b 152-164,168-169
+  s_194c7cc87fd00f::t_a749a83f1e9128 1-31,36-50,52-81,83-84,86-113,118-132,134-151,165-167,170-181,183-191
+  s_194c7cc87fd00f::t_234f109e75c0ac 82,182
+example/Main.hs
+  s_194c7cc87fd00f::t_e4712a5951908c 133,403
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0418dfaed1ffa0588d94bbcb96e542f16fb8f427",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
