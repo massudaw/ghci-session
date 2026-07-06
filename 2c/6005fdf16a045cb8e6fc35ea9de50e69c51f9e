@@ -1,0 +1,47 @@
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_1b90eacda75db7 131
+  s_b267f9ac75e258::t_02c9c36cc2a59c 965-972
+  s_b267f9ac75e258::t_ef2cff9dd28a4e 993
+src/Examples/ModelTEFullBench.hs
+  s_b267f9ac75e258::t_32b04e2d9807ef 3,7
+  s_b267f9ac75e258::t_24369c24d6cee4 41
+docs/jit/JIT_DESIGN.md
+  s_b267f9ac75e258::t_c9babe9bbf13d6 40-46
+docs/jit/JIT_PHASE4_COPYPATCH.md
+  s_b267f9ac75e258::t_a63f3bf8489959 24-27
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_f73d50f4ee1e5e 346
+  s_b267f9ac75e258::t_ce7d4efac574a0 234
+  s_b267f9ac75e258::t_a26d1a44d82bd3 127,129
+  s_b267f9ac75e258::t_6efba70906dd56 112,114-117
+  s_b267f9ac75e258::t_f80957632d6a64 471
+  s_b267f9ac75e258::t_2759ea5da370bf 68
+  s_b267f9ac75e258::t_8e5338b800cf89 509
+  s_b267f9ac75e258::t_2d608d6ec808cb 225
+  s_b267f9ac75e258::t_18038f7b6b2859 292,329
+src/Solver/KINSOL.hs
+  s_b267f9ac75e258::t_1e3a9a8480d1be 7
+src/JIT/CopyPatch.hs
+  s_b267f9ac75e258::t_35e6110ed47070 59,63
+  s_b267f9ac75e258::t_bab48ca4358391 104-107,110
+src/JIT/Compiler.hs
+  s_b267f9ac75e258::t_7a5583d909b11b 85
+  s_b267f9ac75e258::t_e53d764b1f491b 261
+  s_b267f9ac75e258::t_cece8207a4ab01 304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2c6005fdf16a045cb8e6fc35ea9de50e69c51f9e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
