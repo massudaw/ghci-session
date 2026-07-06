@@ -1,0 +1,26 @@
+DESIGN.md
+  s_b267f9ac75e258::t_6ab8750312d774 91,104-152
+  s_b267f9ac75e258::t_2858675f9469d0 234-240
+  s_b267f9ac75e258::t_98e4f8b329c51a 90,92-103
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_df300b0b14d493 194-227,230-233,238-240
+  s_b267f9ac75e258::t_73301c5c7646cc 503-512,515
+  s_b267f9ac75e258::t_cf609a5af9916e 513-514,516
+  s_b267f9ac75e258::t_c54e744bb03a43 268-278,280-281
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d81188021dd6547a6268d218077ed5ce9d1e9fae",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
