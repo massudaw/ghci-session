@@ -1,0 +1,51 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_148aa456256978 367
+golden/ModelCarDrive/solver_audit.txt
+  s_194c7cc87fd00f::t_ba05472f3c3e21 4,6,10,12
+golden/ModelCarDrive/selective_report.txt
+  s_194c7cc87fd00f::t_ba05472f3c3e21 28,32,36
+src/Model/ClutchCoupling.hs
+  s_194c7cc87fd00f::t_275c3bd4fd037b 78
+  s_194c7cc87fd00f::t_83c44a8cd783b5 1-16,18-20,22,32-54,56-77,79-87,89-102
+  s_194c7cc87fd00f::t_01ebc6feccb2b6 17,21,23-31,55,88
+src/Model/HybridControllerCoupling.hs
+  s_194c7cc87fd00f::t_bde55126fd660e 112,123-126,133,136-147
+  s_194c7cc87fd00f::t_addfe90af360e7 69,73-74
+  s_194c7cc87fd00f::t_2fe4c3e2dc54b8 24-28
+  s_b267f9ac75e258::t_86ce564908d91e 148
+golden/ModelCarDrive/equations.txt
+  s_194c7cc87fd00f::t_ba05472f3c3e21 5-6,14-16,20-25,29-34,38-43,47-61,139-150,152-163,170-171,173-177,179,181,183,185,187,189,191,193,195,197,199,201,203,205,207,209,211,213,215,217,219,221,223,225,227,255,259,263
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_55aacde29de0b3 146,306
+  s_194c7cc87fd00f::t_f9c7065fde9880 307
+  s_194c7cc87fd00f::t_86975a0b210b80 142
+  s_194c7cc87fd00f::t_44057142effb04 26-39
+  s_194c7cc87fd00f::t_711706a03efa74 147
+  s_194c7cc87fd00f::t_3b7d9c23044fc1 88,116,139-141,143-145
+  s_194c7cc87fd00f::t_fc723c4f301669 300-301,303-305,308-309
+  s_194c7cc87fd00f::t_92a43665af8f3b 148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e3eacadac39146f0052b24704aaa1bea4dd98874",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
