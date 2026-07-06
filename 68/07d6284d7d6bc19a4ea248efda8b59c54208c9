@@ -1,0 +1,40 @@
+golden/ModelCarDrive/solver_audit.txt
+  s_194c7cc87fd00f::t_f834a9c5e5e56b 7-12
+src/Model/DriveCycleCoupling.hs
+  s_194c7cc87fd00f::t_c6116a3dfc3917 29-35,78,82
+  s_194c7cc87fd00f::t_c896159db481d6 1-28,36-72,74-77,79-81,83-106
+  s_194c7cc87fd00f::t_6e7a0cdd7fc117 73
+golden/ModelCarDrive/equations.txt
+  s_194c7cc87fd00f::t_f834a9c5e5e56b 1-12,14-65,68-71,74-77,80-83,86-89,92-95,98-101,104-107,111-115,117-126,128-132,134-135,137,139-150,152-163,165-169,171-175,177,179,181,183,185,187,189,191,193,195,197,199,201,203,205,207,209,211,213,215,217,219,221,223-225
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_fd64aa7b627ca8 41-49
+  s_194c7cc87fd00f::t_06933534d498bf 174-177,179,187-191,201-206,208-209,211
+  s_194c7cc87fd00f::t_a6cb37297c63fc 407,484
+  s_194c7cc87fd00f::t_2a17c6011a8b73 464,471,473-474
+  s_194c7cc87fd00f::t_f9db67702ce0c8 207,210
+  s_194c7cc87fd00f::t_84686f886e3e6b 83-84,106,141-150
+  s_194c7cc87fd00f::t_7d475096b219ff 449-463,465-470,472,475-477
+  s_194c7cc87fd00f::t_81ca3e02bb28a3 151
+src/Model/AeroDragCoupling.hs
+  s_194c7cc87fd00f::t_064e30bc4886ad 51
+  s_194c7cc87fd00f::t_6e7a0cdd7fc117 60
+  s_194c7cc87fd00f::t_e76be36e54b4e0 1-50,52-59,61-79
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_2169ac1371d978 366-367
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6807d6284d7d6bc19a4ea248efda8b59c54208c9",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
