@@ -1,0 +1,23 @@
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_a34177e8f8cc47 101-103
+  s_b267f9ac75e258::t_12c151fb89fea6 100
+  s_b267f9ac75e258::t_5b740ae60fc99c 99
+  s_b267f9ac75e258::t_0932c3e815d1c4 22-24
+  s_b267f9ac75e258::t_8994e4481e72a4 143-148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "c1bdc0b617bcb98599ddad57441470edecf7d26e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
