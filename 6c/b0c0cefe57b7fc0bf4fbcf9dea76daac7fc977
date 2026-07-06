@@ -1,0 +1,29 @@
+run_golden_tests.sh
+  s_194c7cc87fd00f::t_88959600bcee1f 71
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_88959600bcee1f 350
+golden/ModelCarDrive/solver_audit.txt
+  s_194c7cc87fd00f::t_88959600bcee1f 1-6
+golden/ModelCarDrive/equations.txt
+  s_194c7cc87fd00f::t_88959600bcee1f 1-258
+golden/ModelCarDrive/status.txt
+  s_194c7cc87fd00f::t_88959600bcee1f 1
+golden/ModelCarDrive/selective_report.txt
+  s_194c7cc87fd00f::t_88959600bcee1f 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6cb0c0cefe57b7fc0bf4fbcf9dea76daac7fc977",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
