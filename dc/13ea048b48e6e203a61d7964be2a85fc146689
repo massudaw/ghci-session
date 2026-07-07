@@ -1,0 +1,47 @@
+src/Solver/IDA.hs
+  s_b267f9ac75e258::t_66f87b037686a2 1410
+  s_b267f9ac75e258::t_03ef6021749775 1618
+  s_b267f9ac75e258::t_c56cb08a60b68a 97
+  s_b267f9ac75e258::t_7b4efaea574ad4 1231
+  s_b267f9ac75e258::t_b34a0d1bf37ed6 131
+  s_b267f9ac75e258::t_30c6bcd15a2396 1023
+  s_194c7cc87fd00f::t_6b946fd63e2fff 1082-1084
+src/JIT/Compiler.hs
+  s_b267f9ac75e258::t_21ae6591786d9f 22-23
+  s_b267f9ac75e258::t_754bbda57533a6 99
+  s_b267f9ac75e258::t_e85e7569a21258 177,210,291
+  s_b267f9ac75e258::t_a972f55f59374b 125-130,143,146,148
+  s_b267f9ac75e258::t_f961acc7afda9b 81
+src/JIT/Schedule.hs
+  s_b267f9ac75e258::t_fd35f16e20f3e3 2-3,5-16,18-21,24,39,49-50,52,54-55,57,62-65,68
+src/Solver/Kron.hs
+  s_b267f9ac75e258::t_6a7c9aaa977a1d 375
+src/Project.hs
+  s_b267f9ac75e258::t_d4df33e2b7be92 631-632
+src/JIT/CopyPatch.hs
+  s_b267f9ac75e258::t_7deb64e0d34210 403
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "dc13ea048b48e6e203a61d7964be2a85fc146689",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
