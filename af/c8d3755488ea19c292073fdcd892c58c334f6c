@@ -1,0 +1,35 @@
+src/Model/BatteryPackCoupling.hs
+  s_194c7cc87fd00f::t_13b584741aa65d 1-118
+golden/ModelQuadcopter/selective_report.txt
+  s_194c7cc87fd00f::t_f7e7f12cbc4dd8 20
+golden/ModelQuadcopter/equations.txt
+  s_194c7cc87fd00f::t_f7e7f12cbc4dd8 2-9,11-15,17-20,23-55,83-89,91-98,100-108,110-118,120-122,124-126,128,130,132-134,136-138,140,142,144-146,148-150,152,154,156-158,160-162,164,166,168,188
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_9ee42e1f8ed196 371
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_cbdedf6341f544 135-145
+  s_194c7cc87fd00f::t_a5edd1b2a200df 181-193,209,213-214,217,222-226
+  s_194c7cc87fd00f::t_44996cd1f85035 77-87
+  s_194c7cc87fd00f::t_0382bcf91c2cc7 106-108,119,124-125
+  s_194c7cc87fd00f::t_cfeaafc3651679 255-256,266-267
+  s_194c7cc87fd00f::t_377a670d4ec612 109,111
+  s_194c7cc87fd00f::t_22d38c78e505e8 357-363,365-366,371-372
+golden/ModelQuadcopter/solver_audit.txt
+  s_194c7cc87fd00f::t_f7e7f12cbc4dd8 4,6,10,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "afc8d3755488ea19c292073fdcd892c58c334f6c",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
