@@ -1,0 +1,38 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_ba3b7dda396412 370
+src/Model/AttitudeHoldCoupling.hs
+  s_194c7cc87fd00f::t_e24913904242aa 103-114,118-120
+  s_194c7cc87fd00f::t_05d3cc0a34a67d 137-143,146
+  s_194c7cc87fd00f::t_a42e5b588b89b0 75,77,79
+  s_194c7cc87fd00f::t_8738f552f6e277 102,115-117
+  s_194c7cc87fd00f::t_6f6a46de7e6e35 16-17,19-20,22-30,35-39
+  s_194c7cc87fd00f::t_b9d3f3cb091bcd 1-15,18,21,31-34,40-74,76,78,80-101,121-136,144-145,147-160
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_031cc0a1a4f047 303
+  s_194c7cc87fd00f::t_9440ffc74c31ff 183,185-190,192
+  s_194c7cc87fd00f::t_f2b4c1132da6a4 129-134,136
+  s_194c7cc87fd00f::t_66ed14e5883ccf 229,260
+  s_194c7cc87fd00f::t_93b0856ce9b03e 287-302,304,306-311,313-322
+  s_194c7cc87fd00f::t_d286225787a739 61-78
+  s_194c7cc87fd00f::t_f85987b791c6a7 216-226
+  s_194c7cc87fd00f::t_6695c27e3e1c6a 82,86,96,109
+  s_194c7cc87fd00f::t_cc119b57b589ce 176,181,184
+  s_194c7cc87fd00f::t_270f6521c357ea 305,312
+  s_194c7cc87fd00f::t_9073120f756eca 191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2a1b2d42a14ecfeb05611650f23e46c5ff0bdba9",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
