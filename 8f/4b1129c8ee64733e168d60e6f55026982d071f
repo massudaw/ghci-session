@@ -1,0 +1,40 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_5aa842aa870bfd 372
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_b46f37781d0567 368
+  s_194c7cc87fd00f::t_face02938ce8e0 220
+  s_194c7cc87fd00f::t_64a285d9c83dcc 363-367,369
+  s_194c7cc87fd00f::t_b36eed74087f89 234
+  s_194c7cc87fd00f::t_2f540b12266869 179-212
+  s_194c7cc87fd00f::t_d4f171c99af0f5 259
+  s_194c7cc87fd00f::t_7f9963df6bed14 370
+  s_194c7cc87fd00f::t_6f58958424e6f3 739-745,747
+  s_194c7cc87fd00f::t_8aa8fa601ecc76 279-285
+  s_194c7cc87fd00f::t_2d1510c3a036e4 715-720,723
+src/Model/GroundContactCoupling.hs
+  s_194c7cc87fd00f::t_54ca4c93e80273 1-72,74-77,89,92-106
+  s_194c7cc87fd00f::t_f2bf41d12fa86d 73
+  s_194c7cc87fd00f::t_a14c3f7e04bf57 78-88,90-91
+golden/ModelQuadcopter/equations.txt
+  s_194c7cc87fd00f::t_feb6951d4e86f4 11,23-25,29-31,41-43,47-52,56-58,88-92,112,114-125,127-128,130,132-142,144,146-148,150,152,154,156,158-160,162,164,166,168,170-172,174,176,178,180,182-184,186,188,190,210
+golden/ModelQuadcopter/selective_report.txt
+  s_194c7cc87fd00f::t_ad3850e898607b 20
+golden/ModelQuadcopter/solver_audit.txt
+  s_194c7cc87fd00f::t_4433585d5cd94a 4,6,10,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "8f4b1129c8ee64733e168d60e6f55026982d071f",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
