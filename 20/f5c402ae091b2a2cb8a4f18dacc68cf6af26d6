@@ -1,0 +1,20 @@
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_3d39f04b173aac 643-644
+  s_194c7cc87fd00f::t_eac2ea923b626e 652
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "20f5c402ae091b2a2cb8a4f18dacc68cf6af26d6",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
