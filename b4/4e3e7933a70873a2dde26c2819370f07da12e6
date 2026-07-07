@@ -1,0 +1,27 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_194c7cc87fd00f::t_9360c21713a4a3 1077-1087
+  s_194c7cc87fd00f::t_32b0e06ae469b6 1304-1305,1307-1316
+  s_194c7cc87fd00f::t_5b5b112abb4070 33-35
+  s_194c7cc87fd00f::t_8e55f6c9c2b83e 1250-1256,1258-1267,1269-1272,1277-1287
+  s_194c7cc87fd00f::t_0a688cec412a73 1163
+  s_194c7cc87fd00f::t_4eb4dcce2aa21c 1185
+  s_194c7cc87fd00f::t_88d12423d3102b 1327-1328,1334
+  s_194c7cc87fd00f::t_0dab9a414c675b 1357
+  s_194c7cc87fd00f::t_618e121d329aae 1123,1131-1133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "b44e3e7933a70873a2dde26c2819370f07da12e6",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
