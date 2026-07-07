@@ -1,0 +1,34 @@
+DESIGN.md
+  s_b267f9ac75e258::t_f2b5598df3a040 361-438
+src/JIT/Sectioned.hs
+  s_b267f9ac75e258::t_33d91910123ae7 696-699,707-741
+  s_b267f9ac75e258::t_bf0b99c01af3f2 858-864
+  s_b267f9ac75e258::t_f2ee504f3755f9 865-868
+  s_b267f9ac75e258::t_77afdce0c101f1 874-878
+  s_b267f9ac75e258::t_7d2eda8fb421ae 1266
+  s_b267f9ac75e258::t_dc266fafd734ab 1008-1014,1028-1040,1049
+  s_b267f9ac75e258::t_0b0609b5396b70 1066
+  s_b267f9ac75e258::t_15587d09083c14 89-98
+  s_b267f9ac75e258::t_62a26a47312d12 917-923,927-937,939,941
+  s_b267f9ac75e258::t_33e4aad2533bfd 685-687
+  s_b267f9ac75e258::t_638dc807d3bddc 869-873
+  s_b267f9ac75e258::t_7f988222d5d9bf 1249
+  s_b267f9ac75e258::t_fd6945322d7ee8 682-684
+  s_b267f9ac75e258::t_9bf7cf49e2346c 679-681
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "18698d1403dd4baa94ab7e8742bd2c13b19b4d84",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
