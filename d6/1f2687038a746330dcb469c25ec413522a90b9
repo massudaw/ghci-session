@@ -1,0 +1,33 @@
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_d2058ad015dbdd 545
+  s_194c7cc87fd00f::t_071b0909d48112 594,597-599
+  s_194c7cc87fd00f::t_e1e770b106c9e2 591
+  s_194c7cc87fd00f::t_640d7506b60d70 162-178
+  s_194c7cc87fd00f::t_e8af85358135fd 353
+golden/ModelQuadcopter/selective_report.txt
+  s_194c7cc87fd00f::t_27d992b8939de2 20
+golden/ModelQuadcopter/solver_audit.txt
+  s_194c7cc87fd00f::t_27d992b8939de2 10,12
+golden/ModelQuadcopter/equations.txt
+  s_194c7cc87fd00f::t_27d992b8939de2 113-125,127-128,130,132,134,136-138,140,142,144,146,148-150,152,154,156,158,160-162,164,166,168,170,172-174,176,178,180,200
+src/Model/AttitudeHoldCoupling.hs
+  s_194c7cc87fd00f::t_d2e302463b8d75 85,89,103,106,123-127,129-133,135,158-163,166-167,171-179
+  s_194c7cc87fd00f::t_5a6cb673b24a25 164
+  s_194c7cc87fd00f::t_1863961754853c 16-17,19-22,24-47,52-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "d61f2687038a746330dcb469c25ec413522a90b9",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
