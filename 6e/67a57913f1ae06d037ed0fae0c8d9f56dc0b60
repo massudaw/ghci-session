@@ -1,0 +1,35 @@
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_2efd6a1eabde49 617-623
+  s_194c7cc87fd00f::t_e0ddedf42e2e96 641-662
+  s_194c7cc87fd00f::t_fcb97cf0d01134 665
+  s_194c7cc87fd00f::t_e51bfb0424ce4a 698-710
+  s_194c7cc87fd00f::t_4f659e000ceab9 610-614,616
+  s_194c7cc87fd00f::t_a72440051e629f 615
+  s_194c7cc87fd00f::t_5244a3defdd724 711-717
+  s_194c7cc87fd00f::t_d2dce0e52d39ad 799-814
+  s_194c7cc87fd00f::t_8c513db09d0b42 788-798
+  s_194c7cc87fd00f::t_6905b4ce087b6d 752
+src/Solver/SolverAudit.hs
+  s_194c7cc87fd00f::t_a4cfc241df1bb1 60-63,65-78,80
+src/Solver/HybridDAE.hs
+  s_194c7cc87fd00f::t_16659e9ab3ea1a 2
+  s_194c7cc87fd00f::t_0ba8f006375f19 411,418
+  s_194c7cc87fd00f::t_b604dc813ba70e 395-410,412,419
+  s_194c7cc87fd00f::t_ebf6d7eed674ab 298-313
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6e67a57913f1ae06d037ed0fae0c8d9f56dc0b60",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
