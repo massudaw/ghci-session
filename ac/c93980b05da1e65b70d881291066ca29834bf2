@@ -1,0 +1,27 @@
+sprinkler-solver.cabal
+  s_194c7cc87fd00f::t_bc998ed907dbfa 443
+src/Rendering/DiffCSG.hs
+  s_194c7cc87fd00f::t_d91c2a868e685b 9
+  s_194c7cc87fd00f::t_a589fdd268166e 33-46,54-56,63-65
+  s_194c7cc87fd00f::t_234a87b16413a9 66
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_156d687de9cf3d 264
+  s_194c7cc87fd00f::t_9692717a05029d 1
+  s_194c7cc87fd00f::t_d11f0660bba61a 814-824,827
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "acc93980b05da1e65b70d881291066ca29834bf2",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
