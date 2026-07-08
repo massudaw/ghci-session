@@ -1,0 +1,29 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_8d0ac88e908394 434
+  s_194c7cc87fd00f::t_37fd90fe1825ae 510
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_8d0ac88e908394 857
+  s_194c7cc87fd00f::t_37fd90fe1825ae 92,154,708,810
+src/Examples/ModelCarSim.hs
+  s_194c7cc87fd00f::t_37fd90fe1825ae 258,271
+  s_194c7cc87fd00f::t_8d0ac88e908394 259
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_8d0ac88e908394 482,572,785
+  s_194c7cc87fd00f::t_37fd90fe1825ae 478,621,632,781
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "67a476424296d0060903c260a956fbfe66c161bb",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
