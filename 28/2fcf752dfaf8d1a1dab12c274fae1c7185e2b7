@@ -1,0 +1,23 @@
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_c4ddde03aeb2a9 509-528
+  s_194c7cc87fd00f::t_2df2d2afe6ec4d 1
+  s_194c7cc87fd00f::t_5b907eb8c32b48 76
+  s_194c7cc87fd00f::t_0d51bc729d6f77 544
+  s_194c7cc87fd00f::t_d8b74008d40541 564-578
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "282fcf752dfaf8d1a1dab12c274fae1c7185e2b7",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
