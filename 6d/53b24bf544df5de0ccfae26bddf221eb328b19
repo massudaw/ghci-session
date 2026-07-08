@@ -1,0 +1,44 @@
+src/Examples/ModelCarSim.hs
+  s_194c7cc87fd00f::t_37902988c0a632 44
+  s_194c7cc87fd00f::t_e294b54cfc41dc 253-254,259-260
+  s_194c7cc87fd00f::t_4278328c44352d 31
+  s_194c7cc87fd00f::t_29d38ff4c79d6c 264,340
+src/Examples/ModelFireSprinkler.hs
+  s_194c7cc87fd00f::t_599b582e7edcc3 482-483,529-530,569-570,615-616,751-752,785-786
+  s_194c7cc87fd00f::t_b664e4eb138f20 625
+  s_194c7cc87fd00f::t_488ee71501727f 48
+  s_194c7cc87fd00f::t_ab943ebeb8d05a 67
+  s_194c7cc87fd00f::t_5cafea930f14c4 476,613
+  s_194c7cc87fd00f::t_3cdc6d0fb042d2 572-574,576-577
+src/Utils.hs
+  s_194c7cc87fd00f::t_8ca09072af40ea 4-11
+src/Examples/ModelQuadcopter.hs
+  s_194c7cc87fd00f::t_fc2fdd0093399d 518,549,725,898
+  s_194c7cc87fd00f::t_d5288d86656944 284
+  s_194c7cc87fd00f::t_b95ec524e1443e 298
+  s_194c7cc87fd00f::t_87975be7f26312 857-858
+src/Examples/ModelCarDrive.hs
+  s_194c7cc87fd00f::t_2c65fbf6f995e2 78
+  s_194c7cc87fd00f::t_496a8675c91405 445,494,519
+  s_194c7cc87fd00f::t_670fedd3be43e2 101
+  s_194c7cc87fd00f::t_1e66ede195e0a9 434-435
+src/Transient.hs
+  s_194c7cc87fd00f::t_883c8c833b2567 35
+  s_194c7cc87fd00f::t_6ccc8dd5817b7e 254-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6d53b24bf544df5de0ccfae26bddf221eb328b19",
+  "prompts": {},
+  "sessions": {
+    "s_194c7cc87fd00f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0a130cf0-b953-49f8-906b-2d6a7627c4ac",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
