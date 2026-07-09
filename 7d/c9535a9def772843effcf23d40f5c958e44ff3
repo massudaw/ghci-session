@@ -1,0 +1,88 @@
+src/Examples/Convection3DExample.hs
+  s_b267f9ac75e258::t_8d7a4666932f50 36,49,51,53,55,63-66,87,95,98-105,108-109,111-112,123,135-136,139,171,173,180,182,192
+  s_b267f9ac75e258::t_412e1738d25a71 20
+golden/Convection3DExample/solutions.txt
+  s_b267f9ac75e258::t_d1c254a2fa8aa4 1,242,255
+src/Examples/ModelACConditioner.hs
+  s_b267f9ac75e258::t_35b30a3efa6faf 271-276
+  s_b267f9ac75e258::t_bc612d3576e462 69-70,97,412-413,427,552
+  s_b267f9ac75e258::t_aa18170ad7c86d 270
+  s_b267f9ac75e258::t_9df43463c7231e 397
+src/Field.hs
+  s_b267f9ac75e258::t_0bd5643e9b1a7d 1,7,78
+  s_b267f9ac75e258::t_e27adbd229f04e 127
+  s_b267f9ac75e258::t_143ba0fce16358 2-5,8-77,79-126,128-140,143-304
+  s_b267f9ac75e258::t_36980cb487ca77 6
+  s_b267f9ac75e258::t_1efe49345f55b2 141-142
+src/Model/RoomAirCoupling.hs
+  s_b267f9ac75e258::t_2d424b7c37b02b 30-31,41-42,45,49,56
+src/Examples/Convection2DExample.hs
+  s_b267f9ac75e258::t_8d7a4666932f50 39,52,57-58,64-66,96,99-106,109-110,112,128,144,173-174,176-177,186-187,191,196,214
+  s_b267f9ac75e258::t_412e1738d25a71 22
+golden/Convection3DExample/equations.txt
+  s_b267f9ac75e258::t_d1c254a2fa8aa4 1,75-85,87-97,99-109,135-145,147-157,159-169,242-255,329-335,337-343,345-351,353-359,361-367,369-375,377-383,393-399,401-407,409-415,417-423,425-431,433-439,441-447,457-463,465-471,473-479,481-487,489-495,497-503,505-511,521-527,529-535,537-543,545-551,553-559,561-567,569-575,585-591,593-599,601-607,609-615,617-623,625-631,633-639,649-655,657-663,665-671,673-679,681-687,689-695,697-703,713-719,721-727,729-735,737-743,745-751,753-759,761-767
+src/Examples/LiftChainRender.hs
+  s_b267f9ac75e258::t_bc612d3576e462 41,52,55-62
+  s_b267f9ac75e258::t_412e1738d25a71 29
+DOMAINS.md
+  s_b267f9ac75e258::t_995b5a324d35fe 629-678
+src/Examples/RoomAirConditioningExample.hs
+  s_b267f9ac75e258::t_10b97773e9a651 30-31,40,67-69,73-74,76-78,89-90,100,102
+  s_b267f9ac75e258::t_412e1738d25a71 72,75
+src/Model.hs
+  s_b267f9ac75e258::t_2d424b7c37b02b 92,267
+src/Examples/RoomConvectionExample.hs
+  s_b267f9ac75e258::t_b11c6d51844a04 24,42-44,48,51-58
+  s_b267f9ac75e258::t_412e1738d25a71 74
+  s_b267f9ac75e258::t_aa18170ad7c86d 19
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_2d424b7c37b02b 285
+golden/Convection3DExample/residuals.txt
+  s_b267f9ac75e258::t_d1c254a2fa8aa4 5-6,251-252,269-270
+golden/Convection2DExample/equations.txt
+  s_b267f9ac75e258::t_ad598c203ab919 1,27-49,51-73,75-97,99-121,123-145,170-195,217-235,237-255,257-275,277-295,297-315,317-335,337-355,357-375,377-395,397-415,417-435,437-455,457-475,477-495,497-515,517-535,537-555,557-575,577-595
+golden/Convection2DExample/residuals.txt
+  s_b267f9ac75e258::t_e6c912b75dadc8 5-6,179-180,209-210
+golden/Convection2DExample/solutions.txt
+  s_b267f9ac75e258::t_e1544a850e23be 1,170,195
+golden/ModelACConditioner/equations.txt
+  s_b267f9ac75e258::t_10527e46ad31a9 32-39,99-106
+golden/ModelACConditioner/position_audit.txt
+  s_b267f9ac75e258::t_69513996a3662a 2
+golden/ModelACConditioner/residuals.txt
+  s_b267f9ac75e258::t_02a882815c1a23 12,56
+golden/ModelACConditioner/solutions.txt
+  s_b267f9ac75e258::t_0ad3fc38be91dd 24
+golden/ModelACConditioner/transient.txt
+  s_b267f9ac75e258::t_3ff7e85c139493 11
+golden/RoomAirConditioningExample/equations.txt
+  s_b267f9ac75e258::t_1e0399312500a0 6-11,13-17
+golden/RoomAirConditioningExample/position_audit.txt
+  s_b267f9ac75e258::t_bcfbd3c8b348ea 2
+golden/RoomAirConditioningExample/residuals.txt
+  s_b267f9ac75e258::t_4a7f6f92aaffcb 7,14
+golden/RoomAirConditioningExample/solutions.txt
+  s_b267f9ac75e258::t_16fa0da82632bf 1
+golden/RoomConvectionExample/equations.txt
+  s_b267f9ac75e258::t_2bb2f34764e4d1 1-26
+golden/RoomConvectionExample/residuals.txt
+  s_b267f9ac75e258::t_6a4e7a720e6442 5-6
+golden/RoomConvectionExample/solutions.txt
+  s_b267f9ac75e258::t_999dbbc7737bf3 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7dc9535a9def772843effcf23d40f5c958e44ff3",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

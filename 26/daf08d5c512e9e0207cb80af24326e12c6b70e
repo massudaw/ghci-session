@@ -1,0 +1,56 @@
+src/Field.hs
+  s_b267f9ac75e258::t_b0fc26f639074e 9
+  s_b267f9ac75e258::t_0aab84dfc33f8c 55
+  s_b267f9ac75e258::t_b4ba5bc82865f3 101-113,115-118,121-135
+  s_b267f9ac75e258::t_80e3bc93284362 194,196-197
+  s_b267f9ac75e258::t_bb96fc9862e175 234,236-237
+  s_b267f9ac75e258::t_62e398ca2f9d67 279-281,288-293,296
+DOMAINS.md
+  s_b267f9ac75e258::t_468dc406193228 710-752
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_54174c90a453c5 287
+src/Examples/Convection3DExample.hs
+  s_b267f9ac75e258::t_ad982c75929886 108-109,111-112,135-136
+src/Examples/RoomConvectionExample.hs
+  s_b267f9ac75e258::t_ad982c75929886 42-43
+src/Examples/Convection2DExample.hs
+  s_b267f9ac75e258::t_ad982c75929886 109-110,173-174,176-177
+example/Main.hs
+  s_b267f9ac75e258::t_54174c90a453c5 153,334
+src/Examples/FieldVariableExample.hs
+  s_b267f9ac75e258::t_1fed868259ba89 54
+  s_b267f9ac75e258::t_ef45dba579a33e 1-38,40-53,55-84,89-91,101-134,138-142,146-163,165-258
+  s_b267f9ac75e258::t_54174c90a453c5 39,85-88,92-100,135-137,143-145,164
+src/Examples/ModelACConditioner.hs
+  s_b267f9ac75e258::t_ad982c75929886 412-413
+run_golden_tests.sh
+  s_b267f9ac75e258::t_54174c90a453c5 71
+src/Examples/RoomAirConditioningExample.hs
+  s_b267f9ac75e258::t_ad982c75929886 89-90
+golden/FieldVariableExample/equations.txt
+  s_b267f9ac75e258::t_239452463ca89d 1-372
+golden/FieldVariableExample/position_audit.txt
+  s_b267f9ac75e258::t_f4b615a9fd39bf 1-9
+golden/FieldVariableExample/residuals.txt
+  s_b267f9ac75e258::t_6bf16d5f4b01c2 1-392
+golden/FieldVariableExample/solutions.txt
+  s_b267f9ac75e258::t_4f3b11e5111947 1-372
+golden/FieldVariableExample/status.txt
+  s_b267f9ac75e258::t_e9a31dc5f8afd4 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "26daf08d5c512e9e0207cb80af24326e12c6b70e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

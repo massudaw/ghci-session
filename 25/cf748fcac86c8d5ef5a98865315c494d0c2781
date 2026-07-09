@@ -1,0 +1,80 @@
+golden/BermudanSwaptionExample/equations.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 7-8,19-201,210-211,222-404,432-433,444-626,635-636,647-829,857-858,869-1051,1060-1061,1072-1254,1282-1283,1294-1476,1485-1486,1497-1679,1707-1708,1719-1901,1910-1911,1922-2104
+golden/SwaptionExample/equations.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 7-8,19-201,210-211,222-404,432-433,444-626,635-636,647-829,857-858,869-1051,1060-1061,1072-1254,1282-1283,1294-1476,1485-1486,1497-1679
+src/Examples/BlackScholesSupport.hs
+  s_b267f9ac75e258::t_68fc9131564ac5 39
+  s_b267f9ac75e258::t_de7c757478f759 21-22,213-217
+  s_b267f9ac75e258::t_f3f95c4448ed26 38,53-54,56,65-68,76-79,82-84,88,94-95,132,161,205-212
+  s_b267f9ac75e258::t_c06f8e030917e6 218
+src/Examples/AmericanOptionExample.hs
+  s_b267f9ac75e258::t_de7c757478f759 52
+golden/VasicekSwapExample/position_audit.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 2
+golden/AmericanOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 2
+src/Financial.hs
+  s_b267f9ac75e258::t_9acacad5ddcfd0 73,174-182,188,193,199,206-211,300-301,306,322,332,390,400,415
+  s_b267f9ac75e258::t_aec1509b6d0225 126-131,134-136,140,144,150-154,218-221,224-225,228-229,246-247,271-274,287-288
+  s_b267f9ac75e258::t_f2a1cf5315ff3d 262-263,267-268
+  s_b267f9ac75e258::t_f6924033b1c601 293-296,298-299,302-303,305,317-318,328-329,344,349,353-356,572-573,576-578,581-582,585-586,589-590,593-596
+src/Examples/GenericSparseTransient.hs
+  s_b267f9ac75e258::t_de7c757478f759 63
+  s_b267f9ac75e258::t_37aad1725a3a6f 31
+src/Examples/VasicekSwapExample.hs
+  s_b267f9ac75e258::t_de7c757478f759 46,51
+src/Examples/BermudanSwaptionExample.hs
+  s_b267f9ac75e258::t_37aad1725a3a6f 29
+  s_b267f9ac75e258::t_de7c757478f759 58,62,120
+golden/VasicekSwapExample/equations.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 11-16,19-57,70-75,78-116
+golden/FXAccumulatorExample/position_audit.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 2
+DOMAINS.md
+  s_b267f9ac75e258::t_43a22dbec5c253 753-791
+golden/SwaptionExample/transient.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 220-221,232-414
+src/Examples/FXAccumulatorExample.hs
+  s_b267f9ac75e258::t_de7c757478f759 65,101
+  s_b267f9ac75e258::t_37aad1725a3a6f 32,69
+golden/BermudanSwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 2
+src/Examples/SwaptionExample.hs
+  s_b267f9ac75e258::t_de7c757478f759 53,57
+golden/SwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_cd38bdc3bb634a 2
+golden/BlackScholesExample/position_audit.txt
+  s_b267f9ac75e258::t_215db686929ca5 2
+golden/BlackScholesPutExample/position_audit.txt
+  s_b267f9ac75e258::t_cc365320829482 2
+golden/DigitalOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_d24efebeaea98a 2
+golden/FXDynamicHedgingExample/equations.txt
+  s_b267f9ac75e258::t_61f5ca38d547c4 6-13,15-44,46-110,118-125,127-156,158-222
+golden/FXDynamicHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_cda9b7e30e3fb2 2
+golden/FXOptionHedgingExample/equations.txt
+  s_b267f9ac75e258::t_546ef8d69454a6 6-13,15-44,46-110,118-125,127-156,158-222
+golden/FXOptionHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_b12e7237299220 2
+golden/OptionGreeksExample/position_audit.txt
+  s_b267f9ac75e258::t_49556b766ba3bc 2
+golden/OptionVegaExample/position_audit.txt
+  s_b267f9ac75e258::t_9dc4496088a424 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "25cf748fcac86c8d5ef5a98865315c494d0c2781",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
