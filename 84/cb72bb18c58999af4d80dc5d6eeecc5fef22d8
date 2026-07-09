@@ -1,0 +1,28 @@
+src/Examples/PositionConsistencyTest.hs
+  s_b267f9ac75e258::t_c77df0d4ba376d 29
+  s_b267f9ac75e258::t_c04938e523b02a 157-159,162
+  s_b267f9ac75e258::t_983a5904e772ea 99-122
+src/Position.hs
+  s_b267f9ac75e258::t_c8171006c49e12 655-672,679
+  s_b267f9ac75e258::t_e9610d9d9a65b9 674
+golden/ModelFertilizerThermal/position_audit.txt
+  s_b267f9ac75e258::t_e2eee0e1aefffc 3
+DOMAINS.md
+  s_b267f9ac75e258::t_47f9e4d9dc51c8 223-318
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "84cb72bb18c58999af4d80dc5d6eeecc5fef22d8",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
