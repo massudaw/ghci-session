@@ -1,0 +1,41 @@
+golden/ModelSaoJorge/solutions.txt
+  s_b267f9ac75e258::t_133725d3b99059 2-11,13-115,117-141,143-167,169-193,195-219,221-297,299-323,325-349,351-375,377-692,694-696,699-1087,1089,1091,1093,1095,1097,1099
+golden/ModelSimple/equations.txt
+  s_b267f9ac75e258::t_32e26fb86b1afd 11-12
+golden/ModelSimple/solutions.txt
+  s_b267f9ac75e258::t_32e26fb86b1afd 2-9
+src/Examples/ModelSaoJorge.hs
+  s_b267f9ac75e258::t_0419f12180ed8c 115-119
+  s_b267f9ac75e258::t_d262a87de27270 120-124
+src/Examples/ModelSimple.hs
+  s_b267f9ac75e258::t_194e1d54392074 35-45,47
+golden/ModelSaoJorge/equations.txt
+  s_b267f9ac75e258::t_133725d3b99059 394
+golden/ModelSimple/position_audit.txt
+  s_b267f9ac75e258::t_32e26fb86b1afd 2-4
+DOMAINS.md
+  s_b267f9ac75e258::t_a04292b38f4c0b 372
+  s_b267f9ac75e258::t_eab72ce856cfc7 326-329
+  s_b267f9ac75e258::t_1de94b6e65dba9 282-325,330-371
+golden/ModelSaoJorge/position_audit.txt
+  s_b267f9ac75e258::t_133725d3b99059 2-3,6,8,11-12,14-15,42-43,45-46,49-52,55
+tools/CoherenceSweep.hs
+  s_b267f9ac75e258::t_007e87bbce6f69 7-23
+  s_b267f9ac75e258::t_18fe426fd8c1df 1-6,24-374
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "85c0f27278e659a3d377ed64fb3c50011b1d7166",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,315 @@
+golden/ModelBattery/solutions.txt
+  s_b267f9ac75e258::t_b54f811e441254 5,9
+golden/ModelSimple2/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ModelDiodeClamp/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 10
+golden/ModelPneumaticPiston/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ForceSimple/equations.txt
+  s_b267f9ac75e258::t_b21c1a2dc055e7 42-77
+golden/ModelDCPump/position_audit.txt
+  s_b267f9ac75e258::t_b21c1a2dc055e7 5
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 4
+  s_b267f9ac75e258::t_6d3c454cd420b5 1,3
+golden/ModelHydraulicTransient/residuals.txt
+  s_b267f9ac75e258::t_9b77de42352189 2-3,5,11
+golden/ModelRocketFeed/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 4,8,10-11
+golden/BermudanSwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/GasChamberHeating/solutions.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 2
+golden/SwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/GasChamberHeating/residuals.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 2-5,7
+golden/ModelThermoEngine/transient.txt
+  s_b267f9ac75e258::t_b54f811e441254 8,10-11,13-17
+golden/ForceSimple/position_audit.txt
+  s_b267f9ac75e258::t_b21c1a2dc055e7 14-28
+  s_b267f9ac75e258::t_a4669289847a7c 1-13,29-34
+DOMAINS.md
+  s_b267f9ac75e258::t_1071619b34024f 39,43,63-103,105,112,142
+  s_b267f9ac75e258::t_3e8147ea413158 168-181
+  s_b267f9ac75e258::t_a3f0c90b72c30d 104,106-111,113,115-131,134-137,139-141,143-147,149-151,153-155,157-167,183-190
+  s_b267f9ac75e258::t_ae675c86b949e6 114
+  s_b267f9ac75e258::t_60433b0ea7433b 152,156,182
+  s_b267f9ac75e258::t_8ea0ff57d140ba 192-273
+  s_b267f9ac75e258::t_3e335832e67bba 49
+  s_b267f9ac75e258::t_08eb7e710087a7 132-133
+  s_b267f9ac75e258::t_ec452786c37c27 40-42,44-48,50-62,191
+  s_b267f9ac75e258::t_b794e70e59b4c7 148
+  s_b267f9ac75e258::t_25acd6c72ecc2a 138
+golden/ModelBeamContactStress/transient.txt
+  s_b267f9ac75e258::t_ccbabf538999ed 8
+golden/ModelClosedLoopEnergyCycle/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_67fe9e2440028a 1
+src/Force.hs
+  s_b267f9ac75e258::t_c2def8b1c700cf 658-664,666
+golden/AmericanOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/BlackScholesPutExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/BlackScholesPutExample/solutions.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 2-35,59-60
+golden/RoomConvectionExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/ModelCombustionEngine/transient.txt
+  s_b267f9ac75e258::t_b54f811e441254 15
+src/Project.hs
+  s_b267f9ac75e258::t_f169809d543bd8 555,752
+  s_b267f9ac75e258::t_2798c4c68b3dae 547
+  s_b267f9ac75e258::t_df45a10819e8a5 745
+  s_b267f9ac75e258::t_7b0bf4786606ab 613,710
+  s_b267f9ac75e258::t_c0e5acdc07c159 513,527,539,548,607,670,703,746,766
+  s_b267f9ac75e258::t_f5070e1fedbe84 40
+  s_b267f9ac75e258::t_d501a19a7567fd 556,614,711,753
+src/Examples/PositionConsistencyTest.hs
+  s_b267f9ac75e258::t_af37a6a1017ea5 6-8,14-17,19-26
+  s_b267f9ac75e258::t_c5d447b02f962a 32,35-36
+  s_b267f9ac75e258::t_8e803f85f26490 98-119,131
+  s_b267f9ac75e258::t_7d337784934f3c 1-2
+  s_b267f9ac75e258::t_13810ba9c60826 43-46
+  s_b267f9ac75e258::t_eebb00188d800e 124-126,128,130,134
+  s_b267f9ac75e258::t_a5db7d6ec6b3ff 57-70
+  s_b267f9ac75e258::t_f9d4d6a1d67651 3-4,9-12,27-31,33-34,37-42,47-56,71-78,83,87-97,120-123,127,129,132-133,135-137
+  s_b267f9ac75e258::t_0a395b5836b16b 5,13,18,79-82,84-86
+golden/ModelSliderCrank/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_b54f811e441254 1,3
+golden/ModelThermalExpansion/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/FXDynamicHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+example/Main.hs
+  s_b267f9ac75e258::t_b21d20faef7f71 326
+  s_b267f9ac75e258::t_9a687b27164927 150
+golden/ModelExcavatorArm/equations.txt
+  s_b267f9ac75e258::t_ccbabf538999ed 2-4,8-10
+golden/ModelCombustionEngine/solutions.txt
+  s_b267f9ac75e258::t_b54f811e441254 4,6,9,12-13,15-16
+golden/ModelNeuronSpike/residuals.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 2-5,7
+golden/AmericanOptionExample/transient.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 6-9
+golden/OptionVegaExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/ModelSliderCrank/solutions.txt
+  s_b267f9ac75e258::t_b54f811e441254 3-4,6-7,9
+golden/ModelSolenoidActuator/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 4-5,10-11,21
+golden/CantileverBeam3D/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/ModelThermoEngine/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_b54f811e441254 1
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+golden/MagneticCircuit/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 2
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_ef59e4281bcf1b 278
+golden/ModelLiftRegen/transient.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 9,11,16-18
+validate_golden_tests.sh
+  s_b267f9ac75e258::t_d453db1ba08c56 275-288
+  s_b267f9ac75e258::t_c4921fe4b46df1 313-316
+golden/ModelSolenoidActuator/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_128d4084a0210e 1
+golden/FXOptionHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/RoomAirConditioningExample/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_8705dbec9563f2 1
+  s_b267f9ac75e258::t_b21c1a2dc055e7 2
+golden/PositionConsistencyTest/status.txt
+  s_b267f9ac75e258::t_3b632292053aa6 1
+golden/GasChamberHeating/transient.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 3
+golden/ModelGasPiston/position_audit.txt
+  s_b267f9ac75e258::t_b54f811e441254 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/ModelFertilizerTransient/solutions.txt
+  s_b267f9ac75e258::t_b63ee8b4608eb0 23
+golden/ForceSimple/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 39,42-77,89
+golden/ModelPiezoelectric/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_43c8b3b79e2e05 1
+golden/ModelThermoElectric/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 7-13
+golden/ModelRocket/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/PendulumTransient/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 4-9
+golden/ModelACConditioner/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3-7
+  s_b267f9ac75e258::t_b21c1a2dc055e7 2
+  s_b267f9ac75e258::t_0741b50ab91440 1
+golden/ModelNeuronSpike/solutions.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 2-3
+golden/ModelSimple/position_audit.txt
+  s_b267f9ac75e258::t_b21c1a2dc055e7 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 3-9
+  s_b267f9ac75e258::t_d76beec1d4ce57 1,10
+golden/ModelRocketPressureFed/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 4
+golden/OptionGreeksExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/ModelFertilizerThermal/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_b21c1a2dc055e7 8-9,15,19,26-27,29-32
+  s_b267f9ac75e258::t_b63ee8b4608eb0 1,28
+  s_b267f9ac75e258::t_81d3d13161ccd2 3-7,10-14,16-18,20-25
+golden/ModelRocket/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 3-7
+golden/ModelPiezoelectric/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 7,12-16,20-21,23
+golden/ModelThermoEngine/solutions.txt
+  s_b267f9ac75e258::t_b54f811e441254 17,19-22,25-26,28-29,32,34
+golden/ModelHydraulicAirDuct/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ModelFrameStress/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 4
+golden/ModelCombustionEngine/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_b54f811e441254 1,3
+golden/ModelElectroMechanical/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 9-11
+golden/ModelThermoElectric/residuals.txt
+  s_b267f9ac75e258::t_9b77de42352189 2-4,9,24-25
+golden/ModelNeuronSpike/transient.txt
+  s_b267f9ac75e258::t_0b14d055ac9187 3-5,7-9,11-15
+golden/FXOptionHedgingExample/solutions.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 82-86,100-102,104-110
+golden/ModelDCPump/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 6,14
+golden/ModelHydraulicPipeNetwork/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/VasicekSwapExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+run_golden_tests.sh
+  s_b267f9ac75e258::t_3253c4adbf5342 67
+golden/DigitalOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+golden/ModelPneumaticSuspension/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 13
+golden/ModelBeamContactStress/solver_audit.txt
+  s_b267f9ac75e258::t_ccbabf538999ed 2,10-11
+golden/FXDynamicHedgingExample/solutions.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 82-86,100-102,104-110
+src/Position.hs
+  s_b267f9ac75e258::t_20c5b60579b16f 603
+  s_b267f9ac75e258::t_ce74d87c93b6d8 45
+  s_b267f9ac75e258::t_3a77ede6f382ed 54-60,62-64
+  s_b267f9ac75e258::t_7faf841f57b2b4 68-75
+  s_b267f9ac75e258::t_aece58910b6bf9 652-659,661-665
+  s_b267f9ac75e258::t_b7c7f7857a82d3 699,701-706,711-713,716,718
+  s_b267f9ac75e258::t_8df5e3067b6393 616-628,633-649,651,666-674
+  s_b267f9ac75e258::t_a789b5604cdd64 719-728
+  s_b267f9ac75e258::t_0f7e67c7d35554 675-698,700,707-710,714-715,717
+  s_b267f9ac75e258::t_5ff2da5b22d303 95-103
+  s_b267f9ac75e258::t_42c9c634b66c14 355-371
+  s_b267f9ac75e258::t_d8bf84d913709b 61
+  s_b267f9ac75e258::t_418f7c942c0c5f 383
+golden/BlackScholesExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/ModelMotorBackEMF/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_9f1d6d73c2f0b8 1
+golden_extract_lib.sh
+  s_b267f9ac75e258::t_0181c6e6be921b 30
+  s_b267f9ac75e258::t_92a7f73944f7ef 63-84
+  s_b267f9ac75e258::t_0df5f7898dc6cd 139-141
+  s_b267f9ac75e258::t_62c12b9f0ea760 208-212
+  s_b267f9ac75e258::t_de7ee36ec7f8c3 104-111
+golden/FXAccumulatorExample/position_audit.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 1,3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+golden/ModelElectroMagneticValve/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 10
+golden/ModelRocketTransient/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 2
+golden/ModelRocketLiftoff/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 75-76
+golden/ModelTEFull/transient.txt
+  s_b267f9ac75e258::t_9b77de42352189 39-41,57
+golden/ModelPneumaticPiston/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 7,9-11
+golden/ModelFertilizerDAE/solutions.txt
+  s_b267f9ac75e258::t_b63ee8b4608eb0 23
+golden/ModelRotationalTranslational/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ModelPneumaticGasSpring/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_c3f576248d8d67 1
+golden/ModelPiezoActuator/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_4a936632beb5ca 1
+golden/ModelPiezoActuator/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 4,8,12
+golden/ModelRocketPressureFed/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ModelFluidThermal/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_579a6ed581c53b 1,4-5
+golden/ModelSaoJorge/position_audit.txt
+  s_b267f9ac75e258::t_b21c1a2dc055e7 2
+  s_b267f9ac75e258::t_81d3d13161ccd2 3-56
+  s_b267f9ac75e258::t_b8bf70af1b730f 1
+golden/ModelRocketTransient/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/ModelElectroPneumatic/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 2
+golden/ModelRotationalMotor/solutions.txt
+  s_b267f9ac75e258::t_9b77de42352189 5,8
+golden/ModelElectroMechanical/position_audit.txt
+  s_b267f9ac75e258::t_81d3d13161ccd2 3
+  s_b267f9ac75e258::t_2e3e7b23b5db48 2
+  s_b267f9ac75e258::t_878e76c45d68b6 1
+golden/ModelRocketFeed/position_audit.txt
+  s_b267f9ac75e258::t_2e3e7b23b5db48 1-3
+golden/HeatEquationExample/solutions.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 2-6,10-13,21-24,29,31,34,40-59
+golden/AmericanOptionExample/solutions.txt
+  s_b267f9ac75e258::t_8705dbec9563f2 2-35,59-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bf740ac6f6376d761d2209f65a96b4bc28750f5d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
