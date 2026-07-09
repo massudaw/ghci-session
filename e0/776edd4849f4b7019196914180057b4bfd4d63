@@ -1,0 +1,40 @@
+src/Convection3.hs
+  s_b267f9ac75e258::t_c194c1b9d147aa 116-118,125-126
+  s_b267f9ac75e258::t_d0f73a285004eb 1-115,119-124,127-213
+golden/Convection3DExample/status.txt
+  s_b267f9ac75e258::t_6e683815a98b6c 1
+golden/Convection3DExample/solutions.txt
+  s_b267f9ac75e258::t_6e683815a98b6c 1-767
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_a28c1cf6124cb9 282,284
+src/Examples/Convection3DExample.hs
+  s_b267f9ac75e258::t_807136de073a82 1-201
+example/Main.hs
+  s_b267f9ac75e258::t_a28c1cf6124cb9 154,334
+golden/Convection3DExample/equations.txt
+  s_b267f9ac75e258::t_6e683815a98b6c 1-767
+golden/Convection3DExample/position_audit.txt
+  s_b267f9ac75e258::t_6e683815a98b6c 1-9
+golden/Convection3DExample/residuals.txt
+  s_b267f9ac75e258::t_6e683815a98b6c 1-782
+DOMAINS.md
+  s_b267f9ac75e258::t_6e683815a98b6c 566-583
+run_golden_tests.sh
+  s_b267f9ac75e258::t_a28c1cf6124cb9 71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e0776edd4849f4b7019196914180057b4bfd4d63",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
