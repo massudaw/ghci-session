@@ -1,0 +1,81 @@
+src/Transient.hs
+  s_b267f9ac75e258::t_1020d04828627e 475,481,625-626,630,633,636,643,653,655,717,722,899,904,932,934-935,997,1023,1027,1064,1066-1067,1078,1081-1083
+  s_b267f9ac75e258::t_1dc541d133c114 559,1028
+  s_b267f9ac75e258::t_3b8939aeb2b3f2 624
+golden/FXAccumulatorExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+src/Solver/SymbolicPreSys.hs
+  s_b267f9ac75e258::t_3b8939aeb2b3f2 39-41,44
+golden/OptionGreeksExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/RoomConvectionExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/FXOptionHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/BermudanSwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/FXDynamicHedgingExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/BlackScholesPutExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+src/Examples/IDAPendulum.hs
+  s_b267f9ac75e258::t_5c864cc0431fca 41,46,65
+src/Convection.hs
+  s_b267f9ac75e258::t_7d544a526804c6 55,114,148-149
+  s_b267f9ac75e258::t_0e6313e68bf5a1 150-152,154-157
+src/Rendering/OpenGL/LiveSim.hs
+  s_b267f9ac75e258::t_8c99a4fbfe9bfb 52
+  s_b267f9ac75e258::t_72f0822174a02d 70,73
+golden/AmericanOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/DigitalOptionExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+src/Position.hs
+  s_b267f9ac75e258::t_0643f41b93f99b 246-254,258,262,266,270,274,278,282-288
+  s_b267f9ac75e258::t_97b24fa368c66b 300-309
+  s_b267f9ac75e258::t_61c2be07db5d00 42
+  s_b267f9ac75e258::t_62229b42942af9 2
+  s_b267f9ac75e258::t_db813c63f29238 46
+  s_b267f9ac75e258::t_26eb75173047f5 192-245,255-257,259-261,263-265,267-269,271-273,275-277,279-281,289-299
+src/Model.hs
+  s_b267f9ac75e258::t_d89e53dd4442e8 90,735,743,754
+  s_b267f9ac75e258::t_16b1b1e744cd62 694-700
+  s_b267f9ac75e258::t_3b8939aeb2b3f2 727
+golden/SwaptionExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/RoomAirConditioningExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+src/Examples/PendulumTransient.hs
+  s_b267f9ac75e258::t_5c864cc0431fca 37
+golden/ModelACConditioner/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/VasicekSwapExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+golden/BlackScholesExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+src/Financial.hs
+  s_b267f9ac75e258::t_7d544a526804c6 112,229,260-265
+  s_b267f9ac75e258::t_0e6313e68bf5a1 266-274,276-279
+golden/OptionVegaExample/position_audit.txt
+  s_b267f9ac75e258::t_81e34dbe35adcd 2
+DOMAINS.md
+  s_b267f9ac75e258::t_3ecc9d5f443be8 465-508
+src/Pendulum.hs
+  s_b267f9ac75e258::t_7d544a526804c6 21,42,146-148,150,152,154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "05f0b9269c59bd72ea945e85c5d3ec166c963aed",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
