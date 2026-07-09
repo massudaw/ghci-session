@@ -1,0 +1,29 @@
+src/Examples/ModelCarDrive.hs
+  s_b267f9ac75e258::t_39f93bf36e798b 117,131-229
+src/Examples/ModelFireSprinkler.hs
+  s_b267f9ac75e258::t_18f952dce47820 6,30-34,42-43,55-56,72,78-88,314-445,488-493
+src/Model/PropThrustCoupling.hs
+  s_b267f9ac75e258::t_1ffc76834cc13c 14-15,17-20,22-32,71,73-83,94-116
+src/Rendering/OpenGL/LiveSim.hs
+  s_b267f9ac75e258::t_6229dc3b84848d 20
+src/Rendering/OpenGL/LiveTape.hs
+  s_b267f9ac75e258::t_6fe375ee6c1f4c 20
+src/Solver/ScenarioTree.hs
+  s_b267f9ac75e258::t_47cc40fdbbf5ab 18,26,29-30,33,51-53,65,165-185,266-284,480-498
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4ce9b29ae0010776f8dde55092edc8406f51e76b",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
