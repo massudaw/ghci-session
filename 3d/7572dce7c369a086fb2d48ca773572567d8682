@@ -1,0 +1,23 @@
+golden/ModelCarDrive/equations.txt
+  s_b267f9ac75e258::t_3c29e223e8114d 2,16,22,25,31,34,40,43,49,52,55,58,61,141,144,147,150,154,157,160,163,168-169,171,179,189,199,209,219
+golden/ModelCarDrive/solver_audit.txt
+  s_b267f9ac75e258::t_3c29e223e8114d 2-4,6,12
+golden/ModelQuadcopter/solver_audit.txt
+  s_b267f9ac75e258::t_3c29e223e8114d 3-4,6,9-10,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3d7572dce7c369a086fb2d48ca773572567d8682",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
