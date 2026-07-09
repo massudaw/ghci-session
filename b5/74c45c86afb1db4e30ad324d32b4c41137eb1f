@@ -1,0 +1,28 @@
+src/Examples/RoomAirConditioningExample.hs
+  s_b267f9ac75e258::t_690dc3aec21fa4 249-253,256
+  s_b267f9ac75e258::t_814ccd9f5f9b14 170-173,175,255,257,263
+  s_b267f9ac75e258::t_57f5e0c02e1ce4 164-169,174,176-248,254,258-262,264-265,317,323
+  s_b267f9ac75e258::t_c22ae72d7b0b66 33,35,54-60,136-138
+  s_b267f9ac75e258::t_18e9bf28d556a6 47
+  s_b267f9ac75e258::t_b6527c0a8f5df7 139
+.gitignore
+  s_b267f9ac75e258::t_bf4f5d1af6fe80 36
+DOMAINS.md
+  s_b267f9ac75e258::t_3aa596c9d81393 818-832
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "b574c45c86afb1db4e30ad324d32b4c41137eb1f",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
