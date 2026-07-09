@@ -1,0 +1,40 @@
+.gitignore
+  h_fd5809635b36a3 1
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_113e6ef83037a8 205-207
+src/Examples/ModelCarSim.hs
+  s_b267f9ac75e258::t_dfdc9a4d1f499f 16,160-164,169,178,180,184,186,188,190-193,196-197,286-293,296,298-299,304-311,323,328-330,332-337,367
+src/Rendering/OpenGL/LiveSim.hs
+  s_b267f9ac75e258::t_051d559ab3d331 64-66,111-113,115-122,125-126,128-131
+src/Solver/SessionLog.hs
+  s_b267f9ac75e258::t_bb53ebe2ee1502 1-447
+src/Rendering/OpenGL/CSGEncoding.hs
+  s_b267f9ac75e258::t_3e858d3f7f1d43 6,12-13,20-22,45-60,181,188-189,191-210,266-267,271-272,275,286
+src/Rendering/OpenGL/CSGShaders.hs
+  s_b267f9ac75e258::t_69123cdf315699 146-147,150-154
+src/Rendering/OpenGL/CSGShadersBVH.hs
+  s_b267f9ac75e258::t_35139d357f82f1 160-161,164-168
+src/Rendering/OpenGL/CSGShadersRT.hs
+  s_b267f9ac75e258::t_4fa9b8071ba1a3 9,11,13-15,17-18,20,22-23,74,121-126,129-134,484-524,895-900,950
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2e697c5cd1189a845d20a224cc42f44a56a48340",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
