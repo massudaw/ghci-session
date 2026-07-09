@@ -1,0 +1,75 @@
+golden/ModelFertilizerThermal/position_audit.txt
+  s_b267f9ac75e258::t_3d99aeff110a42 3
+golden/ModelFluidThermal/position_audit.txt
+  s_b267f9ac75e258::t_3d99aeff110a42 3
+src/Pendulum.hs
+  s_b267f9ac75e258::t_f2e847192074a7 39-40
+src/Domains.hs
+  s_b267f9ac75e258::t_9b283b5fc3a808 120-125
+  s_b267f9ac75e258::t_b12198fd30fceb 268-293
+  s_b267f9ac75e258::t_edffbb1cb18f7a 29
+DOMAINS.md
+  s_b267f9ac75e258::t_4343be1bdde281 423-489
+src/Model.hs
+  s_b267f9ac75e258::t_b8a958ab48f63f 683
+  s_b267f9ac75e258::t_78430f6cda7d8a 725-727
+  s_b267f9ac75e258::t_09344167c8984a 605-608
+  s_b267f9ac75e258::t_4c529af0f14537 892-895
+golden/ModelACConditioner/position_audit.txt
+  s_b267f9ac75e258::t_3d99aeff110a42 3
+src/Convection.hs
+  s_b267f9ac75e258::t_f2e847192074a7 106-107
+golden/ModelDCPump/position_audit.txt
+  s_b267f9ac75e258::t_3d99aeff110a42 3
+src/Position.hs
+  s_b267f9ac75e258::t_79f1951302f08b 748,751-755
+  s_b267f9ac75e258::t_798fbd0b696470 783-807,816-824
+  s_b267f9ac75e258::t_7594a20c5674c7 808-815
+  s_b267f9ac75e258::t_ae5c00886bb6c7 679,681
+  s_b267f9ac75e258::t_d339b5cd2d268d 924-931,937-944,946
+  s_b267f9ac75e258::t_91d9fe7497ef4a 451-457
+  s_b267f9ac75e258::t_24e44308c792cc 421,437
+  s_b267f9ac75e258::t_ba418d20a69bf7 891-895,898
+src/Financial.hs
+  s_b267f9ac75e258::t_f2e847192074a7 221-222
+src/Mixture.hs
+  s_b267f9ac75e258::t_f2e847192074a7 309-310
+src/Acoustic.hs
+  s_b267f9ac75e258::t_86647e08ff0f8b 75-76
+src/Bioelectric.hs
+  s_b267f9ac75e258::t_32b91524dc8c3b 81-82
+src/Chemical.hs
+  s_b267f9ac75e258::t_ef0b06650535ed 79-80
+src/Electric.hs
+  s_b267f9ac75e258::t_5bd421e39fb08e 117-118
+src/Energy.hs
+  s_b267f9ac75e258::t_e3ecad936736e6 86-87
+src/Magnetic.hs
+  s_b267f9ac75e258::t_754df92a2a7b23 73-74
+src/Pneumatic.hs
+  s_b267f9ac75e258::t_e092c73b89665e 86-87
+src/Rotational.hs
+  s_b267f9ac75e258::t_9f7630116081d2 108-109
+src/Signal.hs
+  s_b267f9ac75e258::t_1d360acbb4fd3e 53-54
+src/Thermal.hs
+  s_b267f9ac75e258::t_19619e161615dc 123-124
+src/ThermoGas.hs
+  s_b267f9ac75e258::t_1f604aeee7d071 110-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "757326d24a602d7aca3f5b7a4e36c66660ccb607",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
