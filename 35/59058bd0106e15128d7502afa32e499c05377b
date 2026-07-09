@@ -1,0 +1,39 @@
+src/Examples/RoomAirConditioningExample.hs
+  s_b267f9ac75e258::t_68b589f8ece3d8 43,178
+  s_b267f9ac75e258::t_c544c669182678 74-75,78-79,81-85,95,97,99-102,105-106,108,110-111,117,120-122,204-205
+  s_b267f9ac75e258::t_f703cd1b58f3f8 234-246
+  s_b267f9ac75e258::t_4a97c15f8f7ffb 9-10,12-17,19-30,34,36,41-42,44,51-54,56-57,61,66,68-73,76-77,80,92-94,96,98,103-104,107,112-116,124-177,179-197,202-203,206-218,220,222-225,227-232,247-248
+  s_b267f9ac75e258::t_65aabec2f7a659 123
+src/Model/RoomAirCoupling.hs
+  s_b267f9ac75e258::t_5486951bacc588 48-49
+  s_b267f9ac75e258::t_ba351f45877a01 3,13-16,18,20,36-39,41-42,44-47,50-51,55,62
+DOMAINS.md
+  s_b267f9ac75e258::t_bd3171ce924844 792-817
+src/Examples/ModelACConditioner.hs
+  s_b267f9ac75e258::t_33fa0c7c261eb3 392
+  s_b267f9ac75e258::t_ba351f45877a01 109
+golden/RoomAirConditioningExample/equations.txt
+  s_b267f9ac75e258::t_907e4cbfc92a34 6-72,74-390
+golden/RoomAirConditioningExample/position_audit.txt
+  s_b267f9ac75e258::t_1e43ba2419d3c6 2-5
+golden/RoomAirConditioningExample/residuals.txt
+  s_b267f9ac75e258::t_b1d13e03d8a431 26-411
+golden/RoomAirConditioningExample/solutions.txt
+  s_b267f9ac75e258::t_bae87fd3975d29 2-68,70-384
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3559058bd0106e15128d7502afa32e499c05377b",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
