@@ -1,0 +1,50 @@
+tools/CoherenceSweep.hs
+  s_b267f9ac75e258::t_572091f5e53567 346-351
+  s_b267f9ac75e258::t_91b704b6dd69bc 78-88,95,114,141,143-145,157
+golden/ModelDCPump/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 4
+golden/ModelSaoJorge/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 2-3
+golden/ForceSimple/equations.txt
+  s_b267f9ac75e258::t_55dce888ce568f 42-77
+golden/ForceSimple/solutions.txt
+  s_b267f9ac75e258::t_55dce888ce568f 42-77
+golden/RoomAirConditioningExample/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 2
+DOMAINS.md
+  s_b267f9ac75e258::t_7759dd76ee530a 360-421
+golden/ModelFertilizerThermal/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 3-13
+golden/ModelACConditioner/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 2-3
+src/Project.hs
+  s_b267f9ac75e258::t_cb6f807b840410 364
+golden/ForceSimple/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 14-17,20-22
+golden/ModelSimple/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 2-3
+golden/ModelFluidThermal/position_audit.txt
+  s_b267f9ac75e258::t_55dce888ce568f 3,5,7
+src/Position.hs
+  s_b267f9ac75e258::t_4413dbbd5b4c64 867-872,875
+  s_b267f9ac75e258::t_30c7187d43e1b3 677-684,686-695
+  s_b267f9ac75e258::t_22194d43dc059f 397,403,406-409,415
+  s_b267f9ac75e258::t_d29b901c9d3b34 65-146
+  s_b267f9ac75e258::t_3a795c77b2792b 458-462
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "dc0ab134947e942ef4bfb44bbc84a0b9e8d8e89e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
