@@ -1,0 +1,23 @@
+src/Position.hs
+  s_b267f9ac75e258::t_e1316aa1406de1 189-233
+  s_b267f9ac75e258::t_d814d167382b88 559-561,565-568,572
+  s_b267f9ac75e258::t_864177e1cbe50a 273-277
+DOMAINS.md
+  s_b267f9ac75e258::t_d05757ee814ce5 31-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "58296706af0365fadae63c3682af87e0e9c02a37",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
