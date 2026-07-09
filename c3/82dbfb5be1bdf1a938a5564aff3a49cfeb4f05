@@ -1,0 +1,32 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_2984082bb72748 280
+example/Main.hs
+  s_b267f9ac75e258::t_2984082bb72748 152,330
+src/Position.hs
+  s_b267f9ac75e258::t_a22abc86be3960 271-275
+src/Examples/PositionLawsTest.hs
+  s_b267f9ac75e258::t_01fb8f4c8c95ec 2-38,40-63,65-77,81,83-84,86-98,102,111-124,131-135,142-153
+  s_b267f9ac75e258::t_ff1b3035d0d67d 1
+  s_b267f9ac75e258::t_9bfc00f5c29cf8 39,64,78-80,82,99-101,103-110,125-130,136-141
+  s_b267f9ac75e258::t_84b263f05fbf33 85
+run_golden_tests.sh
+  s_b267f9ac75e258::t_2984082bb72748 69
+golden/PositionLawsTest/status.txt
+  s_b267f9ac75e258::t_b9e7f4c7f08e73 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "c382dbfb5be1bdf1a938a5564aff3a49cfeb4f05",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
