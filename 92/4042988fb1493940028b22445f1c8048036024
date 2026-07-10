@@ -1,0 +1,33 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_801c613ae3d7ae::t_751ffe562e6e7d 71,520-530
+src/Solver/SymbolicDAE.hs
+  s_801c613ae3d7ae::t_a1e75624e6cdde 742-748,750-753,755-769
+  s_801c613ae3d7ae::t_91e4906871bbb2 1063-1097,1099,1109
+src/Rendering/DiffCSG/Symbolic.hs
+  s_801c613ae3d7ae::t_79556d27b6abdd 60,169,174,214-217
+  s_b267f9ac75e258::t_4d488e27342ef7 221-222
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "924042988fb1493940028b22445f1c8048036024",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
