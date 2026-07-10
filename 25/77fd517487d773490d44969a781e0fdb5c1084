@@ -1,0 +1,19 @@
+src/Rendering/OpenGL/CSGShadersRT.hs
+  s_b267f9ac75e258::t_d686fe016e6fa5 21-26,31,953-960,972,977-1005,1008,1010,1013-1014,1018-1019,1036-1037,1040-1057
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "2577fd517487d773490d44969a781e0fdb5c1084",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
