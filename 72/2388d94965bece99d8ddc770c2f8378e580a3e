@@ -1,0 +1,23 @@
+golden_parallel_lib.sh
+  s_b267f9ac75e258::t_745075b64ac309 1-174
+run_golden_tests.sh
+  s_b267f9ac75e258::t_0b9d50124128a4 8-11,157-159,166-169,172-175,185-186,194-195,197,199-209,212-215
+validate_golden_tests.sh
+  s_b267f9ac75e258::t_de1d5fe07ab608 7-10,85-86,152-154,156-158,160-170,172-180,182-243,245-252,254-255,257-262,264,266-334,337
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "722388d94965bece99d8ddc770c2f8378e580a3e",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
