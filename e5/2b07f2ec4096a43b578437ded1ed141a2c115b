@@ -1,0 +1,23 @@
+src/Rendering/OpenGL/CSGShadersRT.hs
+  s_801c613ae3d7ae::t_be7d44fca88ae6 1213
+  s_801c613ae3d7ae::t_38647d25732c75 39-41,43-48,53-56
+  s_801c613ae3d7ae::t_20f4ea51d24758 1063-1095
+  s_801c613ae3d7ae::t_43c2d18b1ae01b 1192-1199,1205-1212,1214-1228,1230,1232
+  s_801c613ae3d7ae::t_62cd3d6c81e0f1 1138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "e52b07f2ec4096a43b578437ded1ed141a2c115b",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
