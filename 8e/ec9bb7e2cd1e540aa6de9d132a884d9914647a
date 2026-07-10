@@ -1,0 +1,56 @@
+example/Main.hs
+  s_b267f9ac75e258::t_89a36288a7ff35 132-133,440-441
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_89a36288a7ff35 376-377
+src/Examples/BiharmonicExample.hs
+  s_b267f9ac75e258::t_eb2e3da8436d6b 79-82
+  s_b267f9ac75e258::t_1a3646a20308b5 1-78,83-176
+  s_b267f9ac75e258::t_80d8bf34a7e811 177-182
+src/Examples/MargrabeExample.hs
+  s_b267f9ac75e258::t_a7da213624a51d 1-134
+  s_b267f9ac75e258::t_50e5c934826144 135-138
+src/Field.hs
+  s_b267f9ac75e258::t_afbb9c9d68d8fa 185-191,442-470
+DOMAINS.md
+  s_b267f9ac75e258::t_a47cfd79945945 1399-1431
+golden/BiharmonicExample/equations.txt
+  s_b267f9ac75e258::t_85b53b28937e8e 1-1468
+golden/BiharmonicExample/position_audit.txt
+  s_b267f9ac75e258::t_66efd98f77dcdd 1-6
+golden/BiharmonicExample/residuals.txt
+  s_b267f9ac75e258::t_6e8a3a826a3a18 1-1479
+golden/BiharmonicExample/solutions.txt
+  s_b267f9ac75e258::t_e8d38ae61458c9 1-1468
+golden/BiharmonicExample/solver_audit.txt
+  s_b267f9ac75e258::t_700de944be7fbc 1-6
+golden/BiharmonicExample/status.txt
+  s_b267f9ac75e258::t_3d234032fece13 1
+golden/MargrabeExample/equations.txt
+  s_b267f9ac75e258::t_f7435f4ae6b16e 1-7202
+golden/MargrabeExample/position_audit.txt
+  s_b267f9ac75e258::t_f978220d107447 1-3
+golden/MargrabeExample/residuals.txt
+  s_b267f9ac75e258::t_82630360e34c4f 1-7212
+golden/MargrabeExample/solutions.txt
+  s_b267f9ac75e258::t_40838e9e5bbeea 1-7202
+golden/MargrabeExample/solver_audit.txt
+  s_b267f9ac75e258::t_cf195cfbe55cc5 1-6
+golden/MargrabeExample/status.txt
+  s_b267f9ac75e258::t_bf5bb49ef446e0 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "8eec9bb7e2cd1e540aa6de9d132a884d9914647a",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
