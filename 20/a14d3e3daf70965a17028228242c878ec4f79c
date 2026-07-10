@@ -1,0 +1,19 @@
+src/Rendering/OpenGL/CSGViewer.hs
+  s_b267f9ac75e258::t_45b978183c4b77 27,966-969,993,1011-1015,1017-1018,1062-1069,1071-1079,1191-1194,1426,1457-1458,1460-1462,1464-1465,1520-1521,1526,1529,1531,1534,1613-1622
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "20a14d3e3daf70965a17028228242c878ec4f79c",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

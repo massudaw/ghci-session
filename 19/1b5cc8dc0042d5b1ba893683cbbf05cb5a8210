@@ -1,0 +1,19 @@
+src/Rendering/OpenGL/CSGEncoding.hs
+  s_b267f9ac75e258::t_1fb68756e001ec 15,294-300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "191b5cc8dc0042d5b1ba893683cbbf05cb5a8210",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
