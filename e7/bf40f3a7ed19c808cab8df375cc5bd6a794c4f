@@ -1,0 +1,19 @@
+golden_extract_lib.sh
+  s_b267f9ac75e258::t_7b8c5588783049 181-185,190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "e7bf40f3a7ed19c808cab8df375cc5bd6a794c4f",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
