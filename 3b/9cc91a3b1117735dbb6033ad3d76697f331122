@@ -1,0 +1,20 @@
+src/Examples/ModelQuadcopter.hs
+  s_b267f9ac75e258::t_0a838c3fef961a 1428-1429
+  s_b267f9ac75e258::t_654aa0dddf5a46 1423-1427
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3b9cc91a3b1117735dbb6033ad3d76697f331122",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
