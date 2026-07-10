@@ -1,0 +1,42 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_9ff2f7552feba9 294
+example/Main.hs
+  s_b267f9ac75e258::t_9ff2f7552feba9 159,346
+golden/LqgClosedLoopExample/solutions.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1-68
+golden/LqgClosedLoopExample/status.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1
+golden/LqgClosedLoopExample/equations.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1-71
+src/Examples/KalmanObserverExample.hs
+  s_b267f9ac75e258::t_ea87ac417c07bf 40-44
+golden/LqgClosedLoopExample/position_audit.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1-3
+golden/LqgClosedLoopExample/residuals.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1-79
+src/Examples/LqgClosedLoopExample.hs
+  s_b267f9ac75e258::t_b249710ae1ffa3 1-27,31-217,219-222,226-232,238-260,271-282,286-291,294,296-300
+  s_b267f9ac75e258::t_fccadcc6f4cd56 218,261-270,283-285,295
+  s_b267f9ac75e258::t_9fe22aabd45ee2 223-225
+  s_b267f9ac75e258::t_05e808a8976d82 28-30,233-237,292-293
+golden/LqgClosedLoopExample/solver_audit.txt
+  s_b267f9ac75e258::t_9dba94198f6c80 1-6
+DOMAINS.md
+  s_b267f9ac75e258::t_dfc50eda55c3f6 983-1010
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "d33ff7b213ff990c09fbc8620cc157a22a79a19c",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
