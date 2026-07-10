@@ -1,0 +1,31 @@
+example/TestDiffCSGGoldfeather.hs
+  s_801c613ae3d7ae::t_801de312072eda 105-108,112-116,118-119
+  s_801c613ae3d7ae::t_1d3a35c48333b2 76-77,83-85
+  s_801c613ae3d7ae::t_958c722bb50a15 1-2
+  s_801c613ae3d7ae::t_4c37f9bec615a4 93
+  s_801c613ae3d7ae::t_8e8c61780ecfab 3-75,78-82,86-92,94-104,109-111,117,120-136
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_801c613ae3d7ae::t_9b2318f01edcbe 80
+  s_801c613ae3d7ae::t_9b3d7cdf8b77d6 411
+  s_801c613ae3d7ae::t_ecc92aee137353 1-79,81-410,412-526,528-537,541-544
+  s_801c613ae3d7ae::t_f347e07071a15a 527,538-540
+sprinkler-solver.cabal
+  s_801c613ae3d7ae::t_d97b100c7030dd 170,564-566
+  s_801c613ae3d7ae::t_a2bc10ef8d3606 567-571
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "5ed8a686a4ce755d2f43532a4108780b62380fc8",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
