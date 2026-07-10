@@ -1,0 +1,25 @@
+src/Examples/ModelQuadcopter.hs
+  s_801c613ae3d7ae::t_935f49289ef7c1 890-893
+  s_801c613ae3d7ae::t_3201b5d5e2724b 1282-1285,1287-1288
+src/Examples/ModelFireSprinkler.hs
+  s_801c613ae3d7ae::t_b449fdd9b6b8d2 810-811
+  s_801c613ae3d7ae::t_34eba0bfec28a8 695-698
+  s_801c613ae3d7ae::t_6f2ac2087d55e1 474-476
+  s_801c613ae3d7ae::t_d50ba138e31c7e 494-495
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "263e3d0670d2065c1643c8dd61f8ca2170aa968b",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
