@@ -1,0 +1,30 @@
+src/Examples/ModelQuadcopter.hs
+  s_b267f9ac75e258::t_cfedeab7aa392b 1663-1667,1671
+  s_b267f9ac75e258::t_e0cbb29c444594 1511-1513,1524-1525,1529,1538-1540,1543-1546,1549,1552-1553,1557-1560,1562,1574-1593,1595-1602,1609-1610,1622,1625-1628,1630-1642,1644,1646-1647,1682,1691,1693,1695,1703-1704,1707-1710,1712-1716,1729,1736-1739,1742-1743
+  s_b267f9ac75e258::t_016bb3e641778e 1705,1711,1722,1725,1727,1731-1732
+  s_b267f9ac75e258::t_b3f8f892a84d92 1733-1735,1741,1744-1746,1748,1750
+  s_b267f9ac75e258::t_f649d76eebd456 1554,1594,1603-1608,1611-1615,1645,1672-1681,1683-1688,1692,1694
+  s_b267f9ac75e258::t_0e631c8d291821 1342-1343,1414,1488
+  s_b267f9ac75e258::t_0be50b6d8522c4 1616-1620,1648-1662,1668-1670
+  s_b267f9ac75e258::t_133ab803c297a1 1717-1721
+golden/ModelQuadcopter/transient.txt
+  s_b267f9ac75e258::t_133ab803c297a1 1-15
+DOMAINS.md
+  s_b267f9ac75e258::t_90e0f9b5c33048 1093-1121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "ceabc76b044c3bb13a84bdbcbd8bb16de5535405",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
