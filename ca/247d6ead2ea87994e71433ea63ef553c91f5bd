@@ -1,0 +1,27 @@
+src/Examples/ModelQuadcopter.hs
+  s_b267f9ac75e258::t_741a42df8e1843 1490-1511,1513-1514,1521-1572,1574,1580,1582-1585,1587-1611,1617-1618,1620-1622,1624,1629-1643
+  s_b267f9ac75e258::t_604d4ab5b03388 1612-1616,1619,1623
+  s_b267f9ac75e258::t_c89ff12d4c608b 1573,1575-1579,1625-1628
+  s_b267f9ac75e258::t_13cc53f760027a 1512,1515-1520
+  s_b267f9ac75e258::t_0a64cdf6274fed 289-290,1342-1343,1414,1488
+  s_b267f9ac75e258::t_c1e92a2eea9cbf 1581,1586
+  s_b267f9ac75e258::t_c238cac5a77db8 1489
+DOMAINS.md
+  s_b267f9ac75e258::t_9900274e6cd298 1079-1099
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "ca247d6ead2ea87994e71433ea63ef553c91f5bd",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
