@@ -1,0 +1,22 @@
+golden/SparseOptionPDE/transient.txt
+  s_801c613ae3d7ae::t_87f0cd25d6d55b 2
+src/Examples/SparseOptionPDE.hs
+  s_801c613ae3d7ae::t_8b7c8953979f07 19,21
+  s_801c613ae3d7ae::t_521931bf4c38dc 95-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "8a1f58649679c96cae97ad47add20317b2298ccf",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
