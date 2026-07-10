@@ -1,0 +1,27 @@
+src/Examples/ModelQuadcopter.hs
+  s_801c613ae3d7ae::t_1595495e11c2a3 1282-1286
+src/Rendering/DiffCSG.hs
+  s_801c613ae3d7ae::t_90d696d1b229c7 10
+  s_801c613ae3d7ae::t_c323f7370ccb6b 81-84,88-98
+  s_801c613ae3d7ae::t_542b03bf48c0c5 159-163,165-204
+src/Rendering/OpenGL/CSGShadersRT.hs
+  s_801c613ae3d7ae::t_00acbd6f2af98e 945-967,970-987,991-1011,1013,1015
+  s_801c613ae3d7ae::t_12fe4fc45c3dc9 15,17-25,27-28,30-32,34-36
+  s_801c613ae3d7ae::t_939dd3bb772a68 1051-1053,1056
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "06fa21e42578848fef2efec0740acf4db5d02290",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
