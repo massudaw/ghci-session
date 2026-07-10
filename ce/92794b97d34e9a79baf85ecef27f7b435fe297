@@ -1,0 +1,56 @@
+src/Examples/EkfNonlinearControlExample.hs
+  s_b267f9ac75e258::t_35214a781679d7 204
+golden/CompositionalPdeExample/selective_report.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-20
+src/Examples/StabilityAuditTest.hs
+  s_b267f9ac75e258::t_35214a781679d7 90
+golden/CompositionalPdeExample/residuals.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-800
+DOMAINS.md
+  s_b267f9ac75e258::t_be687f8a42d26f 1216-1245
+golden/CompositionalPdeExample/position_audit.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-6
+golden/CompositionalPdeExample/status.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1
+example/Main.hs
+  s_b267f9ac75e258::t_85baa39d223844 125,425
+src/Examples/SpaceTimeFieldExample.hs
+  s_b267f9ac75e258::t_dedf1745724014 134
+src/Examples/RoomAirConditioningExample.hs
+  s_b267f9ac75e258::t_35214a781679d7 167,195
+src/Examples/LqgOffsetFreeExample.hs
+  s_b267f9ac75e258::t_35214a781679d7 115
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_85baa39d223844 369
+golden/CompositionalPdeExample/solutions.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-785
+golden/CompositionalPdeExample/solver_audit.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-18
+golden/CompositionalPdeExample/equations.txt
+  s_b267f9ac75e258::t_c1123470d97a21 1-928
+src/Field.hs
+  s_b267f9ac75e258::t_126906a3d9bcad 340-343,349-352,363-376,400-432
+  s_b267f9ac75e258::t_3a1a71ba526287 58-59,87-91,147-153,156-177,181,192-204
+src/Examples/CompositionalPdeExample.hs
+  s_b267f9ac75e258::t_268bf5107fe960 46-48
+  s_b267f9ac75e258::t_2aef6c7941f3a6 1-45,49-141,143-207
+  s_b267f9ac75e258::t_6cb592f313fd2b 142
+src/Examples/FieldVariableExample.hs
+  s_b267f9ac75e258::t_35214a781679d7 115,161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "ce92794b97d34e9a79baf85ecef27f7b435fe297",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
