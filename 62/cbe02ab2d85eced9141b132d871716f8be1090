@@ -1,0 +1,43 @@
+src/Transient.hs
+  s_b267f9ac75e258::t_395b8c166317b0 1479-1495
+golden/ModelThermalPlateStress/transient.txt
+  s_b267f9ac75e258::t_0fd7051cb2a84d 4-8
+golden/ModelACStress/transient.txt
+  s_b267f9ac75e258::t_3d4ddd9ecc6420 4-8
+golden/ModelBeamContactStress/transient.txt
+  s_b267f9ac75e258::t_cd5352d179527b 4,7
+golden/ModelBouncingBall/transient.txt
+  s_b267f9ac75e258::t_712c04b8a09036 5-11
+golden/ModelContactArrayStress/transient.txt
+  s_b267f9ac75e258::t_c7446e62b95819 4-8
+golden/ModelDiodeClamp/transient.txt
+  s_b267f9ac75e258::t_70b0c8f722f6d8 5-10
+golden/ModelFreewheel/transient.txt
+  s_b267f9ac75e258::t_395aacdf231e3e 5-9
+golden/ModelFrictionSlide/transient.txt
+  s_b267f9ac75e258::t_8777bf6b0661d4 4-9
+golden/ModelRatchetLimitCycle/transient.txt
+  s_b267f9ac75e258::t_377019545c1a4b 4-10
+golden/ModelRelaxationOsc/transient.txt
+  s_b267f9ac75e258::t_d85bdc80776a2d 5-13
+golden/ModelRelayBank/transient.txt
+  s_b267f9ac75e258::t_85b40a14da7637 4-8,10
+golden/ModelRelayReactor/transient.txt
+  s_b267f9ac75e258::t_4ddaaed1aca5a4 4-13,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "62cbe02ab2d85eced9141b132d871716f8be1090",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
