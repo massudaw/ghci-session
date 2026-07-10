@@ -1,0 +1,40 @@
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_c022c8b9cb7446 372
+golden/NonlinearPdeExample/position_audit.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1-6
+golden/NonlinearPdeExample/solutions.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1-480
+golden/NonlinearPdeExample/solver_audit.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1-12
+golden/NonlinearPdeExample/residuals.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1-495
+golden/NonlinearPdeExample/equations.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1-480
+golden/NonlinearPdeExample/status.txt
+  s_b267f9ac75e258::t_effc8d62e2589c 1
+example/Main.hs
+  s_b267f9ac75e258::t_c022c8b9cb7446 128,431
+src/Field.hs
+  s_b267f9ac75e258::t_645973e570734e 177-185,426
+src/Examples/NonlinearPdeExample.hs
+  s_b267f9ac75e258::t_6ba7e313f7824f 1-122,124-127,129-205
+  s_b267f9ac75e258::t_e0c8b2a73f2bc5 123,128
+DOMAINS.md
+  s_b267f9ac75e258::t_273bf159beae8b 1299-1322
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "84888ff764b095fd33bd9d9f34698c5e231e4a47",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
