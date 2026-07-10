@@ -1,0 +1,49 @@
+example/Main.hs
+  s_b267f9ac75e258::t_9118af8215085a 129,433
+src/Field.hs
+  s_b267f9ac75e258::t_6c2a8c3196f193 177-184,435-447
+src/Examples/MertonJumpExample.hs
+  s_b267f9ac75e258::t_983ed1e7965f29 1-61,63-149,153,156-163
+  s_b267f9ac75e258::t_d4520d615fbfb3 62,150-152,154-155
+src/Financial.hs
+  s_b267f9ac75e258::t_6c2a8c3196f193 104,622-644
+  s_b267f9ac75e258::t_226b0b70c4c835 645
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_9118af8215085a 373
+golden/MertonJumpExample/equations.txt
+  s_801c613ae3d7ae::t_91507c9449b27d 1-322
+golden/MertonJumpExample/position_audit.txt
+  s_801c613ae3d7ae::t_0a67d0ff833f1c 1-3
+golden/MertonJumpExample/residuals.txt
+  s_801c613ae3d7ae::t_d5006bdb7c6b28 1-332
+golden/MertonJumpExample/solutions.txt
+  s_801c613ae3d7ae::t_1f44a2a74b6e66 1-322
+golden/MertonJumpExample/solver_audit.txt
+  s_801c613ae3d7ae::t_0ae0157026e070 1-6
+golden/MertonJumpExample/status.txt
+  s_801c613ae3d7ae::t_5a784ed316f635 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "db78e5bd2e0c7bee05472dbd92296df406d688b6",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
