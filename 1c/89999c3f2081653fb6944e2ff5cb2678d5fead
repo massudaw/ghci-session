@@ -1,0 +1,19 @@
+src/Rendering/DiffCSG/Symbolic.hs
+  s_801c613ae3d7ae::t_9b7e2bfdc7d040 161-164,167-168,170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "1c89999c3f2081653fb6944e2ff5cb2678d5fead",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
