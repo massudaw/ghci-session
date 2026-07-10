@@ -1,0 +1,45 @@
+golden/AmericanOptionExample/equations.txt
+  s_b267f9ac75e258::t_cf2e67070cd5c7 3,65,126-184
+golden/AmericanOptionExample/transient.txt
+  s_b267f9ac75e258::t_0d6d9e19797e17 5-8
+golden/BlackScholesExample/equations.txt
+  s_b267f9ac75e258::t_ca654dfedc5d2a 2,64
+golden/BlackScholesPutExample/equations.txt
+  s_b267f9ac75e258::t_56e19980c800ec 3,65
+golden/DigitalOptionExample/equations.txt
+  s_b267f9ac75e258::t_5ea316dce08852 2,64
+golden/FXDynamicHedgingExample/equations.txt
+  s_b267f9ac75e258::t_07e488a2832381 2-3,114-115
+golden/FXOptionHedgingExample/equations.txt
+  s_b267f9ac75e258::t_295473cbcc6da5 2-3,114-115
+golden/ModelDCPump/equations.txt
+  s_b267f9ac75e258::t_1c80fd030813b5 21
+golden/OptionGreeksExample/equations.txt
+  s_b267f9ac75e258::t_2a6bfda12a5769 2,64
+golden/OptionVegaExample/equations.txt
+  s_b267f9ac75e258::t_5068f63078a447 2,64,145,207,288,350
+src/Examples/BlackScholesSupport.hs
+  s_b267f9ac75e258::t_54b8074c8abe8c 3,16,38,42-43,139-141,170-177,223-248
+src/Field.hs
+  s_b267f9ac75e258::t_93e0aa5c96f93e 228,288-297
+src/Financial.hs
+  s_b267f9ac75e258::t_591a0f30a0520e 316,327,342,405,407,411-423,425,429,431-446
+src/Solver/SymbolicDAE.hs
+  s_b267f9ac75e258::t_edbeb2381d6f01 447-449,556-558
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "8a05cfc2bd2b4c98039319d6624693e83d31e869",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

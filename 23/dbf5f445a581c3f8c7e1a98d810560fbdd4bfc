@@ -1,0 +1,19 @@
+golden/ModelQuadcopter/solver_audit.txt
+  s_b267f9ac75e258::t_345b2ca24a1e82 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "23dbf5f445a581c3f8c7e1a98d810560fbdd4bfc",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
