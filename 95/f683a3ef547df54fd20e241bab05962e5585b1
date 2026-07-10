@@ -1,0 +1,29 @@
+src/Examples/SwapQuoteEkfExample.hs
+  s_b267f9ac75e258::t_fc9bea503019c0 1-149,152-153,156-168,174-191,201,219-238,249-257,262,268-270
+  s_b267f9ac75e258::t_25008c0df8ac42 192-200,202-205,239-245,258
+  s_b267f9ac75e258::t_2d03e6034b7b1a 150-151,154-155,169-173,206-218,246-248,259-261,263-267
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_9e57129d18f3cb 368
+example/Main.hs
+  s_b267f9ac75e258::t_9e57129d18f3cb 124,423
+DOMAINS.md
+  s_b267f9ac75e258::t_13e575b790a741 1189-1215
+golden/SwapQuoteEkfExample/status.txt
+  s_b267f9ac75e258::t_4b75ac9171861a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "95f683a3ef547df54fd20e241bab05962e5585b1",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
