@@ -1,0 +1,28 @@
+src/Examples/FieldVariableExample.hs
+  s_b267f9ac75e258::t_d18da8b11ad211 59,163
+src/Examples/Convection2DExample.hs
+  s_b267f9ac75e258::t_df9d87f5472034 51-52,82-87
+src/Examples/Convection3DExample.hs
+  s_b267f9ac75e258::t_d18da8b11ad211 48-49,78-83
+src/Examples/RoomConvectionExample.hs
+  s_b267f9ac75e258::t_d18da8b11ad211 48,51-54
+src/Field.hs
+  s_b267f9ac75e258::t_5af112656a8fe4 57,60,63,68-69,348-398
+  s_b267f9ac75e258::t_f1540f9a231d17 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "e148cb2732299b51f509b17ea1cde2758136b4b9",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

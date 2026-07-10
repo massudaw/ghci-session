@@ -1,0 +1,50 @@
+golden/BentDuctExample/solutions.txt
+  s_b267f9ac75e258::t_de7d94590e3407 1-38
+src/Model.hs
+  s_b267f9ac75e258::t_b153071a2a92f1 90
+  s_b267f9ac75e258::t_3af03cce1507d2 727-733,741,749,760,783-787
+  s_b267f9ac75e258::t_45e5617cc5387d 788
+src/Position.hs
+  s_b267f9ac75e258::t_55453618ceac7c 328-338,354-387
+golden/BentDuctExample/equations.txt
+  s_b267f9ac75e258::t_de7d94590e3407 1-42
+golden/BentDuctExample/position_audit.txt
+  s_b267f9ac75e258::t_de7d94590e3407 1-6
+golden/BentDuctExample/residuals.txt
+  s_b267f9ac75e258::t_de7d94590e3407 1-58
+src/Domains.hs
+  s_b267f9ac75e258::t_3af03cce1507d2 74,76,321-330
+  s_b267f9ac75e258::t_1820548561c962 331
+example/Main.hs
+  s_b267f9ac75e258::t_98243943de9484 155,338
+golden/BentDuctExample/status.txt
+  s_b267f9ac75e258::t_de7d94590e3407 1
+run_golden_tests.sh
+  s_b267f9ac75e258::t_98243943de9484 73
+src/Examples/BentDuctExample.hs
+  s_b267f9ac75e258::t_43b46c7560e6ef 1-40,42-150
+  s_b267f9ac75e258::t_622ba87f00abba 41
+src/Field.hs
+  s_b267f9ac75e258::t_3ea262699eea52 56,95-103,112,197-203,241-245,274-276,373-376
+  s_b267f9ac75e258::t_b17ff9f6c3754e 377
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_98243943de9484 290
+DOMAINS.md
+  s_b267f9ac75e258::t_546e5b5f3afeb0 865-900
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "f583fdb41473e26da8cff631b0740ed9f2fff75d",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
