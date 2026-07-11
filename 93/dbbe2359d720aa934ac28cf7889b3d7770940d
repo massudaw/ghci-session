@@ -1,0 +1,27 @@
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_cdc73f8ddf550c 708
+  s_5ae5b9e56514e5::t_6193e317ee5edc 748,751,762,764-770
+  s_5ae5b9e56514e5::t_34ccee958cea98 709,711-712,714-716
+  s_5ae5b9e56514e5::t_1ebef5e6f0d34e 118
+  s_5ae5b9e56514e5::t_0f4d56fa1d3445 612,614-617,622,626,628,642-644
+  s_5ae5b9e56514e5::t_d705b1859b9300 710,713
+  s_5ae5b9e56514e5::t_003f2ab8b7e7c1 121
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_34fe7181700454 751
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "93dbbe2359d720aa934ac28cf7889b3d7770940d",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
