@@ -1,0 +1,31 @@
+golden/ModelQuadcopter/transient.txt
+  s_5ae5b9e56514e5::t_6fed56253df3f9 6-7,9
+src/Solver/SymbolicPreSys.hs
+  s_5ae5b9e56514e5::t_8409a76f821af7 195-201
+  s_5ae5b9e56514e5::t_bb4ab5a3edce48 155-160,168
+  s_5ae5b9e56514e5::t_f282a0df513087 11
+  s_5ae5b9e56514e5::t_9ed0bef03cd5fe 32-40,52-54,56,60-61,67,86-88,110-152
+  s_5ae5b9e56514e5::t_14810cc88b12ef 161,167
+  s_5ae5b9e56514e5::t_eb77c43c8e22ad 153
+src/Examples/ModelQuadcopter.hs
+  s_5ae5b9e56514e5::t_09ffca013031b2 500
+  s_5ae5b9e56514e5::t_2843e219a2d4ec 458
+  s_5ae5b9e56514e5::t_c8d5f8ea5e7653 434-435,449-457,459-460
+  s_5ae5b9e56514e5::t_65947ec03d23a6 530
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "a4f29ce2cbc264ccc6c5fa201028c26a044c1e12",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
