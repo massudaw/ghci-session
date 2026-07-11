@@ -1,0 +1,22 @@
+src/Rendering/OpenGL/GoldfeatherGPU.hs
+  s_5ae5b9e56514e5::t_ae91927f90e2ba 628-635
+example/GoldfeatherGPUTest.hs
+  s_5ae5b9e56514e5::t_6d4ca9a708167e 37-60
+  s_5ae5b9e56514e5::t_7c10f41bc92a94 84-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "ce6ab8ca0a084c45cc57d19083ad1ae52b2dff7e",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
