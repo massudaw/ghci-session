@@ -1,0 +1,22 @@
+example/QuadcopterThrustOptDemo.hs
+  s_5ae5b9e56514e5::t_c10d47b782b005 6-9,11-22,24-30,32-34,41-45,48-49,63-71,73,79,81-83,87-99,103-119,126-127,130-131,134-135,142
+  s_5ae5b9e56514e5::t_907c33aee36171 120-125
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_1423edb3ecd3c6 722
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "636ce9287acc6b1a98bcba4300b5ce74d6fcfbc9",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
