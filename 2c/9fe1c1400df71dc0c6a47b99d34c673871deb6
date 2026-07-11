@@ -1,0 +1,24 @@
+example/QuadcopterMultiParamSensDemo.hs
+  s_5ae5b9e56514e5::t_86c1b980ffc62f 63,65
+  s_5ae5b9e56514e5::t_3a7d0507fac2af 132
+  s_5ae5b9e56514e5::t_3f6dbe2deb7d1e 143-144
+  s_5ae5b9e56514e5::t_5633e74e4a82db 151-152
+  s_5ae5b9e56514e5::t_b4ed519e45d239 10-21,23-24,58-62,64,66-70,82,88,99,104,107-125,133
+  s_5ae5b9e56514e5::t_71b934a38ffa99 126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "2c9fe1c1400df71dc0c6a47b99d34c673871deb6",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
