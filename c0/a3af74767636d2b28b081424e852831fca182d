@@ -1,0 +1,31 @@
+src/Rendering/DiffCSG/Symbolic.hs
+  s_801c613ae3d7ae::t_5e3ff777e623f5 146,149-175
+  s_801c613ae3d7ae::t_1c601daf3a8d8f 181-185,187,199-205,207-216,218,221,223-225
+  s_801c613ae3d7ae::t_580fb5a81c3e0e 60-61
+  s_801c613ae3d7ae::t_6d136e12fd3b66 240,247-249,254,256-266,272
+  s_801c613ae3d7ae::t_82054b5446f875 250-253,255
+  s_801c613ae3d7ae::t_60868726359a05 45,48,54-55
+  s_801c613ae3d7ae::t_71c43691affb58 176
+example/TestDiffCSGSymbolic.hs
+  s_801c613ae3d7ae::t_141e5c054dd1f9 59-63,67-72
+  s_801c613ae3d7ae::t_720750a3a8c6f3 108,111
+  s_801c613ae3d7ae::t_1700679a89632e 75,84,99-101
+  s_801c613ae3d7ae::t_dc5c55aca1282f 105-107,109-110,112-123,125,127-130
+  s_801c613ae3d7ae::t_5331220d0654c5 124,126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "c0a3af74767636d2b28b081424e852831fca182d",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

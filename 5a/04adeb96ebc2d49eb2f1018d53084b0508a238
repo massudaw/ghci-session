@@ -1,0 +1,59 @@
+src/Examples/ModelQuadcopter.hs
+  s_5ae5b9e56514e5::t_3c6bb318cba6ea 264
+  s_5ae5b9e56514e5::t_6e3c89b6a5fad7 520
+  s_5ae5b9e56514e5::t_b0c47341ecf0fe 262-263
+  s_5ae5b9e56514e5::t_78ce7c5d07fb42 434-435
+  s_5ae5b9e56514e5::t_dfbccc9afc03c0 424-433,436-437
+src/Transient.hs
+  s_5ae5b9e56514e5::t_c1897b852ec010 1119,1126-1127
+  s_5ae5b9e56514e5::t_8272a0c530306c 1413
+  s_5ae5b9e56514e5::t_423668c7e520ce 989
+  s_5ae5b9e56514e5::t_ef1ce0804a59ca 1333-1343
+  s_5ae5b9e56514e5::t_de496bb61f4594 49
+  s_5ae5b9e56514e5::t_685dbfa0831039 1176,1183
+  s_5ae5b9e56514e5::t_1f31afd06e68b4 302
+  s_5ae5b9e56514e5::t_4e3dba5c5dec2e 1118
+  s_5ae5b9e56514e5::t_1291f8483910f4 241-252
+  s_5ae5b9e56514e5::t_5a3184145de85f 1414-1415
+  s_5ae5b9e56514e5::t_936aaebf4acaf5 1093
+  s_5ae5b9e56514e5::t_4a64f2dbfcfd3e 599
+  s_5ae5b9e56514e5::t_3874d9e9b40cab 231-240
+  s_5ae5b9e56514e5::t_96b9e92022bb0a 1175
+  s_5ae5b9e56514e5::t_4e8272724d22ba 303
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_4c9d8bcebf859b 718-719
+  s_5ae5b9e56514e5::t_2e5059aaa706b6 720-724
+example/QuadcopterThrustOptDemo.hs
+  s_5ae5b9e56514e5::t_9272368678eeb3 173
+  s_5ae5b9e56514e5::t_15400dcff8f5b6 94
+  s_5ae5b9e56514e5::t_63f76b84930193 40-59
+  s_5ae5b9e56514e5::t_2567b4b4e2f5a1 75-81
+  s_5ae5b9e56514e5::t_c0d1e5637749a1 142-151
+  s_5ae5b9e56514e5::t_086b0ff75dd80a 167
+  s_5ae5b9e56514e5::t_42fadccaf35eb4 1-39,60-62,64-74,82-93,95-99,101-102,125-128,130-141,155-166,168-172,174-201
+  s_5ae5b9e56514e5::t_9faf37c60cf29e 63
+  s_5ae5b9e56514e5::t_afc0190f71a076 100,119,124,129
+  s_5ae5b9e56514e5::t_11274a0ba017e9 152-154
+  s_5ae5b9e56514e5::t_6a8150dbe8ce13 103-118,120-123
+src/Solver/IDA.hs
+  s_5ae5b9e56514e5::t_74311a0504f790 1878-1887
+  s_5ae5b9e56514e5::t_b28ec95ee10de9 557
+  s_5ae5b9e56514e5::t_e2ce32d392256e 1928-1931,1933-1938
+  s_5ae5b9e56514e5::t_542682c6371fbe 495-511
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "5a04adeb96ebc2d49eb2f1018d53084b0508a238",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

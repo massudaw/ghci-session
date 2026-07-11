@@ -1,0 +1,27 @@
+src/Model/PropThrustCoupling.hs
+  s_5ae5b9e56514e5::t_66480a1a9bd1ec 89
+  s_5ae5b9e56514e5::t_93346488704065 46,64-65
+  s_5ae5b9e56514e5::t_a701fb66dd07b8 48-59
+  s_5ae5b9e56514e5::t_fb066da6a22ae1 112-114,118,120,123
+src/Examples/ModelQuadcopter.hs
+  s_5ae5b9e56514e5::t_67d3ce28595b95 538-540
+  s_5ae5b9e56514e5::t_d397072d9b07c8 506
+  s_5ae5b9e56514e5::t_c7a9c738b99eb1 260-264
+  s_5ae5b9e56514e5::t_cab486b21b2f48 412-423
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "d1e0a63bc7dff7671e3c94f5dbe04c6d27372324",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

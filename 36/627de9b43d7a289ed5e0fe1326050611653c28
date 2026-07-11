@@ -1,0 +1,26 @@
+example/ExcSafetyTest.hs
+  s_5ae5b9e56514e5::t_03a28d58321ea0 5,29,34
+src/Rendering/OpenGL/GoldfeatherGPU.hs
+  s_5ae5b9e56514e5::t_9e00e4f1a31277 764,766,768
+  s_5ae5b9e56514e5::t_f4ced1547508e1 65
+  s_5ae5b9e56514e5::t_788d354c870a38 836,838,840
+  s_5ae5b9e56514e5::t_f2df76e360dad1 808,810-811
+example/GoldfeatherGPUTest.hs
+  s_5ae5b9e56514e5::t_7060721b6f92ae 5,77,83,86,89,93,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "36627de9b43d7a289ed5e0fe1326050611653c28",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

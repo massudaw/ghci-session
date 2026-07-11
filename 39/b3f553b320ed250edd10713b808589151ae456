@@ -1,0 +1,73 @@
+example/CondMembershipExperiment.hs
+  s_5ae5b9e56514e5::t_736e69117e931d 86
+  s_5ae5b9e56514e5::t_ac4731c88ad25f 1-37,40-79,81,83,85,88-154,156-161
+  s_5ae5b9e56514e5::t_4fdc1b40621acd 38-39
+  s_5ae5b9e56514e5::t_fda83d9649d3b9 155
+  s_5ae5b9e56514e5::t_eaeb03ae220c22 80,82,84,87
+example/InteractiveOptDemo.hs
+  s_5ae5b9e56514e5::t_417d5a8b3f750b 1-2,17-18,20-21,23-27,29-31,33-40,45,48,59,63-64,66-68,70,74,78,81,84-85,101-104,115,136-137,139-150
+  s_5ae5b9e56514e5::t_ee42b2d9395d5b 3-16,19,22,41-44,46-47,49-58,60-62,69,71-73,75-77,80,82-83,105-108,114,117-127,129-132,134-135,138,151-152
+  s_5ae5b9e56514e5::t_7e4ffcf12d5803 79,86-100,109-113,116
+  s_5ae5b9e56514e5::t_a70a1d09644865 128,133
+  s_5ae5b9e56514e5::t_3683dfbcff1387 28
+  s_5ae5b9e56514e5::t_1f767314343845 32
+  s_5ae5b9e56514e5::t_3da1b3b3d45f25 65
+src/Rendering/DiffCSG.hs
+  s_5ae5b9e56514e5::t_f68ae491f3da8a 282-285,287-288
+  s_5ae5b9e56514e5::t_0e715e115393eb 286
+  s_5ae5b9e56514e5::t_1c87df36c8de1f 9
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_30df7948c7a3b5 82
+  s_5ae5b9e56514e5::t_0a9cfc91c74cf5 691-723
+  s_5ae5b9e56514e5::t_67d1ea7a0eaa10 93-94
+  s_5ae5b9e56514e5::t_4a65d00e609cf5 157-160,163-164
+  s_5ae5b9e56514e5::t_0280de0674868b 91-92
+  s_5ae5b9e56514e5::t_11e5d1e7db83f9 747,750-751
+  s_5ae5b9e56514e5::t_2e72cd7fda7ead 352-372,378
+  s_5ae5b9e56514e5::t_d047839833824f 2
+  s_5ae5b9e56514e5::t_dbfeb47a88b951 95
+  s_5ae5b9e56514e5::t_3e696496fefc30 162
+  s_5ae5b9e56514e5::t_0022ede54937d4 3
+  s_5ae5b9e56514e5::t_8692a6b6181cb1 76
+  s_5ae5b9e56514e5::t_1dc4b65618cd09 630
+  s_5ae5b9e56514e5::t_d921b1363107c5 647
+  s_5ae5b9e56514e5::t_ea3eb323b526b1 724-746,748-749
+  s_5ae5b9e56514e5::t_be4030be7ad0e0 75
+  s_5ae5b9e56514e5::t_c0c0790b2ce724 161
+  s_5ae5b9e56514e5::t_7518eca093c5d9 416-431,433,458-460,469-477,479
+  s_5ae5b9e56514e5::t_4fea7f6126679b 481-482
+example/InverseOptDemo.hs
+  s_5ae5b9e56514e5::t_4dbed46666bcf4 41-45
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_efcf3213d5df49 694-702
+  s_5ae5b9e56514e5::t_c032186165b526 673-684
+  s_5ae5b9e56514e5::t_603bceedc39324 685-693
+example/CondJITExperiment.hs
+  s_5ae5b9e56514e5::t_74c7b6b2405b95 1-81
+  s_5ae5b9e56514e5::t_c8aefac12c549b 82-111
+src/Rendering/OpenGL/GoldfeatherGPU.hs
+  s_5ae5b9e56514e5::t_461d718f7b6ae7 543
+  s_5ae5b9e56514e5::t_04e728db0107bf 68,70
+  s_5ae5b9e56514e5::t_008e85a0b17447 597
+  s_5ae5b9e56514e5::t_69919a78d69a8b 511
+  s_5ae5b9e56514e5::t_30580ece53ecc0 138,146,159
+  s_5ae5b9e56514e5::t_e7c0cbfdb898ad 601-632
+src/Rendering/DiffCSG/Symbolic.hs
+  s_5ae5b9e56514e5::t_439b032af8a805 104-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "39b3f553b320ed250edd10713b808589151ae456",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

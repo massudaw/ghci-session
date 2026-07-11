@@ -1,0 +1,25 @@
+src/Examples/JITTest.hs
+  s_801c613ae3d7ae::t_09b07663ee033b 27,252-253,258-259,264
+src/JIT/CAS.hs
+  s_801c613ae3d7ae::t_3a439638ab72eb 153-154,156,159-160,163,166
+src/JIT/Schedule.hs
+  s_801c613ae3d7ae::t_12f0185875a8aa 28,59
+src/JIT/Tape.hs
+  s_801c613ae3d7ae::t_a2c1c97435d346 769-770,772
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "6427277cf239b1a56f105a410479c844366eb93f",
+  "prompts": {},
+  "sessions": {
+    "s_801c613ae3d7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0dba48-0fa5-4a46-bd73-e72dfa0bcb44",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
