@@ -1,0 +1,30 @@
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_294fbb53555424 681,691,699-701,706
+  s_5ae5b9e56514e5::t_f68edec13d938d 400-403,405
+  s_5ae5b9e56514e5::t_9ed9186d5c03b0 623
+  s_5ae5b9e56514e5::t_2c77ca7423def2 521-522,524
+  s_5ae5b9e56514e5::t_05fbd4aa7393ea 407-411,414-437
+  s_5ae5b9e56514e5::t_bcbb0c8500edf9 379-391,404,406,412-413,440-474,480-482,484-485,493-497
+  s_5ae5b9e56514e5::t_43f43f424989e4 392-399
+  s_5ae5b9e56514e5::t_519d7c15c7227c 438-439
+  s_5ae5b9e56514e5::t_da2d1e39a0b0b3 211-217
+  s_5ae5b9e56514e5::t_a67199e3695122 103
+  s_5ae5b9e56514e5::t_6204258874eab8 475-479,483
+  s_5ae5b9e56514e5::t_61b9a1051590d5 498
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "8679acfc309e8211c0a1d737cf679fb3dc88ec85",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
