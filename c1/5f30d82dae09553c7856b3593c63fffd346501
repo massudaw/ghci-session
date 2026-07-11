@@ -1,0 +1,22 @@
+example/QuadcopterMultiParamSensDemo.hs
+  s_5ae5b9e56514e5::t_a9c18083219b52 66-74,87-89,92,109,117,120,129-130,134,136,145-146,153-154
+  s_5ae5b9e56514e5::t_7171184e10c09e 1-65,75-86,90-91,93-108,110-116,118-119,121-128,131-133,135,137-144,147-152,155-162
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_7fbf6f338242f0 741-748
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "c15f30d82dae09553c7856b3593c63fffd346501",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
