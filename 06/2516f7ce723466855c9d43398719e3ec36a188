@@ -1,0 +1,30 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_7e8598d333757e 69
+  s_5ae5b9e56514e5::t_3a0ac11a51f868 588-606
+src/Rendering/DiffCSG/Symbolic.hs
+  s_5ae5b9e56514e5::t_7c262fe9d95234 213-243
+  s_5ae5b9e56514e5::t_05cc6efc309565 48-49,59-60
+  s_5ae5b9e56514e5::t_6837cd8d6fc938 357-392,397
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_a2a56316614c0b 652-659
+example/InverseOptDemo.hs
+  s_5ae5b9e56514e5::t_17727caf7ea361 56-62,64,66,69-71
+  s_5ae5b9e56514e5::t_76b77f22979179 63
+  s_5ae5b9e56514e5::t_f1901afaa3c287 1-55,65,67-68,72-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "062516f7ce723466855c9d43398719e3ec36a188",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
