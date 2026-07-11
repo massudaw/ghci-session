@@ -1,0 +1,31 @@
+example/GoldfeatherGPUTest.hs
+  s_5ae5b9e56514e5::t_89a2752a7865c9 53,59,63,67
+src/Rendering/OpenGL/GoldfeatherGPU.hs
+  s_5ae5b9e56514e5::t_ebaa7835687b62 728,730
+  s_5ae5b9e56514e5::t_847d28776de03c 714-722,742-782,785,788-790,798-803
+  s_5ae5b9e56514e5::t_a0ad02b760d436 808
+  s_5ae5b9e56514e5::t_1c17a4986de21a 471
+  s_5ae5b9e56514e5::t_89bf2a198291a9 700,702-703
+  s_5ae5b9e56514e5::t_00043a4b9dd86f 656,658,661,667-668
+  s_5ae5b9e56514e5::t_77d17a821aad2b 510-516,518-529,532
+  s_5ae5b9e56514e5::t_9099f637090ddf 517
+  s_5ae5b9e56514e5::t_48054d2404f243 683
+  s_5ae5b9e56514e5::t_db1848baef3f86 561-562,577,585
+  s_5ae5b9e56514e5::t_991ad32215eeac 89-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "27db6b2d9e44059feb70bbbdc1aef43427805820",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
