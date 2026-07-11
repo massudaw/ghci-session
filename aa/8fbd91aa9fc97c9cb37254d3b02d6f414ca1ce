@@ -1,0 +1,28 @@
+src/Solver/IDA.hs
+  s_5ae5b9e56514e5::t_a7ef85cb89866b 1968-1989
+  s_5ae5b9e56514e5::t_d04da42ea8029c 1547-1553,1555
+  s_5ae5b9e56514e5::t_809fc04d9afb61 75
+  s_5ae5b9e56514e5::t_cdda3afceb1bf9 313-327
+  s_5ae5b9e56514e5::t_412fb063e44879 1554
+example/QuadcopterThrustOptDemo.hs
+  s_5ae5b9e56514e5::t_5c6594b94d8d0a 49-65
+  s_5ae5b9e56514e5::t_945b4aeeacbf5b 151-153
+  s_5ae5b9e56514e5::t_d6c550c16cdce3 184
+  s_5ae5b9e56514e5::t_f042db6e97b8c2 109-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "aa8fbd91aa9fc97c9cb37254d3b02d6f414ca1ce",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
