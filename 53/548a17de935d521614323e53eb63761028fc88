@@ -1,0 +1,30 @@
+example/QuadcopterFrameOptDemo2.hs
+  s_5ae5b9e56514e5::t_1806a8c6727a99 126
+src/Solver/SymbolicDAE.hs
+  s_5ae5b9e56514e5::t_f1758832ac49fe 386-393,395-400
+example/QuadcopterMultiParamSensDemo.hs
+  s_5ae5b9e56514e5::t_f14844b80cadcb 111
+src/Domains.hs
+  s_5ae5b9e56514e5::t_a68be717764652 218
+  s_5ae5b9e56514e5::t_7d443444701441 210-212
+example/QuadcopterThrustOptDemo.hs
+  s_5ae5b9e56514e5::t_2a6bc029fa3f07 110
+src/Examples/ModelQuadcopter.hs
+  s_5ae5b9e56514e5::t_461c1841341428 532
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "53548a17de935d521614323e53eb63761028fc88",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
