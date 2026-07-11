@@ -1,0 +1,70 @@
+src/Solver/IDA.hs
+  s_5ae5b9e56514e5::t_1d10cd40ced423 304-311
+  s_5ae5b9e56514e5::t_fed65b2cc1021b 50-51
+  s_5ae5b9e56514e5::t_a0b22cc69eaa8a 1230
+  s_5ae5b9e56514e5::t_1ae0dade6e0d03 1521
+  s_5ae5b9e56514e5::t_4f9e1d9b4fb6fe 1015-1030
+  s_5ae5b9e56514e5::t_3a0e6a94215b91 1834-1842,1853-1854,1862-1865,1867-1870,1884-1910
+  s_5ae5b9e56514e5::t_771c533ccc325f 1855-1859,1866
+  s_5ae5b9e56514e5::t_223470ddb7023a 1860-1861
+  s_5ae5b9e56514e5::t_02892caf4a90ed 1871-1883
+  s_5ae5b9e56514e5::t_2e28ae24476528 1509-1512
+  s_5ae5b9e56514e5::t_487a9657015dd2 135
+  s_5ae5b9e56514e5::t_925b0cb0b94e33 478-494
+  s_5ae5b9e56514e5::t_7cc2c468b41732 538-539
+  s_5ae5b9e56514e5::t_be9c0e58d63f2e 1459-1474
+  s_5ae5b9e56514e5::t_20e8a62c5db9c7 992-1014
+  s_5ae5b9e56514e5::t_946af40b328617 1211-1227,1235
+  s_5ae5b9e56514e5::t_68b6c02bb56dbc 102
+  s_5ae5b9e56514e5::t_0fce5f00818912 1671-1679
+  s_5ae5b9e56514e5::t_9c90338ecd23f1 52
+  s_5ae5b9e56514e5::t_68042133d3450b 1205-1210,1228-1229,1231-1234,1236-1237
+example/ModelSensitivityDemo.hs
+  s_5ae5b9e56514e5::t_fea6097cb86e5e 100-109
+  s_5ae5b9e56514e5::t_c7f3eaaa6be404 40
+  s_5ae5b9e56514e5::t_ea79440c19ec11 74-86
+  s_5ae5b9e56514e5::t_61736a23b6554f 3-4
+  s_5ae5b9e56514e5::t_4176a7c7c488ed 110
+  s_5ae5b9e56514e5::t_3148e222523b72 56-57
+  s_5ae5b9e56514e5::t_84992b8ea10eeb 41
+  s_5ae5b9e56514e5::t_5026b6e178ebf2 36
+  s_5ae5b9e56514e5::t_37266eef9d696a 1-2,5-35,37-39,42-55,58,66-73,87-99,111-124
+  s_5ae5b9e56514e5::t_11b203e410adbb 59-65
+src/Examples/ModelDCMotorCTMS.hs
+  s_5ae5b9e56514e5::t_ca4f12d59c848b 107
+  s_5ae5b9e56514e5::t_ef76b68bcd7e5a 78-87,105
+  s_5ae5b9e56514e5::t_305f2e79bc35da 39-46
+  s_5ae5b9e56514e5::t_77dafd7b42153e 77,112-113
+  s_5ae5b9e56514e5::t_e1d6d146a00790 114
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_264594a2f78689 698-704
+src/Transient.hs
+  s_5ae5b9e56514e5::t_55e905df4f0b5a 574
+  s_5ae5b9e56514e5::t_f241ae8e745cef 1145-1146,1153
+  s_5ae5b9e56514e5::t_592975ce548ea0 206-229
+  s_5ae5b9e56514e5::t_07033cf7d3e1d4 964
+  s_5ae5b9e56514e5::t_a2f336b4097350 1090-1091,1098-1099
+  s_5ae5b9e56514e5::t_bb51e9e447a51c 277-278
+  s_5ae5b9e56514e5::t_004ea8c710105a 1104-1140
+  s_5ae5b9e56514e5::t_0a532c80f4a29a 1154-1173
+  s_5ae5b9e56514e5::t_6671467399691b 1174
+  s_5ae5b9e56514e5::t_b351f96b02afdd 1217-1224
+  s_5ae5b9e56514e5::t_5b8ea2c61d34c4 1067-1068
+  s_5ae5b9e56514e5::t_77ceba6d8611d2 1372-1374
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "93afcdd80dcc452e69a3f57908eca4ec7de5189b",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
