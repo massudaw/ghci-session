@@ -1,0 +1,32 @@
+src/Examples/ModelQuadcopter.hs
+  s_5ae5b9e56514e5::t_2a58f43881e35d 449
+  s_5ae5b9e56514e5::t_bd4016b59cfdd2 264
+  s_5ae5b9e56514e5::t_0eb1edd2fe5dbc 524-530,532
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_cde1fa8f64fa68 105-106,303-309
+example/QuadcopterJointOptDemo.hs
+  s_5ae5b9e56514e5::t_cde1fa8f64fa68 41-42,114-120
+example/QuadcopterArmRSensDemo.hs
+  s_5ae5b9e56514e5::t_1ecae8a180de6b 1-138
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_2d46f4351ce9c0 733-740
+  s_5ae5b9e56514e5::t_906cc5f8278843 746,755
+example/QuadcopterFrameOptDemo2.hs
+  s_5ae5b9e56514e5::t_cde1fa8f64fa68 37,132-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "f08baff30a265d719cd58cb71560707ab528c48b",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
