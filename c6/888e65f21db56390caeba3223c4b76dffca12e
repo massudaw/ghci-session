@@ -1,0 +1,24 @@
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_65d02e8a266ad0 720-727
+example/QuadcopterJointOptDemo.hs
+  s_5ae5b9e56514e5::t_631fc8cf3df2a5 240
+  s_5ae5b9e56514e5::t_40d2acfafc7873 1-160,171,173-205,211,213-239,241-243
+  s_5ae5b9e56514e5::t_f40849e80adea4 161-170,172
+  s_5ae5b9e56514e5::t_3243088e8b1eb1 206-210,212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "c6888e65f21db56390caeba3223c4b76dffca12e",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
