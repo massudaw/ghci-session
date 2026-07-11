@@ -1,0 +1,19 @@
+example/QuadcopterFrameOptDemo2.hs
+  s_5ae5b9e56514e5::t_55cccaabff9307 6-13,15-32,35-36,39,41-43,50,57-59,73-79,81-84,86,96,98,102-103,105-114,123-142,146-147,150-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "faea7dbda8cb79b023b160aa7af0a2d4d8278d84",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
