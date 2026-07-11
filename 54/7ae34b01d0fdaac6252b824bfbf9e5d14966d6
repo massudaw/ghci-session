@@ -1,0 +1,31 @@
+example/DiffCSGResTessBench.hs
+  s_5ae5b9e56514e5::t_2177ccff7933d5 1-93,95-99,101-120,122-124
+  s_5ae5b9e56514e5::t_2a9c50b45a0b94 94,100
+  s_5ae5b9e56514e5::t_e4d16fa2a497d4 121
+example/QuadcopterJointOptDemo.hs
+  s_5ae5b9e56514e5::t_1534d6a5cfd00d 58
+  s_5ae5b9e56514e5::t_e8000440444b9c 201
+  s_5ae5b9e56514e5::t_89106e5dfba5a9 187-197
+  s_5ae5b9e56514e5::t_b72b1dec4a4c20 199-200
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_3b8a7446d2e12e 769-777
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_4349a8b09bb8ba 383-390,392-408
+  s_5ae5b9e56514e5::t_2935fd420f242f 113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "547ae34b01d0fdaac6252b824bfbf9e5d14966d6",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
