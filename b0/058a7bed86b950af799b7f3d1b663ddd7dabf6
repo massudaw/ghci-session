@@ -1,0 +1,53 @@
+src/Examples/RealMarketExample.hs
+  s_b267f9ac75e258::t_3d84faba12d936 35-41
+  s_b267f9ac75e258::t_83173073832c4f 7-9,11,13-20,24-31,56,89,96-105,131-133,139,141-142,146-153,155-157,159,161-162,164,167-168,171-175,177-185,195,220-225,229,234,239,241-242,244,247,249,259,266-267,269,271,273-275
+  s_b267f9ac75e258::t_1258decbab154f 1-6,10,12,21-23,32-34,42-55,57-88,90-95,106-130,134-138,140,143-145,154,158,160,163,165-166,169-170,176,186-194,196-219,226-228,230-233,235-238,240,243,245-246,248,250-258,260-265,268,270,272
+.gitignore
+  s_b267f9ac75e258::t_a3072b96ac2d3c 24-25
+DOMAINS.md
+  s_b267f9ac75e258::t_c4d4cba1ae6587 1432-1466
+data/fred/DGS1.csv
+  s_b267f9ac75e258::t_197532888a728d 1-2610
+data/fred/DGS10.csv
+  s_b267f9ac75e258::t_181d0105347ae6 1-2610
+data/fred/DGS2.csv
+  s_b267f9ac75e258::t_c1627fb401a38f 1-2610
+data/fred/DGS3MO.csv
+  s_b267f9ac75e258::t_25ed9b5d2fd428 1-2610
+data/fred/DGS5.csv
+  s_b267f9ac75e258::t_f10ed67917a294 1-2610
+data/fred/SP500.csv
+  s_b267f9ac75e258::t_8caf5c683aac54 1-2611
+data/fred/VIXCLS.csv
+  s_b267f9ac75e258::t_5475e34bd47b19 1-2610
+example/Main.hs
+  s_b267f9ac75e258::t_b8a0f8dcd61708 134,443
+golden/RealMarketExample/equations.txt
+  s_b267f9ac75e258::t_2a92f50a564580 1-137
+golden/RealMarketExample/position_audit.txt
+  s_b267f9ac75e258::t_f245a7ab8bd28d 1-3
+golden/RealMarketExample/selective_report.txt
+  s_b267f9ac75e258::t_a2761ecd01100d 1-20
+golden/RealMarketExample/solver_audit.txt
+  s_b267f9ac75e258::t_5e9ae1db77e470 1-6
+golden/RealMarketExample/status.txt
+  s_b267f9ac75e258::t_a35a5cdc0bc477 1
+sprinkler-solver.cabal
+  s_b267f9ac75e258::t_60e3598203bb0a 378
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "b0058a7bed86b950af799b7f3d1b663ddd7dabf6",
+  "prompts": {},
+  "sessions": {
+    "s_b267f9ac75e258": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8817bacc-affd-43a7-9a7c-c4c22b154a4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
