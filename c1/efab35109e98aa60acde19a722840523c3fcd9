@@ -1,0 +1,81 @@
+src/JIT/Compiler.hs
+  s_5ae5b9e56514e5::t_3e8237986ebb3d 134-143
+  s_5ae5b9e56514e5::t_1238195ed5e6d3 82
+  s_aafedc7edd2e13::t_d8d7015672e3ab 313,319-327
+src/JIT/Tape.hs
+  s_5ae5b9e56514e5::t_ba6b64c5ff699b 88
+  s_5ae5b9e56514e5::t_17c7056f66df0b 856-859
+src/Solver/SelectivePantelides.hs
+  s_5ae5b9e56514e5::t_a672864b769a1c 366-369
+  s_5ae5b9e56514e5::t_3d16d543510cd2 256-263
+  s_5ae5b9e56514e5::t_972386212e8399 191-195
+  s_5ae5b9e56514e5::t_2adcba8041c497 480-483
+src/Solver/SymbolicDAE.hs
+  s_5ae5b9e56514e5::t_8301573f592899 411-479
+  s_5ae5b9e56514e5::t_809ca41b6a914c 1174-1187
+  s_5ae5b9e56514e5::t_2afbac50a6ee46 3071
+  s_5ae5b9e56514e5::t_a508d0bd9c8e52 493
+  s_5ae5b9e56514e5::t_f1b2e6fb7b0c17 126-129
+  s_5ae5b9e56514e5::t_17c766a7ad770f 1378-1385
+  s_5ae5b9e56514e5::t_1a0b0f46ff220c 59
+  s_5ae5b9e56514e5::t_1c0d4a1405dc38 1509
+  s_5ae5b9e56514e5::t_1b63dc54c6ba2f 1987-1990
+  s_5ae5b9e56514e5::t_c00134bdafef07 1334-1335
+  s_5ae5b9e56514e5::t_73aff034c33faa 480-492,494-535
+  s_5ae5b9e56514e5::t_0ca5fba4c3df23 578-581
+  s_5ae5b9e56514e5::t_0a1d74db3464cf 2065-2067
+  s_5ae5b9e56514e5::t_297b901c267bca 1901-1908
+  s_5ae5b9e56514e5::t_ff6169552a60bf 2177-2212,2214-2271
+  s_5ae5b9e56514e5::t_d58117bf9e8fc8 2213
+  s_5ae5b9e56514e5::t_e6f7ab50d5353d 2172-2175
+  s_5ae5b9e56514e5::t_d2cda0ea608162 22
+  s_5ae5b9e56514e5::t_3dadeafd6c594a 1725-1728
+  s_5ae5b9e56514e5::t_c1369752bbffb8 2991-2996
+  s_5ae5b9e56514e5::t_ab8db4212dcd32 1534
+  s_5ae5b9e56514e5::t_64a2d1503b2ec8 2083,2091-2095
+  s_5ae5b9e56514e5::t_58ecb2ba6bf046 1603-1606
+  s_5ae5b9e56514e5::t_6ceacec572ae17 1950-1953
+  s_5ae5b9e56514e5::t_9c2e750297347e 1416-1421
+  s_5ae5b9e56514e5::t_2708b5ceb1f673 1530-1533
+  s_5ae5b9e56514e5::t_d6ce527eed3255 36
+  s_5ae5b9e56514e5::t_68d273355c0189 202-204
+  s_5ae5b9e56514e5::t_1534eb08efbabd 1288-1290
+  s_5ae5b9e56514e5::t_fb7937b6f3984c 3037
+  s_5ae5b9e56514e5::t_bb98b840e9a522 2176
+src/Solver/Kron.hs
+  s_5ae5b9e56514e5::t_d0d1679c78ddec 62-66
+  s_5ae5b9e56514e5::t_c7e7b41e200743 40
+  s_5ae5b9e56514e5::t_2d848a955bf756 114
+  s_5ae5b9e56514e5::t_36470fffd782c5 418-419
+example/TestDiffCSGLoopPrimitive.hs
+  s_5ae5b9e56514e5::t_1fffeac7aab6cc 43
+  s_5ae5b9e56514e5::t_f171945eed1872 1-42,44-49,51-166,173-228
+  s_5ae5b9e56514e5::t_d17242425e05ef 50
+  s_5ae5b9e56514e5::t_9ef10d1693d509 167-172
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_832cf64fa7b5b7 598-606
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "c1efab35109e98aa60acde19a722840523c3fcd9",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_aafedc7edd2e13": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a9b989315f39b89e7",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
