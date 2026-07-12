@@ -1,0 +1,26 @@
+example/AutoGenPrimitiveGLSLProto.hs
+  s_5ae5b9e56514e5::t_880ac7c1677516 64
+  s_5ae5b9e56514e5::t_981960cc90610e 298-300,309
+  s_5ae5b9e56514e5::t_4165e7b42be984 324
+  s_5ae5b9e56514e5::t_3430e4eb237f49 335
+  s_5ae5b9e56514e5::t_8b8a1e976e4dcf 1-63,65-296,312-323,325-334,336-373
+  s_5ae5b9e56514e5::t_939523e08de281 297,301-308,310-311
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_0e2ab2514c36cc 715-728
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "0ebb33c39318ab827ca81d3706cc3df29586762c",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
