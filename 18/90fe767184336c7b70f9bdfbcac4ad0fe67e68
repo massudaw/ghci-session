@@ -1,0 +1,40 @@
+src/JIT/CopyPatch.hs
+  s_5ae5b9e56514e5::t_299714039acd12 231
+src/JIT/Stencil/X86_64.hs
+  s_5ae5b9e56514e5::t_119a3b2c7f2e83 143
+  s_5ae5b9e56514e5::t_31a2030822ea7a 70,72-75
+  s_5ae5b9e56514e5::t_4dfff17800d9ef 134
+src/JIT/Stencil/ARM64.hs
+  s_5ae5b9e56514e5::t_4f6ba34428be1f 253
+  s_5ae5b9e56514e5::t_2326eba2fc448f 269-272
+  s_5ae5b9e56514e5::t_fb0245abbe9c96 326
+  s_5ae5b9e56514e5::t_939bb308ed49d3 425
+  s_5ae5b9e56514e5::t_6de7e0b0af97c3 447
+  s_5ae5b9e56514e5::t_420e65727c460c 416-424,426
+src/JIT/Tape.hs
+  s_5ae5b9e56514e5::t_6bfd3ed32df11f 1095
+  s_5ae5b9e56514e5::t_ccfde4039894f5 115
+  s_5ae5b9e56514e5::t_bb3c3fce481603 200
+  s_5ae5b9e56514e5::t_0298e0e81656e8 501
+  s_5ae5b9e56514e5::t_fe621ba1cb2243 762
+  s_5ae5b9e56514e5::t_2b4abd3cea5774 541
+  s_5ae5b9e56514e5::t_bac916e995041d 355-426
+  s_5ae5b9e56514e5::t_5fffa9f323336e 781
+  s_5ae5b9e56514e5::t_af7c1bb0dad0e3 28,181
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "1890fe767184336c7b70f9bdfbcac4ad0fe67e68",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
