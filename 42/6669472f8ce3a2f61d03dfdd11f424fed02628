@@ -1,0 +1,30 @@
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_864d9cc220656e 437-447,449,455,458
+  s_5ae5b9e56514e5::t_5695836d9be0eb 930-933,947-949,953,957-966,969-973,976-978
+  s_5ae5b9e56514e5::t_b296b45e1bcc85 161
+  s_5ae5b9e56514e5::t_f39f1c7e5795e7 59,71,121-136
+  s_5ae5b9e56514e5::t_e47b3df98b3bf6 86-95
+  s_5ae5b9e56514e5::t_3cee31a2913045 309-320,336-340,349-353,355-376,389,401-425
+  s_5ae5b9e56514e5::t_a5046379c9f909 659-662,666-684,688-697
+  s_5ae5b9e56514e5::t_27a66ebf2a6c68 7,35
+  s_5ae5b9e56514e5::t_2d594052e53277 809-810,812,816-818,820,823,826-827,830-833,836,839-845
+  s_5ae5b9e56514e5::t_25ccd0a24eedff 1012-1014
+  s_5ae5b9e56514e5::t_475f61f908b92c 711-713,716-717,719-720,724-726,729-737
+  s_5ae5b9e56514e5::t_7b0ecfb2ca114d 8-10,13-25,29-34,36-41,43-53,58,60-70,698,846,979,1010,1015
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "426669472f8ce3a2f61d03dfdd11f424fed02628",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
