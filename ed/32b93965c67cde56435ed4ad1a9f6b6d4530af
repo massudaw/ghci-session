@@ -1,0 +1,36 @@
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_5a5c762db9acd2 759-767
+src/Rendering/DiffCSG/Symbolic.hs
+  s_5ae5b9e56514e5::t_2359cf0956ae3c 62,65-66
+  s_5ae5b9e56514e5::t_411a572a761e3a 422-497
+  s_5ae5b9e56514e5::t_596cf3581ece33 63-64
+  s_5ae5b9e56514e5::t_a1048649306604 72
+example/DiffCSGSymbolicFastPathBench.hs
+  s_5ae5b9e56514e5::t_c84e75437ad508 148-154,156
+  s_5ae5b9e56514e5::t_c7490585bc3825 119-124,129-131,135
+  s_5ae5b9e56514e5::t_a6d3a4dc29f31f 80-85,96,101
+  s_5ae5b9e56514e5::t_2a15024bbdc1a5 41
+  s_5ae5b9e56514e5::t_25dd5658961349 193-196
+  s_5ae5b9e56514e5::t_1f4f5ab637d5d8 1-40,42-79,86-95,97-100,102-118,125-128,132-134,136-147,155,157-192,197-200
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_4791070f6c129d 500-531,533-537,539-540,547,549-552,558-560,573-583,587-588,590-592,594-600
+  s_5ae5b9e56514e5::t_e77368588bd55f 74-75
+  s_5ae5b9e56514e5::t_f6cbfde92ccee3 532,538,541-546,548,553-557,561-567,569-570,572,584-586,589,593
+  s_5ae5b9e56514e5::t_e8f5a4fd1a9cde 568,571
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "ed32b93965c67cde56435ed4ad1a9f6b6d4530af",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
