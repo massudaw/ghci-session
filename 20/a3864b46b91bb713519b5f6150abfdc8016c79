@@ -1,0 +1,27 @@
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_5ae5b9e56514e5::t_e49ddf33816af2 1186-1194,1199-1207
+  s_5ae5b9e56514e5::t_31aad1878c7c98 1554-1564,1569-1578,1594-1597
+  s_5ae5b9e56514e5::t_f9b6c8017564d6 1195-1198
+  s_5ae5b9e56514e5::t_eb0527d43840ed 1113-1116
+  s_5ae5b9e56514e5::t_064b6413e30def 1580-1589,1606-1608
+  s_5ae5b9e56514e5::t_476add501cbb66 1019-1054,1098-1111,1127-1132,1136-1137,1147-1154,1158-1163,1175-1176
+  s_5ae5b9e56514e5::t_88ef25ff992910 1590,1602-1605
+  s_5ae5b9e56514e5::t_e78b7e3a57af6c 1133
+  s_5ae5b9e56514e5::t_99c75ef9c204eb 1208-1234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "20a3864b46b91bb713519b5f6150abfdc8016c79",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
