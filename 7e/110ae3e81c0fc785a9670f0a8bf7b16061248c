@@ -1,0 +1,27 @@
+example/JITLoopPoCBench.hs
+  s_5ae5b9e56514e5::t_cda1d1c32ff6a8 1-71
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_91abadbe0849ef 695-702
+  s_5ae5b9e56514e5::t_75d9e38f898d79 209
+src/JIT/LoopStencil.hs
+  s_5ae5b9e56514e5::t_65c63b98872682 284-291,302,304,310,312
+  s_5ae5b9e56514e5::t_03575bbb040a47 1-147,163-165,167-176,178-283,305-309,311,313-401
+  s_5ae5b9e56514e5::t_f584d1a3c8a9a6 292-301,303
+  s_5ae5b9e56514e5::t_c2235040857620 148-162,166,177
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "7e110ae3e81c0fc785a9670f0a8bf7b16061248c",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
