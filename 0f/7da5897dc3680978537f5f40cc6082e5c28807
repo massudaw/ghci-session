@@ -1,0 +1,45 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_8659655fd904de 58-59
+example/AutoGenBoxEdgeAAProto.hs
+  s_5ae5b9e56514e5::t_11287297e53f89 299,304,309,312,315,323-329
+  s_5ae5b9e56514e5::t_06d579ea6ca663 547,549-550
+  s_5ae5b9e56514e5::t_4c02a5a6c48dec 381-382,386
+  s_5ae5b9e56514e5::t_5b44cc26c9f516 280-296,300-303,305-308,310-311,313-314,316-317
+  s_5ae5b9e56514e5::t_fb75e4a32c2abd 357-359
+  s_5ae5b9e56514e5::t_b7b4d1529f8c51 237-242,258,263-269,273-277
+  s_5ae5b9e56514e5::t_1daa6375dab7ae 533,535-536
+  s_5ae5b9e56514e5::t_3ee6199d017f48 167
+  s_5ae5b9e56514e5::t_dc42ce5a35b6c5 491-493
+  s_5ae5b9e56514e5::t_02f8bc9881050f 214-215
+  s_5ae5b9e56514e5::t_641513cf7a42fb 45-46,52-76
+  s_5ae5b9e56514e5::t_c11da3fa04515b 481-483
+  s_5ae5b9e56514e5::t_4fbcf60595a4de 170-178
+  s_5ae5b9e56514e5::t_5104bb3a7c67da 427-450,461-468
+  s_5ae5b9e56514e5::t_a418a6d602fa86 1-44,47-48,77-130,132-141,169,179,216-236,243-257,259-262,270-272,278-279,297-298,330-356,360-380,383-385,387-421,423,426,451-460,469-480,484-490,494-532,534,537-546,548,551-566,582-585,588-623
+  s_5ae5b9e56514e5::t_8b55eff9cab547 143-166,168,180-213
+  s_5ae5b9e56514e5::t_da025da4a5cf7b 319-322
+  s_5ae5b9e56514e5::t_95769781eabed0 49-51
+  s_5ae5b9e56514e5::t_7c0b1d1064dd5e 318
+  s_5ae5b9e56514e5::t_37dc9ba2dfc4f1 131
+  s_5ae5b9e56514e5::t_d4b2cc28aabc7c 422,424-425
+  s_5ae5b9e56514e5::t_c65e14ca4011ea 567-581,586-587
+  s_5ae5b9e56514e5::t_e8de871e8c7da8 142
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_f2e4de9fbafaf3 802-811
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "0f7da5897dc3680978537f5f40cc6082e5c28807",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
