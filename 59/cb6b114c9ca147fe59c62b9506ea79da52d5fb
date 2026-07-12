@@ -1,0 +1,22 @@
+example/GPUDiffCSGOptDemo.hs
+  s_5ae5b9e56514e5::t_81eff8c77eb7a0 25-83
+  s_5ae5b9e56514e5::t_c8f0e341693fbb 235-236,241-252
+  s_5ae5b9e56514e5::t_20afa67caa4d8f 237-240
+  s_5ae5b9e56514e5::t_0ebadc4c5ea6eb 348-353
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "59cb6b114c9ca147fe59c62b9506ea79da52d5fb",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
