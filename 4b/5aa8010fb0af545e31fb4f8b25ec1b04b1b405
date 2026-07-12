@@ -1,0 +1,35 @@
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_5ae5b9e56514e5::t_4fe0aed3ade823 935-945,949
+  s_5ae5b9e56514e5::t_3d269ad9eb8840 1308-1312,1317-1318
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_63b58e75d4384a 203
+  s_5ae5b9e56514e5::t_08ca02ef8ce9e0 198
+  s_5ae5b9e56514e5::t_307f360161a244 933-938
+  s_5ae5b9e56514e5::t_071c87e48aa7f4 190-191,202
+  s_5ae5b9e56514e5::t_b672324e22ceb8 757-776
+  s_5ae5b9e56514e5::t_f12a5cbbc2ca0f 1034
+  s_5ae5b9e56514e5::t_daba7084e45dfb 1107-1109
+  s_5ae5b9e56514e5::t_c84e9c36c4a168 1112-1114,1117-1119
+  s_5ae5b9e56514e5::t_be4b4f60f6d462 1033
+  s_5ae5b9e56514e5::t_42969539a3568f 192
+  s_5ae5b9e56514e5::t_0b8819d0dd703e 1051-1052
+  s_5ae5b9e56514e5::t_6f527c2125534f 664-674,728-756
+  s_5ae5b9e56514e5::t_6e762a90e32215 1039-1050,1053
+  s_5ae5b9e56514e5::t_3c4054baab2467 675-727
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "4b5aa8010fb0af545e31fb4f8b25ec1b04b1b405",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
