@@ -1,0 +1,34 @@
+example/DiffCSGSymbolicTopologyBench.hs
+  s_5ae5b9e56514e5::t_95026a183ad921 1-30,34-103,116,118-137,141-145,147,154,156-178,216-237,239-240
+  s_5ae5b9e56514e5::t_d7e46fc624975f 238
+  s_5ae5b9e56514e5::t_85bf823ca8449d 138-140,146,148-153,155
+  s_5ae5b9e56514e5::t_efccc0d4847617 31-33
+  s_5ae5b9e56514e5::t_994547000280d8 104-115,117
+  s_5ae5b9e56514e5::t_9950c21e65580f 179-215
+sprinkler-solver.cabal
+  s_0f1bd57ef9b657::t_08522e66427540 750-758
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "f5b028656249a2a822a3c6a1be0b130d0eb6aa75",
+  "prompts": {},
+  "sessions": {
+    "s_0f1bd57ef9b657": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-aa9389e1637a72d05",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
