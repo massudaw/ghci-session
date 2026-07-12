@@ -1,0 +1,62 @@
+example/GoldfeatherGPUDiffBench.hs
+  s_5ae5b9e56514e5::t_e34cd58fbfb46f 694-695
+  s_5ae5b9e56514e5::t_dfbd9cfff1e9f5 666-679
+  s_5ae5b9e56514e5::t_4df827686bd5b5 665
+  s_5ae5b9e56514e5::t_9cf3de550b7196 38-39
+  s_5ae5b9e56514e5::t_da6ae4ae2793bb 692,718
+  s_5ae5b9e56514e5::t_978ea9ae709792 617
+  s_5ae5b9e56514e5::t_23ef260d5e38b3 681
+  s_5ae5b9e56514e5::t_06a492051b81e8 595-616,618-651,664,680,682-690,719-760
+  s_5ae5b9e56514e5::t_9c2ef76dbb7672 652-663
+  s_5ae5b9e56514e5::t_d91ce57c89d74e 25-27
+  s_5ae5b9e56514e5::t_dac7330db3aff7 691
+  s_5ae5b9e56514e5::t_5142d6ced0cee5 693
+  s_5ae5b9e56514e5::t_34672dfcf206e0 696-698,715-717
+  s_5ae5b9e56514e5::t_617889fcc42e72 761
+  s_34199b2fd3b423::t_7cd3d8b32bec66 699-714
+src/Rendering/OpenGL/GoldfeatherGPUDiff.hs
+  s_5ae5b9e56514e5::t_cba8253f56a91f 1922-1975
+  s_5ae5b9e56514e5::t_2158db46c1d0ee 8-21
+  s_5ae5b9e56514e5::t_00794036a20253 104,110,114-115
+  s_5ae5b9e56514e5::t_fd8a942cc174ab 1381-1388
+  s_5ae5b9e56514e5::t_82bea47a1954c1 480
+  s_5ae5b9e56514e5::t_a86505dd45a956 740
+  s_5ae5b9e56514e5::t_c2bbb71bcb9c54 1423-1426
+  s_5ae5b9e56514e5::t_686f8d653b1ecc 565-639,694
+  s_5ae5b9e56514e5::t_66a03e99c57a95 165-216,220,222-223,229,234,236-237,243,248,250-251,256-257,262-282,284-285
+  s_5ae5b9e56514e5::t_2b965a3e9022ce 1493,1498-1507
+  s_5ae5b9e56514e5::t_0b8919c313d161 776-785
+  s_5ae5b9e56514e5::t_29df93cf13d0e5 648,655-657,676,681-693
+  s_5ae5b9e56514e5::t_6a3ea6db399e86 1647-1648
+  s_5ae5b9e56514e5::t_bae11cc86b9d01 695,726,753-772,774-775,786-789
+  s_5ae5b9e56514e5::t_70d63e5043800e 773
+  s_5ae5b9e56514e5::t_4598a1553b6d25 706
+  s_5ae5b9e56514e5::t_58938457848107 1329-1333
+  s_5ae5b9e56514e5::t_da4b519994fd98 1558-1570,1607-1613
+  s_5ae5b9e56514e5::t_c92b870ab7938f 449,465-479
+  s_5ae5b9e56514e5::t_955a8266494a27 294-300,790-792,1614
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "080784cccc75c87026a275162d475e871fbfa93b",
+  "prompts": {},
+  "sessions": {
+    "s_34199b2fd3b423": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-af24157c15bd6a38b",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
