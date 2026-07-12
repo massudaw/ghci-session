@@ -1,0 +1,25 @@
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_d8070803f034c8 743-756
+example/AutoGenClassificationGLSLProto.hs
+  s_5ae5b9e56514e5::t_22d9020a2bb934 470,476-478,483-485,488-492
+  s_5ae5b9e56514e5::t_cc54d268597203 530
+  s_5ae5b9e56514e5::t_8c13bb80b3d387 1-195,209-233,254-260,266-469,471-475,479-482,486-487,493-529
+  s_5ae5b9e56514e5::t_67500b6bf68f15 234-253,261-265
+  s_5ae5b9e56514e5::t_15e5aafc275b10 196-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "d76cd543bbe796effb27417f05bb6eb6d681aea2",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
