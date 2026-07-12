@@ -1,0 +1,32 @@
+example/DiffCSGGPUTranspileDemo.hs
+  s_5ae5b9e56514e5::t_d68cf712918613 1-401
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_83568aece75005 671-681
+  s_5ae5b9e56514e5::t_ce93a3e018994f 208
+  s_5ae5b9e56514e5::t_d05c54d9eec261 682-684
+  s_61cd5499c412dd::t_3ff98fdd4803fc 685
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "321458cbafcfc47c93e13c155bba76de3e934f7e",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_61cd5499c412dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-acf756a201327d059",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
