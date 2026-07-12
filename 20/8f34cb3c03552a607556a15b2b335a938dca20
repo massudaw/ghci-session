@@ -1,0 +1,50 @@
+example/GoldfeatherGPUDiffBench.hs
+  s_5ae5b9e56514e5::t_35f148aabeb6f1 441-582
+src/Rendering/OpenGL/GoldfeatherGPUDiff.hs
+  s_5ae5b9e56514e5::t_1c0e8e418ca71c 765-770,774,778
+  s_5ae5b9e56514e5::t_5e1da3a633b0d9 391-403
+  s_5ae5b9e56514e5::t_68bd39235efdde 1169
+  s_5ae5b9e56514e5::t_754b0020bab03b 1471-1473,1475
+  s_5ae5b9e56514e5::t_7f12095a3d9211 897-918
+  s_5ae5b9e56514e5::t_b755d447a6c5e2 468-469,487,492-516
+  s_5ae5b9e56514e5::t_a68e18169615d5 560,564
+  s_5ae5b9e56514e5::t_c63b01d7afe4f3 1088
+  s_5ae5b9e56514e5::t_b05d0bae15bd1e 576-583
+  s_5ae5b9e56514e5::t_59d552af82320b 1502
+  s_5ae5b9e56514e5::t_bda9b5e19fc146 660
+  s_5ae5b9e56514e5::t_0fa1d6ef97c516 800-801,806,811-812,823-830,833-834,838-844
+  s_5ae5b9e56514e5::t_fd31e06c5f249f 1393,1400-1401
+  s_5ae5b9e56514e5::t_ad333e053bea6e 1581-1629
+  s_5ae5b9e56514e5::t_e627066c524b86 517,862-876,885,889-890,892-896,919,924-925,927
+  s_5ae5b9e56514e5::t_7f16085c5c7230 1144
+  s_5ae5b9e56514e5::t_d96f4adf5207d1 884,886-888,891
+  s_5ae5b9e56514e5::t_8bbce685d0d949 955,968,970,979,981,992,994,1002,1004
+  s_5ae5b9e56514e5::t_6cd73e11fe057d 518,728-764,771-773,775-777,779-799,802-805,807-810,813-822,831-832,835-837,845-851
+  s_5ae5b9e56514e5::t_c74d1331bfedd4 920-923
+  s_5ae5b9e56514e5::t_4f797693ada7af 926
+  s_ba21ff4f37545f::t_587002a0cfae34 935
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "208f34cb3c03552a607556a15b2b335a938dca20",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_ba21ff4f37545f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-acfc9aa5b85781e6a",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
