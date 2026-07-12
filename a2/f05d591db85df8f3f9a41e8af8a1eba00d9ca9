@@ -1,0 +1,76 @@
+src/JIT/LoopLower.hs
+  s_5ae5b9e56514e5::t_8cadf264fcd46e 584,803-845
+  s_5ae5b9e56514e5::t_78a77d1381bb24 743
+  s_5ae5b9e56514e5::t_c9dbab1aa5c673 81-82
+  s_5ae5b9e56514e5::t_8819ee71589d0c 577
+  s_5ae5b9e56514e5::t_07298fee64efac 787
+  s_5ae5b9e56514e5::t_c4c807411d828c 585-632
+  s_5ae5b9e56514e5::t_bb5ad63c356a78 53-58
+  s_5ae5b9e56514e5::t_828c2cacf1a8c3 92-93,97
+src/Solver/SymbolicDAE.hs
+  s_5ae5b9e56514e5::t_cf2af4ce6c8c00 648
+  s_5ae5b9e56514e5::t_b3062ae5bb3456 131-136
+  s_5ae5b9e56514e5::t_7cd7cecc7eac05 1245
+  s_5ae5b9e56514e5::t_ad2d1dff75eb94 1406
+  s_5ae5b9e56514e5::t_7ef9efd5e7d759 2071-2072
+  s_5ae5b9e56514e5::t_48485866d523c8 22
+  s_5ae5b9e56514e5::t_6e46cc734970ff 1680-1682
+  s_5ae5b9e56514e5::t_7532a567e39a2e 505-529
+  s_5ae5b9e56514e5::t_01d49d1f5504d4 1451
+  s_5ae5b9e56514e5::t_244de7e5210859 1805-1807
+  s_5ae5b9e56514e5::t_6cdb28ae529460 579
+  s_5ae5b9e56514e5::t_811b8b223c9291 2032-2033
+  s_5ae5b9e56514e5::t_9fa1c3eff05dcc 2169
+  s_5ae5b9e56514e5::t_0e00bbe93e7b3d 1490
+  s_5ae5b9e56514e5::t_2c8f34a1c548aa 1584
+  s_5ae5b9e56514e5::t_c671a4283ca243 212
+src/JIT/LoopCodegen.hs
+  s_5ae5b9e56514e5::t_0bc4a63d33fdcc 322
+  s_5ae5b9e56514e5::t_215ba58a2f945c 43
+  s_5ae5b9e56514e5::t_67cb1bad2fc377 239-261,263,265-267
+  s_5ae5b9e56514e5::t_506d7e02b526a7 63-65
+example/JITIndexedLoopBench.hs
+  s_5ae5b9e56514e5::t_2efcb046e6fd33 23
+  s_5ae5b9e56514e5::t_9d243ebcabad80 1-22,24-72,80-125
+  s_5ae5b9e56514e5::t_6929bb607bbeb2 73-79
+src/JIT/CopyPatch.hs
+  s_5ae5b9e56514e5::t_eed0eace8cc096 55-58
+  s_5ae5b9e56514e5::t_821ef200e9ec17 416-447
+  s_5ae5b9e56514e5::t_0bbfc71c4dd393 270
+  s_5ae5b9e56514e5::t_d8b950e0b71abc 87-95
+  s_5ae5b9e56514e5::t_5e2e14b3c78e6a 68
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_3cf1ed1a41af6c 633-642
+src/JIT/Stencil/ARM64.hs
+  s_5ae5b9e56514e5::t_e929c646d9a281 357
+  s_5ae5b9e56514e5::t_fe1e8abfb0c468 264-297
+  s_5ae5b9e56514e5::t_f15eaf81748b06 19-23
+  s_5ae5b9e56514e5::t_7e2897128707bc 410
+  s_5ae5b9e56514e5::t_ddc1bf608bc332 119-170
+src/JIT/Tape.hs
+  s_5ae5b9e56514e5::t_b94d1a8d526b40 226
+  s_5ae5b9e56514e5::t_a8cccdc3697ed2 266-269
+  s_5ae5b9e56514e5::t_8fabf7e8126e2f 88
+  s_5ae5b9e56514e5::t_92cd5cf2ff4764 1032-1046
+  s_5ae5b9e56514e5::t_52abc93fd82b09 163-175
+  s_5ae5b9e56514e5::t_b4fde929bfa1af 1130
+  s_5ae5b9e56514e5::t_141079d6471fb2 913-915
+  s_5ae5b9e56514e5::t_c3038c6369a717 748
+  s_5ae5b9e56514e5::t_a263bd4ec70fd9 770
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "a2f05d591db85df8f3f9a41e8af8a1eba00d9ca9",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
