@@ -1,0 +1,22 @@
+example/AutoGenCylinderGLSLProto.hs
+  s_5ae5b9e56514e5::t_a5ce15918514bb 426-432,436,438
+  s_5ae5b9e56514e5::t_2b6e176375f34b 1-425,433-435,437,439-508
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_4d5b54325d0a0b 729-742
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "00e95312ef0e5e4f2adbce39f1cc1aa82b72864b",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
