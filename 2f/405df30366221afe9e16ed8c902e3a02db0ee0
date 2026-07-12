@@ -1,0 +1,36 @@
+example/AutoGenPrimitiveGLSLProto.hs
+  s_5ae5b9e56514e5::t_2663f283788d52 246-343
+  s_5ae5b9e56514e5::t_d750f2f13ea863 471-500,520,523,525,530
+  s_5ae5b9e56514e5::t_2faff3f30030c4 501-519,521-522,524,526-529,531-534
+  s_5ae5b9e56514e5::t_e0b9ab1c0f470c 535
+example/AutoGenCylinderGLSLProto.hs
+  s_5ae5b9e56514e5::t_e9f72ab356c3bd 373-468
+  s_5ae5b9e56514e5::t_c9843c8db05344 627-647
+  s_5ae5b9e56514e5::t_fea1eb513155e0 624-626
+  s_5ae5b9e56514e5::t_a61ee896424e77 648
+  s_f761a632afbf39::t_53a0effd72c45b 604-623
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "2f405df30366221afe9e16ed8c902e3a02db0ee0",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_f761a632afbf39": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-aa4e8b4c664e67365",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
