@@ -1,0 +1,39 @@
+example/CandidateLaneBatchProto.hs
+  s_5ae5b9e56514e5::t_6bada42f7fd2b5 1-184
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_1c01216d29d5b4 819-833
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_5ae5b9e56514e5::t_d279490164cab1 102-105
+  s_5ae5b9e56514e5::t_82b8290d0efd64 645,657,664,715,1997-2314
+  s_5ae5b9e56514e5::t_40e3310c881e07 236-239,245
+  s_5ae5b9e56514e5::t_121348cd514bed 212-232
+  s_5ae5b9e56514e5::t_6a2ae4bfa66dde 646-648,654-656
+  s_5ae5b9e56514e5::t_e3e3805f797128 658-663
+  s_5ae5b9e56514e5::t_39bdbeb548566e 665-667,712-714
+  s_5ae5b9e56514e5::t_8f1a8fbb5dff67 716-718
+  s_497b75d7c84abc::t_cc18ed3c9658be 649-653,668-711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "e32fdbe60033b6de9c0810026d66003c6bde0c96",
+  "prompts": {},
+  "sessions": {
+    "s_497b75d7c84abc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a7a8861e3910d95f8",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
