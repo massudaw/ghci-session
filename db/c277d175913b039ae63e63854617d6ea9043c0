@@ -1,0 +1,24 @@
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_ef8cafd5c69696 2050
+  s_0a0d3792ecffdd::t_84efe47c38015d 2013-2024,2026-2027
+example/DiffCSGNativeTwinProto.hs
+  s_0a0d3792ecffdd::t_e39d14f93b5ca5 262,266,283,375,379,396,552,556,573,719,723,740
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_6028b90609edda 562,566,884,888,1205,1211,2728,2732,2940
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "dbc277d175913b039ae63e63854617d6ea9043c0",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
