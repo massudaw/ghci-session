@@ -1,0 +1,30 @@
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_6004357458807b 832-840
+example/QuadClearanceRoughnessProbe.hs
+  s_5ae5b9e56514e5::t_fd71ee6fd31e88 2-4,12-52
+  s_5ae5b9e56514e5::t_219c4109a04c6a 117-123
+  s_5ae5b9e56514e5::t_0e2d730804e929 1,5-11,53-94,124-202
+  s_5ae5b9e56514e5::t_3ef6d5f785c225 209-211
+  s_5ae5b9e56514e5::t_0508a1d4416737 95-100
+  s_5ae5b9e56514e5::t_33a5cd41ce037b 212-214
+  s_5ae5b9e56514e5::t_a2c6c2971c64ec 108-116
+  s_5ae5b9e56514e5::t_2450d38f0b02cb 206-208
+  s_5ae5b9e56514e5::t_00054f7120d926 101-107
+  s_5ae5b9e56514e5::t_a0c8c6afe88d24 203-205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "dac92d09ab0c34a7538b67749df19e586da829cf",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
