@@ -1,0 +1,26 @@
+example/CandidateLaneBatchProto.hs
+  s_0a0d3792ecffdd::t_25916fcc0c5614 382-416
+  s_0a0d3792ecffdd::t_918f36e9af4f74 235-281
+  s_0a0d3792ecffdd::t_da6c01dcbbd24d 320-350
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_98c82f746fd6d2 2699-2843,2846-2907
+  s_0a0d3792ecffdd::t_45fd434683bae4 255-271
+  s_0a0d3792ecffdd::t_1561243a3decd2 275
+  s_0a0d3792ecffdd::t_bf08e8119c53ff 2844-2845
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "0242b77706fd4cfaf6a5e43b35598552757f7568",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
