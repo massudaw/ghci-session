@@ -1,0 +1,37 @@
+src/Rendering/DiffCSG/BoundaryDerivative.hs
+  s_5ae5b9e56514e5::t_e66aa0f967142e 152
+  s_5ae5b9e56514e5::t_5c05b0f16ec6fa 1-36,39-129,131-151,153-190
+  s_5ae5b9e56514e5::t_ff648d2bd532ad 130
+  s_5ae5b9e56514e5::t_b2bd82ffa70cd5 37-38
+example/BoundaryDerivativeProto.hs
+  s_5ae5b9e56514e5::t_f8ecb29761633c 153
+  s_5ae5b9e56514e5::t_f6d0aae52e90a0 63
+  s_5ae5b9e56514e5::t_5962826d9a5f6f 128-144
+  s_5ae5b9e56514e5::t_2fb5cbeea9c317 1-21,32-62,64-127,145,151-152,154-237,243-249,252-269,275-281,284-342,360-376,383-394,396-487,492-558
+  s_5ae5b9e56514e5::t_231b14cc618176 270-274,282-283
+  s_5ae5b9e56514e5::t_7562f0d553ffef 343-359
+  s_5ae5b9e56514e5::t_8ae6be024a9e37 488-491
+  s_5ae5b9e56514e5::t_57f4c3d6a3a43c 238-242,250-251
+  s_5ae5b9e56514e5::t_9c8f44e9385e6b 146-150
+  s_5ae5b9e56514e5::t_b924d8184de37f 22-31
+  s_5ae5b9e56514e5::t_cbfc042f7edf27 377-382,395
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_4ccbc3c30d82a7 839-848
+  s_5ae5b9e56514e5::t_161ce99719ef42 174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "b2b7293b15115164ff175e090ef3550ef62d1db9",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
