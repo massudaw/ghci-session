@@ -1,0 +1,25 @@
+example/GLSLVecPackingBench.hs
+  s_5ae5b9e56514e5::t_94efb13bae0230 329-331
+  s_5ae5b9e56514e5::t_a43058a43c4b43 326
+  s_5ae5b9e56514e5::t_5e83214f40e833 62
+  s_5ae5b9e56514e5::t_8dcf6d6366dbe4 1-61,63-325,327-328
+  s_5ae5b9e56514e5::t_cac506d6f40a21 332-389
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_8406bfb4d1ff2f 812-824
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "fced7bb3008df4026d017927a3152412ac25af4c",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
