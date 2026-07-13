@@ -1,0 +1,25 @@
+example/DiffCSGViewportViewer.hs
+  s_0a0d3792ecffdd::t_00bc41dbcd935f 93
+  s_0a0d3792ecffdd::t_19385841809ea5 357-365
+  s_0a0d3792ecffdd::t_3fba4ef76b306f 72
+  s_0a0d3792ecffdd::t_86841f25f653f5 335-345,347-348
+  s_0a0d3792ecffdd::t_491902cccf2762 426
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_40f9f2b912469b 1129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "3726d6d7bf9b213fd3eaba1cfe2259bd3fd4672f",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
