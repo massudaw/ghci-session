@@ -1,0 +1,36 @@
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_5ae5b9e56514e5::t_75c0a7c0e81018 517-518,520-521,535,537
+  s_5ae5b9e56514e5::t_0edb3758ea0e9c 564,567-575
+  s_5ae5b9e56514e5::t_9cd4e547276af7 597,601-603,606
+  s_5ae5b9e56514e5::t_d74d6062ff4500 2631-2632,2634-2635,2649,2651
+  s_5ae5b9e56514e5::t_9c8a3bc4197022 2678,2680-2685
+example/DiffCSGNativeTwinProto.hs
+  s_5ae5b9e56514e5::t_799459de9bf667 923
+example/CandidateLaneBatchProto.hs
+  s_5ae5b9e56514e5::t_862130ec93b6d0 227-228,252-253,257,260
+example/DiffCSGPrimitivesGalleryProto.hs
+  s_5ae5b9e56514e5::t_743a8cdfe0b22a 95
+example/DiffCSGViewportViewer.hs
+  s_5ae5b9e56514e5::t_e765285dc7d527 363
+  s_5ae5b9e56514e5::t_a3b74f02f9afbd 85
+  s_5ae5b9e56514e5::t_ad2407df988ace 409-410
+  s_5ae5b9e56514e5::t_ba91b2701217ab 129-130,133,143-144,148
+  s_5ae5b9e56514e5::t_fd412ee6782cf7 322-326,331-340
+  s_5ae5b9e56514e5::t_8a5a2ebc82d84b 341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "fa35c6a8ccd2e2f0dc63e434cdc13b20b7a25525",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
