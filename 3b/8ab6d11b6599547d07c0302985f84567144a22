@@ -1,0 +1,32 @@
+example/LensCenterAAProbe.hs
+  s_5ae5b9e56514e5::t_ac7c63c7be7e93 158,163-167
+  s_5ae5b9e56514e5::t_9ac8b719a518b2 1-16,34-40,42-43,45-54,76-109,128-129,131-133,155
+  s_5ae5b9e56514e5::t_a90b5c1a8fb6b0 41,44,55-75
+  s_5ae5b9e56514e5::t_5e706b9adf030a 110-127,130,134-145,156-157,159-162
+  s_5ae5b9e56514e5::t_dcc0b1c4037044 17-33
+  s_5ae5b9e56514e5::t_5881ada995927a 146-154
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_6e6b3c6b8419e4 841-849
+  s_5ae5b9e56514e5::t_ec7cac750ec9d9 850-858
+example/QuadClearanceGroundTruth.hs
+  s_5ae5b9e56514e5::t_c860ab1515bc6d 33-65
+  s_5ae5b9e56514e5::t_c601dbbbca526a 279-288
+  s_5ae5b9e56514e5::t_bb49c602f35236 1-32,66-259,262,276
+  s_5ae5b9e56514e5::t_45b7a0c461ac9c 260-261,263-275,277-278
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "3b8ab6d11b6599547d07c0302985f84567144a22",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
