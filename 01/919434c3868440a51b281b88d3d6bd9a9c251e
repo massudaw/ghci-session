@@ -1,0 +1,39 @@
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_5ae5b9e56514e5::t_464b55aa21630d 1440-1480,1482-1485,1487
+  s_5ae5b9e56514e5::t_72c512891b2420 936-977,979-983,985
+  s_5ae5b9e56514e5::t_b56744a63b82f5 1481,1486
+  s_5ae5b9e56514e5::t_925d2ca99ec834 643-685
+  s_5ae5b9e56514e5::t_55761ea64c6c5c 978,984
+  s_5ae5b9e56514e5::t_2b537598dc50fc 1926-1963,1965-1968,1970
+  s_5ae5b9e56514e5::t_195d56be14e587 233-254
+  s_5ae5b9e56514e5::t_199964d49ef459 1726,1731
+  s_5ae5b9e56514e5::t_3ba9222ee647b1 1687-1725,1727-1730,1732
+  s_5ae5b9e56514e5::t_ec4207a34f5221 2283,2288
+  s_5ae5b9e56514e5::t_4171c21503f6a3 2475-2512
+  s_5ae5b9e56514e5::t_58a39a2006ebb0 1964,1969
+  s_5ae5b9e56514e5::t_f27e0d2904fcac 755
+  s_5ae5b9e56514e5::t_c783752a262ff4 2534-2548,2553,2557-2558,2565-2590
+  s_5ae5b9e56514e5::t_7b715f725c84b2 935,1439,1686,1925,2239-2282,2284-2287,2289
+  s_5ae5b9e56514e5::t_4d49ebe3b2ef3f 765
+example/CandidateLaneBatchProto.hs
+  s_5ae5b9e56514e5::t_10f72ce320e4ac 247-249
+  s_5ae5b9e56514e5::t_b41b0bf5dab059 174-188
+  s_5ae5b9e56514e5::t_f069f529b93a3a 72-157
+  s_5ae5b9e56514e5::t_6f65ad4b2e20d6 281-302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "01919434c3868440a51b281b88d3d6bd9a9c251e",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
