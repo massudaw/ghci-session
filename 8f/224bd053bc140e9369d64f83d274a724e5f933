@@ -1,0 +1,22 @@
+example/DiffCSGPrimitivesGalleryProto.hs
+  s_5ae5b9e56514e5::t_f4378bb2bc261c 1-59,71,73-112
+  s_5ae5b9e56514e5::t_8d652a71a16f94 60-70,72
+sprinkler-solver.cabal
+  s_5ae5b9e56514e5::t_fc58e4c96c69c7 819-828
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "8f224bd053bc140e9369d64f83d274a724e5f933",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
