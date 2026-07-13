@@ -1,0 +1,29 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_2dfba86a2b236f 692
+  s_5ae5b9e56514e5::t_e09b5b983300f9 419-445
+  s_5ae5b9e56514e5::t_8180086ec1c9d5 565,569-576,579
+  s_5ae5b9e56514e5::t_13806fd324f2d5 764-765
+  s_5ae5b9e56514e5::t_2f837f27a68a12 661,665-672,675
+  s_5ae5b9e56514e5::t_8bb93abde81c48 480-487
+  s_5ae5b9e56514e5::t_22ba1f896c09d1 813,816
+  s_5ae5b9e56514e5::t_204f738febe2f0 93
+  s_5ae5b9e56514e5::t_efdb8da95bd16c 766-780
+example/QuadClearanceGroundTruth.hs
+  s_5ae5b9e56514e5::t_90d62cea5bb0b8 251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "4fcf5062d36bd64b173690c4a247b7ae21fbb078",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
