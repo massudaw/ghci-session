@@ -1,0 +1,48 @@
+example/DiffCSGGPUTranspileDemo.hs
+  s_5ae5b9e56514e5::t_19615042ebb563 281-286,289,291,297,300-304
+  s_5ae5b9e56514e5::t_05ac0fe47c2a75 329,331,347,355,358,360,362,365
+  s_5ae5b9e56514e5::t_94ce12d074099b 59
+example/TestDiffCSGSymbolic.hs
+  s_5ae5b9e56514e5::t_e43c023b92df15 81,84
+  s_5ae5b9e56514e5::t_729152c18828fa 151,156-160
+  s_5ae5b9e56514e5::t_d2df156ab8b6cc 106,111
+  s_5ae5b9e56514e5::t_228baac9b61e43 126,129
+src/Rendering/DiffCSG/Symbolic.hs
+  s_5ae5b9e56514e5::t_140c9af6888964 122-123
+  s_5ae5b9e56514e5::t_b6fea718aa51a8 352-370,378,380-384,387-392
+  s_5ae5b9e56514e5::t_671bfc6f03c8fc 916-936,948-952
+  s_5ae5b9e56514e5::t_c7e9cd37fd22e2 640-642,645-646
+  s_5ae5b9e56514e5::t_3fb0b3f9306873 720-724,730
+  s_5ae5b9e56514e5::t_8c436e50d057e0 803-804
+  s_5ae5b9e56514e5::t_c22392e9cf276e 1004-1012
+  s_5ae5b9e56514e5::t_5769dbd6a3b3c1 1103,1110
+  s_5ae5b9e56514e5::t_2d1a3c387993af 397
+  s_5ae5b9e56514e5::t_dfbc5bf19639a5 459-463,468,470-472,482-486,491,493-495,521,523-525,536,538-539,544-545,554,556-558
+  s_5ae5b9e56514e5::t_44ae449732daf1 569-575,577-580,588-591,594-598,600-602,613-614,618,621-622,624
+  s_5ae5b9e56514e5::t_c51779ba956ce7 448-451
+  s_5ae5b9e56514e5::t_12719d0b53c752 1048
+  s_5ae5b9e56514e5::t_656f26f6b5af1c 157,170
+  s_5ae5b9e56514e5::t_c9b18b80cd5ebd 303-351,371-377,379,385-386,393-396,398-447,452-453
+example/DiffCSGPixelKernelBench.hs
+  s_5ae5b9e56514e5::t_26ca07c7dcc946 244,252-253,264
+  s_5ae5b9e56514e5::t_3b838ddbf7e7fb 180,186,195
+  s_5ae5b9e56514e5::t_00e28c9dfde682 156,159
+example/DiffCSGSymbolicTopologyBench.hs
+  s_5ae5b9e56514e5::t_59eae432fe8086 192,195-196,207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "77764738b54ebe6bdb0f084a9afb17dc96d72d42",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
