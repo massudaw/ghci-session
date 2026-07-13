@@ -1,0 +1,20 @@
+example/DiffCSGViewportViewer.hs
+  s_5ae5b9e56514e5::t_eb14bf52e07143 227-229,231
+  s_5ae5b9e56514e5::t_f98ef345006df2 255-268,273-274
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "75ac1591a2d3ebb44184a5f4795db5d7bbbe2160",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
