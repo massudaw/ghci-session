@@ -1,0 +1,36 @@
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_0d11b374f95cc8 815,818-825
+  s_0a0d3792ecffdd::t_251eb78b909625 840-843
+example/CandidateLaneBatchProto.hs
+  s_0a0d3792ecffdd::t_3ed31c200e74dd 274-305
+  s_0a0d3792ecffdd::t_5dbe89df80594d 337-339
+  s_0a0d3792ecffdd::t_70b4654b4db75c 37
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_5231a3f183a7c4 643-644
+  s_0a0d3792ecffdd::t_faa3337059ad15 2476-2496,2499-2501,2504,2506-2508,2511,2513-2515,2518,2520-2522,2525,2527-2529,2532,2534-2536,2539,2541-2543,2546,2550-2552,2555,2559-2562,2565,2567-2569,2572,2574-2576,2579,2581-2583,2586,2588-2590,2593
+  s_0a0d3792ecffdd::t_c2812c2107cb6a 224,226,228,230,232,234,236,238
+  s_0a0d3792ecffdd::t_6b2f5386cb0ad5 251,256,261,266,271
+  s_0a0d3792ecffdd::t_611fee2477b9a8 82-86
+  s_0a0d3792ecffdd::t_f4f21939c251b5 279
+  s_0a0d3792ecffdd::t_910c3c3b5db73c 596-642,645
+  s_0a0d3792ecffdd::t_7e891f888ab156 2757-2771
+example/DiffCSGNativeTwinProto.hs
+  s_0a0d3792ecffdd::t_7a76f8d85c1a13 54
+  s_0a0d3792ecffdd::t_fb673b5faec947 1171-1211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "2be048b24a19ef3c0481869e18ab8842bbba8a29",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
