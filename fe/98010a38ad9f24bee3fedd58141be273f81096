@@ -1,0 +1,37 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_5ae5b9e56514e5::t_fa0b25b482862c 443-445,447-452
+  s_5ae5b9e56514e5::t_91736b46b4817b 629
+  s_5ae5b9e56514e5::t_da709314b01f79 533,537,542
+  s_5ae5b9e56514e5::t_d6e3d3ad1bb497 387,390-399,411,422
+  s_5ae5b9e56514e5::t_f09abbf92a30d4 536
+  s_5ae5b9e56514e5::t_0034a6df9a625f 446,453,539,630
+  s_5ae5b9e56514e5::t_4974dfea9e3cf9 744
+  s_5ae5b9e56514e5::t_988995f1a0fc74 624,628,633
+  s_5ae5b9e56514e5::t_5ce9f017a29b61 419-420
+  s_5ae5b9e56514e5::t_be8daf24d0042c 716-742,748,752-758,760,762-765
+  s_5ae5b9e56514e5::t_f067495b6aa060 454-455
+  s_5ae5b9e56514e5::t_d328b23fa83611 388-389,400-410,412-418,421
+  s_5ae5b9e56514e5::t_9e9caeba2b4934 708-710,712-715
+  s_5ae5b9e56514e5::t_0915f12c57b977 759,761
+  s_5ae5b9e56514e5::t_e0af187b46262a 650
+  s_5ae5b9e56514e5::t_7fb1d5270a8352 538
+  s_5ae5b9e56514e5::t_48bb8ed6cc060f 627
+  s_5ae5b9e56514e5::t_81f45f5400ad64 673
+  s_5ae5b9e56514e5::t_c6bf86c2e5f49c 711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "fe98010a38ad9f24bee3fedd58141be273f81096",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
