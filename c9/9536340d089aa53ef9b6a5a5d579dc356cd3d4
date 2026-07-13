@@ -1,0 +1,25 @@
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_5ae5b9e56514e5::t_c8cebf30e112c3 184-207
+  s_5ae5b9e56514e5::t_25e229760109dd 1627-1677,1707-1894
+  s_5ae5b9e56514e5::t_c9dc182c202097 1678-1706
+example/DiffCSGNativeTwinProto.hs
+  s_5ae5b9e56514e5::t_2f01a5b66de1a4 796-809,811-812,814,818-819
+  s_5ae5b9e56514e5::t_e503076dfb218d 655-795,810,813,815-817,820-836
+  s_5ae5b9e56514e5::t_f933560dbac3e2 1093-1125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "c99536340d089aa53ef9b6a5a5d579dc356cd3d4",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
