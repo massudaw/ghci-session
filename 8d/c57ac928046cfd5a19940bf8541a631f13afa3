@@ -1,0 +1,20 @@
+example/QuadcopterLiveJointDemo.hs
+  s_5ae5b9e56514e5::t_7fc4a306f85498 767-791,793
+  s_5ae5b9e56514e5::t_bdb2eb1f583952 1117-1119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "8dc57ac928046cfd5a19940bf8541a631f13afa3",
+  "prompts": {},
+  "sessions": {
+    "s_5ae5b9e56514e5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7def06ca-45cb-4ef3-897d-48ffcca85b2d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
