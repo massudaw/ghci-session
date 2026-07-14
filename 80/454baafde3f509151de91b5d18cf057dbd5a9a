@@ -1,0 +1,20 @@
+example/DiffCSGNativeTwinProto.hs
+  s_0a0d3792ecffdd::t_993bd2a4cf5368 1215-1242
+  s_0a0d3792ecffdd::t_ff6070e85fd514 70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "80454baafde3f509151de91b5d18cf057dbd5a9a",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
