@@ -1,0 +1,27 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_de4c7239041111 288-299,307-317
+  s_0a0d3792ecffdd::t_6373bb1605335d 47,56
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_7378d245cf1b5a 555-564
+  s_0a0d3792ecffdd::t_0ed5b7f3a08a63 97
+  s_0a0d3792ecffdd::t_08c2069519e42c 66
+src/JIT/CopyPatch.hs
+  s_0a0d3792ecffdd::t_57934aa2d5ed86 417-444
+  s_0a0d3792ecffdd::t_b0f0b0934213e1 51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "dbd200a1a837866cfa7cddf280abe05351e3c072",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
