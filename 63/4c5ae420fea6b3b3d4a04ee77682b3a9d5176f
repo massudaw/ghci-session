@@ -1,0 +1,76 @@
+example/RegionProto.hs
+  s_0a0d3792ecffdd::t_0cc3699311471c 22
+  s_0a0d3792ecffdd::t_de830f680ad0b8 119-146
+  s_0a0d3792ecffdd::t_a32fe9220701b2 194-201,203-206
+  s_0a0d3792ecffdd::t_a20a0acaf6a4de 19
+  s_0a0d3792ecffdd::t_902b7767da2de2 20
+  s_0a0d3792ecffdd::t_baa6f4f91639b9 216-228,230,234-238
+  s_0a0d3792ecffdd::t_eb8f08f90bdffa 147-154,157-158,164-193
+  s_0a0d3792ecffdd::t_848b7e77bd1e16 246-252,254-256
+  s_0a0d3792ecffdd::t_9e1d66d19fef2a 262-266
+  s_0a0d3792ecffdd::t_7d2f70350be405 253
+  s_0a0d3792ecffdd::t_38387b6fa1ecae 202
+  s_0a0d3792ecffdd::t_a199374d61de76 155-156,159-163
+  s_0a0d3792ecffdd::t_82ff38fbb20bab 207-215,229,231-233,239-245,257-261
+  s_0a0d3792ecffdd::t_105d82fa5807fa 267
+example/NativeGlueProto.hs
+  s_0a0d3792ecffdd::t_5b5668eef5575d 268-286
+  s_0a0d3792ecffdd::t_6a05aa152239a7 13
+  s_0a0d3792ecffdd::t_a59e8ce2f12f28 289-300
+  s_0a0d3792ecffdd::t_b674e5a9129d61 353
+  s_0a0d3792ecffdd::t_d232b9480221f6 25,30
+  s_0a0d3792ecffdd::t_78c83e19befc15 27,29
+  s_0a0d3792ecffdd::t_4290b48334c252 319-335
+  s_0a0d3792ecffdd::t_c228101f1a370e 18
+  s_0a0d3792ecffdd::t_08ecabf7431aac 24
+  s_0a0d3792ecffdd::t_8428f04a76f2ce 336-352,354-363
+  s_0a0d3792ecffdd::t_0195bdbcce93b5 301-318
+  s_0a0d3792ecffdd::t_94e752f86f74f4 28
+  s_0a0d3792ecffdd::t_86c14b9d7802d0 265-267
+  s_0a0d3792ecffdd::t_368e8b0a150fcd 287-288
+  s_0a0d3792ecffdd::t_f1f9aafe08c3d2 364-366
+  s_0a0d3792ecffdd::t_5ed65d67f5ea45 257-264,367-376
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_72bc24713e8867 399-415
+  s_0a0d3792ecffdd::t_1848a0a14e02a2 375-395
+  s_0a0d3792ecffdd::t_ecfee71b6db4a3 523-536
+  s_0a0d3792ecffdd::t_b0d19548e02383 447-470
+  s_0a0d3792ecffdd::t_077b77de71aecb 547-557,560,563-564,567
+  s_0a0d3792ecffdd::t_d48fb06546917a 497-513,517-519
+  s_0a0d3792ecffdd::t_d8be20f308c2d1 421-445
+  s_0a0d3792ecffdd::t_0bf8aae5a3b1bd 368
+src/Solver/SymbolicDAE.hs
+  s_0a0d3792ecffdd::t_229873ec5abc12 661-673
+  s_0a0d3792ecffdd::t_00900971dbcacb 674
+  s_0a0d3792ecffdd::t_748d25614b99bb 67
+  s_0a0d3792ecffdd::t_d93b8ff4376a5b 634-660,675-678,683-689,697,702
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_0603971e06b5a9 846-854
+  s_0a0d3792ecffdd::t_879a3fb2476d54 862
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_52d3bcbe745da5 696-851
+  s_0a0d3792ecffdd::t_eddf23c271441d 43-44
+  s_0a0d3792ecffdd::t_bb018f83f70c7b 42,57,63
+  s_0a0d3792ecffdd::t_7ef04ba3520e1d 35
+example/TwoRayProbe.hs
+  s_0a0d3792ecffdd::t_a1dbcce98752df 1-14,16-64,67-89,98
+  s_0a0d3792ecffdd::t_27d4d0403037bd 15
+  s_0a0d3792ecffdd::t_e4588833c791cb 90-97
+  s_0a0d3792ecffdd::t_6cc55534b3a775 65-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "634c5ae420fea6b3b3d4a04ee77682b3a9d5176f",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
