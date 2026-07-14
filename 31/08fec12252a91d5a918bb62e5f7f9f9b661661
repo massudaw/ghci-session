@@ -1,0 +1,47 @@
+src/JIT/jit_profiler.c
+  s_0a0d3792ecffdd::t_bea277bfec0114 33
+  s_0a0d3792ecffdd::t_6fb26e8c867d77 142
+  s_0a0d3792ecffdd::t_442ecbe782f29d 79
+  s_0a0d3792ecffdd::t_202ea651043c4f 143
+  s_0a0d3792ecffdd::t_409e137224b79e 53
+  s_0a0d3792ecffdd::t_6f96e451469810 1-32,34-52,54-78,80-141,144-152
+src/JIT/Profiler.hs
+  s_0a0d3792ecffdd::t_218cbbaec42386 38
+  s_0a0d3792ecffdd::t_033988feebd558 41
+  s_0a0d3792ecffdd::t_4809ae76da0e06 42,46
+  s_0a0d3792ecffdd::t_b7630887fae741 64,70,73
+  s_0a0d3792ecffdd::t_aab22143591c03 75-82
+  s_0a0d3792ecffdd::t_44665d295ea37e 1-37,39-40,43-45,47-63,65-69,71-72,74,83-128
+example/NativeGlueProto.hs
+  s_0a0d3792ecffdd::t_b6691816616782 170-173,179-180
+  s_0a0d3792ecffdd::t_af7f9200617e53 17-18,24-25
+  s_0a0d3792ecffdd::t_85e44a3c1c0dfa 115-139
+  s_0a0d3792ecffdd::t_fe3a4afe5059b7 20-21
+  s_0a0d3792ecffdd::t_77ce26e88f4791 159-169,174-178,181-184
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_0dafccdee8d952 567-572
+  s_0a0d3792ecffdd::t_46ccf02761436d 69
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_960186b69ae4ab 412-432
+  s_0a0d3792ecffdd::t_234584ceb44ae2 33
+  s_0a0d3792ecffdd::t_44bde63f52eaad 325-340
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_5d51203efc475a 527
+  s_0a0d3792ecffdd::t_c08a9fc5b3c12a 211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "3108fec12252a91d5a918bb62e5f7f9f9b661661",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
