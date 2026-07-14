@@ -1,0 +1,92 @@
+src/JIT/Stencil/X86_64.hs
+  s_0a0d3792ecffdd::t_eaa50f61748dce 153-154
+  s_0a0d3792ecffdd::t_a2cfff344eea72 170-171
+src/JIT/CopyPatch.hs
+  s_0a0d3792ecffdd::t_c2df0f7f2fe8a1 299-300
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_0b35616ca9fb3d 291-293
+src/Solver/SymbolicDAE.hs
+  s_0a0d3792ecffdd::t_f3cb6186f13403 1421-1422
+  s_0a0d3792ecffdd::t_8ebf3ce9dfec32 2297
+  s_0a0d3792ecffdd::t_edee7a976a67a7 154-169,171-173
+  s_0a0d3792ecffdd::t_00af62238aed76 25
+  s_0a0d3792ecffdd::t_bbd541868f248b 1419-1420
+  s_0a0d3792ecffdd::t_77925039607da3 1770-1773
+  s_0a0d3792ecffdd::t_0ae13160cd9fbd 2495
+  s_0a0d3792ecffdd::t_4cdf4a7343b6a8 595,646-648,653-654,658
+  s_0a0d3792ecffdd::t_edce1309a98b20 153
+  s_0a0d3792ecffdd::t_3878a6e507d810 1774-1776
+  s_0a0d3792ecffdd::t_07c8b848d64c83 1417-1418
+  s_0a0d3792ecffdd::t_c13cc666dca318 269-270
+  s_0a0d3792ecffdd::t_2197637c1d68c7 170,176-186
+  s_0a0d3792ecffdd::t_bf1b8d45309b1a 2330-2331
+  s_0a0d3792ecffdd::t_17428902f61726 610-615,630,633
+  s_0a0d3792ecffdd::t_b0daa3ddd5d061 142-152
+  s_0a0d3792ecffdd::t_e6b888c86c0433 2298-2299
+  s_0a0d3792ecffdd::t_ca809dbf580d2d 263-264
+  s_0a0d3792ecffdd::t_8f5f0b8153df24 2329
+  s_0a0d3792ecffdd::t_1156f4c6b52477 68-69
+  s_0a0d3792ecffdd::t_d1ae3128febe59 22
+  s_0a0d3792ecffdd::t_0afba6988eecbb 2496-2497
+  s_0a0d3792ecffdd::t_ab4419bbb98f06 2411-2412
+  s_0a0d3792ecffdd::t_39084cbfe42f32 584-594,634-645,649-652,655-657
+  s_0a0d3792ecffdd::t_8e304c03579ffb 1777-1778
+  s_0a0d3792ecffdd::t_7bbb59bf5e7b72 596-609,616-629,631-632
+  s_0a0d3792ecffdd::t_70641898246f43 26
+  s_0a0d3792ecffdd::t_f49a7bb63176b4 67
+  s_0a0d3792ecffdd::t_ecb6bcb7566b86 2413-2414
+  s_0a0d3792ecffdd::t_22c2aa45787740 187
+  s_0a0d3792ecffdd::t_7c42fa30ed42e5 262
+example/RegionProto.hs
+  s_0a0d3792ecffdd::t_55c94ba15cf276 77-90,99-106,116
+  s_0a0d3792ecffdd::t_c2d82f5b5a4ca5 1-17,24-76,117
+  s_0a0d3792ecffdd::t_2a73358e1a7fb7 91-98
+  s_0a0d3792ecffdd::t_d9854fe25ace12 18-23
+  s_0a0d3792ecffdd::t_87596904d368f7 107-115
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_0b218b0e528159 838-845
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_bd6762915986c4 104-105
+  s_0a0d3792ecffdd::t_90a789865bcea6 293-460
+  s_0a0d3792ecffdd::t_b75963cc47f204 75-76
+src/JIT/Stencil/ARM64.hs
+  s_0a0d3792ecffdd::t_8709a76c3152da 378-379
+  s_0a0d3792ecffdd::t_89056a097a1fd4 471-472
+src/JIT/Tape.hs
+  s_0a0d3792ecffdd::t_8a077c3b34b037 1131-1144
+  s_0a0d3792ecffdd::t_7c9111c5f900e0 978-983
+  s_0a0d3792ecffdd::t_4e22dbd98c7068 1415-1418
+  s_0a0d3792ecffdd::t_08f7c7c0dcaf9d 1150-1163
+  s_0a0d3792ecffdd::t_0536de39176fb1 79
+  s_0a0d3792ecffdd::t_cc9a76f09c2621 1290-1292
+  s_0a0d3792ecffdd::t_d3d72211763b7e 43-44
+  s_0a0d3792ecffdd::t_2a286f52155a63 1269-1274
+  s_0a0d3792ecffdd::t_95dec4ba7cb1a6 246-251
+  s_0a0d3792ecffdd::t_58235ddfe3c807 309-310
+  s_0a0d3792ecffdd::t_7f0d7f30f95bbe 359-363
+  s_0a0d3792ecffdd::t_7665d013c96409 108
+  s_0a0d3792ecffdd::t_62e27a3bfea77a 236-245
+  s_0a0d3792ecffdd::t_25b51734717555 111
+  s_0a0d3792ecffdd::t_8843b6842ece10 1275-1289
+  s_0a0d3792ecffdd::t_ba1738b5b55b76 924-925
+  s_0a0d3792ecffdd::t_4601d0e1fa02c9 1004
+  s_0a0d3792ecffdd::t_7a4e50bb2d0eed 1145-1149,1164-1166
+  s_0a0d3792ecffdd::t_8e18db74414748 950-951
+  s_0a0d3792ecffdd::t_158441c189a262 1214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "1e809f621cd43cd5d4afffb61a745d49dd0efc09",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
