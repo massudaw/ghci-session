@@ -1,0 +1,22 @@
+example/NativeGlueProto.hs
+  s_0a0d3792ecffdd::t_76e251f602f007 395-396
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_f3d6561fbb792f 794-795
+  s_0a0d3792ecffdd::t_fab9b3424e1450 823-825
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "d06f036c27390cf7b5447f87ef42685a311cb37c",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
