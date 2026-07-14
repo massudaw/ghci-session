@@ -1,0 +1,57 @@
+example/SharedKernelProbe.hs
+  s_0a0d3792ecffdd::t_f0709e4e48a415 18,23
+  s_0a0d3792ecffdd::t_7cf674200bab1b 109-110,112-117
+  s_0a0d3792ecffdd::t_17e1ccdbd879ba 57-66
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_4ecc7102c31318 300-313,315-317,319-324,334-338,340-341
+  s_0a0d3792ecffdd::t_160519612dd486 77
+  s_0a0d3792ecffdd::t_64ad1152268e75 314,318
+  s_0a0d3792ecffdd::t_76c24d18f0c99b 95-98
+example/Call2Proto.hs
+  s_0a0d3792ecffdd::t_7721f472a16166 1-68
+src/JIT/Tape.hs
+  s_0a0d3792ecffdd::t_4963e52a415ce0 1105-1108
+  s_0a0d3792ecffdd::t_533812efe7068d 1247-1250
+  s_0a0d3792ecffdd::t_f8aebc1b869764 109
+src/Solver/SymbolicDAE.hs
+  s_0a0d3792ecffdd::t_58c1caee4ba3de 2458-2459
+  s_0a0d3792ecffdd::t_352c53b4f2e800 177-197
+  s_0a0d3792ecffdd::t_21fc9174b8d046 64-65
+  s_0a0d3792ecffdd::t_1e5f14419f6a70 2543-2548
+  s_0a0d3792ecffdd::t_1f882b9a5a1283 2727-2728
+  s_0a0d3792ecffdd::t_48754fbb925ba6 1903-1904
+  s_0a0d3792ecffdd::t_e76a682cce399e 1542-1546
+  s_0a0d3792ecffdd::t_0ff8b8ddbf9b82 22,27
+  s_0a0d3792ecffdd::t_18f194942ab81e 2549
+  s_0a0d3792ecffdd::t_2161ee836f9914 2556-2562,2570
+  s_0a0d3792ecffdd::t_52414617ddb027 289-290
+  s_0a0d3792ecffdd::t_3230fb38c8cc3b 2552-2555,2563-2569,2571-2624,2637-2645
+  s_0a0d3792ecffdd::t_fe4d79912914c0 2625-2636
+  s_0a0d3792ecffdd::t_e63a552a281f92 660-706
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_a7e2084b4c86fa 865-872
+example/NativeGlueProto.hs
+  s_0a0d3792ecffdd::t_c2fe10cc377ef5 400-401
+  s_0a0d3792ecffdd::t_1e158a1a43ee0f 414,416
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_0e3b3900030963 840-867
+  s_0a0d3792ecffdd::t_f71b5cdaae44ad 45
+  s_0a0d3792ecffdd::t_bb356991c329ca 59
+  s_0a0d3792ecffdd::t_61c560a0aa457d 916-920,925-930,937-941,954-955,958-962
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "3d4a29c7ddab6b758fca0631e6a35e666ab10a8c",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
