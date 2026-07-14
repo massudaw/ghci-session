@@ -1,0 +1,52 @@
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_06cf695806ca99 952
+  s_0a0d3792ecffdd::t_6b83985c7cc584 953-955,969,972
+  s_0a0d3792ecffdd::t_ecebcfcd42c532 1010
+  s_0a0d3792ecffdd::t_f128862931fd41 427,436
+  s_0a0d3792ecffdd::t_2577b9195be981 340-351,362,365
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_910f48f272757f 276-281
+  s_0a0d3792ecffdd::t_ba33efab55f645 272-275,287
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_cecbdb0bec1490 96,98-106
+  s_0a0d3792ecffdd::t_69347126bc7534 480-616,629-667,671-691
+  s_0a0d3792ecffdd::t_f8e7158a60f36d 38-40
+  s_0a0d3792ecffdd::t_519f54959391f3 617-628
+  s_0a0d3792ecffdd::t_62216d63ad5f25 47
+  s_0a0d3792ecffdd::t_4b5bd16266a6fa 165-177,181,184-190
+  s_0a0d3792ecffdd::t_4b62f9706d2e01 668-670
+  s_0a0d3792ecffdd::t_3b271c8eb0c3bf 207-215,217,231,244-245
+example/NativeGlueProto.hs
+  s_0a0d3792ecffdd::t_79239b8857202d 194-195
+  s_0a0d3792ecffdd::t_38bdb93b7a0f5e 217
+  s_0a0d3792ecffdd::t_74dc977a77d09e 23
+  s_0a0d3792ecffdd::t_fcad2e1a66dc60 17
+  s_0a0d3792ecffdd::t_7f80e7fb28c833 231-237
+  s_0a0d3792ecffdd::t_2021a058ea81ae 191-193
+  s_0a0d3792ecffdd::t_b571f3b516db0e 207-216,218-230,238-250
+CLAUDE.md
+  s_0a0d3792ecffdd::t_eb06fa858a2488 110-123
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_63376b5b95c0e0 254
+  s_0a0d3792ecffdd::t_05fe4ca10157b1 255-269
+DIFFCSG_ADDING_ELEMENTS.md
+  s_0a0d3792ecffdd::t_67e213d1e3bde7 1-251
+example/ICallKernelProto.hs
+  s_0a0d3792ecffdd::t_734d624cdeac63 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "8921d77e62b7f7a5e056b20327dd5749175f4cae",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
