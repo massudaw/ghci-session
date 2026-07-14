@@ -1,0 +1,41 @@
+src/JIT/Stencil/X86_64.hs
+  s_0a0d3792ecffdd::t_4e9d43f3e1bb60 167
+  s_0a0d3792ecffdd::t_ddab30c2f2c7f6 152
+src/JIT/Tape.hs
+  s_0a0d3792ecffdd::t_4e282607a3fe8f 278-282
+  s_0a0d3792ecffdd::t_cd50dab7cb0ef6 200-225
+  s_0a0d3792ecffdd::t_ebaf6651bfed26 1309
+  s_0a0d3792ecffdd::t_4a3fdd65f475f6 72-73
+  s_0a0d3792ecffdd::t_d2288b5f9042ed 914
+  s_0a0d3792ecffdd::t_aa4e45d975b30f 328-330
+  s_0a0d3792ecffdd::t_dc603c6eaa5c79 890
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_5cdf2270f22797 240-269
+  s_0a0d3792ecffdd::t_b1004bf5b3a971 69-71
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_f46785f395d853 827-834
+src/JIT/CopyPatch.hs
+  s_0a0d3792ecffdd::t_18917f9e7a205a 276
+src/JIT/Stencil/ARM64.hs
+  s_0a0d3792ecffdd::t_d5c20902f94554 377
+  s_0a0d3792ecffdd::t_3cd285b1516fcb 444-468
+  s_0a0d3792ecffdd::t_a46d70d7e3ee86 200-204
+example/ICallKernelProto.hs
+  s_0a0d3792ecffdd::t_4174ba809851af 1-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "f09a6540a000a2055a9ca6ff3e91c5f66268cf49",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
