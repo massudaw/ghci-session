@@ -1,0 +1,44 @@
+example/Call2GLSLProto.hs
+  s_0a0d3792ecffdd::t_7009b2135d8251 1-253
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_200cc4550cdd97 735-743
+  s_0a0d3792ecffdd::t_71137aaf74d09d 732-734
+  s_3ce7ba7e952ce3::t_6f19f2c397d06f 731
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_352ddf6a16b5bb 426,432-448
+  s_0a0d3792ecffdd::t_d084e1f1fb7512 379-382
+  s_0a0d3792ecffdd::t_5d60e0acf13a9e 537-541,548-549,555
+  s_0a0d3792ecffdd::t_670453d168c1d6 115-173,175,179,189-212
+  s_0a0d3792ecffdd::t_0507180ade4f4e 311
+  s_0a0d3792ecffdd::t_ba62b2df4b9bf8 297,301-308,312-313
+  s_0a0d3792ecffdd::t_a36621fde34a8a 517
+  s_0a0d3792ecffdd::t_7fb53247404f6a 225-233,240,242,253-255
+  s_0a0d3792ecffdd::t_97d39daab35935 52-55,62,64-65,67-70
+  s_0a0d3792ecffdd::t_59a571b619aea9 568,570-574,576,578
+  s_0a0d3792ecffdd::t_0bb3f03af3b6f1 418-425,427-431,449-516,518-536,542-547,550-554,556-567,569,575,577,579
+  s_0a0d3792ecffdd::t_51304af6185f06 213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "691b2d406358811eca0339e9ce5da79c2f652600",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_3ce7ba7e952ce3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-af7ffc2214ca5ef94",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
