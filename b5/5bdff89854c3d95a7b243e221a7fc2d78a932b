@@ -1,0 +1,20 @@
+src/JIT/jit_math.c
+  s_0a0d3792ecffdd::t_3b366efbf8a2ef 7-9
+  s_0a0d3792ecffdd::t_6ace69210bde4a 42-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "b55bdff89854c3d95a7b243e221a7fc2d78a932b",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
