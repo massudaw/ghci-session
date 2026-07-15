@@ -1,0 +1,41 @@
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_668e991c23f11c 61
+  s_0a0d3792ecffdd::t_62f767eb34773b 936-994
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_4aa58e345e5488 75-76
+example/DebugClearanceGradGPU.hs
+  s_0a0d3792ecffdd::t_fccaca0d333264 211-217
+  s_0a0d3792ecffdd::t_16b70daae1cbce 218-220
+  s_0a0d3792ecffdd::t_0096e8ee1fbde6 1-39,41-60,62-82,87-91,102,105-184,189,192-196,227-298,300-362
+  s_0a0d3792ecffdd::t_4ca983a423aecd 40
+  s_0a0d3792ecffdd::t_85c941344821ad 221-226
+  s_0a0d3792ecffdd::t_e5ca398af51a17 185-188,190-191
+  s_0a0d3792ecffdd::t_709ab6d767e46d 299
+  s_0a0d3792ecffdd::t_221e3d31b5a2cf 83-86
+  s_0a0d3792ecffdd::t_596e4c64746327 61
+  s_0a0d3792ecffdd::t_27b5bbe52598c1 92-101,103-104
+  s_0a0d3792ecffdd::t_ec923b07074637 197-210
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_4521ae6d2dfd84 900-908,910-913
+  s_0a0d3792ecffdd::t_b3c58524f868af 909
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_4296cc1d7d0d1d 1001-1011
+  s_0a0d3792ecffdd::t_17c0ad5b27357a 574-597,602,606,609-620,627-630,644-646,669-670
+  s_0a0d3792ecffdd::t_a390dc9edda040 671
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "77a0edd2a475f572e362ecb3f4653194017ba0df",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
