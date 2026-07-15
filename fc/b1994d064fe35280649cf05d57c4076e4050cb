@@ -1,0 +1,27 @@
+example/DebugFoldLoopQuadcopterViewer.hs
+  s_0a0d3792ecffdd::t_86fa4cd9517fe1 43-44
+  s_0a0d3792ecffdd::t_c58bd98fd88f6d 102-116,121,124-156
+  s_0a0d3792ecffdd::t_a11a9f0627fe1a 157
+example/DebugFoldLoopQuadcopterGPUViewer.hs
+  s_0a0d3792ecffdd::t_8403bee6b672c2 24-25
+  s_0a0d3792ecffdd::t_f1d1c38ef3475a 53
+  s_0a0d3792ecffdd::t_c58bd98fd88f6d 75-89,94,97-100,102-129
+  s_0a0d3792ecffdd::t_cabdd3c556594f 101
+  s_0a0d3792ecffdd::t_b27572ba86eeaa 130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "fcb1994d064fe35280649cf05d57c4076e4050cb",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
