@@ -1,0 +1,31 @@
+example/DebugFoldLoopQuadcopterFlyingViewer.hs
+  s_0a0d3792ecffdd::t_843cf50ba413b3 1-378
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_f3d82472e04a33 73
+  s_0a0d3792ecffdd::t_f6b3d680b70660 2261
+  s_0a0d3792ecffdd::t_afb95be4bbf8d9 2170,2292
+  s_0a0d3792ecffdd::t_1c2c85082122bb 2035,2039,2042
+  s_0a0d3792ecffdd::t_a178966ece0268 1991-1997,2001,2003
+  s_0a0d3792ecffdd::t_bbbabae9fedbfc 2174,2296
+  s_0a0d3792ecffdd::t_904b80405409e3 1958-1967
+  s_0a0d3792ecffdd::t_e736ee9c80138f 2151
+  s_0a0d3792ecffdd::t_bc663dc22e9b6b 2323-2413
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_c7e9a76fd68cfd 856-871
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1fbc90b609ac3ad8bc6150113ae567789e078e61",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
