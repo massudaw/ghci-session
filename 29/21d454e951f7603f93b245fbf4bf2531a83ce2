@@ -1,0 +1,31 @@
+example/DebugFoldLoopQuadcopterIDADerivGPUViewer.hs
+  s_0a0d3792ecffdd::t_3149562b774d41 533-534,543-544,546-547,554
+  s_0a0d3792ecffdd::t_f48209cef55b67 614-615,617-618
+  s_0a0d3792ecffdd::t_cad214a632c5e9 440,450,453-470
+  s_0a0d3792ecffdd::t_ddb0091ab7098d 641-642,644-645
+  s_0a0d3792ecffdd::t_4d0bae4c721356 594-595
+  s_0a0d3792ecffdd::t_7bccff5f5b303c 3
+  s_0a0d3792ecffdd::t_fb4de7e8aeb0da 669
+  s_0a0d3792ecffdd::t_40c68ea919c6d8 86
+  s_0a0d3792ecffdd::t_3b145e3a8b8442 48-49,51,53
+  s_0a0d3792ecffdd::t_7f0581f91edb50 275-280,282,285
+  s_0a0d3792ecffdd::t_3d9db025db2362 344
+  s_0a0d3792ecffdd::t_0eaf099b361e0e 371
+  s_0a0d3792ecffdd::t_da9bb557bbf0a2 471
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2921d454e951f7603f93b245fbf4bf2531a83ce2",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
