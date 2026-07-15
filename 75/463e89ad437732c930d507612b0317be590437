@@ -1,0 +1,28 @@
+src/Examples/ModelQuadcopter.hs
+  s_0a0d3792ecffdd::t_b8dbe35d95efd8 269-275
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_c7fe62d0c19eeb 872-887
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_328ccf5319b3c2 217
+  s_0a0d3792ecffdd::t_aef262f3f38591 282-394
+  s_0a0d3792ecffdd::t_d29f41c419b430 275
+  s_0a0d3792ecffdd::t_e54ecce9322cda 189,196,198-211,215,226,232-240,242-243,246,257
+  s_0a0d3792ecffdd::t_67ef0bb3aaf599 1-59,61-188,190-195,197,212-214,216,218-225,227-231,241,244-245,247-256,258-274,276-281
+  s_0a0d3792ecffdd::t_f548114e1eadea 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "75463e89ad437732c930d507612b0317be590437",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
