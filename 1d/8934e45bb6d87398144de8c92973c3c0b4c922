@@ -1,0 +1,24 @@
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_1442635b9b718d 452-465,467-482
+  s_0a0d3792ecffdd::t_5d8c186c8e4284 259,265
+  s_0a0d3792ecffdd::t_4604e5b5914d58 809,818,823
+  s_0a0d3792ecffdd::t_bb01f545d0dcb9 304
+  s_0a0d3792ecffdd::t_251d9918fc9f11 910,914-916,918
+  s_0a0d3792ecffdd::t_55aec3d71b1fbf 713-714
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1d8934e45bb6d87398144de8c92973c3c0b4c922",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
