@@ -1,0 +1,29 @@
+example/DebugFoldLoopQuadcopterGPUViewer.hs
+  s_0a0d3792ecffdd::t_716c71796e9a6d 142
+  s_0a0d3792ecffdd::t_ab292eecbf1ba8 131-140
+  s_0a0d3792ecffdd::t_36ea951025d3f3 144-161,166-167
+  s_0a0d3792ecffdd::t_659d6cc932df50 143
+example/DebugFoldLoopQuadcopterViewer.hs
+  s_0a0d3792ecffdd::t_f2c6062bead14c 200-208
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_4cebfb91084ad3 2138-2141,2144,2146-2151
+  s_0a0d3792ecffdd::t_8d1a7f5fd9e9d4 2236-2242,2245,2247-2252
+  s_0a0d3792ecffdd::t_32b2ebadc2875a 2630-2648
+  s_0a0d3792ecffdd::t_c0f3470322a3c8 2005-2046
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "afb7721b58df9f5ac59fb4a594cd58b2834f2338",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
