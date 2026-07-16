@@ -1,0 +1,24 @@
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_f1ae6d6a779684 701,704,706,708,711-712
+  s_0a0d3792ecffdd::t_e7d10806f9be85 648-659,662-676
+  s_0a0d3792ecffdd::t_2c4e1bfa345f33 920,929
+  s_0a0d3792ecffdd::t_e74f878a838c6d 710
+  s_0a0d3792ecffdd::t_d710c3878a9f29 82
+  s_0a0d3792ecffdd::t_8173b35ca3cd2e 564-587,589-603,609
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "9689ac09e51fd828116e57f93d4550b687e16881",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
