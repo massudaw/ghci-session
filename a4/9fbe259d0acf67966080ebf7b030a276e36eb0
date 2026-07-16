@@ -1,0 +1,44 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_5ead4ae204e971 78
+  s_0a0d3792ecffdd::t_d7ea39e682c25b 118
+  s_0a0d3792ecffdd::t_a609afc1a82937 2369-2434
+example/DebugGBufferProbe.hs
+  s_0a0d3792ecffdd::t_ec545a64cab3c2 1-191
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_88ec4f5b0e9d29 1070-1075,1096,1100,1108,1123
+  s_0a0d3792ecffdd::t_084a7a6195e72c 1056-1069,1076-1095,1097-1099,1101-1107,1109-1122,1125-1140
+  s_0a0d3792ecffdd::t_ebc009da304fa0 1124
+  s_0a0d3792ecffdd::t_713c942494f84c 63
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_48c4534eb6b2ca 74
+  s_0a0d3792ecffdd::t_b56f5f0bab5b32 338-379,383-451
+  s_0a0d3792ecffdd::t_389202cfb7c4e3 108
+  s_0a0d3792ecffdd::t_b1a12f6e13116f 200-211
+  s_0a0d3792ecffdd::t_69ff6e6d03e006 380-382
+  s_0a0d3792ecffdd::t_6c5ae1dc1961e9 778-783,785-789
+  s_0a0d3792ecffdd::t_c1ce7c06309d10 834-839
+  s_0a0d3792ecffdd::t_7e89f91ec7bd42 555-561,564-568,570-571,574-583,585,588-594
+  s_0a0d3792ecffdd::t_da35d98ce1ecd7 106-107
+example/DebugAACompileProbe.hs
+  s_0a0d3792ecffdd::t_bfa245c29beae1 151
+  s_0a0d3792ecffdd::t_96448c51756a7e 162
+  s_0a0d3792ecffdd::t_e68cffdb783e28 12
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_11218382001cc1 887-901
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a49fbe259d0acf67966080ebf7b030a276e36eb0",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
