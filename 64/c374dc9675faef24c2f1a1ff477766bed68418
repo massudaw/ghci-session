@@ -1,0 +1,24 @@
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_9c2e5231b1a700 950
+  s_0a0d3792ecffdd::t_4ddda23f1e4ba7 949,955
+  s_0a0d3792ecffdd::t_b90254af34efd5 468-470,481-483,489-490
+  s_0a0d3792ecffdd::t_efd97d5cd45abf 512-517,520-521,538-543
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_f641eab3b2db9b 2570-2572,2583-2593,2610-2623,2626-2627,2629-2632,2634
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "64c374dc9675faef24c2f1a1ff477766bed68418",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
