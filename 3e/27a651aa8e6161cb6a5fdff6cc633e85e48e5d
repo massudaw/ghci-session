@@ -1,0 +1,68 @@
+example/TestGLSLWindowElision.hs
+  s_0a0d3792ecffdd::t_35230d2714e82d 1-256
+example/DebugMSLKernelMetrics.hs
+  s_0a0d3792ecffdd::t_596ffd1189d62e 1-120
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_24e8d9929da3fb 2361-2364,2369-2393
+  s_0a0d3792ecffdd::t_cc27797dca2c2c 2253-2254,2256-2266,2269-2284
+  s_0a0d3792ecffdd::t_0977296e241a41 2097-2132
+example/TestMSLWindowElision.hs
+  s_0a0d3792ecffdd::t_a44722568cf3f2 125,129-133,135-138,140
+  s_0a0d3792ecffdd::t_4c5eda21ae2e11 1-124,126-128,134,139,146-187
+  s_0a0d3792ecffdd::t_c10820bf067db3 141-145
+src/JIT/MSLBackend.hs
+  s_0a0d3792ecffdd::t_4b91547463f12b 242-246,248-257,261-279,281-282,296-300,306,308-309,319,321-322,324
+  s_0a0d3792ecffdd::t_7eddfadb20fc37 444,450
+  s_0a0d3792ecffdd::t_f4c09e68d08ae1 445-449
+  s_0a0d3792ecffdd::t_57e685902439ee 678
+  s_0a0d3792ecffdd::t_a42933c9a1cb08 73-74
+  s_0a0d3792ecffdd::t_b5c524f4891ccf 731-732
+  s_0a0d3792ecffdd::t_23b02d69ce105a 57
+  s_0a0d3792ecffdd::t_d0c130c0860ed9 280
+  s_0a0d3792ecffdd::t_66b3a0b341983e 193
+  s_0a0d3792ecffdd::t_5364de2c41931e 745,750-753
+  s_0a0d3792ecffdd::t_57365145de3df5 588-589,592,596-616
+  s_0a0d3792ecffdd::t_485a1c20c40bfc 721
+  s_0a0d3792ecffdd::t_78da1de49501f5 440-442
+  s_0a0d3792ecffdd::t_00c46b968a9343 40
+  s_0a0d3792ecffdd::t_352b2bc4652f4c 541
+  s_0a0d3792ecffdd::t_ffccb05902e1ea 799
+  s_0a0d3792ecffdd::t_3591f9a1a51a11 219
+  s_0a0d3792ecffdd::t_add5b3f4e6223d 443
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_f4683d7c2b9288 364-373,377-381,388-391,393-400
+  s_0a0d3792ecffdd::t_251535adba3229 744
+  s_0a0d3792ecffdd::t_9b273f4bce5fec 281-283
+  s_0a0d3792ecffdd::t_5ec7857ecf4280 84-86
+  s_0a0d3792ecffdd::t_6747bd8e6a75ef 822
+  s_0a0d3792ecffdd::t_b81f687df2834d 994-1000
+  s_0a0d3792ecffdd::t_42cd14c3a9c9bc 1080-1096
+  s_0a0d3792ecffdd::t_6ed8592cc91bd1 446,448-449
+  s_0a0d3792ecffdd::t_ecca8aa83d1d99 467,469-470,472
+  s_0a0d3792ecffdd::t_4aac9f28ce2d87 1061-1062,1065
+  s_0a0d3792ecffdd::t_f26bf2bdd0407d 420-424
+  s_0a0d3792ecffdd::t_1269eef5ae4487 270-271
+src/JIT/CallWindowElision.hs
+  s_0a0d3792ecffdd::t_9d683e36fa8f94 1-315
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_8cc19087d30f4e 947-959
+  s_0a0d3792ecffdd::t_47fed6051b1b61 936-946
+  s_0a0d3792ecffdd::t_a1d5e4acb4a219 211
+  s_0a0d3792ecffdd::t_236d1af107647e 1130-1139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3e27a651aa8e6161cb6a5fdff6cc633e85e48e5d",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
