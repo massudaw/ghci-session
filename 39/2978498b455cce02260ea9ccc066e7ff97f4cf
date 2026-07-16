@@ -1,0 +1,37 @@
+src/JIT/Compiler.hs
+  s_0a0d3792ecffdd::t_080ac23ef27791 974-988
+golden/ModelFertilizerTransient/equations.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 33,35,70,72,75,79-91,95-97,103-115
+src/Model/MixtureReactionCoupling.hs
+  s_0a0d3792ecffdd::t_f92eb767a66379 111-113
+  s_0a0d3792ecffdd::t_f06eeca150e1cb 53
+golden/ModelFertilizerDAE/equations.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 33,35
+golden/ModelFertilizerTransient/selective_report.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 2,6-18,22-24,30-42
+golden/ModelFertilizerDAE/solver_audit.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 10
+golden/ModelFertilizerTransient/solver_audit.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 4
+src/Model/ArrheniusReactionCoupling.hs
+  s_0a0d3792ecffdd::t_be1c90853e1366 45
+  s_0a0d3792ecffdd::t_4b35dad8185848 99-106
+golden/ModelFertilizerThermal/equations.txt
+  s_0a0d3792ecffdd::t_345f8143e71c6a 134-136,138-141,143-146,148-151,153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "392978498b455cce02260ea9ccc066e7ff97f4cf",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
