@@ -1,0 +1,35 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_ce5e905970cc83 2513-2597
+  s_0a0d3792ecffdd::t_057bdba8346a8d 75
+example/DebugAACompileProbe.hs
+  s_0a0d3792ecffdd::t_c9abd23be2d61d 154
+  s_0a0d3792ecffdd::t_c4e1391fa27008 10
+  s_0a0d3792ecffdd::t_d69e67aacc466e 145
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_5ffaeec5a8dd61 105
+  s_0a0d3792ecffdd::t_d944e61b3eddf8 632-635
+  s_0a0d3792ecffdd::t_4e899a50c58d2e 25-37
+  s_0a0d3792ecffdd::t_12bd30cba7442e 226
+  s_0a0d3792ecffdd::t_127eb89f701f56 411-426,430,445-446
+  s_0a0d3792ecffdd::t_b3dab16d08928e 427
+  s_0a0d3792ecffdd::t_0f3a6f17ba72f4 199-225,227-319,321-322
+  s_0a0d3792ecffdd::t_a1185d9f02ddae 678
+  s_0a0d3792ecffdd::t_82cf9e76a79ac3 434-444,447
+  s_0a0d3792ecffdd::t_85f38f7434fe7e 320
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "aaf7110004f337f5f2f5e3434517ce31a26ff919",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
