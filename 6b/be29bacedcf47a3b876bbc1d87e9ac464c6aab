@@ -1,0 +1,26 @@
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_bc0fd5a774122b 356,393,408,518,868,1030,1061,1077,1160,1188,1204,1274,1743,1784,1800,1870,1897,1913,1980,2156,2225,2394,2464,2708,2783
+example/DiffCSGNativeTwinProto.hs
+  s_0a0d3792ecffdd::t_1c60223ba297b0 245,361,541,708
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_056c4e05fe5aff 537,555,573,753,772,793
+  s_0a0d3792ecffdd::t_c5fea0df2b7357 328-342,349,352-356
+  s_0a0d3792ecffdd::t_f4a5e39ebb5b88 351
+  s_0a0d3792ecffdd::t_17c66b76f6f5a1 350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6bbe29bacedcf47a3b876bbc1d87e9ac464c6aab",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
