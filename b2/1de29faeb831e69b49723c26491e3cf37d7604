@@ -1,0 +1,41 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_36a8a2544b5ad4 143-144
+  s_0a0d3792ecffdd::t_6fa707cbbf3a34 2182-2271
+  s_0a0d3792ecffdd::t_c4561f4cea5436 2272-2343,2358-2366
+  s_0a0d3792ecffdd::t_63c55a11d7cee0 3247-3336
+  s_0a0d3792ecffdd::t_7d1feed83ea169 116
+  s_0a0d3792ecffdd::t_95c29816ac1228 2344-2357
+  s_0a0d3792ecffdd::t_6c4966cb670f57 65
+  s_0a0d3792ecffdd::t_c2386062af66d0 77
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_d35183f958c98a 1900-1915
+  s_0a0d3792ecffdd::t_9ce72302a2dd6a 252-263
+  s_0a0d3792ecffdd::t_3b15653490152a 1787-1802
+  s_0a0d3792ecffdd::t_6900ae5961f913 396-410
+  s_0a0d3792ecffdd::t_185fa8b30334f6 1064-1079
+  s_0a0d3792ecffdd::t_f583ce0d197c66 1191-1206
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_44b2cec7e95121 996-1054
+  s_0a0d3792ecffdd::t_7a604015a13907 62
+example/DebugAACompileProbe.hs
+  s_0a0d3792ecffdd::t_1f8c886c9caeef 148-149
+  s_0a0d3792ecffdd::t_26a4bb6a517e04 12
+  s_0a0d3792ecffdd::t_f58ba4127b6fa5 11
+  s_0a0d3792ecffdd::t_40f6552be0ff5e 159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "b21de29faeb831e69b49723c26491e3cf37d7604",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
