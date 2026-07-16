@@ -1,0 +1,31 @@
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_814547631e52a1 340,342-353,356-358,364,380,386-389,394,399-407,409-458,462-467,476,482-483,495-500,502-504,506-508,513-519,528
+  s_0a0d3792ecffdd::t_5bea4679ad26fe 672,675-676
+  s_0a0d3792ecffdd::t_90671fc4516be7 107
+  s_0a0d3792ecffdd::t_aaebb145430745 861-869,872-874
+  s_0a0d3792ecffdd::t_8808f6899ab60a 922,925-926
+  s_0a0d3792ecffdd::t_677433bfda1947 646-647
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_680e0c7ab5109b 2276-2279,2281,2286-2288,2291-2293
+  s_0a0d3792ecffdd::t_67ea281c40fdfb 78
+  s_0a0d3792ecffdd::t_52dcb7121e5f26 2363-2380,2384-2385,2391
+  s_0a0d3792ecffdd::t_c766046e8b3d51 2568,2576,2589-2596
+  s_0a0d3792ecffdd::t_cb3bf3c81df466 2396-2499
+  s_0a0d3792ecffdd::t_5c20add5fb23bb 2602
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "70a8215d750dc9d7611d79b3cff3b88204762836",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
