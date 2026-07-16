@@ -1,0 +1,284 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_ea860f7e8d4487 4196-4235
+  s_0a0d3792ecffdd::t_4d7fcad5d3cd4b 3100
+  s_0a0d3792ecffdd::t_a8ea010e2e2040 3101
+  s_0a0d3792ecffdd::t_ff17948b211814 3022-3043,3045-3047,3049-3097,3102-3104
+  s_0a0d3792ecffdd::t_3fd92bb2b3e39c 3044,3048
+  s_0a0d3792ecffdd::t_42340e746f4e0c 67
+  s_0a0d3792ecffdd::t_90b2be66ca8d66 71-73
+  s_0a0d3792ecffdd::t_c5e060084a86b2 109,115,117
+  s_0a0d3792ecffdd::t_a06344bffca563 69
+  s_0a0d3792ecffdd::t_e62d02a6829aee 3105-3178,3181-3185
+  s_0a0d3792ecffdd::t_3cfec7da8179ad 3297-3375,3378-3447,3450-3530,3533-3539,3549-3555,3558-3580
+  s_0a0d3792ecffdd::t_1163878ee600e7 4154-4195
+  s_0a0d3792ecffdd::t_6e5a2e042ff1c1 3540-3548,3556-3557
+  s_0a0d3792ecffdd::t_c3bdfa3e4f56bc 4348-4349
+  s_0a0d3792ecffdd::t_56254e96552fba 134-135
+  s_0a0d3792ecffdd::t_0a2193c5406be1 70
+  s_0a0d3792ecffdd::t_497f23fabd07c0 131-133,136
+  s_0a0d3792ecffdd::t_0d143f93f5cf0e 66,68
+  s_0a0d3792ecffdd::t_45bf56b95dd4e3 2428-2429,2516-2517,2604-2605,2921-2922,3013-3014,3098-3099,3179-3180,3291-3292,3376-3377,3448-3449,3531-3532,3676-3677,3900-3901,4012-4013,4084-4085
+  s_0a0d3792ecffdd::t_2b9a5806e5cddb 3186-3290,3293-3296
+  s_0a0d3792ecffdd::t_e47fd415cab18d 2051-2081
+example/DebugMSLTapeDump.hs
+  s_0a0d3792ecffdd::t_e84d7a4efc1863 1-22
+example/DebugMetalQuadcopterAALoop.hs
+  s_0a0d3792ecffdd::t_c0d53949091732 1-118
+example/DebugMetalGPUCaptureProbe.hs
+  s_0a0d3792ecffdd::t_daffe221bac79d 1-102
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_ec1243093cb1f2 1520-1522,2307-2309
+  s_0a0d3792ecffdd::t_114d138ab213ed 2703-2704
+  s_0a0d3792ecffdd::t_523014bb75ce65 2360-2361
+  s_0a0d3792ecffdd::t_6f38c35d593a2a 2643-2650,2656-2659,2662-2667
+  s_0a0d3792ecffdd::t_80a48de7e3c9e6 2121-2122
+  s_0a0d3792ecffdd::t_9addd51bfdfd96 1631-1640
+  s_0a0d3792ecffdd::t_258b53551af06b 1570-1574,1654-1658,1714-1718
+example/DebugMetalAAProbe.hs
+  s_0a0d3792ecffdd::t_3484a6f3952e6b 64,68
+  s_0a0d3792ecffdd::t_f7121fa70c153b 93-98,104,116-117
+  s_0a0d3792ecffdd::t_2201e546cb1e98 1-63,65-67,69-92,99-103,105-115,118-124
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_d4e7fd9e3e00d2 191
+  s_0a0d3792ecffdd::t_158ce359e92c67 935-943
+  s_0a0d3792ecffdd::t_858eff660c7db2 975-985
+  s_0a0d3792ecffdd::t_b8a69b5fbc6c23 1109
+  s_0a0d3792ecffdd::t_0151bad7bc71b9 1095-1104
+  s_0a0d3792ecffdd::t_07c1a01968b5a5 1122-1133
+  s_0a0d3792ecffdd::t_c1d6920dadb663 953-963
+  s_0a0d3792ecffdd::t_309a872bd65ad5 1051-1059
+  s_0a0d3792ecffdd::t_35243751caa96c 1146-1157
+  s_0a0d3792ecffdd::t_ea89b17c97763f 1072-1083
+  s_0a0d3792ecffdd::t_b672e2b86a44d3 1020-1030
+  s_0a0d3792ecffdd::t_66ba795ece533d 1105-1108,1110-1113
+  s_0a0d3792ecffdd::t_8d6e8f1e4ba84d 908-916
+  s_0a0d3792ecffdd::t_53ea2d0ebd6d2a 997-1007
+  s_0a0d3792ecffdd::t_8cd6204be387f7 926-934
+  s_0a0d3792ecffdd::t_1affd989bdfe86 210
+  s_0a0d3792ecffdd::t_b5b1c622a85104 1114-1121
+  s_0a0d3792ecffdd::t_99290554c64357 986-996
+  s_0a0d3792ecffdd::t_26a527091417b9 917-925
+  s_0a0d3792ecffdd::t_293017ba494c57 1158-1165
+  s_0a0d3792ecffdd::t_0d3669462244b8 1134-1145
+  s_0a0d3792ecffdd::t_67de6b218a6c0c 1060-1066,1068-1071
+  s_0a0d3792ecffdd::t_ebb560473ce8f3 512,514-515
+  s_0a0d3792ecffdd::t_dc8ef91a59ac64 1031-1041
+  s_0a0d3792ecffdd::t_0f608d27469734 221
+  s_0a0d3792ecffdd::t_49d41665f679a5 1067
+  s_0a0d3792ecffdd::t_a9edc72e91bc7c 944-952
+  s_0a0d3792ecffdd::t_c4632f6505b927 1008-1019
+  s_0a0d3792ecffdd::t_fd3d0780f9be2b 1166-1177
+  s_0a0d3792ecffdd::t_f202e4bf9e953c 1084-1094
+  s_0a0d3792ecffdd::t_301dbc41ab67ac 1042-1050
+  s_0a0d3792ecffdd::t_ff13c6de61b48e 964-974
+  s_0a0d3792ecffdd::t_e48011d75c88e2 1634-1643
+  s_0a0d3792ecffdd::t_dc8b888775daf9 192
+example/GlueCompactProbe.hs
+  s_0a0d3792ecffdd::t_71f178129e7f24 1
+  s_0a0d3792ecffdd::t_5e9fdc4df7d4d5 2-295
+src/JIT/CAS.hs
+  s_0a0d3792ecffdd::t_705cb3a7b69802 186-200
+cbits/metal_shim.m
+  s_0a0d3792ecffdd::t_b9a3be9de4cef6 691-867
+  s_0a0d3792ecffdd::t_4790a6d6730e1d 868-932
+  s_0a0d3792ecffdd::t_2f183966605a05 60-72
+  s_0a0d3792ecffdd::t_b9ae3c1902bfee 14
+  s_0a0d3792ecffdd::t_baf4643693d61c 975-1043
+  s_0a0d3792ecffdd::t_543db3c860a318 933-974
+  s_0a0d3792ecffdd::t_3193ae67500a96 250-321
+  s_0a0d3792ecffdd::t_c8fce20dd2d423 379-417
+  s_0a0d3792ecffdd::t_df1f5ba61d5cb0 113-173
+  s_0a0d3792ecffdd::t_9edb3d2ef84d41 179-249,322-378,418-471
+  s_0a0d3792ecffdd::t_f9a5f8ae120e40 495-503
+  s_0a0d3792ecffdd::t_8869f325bbdc8b 472-494,504-636
+  s_0a0d3792ecffdd::t_181bb79fa21233 1-13,15-59,73-112,174-178
+  s_0a0d3792ecffdd::t_e23cff283d0ae1 637-690
+src/Rendering/Metal/MetalWindow.hs
+  s_0a0d3792ecffdd::t_47a327c6e1e431 133-135
+  s_0a0d3792ecffdd::t_2b16caba033174 38-43,45-47
+  s_0a0d3792ecffdd::t_b1c350a7f0fb44 26-29,31-33,35-37,67-69,71
+  s_0a0d3792ecffdd::t_09d8d732688378 30
+  s_0a0d3792ecffdd::t_52a3f1367966c1 262-277
+  s_0a0d3792ecffdd::t_3e11b1b0d76033 73
+  s_0a0d3792ecffdd::t_8547436c798451 302-303,306-307,311-314,325,332-334
+  s_0a0d3792ecffdd::t_f6ab2d763d6af5 25,75
+  s_0a0d3792ecffdd::t_9d29354ec3b323 396,403-404
+  s_0a0d3792ecffdd::t_a1125fd853b3b0 409-414
+  s_0a0d3792ecffdd::t_536d02495dd5ff 472-552
+  s_0a0d3792ecffdd::t_397de4d9a3f2e0 684-704
+  s_0a0d3792ecffdd::t_f401dac4de6dc2 119-125
+  s_0a0d3792ecffdd::t_c01c9c79ded554 66
+  s_0a0d3792ecffdd::t_458a090cf4bae8 175-180
+  s_0a0d3792ecffdd::t_844ce17d5524d5 315-324,326-331
+  s_0a0d3792ecffdd::t_b8f9e79385c8b5 335-367,391-395,397-402,405-408,415-419,434-439,442-471
+  s_0a0d3792ecffdd::t_86f96ac16c5dbd 440-441
+  s_0a0d3792ecffdd::t_bbed5abf8a2b8e 152-174
+  s_0a0d3792ecffdd::t_94f7439e3c0e2e 586-643
+  s_0a0d3792ecffdd::t_5624e01eac12e0 23
+  s_0a0d3792ecffdd::t_88cbac8724ca66 705-737
+  s_0a0d3792ecffdd::t_af40bfa99244ff 1-22,24,60-64,76-88,114-118,214-261,278-282
+  s_0a0d3792ecffdd::t_8e18e024935b08 72
+  s_0a0d3792ecffdd::t_2063f83f37a7f7 101-113
+  s_0a0d3792ecffdd::t_f3463b5306fec8 205-213
+  s_0a0d3792ecffdd::t_c64ef5b1470873 283-291,294-301,304-305,308-310
+  s_0a0d3792ecffdd::t_21a53c843eb8a9 48-52
+  s_0a0d3792ecffdd::t_2dea58ec395834 292-293
+  s_0a0d3792ecffdd::t_af4967196b1f03 368-390
+  s_0a0d3792ecffdd::t_dcc56756cefc3f 34
+  s_0a0d3792ecffdd::t_81802796b7de0a 139-143
+  s_0a0d3792ecffdd::t_9856706fd1364a 553-585
+  s_0a0d3792ecffdd::t_6fdab917107ff8 644-683
+  s_0a0d3792ecffdd::t_a0020113ee6a7e 53
+  s_0a0d3792ecffdd::t_aaccef62f4bfa7 89-100
+  s_0a0d3792ecffdd::t_8a0967c12ee33f 181-204
+  s_0a0d3792ecffdd::t_8ce9cb062fe7f8 126-132,136-138,144-151
+  s_0a0d3792ecffdd::t_577b46e0b549ba 420-433
+  s_0a0d3792ecffdd::t_21746654a476ba 65,70,74
+  s_0a0d3792ecffdd::t_4b55de0ef61907 57-59
+  s_0a0d3792ecffdd::t_db0e3c3eaf79bf 44
+  s_0a0d3792ecffdd::t_c48ac8b5c49aba 54-56
+example/DebugMetalDeadLeafAudit.hs
+  s_0a0d3792ecffdd::t_f271739782e176 1-118,134-143,158-167,170-176,178,181,184-185,206-209
+  s_0a0d3792ecffdd::t_e7bedbdad0c972 119-133,144-157,168-169,177,180,186-205
+  s_0a0d3792ecffdd::t_32316390eb9798 179,182-183
+example/DebugMetalCooperativePackedCluster.hs
+  s_0a0d3792ecffdd::t_7899c973cd80df 1-230
+example/DebugMetalILPAccumulators.hs
+  s_0a0d3792ecffdd::t_e8ec440ced920a 79
+  s_0a0d3792ecffdd::t_130e5c4eb6545c 1-78,80-177,179-194
+  s_0a0d3792ecffdd::t_333f9ca072cd39 178
+cabal.project.freeze
+  s_0a0d3792ecffdd::t_b0a63e721f344c 41
+example/DebugMetalLeafCountScaling.hs
+  s_0a0d3792ecffdd::t_67351f3ddb4439 1-157
+cabal.project
+  s_0a0d3792ecffdd::t_b5dea6bdf387e8 50-55
+example/DebugMetalAALoopOnlyTrace.hs
+  s_0a0d3792ecffdd::t_75a696e01e4fb7 1-105
+src/JIT/MSLBackend.hs
+  s_0a0d3792ecffdd::t_4934c8e2c76485 49-52
+  s_0a0d3792ecffdd::t_0325fbddd59b1f 42-48,59,61-62,64-67
+  s_0a0d3792ecffdd::t_b707fe94384845 38
+  s_0a0d3792ecffdd::t_24ca7a0b22ca94 121-195
+  s_0a0d3792ecffdd::t_6d1573adcbbcc9 592-602,612-615,618-620
+  s_0a0d3792ecffdd::t_d91557e1600a32 578-591
+  s_0a0d3792ecffdd::t_7c0f28d2745f13 411-577,603-611,616-617,621-633
+  s_0a0d3792ecffdd::t_71be3fb397a471 634-757
+  s_0a0d3792ecffdd::t_a3f0c58ec56566 235-239,245-246
+  s_0a0d3792ecffdd::t_bf10189decd68d 1-37,39-41,53-58,60,63,68-120,196-234,240-244,247-410
+src/Rendering/OpenGL/LiveSim.hs
+  s_0a0d3792ecffdd::t_f62a167a3d960e 65
+  s_0a0d3792ecffdd::t_ebf70a547ac8b1 67
+  s_0a0d3792ecffdd::t_023a935e3a51b2 37-38
+  s_0a0d3792ecffdd::t_6a9c69312958f8 201-218,221-239
+  s_0a0d3792ecffdd::t_75c718e29b45ee 219
+  s_0a0d3792ecffdd::t_5791816ae21ea6 220
+  s_0a0d3792ecffdd::t_abcd800ecc4707 270,272-274
+example/DebugMetalCooperativePerCluster.hs
+  s_0a0d3792ecffdd::t_9827e95513ad96 1-319
+src/Rendering/Metal/CSGViewerFoldLoopMetal.hs
+  s_0a0d3792ecffdd::t_7ef87e7b31f934 307-315,353-358,367,371-374
+  s_0a0d3792ecffdd::t_d45769a7b54fc3 340-347
+  s_0a0d3792ecffdd::t_bd548a1111f89c 1
+  s_0a0d3792ecffdd::t_d8d547f4dfdacf 25,28,30-34,39-43,45,50-61
+  s_0a0d3792ecffdd::t_cb4ddcde558eb5 44
+  s_0a0d3792ecffdd::t_f05ae9bbabd217 2-24,26-27,29,63-157
+  s_0a0d3792ecffdd::t_602c1ed093a6db 62
+  s_0a0d3792ecffdd::t_a7b6ffd0ae0d9d 377-380
+  s_0a0d3792ecffdd::t_dc50383e0c5e68 219-223,235-236,275-277,279-286,289-291,293-304,316-329,351
+  s_0a0d3792ecffdd::t_f93e91fbaa9c37 37-38,47-49
+  s_0a0d3792ecffdd::t_f46ae5a4178b14 382-488
+  s_0a0d3792ecffdd::t_a2a15a3918b734 158-205,224,226,228-234,237-252,257,278,287-288,305-306,330-339,348-350,352,375-376,381
+  s_0a0d3792ecffdd::t_28c6e7cb087eb4 35-36,46
+  s_0a0d3792ecffdd::t_719a2fe3b6c406 359,362-364,368-369
+  s_0a0d3792ecffdd::t_077afe38b2baf0 292
+  s_0a0d3792ecffdd::t_548025ab9c6bee 206-218,225,227,253-256,258-274
+  s_0a0d3792ecffdd::t_e7687b17746de9 360-361,365-366,370
+example/DebugKernelSizeCheck.hs
+  s_0a0d3792ecffdd::t_d6534eccbfc81a 22,26
+  s_0a0d3792ecffdd::t_d51cc2aebfbbd8 1-8,10-21
+  s_0a0d3792ecffdd::t_5380bca96fdb9a 9,23-25,27-29
+example/DebugMetalSphereSceneLoop.hs
+  s_0a0d3792ecffdd::t_35c7b6aa206fb1 1-73
+example/DebugMetalAALoopVsMultipass.hs
+  s_0a0d3792ecffdd::t_235c998569bfee 1-158
+src/JIT/GlueCompact.hs
+  s_0a0d3792ecffdd::t_791a55345cbb5a 1-307
+example/DebugMetalShadowProbe.hs
+  s_0a0d3792ecffdd::t_6ede4a81757cb8 1-14,16-70,72,74-115
+  s_0a0d3792ecffdd::t_f54b3ad384342c 71,73
+  s_0a0d3792ecffdd::t_7ad7206e7fc578 116-121
+  s_0a0d3792ecffdd::t_fbfff974056102 15
+example/DebugMetalWindowProbe.hs
+  s_0a0d3792ecffdd::t_5cab17bcbfa7b8 1-28
+tools/xcode_gputrace_profile.sh
+  s_0a0d3792ecffdd::t_b9a38a184f6dc6 1-118
+example/DebugMetalUnrollVsLoop.hs
+  s_0a0d3792ecffdd::t_5e5c730a30aff7 211-214,222-229
+  s_0a0d3792ecffdd::t_737a1413b49055 153-157
+  s_0a0d3792ecffdd::t_db25ff4a871aee 28
+  s_0a0d3792ecffdd::t_340f74f9d513a6 179
+  s_0a0d3792ecffdd::t_202bbdf3889e71 180-182
+  s_0a0d3792ecffdd::t_442a034454043b 152
+  s_0a0d3792ecffdd::t_827b75f5de6255 1-27,29-93,95-151,158-173,175-178,184-186,192-210,215-221,230-231,246-253
+  s_0a0d3792ecffdd::t_3b26cbeb289152 187-191
+  s_0a0d3792ecffdd::t_814a6614b164f6 174
+  s_0a0d3792ecffdd::t_538cba8a3b6903 232-245
+  s_0a0d3792ecffdd::t_d93e798e4335d7 94
+  s_0a0d3792ecffdd::t_b37569641056ac 183
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_082a96415396e3 374,377-393
+  s_0a0d3792ecffdd::t_84c946b0deac37 524-532
+  s_0a0d3792ecffdd::t_0073cfd75b249f 322-331
+  s_0a0d3792ecffdd::t_6734902331c4ea 368-372
+  s_0a0d3792ecffdd::t_5ebcc6ce30db56 333-338
+  s_0a0d3792ecffdd::t_ff3baf65dfffc3 357-361
+  s_0a0d3792ecffdd::t_263ee7b9cf2e04 394
+example/DebugMetalCooperativeFullScene.hs
+  s_0a0d3792ecffdd::t_b87204cdad87fc 267-268,279-280,284-285,289-290,299,304,315-316,328
+  s_0a0d3792ecffdd::t_1946b99e32b2ef 160-164,184
+  s_0a0d3792ecffdd::t_96f03875973282 200-201,208,211,219-221,227,230-232
+  s_0a0d3792ecffdd::t_e098d2398f7ccb 91-99,110-112,114-116,131-132,134-144,150-152
+  s_0a0d3792ecffdd::t_982adaa03dcada 1-90,100-109,113,117-130,133,145-149,153-159,165-183,185-199,202-207,209-210,212-218,222-226,228-229,233-266,269-278,281-283,286-288,291-298,300-303,305-314,317-327,329-335
+example/DebugClusterInspect.hs
+  s_0a0d3792ecffdd::t_917db82bc0b896 1-35
+example/DebugMSLBackendProbe.hs
+  s_0a0d3792ecffdd::t_4329ba35dba7f2 14,21
+  s_0a0d3792ecffdd::t_1de4b24eeb5559 1-13,15-20,22-37
+example/DebugMetalCooperativeRealCluster.hs
+  s_0a0d3792ecffdd::t_d999b0b22600fe 1-29,31-34,36-39,42,46-203,225-235
+  s_0a0d3792ecffdd::t_cbcf87b9440213 40-41,43-45
+  s_0a0d3792ecffdd::t_9553d1620f3ed1 204-224
+  s_0a0d3792ecffdd::t_c9d941541529fa 30,35
+example/DebugMetalSphereSceneProbe.hs
+  s_0a0d3792ecffdd::t_0cbb0e33520117 1-17,32-44,46-55
+  s_0a0d3792ecffdd::t_164cb42687281c 18-31
+  s_0a0d3792ecffdd::t_d048d9723cc6c4 45
+example/DebugMetalQuadcopterLoop.hs
+  s_0a0d3792ecffdd::t_2ceec0d91c9e3b 1-107
+example/DebugMetalQuadcopterProbe.hs
+  s_0a0d3792ecffdd::t_b2ae6a0aae10b0 1-92,94-96
+  s_0a0d3792ecffdd::t_66981e808b866f 93
+example/DebugMetalPipelineProbe.hs
+  s_0a0d3792ecffdd::t_e5af488adcf51f 1-39
+example/DebugMetalComputeCooperativeProbe.hs
+  s_0a0d3792ecffdd::t_958de44b945a47 1-131
+example/DebugMetalComputeTrivial.hs
+  s_0a0d3792ecffdd::t_4b16a86ae40b51 1-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7fa15a7f21c3b0fe64a76b48dc5a55d85d0d8674",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
