@@ -1,0 +1,46 @@
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_a900ee32295002 82-83
+  s_0a0d3792ecffdd::t_d951047471bad0 75
+  s_0a0d3792ecffdd::t_3e6283ec572ad9 1964-2022
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_02faa505174700 190
+src/Rendering/OpenGL/LiveSim.hs
+  s_0a0d3792ecffdd::t_0e96ae73b8f99e 168-215
+  s_0a0d3792ecffdd::t_fcb543a350ec28 35-36
+  s_0a0d3792ecffdd::t_6b72fd5447db39 64
+  s_0a0d3792ecffdd::t_127e028415b84a 37
+  s_0a0d3792ecffdd::t_cd43c5a57da90f 216-232
+src/Rendering/OpenGL/CSGViewer.hs
+  s_0a0d3792ecffdd::t_f23783a634afe7 16-26
+src/Examples/ModelQuadcopter.hs
+  s_0a0d3792ecffdd::t_9534d621b0e3ae 289,291
+  s_0a0d3792ecffdd::t_3e7df7de69cd8f 290
+  s_0a0d3792ecffdd::t_7ba5d010008843 1270
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_52d52daa1f202e 281-284
+  s_0a0d3792ecffdd::t_19c8992a5725fd 57-60
+  s_0a0d3792ecffdd::t_8b386307abce93 186-195,197-206
+  s_0a0d3792ecffdd::t_33f470be3933fe 127,132,140,146-147
+  s_0a0d3792ecffdd::t_c13dedc1d2d287 276-277
+  s_0a0d3792ecffdd::t_02e15238a09559 196
+  s_0a0d3792ecffdd::t_786c6762f91b1d 1-55,61-62,67-72,75,77-126,128-131,133-139,141-145,148-185,207-275,278-280,285-482,489-508
+  s_0a0d3792ecffdd::t_1c16159e095d00 56,63-66,73-74
+  s_0a0d3792ecffdd::t_88d640a7f38a57 76
+  s_0a0d3792ecffdd::t_ae3ce06fde1567 483-488
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "97905bce11cc59b4ed7ab848accb5397d3e028a8",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
