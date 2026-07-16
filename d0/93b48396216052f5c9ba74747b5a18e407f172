@@ -1,0 +1,33 @@
+example/DebugAACompileProbe.hs
+  s_0a0d3792ecffdd::t_00d9e7c2e3d45e 23-24,31,33-36,44-45,58,68,70,76,85,90-91,125-139
+  s_0a0d3792ecffdd::t_2bb2d880892208 6
+  s_0a0d3792ecffdd::t_1a427051f3d126 8,10-16
+  s_0a0d3792ecffdd::t_4d3e650d953f51 92-124
+  s_0a0d3792ecffdd::t_1d5c2825ac539a 140-142
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_2ea6eb468e0595 881
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_cdf046d23917e1 26-35
+  s_0a0d3792ecffdd::t_deb4c5a4c8e8ec 286-300
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_79428aab0bed3b 2625-2633
+  s_0a0d3792ecffdd::t_a00b637d3721fb 2578,2581-2595,2617-2624,2634-2644
+  s_0a0d3792ecffdd::t_5974c8d19c515d 2486-2489,2491
+  s_0a0d3792ecffdd::t_e348ebf92b3e23 2492-2540
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d093b48396216052f5c9ba74747b5a18e407f172",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
