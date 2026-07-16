@@ -1,0 +1,28 @@
+src/Rendering/OpenGL/CSGViewerFoldLoop.hs
+  s_0a0d3792ecffdd::t_4a04e0fbf3e341 195-213,232-249,347,352-364,372-374,377-379
+example/DebugAdaptiveAAProbe.hs
+  s_0a0d3792ecffdd::t_b7c4aadc0eba3a 304-305,316-325
+  s_0a0d3792ecffdd::t_a58e525c863a98 297,299
+  s_0a0d3792ecffdd::t_e2984f2b431493 148
+  s_0a0d3792ecffdd::t_47b77d20ec2d17 1-147,149-278,296,298,300-301,303,306-308,310,312-313
+  s_0a0d3792ecffdd::t_c831ea359fb699 309,311,314-315
+  s_0a0d3792ecffdd::t_d59208d93b73d6 279-295,302
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_492ef6475d88a6 887-901
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "344ebcfd9352a4770da9d25ba27a73db3f178db8",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
