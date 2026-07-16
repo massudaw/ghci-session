@@ -1,0 +1,36 @@
+example/DebugAACompileProbe.hs
+  s_0a0d3792ecffdd::t_d1f34344415924 16-19
+  s_0a0d3792ecffdd::t_52992e3092cdd3 132-134
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_ce0582649d8ef0 60-65
+  s_0a0d3792ecffdd::t_bb6bc683c19add 474-480
+  s_0a0d3792ecffdd::t_292c685c9d0917 867-941,959-961,963,972-983,991-992,998-1002,1007
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_a78a06cc314d66 2364-2369
+  s_0a0d3792ecffdd::t_3b7767ce098c2b 2436-2466
+  s_0a0d3792ecffdd::t_50dd967f616a7c 2712-2715,2805-2808,2893-2896,3113-3116,3226-3229
+  s_0a0d3792ecffdd::t_5ec2f927a31b57 3299-3302
+  s_0a0d3792ecffdd::t_2d2af40c3f447b 116-118
+example/DebugClearanceGradGPU.hs
+  s_0a0d3792ecffdd::t_ee91cb2912beb3 169-174
+  s_0a0d3792ecffdd::t_473e03cfb79d7c 57-60
+example/DebugFoldLoopQuadcopterIDADerivGPUViewer.hs
+  s_0a0d3792ecffdd::t_13e2e29bb2f354 80-83
+  s_0a0d3792ecffdd::t_a766b4712ee887 232-237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e70954ec762443df7d27fbe7efc5f35b09f9cee4",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
