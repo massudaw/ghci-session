@@ -1,0 +1,46 @@
+src/Rendering/DiffCSG/ViewportMSL.hs
+  s_0a0d3792ecffdd::t_30b8432121db9f 345,348,355-377
+  s_0a0d3792ecffdd::t_fa7dc68a38afe6 93,97
+  s_0a0d3792ecffdd::t_e8201fc9e6f6ce 253
+  s_0a0d3792ecffdd::t_052ff8cd3a7f31 80,82
+  s_0a0d3792ecffdd::t_6414c00d5fbcc4 2-79,81,83-92,94-96,98-252,254-344,346-347,349-354
+  s_0a0d3792ecffdd::t_25d1f7bd7f7d48 1
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_2e43614e5eae7d 1621-1630
+  s_0a0d3792ecffdd::t_4f77591aa56a40 173
+example/TestViewportMSLGradient.hs
+  s_0a0d3792ecffdd::t_687dab483f949e 1
+  s_0a0d3792ecffdd::t_98c6f14fd75f78 42
+  s_0a0d3792ecffdd::t_925fdb92153d3f 77-79
+  s_0a0d3792ecffdd::t_8ea6f20ada4894 2-34,36-41,43-49,51-76,80-90,102-136
+  s_0a0d3792ecffdd::t_787479451cadc3 91-101
+  s_0a0d3792ecffdd::t_5ee6521b022e89 50
+  s_0a0d3792ecffdd::t_17e94a3eb4e631 35
+example/QuadcopterLiveJointDemo.hs
+  s_0a0d3792ecffdd::t_67bd6f1ed0a771 1137-1141
+  s_0a0d3792ecffdd::t_2ca78a7fcb1cd6 761
+  s_0a0d3792ecffdd::t_a63e72504ad492 193-195
+  s_0a0d3792ecffdd::t_1ec3d75bed14f5 748-760,762-769,771,774,776
+  s_0a0d3792ecffdd::t_388d19f1116cb2 191
+  s_0a0d3792ecffdd::t_1f4faa42d11419 1167,1170,1173-1174
+  s_0a0d3792ecffdd::t_b5198daceb8c92 833-846
+  s_0a0d3792ecffdd::t_b3b13cc4b57edf 819-832
+cbits/metal_shim.m
+  s_0a0d3792ecffdd::t_150a09b39ba124 1044-1116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "021c20affda372119acb868b62af08fd8aed5323",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
