@@ -1,0 +1,28 @@
+src/JIT/CallWindowElision.hs
+  s_0a0d3792ecffdd::t_2a30d126005c87 282,287,289-294,299
+  s_0a0d3792ecffdd::t_6c84b002260e20 41-53
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_650e175dfbfde5 1179-1187,1189,1192-1194
+example/TestMSLCallOutDirect.hs
+  s_0a0d3792ecffdd::t_ee6d0557afb71b 1-193
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_33fbefe82b2247 973-985
+src/JIT/MSLBackend.hs
+  s_0a0d3792ecffdd::t_0399559bb90d2c 668-680,682,685-687
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "392d36913c77d16f532988c3f2b11969f4fedb19",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
