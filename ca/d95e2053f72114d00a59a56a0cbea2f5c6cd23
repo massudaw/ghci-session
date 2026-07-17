@@ -1,0 +1,66 @@
+src/JIT/MSLBackend.hs
+  s_0a0d3792ecffdd::t_7d706946832e51 319
+  s_0a0d3792ecffdd::t_897db638e675fb 286-287
+  s_0a0d3792ecffdd::t_859183205f6b73 602-604,609-611
+  s_0a0d3792ecffdd::t_b86d0950a42e10 875-876,880
+  s_0a0d3792ecffdd::t_188571010ac6cb 743-744,748,752-755
+  s_0a0d3792ecffdd::t_6407c44577c666 458-462,469-473,480-481
+  s_0a0d3792ecffdd::t_7d19c26f61ac8a 816-817,819,828-834
+  s_0a0d3792ecffdd::t_7633ea74a9ddc8 352-379,381-386,388
+  s_0a0d3792ecffdd::t_94de4a002d1f33 409-416,424
+  s_0a0d3792ecffdd::t_58aab50a940ad3 223-225,229
+  s_0a0d3792ecffdd::t_3e363894b1aa87 75
+  s_0a0d3792ecffdd::t_891fbb997b05bc 887-890
+  s_0a0d3792ecffdd::t_0da9549a8c37a6 263-272
+  s_0a0d3792ecffdd::t_636a871c63cf1c 189-190,194,198-202
+  s_0a0d3792ecffdd::t_8e2a3a37409203 654-655,658-662
+example/TestMSLInputInline.hs
+  s_0a0d3792ecffdd::t_dd9a7a58f00014 1-139,146,148-149,151-153,155-156,158,160,164-218
+  s_0a0d3792ecffdd::t_7d9fdb69dd7cf7 140-145,147,150,154,157,159,161-163
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_adbac3f79ad066 949-959
+  s_0a0d3792ecffdd::t_33963c93bf579d 212
+  s_0a0d3792ecffdd::t_6373f42a10f6de 960-972
+example/TestGLSLInputInline.hs
+  s_0a0d3792ecffdd::t_4943fc2d3d3374 21
+  s_0a0d3792ecffdd::t_adae145b37a7e6 185
+  s_0a0d3792ecffdd::t_378004e84f26f7 82
+  s_0a0d3792ecffdd::t_2a8f9d884d8597 2-6,8-16,18-20,35-36,64-66,75-76,83-84,90,110-116,158-165,168-172,180,183-184,186-189,195,201-202,232-233,243-246,257-260,262,264-282,306,311-315,336-337,352,357-360
+  s_0a0d3792ecffdd::t_442726b38897d7 261,263
+  s_0a0d3792ecffdd::t_92d7328cf3368d 121-129,133,135
+  s_0a0d3792ecffdd::t_18c00dd082f15b 176-179,181-182
+  s_0a0d3792ecffdd::t_295b557605cd36 1,7,17,22-34,37-63,67-74,77-81,85-89,91-109,117-120,130-132,134,136-157,166-167,173-175,190-194,196-200,203-231,234-242,247-256,283-305,307-310,316-335,338-351,353-356,361
+src/JIT/InputLoadElision.hs
+  s_0a0d3792ecffdd::t_931e6f9dc6e9c5 1-115
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_c9db1375aba1b3 903-904
+  s_0a0d3792ecffdd::t_b8589cb84923d0 399-400
+  s_0a0d3792ecffdd::t_d96cb59e15b3fe 819-821,826-829
+  s_0a0d3792ecffdd::t_6f57c3308d9523 585-592,600
+  s_0a0d3792ecffdd::t_85d12303ea0ead 929,934
+  s_0a0d3792ecffdd::t_5cc6db1e0d9c24 544-553
+  s_0a0d3792ecffdd::t_0721569a79a372 1090-1104
+  s_0a0d3792ecffdd::t_8a4de0a4ec1fb1 651-656,661-666,673-674
+  s_0a0d3792ecffdd::t_c57b52e0c22b4b 1119,1123
+  s_0a0d3792ecffdd::t_026a529afb808d 1152-1155,1158-1162
+  s_0a0d3792ecffdd::t_24a5c7b83e8968 86
+  s_0a0d3792ecffdd::t_1a843e081d0a10 373-381
+  s_0a0d3792ecffdd::t_fd6fee05d153dd 445
+  s_0a0d3792ecffdd::t_40029cba5f688f 507-543,560-565,567
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "cad95e2053f72114d00a59a56a0cbea2f5c6cd23",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
