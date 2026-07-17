@@ -1,0 +1,24 @@
+src/JIT/CallWindowElision.hs
+  s_0a0d3792ecffdd::t_29a76d607d1cb9 258-259
+  s_0a0d3792ecffdd::t_7858e8df968b21 225-248,254-257
+example/TestMSLElisionCompactReuse.hs
+  s_0a0d3792ecffdd::t_54a41cdcf0341c 1-185
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_65edbd558f162b 973-985
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a88f618a4fb01bc190667eca979809489b8ee943",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
