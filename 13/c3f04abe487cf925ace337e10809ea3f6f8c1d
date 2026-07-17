@@ -1,0 +1,29 @@
+src/Rendering/Metal/CSGViewerFoldLoopMetal.hs
+  s_0a0d3792ecffdd::t_0c55a32e473e4a 34-35
+  s_0a0d3792ecffdd::t_237865999686f8 561-563,565-566,574-593,595
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_a6826acdd228a0 189-190
+  s_0a0d3792ecffdd::t_cbc311682fe585 153-159,161-169,177
+  s_0a0d3792ecffdd::t_0c1e3c5a27ec15 232-234
+  s_0a0d3792ecffdd::t_6d2d1919c8f236 170-176,178-188
+  s_0a0d3792ecffdd::t_6cf3bc58ad0aac 273-277
+  s_0a0d3792ecffdd::t_0a6d494151d330 326-509
+  s_0a0d3792ecffdd::t_0caf229a75abb1 63,74-80
+  s_0a0d3792ecffdd::t_681134e5bcc8fe 325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "13c3f04abe487cf925ace337e10809ea3f6f8c1d",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
