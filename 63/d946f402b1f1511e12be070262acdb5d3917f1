@@ -1,0 +1,31 @@
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_469052489321e9 681-683,685-687,690-693,695-698,701-705,717,721-726,729-736,740-741,744-759,762-764,768-769
+  s_0a0d3792ecffdd::t_c29ce6e06d0eec 468-492,494,498-521,523-525,528-536
+  s_0a0d3792ecffdd::t_981b388bbc95e9 727
+  s_0a0d3792ecffdd::t_6b6ed1308da810 847-849,851
+  s_0a0d3792ecffdd::t_801de3fe24e0f1 760-761
+  s_0a0d3792ecffdd::t_18e0afceb9e268 83
+  s_0a0d3792ecffdd::t_fa9c7bd6d464b8 728
+src/Rendering/Metal/MetalWindow.hs
+  s_0a0d3792ecffdd::t_c8e3a172a05cc0 661-733
+  s_0a0d3792ecffdd::t_7841ddd94267d3 52-55
+  s_0a0d3792ecffdd::t_4e4e0947763cee 201-209
+cbits/metal_shim.m
+  s_0a0d3792ecffdd::t_fcc7d2757b8d80 764-813
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "63d946f402b1f1511e12be070262acdb5d3917f1",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
