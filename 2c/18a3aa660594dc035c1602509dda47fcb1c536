@@ -1,0 +1,40 @@
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_09659d290384b0 1197-1200,1203-1205
+  s_0a0d3792ecffdd::t_b50510ea0f19ac 1201-1202
+src/JIT/Tape.hs
+  s_0a0d3792ecffdd::t_63c21656657bc3 69-72
+  s_0a0d3792ecffdd::t_cdf099e30dab32 1081
+  s_0a0d3792ecffdd::t_63f7a7e7081fc2 1055-1059
+  s_0a0d3792ecffdd::t_3dc2c1ee5ab25a 1135-1197
+example/TestGuardCacheStaleness.hs
+  s_0a0d3792ecffdd::t_6a6556630c8ac4 6-7,23,34,57-58,63,65
+  s_0a0d3792ecffdd::t_54c1b295e508a9 9-22,30-33,35-42,44-46,48-56,60,62,64,74,77-79,84,93,107-115,117-173,179-206
+  s_0a0d3792ecffdd::t_967bde707fa702 174-178
+  s_0a0d3792ecffdd::t_bbbe12e1dbf4b2 1-5,8,24-29,43,47,59,61,66-73,75-76,80-83,85-92,94-106,116
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_c031ea9ee41a2c 2277-2279,2287
+  s_0a0d3792ecffdd::t_2a8af63f90a0e6 105
+  s_0a0d3792ecffdd::t_73a978e083e860 2194-2203,2211
+  s_0a0d3792ecffdd::t_469656e002db9f 120
+  s_0a0d3792ecffdd::t_626ee58e58a716 2390-2392,2403
+  s_0a0d3792ecffdd::t_d6cddb28c1526e 2738-2748,2754
+  s_0a0d3792ecffdd::t_3f6d790f54004a 108
+  s_0a0d3792ecffdd::t_e7638f89b1320b 2350-2352,2363
+  s_0a0d3792ecffdd::t_db3ac2b17db471 3127-3139,3143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2c18a3aa660594dc035c1602509dda47fcb1c536",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
