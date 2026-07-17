@@ -1,0 +1,43 @@
+src/Rendering/Metal/MetalWindow.hs
+  s_0a0d3792ecffdd::t_9d47a8542cb87d 48-51
+  s_0a0d3792ecffdd::t_769e0949042609 73
+  s_0a0d3792ecffdd::t_7bd7a13739f2bc 185-196
+  s_0a0d3792ecffdd::t_9e16fe7a4f4e19 603-647
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_78857a028e2342 69-71
+  s_0a0d3792ecffdd::t_25b89760f071f1 288-335,352-356
+  s_0a0d3792ecffdd::t_0bbb6fff2f5a72 336-351,357-363
+src/Rendering/Metal/CSGViewerFoldLoopMetal.hs
+  s_0a0d3792ecffdd::t_8de68f291d21e2 37
+  s_0a0d3792ecffdd::t_bc8f5b75cd192d 561-590
+  s_0a0d3792ecffdd::t_be2e5e40359f05 622-638
+  s_0a0d3792ecffdd::t_bc707404572a69 32
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_fad5c17063b971 739-747
+  s_0a0d3792ecffdd::t_61027b8efbcf39 427-465
+  s_0a0d3792ecffdd::t_de465570c0bac7 652
+  s_0a0d3792ecffdd::t_69a3ebffee7bf6 657-660,663-664
+  s_0a0d3792ecffdd::t_e2e221006a802d 539-550
+  s_0a0d3792ecffdd::t_b76462388984de 595-651,654-656,661-662,665-668,682-703
+  s_0a0d3792ecffdd::t_60af559474ea27 708-713
+  s_0a0d3792ecffdd::t_0ba630a5ae76ea 653
+  s_0a0d3792ecffdd::t_312d766d4510de 76-84,86-87
+cbits/metal_shim.m
+  s_0a0d3792ecffdd::t_1fe8e66f66febb 692-763
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1213cded5d8f5b7f30926cf0efc9511fed6e413c",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
