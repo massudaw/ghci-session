@@ -1,0 +1,45 @@
+src/JIT/MSLBackend.hs
+  s_0a0d3792ecffdd::t_8234174a34dadd 287-297,301-309
+  s_0a0d3792ecffdd::t_fa3b1d16ae44b4 343-345
+  s_0a0d3792ecffdd::t_3c4e52a524fcc2 76-78
+  s_0a0d3792ecffdd::t_eb1fabde29a5d7 318-322
+src/JIT/GLSLBackend.hs
+  s_0a0d3792ecffdd::t_cb46c3952a3a5b 87
+  s_0a0d3792ecffdd::t_fdf073a364f113 398-403,407-413
+src/JIT/FastMathPeephole.hs
+  s_0a0d3792ecffdd::t_bda4361d86b899 207-209,211,226,231-235,237-239
+  s_0a0d3792ecffdd::t_cf04d207d30f21 212-217,219,230
+  s_0a0d3792ecffdd::t_c57ab29ccfd190 199
+  s_0a0d3792ecffdd::t_15bd909775649c 169
+  s_0a0d3792ecffdd::t_8711c51b89c4d3 1-168,170-198,200-206,210,218,220-225,227-229,236
+sprinkler-solver.cabal
+  s_0a0d3792ecffdd::t_9efc20b8520ddc 213
+  s_0a0d3792ecffdd::t_e218dabdb5a8c4 1192
+  s_0a0d3792ecffdd::t_fbb7edee7e1add 1183-1191,1193-1196
+example/TestMSLFastMathPeephole.hs
+  s_0a0d3792ecffdd::t_2de28a5ddbdc53 169-175,183-187,195-200
+  s_0a0d3792ecffdd::t_6a4a42288ddc18 452,454-459
+  s_0a0d3792ecffdd::t_fb9cc2ff2e62f0 232
+  s_0a0d3792ecffdd::t_5229ef2b7fb6d0 322-420
+  s_0a0d3792ecffdd::t_c28092567bc1a3 48,55-66
+  s_0a0d3792ecffdd::t_b7878a1b10a8b7 1-47,50-54,67-168,176-182,188-194,201-216,219-231,233-295,297-321,421-451,453,460-463
+  s_0a0d3792ecffdd::t_82cdc7a082e2fa 217-218
+  s_0a0d3792ecffdd::t_5cfac57b65b71d 49
+  s_0a0d3792ecffdd::t_c3724fce9b23a1 296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2d185c8afb8f81d12b7fe6f9a92b7ede6b3de727",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
