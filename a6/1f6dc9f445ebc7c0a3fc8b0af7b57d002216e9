@@ -1,0 +1,31 @@
+src/JIT/CallParallelismReport.hs
+  s_3864fd9006fa92::t_f4640fc7a4fe8c 1-189
+sprinkler-solver.cabal
+  s_3864fd9006fa92::t_43ecfcb46bc13f 212
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_c7fe07cb5fe281 110-112,121,2082-2083,2087-2102,2417-2418,2420-2551,2554-2555,2559-2561,2565-2566,2571-2573,2575-2578,2586-2601,2607-2625,2633-2771,2774-2818,2820-2821,2828-2829,2860-2868,2889,2892-2893,2916-2924,2986,2997-2998,3061-3081,3132-3139,3141-3142,3145,3182-3189,3191-3192,3195-3196,3200-3203,3207,3209-3213,3227-3234,3236-3239,3263-3270,3272-3275,3302-3309,3311-3313,3328-3335,3338-3339,3341,3344,3346,3362-3370,3391,3393-3394,3413-3421,3464,3466-3467,3512-3519,3521-3522,3528,3531-3532,3654-3665,3667-3668,3671-3672,3705-3712,3714-3715,3718-3719
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a61f6dc9f445ebc7c0a3fc8b0af7b57d002216e9",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_3864fd9006fa92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15a238b9-18b6-4e93-9bfb-d664fd325064",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
