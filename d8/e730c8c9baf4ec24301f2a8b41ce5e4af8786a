@@ -1,0 +1,97 @@
+src/Rendering/DiffCSG/Goldfeather.hs
+  s_0a0d3792ecffdd::t_eba81167cd9658 251-252
+  s_0a0d3792ecffdd::t_ffd3d3b6914be1 594-595
+src/Rendering/DiffCSG/ViewportGPU.hs
+  s_0a0d3792ecffdd::t_acccbd88fbe038 347-359,361-366,373-376,381-385
+  s_0a0d3792ecffdd::t_28a56f222e4b2b 360
+  s_0a0d3792ecffdd::t_3eb8ccf77bc29b 107
+  s_0a0d3792ecffdd::t_efb522ac5d8a9f 367-372,377-380
+  s_0a0d3792ecffdd::t_dfef5fac7d8156 341-346
+example/DebugFoldLoopQuadcopterIDADerivGPUViewer.hs
+  s_0a0d3792ecffdd::t_6656cf6c858854 109
+src/Examples/ModelQuadcopter.hs
+  s_0a0d3792ecffdd::t_78ced3d7aebcab 954-955
+  s_0a0d3792ecffdd::t_a8bd315cfea06c 966,968
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_6656cf6c858854 111
+example/DebugFoldLoopQuadcopterGPUViewer.hs
+  s_0a0d3792ecffdd::t_6656cf6c858854 74
+src/Rendering/DiffCSG/Symbolic.hs
+  s_0a0d3792ecffdd::t_f30eb414c5e76c 428-429
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0a0d3792ecffdd::t_a5f1f7836d67f6 436
+  s_0a0d3792ecffdd::t_b6c0b276f33386 2041
+  s_0a0d3792ecffdd::t_d3dda381d33c5c 1919-1923,1925
+  s_0a0d3792ecffdd::t_49f4f256562fc5 1270
+  s_0a0d3792ecffdd::t_893592fb3d1386 1149
+  s_0a0d3792ecffdd::t_9fa6bb2050e721 4022,4034,4037-4039
+  s_0a0d3792ecffdd::t_53da27f33b2348 4348,4353,4355
+  s_0a0d3792ecffdd::t_363e3fe0d22fe8 4048
+  s_0a0d3792ecffdd::t_63531af988ffef 3929,3945,3948-3950,3961
+  s_0a0d3792ecffdd::t_04bb17b5ab78b3 4349-4352,4354
+  s_0a0d3792ecffdd::t_17921909c05ed5 420
+  s_0a0d3792ecffdd::t_3fa39769561839 4177-4178
+  s_0a0d3792ecffdd::t_52c6177df01d9d 1924
+  s_0a0d3792ecffdd::t_db9b7c91790e82 3886,3898,3901-3903,3916
+  s_0a0d3792ecffdd::t_819fe55805901f 171-172
+  s_0a0d3792ecffdd::t_2c18a5a9869e8f 3978,3990,3993-3995
+  s_0a0d3792ecffdd::t_fb28f98a6ba5fe 4209-4210
+  s_0a0d3792ecffdd::t_f750d4e3110615 4004
+src/Rendering/CPURayTracer.hs
+  s_0a0d3792ecffdd::t_2f4af4888eb2b1 22-24
+  s_0a0d3792ecffdd::t_b17b4fb5c26ad3 16-21,25
+  s_0a0d3792ecffdd::t_37aebe5cffd1ce 85
+src/Rendering/CSGRayTraceCPU.hs
+  s_0a0d3792ecffdd::t_e5688da05b8174 147-158
+  s_0a0d3792ecffdd::t_682c9f29995ad0 146
+  s_0a0d3792ecffdd::t_e3c0a2e00da09e 188
+src/Rendering/DiffCSG/NativeTwin.hs
+  s_0a0d3792ecffdd::t_7c843f3647c53c 427,441-445,447-449,454-456,458-469,471-472,474-478,480-490,492-493,495-499,501-507,509-514,517
+  s_0a0d3792ecffdd::t_1c25ca041494fc 2949
+  s_0a0d3792ecffdd::t_0612687016e0ef 316
+  s_0a0d3792ecffdd::t_619b0e9838a3df 428-440,446,450-453,457,470,473,479,491,494,500,508,515-516
+  s_0a0d3792ecffdd::t_a061ee9738d8f7 252-256
+  s_0a0d3792ecffdd::t_9858f71074058e 3093
+src/Rendering/OpenGL/CSGEncoding.hs
+  s_0a0d3792ecffdd::t_2b4adfc995b533 114-116
+  s_0a0d3792ecffdd::t_6dcc7e5fa4ac45 254-256
+src/Rendering/OpenGL/GoldfeatherGPU.hs
+  s_0a0d3792ecffdd::t_c50028f358d8d8 113-114
+src/Rendering/DiffCSG.hs
+  s_0a0d3792ecffdd::t_83a5d5ce9a5466 72-73
+  s_0a0d3792ecffdd::t_a6f5aa4a7769df 126
+  s_0a0d3792ecffdd::t_a821e0f4fb7568 417
+  s_0a0d3792ecffdd::t_a7f604931592b2 418-420
+  s_0a0d3792ecffdd::t_e9efa12706e400 32-49,55
+  s_0a0d3792ecffdd::t_b63d4e23416f33 50-54
+  s_0a0d3792ecffdd::t_2be43116d9dac5 370-371
+  s_0a0d3792ecffdd::t_3c2441e3c039cf 127-134
+  s_0a0d3792ecffdd::t_ba5cf2579d6120 448-456
+example/DebugFoldLoopQuadcopterViewer.hs
+  s_0a0d3792ecffdd::t_6656cf6c858854 101
+src/Backend/CSG.hs
+  s_0a0d3792ecffdd::t_b0c0e0d1b4193c 137-141,148
+  s_0a0d3792ecffdd::t_d9b9b466b6ec0f 106,108-114
+  s_0a0d3792ecffdd::t_59f677a0941850 16
+  s_0a0d3792ecffdd::t_c45a488e0b7d29 107
+  s_0a0d3792ecffdd::t_539107306a7ba6 115
+  s_0a0d3792ecffdd::t_beda15446a82fc 142-147
+example/DebugFoldLoopQuadcopterFlyingViewer.hs
+  s_0a0d3792ecffdd::t_6656cf6c858854 81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d8e730c8c9baf4ec24301f2a8b41ce5e4af8786a",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
