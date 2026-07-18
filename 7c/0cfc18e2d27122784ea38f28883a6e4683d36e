@@ -1,0 +1,19 @@
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_19139e2bf19b5f 203,205-207,211,225-244,246,248,250-263,265-270,275-276,278,287
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7c0cfc18e2d27122784ea38f28883a6e4683d36e",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
