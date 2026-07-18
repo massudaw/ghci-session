@@ -12,6 +12,8 @@ example/DebugFoldLoopQuadcopterIDADerivGPUViewer.hs
 src/Examples/ModelQuadcopter.hs
   s_0a0d3792ecffdd::t_78ced3d7aebcab 954-955
   s_0a0d3792ecffdd::t_a8bd315cfea06c 966,968
+  s_0a0d3792ecffdd::t_370f1188bd9d59 1001
+  s_0a0d3792ecffdd::t_4d4e12b0b803db 956-965,967
 example/DebugFoldLoopQuadcopterIDAViewer.hs
   s_0a0d3792ecffdd::t_6656cf6c858854 111
 example/DebugFoldLoopQuadcopterGPUViewer.hs
