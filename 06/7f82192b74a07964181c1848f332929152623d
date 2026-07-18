@@ -1,0 +1,33 @@
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_a96d8d82110797 103
+  s_0a0d3792ecffdd::t_0e87b0ac62df85 102,104-105
+  s_0a0d3792ecffdd::t_b1c6f76758e3c1 716-787
+example/TestQuadTrustGateGradient.hs
+  s_0a0d3792ecffdd::t_36d14d7724f4e7 27
+  s_0a0d3792ecffdd::t_02d67365f6e580 231-273
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_c72e9f160e05e7 1083,1085
+  s_0a0d3792ecffdd::t_676ee7023156b3 960-961
+  s_0a0d3792ecffdd::t_4832ee03d32955 1026-1027,1030
+  s_0a0d3792ecffdd::t_86d8b2c996521e 1060-1061,1065
+  s_0a0d3792ecffdd::t_ffd9bdb664c365 847
+  s_0a0d3792ecffdd::t_1085bd674d2fbc 762
+  s_0a0d3792ecffdd::t_d55d14602b0759 490-504,510-513,516-537,539-542,552-554
+  s_0a0d3792ecffdd::t_e46b0f72b6a4b2 555
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "067f82192b74a07964181c1848f332929152623d",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
