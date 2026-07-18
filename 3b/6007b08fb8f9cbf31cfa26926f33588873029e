@@ -1,0 +1,43 @@
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_138eb0a443ce6b 757-764,768-770
+  s_0a0d3792ecffdd::t_c0f2633d51f3b8 890,894
+  s_0a0d3792ecffdd::t_dedc0187162022 560-569
+  s_0a0d3792ecffdd::t_14628156615590 696-707,710,728
+  s_0a0d3792ecffdd::t_3511112b7a0c12 793
+  s_0a0d3792ecffdd::t_41419d351b4121 519
+src/Rendering/DiffCSG/ViewportMSL.hs
+  s_0a0d3792ecffdd::t_1fc889ff189e7b 267-269
+  s_0a0d3792ecffdd::t_0423876f0300bd 86
+  s_0a0d3792ecffdd::t_6de8ac6da4daf3 191,193-204,208-212,217
+  s_0a0d3792ecffdd::t_c722b53d56a83b 226,228-236,238
+  s_0a0d3792ecffdd::t_354e9fd47ef1b6 366-372,374-383,387,393-400,403,407-411
+  s_0a0d3792ecffdd::t_1ff0b2649be9fa 412
+  s_0a0d3792ecffdd::t_aafbb9c5b3aa7a 298
+example/TestQuadTrustGateGradient.hs
+  s_0a0d3792ecffdd::t_c63d179d082a54 108
+  s_0a0d3792ecffdd::t_6b8313dd75cd7c 27
+  s_0a0d3792ecffdd::t_f5225b064ab87f 49-54,57-58,61-63
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_a38fdf6bc0654e 96-98
+  s_0a0d3792ecffdd::t_cb3dc8a6d4578d 322-333,335-336,343
+  s_0a0d3792ecffdd::t_3d9a3a7ef9cd46 249-254,262-263,268
+  s_0a0d3792ecffdd::t_bc4f8562f82deb 170-224
+  s_0a0d3792ecffdd::t_77e8bc60b6f7b2 20,24-39,41-56
+  s_0a0d3792ecffdd::t_197af6790caf3a 279-287,293,295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3b6007b08fb8f9cbf31cfa26926f33588873029e",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
