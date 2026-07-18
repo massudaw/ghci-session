@@ -1,0 +1,26 @@
+src/Examples/ModelQuadcopter.hs
+  s_0a0d3792ecffdd::t_8c2c909ab1e463 275
+  s_0a0d3792ecffdd::t_826dccc54f1ff8 654-672
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_fefaffd6a1be98 521-530,532-534,536-539
+  s_0a0d3792ecffdd::t_efb9f09d579477 61-62
+  s_0a0d3792ecffdd::t_7e8c72c115b7df 756
+  s_0a0d3792ecffdd::t_cad22b30490661 477-488
+  s_0a0d3792ecffdd::t_165764aaeb8870 843-846,848
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c95efe4b4f9d24ca49bf2b2d90813254b9eeb30a",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
