@@ -1,0 +1,51 @@
+src/Examples/ModelQuadcopter.hs
+  s_0a0d3792ecffdd::t_5821c7ec7d6f9e 713-720,729-747
+  s_0a0d3792ecffdd::t_a6e431618b550e 954-959,961-962,970-974,976,986-988,991,994-996,1001-1003,1006
+  s_0a0d3792ecffdd::t_7fa68995790dfd 277
+  s_0a0d3792ecffdd::t_3062ad604cccee 913-915,917-925
+  s_0a0d3792ecffdd::t_44d2e0f125a79c 748
+src/Rendering/DiffCSG/ViewportMSL.hs
+  s_0a0d3792ecffdd::t_c926499aa65daf 249
+  s_0a0d3792ecffdd::t_a4cbd84fd38d20 587-595,601
+  s_0a0d3792ecffdd::t_c2dc0835f40c93 222
+  s_0a0d3792ecffdd::t_8d530e02260118 92
+  s_0a0d3792ecffdd::t_04dc7ea2c5bd49 281-282,311,351-352,395
+  s_0a0d3792ecffdd::t_67a12b9cc47fc2 494,496-498,500-501,504,508-514
+  s_0a0d3792ecffdd::t_c8587acaf5b7bc 515
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_fc6b5b1ae1c612 64
+  s_0a0d3792ecffdd::t_82a03430fd50a3 198-205,212-214,232-233
+  s_0a0d3792ecffdd::t_c21ce695120971 234-235
+  s_0a0d3792ecffdd::t_793bcc85cfea80 560-561,566-567
+  s_0a0d3792ecffdd::t_023298fc7fbe1a 531-534
+  s_0a0d3792ecffdd::t_d27483868dd52a 809-811,813-814,816
+  s_0a0d3792ecffdd::t_e0566007278f3e 979
+  s_0a0d3792ecffdd::t_25f5b7bb6f6acf 1019-1028,1031
+  s_0a0d3792ecffdd::t_911e7e87e6fa76 1090-1095,1097
+  s_0a0d3792ecffdd::t_9ac81d1af767e8 907,912-913,917-919,923
+  s_0a0d3792ecffdd::t_e82cf0293fd017 1136
+  s_0a0d3792ecffdd::t_47e889b2866f0a 215-231
+  s_0a0d3792ecffdd::t_a43059522840d1 1134
+  s_0a0d3792ecffdd::t_5e5e07b76f4eb2 585,588,594,596,600
+  s_0a0d3792ecffdd::t_89cd7960a1aaf1 236-237
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_6ce7d27fffe899 112
+  s_0a0d3792ecffdd::t_518c73fd17d3e8 282,304,342,379,402,427,535
+  s_0a0d3792ecffdd::t_56c81bc04800fa 239-246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "5b12d64b38242cc6081868685134fdb95fbe72c2",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
