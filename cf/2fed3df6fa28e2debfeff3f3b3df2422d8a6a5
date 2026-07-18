@@ -1,0 +1,28 @@
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_3c5bb597188c2c 89,99-101
+  s_0a0d3792ecffdd::t_0dc5614e25cb08 490-514
+  s_0a0d3792ecffdd::t_a9b763c812a45f 404-430
+  s_0a0d3792ecffdd::t_5989442d1206c6 640-711
+  s_0a0d3792ecffdd::t_a175af01c69534 307-346
+example/TestQuadTrustGateGradient.hs
+  s_0a0d3792ecffdd::t_8f6e37f174157d 17
+  s_0a0d3792ecffdd::t_d3c7603710a701 208
+  s_0a0d3792ecffdd::t_26d37279b7bcd8 26
+  s_0a0d3792ecffdd::t_7423103596022e 165-207,209-229
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "cf2fed3df6fa28e2debfeff3f3b3df2422d8a6a5",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
