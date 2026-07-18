@@ -1,0 +1,39 @@
+example/DebugFoldLoopQuadcopterIDAViewer.hs
+  s_0a0d3792ecffdd::t_1daf4a904a8c3f 886-898,907,921-925
+  s_0a0d3792ecffdd::t_6928aa9548260d 989
+  s_0a0d3792ecffdd::t_c2a9b88680fb3d 699-709,711-712
+  s_0a0d3792ecffdd::t_715572573a6ef1 954-960,964
+  s_0a0d3792ecffdd::t_338512a726d4c1 1088,1092
+example/TestQuadTrustGateGradient.hs
+  s_0a0d3792ecffdd::t_67218d225dd5d7 113-163
+  s_0a0d3792ecffdd::t_375fdb015d520e 25-26,28-29
+src/Rendering/DiffCSG/QuadTrustGate.hs
+  s_0a0d3792ecffdd::t_a0c59429e8ee59 281-302
+  s_0a0d3792ecffdd::t_8ac190f91c3536 401-404
+  s_0a0d3792ecffdd::t_6d03ee3715fb61 405-414
+  s_0a0d3792ecffdd::t_913d9320baaaac 337-359
+  s_0a0d3792ecffdd::t_306bd6ad9c0daa 88
+cbits/metal_shim.m
+  s_0a0d3792ecffdd::t_e2e2d65db3fabd 1239-1275
+src/Rendering/DiffCSG/ViewportMSL.hs
+  s_0a0d3792ecffdd::t_45a8d303e0a3b9 88-92,95
+  s_0a0d3792ecffdd::t_8a4257a6f614d9 531-585
+  s_0a0d3792ecffdd::t_cc9f57d4ae69d6 317-402
+  s_0a0d3792ecffdd::t_45bc1f48c42550 160-163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "eb47f47905e9e30025ea8e6a9cc4c1d3d1d98886",
+  "prompts": {},
+  "sessions": {
+    "s_0a0d3792ecffdd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "434432cd-5307-4281-a53c-5f18d42f6649",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
