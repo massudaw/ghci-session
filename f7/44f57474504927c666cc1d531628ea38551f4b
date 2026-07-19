@@ -1,0 +1,22 @@
+src/Rendering/Metal/CSGViewerFoldLoopMetal.hs
+  s_ebc5df7c0dfede::t_accad2598b9f5e 444-451
+  s_ebc5df7c0dfede::t_d91696645b3f66 77
+  s_ebc5df7c0dfede::t_27a759de959c0e 479-488
+  s_ebc5df7c0dfede::t_01dbe952c1f66f 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f744f57474504927c666cc1d531628ea38551f4b",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
