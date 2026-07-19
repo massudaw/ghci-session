@@ -1,0 +1,23 @@
+ml/latent_surrogate_train.py
+  s_ebc5df7c0dfede::t_33ba1c27dd9074 288-291,392-398,427-430
+  s_ebc5df7c0dfede::t_bbc9609217c3a4 184-187,274-283,285,287,377-385,389-390
+  s_ebc5df7c0dfede::t_76adc3abcac4e2 372-376
+ml/README.md
+  s_ebc5df7c0dfede::t_f2bf0220b6c443 421-441
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "ea48a83b1806052c79da5505db351772d527cd1e",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
