@@ -1,0 +1,70 @@
+src/JIT/CAS.hs
+  s_ebc5df7c0dfede::t_dd36ffbcfa120e 2
+src/JIT/Tape.hs
+  s_ebc5df7c0dfede::t_5f2a55b8062755 1306-1312
+  s_ebc5df7c0dfede::t_18fd3cdffcfd03 1523-1527
+  s_ebc5df7c0dfede::t_e4337172d59869 2
+src/Solver/UnionGroups.hs
+  s_ebc5df7c0dfede::t_3780736a6ee523 1
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_5243c3427e1271 1262,1264-1265
+  s_ebc5df7c0dfede::t_3386e7c80ceb4e 2207-2211
+  s_ebc5df7c0dfede::t_babac5d43c8a32 975-1101
+  s_ebc5df7c0dfede::t_f316f8e42b83ac 4366-4370
+  s_ebc5df7c0dfede::t_7a52409a05aba4 941-974
+  s_ebc5df7c0dfede::t_58887e60565dba 2477-2482
+  s_ebc5df7c0dfede::t_cad044321e8d1d 25-26
+  s_ebc5df7c0dfede::t_fc23ad89ad7573 2140-2148
+  s_ebc5df7c0dfede::t_91752297c3c15f 2920-2924
+  s_ebc5df7c0dfede::t_4a43ae9803b3a0 8
+  s_ebc5df7c0dfede::t_26a535aa3b8a30 73-76
+  s_ebc5df7c0dfede::t_2c551731eed6b1 4311-4316
+  s_ebc5df7c0dfede::t_dceda5bb0f87e7 4413-4417
+  s_ebc5df7c0dfede::t_a25a1b395c857f 2255-2259
+  s_ebc5df7c0dfede::t_29f106558f04f6 1324-1333
+  s_ebc5df7c0dfede::t_6b17183b8e5e1b 3052-3191
+  s_ebc5df7c0dfede::t_d7a3cd4893dea4 3229,3233-3239
+  s_ebc5df7c0dfede::t_5b250e734ea254 2622-2627
+  s_ebc5df7c0dfede::t_43b9e48d270c6c 118-227
+  s_8dee409b91d8d3::t_8fc8b3e1c18238 2869-2873
+src/Solver/SelectivePantelides.hs
+  s_ebc5df7c0dfede::t_0312a372a9cdfb 73
+  s_ebc5df7c0dfede::t_15fc6026223ee2 195-196,201-209
+  s_ebc5df7c0dfede::t_3400270482f25a 353,356-369
+  s_ebc5df7c0dfede::t_23de7878387f9d 483-484,488-497
+  s_ebc5df7c0dfede::t_dea4fd6fc2d0b2 273-274,282-299
+  s_ebc5df7c0dfede::t_9d1a1db8663089 4
+src/Transient.hs
+  s_ebc5df7c0dfede::t_ea00cfa2e2578f 1252-1264,1266,1268-1278
+src/Solver/Kron.hs
+  s_ebc5df7c0dfede::t_aa358038c80ea3 381-382
+  s_ebc5df7c0dfede::t_c6c3e380dba8d8 42-43
+  s_ebc5df7c0dfede::t_d355fdeb06a195 53-57,59,61-62
+  s_ebc5df7c0dfede::t_b2cacf2a9a9e42 40-41
+  s_ebc5df7c0dfede::t_62114a7ac12d8b 2
+  s_ebc5df7c0dfede::t_5f4b9cb915fe80 379
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "43189038fd49576361739728663bd6bdb174eb0c",
+  "prompts": {},
+  "sessions": {
+    "s_8dee409b91d8d3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a83ff5691ee3ab3da",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
