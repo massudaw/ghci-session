@@ -1,0 +1,49 @@
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_6630f69689f87d 1796-1808
+ml/latent_surrogate_train.py
+  s_ebc5df7c0dfede::t_21f7e3ddb77792 339-362,366,369
+  s_ebc5df7c0dfede::t_1a0fdecd0aa64e 234-280
+  s_ebc5df7c0dfede::t_b216b7180e46c8 299-302
+  s_ebc5df7c0dfede::t_67b5cd031c53db 177-183
+  s_ebc5df7c0dfede::t_9a9069d3270865 35,41-43
+  s_ebc5df7c0dfede::t_4a7d3fe382dbc6 388-391,401-402
+ml/physics_loss_check.py
+  s_ebc5df7c0dfede::t_88c546ff2fe82a 1-112
+example/SurrogateDataGenerator.hs
+  s_ebc5df7c0dfede::t_b5750e892885b5 163-164
+  s_ebc5df7c0dfede::t_29c12be7d98bb9 26
+  s_ebc5df7c0dfede::t_cc12b722f5f5b3 150
+  s_ebc5df7c0dfede::t_d47c11720aad92 52-62
+  s_ebc5df7c0dfede::t_10159e66c3cc78 48-49
+  s_ebc5df7c0dfede::t_1c54a7c91b8cef 40-47,50-51,63-64
+  s_ebc5df7c0dfede::t_acdfa2829f6300 136
+example/ResidualExport.hs
+  s_ebc5df7c0dfede::t_f351fba4a3fa65 58
+  s_ebc5df7c0dfede::t_220a2c49ad5541 40
+  s_ebc5df7c0dfede::t_a89c956e038b77 171-172
+  s_ebc5df7c0dfede::t_748c1c7476be35 1-37,41-48,52-57,59-65,67-83,86-89,94-170,173-346
+  s_ebc5df7c0dfede::t_252ed09fdaf785 38-39,49-51,66,84-85,90-93
+ml/quad_residual.py
+  s_ebc5df7c0dfede::t_a54b8cdd28aaff 1-2342
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "cf6296de0637b2667fbecde951ab9536adcc7048",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

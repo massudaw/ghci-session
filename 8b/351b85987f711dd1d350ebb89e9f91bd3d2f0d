@@ -1,0 +1,14 @@
+src/Position.hs
+  h_fd5809635b36a3 64,104,139,154,166,169,175,178,183,674
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8b351b85987f711dd1d350ebb89e9f91bd3d2f0d",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
