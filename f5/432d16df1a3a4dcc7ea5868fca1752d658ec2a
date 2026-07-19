@@ -1,0 +1,51 @@
+src/JIT/CAS.hs
+  s_ebc5df7c0dfede::t_d945a9af799963 115-116
+  s_ebc5df7c0dfede::t_0066aeba7c5180 432-433
+  s_ebc5df7c0dfede::t_e7c70c37ea1883 41
+  s_ebc5df7c0dfede::t_03e8df8bccf0f8 266-267
+  s_ebc5df7c0dfede::t_0a1f728d5ead2e 363-364
+src/Model/GroundContactCoupling.hs
+  s_ebc5df7c0dfede::t_72a21766eab9b0 90
+  s_ebc5df7c0dfede::t_8fe7ad6ad44879 46
+src/Model/PositionHoldCoupling.hs
+  s_ebc5df7c0dfede::t_726fb3dc72d47a 101-102
+  s_ebc5df7c0dfede::t_81b7305aef07d1 43
+  s_ebc5df7c0dfede::t_6b91872561ad3f 96
+src/Model/ThrottleVoltageCoupling.hs
+  s_ebc5df7c0dfede::t_3abcecab140822 39
+  s_ebc5df7c0dfede::t_591866bdf72605 73
+src/Solver/Kron.hs
+  s_ebc5df7c0dfede::t_78bfd3f6cddbd9 40
+  s_ebc5df7c0dfede::t_61a14c011507b4 89-90,95-98
+  s_ebc5df7c0dfede::t_ee4ea32a06f961 448-449
+src/Model/ThermalDerateCoupling.hs
+  s_ebc5df7c0dfede::t_b2443a0867b204 70
+  s_ebc5df7c0dfede::t_d043137896bfd4 35
+src/Model/AttitudeHoldCoupling.hs
+  s_ebc5df7c0dfede::t_0fb9b05889173b 89
+  s_ebc5df7c0dfede::t_3d67c937be6a01 170
+  s_ebc5df7c0dfede::t_7380298cb26603 175
+src/Solver/UnionGroups.hs
+  s_ebc5df7c0dfede::t_a0df1133bdedee 33
+  s_ebc5df7c0dfede::t_1beaaf80e33ef4 73-77
+golden/ModelCarDrive/equations.txt
+  s_ebc5df7c0dfede::t_66968f92be8108 187,191,197,201,207,211,217,221
+src/Transient.hs
+  s_ebc5df7c0dfede::t_c47af37dde9de1 1285-1286
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f5432d16df1a3a4dcc7ea5868fca1752d658ec2a",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
