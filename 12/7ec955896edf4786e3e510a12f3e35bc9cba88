@@ -1,0 +1,34 @@
+golden/AmericanOptionExample/transient.txt
+  s_ebc5df7c0dfede::t_d9c5af7ec1fe38 5-6,8-9
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_4a7bfc57d9ebf0 2289-2296
+  s_ebc5df7c0dfede::t_b376e520173034 411-420
+  s_ebc5df7c0dfede::t_2728555cdeb8db 2584-2588
+  s_ebc5df7c0dfede::t_670bc4178cc048 196-204
+  s_ebc5df7c0dfede::t_ded33990ad8f72 2425-2433
+golden/ModelFrictionSlide/transient.txt
+  s_ebc5df7c0dfede::t_d9c5af7ec1fe38 4-9
+golden/ModelQuadcopter/transient.txt
+  s_ebc5df7c0dfede::t_d9c5af7ec1fe38 4-7,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "127ec955896edf4786e3e510a12f3e35bc9cba88",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
