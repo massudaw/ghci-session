@@ -1,0 +1,36 @@
+src/Examples/FokkerPlanckExample.hs
+  s_ebc5df7c0dfede::t_b55c7a55c8d4ef 132-136
+src/Examples/CompositionalPdeExample.hs
+  s_ebc5df7c0dfede::t_3c810346e4a61b 176-179
+  s_ebc5df7c0dfede::t_9c74c268047f94 105-108
+src/Examples/KalmanFilterExample.hs
+  s_ebc5df7c0dfede::t_099b19dd6b275c 55
+  s_ebc5df7c0dfede::t_48ed5402f2a9ff 123-129
+src/Examples/NonlinearBayesExample.hs
+  s_ebc5df7c0dfede::t_12051ce3e2cabd 144-148
+src/Examples/NonlinearPdeExample.hs
+  s_ebc5df7c0dfede::t_e8cd5c5315edcc 165-168
+  s_ebc5df7c0dfede::t_fd0b2d4747507a 93-96
+src/Examples/BiharmonicExample.hs
+  s_ebc5df7c0dfede::t_95d65abe760808 147-150
+src/Examples/MargrabeExample.hs
+  s_ebc5df7c0dfede::t_50218ffcdfc600 99-102
+src/Examples/MertonJumpExample.hs
+  s_ebc5df7c0dfede::t_602c796672c24c 113-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "83ef6135dbbd556a66cbdfce8fe10ba2569c9270",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
