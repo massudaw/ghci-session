@@ -1,0 +1,92 @@
+src/Project.hs
+  s_ebc5df7c0dfede::t_2487a53a273b51 590-605,608-613,615-616,618
+golden/CircuitRLC/equations.txt
+  s_ebc5df7c0dfede::t_193f7282da743a 2-5
+golden/Convection3DExample/equations.txt
+  s_ebc5df7c0dfede::t_0244cc622fe1f6 75-85,87-97,99-109,135-145,147-157,159-169,244-254,329-335,337-343,345-351,353-359,361-367,369-375,377-383,393-399,401-407,409-415,417-423,425-431,433-439,441-447,457-463,465-471,473-479,481-487,489-495,497-503,505-511,521-527,529-535,537-543,545-551,553-559,561-567,569-575,585-591,593-599,601-607,609-615,617-623,625-631,633-639,649-655,657-663,665-671,673-679,681-687,689-695,697-703,713-719,721-727,729-735,737-743,745-751,753-759,761-767
+src/Equation.hs
+  s_ebc5df7c0dfede::t_374464e5d1169c 70-94
+  s_ebc5df7c0dfede::t_a57dcbcba86efe 4,32-33
+  s_ebc5df7c0dfede::t_cce80fb5dea4ba 125-141
+  s_ebc5df7c0dfede::t_65ff6736936189 124
+golden/AsianOptionExample/equations.txt
+  s_ebc5df7c0dfede::t_13f3b64959a6f4 2,113-221,223-331,333-441,443-551,553-661,663-771,773-881,883-991,993-1101,1103-1211,1213-1321,1323-1431,1433-1541,1543-1651,1653-1761,1763-1871,1873-1981,1983-2091,2093-2201,2203-2311,2313-2421,2423-2531,2533-2641,2643-2751,2753-2861,2863-2971,2973-3081,3083-3191,3193-3301,3303-3411,3413-3521,3523-3631,3633-3741,3743-3851,3853-3961,3963-4071,4073-4181,4183-4291,4293-4401,4403-4511,4513-4621,4623-4731,4733-4841,4843-4951,4953-5061,5063-5171,5173-5281,5283-5391,5393-5501,5503-5611
+golden/BentDuctExample/equations.txt
+  s_ebc5df7c0dfede::t_37ec53e8fd9451 2,4,7-17,23,25,28-38
+golden/BiharmonicExample/equations.txt
+  s_ebc5df7c0dfede::t_e648efda85fd1e 2-1370,1372-1468
+golden/CantileverBeam3D/equations.txt
+  s_ebc5df7c0dfede::t_a831f0e5babbfb 2-4,6,8-13
+golden/ChemicalReactor/equations.txt
+  s_ebc5df7c0dfede::t_9595f713f7e1e1 4
+golden/CompositionalPdeExample/equations.txt
+  s_ebc5df7c0dfede::t_57ef694e427784 3-61,206-566,568-928
+golden/Convection2DExample/equations.txt
+  s_ebc5df7c0dfede::t_2bc9f753ead23f 27-49,51-73,75-97,99-121,123-145,172-194,217-235,237-255,257-275,277-295,297-315,317-335,337-355,357-375,377-395,397-415,417-435,437-455,457-475,477-495,497-515,517-535,537-555,557-575,577-595
+golden/EkfNonlinearControlExample/equations.txt
+  s_ebc5df7c0dfede::t_60721a238f1fae 30-43,45-100,102-157,159-186,188-215,217-220,222-225,227-240,270-283,285-291,293-296,298-301,303-316
+golden/Elasticity3D/equations.txt
+  s_ebc5df7c0dfede::t_73419fc015b6c2 2-37
+golden/ElectricCircuit/equations.txt
+  s_ebc5df7c0dfede::t_eb55fa8b5443d3 2-3,5-9,11,15
+golden/FieldVariableExample/equations.txt
+  s_ebc5df7c0dfede::t_f696d663962903 3-41,43-81,84-146,148-372
+golden/FokkerPlanckExample/equations.txt
+  s_ebc5df7c0dfede::t_ad5213dc9788e3 2-320,322-640,642-960,962-1280,1282-1600,1602-1920
+golden/ForceSimple/equations.txt
+  s_ebc5df7c0dfede::t_613ff61f290b3e 2-7,9-12,14-22,24-31,33-40,42-77,79-90
+golden/GenericSparseSolve/equations.txt
+  s_ebc5df7c0dfede::t_fd62b58e1d5471 2-11
+golden/GenericSparseTransient/equations.txt
+  s_ebc5df7c0dfede::t_47c158a46d6a43 2-60,63-121
+golden/HeatEquationExample/equations.txt
+  s_ebc5df7c0dfede::t_d148864006bebd 2-40
+golden/KalmanFilterExample/equations.txt
+  s_ebc5df7c0dfede::t_938d70e10b9d10 2-16
+golden/KalmanObserverExample/equations.txt
+  s_ebc5df7c0dfede::t_4c2b1d304d4c7a 2-31
+golden/LqgClosedLoopExample/equations.txt
+  s_ebc5df7c0dfede::t_39833adb2a8da0 2-31,35-40
+golden/LqgOffsetFreeExample/equations.txt
+  s_ebc5df7c0dfede::t_02567b47eda54a 3-32,36-41
+golden/MagneticCircuit/equations.txt
+  s_ebc5df7c0dfede::t_68f1580adc89e4 2,4-6
+golden/MargrabeExample/equations.txt
+  s_ebc5df7c0dfede::t_415ba4b6221509 2,63-121,123-181,183-241,243-301,303-361,363-421,423-481,483-541,543-601,603-661,663-721,723-781,783-841,843-901,903-961,963-1021,1023-1081,1083-1141,1143-1201,1203-1261,1263-1321,1323-1381,1383-1441,1443-1501,1503-1561,1563-1621,1623-1681,1683-1741,1743-1801,1803-1861,1863-1921,1923-1981,1983-2041,2043-2101,2103-2161,2163-2221,2223-2281,2283-2341,2343-2401,2403-2461,2463-2521,2523-2581,2583-2641,2643-2701,2703-2761,2763-2821,2823-2881,2883-2941,2943-3001,3003-3061,3063-3121,3123-3181,3183-3241,3243-3301,3303-3361,3363-3421,3423-3481,3483-3541,3543-3601,3603,3664-3722,3724-3782,3784-3842,3844-3902,3904-3962,3964-4022,4024-4082,4084-4142,4144-4202,4204-4262,4264-4322,4324-4382,4384-4442,4444-4502,4504-4562,4564-4622,4624-4682,4684-4742,4744-4802,4804-4862,4864-4922,4924-4982,4984-5042,5044-5102,5104-5162,5164-5222,5224-5282,5284-5342,5344-5402,5404-5462,5464-5522,5524-5582,5584-5642,5644-5702,5704-5762,5764-5822,5824-5882,5884-5942,5944-6002,6004-6062,6064-6122,6124-6182,6184-6242,6244-6302,6304-6362,6364-6422,6424-6482,6484-6542,6544-6602,6604-6662,6664-6722,6724-6782,6784-6842,6844-6902,6904-6962,6964-7022,7024-7082,7084-7142,7144-7202
+golden/ModelACConditioner/equations.txt
+  s_ebc5df7c0dfede::t_b9a5daff0ec4b8 2,4-5,7-12,14,16,18,31,34-38,50,52,54,56-57,59,61,63-64,66,133
+golden/ModelAcousticHeating/equations.txt
+  s_ebc5df7c0dfede::t_e024b3f220b1a2 4,6-7
+golden/ModelBattery/equations.txt
+  s_ebc5df7c0dfede::t_839381feeb982e 2-3,12,14,17,19,21,23
+golden/ModelChemicalTransient/equations.txt
+  s_ebc5df7c0dfede::t_b3a5bbbf14142f 3
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_ebc5df7c0dfede::t_d96b7a507953b1 4,11,13,16-17,26,28,31,35
+golden/ModelCombustionEngine/equations.txt
+  s_ebc5df7c0dfede::t_0e726601c0cf0b 6-7,9-12,20,23
+golden/ModelConcentrationCell/equations.txt
+  s_ebc5df7c0dfede::t_1dd775054c3117 3
+golden/ModelCoupledDemo/equations.txt
+  s_ebc5df7c0dfede::t_f5f140f25e834b 2-3,7,9,11
+golden/NonlinearBayesExample/equations.txt
+  s_ebc5df7c0dfede::t_e59871fa637d2e 2-272
+golden/ThermalSourceCircuit/equations.txt
+  s_ebc5df7c0dfede::t_ed015be9792fe1 2-5,11-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4cf898eadb4e3de2d48c89822fd36835d39dae40",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
