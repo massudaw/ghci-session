@@ -1,0 +1,32 @@
+src/Equation.hs
+  s_ebc5df7c0dfede::t_db1bf1357d454a 175-191
+  s_ebc5df7c0dfede::t_62d1036f1cd405 34
+  s_ebc5df7c0dfede::t_2133c9a32ca5d4 155-174,192-208
+  s_ebc5df7c0dfede::t_ba6dd3683ee210 27
+  s_ebc5df7c0dfede::t_0a2ee6b292b90e 22
+golden/HestonPricingExample/equations.txt
+  s_ebc5df7c0dfede::t_adeb6f7464a0b6 1-8
+src/Transient.hs
+  s_ebc5df7c0dfede::t_43ddca1bb0413b 73-74
+  s_ebc5df7c0dfede::t_70ee8e0e2545a0 133-136
+  s_ebc5df7c0dfede::t_e64f6ee2578d34 601-604
+  s_ebc5df7c0dfede::t_295cf8ac29d5e8 341
+src/Examples/HestonPricingExample.hs
+  s_ebc5df7c0dfede::t_f86b783902bda6 121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "896cc704a4e662efdb7743af029ad74915a844dd",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
