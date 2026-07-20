@@ -1,0 +1,39 @@
+src/Project.hs
+  s_ebc5df7c0dfede::t_b270f0ad438e48 605
+  s_ebc5df7c0dfede::t_c844398a795730 804
+golden/BiharmonicExample/equations.txt
+  s_ebc5df7c0dfede::t_898d50351be556 1-19
+golden/RoomConvectionExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-4
+golden/SpaceTimeFieldExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-11
+golden/Convection2DExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-22
+src/Equation.hs
+  s_ebc5df7c0dfede::t_ef965d8695d2ca 216
+  s_ebc5df7c0dfede::t_f2f030865e92a0 270-275,277-279
+  s_ebc5df7c0dfede::t_cbae17453f0a60 176-184
+  s_ebc5df7c0dfede::t_e416613a093d75 341-355
+golden/Convection3DExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-60
+golden/FieldVariableExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-29
+golden/AsianOptionExample/equations.txt
+  s_ebc5df7c0dfede::t_2dc1b4eee822d1 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "48e93b899a8a50fcd616df770c27662e1f1f049c",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
