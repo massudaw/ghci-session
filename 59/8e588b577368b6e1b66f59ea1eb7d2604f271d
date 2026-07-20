@@ -1,0 +1,23 @@
+src/Project.hs
+  s_ebc5df7c0dfede::t_558110e36c9015 590-596,600,602,612
+  s_ebc5df7c0dfede::t_994c14769abcc4 628-654,671-686,707,720
+  s_ebc5df7c0dfede::t_3ee50bc9842dfe 768-773,775-776
+golden/ModelSaoJorge/equations.txt
+  s_ebc5df7c0dfede::t_6ad153b5544913 2-718
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "598e588b577368b6e1b66f59ea1eb7d2604f271d",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
