@@ -1,0 +1,32 @@
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_d0f7e5cf14f5d8 580-584
+  s_ebc5df7c0dfede::t_d660c3d6a20d7e 577-579
+  s_ebc5df7c0dfede::t_cb848c33441414 574-576
+example/StencilTemplateBench.hs
+  s_ebc5df7c0dfede::t_0c1f993c06b70c 91
+  s_ebc5df7c0dfede::t_7c88d0b052ccf3 1-6,8-23,25-44
+  s_ebc5df7c0dfede::t_349bd73a29a79a 166-167
+  s_ebc5df7c0dfede::t_a7dc221b9acf11 121-132
+  s_ebc5df7c0dfede::t_722455b9de7617 113-119,133
+  s_ebc5df7c0dfede::t_5de0a5f318f7c5 137-138,143
+  s_ebc5df7c0dfede::t_c872a24041c131 7,24,45-50,52-90,92-104,109-112,120,134-136,139-142,144-153,163,165
+  s_ebc5df7c0dfede::t_57e9139d8d465e 51
+  s_ebc5df7c0dfede::t_0fa58006b2d131 154-162,164,168
+  s_ebc5df7c0dfede::t_23a065d17ea098 105-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a85e92c5a05e1145dadbb56e6513c68faa466232",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
