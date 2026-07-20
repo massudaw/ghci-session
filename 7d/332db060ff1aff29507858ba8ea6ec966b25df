@@ -1,0 +1,21 @@
+example/DenseMemoBench.hs
+  s_ebc5df7c0dfede::t_6b27a1fdff0370 1-56
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_e6ee33ff8efbb2 571-579
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "7d332db060ff1aff29507858ba8ea6ec966b25df",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
