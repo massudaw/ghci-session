@@ -1,0 +1,99 @@
+src/Transient.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 83
+src/Solver/SymbolicDAE/ICRepair.hs
+  s_ebc5df7c0dfede::t_8f5a4f3271da14 1-2,26,35,58
+src/JIT/Sectioned.hs
+  s_ebc5df7c0dfede::t_8f5a4f3271da14 101,173,544,671
+  s_ebc5df7c0dfede::t_a3d05839d196a1 6,63
+  s_ebc5df7c0dfede::t_15b931c71a69ac 68,109,248,460
+src/Solver/UnionSession.hs
+  s_ebc5df7c0dfede::t_958593c01d896b 42,73,130,141,460
+  s_ebc5df7c0dfede::t_a3d05839d196a1 72
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 2161,3068,3099
+example/EvalBench.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 28
+src/Solver/SymbolicDAE/UnionGroups.hs
+  s_ebc5df7c0dfede::t_958593c01d896b 2,21,38
+src/JIT/Schedule.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 51,59
+src/Solver/SymbolicDAE/SelectivePantelides.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 23
+  s_ebc5df7c0dfede::t_43bf748d153b67 1-22,24-798
+example/StencilTemplateBench.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 48
+src/Examples/SelectivePantelidesTest.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 23
+src/Examples/ICRepairTest.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 30
+  s_ebc5df7c0dfede::t_8f5a4f3271da14 3,31
+src/Solver/Temporal.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 60
+example/TestLoopCandidates.hs
+  s_ebc5df7c0dfede::t_06a99eaf118c64 2,11,29
+src/Examples/JITTest.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 10,40,348,353
+  s_ebc5df7c0dfede::t_a3d05839d196a1 36
+src/Solver/HybridDAE.hs
+  s_ebc5df7c0dfede::t_958593c01d896b 42,195,297
+  s_ebc5df7c0dfede::t_a3d05839d196a1 15,36
+example/TensorDerivativesSelfTest.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 9,13,21
+src/Solver/UnionCompile.hs
+  s_ebc5df7c0dfede::t_958593c01d896b 1,85,116
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_06a99eaf118c64 866
+  s_ebc5df7c0dfede::t_a3d05839d196a1 156,667,672,1304,3687,3704,3788
+  s_ebc5df7c0dfede::t_15b931c71a69ac 738,3836-3837,4078
+src/Solver/SymbolicDAE/CAS.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 1-452
+src/Examples/IDADAE.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 24
+src/Domains.hs
+  s_ebc5df7c0dfede::t_06a99eaf118c64 320
+src/Solver/SymbolicDAE/Kron.hs
+  s_ebc5df7c0dfede::t_c2a9e262791808 4
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_15b931c71a69ac 225
+  s_ebc5df7c0dfede::t_06a99eaf118c64 247
+  s_ebc5df7c0dfede::t_958593c01d896b 248
+  s_ebc5df7c0dfede::t_66a4ac3bcf25cb 207
+  s_ebc5df7c0dfede::t_adc418e1fc3f6e 208
+src/Equation.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 32
+  s_ebc5df7c0dfede::t_a3d05839d196a1 104
+src/JIT/MSLBackend.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 5,70
+src/Examples/UnionSessionValidate.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 47
+  s_ebc5df7c0dfede::t_958593c01d896b 4,50
+src/Solver/SymbolicDAE/LoopCandidates.hs
+  s_ebc5df7c0dfede::t_06a99eaf118c64 1-265
+src/Solver/HybridTypes.hs
+  s_ebc5df7c0dfede::t_a3d05839d196a1 14
+example/ShapedDerivativesSelfTest.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 21
+src/Solver/IDA.hs
+  s_ebc5df7c0dfede::t_8f5a4f3271da14 141,1397,2144
+  s_ebc5df7c0dfede::t_a3d05839d196a1 140
+src/JIT/Compiler.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 105
+src/JIT/GLSLBackend.hs
+  s_ebc5df7c0dfede::t_15b931c71a69ac 7,81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "c31f81c2aa017ac59a2c815f5afc9ec0a3cd63f9",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
