@@ -1,0 +1,54 @@
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 251,1272,1293,1384,1598,3687,3690
+  s_ebc5df7c0dfede::t_4b289c72446bd3 653-688
+src/Solver/UnionCompile.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 7,147
+  s_ebc5df7c0dfede::t_e6c19fa43dee7b 83
+src/JIT/Schedule.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 13
+src/Solver/UnionSession.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 29
+src/Solver/SymbolicDAE/Kron.hs
+  s_ebc5df7c0dfede::t_6827b00f78a785 17
+src/Solver/IDA.hs
+  s_ebc5df7c0dfede::t_4a421aff289956 1367-1377
+  s_ebc5df7c0dfede::t_02e9b1f00965a0 135
+src/Equation.hs
+  s_ebc5df7c0dfede::t_4abbcd0aa2ccce 113-118,120
+  s_ebc5df7c0dfede::t_a86139bfbf2ba9 97-108,119
+  s_ebc5df7c0dfede::t_f600e41d4821eb 89-96
+  s_ebc5df7c0dfede::t_a6d0ead7721b51 33
+src/JIT/Compiler.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 981
+  s_ebc5df7c0dfede::t_0c997e5d47636c 997-1005
+src/Examples/BLTTest.hs
+  s_ebc5df7c0dfede::t_e6c19fa43dee7b 25
+example/EvalBench.hs
+  s_ebc5df7c0dfede::t_e6c19fa43dee7b 29
+src/Transient.hs
+  s_ebc5df7c0dfede::t_e6c19fa43dee7b 94
+src/JIT/Sectioned.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 243
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_db93c362ad7ed7 244
+src/Solver/BLT.hs
+  s_ebc5df7c0dfede::t_f8f84c8daf7ba0 94
+src/Solver/Temporal.hs
+  s_ebc5df7c0dfede::t_e6c19fa43dee7b 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "18df64252aa7bf51147e5358cc12c9f4a7bd5e3b",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
