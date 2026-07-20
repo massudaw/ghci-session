@@ -1,0 +1,52 @@
+src/Examples/CompositionalPdeExample.hs
+  s_ebc5df7c0dfede::t_34139a98286b05 47
+  s_ebc5df7c0dfede::t_84cdca11ce2939 180-184
+golden/MertonJumpExample/selective_report.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-20
+golden/CompositionalPdeExample/equations.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 144-173
+golden/MargrabeExample/equations.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-33
+golden/BiharmonicExample/equations.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1371-1397
+golden/CompositionalPdeExample/selective_report.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 21-40
+golden/NonlinearPdeExample/equations.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-29
+src/Examples/MertonJumpExample.hs
+  s_ebc5df7c0dfede::t_cd28467e34daa3 117-122
+  s_ebc5df7c0dfede::t_86f91086ee311d 41
+src/Examples/NonlinearPdeExample.hs
+  s_ebc5df7c0dfede::t_f6b27f6e4d7597 41
+  s_ebc5df7c0dfede::t_32a1abe5b53227 169-174
+src/Examples/MargrabeExample.hs
+  s_ebc5df7c0dfede::t_b71f7651bb142b 103-108
+  s_ebc5df7c0dfede::t_be9239dc20b403 37
+src/Examples/BiharmonicExample.hs
+  s_ebc5df7c0dfede::t_d8da7debf12fa6 39
+  s_ebc5df7c0dfede::t_acaa029434aebb 151-155
+golden/NonlinearPdeExample/selective_report.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-20
+golden/MertonJumpExample/equations.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-181
+golden/MargrabeExample/selective_report.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-20
+golden/BiharmonicExample/selective_report.txt
+  s_ebc5df7c0dfede::t_dc141bc9c6d554 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "773f32b7791bd8bbdce7e6f1b9a23e66b30c669a",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
