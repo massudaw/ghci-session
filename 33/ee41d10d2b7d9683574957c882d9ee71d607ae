@@ -1,0 +1,52 @@
+golden/LqgClosedLoopExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 2-31
+golden/Convection2DExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 27-49,51-73,75-97,99-121,123-145,172-194,217-235,237-255,257-275,277-295,297-315,317-335,337-355,357-375,377-395,397-415,417-435,437-455,457-475,477-495,497-515,517-535,537-555,557-575,577-595
+golden/RoomConvectionExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 3-26
+golden/KalmanObserverExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 2-31
+golden/AsianOptionExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 113-221,223-331,333-441,443-551,553-661,663-771,773-881,883-991,993-1101,1103-1211,1213-1321,1323-1431,1433-1541,1543-1651,1653-1761,1763-1871,1873-1981,1983-2091,2093-2201,2203-2311,2313-2421,2423-2531,2533-2641,2643-2751,2753-2861,2863-2971,2973-3081,3083-3191,3193-3301,3303-3411,3413-3521,3523-3631,3633-3741,3743-3851,3853-3961,3963-4071,4073-4181,4183-4291,4293-4401,4403-4511,4513-4621,4623-4731,4733-4841,4843-4951,4953-5061,5063-5171,5173-5281,5283-5391,5393-5501,5503-5611
+golden/SpaceTimeFieldExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 3-25,52-74,76-98,100-122,124-146,148-170,172-194,196-218,220-242,244-266,268-290,292-314,316-338,340-362,364-386,388-410,412-434,436-458,460-482,484-506,508-530
+golden/Convection3DExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 75-85,87-97,99-109,135-145,147-157,159-169,244-254,329-335,337-343,345-351,353-359,361-367,369-375,377-383,393-399,401-407,409-415,417-423,425-431,433-439,441-447,457-463,465-471,473-479,481-487,489-495,497-503,505-511,521-527,529-535,537-543,545-551,553-559,561-567,569-575,585-591,593-599,601-607,609-615,617-623,625-631,633-639,649-655,657-663,665-671,673-679,681-687,689-695,697-703,713-719,721-727,729-735,737-743,745-751,753-759,761-767
+golden/FieldVariableExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 3-41,43-81,148-372
+golden/EkfNonlinearControlExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 2-43,222-225,270-283,298-301
+src/Field.hs
+  s_ebc5df7c0dfede::t_af2d656ce04e58 408-410,412,416,420-434,437-439
+src/Solver/SymbolicDAE/IDASegment.hs
+  s_ebc5df7c0dfede::t_84906285cb4e2a 30-33
+  s_ebc5df7c0dfede::t_8fb838962ffa96 118-126,139,142,144
+  s_ebc5df7c0dfede::t_7bcd416c1dbc73 2
+  s_ebc5df7c0dfede::t_4799ff39ac1881 127-135
+  s_ebc5df7c0dfede::t_ceec58acc1a2d6 145-146
+golden/RoomAirConditioningExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 19-27,30-38,41-49,52-60,179-197,200-218,221-239,242-260,263-281,284-302,305-323,326-344,347-365
+golden/ModelACConditioner/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 101-105
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_2894b019b7faa0 653-681
+  s_ebc5df7c0dfede::t_ab79c059740312 684
+golden/LqgOffsetFreeExample/equations.txt
+  s_ebc5df7c0dfede::t_0b7062dc70236a 2-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "33ee41d10d2b7d9683574957c882d9ee71d607ae",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
