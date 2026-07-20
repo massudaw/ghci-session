@@ -1,0 +1,21 @@
+src/Project.hs
+  s_ebc5df7c0dfede::t_7ac7230f4cd794 53-54
+  s_ebc5df7c0dfede::t_3d075b38c18ee1 616-618,622,624,647,649-652,654,656,659,666
+  s_ebc5df7c0dfede::t_636ff2fd65f4b5 619-621,623
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1b69519330ce0ddf432b10fd46dfbcf7d467d0eb",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
