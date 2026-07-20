@@ -1,0 +1,109 @@
+golden/CompositionalPdeExample/equations.txt
+  s_ebc5df7c0dfede::t_4b30353ba25e4c 568-587,606,625,644,663,682,701,720,739,758,777,796,815,834,853,872,891,910
+golden/FokkerPlanckExample/equations.txt
+  s_ebc5df7c0dfede::t_4b30353ba25e4c 2,322,642,962,1282,1602
+golden/NonlinearBayesExample/equations.txt
+  s_ebc5df7c0dfede::t_f06f855de4d0b8 2
+src/JIT/Compiler.hs
+  s_ebc5df7c0dfede::t_14fb82569754f4 101
+  s_ebc5df7c0dfede::t_6ad2b034fd2d94 156-165
+example/ShapedDerivativesSelfTest.hs
+  s_ebc5df7c0dfede::t_761e8f21ca08e1 83
+  s_ebc5df7c0dfede::t_38f46359f0ef37 1-82,84-131
+src/Solver/SelectivePantelides.hs
+  s_ebc5df7c0dfede::t_5a9ccfa0f0fe60 565
+  s_ebc5df7c0dfede::t_cf21f7bbc61b33 290-295
+src/JIT/Tape.hs
+  s_ebc5df7c0dfede::t_2b753f1cbf5c34 117
+  s_ebc5df7c0dfede::t_5489cb2f7380da 1311
+  s_ebc5df7c0dfede::t_09219710ec03ea 1550
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_db3cc449672272 3760
+  s_ebc5df7c0dfede::t_0109c16ca01db1 4048-4050,4053
+  s_ebc5df7c0dfede::t_7ec296e6a5d38e 3129
+  s_ebc5df7c0dfede::t_841a52fe3f7e4a 5193-5194
+  s_ebc5df7c0dfede::t_a0750697b7992c 8-9
+  s_ebc5df7c0dfede::t_042bf3a9bae73c 1351-1355
+  s_ebc5df7c0dfede::t_80a436b2c50430 95
+  s_ebc5df7c0dfede::t_e145cfdd6033a9 3838-3920,3924-3936,3951-3977
+  s_ebc5df7c0dfede::t_5143c8624f0526 10
+  s_ebc5df7c0dfede::t_13294af4bb686c 102
+  s_ebc5df7c0dfede::t_064e085cd042ee 642
+  s_ebc5df7c0dfede::t_10cae997e07050 2651-2672
+  s_ebc5df7c0dfede::t_dd7d3aae529f7e 594
+  s_ebc5df7c0dfede::t_89297af2f1e9d7 2694-2700
+  s_ebc5df7c0dfede::t_04775be3c0d36d 26
+  s_ebc5df7c0dfede::t_13b9015e05067f 451-482
+  s_ebc5df7c0dfede::t_910a343a457164 2523
+  s_ebc5df7c0dfede::t_ca42fc6f7c1f72 2905-2923
+  s_ebc5df7c0dfede::t_47038fdb4aac78 3921-3923
+  s_ebc5df7c0dfede::t_b5aa685b1f076c 3937-3950
+  s_ebc5df7c0dfede::t_0f77ef1a09250e 3978-3982,3984,3992-3993,4005,4010-4011,4025-4026,4033-4034,4039-4046,4051-4052,4054-4055
+  s_ebc5df7c0dfede::t_5f48665c03cf55 4060,4066-4067,4070
+  s_ebc5df7c0dfede::t_84323535a8b754 3402
+  s_ebc5df7c0dfede::t_f0af693183cf65 5254
+  s_ebc5df7c0dfede::t_a2ca1410829c2c 1279-1280
+  s_ebc5df7c0dfede::t_dc81bf16065f0d 97
+  s_ebc5df7c0dfede::t_a5aecba681527f 1238-1246
+  s_ebc5df7c0dfede::t_b3bcaedad1174f 2615-2618
+  s_ebc5df7c0dfede::t_73586faf809a1a 3812-3837
+  s_ebc5df7c0dfede::t_78b57cd897b105 647-669,672
+  s_ebc5df7c0dfede::t_313f85df6d2acd 4069
+  s_ebc5df7c0dfede::t_7e86293b018f43 90-93
+  s_ebc5df7c0dfede::t_904b166fe89f95 2973
+  s_ebc5df7c0dfede::t_62c70d2ff3a79d 3601-3609
+  s_ebc5df7c0dfede::t_308e4f3ab2698f 4004,4012,4032
+  s_ebc5df7c0dfede::t_0607fc44b9b580 1657-1659
+  s_ebc5df7c0dfede::t_fda6c3710d0ddc 643-646,670-671
+  s_ebc5df7c0dfede::t_b2ee287a3bf71c 89
+  s_ebc5df7c0dfede::t_19f6588330af31 2378-2383
+  s_ebc5df7c0dfede::t_6fc0c5f4b6ebd9 1423
+  s_ebc5df7c0dfede::t_8728321a96c40e 94,96,98-99
+  s_ebc5df7c0dfede::t_c837b1256726d0 3460
+  s_ebc5df7c0dfede::t_e93eff341d3be7 3983,3985-3991,3994-4003,4006-4009,4013-4024,4027-4031,4035-4038,4047,4056-4059,4061-4065,4068
+  s_ebc5df7c0dfede::t_e48fb4fd89483c 3652-3660
+  s_ebc5df7c0dfede::t_aa5eb7e19a3146 5307
+src/Domains.hs
+  s_ebc5df7c0dfede::t_ca008c60aa9943 205-220
+  s_ebc5df7c0dfede::t_82a2c09b22e345 202-204,221
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_1294accbaaddc0 600-608
+  s_ebc5df7c0dfede::t_10186fe981e2de 591-599
+example/TensorDerivativesSelfTest.hs
+  s_ebc5df7c0dfede::t_775a40224a7862 10,46-47,52-54,58
+  s_ebc5df7c0dfede::t_a6dcae18949949 18-20,22,24-26,30-38,40-43,45,48-51,56-57,60,67-72
+  s_ebc5df7c0dfede::t_33a988c816785b 77,80
+  s_ebc5df7c0dfede::t_279b93609d202f 2-9,11-17,23,39,44,55,59,61-66,81-95,100-104,112-115,120,123,130-134,140,148-151,154-155
+  s_ebc5df7c0dfede::t_3df6ea6583d7d8 73-76,78-79,96-98,105-111,116-119,121-122,124-129,135-139,141-147,152-153,156-158
+  s_ebc5df7c0dfede::t_b5daecd927edf7 21,27-29
+  s_ebc5df7c0dfede::t_d4f52a29100af4 99
+  s_ebc5df7c0dfede::t_a79bd0f3e58911 1
+src/Field.hs
+  s_ebc5df7c0dfede::t_8bda8a939f139e 64
+  s_ebc5df7c0dfede::t_86b410692c4590 63
+  s_ebc5df7c0dfede::t_bef6d3fccc559b 327-451
+  s_ebc5df7c0dfede::t_9aa0e64249dd4a 469-478
+  s_ebc5df7c0dfede::t_9c620b6bd44487 68
+  s_ebc5df7c0dfede::t_bb0708fcff080b 644-676
+example/StencilTemplateBench.hs
+  s_ebc5df7c0dfede::t_edba689adc94f7 91
+  s_ebc5df7c0dfede::t_c1362bcc444c5a 131
+  s_ebc5df7c0dfede::t_1aad9ce7b507da 118
+  s_ebc5df7c0dfede::t_78c75b118aef98 143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "36b143884700e63c4f17e09abfaf32d2aa2cf957",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
