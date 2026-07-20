@@ -1,0 +1,26 @@
+golden/MertonJumpExample/solver_audit.txt
+  s_ebc5df7c0dfede::t_f58e3c5758c0f2 2-4,6-12
+src/Project.hs
+  s_ebc5df7c0dfede::t_3b4f3e26551884 558-566,587,608,612,616-617
+  s_ebc5df7c0dfede::t_c8671985b62d8f 592-593,596,598-599
+  s_ebc5df7c0dfede::t_6bd8e7b52adcc7 594
+  s_ebc5df7c0dfede::t_a584c3477d9d46 595,597
+src/Examples/MertonJumpExample.hs
+  s_ebc5df7c0dfede::t_99d3c22cb731ae 98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "af373b951ba054d5fd77e9db341c3f230c7bde53",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
