@@ -1,0 +1,24 @@
+src/Solver/KINSOL.hs
+  s_ebc5df7c0dfede::t_74901506cf88fa 120-128
+  s_ebc5df7c0dfede::t_0113de2ca679cf 17
+src/Solver/IDA.hs
+  s_ebc5df7c0dfede::t_21f67ccaae9fb3 797-803,805-808
+  s_ebc5df7c0dfede::t_754a9c76eef769 100
+  s_ebc5df7c0dfede::t_b5a0450359c6e4 1030-1031
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "14292066ff87b9b021f69e6fc8523661b07ad795",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
