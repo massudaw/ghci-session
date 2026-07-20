@@ -1,0 +1,24 @@
+golden/HestonPricingExample/equations.txt
+  s_ebc5df7c0dfede::t_816d598ffb5e74 1-3081
+src/Examples/HestonPricingExample.hs
+  s_ebc5df7c0dfede::t_c7c34ff7b87220 40
+  s_ebc5df7c0dfede::t_22de55840a6f98 117-122
+golden/HestonPricingExample/selective_report.txt
+  s_ebc5df7c0dfede::t_d1569791da1a4e 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "38ca6a9b6596f080d70cca56f555ab8cd621cec0",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
