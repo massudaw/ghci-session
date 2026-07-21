@@ -1,0 +1,33 @@
+src/Examples/DESFactoryLine.hs
+  s_e94ce581beb708::t_d10ea0d607f18d 42
+  s_e94ce581beb708::t_0a76f14d34a044 66
+  s_e94ce581beb708::t_e7df864d23f381 55
+  s_e94ce581beb708::t_c82df32acf42a2 1,3-12,14-17,19-32,36,40-41,43-50,62,67-71,74-76,82-88,90,92,94-96,99-102,105-109,111,113,116-120,122-123,125,127-128,130-133,142,145-146,148-174,177-180,194-195,199-204,206-208,233
+  s_e94ce581beb708::t_9f9e9c32a5758f 72-73
+  s_e94ce581beb708::t_d0ad2d3161337c 89,91,93,97-98,103-104
+  s_e94ce581beb708::t_234929d544584b 2
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_cb63d6d3e75560 86
+src/Model/SignalHeatSource.hs
+  s_e94ce581beb708::t_a0705ff1e1e416 1-71
+src/Solver/DES.hs
+  s_e94ce581beb708::t_b7a719595971c5 69
+  s_e94ce581beb708::t_56e68c1e99ec01 663-671,673
+  s_e94ce581beb708::t_74d9e5f1e72c40 266-268
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8fbd9ed9b054c8cf5e22a3fc734addbb6858e6b1",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
