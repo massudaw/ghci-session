@@ -1,0 +1,64 @@
+src/Model/GroundContactCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 71,75
+src/Model/RackPinionCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 54
+src/Model/RoadForceCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 53
+src/Model/TimedCombustionForce.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 50
+src/Examples/ModelCombustionEngine.hs
+  s_e94ce581beb708::t_569841c8dbd6e9 121,123-124,126-127
+src/Examples/ModelPneumaticSuspension.hs
+  s_e94ce581beb708::t_569841c8dbd6e9 171
+src/Model/PneumaticPistonCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 54
+src/Force.hs
+  s_e94ce581beb708::t_b108d7e785bf18 266,272,298,522,543,545-546
+  s_e94ce581beb708::t_3d95e6cf4286b2 848
+  s_e94ce581beb708::t_1abf4d49deab6e 227-240
+  s_e94ce581beb708::t_703403f446f25c 577
+src/Model/PiezoActuatorCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 51
+src/Model/HydraulicCylinderCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 67
+src/Model/BodyLoadCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 58
+src/Model/ThermalExpansionCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 68
+src/Model/MagnetoMechanicalCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 55
+src/Model/RotationalTranslationalCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 54
+src/Model/PropThrustCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 77,81
+src/Model/SliderCrankCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 71
+src/Model.hs
+  s_e94ce581beb708::t_fd138b9be13337 218-222
+src/Model/GasPistonForce.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 50
+src/Examples/ModelSliderCrank.hs
+  s_e94ce581beb708::t_569841c8dbd6e9 111,113-114
+src/Model/NozzleThrustCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 82
+golden/ModelCombustionEngine/transient.txt
+  s_e94ce581beb708::t_d1b90c14161731 4-15
+src/Model/ElectroMechanicalCoupling.hs
+  s_e94ce581beb708::t_c7c93f28c60f57 65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "21663052247dc6a7b2299992d35fa575b686f44e",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
