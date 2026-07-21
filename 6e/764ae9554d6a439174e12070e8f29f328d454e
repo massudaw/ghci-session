@@ -1,0 +1,84 @@
+src/Model/BuoyancyCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 54
+src/Model/ConvectiveCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 53
+src/Model/AdvectiveCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 51
+src/Model/JouleHeating.hs
+  s_e94ce581beb708::t_568431b55230bb 43
+src/Model/StrayLosses.hs
+  s_e94ce581beb708::t_568431b55230bb 52,56
+src/Model/EvaporationCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 79
+src/Model/FireSprinklerCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 129
+src/Model/ScheduledCooler.hs
+  s_e94ce581beb708::t_568431b55230bb 69
+src/Model/SpeedDependentCooling.hs
+  s_e94ce581beb708::t_568431b55230bb 56,61
+src/Model/TrimCoolerCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 71
+src/Model/PneumaticDissipationCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 60
+src/Model.hs
+  s_e94ce581beb708::t_1acc8bac919c3e 57
+  s_e94ce581beb708::t_da816f46046c86 58
+  s_e94ce581beb708::t_306571a390e5f4 198-199,201-204,209-213,215-216
+  s_e94ce581beb708::t_570a1a0bb49266 271-289
+src/Thermal.hs
+  s_e94ce581beb708::t_7acd39b6514107 130,133,138
+  s_e94ce581beb708::t_95bb3b3c495ec8 154,157
+  s_e94ce581beb708::t_bd50f492b73a45 145-146,150
+  s_e94ce581beb708::t_cd0297154284ff 246-247,251-258
+  s_e94ce581beb708::t_773af7777bcd1e 329,333,338-342,344
+  s_e94ce581beb708::t_ebefbf7495db34 359-360
+  s_e94ce581beb708::t_ab8a48b968aaee 165
+src/Model/SignalHeatSource.hs
+  s_e94ce581beb708::t_568431b55230bb 58
+src/Model/SignalCurrentSource.hs
+  s_e94ce581beb708::t_8b803ccf83043d 53,56
+src/Model/RoomAirCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 54
+src/Examples/ModelThermostat.hs
+  s_e94ce581beb708::t_5ceafffcbabcf3 54
+src/Domains.hs
+  s_e94ce581beb708::t_f4a07328f38e35 929-944
+  s_e94ce581beb708::t_12a753f0004900 60
+  s_e94ce581beb708::t_e5c297b31d98fb 6-7
+src/Model/ReactionHeatingCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 59
+src/Model/PneumaticCompressionHeating.hs
+  s_e94ce581beb708::t_568431b55230bb 60
+src/Model/MotorSpeedDrivenCompressor.hs
+  s_e94ce581beb708::t_568431b55230bb 258,276
+src/Model/ArrheniusReactionCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 77
+src/Model/MixtureReactionCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 83
+src/Model/SupervisedCooler.hs
+  s_e94ce581beb708::t_568431b55230bb 64
+src/Model/Peltier.hs
+  s_e94ce581beb708::t_568431b55230bb 46
+src/Model/TempDependentJouleHeating.hs
+  s_e94ce581beb708::t_568431b55230bb 55
+src/Examples/ModelACConditioner.hs
+  s_e94ce581beb708::t_6bfe998ecd6a86 439
+src/Model/AcousticDissipationCoupling.hs
+  s_e94ce581beb708::t_568431b55230bb 54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6e764ae9554d6a439174e12070e8f29f328d454e",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
