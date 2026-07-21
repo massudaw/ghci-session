@@ -1,0 +1,26 @@
+src/Acoustic.hs
+  s_e94ce581beb708::t_85b65b15e828b4 122,124-125,205-207,210-216
+  s_e94ce581beb708::t_5f2035cdfd6800 81,86,95,115-117
+src/Model/PropNoiseCoupling.hs
+  s_e94ce581beb708::t_85b65b15e828b4 73,77
+src/Model/ElectroacousticCoupling.hs
+  s_e94ce581beb708::t_85b65b15e828b4 57
+src/Model/ThermoacousticCoupling.hs
+  s_e94ce581beb708::t_85b65b15e828b4 63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b6b7a912f64b9fd200cdaebe9f2692360b2e7100",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
