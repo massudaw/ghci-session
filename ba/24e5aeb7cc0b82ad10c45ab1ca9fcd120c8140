@@ -1,0 +1,25 @@
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_a4040f2446c02c 87
+src/Model/SignalVoltageSource.hs
+  s_e94ce581beb708::t_4d96144fa6e132 11-12,14,16-23,30-31,43-45,48-51,57,61-63
+  s_e94ce581beb708::t_cdede3570429a0 24-27,74
+src/Examples/DESElectricLoad.hs
+  s_e94ce581beb708::t_b7c5498132ee2f 6,12-19,29,42-44,46-48,59,61,91-93,98-99,111-114,119-120
+  s_e94ce581beb708::t_bc29a55a2e61db 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ba24e5aeb7cc0b82ad10c45ab1ca9fcd120c8140",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
