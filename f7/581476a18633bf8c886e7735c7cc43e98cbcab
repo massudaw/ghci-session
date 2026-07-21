@@ -1,0 +1,49 @@
+src/Equation.hs
+  s_ebc5df7c0dfede::t_48948379353959 216
+src/Examples/NonlinearBayesExample.hs
+  s_ebc5df7c0dfede::t_d35ee1b78ed876 133-137,140-141,144,148-150
+  s_ebc5df7c0dfede::t_84f267afcdc915 36-37
+sprinkler-solver.cabal
+  s_ebc5df7c0dfede::t_b537771a29770e 239
+golden/FokkerPlanckExample/selective_report.txt
+  s_ebc5df7c0dfede::t_0767fe329c8d95 1-20
+golden/NonlinearBayesExample/equations.txt
+  s_ebc5df7c0dfede::t_0767fe329c8d95 1-27
+src/Examples/FokkerPlanckExample.hs
+  s_ebc5df7c0dfede::t_178dafec4b49c3 150-157,160-170
+  s_ebc5df7c0dfede::t_9dc3bfdeeb3491 133-134
+  s_ebc5df7c0dfede::t_14e12a0cc1277f 121-124
+  s_ebc5df7c0dfede::t_3dfb4fbf5fc428 36,45-46
+  s_ebc5df7c0dfede::t_f57efeb3ccee55 125
+  s_ebc5df7c0dfede::t_fdddb37a20edda 158-159
+golden/FokkerPlanckExample/equations.txt
+  s_ebc5df7c0dfede::t_0767fe329c8d95 1-27
+golden/NonlinearBayesExample/selective_report.txt
+  s_ebc5df7c0dfede::t_0767fe329c8d95 1-20
+src/Solver/FieldLoop.hs
+  s_ebc5df7c0dfede::t_ded279b5c9c133 50-53
+  s_ebc5df7c0dfede::t_a50afe7e9eaff5 2-4
+  s_ebc5df7c0dfede::t_3b3f1dec9d3bdb 1,5-49,54-106,108-123,125-126
+  s_ebc5df7c0dfede::t_280651ac3b7c53 107,124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f7581476a18633bf8c886e7735c7cc43e98cbcab",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
