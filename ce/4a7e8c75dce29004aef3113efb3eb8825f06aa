@@ -1,0 +1,20 @@
+src/JIT/Sectioned.hs
+  s_e94ce581beb708::t_ed0bfd0e2e34f0 57-58,60-62,80-91,914-924,1154,1167,1170
+  s_e94ce581beb708::t_d6c233048a1f33 1160-1166,1168-1169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ce4a7e8c75dce29004aef3113efb3eb8825f06aa",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
