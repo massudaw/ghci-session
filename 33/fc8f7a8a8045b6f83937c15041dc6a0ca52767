@@ -1,0 +1,69 @@
+src/Model/SliderCrankCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 70
+src/Model/AeroDragCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 57,61
+src/Model/ClutchCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 75,79
+src/Model/RackPinionCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 53
+src/Model/RotationalMotorCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 57
+src/Model/RotationalMotorMagnetic.hs
+  s_e94ce581beb708::t_2c0caca033f004 57
+src/Model/SliderCrankKinematics.hs
+  s_e94ce581beb708::t_2c0caca033f004 54
+src/Model/CyclicRatchetCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 62,66
+src/Model/HybridControllerCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 104,117
+src/Model/RotationalPneumaticCompressorLoad.hs
+  s_e94ce581beb708::t_2c0caca033f004 73,81
+src/Model/SpeedGovernor.hs
+  s_e94ce581beb708::t_2c0caca033f004 62,67
+src/Model/RotationalTranslationalKinematics.hs
+  s_e94ce581beb708::t_2c0caca033f004 55
+src/Examples/ModelCombustionEngine.hs
+  s_e94ce581beb708::t_f9a22a1d36db81 121,123-124,126-127
+src/Examples/ModelGovernorPI.hs
+  s_e94ce581beb708::t_f9a22a1d36db81 51
+src/Examples/ModelSliderCrank.hs
+  s_e94ce581beb708::t_f9a22a1d36db81 111,113-114
+src/Model/YawVectorCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 53
+src/Model/CompliantContact.hs
+  s_e94ce581beb708::t_2c0caca033f004 67,72
+src/Model/CarDriveCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 91
+src/Rotational.hs
+  s_e94ce581beb708::t_ce2d0fbe938b4b 115,120,137,164,166-167,170,189,209-210,226,229,258-259,264,270
+src/Model/BounceCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 69,75
+src/Model/PumpTorqueCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 56,71
+src/Model/CarDriveGripCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 102
+src/Model/FreewheelCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 54,58
+src/Model/HEVCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 137
+src/Model/RotationalTranslationalCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 56
+src/Model/LockClutchCoupling.hs
+  s_e94ce581beb708::t_2c0caca033f004 61,65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "33fc8f7a8a8045b6f83937c15041dc6a0ca52767",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
