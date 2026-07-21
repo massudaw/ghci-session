@@ -1,0 +1,26 @@
+src/Solver/SymbolicDAE/IDASegment.hs
+  s_ebc5df7c0dfede::t_f9d606506eadf5 32
+  s_ebc5df7c0dfede::t_9af5c94bccdeaa 134
+src/Solver/SymbolicDAE.hs
+  s_ebc5df7c0dfede::t_12706c271ad747 3676-3699
+  s_ebc5df7c0dfede::t_62a7f18cc2da17 62
+src/Examples/JITTest.hs
+  s_ebc5df7c0dfede::t_c611dcc6ade04a 269-281
+  s_ebc5df7c0dfede::t_274b82fdee2649 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "9a429eacaf96834f6de04686762da95cae6abe63",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
