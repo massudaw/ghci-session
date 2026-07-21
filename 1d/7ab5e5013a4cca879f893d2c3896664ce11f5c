@@ -1,0 +1,16 @@
+run_exec.sh
+  h_fd5809635b36a3 3
+run_build.sh
+  h_fd5809635b36a3 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1d7ab5e5013a4cca879f893d2c3896664ce11f5c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
