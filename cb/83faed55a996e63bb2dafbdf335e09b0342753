@@ -1,0 +1,34 @@
+golden/Convection2DExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 4-5,8-10,14-27
+golden/AsianOptionExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 1,5-19
+golden/Convection3DExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 1,5-15,18-20,24-81
+golden/FieldVariableExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 1,3,9,12-36
+golden/RoomConvectionExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 3-4
+golden/SpaceTimeFieldExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 3-5,8-9
+golden/EkfNonlinearControlExample/equations.txt
+  s_ebc5df7c0dfede::t_9194247792dfc9 30-43,270-283
+src/Equation.hs
+  s_ebc5df7c0dfede::t_74d319d48b3ce2 94-105,109-110
+  s_ebc5df7c0dfede::t_0e19155821356b 38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "cb83faed55a996e63bb2dafbdf335e09b0342753",
+  "prompts": {},
+  "sessions": {
+    "s_ebc5df7c0dfede": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a43063dd-438c-4cad-acea-c5fe01c66188",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
