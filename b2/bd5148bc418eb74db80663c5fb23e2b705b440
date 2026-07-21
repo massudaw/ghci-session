@@ -1,0 +1,43 @@
+example/Main.hs
+  s_e94ce581beb708::t_ab53e2ecde8dcf 380
+  s_e94ce581beb708::t_5ea89ce1e35a80 185
+src/Solver/DES.hs
+  s_e94ce581beb708::t_dea789f949ec82 360-361
+  s_e94ce581beb708::t_4727d9556460c1 232,236-239
+  s_e94ce581beb708::t_bf1de84380bd77 447-465
+  s_e94ce581beb708::t_c3ac1303d096b8 496,499-510
+  s_e94ce581beb708::t_7bce859cfc5b65 607
+  s_e94ce581beb708::t_aee1f7f391a319 382-383
+  s_e94ce581beb708::t_5ea5b8aa75e6fe 531-535,546,559-576,582-584
+  s_e94ce581beb708::t_885d842aea4663 547-558
+  s_e94ce581beb708::t_6d787797c861ed 156
+  s_e94ce581beb708::t_3c4fae60fbe900 284-289,294,301-302,306
+  s_e94ce581beb708::t_09f39e31204672 342-343
+  s_e94ce581beb708::t_2f11eb7469a796 169-182
+  s_e94ce581beb708::t_d2236fa8fcec1b 716-718,725
+  s_e94ce581beb708::t_32d9335390684e 53
+  s_e94ce581beb708::t_5d4b789a8cfae7 140-141
+  s_e94ce581beb708::t_44894b538173b8 511
+golden/DESBackPressure/status.txt
+  s_e94ce581beb708::t_fc0b94bed50060 1
+src/Examples/DESBackPressure.hs
+  s_e94ce581beb708::t_5652f66ac7193b 1-132
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_a68c0c77bf8f78 337
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b2bd5148bc418eb74db80663c5fb23e2b705b440",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
