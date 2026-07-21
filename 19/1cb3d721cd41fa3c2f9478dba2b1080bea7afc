@@ -1,0 +1,39 @@
+golden/DESElectricLoad/status.txt
+  s_e94ce581beb708::t_524f4e151720f4 1
+src/Solver/DES/Unified.hs
+  s_e94ce581beb708::t_d44139ec144817 68
+  s_e94ce581beb708::t_24d98bee911082 188
+  s_e94ce581beb708::t_a2d6ac2a22675b 3,7,9-13,15-21,23-25,30,65,69,79-81,83-84,89,92-95,98,106,110-112,116-118,122,133,135-136,144,150-151,161,165,170,173-177,182,185-187,189-193
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_3dd691795ac9a2 344
+  s_e94ce581beb708::t_51ef5f1b383079 87
+src/Examples/DESElectricLoad.hs
+  s_e94ce581beb708::t_bc29a55a2e61db 1-48,50,52-107
+  s_e94ce581beb708::t_ed44d5a1028736 49,51
+src/Model/SignalCurrentSource.hs
+  s_e94ce581beb708::t_4d96144fa6e132 1-67
+example/Main.hs
+  s_e94ce581beb708::t_7d33dfc2a78297 188
+  s_e94ce581beb708::t_aee9f6247ebd8c 386
+src/Examples/DESUnifiedLine.hs
+  s_e94ce581beb708::t_20059150798bc9 18-19,22
+  s_e94ce581beb708::t_cc939c5bf4ae48 71-72
+  s_e94ce581beb708::t_25c730951387ac 1,3
+  s_e94ce581beb708::t_ee76c1ff9a13a2 38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "191cb3d721cd41fa3c2f9478dba2b1080bea7afc",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
