@@ -1,0 +1,31 @@
+src/Model/SpeciesAdvectionCoupling.hs
+  s_e94ce581beb708::t_37add3f10180b5 76
+src/Model/ElectrolysisCoupling.hs
+  s_e94ce581beb708::t_37add3f10180b5 56
+src/Examples/ModelFertilizerTransient.hs
+  s_e94ce581beb708::t_24c62afa9a255a 149
+src/Examples/ModelFertilizerDAE.hs
+  s_e94ce581beb708::t_24c62afa9a255a 114
+src/Chemical.hs
+  s_e94ce581beb708::t_b669cdb5cddffe 85,90,99,106,108,111,113,132,135,137
+  s_e94ce581beb708::t_205b4a9441e7dc 159,161,166-167
+  s_e94ce581beb708::t_f549a993f0a36a 110
+src/Model/ArrheniusReactionCoupling.hs
+  s_e94ce581beb708::t_37add3f10180b5 76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4370faa5b3df44affe7b77db971616a201cb2f92",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
