@@ -1,0 +1,21 @@
+src/Model/ElectroMagneticCoupling.hs
+  s_e94ce581beb708::t_6a04d2195bb261 49
+src/Magnetic.hs
+  s_e94ce581beb708::t_a58aa4a46be889 80,84,96,99-100,104,106,108-109,122-123,125,144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0606ad8971a2e7680675690a4a2fccb99692e2c4",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
