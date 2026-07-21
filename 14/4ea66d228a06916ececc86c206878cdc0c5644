@@ -1,0 +1,27 @@
+src/Model/BuoyancyCoupling.hs
+  s_e94ce581beb708::t_242f7e950c9caf 55
+src/Hydraulic.hs
+  s_e94ce581beb708::t_e35866529e4d55 524,528,539,572-573,580-581
+  s_e94ce581beb708::t_c77a1e88f206d8 309-310,317-324
+  s_e94ce581beb708::t_3e3018122e84f7 490-491,509-510,568,576
+src/Model/PumpPressureCoupling.hs
+  s_e94ce581beb708::t_242f7e950c9caf 54,68
+src/Model/FireSprinklerCoupling.hs
+  s_e94ce581beb708::t_242f7e950c9caf 177,227,317
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "144ea66d228a06916ececc86c206878cdc0c5644",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
