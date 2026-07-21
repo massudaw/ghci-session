@@ -1,0 +1,26 @@
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_708fab9298985c 335
+golden/DESParallelLines/status.txt
+  s_e94ce581beb708::t_9a4876ffd0b584 1
+src/Examples/DESParallelLines.hs
+  s_e94ce581beb708::t_2e76abd1d99af7 1-213
+example/Main.hs
+  s_e94ce581beb708::t_1dfdc9599ca816 376
+  s_e94ce581beb708::t_c7cddb113a001a 183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fd203ccfc5d53806014e12dca8623040f724c2ac",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
