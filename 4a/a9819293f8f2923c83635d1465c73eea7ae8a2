@@ -1,0 +1,19 @@
+src/Examples/DESFactoryLine.hs
+  s_e94ce581beb708::t_50c169d5eced3b 1-5,7-21,23-24,26-27,31,42-44,46-53,56,60-66,68-90,99-100,102-103,105-141,150-189,191-192,195-196,199-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4aa9819293f8f2923c83635d1465c73eea7ae8a2",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
