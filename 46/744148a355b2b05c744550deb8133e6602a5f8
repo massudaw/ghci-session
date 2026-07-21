@@ -1,0 +1,45 @@
+src/Solver/DES/Unified.hs
+  s_e94ce581beb708::t_c4dcd99724ca49 134-137,141-142
+  s_e94ce581beb708::t_4a12dd82ed70fb 1-62,65-69,71-133,138-140,143-172,178-195
+  s_e94ce581beb708::t_8b8111ff25c217 70
+  s_e94ce581beb708::t_0830f97821872b 173-177
+  s_e94ce581beb708::t_afc0b320a41562 63-64
+src/Examples/DESUnifiedLine.hs
+  s_e94ce581beb708::t_6c143ba3c47cf6 1-107
+golden/DESUnifiedLine/status.txt
+  s_e94ce581beb708::t_1cbfbcc2f865eb 1
+example/Main.hs
+  s_e94ce581beb708::t_b3d1a562daf839 384
+  s_e94ce581beb708::t_886cda6c953af1 187
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_9b1716c37e98f6 258
+  s_e94ce581beb708::t_a5ba4475ba7e58 342
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_ca87454241fdb5 35
+  s_e94ce581beb708::t_0f68e3b0e111b6 160-169
+  s_e94ce581beb708::t_fe807362536582 201,206,215
+  s_e94ce581beb708::t_8ed8b11e9b3b46 262-263
+src/Examples/DESSharedRoom.hs
+  s_e94ce581beb708::t_d31f8e30a83391 118
+src/Solver/DES.hs
+  s_e94ce581beb708::t_4c3d452bb5d712 675-681,696-703
+  s_e94ce581beb708::t_050f158f807a2c 70-73
+  s_e94ce581beb708::t_8746c1015fca23 86
+  s_e94ce581beb708::t_f41fe71884111f 704
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "46744148a355b2b05c744550deb8133e6602a5f8",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
