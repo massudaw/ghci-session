@@ -1,0 +1,32 @@
+src/Examples/DESFactoryLine.hs
+  s_e94ce581beb708::t_00964f2a3a3341 3,5-8,23-25,27,29,41
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_fad65664c72d6f 226-281
+  s_e94ce581beb708::t_516569f3a9260e 32-48,51-52
+  s_e94ce581beb708::t_c48d93bac4222b 67-68
+src/Examples/DESFanOut.hs
+  s_e94ce581beb708::t_ede4a81a6b5bf3 64
+  s_e94ce581beb708::t_109051fa6f4e88 75
+  s_e94ce581beb708::t_779d9cb58d9b2d 23-24,26-28,31-33,35-37,40
+  s_e94ce581beb708::t_4dda817e28ddc1 53
+src/Examples/DESParallelLines.hs
+  s_e94ce581beb708::t_643afc57a6777c 26-27,29-32,35-37,40-43
+  s_e94ce581beb708::t_56be0aecc0d280 70,79
+  s_e94ce581beb708::t_9951e6587dbfab 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "51ea4a2c7247cf6db20abb901f58a0eb8ab2f53e",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
