@@ -1,0 +1,88 @@
+src/Model/BatteryCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 52
+src/Model/RotationalMotorMagneticBackEMF.hs
+  s_e94ce581beb708::t_8319cdf735377d 58,63
+src/Model/SignalVoltageSource.hs
+  s_e94ce581beb708::t_8319cdf735377d 62
+src/Model/ThermalDerateCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 60
+src/Model/MotorBackEMFCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 82
+src/Model/PiezoSensorCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 50
+src/Model/ElectroMagneticInduction.hs
+  s_e94ce581beb708::t_8319cdf735377d 54,59
+src/Model/InductanceSaturation.hs
+  s_e94ce581beb708::t_8319cdf735377d 56,61
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_7c916bad5380f3 88
+src/Model/ElectroMechanicalBackEMF.hs
+  s_e94ce581beb708::t_8319cdf735377d 74,81
+src/Model/NernstCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 63
+src/Model/HybridControlSwitch.hs
+  s_e94ce581beb708::t_8319cdf735377d 51
+src/Model/RotationalMotorBackEMF.hs
+  s_e94ce581beb708::t_8319cdf735377d 61,68
+src/Electric.hs
+  s_e94ce581beb708::t_656b8c98e54c7a 67
+  s_e94ce581beb708::t_530adfc9a53d65 103-125
+  s_e94ce581beb708::t_f54323941a5127 169-170
+  s_e94ce581beb708::t_dbdddf385f30c4 222
+  s_e94ce581beb708::t_434dccbeb51fd6 202,204
+  s_e94ce581beb708::t_cd6bf646e7e4c0 147
+  s_e94ce581beb708::t_88a061d77f3c77 156-157
+  s_e94ce581beb708::t_f56d8db0fafa96 213,216
+  s_e94ce581beb708::t_e43e80eeeffda7 381,383-384,387-397
+  s_e94ce581beb708::t_481f2ee6700fd5 432,434-436
+src/Model/TimeControlledSwitch.hs
+  s_e94ce581beb708::t_8319cdf735377d 46
+src/Model/ThrottleVoltageCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 66
+src/Model/SignalCurrentSource.hs
+  s_e94ce581beb708::t_c238747d1b6f21 1-71
+src/Model/DiodeCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 56
+src/Examples/ModelACConditioner.hs
+  s_e94ce581beb708::t_f9e6d66ec9b838 451,454,548
+src/Examples/DESElectricLoad.hs
+  s_e94ce581beb708::t_ced4e5a237dd12 41,45,90,92,112
+  s_e94ce581beb708::t_7d7c740968fb7e 12-14,16,18
+  s_e94ce581beb708::t_03456fded3f415 28
+  s_e94ce581beb708::t_37286c17009981 42-43,47,58,60
+src/Model.hs
+  s_e94ce581beb708::t_1ce5ce8b7390b2 249-250,252-253
+  s_e94ce581beb708::t_94eda5d6ba9152 284
+  s_e94ce581beb708::t_bb2cdc86de1927 57
+  s_e94ce581beb708::t_e9544bb993d967 190-204
+  s_e94ce581beb708::t_439dcd72dede43 213,217
+  s_e94ce581beb708::t_e09c6edbc8b8a1 258-274
+src/Model/CrowbarDiodeCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 136,142
+src/Model/TempDependentJouleHeating.hs
+  s_e94ce581beb708::t_8319cdf735377d 56
+src/Model/Seebeck.hs
+  s_e94ce581beb708::t_8319cdf735377d 46
+src/Model/VectoredVoltageCoupling.hs
+  s_e94ce581beb708::t_8319cdf735377d 55
+src/Model/MotorSpeedDrivenCompressor.hs
+  s_e94ce581beb708::t_8319cdf735377d 119
+src/Model/ThermalElectricVSD.hs
+  s_e94ce581beb708::t_8319cdf735377d 69,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "05c017fbb32bffb1464ab7dcb9d722c25d9988ea",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
