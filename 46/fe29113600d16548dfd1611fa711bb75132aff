@@ -1,0 +1,33 @@
+golden/DESFanOut/status.txt
+  s_e94ce581beb708::t_eb77b8048333ed 1
+src/Examples/DESFanOut.hs
+  s_e94ce581beb708::t_15441c7699bf8c 1-197
+example/Main.hs
+  s_e94ce581beb708::t_c69384a2964b11 378
+  s_e94ce581beb708::t_fa56cc9a751189 184
+src/Solver/DES.hs
+  s_e94ce581beb708::t_469d12f8695783 56
+  s_e94ce581beb708::t_5bad691801225a 154
+  s_e94ce581beb708::t_51a9572d8ed6bd 438-442,451,456-473
+  s_e94ce581beb708::t_ba42d5e226f69c 129-134,136-139
+  s_e94ce581beb708::t_b4470e64718b74 173,180-193
+  s_e94ce581beb708::t_8e7a013c9acc30 194
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_4cd5a61041abb8 336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "46fe29113600d16548dfd1611fa711bb75132aff",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
