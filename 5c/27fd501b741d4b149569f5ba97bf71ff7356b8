@@ -1,0 +1,22 @@
+src/JIT/Stencil/ARM64.hs
+  s_e94ce581beb708::t_4add20b900bcb3 724-729
+src/JIT/Tape.hs
+  s_e94ce581beb708::t_95c81805a91e9a 885-887
+  s_e94ce581beb708::t_e20213495ddd04 839-842,844
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5c27fd501b741d4b149569f5ba97bf71ff7356b8",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
