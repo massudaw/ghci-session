@@ -1,0 +1,21 @@
+src/JIT/Compiler.hs
+  s_e94ce581beb708::t_44b7bdb308a590 131-142
+  s_e94ce581beb708::t_bde9d369e0cc15 102,104
+  s_e94ce581beb708::t_a1a01f696e6619 195-198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8b93dca7fb19049faa872f4e0417379fe16c29a7",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
