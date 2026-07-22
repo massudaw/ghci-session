@@ -1,0 +1,21 @@
+src/JIT/Tape.hs
+  s_e94ce581beb708::t_95c81805a91e9a 888-890
+src/JIT/Stencil/ARM64.hs
+  s_e94ce581beb708::t_4add20b900bcb3 724-729
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e10bd0644da17b9ad7546469f96b953bbee72f3d",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
