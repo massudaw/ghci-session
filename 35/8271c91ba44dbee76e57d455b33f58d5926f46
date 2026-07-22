@@ -1,0 +1,24 @@
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_fb508fccfbea73 1-4
+src/Examples/DESMoldingShop.hs
+  s_e94ce581beb708::t_e7b3975c09e61d 12-16,18-26,32-34,71-72,75-92,99,121-126,136-138,146,150-158,160-162,171-177,184,189,191-193,197-199,201-204,219-221,223,227-231,238-247,254-255
+  s_e94ce581beb708::t_e14a78bed20ac3 70
+golden/DESMoldingShop/tapestats.txt
+  s_e94ce581beb708::t_fb508fccfbea73 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "358271c91ba44dbee76e57d455b33f58d5926f46",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
