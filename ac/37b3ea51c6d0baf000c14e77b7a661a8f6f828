@@ -1,0 +1,44 @@
+src/JIT/Sectioned.hs
+  s_e94ce581beb708::t_7004b3ae64fc7e 897-913
+  s_e94ce581beb708::t_9af4f2cf9e99df 80-87
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_b37ab5dc1ab329 953-954
+  s_e94ce581beb708::t_292428d00b5125 1190-1191
+run_golden_tests.sh
+  s_e94ce581beb708::t_c63808bfaca925 51,58-62
+golden_extract_lib.sh
+  s_e94ce581beb708::t_95e2f9902c450c 134-144
+golden/ModelCarDrive/fingerprint.txt
+  s_e94ce581beb708::t_de6f0c14c6b431 1-13
+golden/ModelCombustionEngine/fingerprint.txt
+  s_e94ce581beb708::t_5b3d35542ced4c 1-3
+golden/IDAPendulum/fingerprint.txt
+  s_e94ce581beb708::t_de6f0c14c6b431 1-3
+validate_golden_tests.sh
+  s_e94ce581beb708::t_9dd0c0ea9efb90 214
+  s_e94ce581beb708::t_50a49882518aa4 297-311,315
+  s_e94ce581beb708::t_cc4029cc3da60f 231-232
+  s_e94ce581beb708::t_7c80bbc49e3393 342-345
+golden/ModelSliderCrank/fingerprint.txt
+  s_e94ce581beb708::t_de6f0c14c6b431 1-3
+golden/ModelTEFull/fingerprint.txt
+  s_e94ce581beb708::t_de6f0c14c6b431 1-4
+golden/HybridGroupedTest/fingerprint.txt
+  s_e94ce581beb708::t_de6f0c14c6b431 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ac37b3ea51c6d0baf000c14e77b7a661a8f6f828",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
