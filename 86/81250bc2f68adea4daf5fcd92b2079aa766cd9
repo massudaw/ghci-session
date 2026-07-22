@@ -1,0 +1,26 @@
+src/Examples/DESMoldingShop.hs
+  s_e94ce581beb708::t_d19a80236e0ebc 156-157,160-162,165-166,172-177,179,183-184
+  s_e94ce581beb708::t_dc403737345630 50-52,55-58
+  s_e94ce581beb708::t_806be79dc5317c 105
+src/Solver/DES/Unified.hs
+  s_e94ce581beb708::t_bdd584c6c4d866 41
+  s_e94ce581beb708::t_066b0988d579bf 161-173
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_1ced35450b8708 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8681250bc2f68adea4daf5fcd92b2079aa766cd9",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
