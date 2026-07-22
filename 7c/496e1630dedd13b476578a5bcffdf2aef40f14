@@ -1,0 +1,44 @@
+src/Solver/DES/Unified.hs
+  s_e94ce581beb708::t_ad1ca863566205 197-204
+  s_e94ce581beb708::t_4dd9db299169fe 219,225
+  s_e94ce581beb708::t_cd82171676c2e2 91
+  s_e94ce581beb708::t_65e8088ee6d3e6 46
+src/Examples/DESSharedRoom.hs
+  s_e94ce581beb708::t_0375070cd46169 121
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_95f7c1b7a31e30 271
+  s_e94ce581beb708::t_d710f872dab30b 204,207
+  s_e94ce581beb708::t_a35bcf88e44af7 226-230
+src/Solver/DES.hs
+  s_e94ce581beb708::t_f801254b6b0143 550-551
+  s_e94ce581beb708::t_b642647dbc93f3 50
+  s_e94ce581beb708::t_222d76f161cd20 79-80
+  s_e94ce581beb708::t_f47ca75daeec3d 578-583,585
+  s_e94ce581beb708::t_b7127b8c30540a 726-736
+  s_e94ce581beb708::t_972d302184c8f9 477-483,486-487,489
+  s_e94ce581beb708::t_5f6a8c493e826d 821,824
+  s_e94ce581beb708::t_05280b510dadcf 838
+src/Examples/DESMoldingShop.hs
+  s_e94ce581beb708::t_efaba6925e337f 181-182,190-196,198-201,206-207
+  s_e94ce581beb708::t_d37415bf16725b 136
+  s_e94ce581beb708::t_5244bd72de74e1 15-16,20-27,31-32
+  s_e94ce581beb708::t_9b186a0da28cee 68-78
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_bc16229e3d6a20 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7c496e1630dedd13b476578a5bcffdf2aef40f14",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
