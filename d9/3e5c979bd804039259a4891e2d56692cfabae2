@@ -1,0 +1,29 @@
+example/Main.hs
+  s_e94ce581beb708::t_6434c53a846b5b 189,388
+src/Examples/DESMoldingShop.hs
+  s_e94ce581beb708::t_e6836231d61df8 1-177
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_5e988aea60d027 1-4
+golden/DESMoldingShop/status.txt
+  s_e94ce581beb708::t_5e988aea60d027 1
+golden/DESMoldingShop/tapestats.txt
+  s_e94ce581beb708::t_5e988aea60d027 1
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_6434c53a846b5b 346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d93e5c979bd804039259a4891e2d56692cfabae2",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
