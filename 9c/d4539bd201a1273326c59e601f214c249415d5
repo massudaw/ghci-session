@@ -1,0 +1,24 @@
+src/Examples/ModelCombustionEngine.hs
+  s_e94ce581beb708::t_af7cb73e2657ac 123-124,126-127
+golden/ModelCombustionEngine/transient.txt
+  s_e94ce581beb708::t_0599b32cdf7a38 4-15
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_623fa283db7b47 149
+  s_e94ce581beb708::t_a9fc1d118bf1ef 1200-1205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9cd4539bd201a1273326c59e601f214c249415d5",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
