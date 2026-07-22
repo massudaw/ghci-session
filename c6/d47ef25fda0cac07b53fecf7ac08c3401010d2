@@ -1,0 +1,32 @@
+golden/DESMoldingShop/tapestats.txt
+  s_e94ce581beb708::t_71eb8208867a4b 1
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_71eb8208867a4b 1-4
+src/Examples/DESMoldingShop.hs
+  s_e94ce581beb708::t_d5456300d08acb 148,152
+  s_e94ce581beb708::t_bca63c4344b186 66-68,70-71,73-74,77
+  s_e94ce581beb708::t_34e5230bd610d1 105-108,116,120-122,124-125
+  s_e94ce581beb708::t_46b359c6ef4592 166-167
+  s_e94ce581beb708::t_d06196f88819ce 168,170-172,182-183
+  s_e94ce581beb708::t_ea959066ce1b26 180-181,188-189
+  s_e94ce581beb708::t_996de485acd502 139,153-155
+  s_e94ce581beb708::t_b57db5682ec096 92,109-115
+  s_e94ce581beb708::t_b029b66e583723 93-95
+  s_e94ce581beb708::t_e604f55704a9cd 10-14,16-23,26-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c6d47ef25fda0cac07b53fecf7ac08c3401010d2",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
