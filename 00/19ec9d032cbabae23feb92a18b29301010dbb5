@@ -1,0 +1,32 @@
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_e94ce581beb708::t_dacdc80f0bd375 37,41,44,49,52-64
+  s_e94ce581beb708::t_10e7febf163b80 65
+src/Solver/HybridDAE.hs
+  s_e94ce581beb708::t_aee3718885f5a7 141-150
+  s_e94ce581beb708::t_917bddc2a89b1d 38
+  s_e94ce581beb708::t_bc0bfb0f85a017 200-212
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_1ce2f0b7d0225e 1896-1898
+  s_e94ce581beb708::t_36747d2f792e11 1038
+  s_e94ce581beb708::t_26d1ddcac172bd 992-996,1004-1006,1010,1022-1024
+  s_e94ce581beb708::t_40d12dfbac47a0 997-1003
+  s_e94ce581beb708::t_2e2212687baf72 1899-1900
+  s_e94ce581beb708::t_a77f026d4c9a78 1840
+  s_e94ce581beb708::t_1a159dbd8afcb3 1903-1907,1909-1910,1912-1915
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0019ec9d032cbabae23feb92a18b29301010dbb5",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
