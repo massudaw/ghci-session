@@ -1,0 +1,88 @@
+run_golden_tests.sh
+  s_e94ce581beb708::t_411b5c9e471357 90,96
+golden/DESFactoryLine/fingerprint.txt
+  s_e94ce581beb708::t_58ddd99ef396fb 3-13
+golden/DESParallelLines/fingerprint.txt
+  s_e94ce581beb708::t_58ddd99ef396fb 3-17
+golden/DESUnifiedLine/fingerprint.txt
+  s_e94ce581beb708::t_58ddd99ef396fb 3-8
+golden/DESElectricLoad/fingerprint.txt
+  s_e94ce581beb708::t_95c0cb2dc3a6c5 3-6
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_0fbc26ce5a46d6 311-312,322
+  s_e94ce581beb708::t_66a7661e1dff52 276-288,300-308,324-327,334-336,340-341
+  s_e94ce581beb708::t_e2aa1701276c48 313-321
+  s_e94ce581beb708::t_579e30a429979d 75,80,82,84
+  s_e94ce581beb708::t_a0f1d4ae10e9f1 77-78
+  s_e94ce581beb708::t_d1cee534bbab5c 289-299
+  s_e94ce581beb708::t_566b024559f45b 309-310,323
+golden/ModelRelaxationOsc/transient.txt
+  s_e94ce581beb708::t_a50d1ab52d45d5 5-13
+src/JIT/jit_trampoline.c
+  s_e94ce581beb708::t_9cd6271310b9fb 638-641
+  s_e94ce581beb708::t_ce44e5f4fa6bd2 773-776
+  s_e94ce581beb708::t_469de8bfa559ee 565-568
+  s_e94ce581beb708::t_655510ebf7fe30 754-764,766-771
+  s_e94ce581beb708::t_64bea3fe769c42 765
+src/JIT/des_kernel.c
+  s_e94ce581beb708::t_1014d2b169237f 304,313
+  s_e94ce581beb708::t_120d873f7b2d60 305-311,314-320
+  s_e94ce581beb708::t_512fb6c6b1012b 283-289
+  s_e94ce581beb708::t_224e4fa694c200 274,276-281,294-303,312
+  s_e94ce581beb708::t_6c2680c9e3ab61 282
+  s_e94ce581beb708::t_6b3bf0adfa1673 21
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_a6c1620170213d 149
+  s_e94ce581beb708::t_f75f5e805ba83a 1900-1908,1910
+  s_e94ce581beb708::t_313021661bf838 1909
+  s_e94ce581beb708::t_6b737d538165df 2009
+  s_e94ce581beb708::t_1f95f5856e70c5 1027-1031,1034-1036
+src/JIT/Tape.hs
+  s_e94ce581beb708::t_585d8fc2d779c5 370-379
+  s_e94ce581beb708::t_46d267a33d149f 87
+golden_parallel_lib.sh
+  s_e94ce581beb708::t_f1a7066ea330ed 171-186
+src/Solver/DES.hs
+  s_e94ce581beb708::t_8d9b111340d3a3 99,101,104-107,110
+  s_e94ce581beb708::t_92b4d4d4f58953 91-93,95-96
+  s_e94ce581beb708::t_8a0fe537e24518 94
+  s_e94ce581beb708::t_de26803745313b 667-673,675-678
+  s_e94ce581beb708::t_559950598982cf 783-829,833,841-843,845-903
+  s_e94ce581beb708::t_bed639382a12c8 830-832,834-840,844
+  s_e94ce581beb708::t_a890399d846f03 111
+validate_golden_tests.sh
+  s_e94ce581beb708::t_2c661a2787cc0a 386,395
+golden/DESSharedRoom/fingerprint.txt
+  s_e94ce581beb708::t_95c0cb2dc3a6c5 3-8
+golden/DESPureParity/fingerprint.txt
+  s_e94ce581beb708::t_fccbe4af1ba7b6 6-13
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_95c0cb2dc3a6c5 3-13
+golden/DESFanOut/fingerprint.txt
+  s_e94ce581beb708::t_58ddd99ef396fb 3-13
+golden/DESQueue/fingerprint.txt
+  s_e94ce581beb708::t_b00e4ee6f50105 5
+  s_e94ce581beb708::t_fccbe4af1ba7b6 3-4
+src/JIT/Compiler.hs
+  s_e94ce581beb708::t_e4e3c27ed63b00 76
+  s_e94ce581beb708::t_861ad97217ce0e 273-279,281-283
+  s_e94ce581beb708::t_8982e3d260d76e 284-292
+  s_e94ce581beb708::t_751a85da4108e2 280
+  s_e94ce581beb708::t_ff0560d251230e 342-356,361-363
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1f297a530c01b676e2be861e6fa5942904d7e5fb",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
