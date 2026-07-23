@@ -1,0 +1,20 @@
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_1c376bf6ae37f8 77-79
+  s_e94ce581beb708::t_7d02f5105b8133 235-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "15eb006d9ba14e44084bd010e3eb78d136db03da",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
