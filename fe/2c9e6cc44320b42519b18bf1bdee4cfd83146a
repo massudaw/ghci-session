@@ -1,0 +1,20 @@
+src/JIT/des_kernel.c
+  s_e94ce581beb708::t_dd0dae22f042ca 175-204,220,223,229-252
+  s_e94ce581beb708::t_5cd88da3f2bb0f 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fe2c9e6cc44320b42519b18bf1bdee4cfd83146a",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
