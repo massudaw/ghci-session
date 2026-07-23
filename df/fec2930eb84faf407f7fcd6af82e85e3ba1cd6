@@ -1,0 +1,27 @@
+src/Examples/DESEntityProto.hs
+  s_e94ce581beb708::t_ac0ff61228a186 30-32,35-38
+  s_e94ce581beb708::t_dd8bfcfd10aa48 153-158
+  s_e94ce581beb708::t_4c052bd8532286 249,254,267
+  s_e94ce581beb708::t_ed28999fbf0af9 298-301
+  s_e94ce581beb708::t_e13fcc5ddd16e7 178-179,182-195
+  s_e94ce581beb708::t_9cc6e0b111c2b3 59-84
+  s_e94ce581beb708::t_1d93b57b38b3a4 311-312
+  s_e94ce581beb708::t_a39b439442e725 39
+  s_e94ce581beb708::t_a3886573422c63 196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "dffec2930eb84faf407f7fcd6af82e85e3ba1cd6",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
