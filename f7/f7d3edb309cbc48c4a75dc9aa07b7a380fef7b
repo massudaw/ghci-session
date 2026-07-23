@@ -1,0 +1,32 @@
+src/Examples/DESCKernel.hs
+  s_e94ce581beb708::t_29535dc527c49d 63-66
+  s_e94ce581beb708::t_17a6d48af37e01 112-126,129,131-134,136-137
+  s_e94ce581beb708::t_4eecce3639881a 34-35,37
+  s_e94ce581beb708::t_3ed90672a36733 27
+  s_e94ce581beb708::t_3f7b76e36e4c98 50,54
+src/JIT/des_kernel.c
+  s_e94ce581beb708::t_0f931bcdd8a577 181,186
+  s_e94ce581beb708::t_59d0da219a459d 35-36
+  s_e94ce581beb708::t_11769a99c16218 137-141
+src/Solver/DES.hs
+  s_e94ce581beb708::t_8358dd4da70836 65,706
+  s_e94ce581beb708::t_553ca4c010e314 727-728,732-734
+  s_e94ce581beb708::t_24ba3431c3340d 678-683
+  s_e94ce581beb708::t_1cddd82cda4860 755-757
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f7f7d3edb309cbc48c4a75dc9aa07b7a380fef7b",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
