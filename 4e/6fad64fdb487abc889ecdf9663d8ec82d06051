@@ -1,0 +1,27 @@
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_c11129439010a6 281
+src/Solver/DES.hs
+  s_e94ce581beb708::t_9e037444383b3a 652
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_3f3eac9608c8e2 1512-1514,1538-1540,1548-1550,1552-1554
+  s_e94ce581beb708::t_3b880ce34c6346 1515-1523,1541,1544-1545,1551
+  s_e94ce581beb708::t_e525f5ba83f5f2 1524-1537,1542-1543,1546-1547
+src/Examples/DESBackPressure.hs
+  s_e94ce581beb708::t_9e037444383b3a 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4e6fad64fdb487abc889ecdf9663d8ec82d06051",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
