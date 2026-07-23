@@ -1,0 +1,24 @@
+src/JIT/Tape.hs
+  s_e94ce581beb708::t_6fca29a2ca8ecb 1036-1045,1048
+  s_e94ce581beb708::t_fd36006585c60a 1074-1085
+  s_e94ce581beb708::t_6dbb6dbe410db3 1119-1121
+  s_e94ce581beb708::t_f38108c7d04a6a 1089-1095
+src/JIT/Compiler.hs
+  s_e94ce581beb708::t_b9bfbb7c963131 361-363,365-376,381-395
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9fd269f99028c736a6c4b7d2fbaa18446b681430",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
