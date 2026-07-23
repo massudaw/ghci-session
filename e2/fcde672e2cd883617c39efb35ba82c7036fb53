@@ -1,0 +1,26 @@
+src/Examples/DESEntityProto.hs
+  s_e94ce581beb708::t_61a4ce6512157a 223
+  s_e94ce581beb708::t_38400dcee16d88 1-222,224-252
+sprinkler-solver.cabal
+  s_e94ce581beb708::t_953e2b1c79413b 340
+golden/DESEntityProto/status.txt
+  s_e94ce581beb708::t_b084649f57821b 1
+example/Main.hs
+  s_e94ce581beb708::t_953e2b1c79413b 182,382
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e2fcde672e2cd883617c39efb35ba82c7036fb53",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
