@@ -1,0 +1,29 @@
+src/Examples/DESExploreShopNative.hs
+  s_9e552fc89e3ff2::t_473f0eb3305abf 140-143,145,178
+  s_9e552fc89e3ff2::t_7c7083c056082c 76-77
+  s_9e552fc89e3ff2::t_0f5822ff9b4206 114-139,144,146-176,180
+  s_9e552fc89e3ff2::t_fa660d4f36ad71 55-65
+  s_9e552fc89e3ff2::t_cbf538433d3d82 25-30,34,38-41,43,47
+golden/DESExploreShopNative/fingerprint.txt
+  s_9e552fc89e3ff2::t_c02701f040597a 1-87,89-121,129
+src/Solver/DES/DST.hs
+  s_9e552fc89e3ff2::t_94af2f52f728f3 43-44
+  s_9e552fc89e3ff2::t_5ab9937ec2a362 26
+  s_9e552fc89e3ff2::t_052ba5ac2f4bac 187-254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "600829a357980f32244b1ff9524619d5215f9912",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
