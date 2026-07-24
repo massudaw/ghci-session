@@ -1,0 +1,20 @@
+src/Examples/DESBench.hs
+  s_9e552fc89e3ff2::t_63b823fc61251a 10,12
+  s_9e552fc89e3ff2::t_011ed974364f43 51-63,66-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "7edf5db58ebac54f87850e2ab6bc3aa1f89bda86",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
