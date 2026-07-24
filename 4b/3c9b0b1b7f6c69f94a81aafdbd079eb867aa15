@@ -1,0 +1,43 @@
+src/Model/SignalGasSource.hs
+  s_9e552fc89e3ff2::t_15ed0fa09f4961 1-77
+src/Examples/DESDistillery.hs
+  s_9e552fc89e3ff2::t_4d4aab4a0d0fd9 97-100,102
+  s_9e552fc89e3ff2::t_22dec55df01cac 156-160,163-164
+  s_9e552fc89e3ff2::t_cf32d57a5a75b2 424-434,436-440,442,445-447
+  s_9e552fc89e3ff2::t_bf7ed10909da15 181,183
+  s_9e552fc89e3ff2::t_119a5b2408ff82 257,435,441
+  s_9e552fc89e3ff2::t_b3a8bc7e770931 318,329-330
+  s_9e552fc89e3ff2::t_264bc79a71b737 305-309
+  s_9e552fc89e3ff2::t_e05ddd9241569f 351-355
+  s_9e552fc89e3ff2::t_a1aecdf6a384e8 281-282
+  s_9e552fc89e3ff2::t_3efd5766784413 142-155,161-162,165
+  s_9e552fc89e3ff2::t_ed516b7915de57 167,169,172,175-176
+  s_9e552fc89e3ff2::t_1aed22df7fdd8d 262
+  s_9e552fc89e3ff2::t_269459788af496 293
+  s_9e552fc89e3ff2::t_d9ed8286c4e5a6 20-23,25-31
+  s_9e552fc89e3ff2::t_9a0a5ca36d86f7 45,52
+  s_9e552fc89e3ff2::t_2fba53c44565b3 380,382,386-387,389-391
+  s_9e552fc89e3ff2::t_ca41730d636746 241-256,258-261,263-265
+golden/DESDistillery/tapestats.txt
+  s_9e552fc89e3ff2::t_094a2a2d6f5c1c 1
+golden/DESDistillery/fingerprint.txt
+  s_9e552fc89e3ff2::t_094a2a2d6f5c1c 1-18
+sprinkler-solver.cabal
+  s_9e552fc89e3ff2::t_558ece3f348a07 91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "4b3c9b0b1b7f6c69f94a81aafdbd079eb867aa15",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
