@@ -1,0 +1,40 @@
+src/Solver/DES/Physical.hs
+  s_9e552fc89e3ff2::t_8bb794ac512938 460,467-474,476,479-480
+  s_9e552fc89e3ff2::t_47899d2d05c03d 97
+src/Solver/IDA.hs
+  s_9e552fc89e3ff2::t_31d2594841b962 701,703-709,717
+  s_9e552fc89e3ff2::t_88b68efbce666e 1425
+  s_9e552fc89e3ff2::t_5e002014a0a2b5 108
+  s_9e552fc89e3ff2::t_9e2a82e40af28e 1546-1572,1575
+  s_9e552fc89e3ff2::t_98c74b13644764 1586
+  s_9e552fc89e3ff2::t_500adad0fc5c30 1618-1645,1649
+  s_9e552fc89e3ff2::t_c12dbb931c2551 1663
+src/Solver/DES/DST.hs
+  s_9e552fc89e3ff2::t_e9a1e6c934611e 196-203,209,211
+src/Examples/DESBench.hs
+  s_9e552fc89e3ff2::t_a4dad273532e5f 95
+  s_9e552fc89e3ff2::t_28fc5cdf006273 115
+src/Solver/HybridDAE.hs
+  s_9e552fc89e3ff2::t_3bcf4c4bc4c4d3 250-254
+  s_9e552fc89e3ff2::t_17d9adfa0133e7 272,276,280
+  s_9e552fc89e3ff2::t_a9058c8c8ccae7 401
+  s_9e552fc89e3ff2::t_f5a17c847495a6 294
+src/Examples/DESExploreShopNative.hs
+  s_9e552fc89e3ff2::t_c06dbca61f6ab8 147-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "53b91da16d9bf5bb6ff6ca88514b3878e7167b80",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
