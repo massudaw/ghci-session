@@ -1,0 +1,24 @@
+src/Solver/IDA.hs
+  s_e94ce581beb708::t_8a38c94d8e5bd9 1272-1287
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_4d58af529360ac 336-344
+  s_e94ce581beb708::t_f8ea9dd4258e83 345
+golden/DESMoldingShop/fingerprint.txt
+  s_e94ce581beb708::t_60bc7d79a520f4 3,6,8,10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "00fdf7414aa87268bd51da7613cabadcf9019101",
+  "prompts": {},
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
