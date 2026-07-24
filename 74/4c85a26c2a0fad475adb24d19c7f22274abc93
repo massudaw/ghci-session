@@ -1,0 +1,87 @@
+src/Solver/DES/Physical.hs
+  s_fde37d29736bbf::t_92347009ff1ae6 359-360
+  s_fde37d29736bbf::t_afab0f2fa13d13 364
+  s_fde37d29736bbf::t_2e1e90721e99ae 358,363
+  s_fde37d29736bbf::t_d0441bcc795882 186
+src/Solver/DES/Unified.hs
+  s_fde37d29736bbf::t_ba7bf7b3c42296 96
+  s_fde37d29736bbf::t_963f263ab57a59 47
+  s_fde37d29736bbf::t_23e04340f9c620 66-67,70,77,82-83
+  s_fde37d29736bbf::t_cf90e649082ff5 233,241-261
+  s_fde37d29736bbf::t_5e707eb41e874f 210-218
+src/Examples/DESQueue.hs
+  s_fde37d29736bbf::t_b0312e81c79d3c 19,22
+  s_fde37d29736bbf::t_c0f2868c4d07ff 69
+  s_fde37d29736bbf::t_feb2f9e18fd115 89
+  s_fde37d29736bbf::t_1a24dac8b4c2b3 55-68,70
+src/Examples/DESUnifiedLine.hs
+  s_fde37d29736bbf::t_46a8752fddbabe 25,29
+  s_fde37d29736bbf::t_aef264edb34c2a 49
+  s_fde37d29736bbf::t_62a06e520bc835 88-96,98-99
+src/Examples/DESElectricLoad.hs
+  s_fde37d29736bbf::t_0a2bd2e38b1a58 32,34
+  s_fde37d29736bbf::t_cd32ac1b3d9e7c 94-102,104-105
+.gitignore
+  s_fde37d29736bbf::t_7c3f4ccb46ea53 14
+src/Backend/DESChart.hs
+  s_fde37d29736bbf::t_a4509c73587de7 1-16,19-42,44-50,60,80-83,87-91,95-146,149,205-207,213-248
+  s_fde37d29736bbf::t_eb8872f4ba18eb 43
+  s_fde37d29736bbf::t_c23486f6f1a692 17-18
+  s_fde37d29736bbf::t_ed21faef8e8cd1 155-156,163,165-184,190,192-193,196-197,200-203
+  s_fde37d29736bbf::t_ed0b97c504e3c2 51-59,61-79,84-86,92-94
+  s_fde37d29736bbf::t_8d1436c2f5b33a 164,185-189,191,194-195,198-199,204
+  s_fde37d29736bbf::t_90912597391e3d 147-148
+  s_fde37d29736bbf::t_7f0d23dce7483b 150-154,157-162
+  s_fde37d29736bbf::t_6d85d9d8aab247 208-212
+sprinkler-solver.cabal
+  s_fde37d29736bbf::t_2797319ecb2d6d 161
+src/Solver/DES.hs
+  s_fde37d29736bbf::t_8561bae0757807 699-700
+  s_fde37d29736bbf::t_99f4bbc59ab058 1020-1025
+  s_fde37d29736bbf::t_4777edb4c26dba 88-89
+  s_fde37d29736bbf::t_cb071595efda18 1104-1109,1112-1123,1136,1142
+  s_fde37d29736bbf::t_504e994a757f45 702
+  s_fde37d29736bbf::t_536c3641827df8 91,93,96
+  s_fde37d29736bbf::t_23b08835126ff6 698
+  s_fde37d29736bbf::t_37be9311d45c0e 1124-1134,1137-1141,1143-1164
+  s_fde37d29736bbf::t_616c41cb899eca 1080
+  s_fde37d29736bbf::t_e9be3f6f9db623 1110-1111,1135,1165
+  s_fde37d29736bbf::t_bb8bf05f9721e5 110
+  s_fde37d29736bbf::t_39a054f09ad256 670
+  s_fde37d29736bbf::t_577cbbb6aa4934 1081
+  s_fde37d29736bbf::t_82b7030c4eec6f 1037-1043
+  s_fde37d29736bbf::t_7281af2cad9c64 99
+  s_fde37d29736bbf::t_6bba8d11c1f5e8 83
+  s_fde37d29736bbf::t_e6c2111f21b269 669
+  s_fde37d29736bbf::t_957130a77eac54 701
+  s_fde37d29736bbf::t_8237f5dd074a85 90,92
+src/Examples/DESMoldingShop.hs
+  s_fde37d29736bbf::t_4c776b27a57bf7 56
+  s_fde37d29736bbf::t_d46b0e753995dc 221
+  s_fde37d29736bbf::t_451ebbc00287f8 52
+  s_fde37d29736bbf::t_6fc50fb1565c90 255
+  s_fde37d29736bbf::t_511afeb0422443 189
+  s_fde37d29736bbf::t_7e2978b0e0b663 252-254,256-258
+  s_fde37d29736bbf::t_9c574274a3c4cb 259
+  s_fde37d29736bbf::t_30973a3e6e34fb 126-129
+  s_fde37d29736bbf::t_e66df11b98afce 150,159
+  s_fde37d29736bbf::t_77083c91d7fe95 181
+  s_fde37d29736bbf::t_2a21acf5c1902f 182
+  s_fde37d29736bbf::t_1244327017ee4b 205-212,220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "744c85a26c2a0fad475adb24d19c7f22274abc93",
+  "prompts": {},
+  "sessions": {
+    "s_fde37d29736bbf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db556d30-4571-4a03-a335-2410d8435a4e",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
