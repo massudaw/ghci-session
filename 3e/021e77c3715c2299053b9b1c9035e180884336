@@ -1,0 +1,58 @@
+golden/DESPureParity/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 6-11
+src/Solver/SymbolicDAE/SelectivePantelides.hs
+  s_e94ce581beb708::t_5a9da2f5d3cf48 350-359
+  s_e94ce581beb708::t_66dd2620aabe69 45
+golden/DESQueue/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-4
+golden/DESUnifiedLine/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-7
+src/Solver/DES.hs
+  s_e94ce581beb708::t_3c8b300a134ed7 673-677,682-683
+  s_e94ce581beb708::t_b210860dae2558 110
+golden/DESFactoryLine/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-12
+src/Solver/DES/Physical.hs
+  s_e94ce581beb708::t_6ddddb725e6e6c 329-330,332-335
+src/JIT/jit_trampoline.c
+  s_e94ce581beb708::t_902353226d2446 45-47
+  s_e94ce581beb708::t_2da00b16db226e 637-638
+  s_e94ce581beb708::t_f3190a84bc6bef 723-727
+  s_e94ce581beb708::t_09b0e2e1caa60a 779,781
+  s_e94ce581beb708::t_c45c3ce9d1df1d 801-806
+  s_e94ce581beb708::t_6190b6e75225d6 756,758
+golden/DESSharedRoom/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-7
+src/Solver/HybridDAE.hs
+  s_e94ce581beb708::t_3cedb0975425fc 148
+  s_e94ce581beb708::t_b10f8730c72d1c 595
+  s_e94ce581beb708::t_991d1f485276a1 40-41
+  s_e94ce581beb708::t_cdc0e5b8cf1a61 197-204
+  s_e94ce581beb708::t_526af46be66856 216-220,222-224
+  s_e94ce581beb708::t_289ee7db0f4f2f 405-426,429-437
+golden/DESFanOut/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-12
+golden/DESParallelLines/fingerprint.txt
+  s_e94ce581beb708::t_0cda81bf4992a1 3-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3e021e77c3715c2299053b9b1c9035e180884336",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e94ce581beb708": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4a29170-a7b1-4b63-8afc-188a5885bbfa",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
