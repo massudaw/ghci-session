@@ -1,0 +1,55 @@
+sprinkler-solver.cabal
+  s_0d7413bb621c3f::t_1baf30929f2252 87
+golden/DESDistillery/tapestats.txt
+  s_0d7413bb621c3f::t_425db660fea50a 2
+golden/DESExploreDistillery/fingerprint.txt
+  s_0d7413bb621c3f::t_425db660fea50a 1-3,5-23
+src/Examples/DESDistillery.hs
+  s_0d7413bb621c3f::t_735f959d13c45c 238-239
+  s_0d7413bb621c3f::t_829b45c9770033 48
+  s_0d7413bb621c3f::t_0010f159986a2b 119-130
+  s_0d7413bb621c3f::t_789b3a27839cf0 181
+  s_0d7413bb621c3f::t_276f37b372e80e 218-222,229-231,236-237
+golden/DESMctsFalsify/fingerprint.txt
+  s_0d7413bb621c3f::t_425db660fea50a 1-12
+src/Model/SignalHeatSourceCapped.hs
+  s_0d7413bb621c3f::t_fb2cbf4a7a3cb0 1-90
+golden/DESExploreDistilleryNative/tapestats.txt
+  s_0d7413bb621c3f::t_425db660fea50a 1
+golden/DESExploreDistillery/tapestats.txt
+  s_0d7413bb621c3f::t_425db660fea50a 1
+golden/DESDistillery/fingerprint.txt
+  s_0d7413bb621c3f::t_425db660fea50a 2,4,7-8,11-12,14,17-18,20-21,24
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_0d7413bb621c3f::t_425db660fea50a 1-12
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_0d7413bb621c3f::t_425db660fea50a 2,4,7-8,11-12,14,17-18,20-21,24
+src/Examples/DESExploreDistilleryNative.hs
+  s_0d7413bb621c3f::t_d83e9f68f3dbc1 191,206
+  s_0d7413bb621c3f::t_b7e2351874ecc1 37
+  s_0d7413bb621c3f::t_ed413ddc0beea3 173-176,178-183
+  s_0d7413bb621c3f::t_44153e4349957e 43
+  s_0d7413bb621c3f::t_4927ba80fd774c 185
+  s_0d7413bb621c3f::t_f8c69290d6f6c7 171-172,177,184,186-187,193-205,207-210,212-214,216-217
+  s_0d7413bb621c3f::t_a2129f6604bcf1 215
+  s_0d7413bb621c3f::t_8e3c2f11edeb37 34,36,41-42
+  s_0d7413bb621c3f::t_4a9e9120228be0 211
+  s_0d7413bb621c3f::t_7ecc8342ca20ad 188-190
+  s_0d7413bb621c3f::t_6b2458ff34917e 192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "233f4dbdfb1fea615a6d70d694a8ba266572a5d4",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
