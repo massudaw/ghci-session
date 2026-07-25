@@ -1,0 +1,30 @@
+src/Examples/ModelSaoJorgeOptimize.hs
+  s_9647294b2c447a::t_8c5ca53cdb17f0 38-67
+  s_9647294b2c447a::t_458b4af5865c0a 283
+  s_9647294b2c447a::t_25d46112a9d9b1 539-546,548-566
+  s_9647294b2c447a::t_b854b996c9a50c 199-201
+  s_9647294b2c447a::t_c1f1282f640fa9 547
+  s_9647294b2c447a::t_b3c31bf3d847cf 410,412-413
+  s_9647294b2c447a::t_f7c824924b8409 358-409,411,414-417
+  s_9647294b2c447a::t_f535cd46930dcd 264-265,267
+  s_9647294b2c447a::t_0e66340256c1c3 226-228
+  s_9647294b2c447a::t_fa46f8a1b8c10c 309-312
+  s_9647294b2c447a::t_ba3783911fb359 145-156,170-173,175-176
+  s_9647294b2c447a::t_7bb636255d62eb 484-515,519,521-527,530-531
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b11b5d6fb139325746645afa2847d81ee6074a78",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
