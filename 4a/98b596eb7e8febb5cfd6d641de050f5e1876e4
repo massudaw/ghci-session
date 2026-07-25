@@ -1,0 +1,24 @@
+src/Examples/ModelPumpSizing.hs
+  s_9647294b2c447a::t_ece64f33c7712a 73,77-78,85
+  s_9647294b2c447a::t_518c8eac8e146e 37
+src/Project.hs
+  s_9647294b2c447a::t_51aac1d9a8ccce 788-807
+  s_9647294b2c447a::t_01b91f59309233 785-787
+  s_9647294b2c447a::t_b47c5464959121 782-784
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "4a98b596eb7e8febb5cfd6d641de050f5e1876e4",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
