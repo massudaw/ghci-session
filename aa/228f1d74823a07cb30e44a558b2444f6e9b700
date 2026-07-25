@@ -1,0 +1,31 @@
+src/Solver/DesignOptimize.hs
+  s_9647294b2c447a::t_9927b158c438dc 156
+  s_9647294b2c447a::t_55c7864cec5399 139-155,157-179,181-219,221-222
+  s_9647294b2c447a::t_2640e4227f525b 113-115
+src/Examples/ModelSaoJorgeOptimize.hs
+  s_9647294b2c447a::t_7337a894300141 187-188,390,640
+  s_9647294b2c447a::t_b4611da15377f7 382-389,396-399,403-405
+  s_9647294b2c447a::t_05efcc2a5362e5 605,622
+  s_9647294b2c447a::t_96419b3094fe91 633-639,641-642
+  s_9647294b2c447a::t_7fa86d35cfe771 417-418
+  s_9647294b2c447a::t_80c378f68b1ca3 38
+  s_9647294b2c447a::t_b982617c99b30d 63-72,75,79-82,88-90,93-107
+  s_9647294b2c447a::t_63723a628fffbf 522-535,537-538
+  s_9647294b2c447a::t_e356bcd447c449 727
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "aa228f1d74823a07cb30e44a558b2444f6e9b700",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
