@@ -1,0 +1,72 @@
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_5dbbf6bd83b084 360-418
+golden/DESMctsFalsify/fingerprint.txt
+  s_0d7413bb621c3f::t_6c17ddd355cf39 1-11
+src/Examples/DESCKernel.hs
+  s_0d7413bb621c3f::t_c52c8c8e6c799e 21
+  s_0d7413bb621c3f::t_a1a2872a51830e 51,53
+src/Examples/DESMctsFalsify.hs
+  s_0d7413bb621c3f::t_c7cb3d2068d123 138,140-146,150
+  s_0d7413bb621c3f::t_0799fb00c370f3 68,70
+  s_0d7413bb621c3f::t_180540940319b9 15-20
+  s_0d7413bb621c3f::t_130ba3884abf71 195
+  s_0d7413bb621c3f::t_26aec981725002 94-96,98-104
+src/Solver/DES.hs
+  s_0d7413bb621c3f::t_6f706dc942012c 815-817,821-824,849-850
+  s_0d7413bb621c3f::t_51df54c510e4ee 994-1001,1028-1053,1055,1057-1058,1062-1063
+  s_0d7413bb621c3f::t_78fdde695e862a 883,912,916,920-924,926,929,935-936,966-967
+  s_0d7413bb621c3f::t_e267cd5bc11636 75-77
+  s_0d7413bb621c3f::t_9b231380e114bf 623-624,639,662
+  s_0d7413bb621c3f::t_f8586470170beb 1096
+  s_0d7413bb621c3f::t_9ea72c147078d7 557-560,566-570,578-579,595
+  s_0d7413bb621c3f::t_006c0458e23136 303-327,349-354,365,367
+  s_0d7413bb621c3f::t_565906af397076 279-280
+  s_0d7413bb621c3f::t_49c690c1ef47df 383,385,396,408,427,430,439,452,457-461,463-466,468,471
+  s_0d7413bb621c3f::t_103c941c87ecf0 1258,1261,1275
+  s_0d7413bb621c3f::t_c57a4512051da7 397
+  s_0d7413bb621c3f::t_b7078cb4ad70b0 431
+  s_0d7413bb621c3f::t_165dee479f3d69 792
+  s_0d7413bb621c3f::t_9e6fc25d916576 86
+  s_0d7413bb621c3f::t_7a8cf10330c2a6 440
+src/JIT/des_kernel.c
+  s_0d7413bb621c3f::t_9f9afb52094a5b 240
+  s_0d7413bb621c3f::t_3a1d097fe609c8 102
+  s_0d7413bb621c3f::t_7cdc4b19de49d7 29-31
+  s_0d7413bb621c3f::t_cc553cb1b052fa 210
+  s_0d7413bb621c3f::t_c473005d0342c6 149
+  s_0d7413bb621c3f::t_6d6c9b2ee5db79 76-77,83-85
+src/Solver/DES/Unified.hs
+  s_0d7413bb621c3f::t_f28ce8c4637fb0 53
+  s_0d7413bb621c3f::t_74afe9490269af 103-104
+  s_0d7413bb621c3f::t_aac189b1eb47dd 66-67
+  s_0d7413bb621c3f::t_cac14f1db85aea 308-332
+  s_0d7413bb621c3f::t_f5c384c311b764 101
+src/Solver/HybridDAE.hs
+  s_0d7413bb621c3f::t_97dc85d02e48eb 237-245,264,280,284,291,296
+  s_0d7413bb621c3f::t_a0fad4be618115 297
+  s_0d7413bb621c3f::t_9e6cc96659a36c 395-397,403
+src/Solver/DES/Physical.hs
+  s_0d7413bb621c3f::t_d41df83607cfdd 291-326,335
+  s_0d7413bb621c3f::t_250c0e0a950696 39
+  s_0d7413bb621c3f::t_b23ea67f786d39 529-532,538-553,558-562
+  s_0d7413bb621c3f::t_4d168aa60255e3 51-52
+  s_0d7413bb621c3f::t_8b7736981830a3 563
+src/Solver/IDA.hs
+  s_0d7413bb621c3f::t_50ea786d4fc6ec 722
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a9d577ec5896257e807493fc3f11a3aa6a7108e3",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
