@@ -1,0 +1,38 @@
+src/Examples/DESMctsFalsify.hs
+  s_0d7413bb621c3f::t_664a2d242f3cac 25-26
+  s_0d7413bb621c3f::t_7742241e0808fd 41
+  s_0d7413bb621c3f::t_1e7f882e5d53b3 54
+  s_0d7413bb621c3f::t_8f6ec44d04a688 16-20,22-24,27-28,30-39,42-51,64,92-95,97,100,102-103,126-295,297-330,336,344-345,348
+  s_0d7413bb621c3f::t_aec571c70486c6 65
+  s_0d7413bb621c3f::t_d36359a46ffa1a 296
+  s_0d7413bb621c3f::t_6641f79de455ee 331-335,337-343,346-347
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_e0c622cc45ee20 169-173,177-181,183-184,186-194
+  s_0d7413bb621c3f::t_b2b4b358a59198 265-267,272-299,301,305-312
+  s_9e552fc89e3ff2::t_f5515403c4d780 1-168,174-176,182,185,199-200,204-205,209-210,217,221-222,226,261-264,268-271,300,302-304,313-318
+  s_0d7413bb621c3f::t_fd6bbf12a7208c 195-198,201-203,206-208,211-216,218-220,223-225,227-260
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "61f9428e5bc97033e0517a728452cdf52b7b25be",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
