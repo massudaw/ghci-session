@@ -1,0 +1,24 @@
+src/Examples/ModelSaoJorgeOptimize.hs
+  s_9647294b2c447a::t_0053bde7d55af1 663-678
+  s_9647294b2c447a::t_c4e3e816110160 70-110
+  s_9647294b2c447a::t_f255dc33510962 437-474,523
+  s_9647294b2c447a::t_dc97aa9164557e 475-522
+  s_9647294b2c447a::t_cea4900944d73b 700
+  s_9647294b2c447a::t_d2ba1f9b2ce119 694-697
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "99e39de0b2c562f4444a48deaca93cb96cf1626a",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
