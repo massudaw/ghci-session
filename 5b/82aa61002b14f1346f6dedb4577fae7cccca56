@@ -1,0 +1,29 @@
+golden/timings_history.tsv
+  s_0d7413bb621c3f::t_a4a379fb5a4e42 1-20,22,24-204
+  s_0d7413bb621c3f::t_4ace476ee23b01 21
+  s_0d7413bb621c3f::t_398413b97da9ad 23
+golden_timings.sh
+  s_0d7413bb621c3f::t_cdea6fe61e70e3 107
+  s_0d7413bb621c3f::t_c38f17600f4ea4 4,11-21,39-40,45,111-116,121-122,130-134,140
+  s_0d7413bb621c3f::t_2652ec1f2aa2d5 22-23,42-43,51,54,59,63-106,108-110,117-118,137,139
+  s_0d7413bb621c3f::t_576a452a742d21 44
+  s_0d7413bb621c3f::t_ea59db6c8a7bda 119
+golden/timings.tsv
+  s_0d7413bb621c3f::t_a4a379fb5a4e42 1-2,10-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "5b82aa61002b14f1346f6dedb4577fae7cccca56",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
