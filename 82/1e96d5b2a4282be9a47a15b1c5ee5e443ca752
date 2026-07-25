@@ -1,0 +1,38 @@
+src/Solver/DesignOptimize.hs
+  s_9647294b2c447a::t_279e6852ec02ba 150
+  s_9647294b2c447a::t_8463db0993733b 74-86
+  s_9647294b2c447a::t_b0f9371a670c2d 42
+golden/ModelSaoJorgeOptimize/status.txt
+  s_9647294b2c447a::t_892d5fe836ba05 1
+sprinkler-solver.cabal
+  s_9647294b2c447a::t_6230011fb6a476 300
+example/Main.hs
+  s_9647294b2c447a::t_bd92b4edd7e498 43,346
+src/Examples/ModelSaoJorgeOptimize.hs
+  s_9647294b2c447a::t_db39cd0b30ba42 316-324,326
+  s_9647294b2c447a::t_261869f52cf197 362
+  s_9647294b2c447a::t_13f775a1d2823c 282-286,289-292
+  s_9647294b2c447a::t_3ffb837c03933a 130-132,142,148-150,152-154,161-163,165-171,175,177-178,192,195,199,201,204,209-210,217,220-222,224-226,228-229,231-234
+  s_9647294b2c447a::t_1607ced52a8c91 37-52
+  s_9647294b2c447a::t_15c0b6a1489edb 1-17,19-36,53-129,133-141,143-147,151,155-160,164,172-174,176,179-191,193-194,196-198,200,202-203,205-208,211-216,218-219,223,227,230,235-281,287-288,293-297,300,314-315,325,327-335,337-361,363-386,388-422
+  s_9647294b2c447a::t_4497e5c2c0f13d 18
+  s_9647294b2c447a::t_62e468d24a3f8c 298-299,301-313
+  s_9647294b2c447a::t_601610db0d681e 387
+  s_9647294b2c447a::t_0b2d4e7ca04a79 336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "821e96d5b2a4282be9a47a15b1c5ee5e443ca752",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
