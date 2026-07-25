@@ -1,0 +1,19 @@
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_c367308155ea2f 934-1025
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a493c833e38e2a9ba413f4b123d70838dd78c2af",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
