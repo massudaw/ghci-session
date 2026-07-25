@@ -1,0 +1,27 @@
+src/Examples/DESExploreDistilleryNative.hs
+  s_0d7413bb621c3f::t_c2801c1d1c385f 90
+  s_0d7413bb621c3f::t_1a40299039ae57 137
+src/Examples/DESFalsifyDistillery.hs
+  s_0d7413bb621c3f::t_734a38b2b91191 61
+  s_0d7413bb621c3f::t_6d885a6422578a 141-156,158-192,195-213
+  s_0d7413bb621c3f::t_a7d7f86bbf170b 115-116,118,123
+  s_0d7413bb621c3f::t_bcc6fd0e6ee200 138-140
+  s_0d7413bb621c3f::t_8c857bd6befefd 157
+  s_0d7413bb621c3f::t_bf490c8e955654 193-194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d5d09d4ba04a93fb200626c685fbca5e3847f81d",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+src/Model/SignalFlowSource.hs
+  s_9e552fc89e3ff2::t_e950625d027867 1-75
+src/Model/SignalReactionSource.hs
+  s_9e552fc89e3ff2::t_7ab4fb555f8859 1-77
+sprinkler-solver.cabal
+  s_9e552fc89e3ff2::t_9325ae70a79d16 89-90
+  s_9e552fc89e3ff2::t_a4fd4d8f69c936 363
+golden/DESReactorTank/status.txt
+  s_9e552fc89e3ff2::t_0a06e572539cb2 1
+golden/DESReactorTank/tapestats.txt
+  s_9e552fc89e3ff2::t_0a06e572539cb2 1
+src/Examples/DESReactorTank.hs
+  s_9e552fc89e3ff2::t_dae702054af754 1-5,10,14,25-32,34-37,39-45,47,49,52,55-59,61-66,71-72,74-76,78,80-87,94-96,102-103,106-109
+  s_9e552fc89e3ff2::t_bf787cbfba418a 38,46,60
+  s_9e552fc89e3ff2::t_710ef3b7dec358 6-9,11-13,15-24,33,48,50-51,53-54,67-70,73,77,79,88-93,97-101,104-105
+golden/DESReactorTank/fingerprint.txt
+  s_9e552fc89e3ff2::t_0a06e572539cb2 1-6
+example/Main.hs
+  s_9e552fc89e3ff2::t_0ab23006fae224 200,410
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "22dca8d05013029547dd07916d813767ccc9773d",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

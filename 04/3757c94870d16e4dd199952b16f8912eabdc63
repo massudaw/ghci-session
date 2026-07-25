@@ -1,0 +1,30 @@
+sprinkler-solver.cabal
+  s_9e552fc89e3ff2::t_252141b75a5f56 361
+golden/DESExploreDistillery/tapestats.txt
+  s_9e552fc89e3ff2::t_8a1e8d57eea66a 1
+src/Examples/DESExploreDistillery.hs
+  s_9e552fc89e3ff2::t_bbfceb6dd7f8ad 35
+  s_9e552fc89e3ff2::t_94904f07c56b1f 1-34,36-178
+golden/DESExploreDistillery/fingerprint.txt
+  s_9e552fc89e3ff2::t_8a1e8d57eea66a 1-103
+example/Main.hs
+  s_9e552fc89e3ff2::t_252141b75a5f56 197,408
+golden/DESExploreDistillery/status.txt
+  s_9e552fc89e3ff2::t_8a1e8d57eea66a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "043757c94870d16e4dd199952b16f8912eabdc63",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+src/JIT/des_kernel.c
+  s_0d7413bb621c3f::t_50ababce3bec56 41-43
+  s_0d7413bb621c3f::t_63322cd1a36011 85-99
+  s_0d7413bb621c3f::t_3ca9e46b90f371 234,239
+  s_0d7413bb621c3f::t_9b7d102e72974d 264,269
+src/Solver/DES.hs
+  s_0d7413bb621c3f::t_4fd61ba8fcb49b 456
+  s_0d7413bb621c3f::t_973aad33126b11 610
+  s_0d7413bb621c3f::t_6614e07a8bed57 633-648
+  s_0d7413bb621c3f::t_7207d7a254e328 392,394
+  s_0d7413bb621c3f::t_68bcb35e8dfa28 988-989
+  s_0d7413bb621c3f::t_bdd89b855ef55c 1090
+  s_0d7413bb621c3f::t_a52dc6b7a5823b 325-335
+  s_0d7413bb621c3f::t_372673877f3460 78-80
+  s_0d7413bb621c3f::t_5fc5fb477790d9 90
+  s_0d7413bb621c3f::t_ada3a13d53e251 410,412
+  s_0d7413bb621c3f::t_db59840c97ecae 285-292
+  s_0d7413bb621c3f::t_6c672ff6e9293d 936
+  s_0d7413bb621c3f::t_255c84c8bb99f2 859-862
+  s_0d7413bb621c3f::t_a7bc5af2a8eed6 972-976,978,980
+  s_0d7413bb621c3f::t_c8bfbffe08491c 376-380
+  s_0d7413bb621c3f::t_b283006dee5cef 484
+  s_0d7413bb621c3f::t_c0818b031ca93d 436
+  s_0d7413bb621c3f::t_07a47397bfc1ec 627
+  s_0d7413bb621c3f::t_6d86d7a480a563 680
+  s_0d7413bb621c3f::t_652d027a5e700a 1020,1023
+  s_0d7413bb621c3f::t_5e0bd1dc042c18 1112-1134,1136,1138,1140,1146
+  s_0d7413bb621c3f::t_a5093565acd1d2 1056-1063
+  s_0d7413bb621c3f::t_5f6acd59e55e01 482-483
+  s_0d7413bb621c3f::t_cb722461ce0280 895-896
+src/Solver/DES/Physical.hs
+  s_0d7413bb621c3f::t_be54e66e2e1a5d 40
+  s_0d7413bb621c3f::t_919126bbf70d5f 311-330,335,347
+  s_0d7413bb621c3f::t_834790dfcc0654 356-358
+  s_0d7413bb621c3f::t_b1377413ba41db 292
+src/Examples/DESCKernel.hs
+  s_0d7413bb621c3f::t_4440318d9036d3 28
+  s_0d7413bb621c3f::t_95a84754bdc3b2 53,57
+src/Solver/DES/Unified.hs
+  s_0d7413bb621c3f::t_f927551e1c2254 102
+  s_0d7413bb621c3f::t_a99fd1869f4e21 54
+  s_0d7413bb621c3f::t_4a580eb7cc924b 334-359
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "ecaa9494ad9538316d2a7cb0fb9a5f81c6de7a44",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

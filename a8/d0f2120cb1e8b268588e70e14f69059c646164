@@ -1,0 +1,32 @@
+example/Main.hs
+  s_9e552fc89e3ff2::t_df38361199084a 200,415
+src/Examples/DESMctsFalsify.hs
+  s_9e552fc89e3ff2::t_4b62c17a7f6c49 123-126,129
+  s_9e552fc89e3ff2::t_84f973d56dd50a 30-40
+  s_9e552fc89e3ff2::t_4c8bab66daa5ca 11-12,17-23,25-29,54,81-83,85-88,92-93,96-97,102,115,119-120,122,130-133,135-136,139,141-142,146,148-152,155,157,159,161-171,175,182-184,186-187,189-194,198,204,207,210-212,216-221,223-230,233-238
+  s_9e552fc89e3ff2::t_4bf104f1008ec1 200,202,206,208-209
+  s_9e552fc89e3ff2::t_e42d672ea1c4f1 1-10,13-16,24,41-53,55-80,84,89-91,94-95,98-101,103-114,116-118,121,127-128,134,137-138,140,143-145,147,153-154,156,158,160,172-174,176-181,185,188,195-197,199,201,203,205,213-215,222,231-232,239-241,243-246
+  s_9e552fc89e3ff2::t_99151016306c70 242
+sprinkler-solver.cabal
+  s_9e552fc89e3ff2::t_df38361199084a 366
+golden/DESMctsFalsify/fingerprint.txt
+  s_9e552fc89e3ff2::t_f3ebc3491c271a 1-11
+golden/DESMctsFalsify/status.txt
+  s_9e552fc89e3ff2::t_f3ebc3491c271a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a8d0f2120cb1e8b268588e70e14f69059c646164",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

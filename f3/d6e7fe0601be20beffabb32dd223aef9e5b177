@@ -1,0 +1,59 @@
+src/Solver/DES/Physical.hs
+  s_9e552fc89e3ff2::t_57f301aad88ab8 86-87
+  s_9e552fc89e3ff2::t_3835c2ef9c50ca 446-462
+  s_9e552fc89e3ff2::t_aea5291dda55d0 42-45
+src/JIT/jit_trampoline.c
+  s_9e552fc89e3ff2::t_31dca980004bcc 895-901
+  s_9e552fc89e3ff2::t_8b47e83a9f0f5a 893-894
+src/Solver/DES/Unified.hs
+  s_9e552fc89e3ff2::t_a8b4ce45f3bf10 96-97
+  s_9e552fc89e3ff2::t_c0cfbbebcd6095 58-61
+example/Main.hs
+  s_9e552fc89e3ff2::t_9e9a0fbf12e565 197,404
+golden/DESExploreShopNative/fingerprint.txt
+  s_9e552fc89e3ff2::t_bffeed05a98937 1-10
+golden/DESExploreShopNative/status.txt
+  s_9e552fc89e3ff2::t_bffeed05a98937 1
+golden/DESExploreShopNative/tapestats.txt
+  s_9e552fc89e3ff2::t_bffeed05a98937 1
+src/Solver/IDA.hs
+  s_9e552fc89e3ff2::t_e0de73ef9fbda5 442-445
+  s_9e552fc89e3ff2::t_4118c9394c84b6 1175-1177
+  s_9e552fc89e3ff2::t_11da77f2710d6a 1443-1646
+  s_9e552fc89e3ff2::t_62ea187083b9d1 123
+  s_9e552fc89e3ff2::t_83918c0a93aeaf 92,94-96
+  s_9e552fc89e3ff2::t_1a3fd1cb4a595b 113
+  s_9e552fc89e3ff2::t_a1af3f4119addf 693-710,713-725
+  s_9e552fc89e3ff2::t_ad83d04a62dddd 726
+src/Examples/DESExploreShopNative.hs
+  s_9e552fc89e3ff2::t_ce5315272c50c4 1-96
+src/Solver/HybridDAE.hs
+  s_9e552fc89e3ff2::t_b1be2f140f2802 227
+  s_9e552fc89e3ff2::t_d6c19ed5e5b482 28-31
+  s_9e552fc89e3ff2::t_e9a7018da5e6dc 282,287
+  s_9e552fc89e3ff2::t_6c294f57dd7efa 352-382
+  s_9e552fc89e3ff2::t_f97458f1ea01f0 54-55
+  s_9e552fc89e3ff2::t_0e1b515acd3957 38
+  s_9e552fc89e3ff2::t_55170fdd605ee6 171
+  s_9e552fc89e3ff2::t_e26153533c9dd7 156
+  s_9e552fc89e3ff2::t_115743f029fc95 232-265
+  s_9e552fc89e3ff2::t_28d595bbd5c6c2 400
+sprinkler-solver.cabal
+  s_9e552fc89e3ff2::t_9e9a0fbf12e565 358
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f3d6e7fe0601be20beffabb32dd223aef9e5b177",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

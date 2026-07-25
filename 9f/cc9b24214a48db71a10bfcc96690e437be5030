@@ -1,0 +1,44 @@
+golden/DESDistillery/fingerprint.txt
+  s_9e552fc89e3ff2::t_6306875cad308c 1-18
+src/Examples/DESDistillery.hs
+  s_9e552fc89e3ff2::t_ac6d00088b5cc6 39-41,46-47
+  s_9e552fc89e3ff2::t_31bb2a759369ce 114-122,132-133,135-137,139-143
+  s_9e552fc89e3ff2::t_59da7427a5a121 20,24-28
+  s_9e552fc89e3ff2::t_dbd5153cf386f1 312-315,317
+  s_9e552fc89e3ff2::t_03b1274555ef4f 21-22
+  s_9e552fc89e3ff2::t_e09ad065bee6f0 145-147
+  s_9e552fc89e3ff2::t_08659aa67c2ec4 233
+  s_9e552fc89e3ff2::t_fdef951427f788 283
+  s_9e552fc89e3ff2::t_ba3715adb744e5 208-212
+  s_9e552fc89e3ff2::t_14d71ba06a5f65 282
+  s_9e552fc89e3ff2::t_d9a80bc905af8e 336-339,342-343
+  s_9e552fc89e3ff2::t_29664909d8b628 241
+  s_9e552fc89e3ff2::t_414de5562ef797 345-346,354
+  s_9e552fc89e3ff2::t_8e5b627a742c3d 274,280
+  s_9e552fc89e3ff2::t_c1720b89c84ef7 180,183-185,191-207,214-216,218,221-222
+  s_9e552fc89e3ff2::t_9f44ec73f61a01 349-350,353
+  s_9e552fc89e3ff2::t_b99d1c58e90686 131
+  s_9e552fc89e3ff2::t_a2a994cd5ddd4c 308,310,328-329,340-341,344,347-348
+  s_9e552fc89e3ff2::t_1c97dc76aa6fd2 148,150
+  s_9e552fc89e3ff2::t_4e291923883b8b 240,242,253,262-263,267,273,279,281
+  s_9e552fc89e3ff2::t_c8783afe8d399b 123-130
+  s_9e552fc89e3ff2::t_ba0e48f62be9e9 243-244
+golden/DESDistillery/tapestats.txt
+  s_9e552fc89e3ff2::t_6306875cad308c 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "9fcc9b24214a48db71a10bfcc96690e437be5030",
+  "prompts": {},
+  "sessions": {
+    "s_9e552fc89e3ff2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95ab2c3e-5485-4f61-9493-551f4efe670f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

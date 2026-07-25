@@ -1,0 +1,37 @@
+golden/DESDispatch/fingerprint.txt
+  s_9647294b2c447a::t_162e2bd9ace134 1-12
+golden/DESDispatch/tapestats.txt
+  s_9647294b2c447a::t_162e2bd9ace134 1
+golden/DESDispatch/status.txt
+  s_9647294b2c447a::t_162e2bd9ace134 1
+src/Model/RampTracker.hs
+  s_9647294b2c447a::t_5e87baff08b704 1-15,21-61,66-69
+  s_9647294b2c447a::t_04beb149ae0811 16-20
+  s_9647294b2c447a::t_ee593036ad2d6a 62-65
+sprinkler-solver.cabal
+  s_9647294b2c447a::t_f44a646e79c88a 92
+  s_9647294b2c447a::t_91f621a5dee83e 368
+example/Main.hs
+  s_9647294b2c447a::t_9faa790080a38e 203
+  s_9647294b2c447a::t_2f793204258481 417
+src/Examples/DESDispatch.hs
+  s_9647294b2c447a::t_fe6956b9681cb5 154-156
+  s_9647294b2c447a::t_0b8745a8a7926c 43
+  s_9647294b2c447a::t_96511d43fa7316 1-42,44-153,157-211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d2b8f3e9ea868d5ccd94cf0be465026a634b5ffb",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+golden/DESBench/fingerprint.txt
+  s_0d7413bb621c3f::t_7d6b17ddee75ba 1-11
+src/Examples/DESExploreShop.hs
+  s_0d7413bb621c3f::t_77feea202d6a97 114-115
+  s_0d7413bb621c3f::t_3a9db5dc42cc88 139-142,145-149
+src/Examples/DESFalsifyDistillery.hs
+  s_0d7413bb621c3f::t_f5215406113d1b 154
+  s_0d7413bb621c3f::t_7eed1dc7b6bce2 153
+src/Examples/DESExploreDistillery.hs
+  s_0d7413bb621c3f::t_01b77b2e701ec0 133-134
+  s_0d7413bb621c3f::t_d012e22ee7738e 160-163,166-170
+src/Examples/DESBench.hs
+  s_0d7413bb621c3f::t_dfdf8465fb2c43 137-138
+  s_0d7413bb621c3f::t_775acdc9c524d2 48
+src/Examples/DESMctsFalsify.hs
+  s_0d7413bb621c3f::t_a1950c57d446c0 193
+golden/DESBench/tapestats.txt
+  s_0d7413bb621c3f::t_7d6b17ddee75ba 1
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_9273d7c58aa18b 1366-1398
+golden/DESBench/status.txt
+  s_0d7413bb621c3f::t_7d6b17ddee75ba 1
+src/Examples/DESControlPolicyFalsifyV5.hs
+  s_0d7413bb621c3f::t_f1bc0ccd25de20 223-224
+src/Examples/DESExploreDistilleryNative.hs
+  s_0d7413bb621c3f::t_40a04a867ebd37 137
+  s_0d7413bb621c3f::t_7cd0d4a5dbfcfb 136
+src/Examples/DESExploreShopNative.hs
+  s_0d7413bb621c3f::t_904a467ec8962d 138-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "9cc3b46017ee00a01e75255900972df0f4891deb",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_0d7413bb621c3f::t_fa9a55a35f0ff3 1-6
+src/Examples/DESControlPolicyFalsify.hs
+  s_0d7413bb621c3f::t_ed12216cd4281a 224
+  s_0d7413bb621c3f::t_833d5f35f73070 61
+  s_0d7413bb621c3f::t_1b936cdeb381e1 180-181
+  s_0d7413bb621c3f::t_62ab2a283c437e 1-60,62-113,122-168,170-179,182-203,213-214,218-223,225-386
+  s_0d7413bb621c3f::t_9db23d44f76877 114-121
+  s_0d7413bb621c3f::t_069c35a2fa1fd1 204-212,215-216
+  s_0d7413bb621c3f::t_e2b93342a73e06 169
+  s_0d7413bb621c3f::t_f5e36870a9fc41 217
+example/Main.hs
+  s_0d7413bb621c3f::t_af9140843be74c 417
+  s_0d7413bb621c3f::t_06556e1da46529 201
+sprinkler-solver.cabal
+  s_0d7413bb621c3f::t_ca29a757324664 367
+golden/DESControlPolicyFalsify/status.txt
+  s_0d7413bb621c3f::t_fa9a55a35f0ff3 1
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_2c960ed18b6a24 549-641
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "6d1d81154f11115879d1fb1507baaa724b2e71d8",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

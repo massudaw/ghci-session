@@ -1,0 +1,25 @@
+src/Examples/DESMctsFalsify.hs
+  s_0d7413bb621c3f::t_795a4077837645 193
+  s_0d7413bb621c3f::t_578e6a245fb0a9 188-192
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_2fcaa82fa6aadb 1318-1365,1368-1383,1391-1393
+src/Examples/DESControlPolicyFalsifyV5.hs
+  s_0d7413bb621c3f::t_fa3025df0770ba 518
+  s_0d7413bb621c3f::t_4de744e12da537 223-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b81fb37528f85d3d3b65141de91031cc361599e7",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
