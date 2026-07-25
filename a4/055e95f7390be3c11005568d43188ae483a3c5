@@ -1,0 +1,40 @@
+sprinkler-solver.cabal
+  s_0d7413bb621c3f::t_f8adc0c89fa5b9 366
+example/Main.hs
+  s_0d7413bb621c3f::t_47345c06c031bd 201
+  s_0d7413bb621c3f::t_df0ab4799f76a6 417
+DESMCTS_REVIEW_AND_PLAN.md
+  s_0d7413bb621c3f::t_7313aa5a66b7a3 1068-1190
+golden/DESControlPolicyFalsifyV4/fingerprint.txt
+  s_0d7413bb621c3f::t_9726378d6790f4 1-7
+golden/DESControlPolicyFalsifyV4/status.txt
+  s_0d7413bb621c3f::t_9726378d6790f4 1
+src/Examples/DESControlPolicyFalsifyV4.hs
+  s_0d7413bb621c3f::t_fa90104d9f9db8 521
+  s_0d7413bb621c3f::t_97610c4c74cda6 485
+  s_0d7413bb621c3f::t_5f4aab03b83e28 228
+  s_0d7413bb621c3f::t_c7b0adf6eea42b 1-86,88,90-91,93-227,229-284,286-356,358-365,367-447,449-467,470-484,486-501,523-528
+  s_0d7413bb621c3f::t_507611f54a349c 87,89,92
+  s_0d7413bb621c3f::t_cc997c71216332 357
+  s_0d7413bb621c3f::t_bff4ad142c27fe 366
+  s_0d7413bb621c3f::t_a3046a0723db0f 468-469
+  s_0d7413bb621c3f::t_d324db1af8ca79 502-520,522
+  s_0d7413bb621c3f::t_0ba413f7f5dffd 448
+  s_0d7413bb621c3f::t_310ea52f2b02d9 285
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a4055e95f7390be3c11005568d43188ae483a3c5",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
