@@ -1,0 +1,30 @@
+golden_examples_lib.sh
+  s_9647294b2c447a::t_291bf6c24f8f45 108-109
+  s_9647294b2c447a::t_b6888625a19823 126-130
+  s_9647294b2c447a::t_0a6cead91fa8fa 131-132
+golden/timings.tsv
+  s_9647294b2c447a::t_b1ea8df2d0efd9 1-2,7-9,14-203
+golden_timings.sh
+  s_9647294b2c447a::t_b1ea8df2d0efd9 39-40,42-49,58-59,64-66,73
+golden_parallel_lib.sh
+  s_9647294b2c447a::t_64669772c727b7 124-127,199-202,204-210,212-224,227,229,232-235,239,248,250-253
+  s_9647294b2c447a::t_afe2f54065667a 128-129
+  s_9647294b2c447a::t_71c5e3e03df07f 254-256
+  s_9647294b2c447a::t_69b2fbac97c5c6 257-259
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "8a01f6c2cbb92c422bc2ddeee5843a30dc5b6f97",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
