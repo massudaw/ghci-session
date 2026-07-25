@@ -1,0 +1,40 @@
+src/Examples/ModelSaoJorgeOptimize.hs
+  s_9647294b2c447a::t_ece1e0cf22550c 44-57,64-69,246-254,655-669
+  s_9647294b2c447a::t_320e29626b7c26 96-97,121-123,125,142-153
+  s_9647294b2c447a::t_b536883a3139ba 670-671,673,696-712,714,723-736,763-764,769,987-988,996,1003
+  s_9647294b2c447a::t_304c43c4ac1945 885,890,909,913-925,930-931,970
+  s_9647294b2c447a::t_d4b3f4595e9444 181,255-256,270-284,290-294,372,382,398
+  s_9647294b2c447a::t_3cc9d3991a4087 381
+src/Examples/ModelSaoJorge.hs
+  s_9647294b2c447a::t_0dfb686c1a6191 30
+src/Project.hs
+  s_9647294b2c447a::t_f00f92e7677954 472
+  s_9647294b2c447a::t_0dfb686c1a6191 512-515
+src/Backend/Mecha.hs
+  s_9647294b2c447a::t_0dfb686c1a6191 90
+src/Hydraulic/Element.hs
+  s_9647294b2c447a::t_f1a90e9b967a21 385-388
+  s_9647294b2c447a::t_a87808371d0452 195-199,202-226,357-358,419-458,460
+src/Hydraulic/Tee.hs
+  s_9647294b2c447a::t_f00f92e7677954 147-148,169-170,181-188,202,216-223
+src/Backend/DXF.hs
+  s_9647294b2c447a::t_0dfb686c1a6191 118
+src/Hydraulic.hs
+  s_9647294b2c447a::t_f00f92e7677954 383-385,401,435
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b72c3c722d1685a9decb6852841e4cda625b8320",
+  "prompts": {},
+  "sessions": {
+    "s_9647294b2c447a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c027761f-f2d5-4b28-acc7-dcef525527cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
