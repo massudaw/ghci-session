@@ -1,0 +1,35 @@
+src/JIT/Sectioned.hs
+  s_b365136a975c11::t_652e8586b77960 320-322
+  s_b365136a975c11::t_895901bf8b89c1 68-69
+  s_b365136a975c11::t_7466c93817a6d2 276-283,292
+  s_b365136a975c11::t_46eb848854960b 202-275,293-319,323-340
+  s_b365136a975c11::t_eee60cf91067d7 45-49
+  s_b365136a975c11::t_de937e88e7fbae 50,284-291
+docs/bank-risk/PROTOTYPE_STATUS.md
+  s_b365136a975c11::t_5682760093d2b2 1170-1252
+src/Solver/DES/Partition.hs
+  s_b365136a975c11::t_7245222ea62405 568-570
+  s_b365136a975c11::t_d3411df15d5f65 571
+  s_b365136a975c11::t_3f3028e30a22e8 162-163,165
+  s_b365136a975c11::t_ad73fd22c4b25c 531-547
+src/Solver/IDA.hs
+  s_b365136a975c11::t_de937e88e7fbae 163,1338-1340
+  s_b365136a975c11::t_fae42da26d6a21 744,1225-1226,1335-1337
+  s_b365136a975c11::t_d6edc781f68e8a 681-693
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "ed082e920399f46e5fcd3c26ea603e094defe593",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
