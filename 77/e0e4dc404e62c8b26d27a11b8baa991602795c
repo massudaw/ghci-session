@@ -1,0 +1,27 @@
+src/Examples/ModelDCMotorCTMS.hs
+  s_84c76f795d80ef::t_e1b8fa6e902f55 43
+  s_84c76f795d80ef::t_bc001d29cdabf6 88-95,113-114,118-130
+  s_84c76f795d80ef::t_4465e158bc2096 131
+example/ModelSensitivityDemo.hs
+  s_84c76f795d80ef::t_0d157973809755 85
+  s_84c76f795d80ef::t_4c83539d8dcda7 14-29,42,49-50,52-53,56-77,86,92-96,99,107,110-115,118-119,125
+  s_84c76f795d80ef::t_3a54920d15b8a8 51
+sprinkler-solver.cabal
+  s_84c76f795d80ef::t_d289e3dd849c59 1711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "77e0e4dc404e62c8b26d27a11b8baa991602795c",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
