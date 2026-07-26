@@ -1,0 +1,26 @@
+docs/bank-risk/PROTOTYPE_STATUS.md
+  s_b365136a975c11::t_5866e061038936 878-904
+src/Examples/RiskPortfolioDES.hs
+  s_b365136a975c11::t_fa7ca99818ad32 50
+  s_b365136a975c11::t_92eadf591b7bdf 138,140-145,149,152
+  s_b365136a975c11::t_5c5948a883f37d 36-37
+  s_b365136a975c11::t_e03d1d902a67e0 51
+  s_b365136a975c11::t_3b1ac1b1d2a393 139,146-147,150-151,153-156,161-162
+  s_b365136a975c11::t_7bb818031e3214 137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a07faba7afd053824e27877de1de1c915d4e0086",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
