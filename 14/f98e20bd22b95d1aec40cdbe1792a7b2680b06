@@ -1,0 +1,20 @@
+src/Solver/IDA.hs
+  s_0d7413bb621c3f::t_f1e07b125c4ed1 1945
+  s_0d7413bb621c3f::t_7af77a3b64bb37 293-308
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "14f98e20bd22b95d1aec40cdbe1792a7b2680b06",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
