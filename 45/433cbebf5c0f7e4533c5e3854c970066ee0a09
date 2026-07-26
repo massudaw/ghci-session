@@ -1,0 +1,39 @@
+src/Domains.hs
+  s_84c76f795d80ef::t_71546e877c1923 371
+src/Examples/ModelBouncingBall.hs
+  s_84c76f795d80ef::t_b4d9a64da9249f 28
+  s_84c76f795d80ef::t_f32b1905410e93 38
+  s_84c76f795d80ef::t_90146bf2521ee7 86
+  s_84c76f795d80ef::t_a4ec4f073105b2 89-107
+  s_84c76f795d80ef::t_609a2f2acf09f6 87-88
+src/Transient.hs
+  s_84c76f795d80ef::t_542ab47cc4d4ce 1803,1805,1808
+  s_84c76f795d80ef::t_08a237c94558fa 1833-1836,1838
+  s_84c76f795d80ef::t_1d4515b65670ef 1750-1786
+  s_84c76f795d80ef::t_79368d510e1e36 1869,1872,1884
+example/ModelBounceSensitivityDemo.hs
+  s_84c76f795d80ef::t_572a54b9124be3 48
+  s_84c76f795d80ef::t_417dcc93596f96 27
+src/Model/BounceCoupling.hs
+  s_84c76f795d80ef::t_93c17cb43be030 123-127
+  s_84c76f795d80ef::t_c7a7a74591d60a 117
+  s_84c76f795d80ef::t_5c30f433f31455 57-68,71-80,84
+  s_84c76f795d80ef::t_3992856cb6c3f8 41-42
+  s_84c76f795d80ef::t_926298d75d41d2 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "45433cbebf5c0f7e4533c5e3854c970066ee0a09",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
