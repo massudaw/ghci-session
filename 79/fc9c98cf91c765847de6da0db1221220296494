@@ -1,0 +1,49 @@
+src/Solver/DES.hs
+  s_b365136a975c11::t_60afffd36aff78 1353-1363
+  s_b365136a975c11::t_93cb62ae485827 1373-1386
+src/Solver/SymbolicDAE.hs
+  s_b365136a975c11::t_7f0fb4e8e805d6 4534,4536-4549,4551-4552,4556
+  s_b365136a975c11::t_aeea9fcc064fef 4060-4097
+  s_b365136a975c11::t_55525d9035b057 92
+  s_b365136a975c11::t_7a89c5e3657b10 2346-2352
+src/JIT/des_kernel.c
+  s_b365136a975c11::t_69e1741387ff3e 318-327
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_b365136a975c11::t_1145ab495eb2f3 39
+  s_b365136a975c11::t_bee92a1440c7ec 49-50
+  s_b365136a975c11::t_3f1c85382476de 70-129,131-141
+  s_b365136a975c11::t_ea536c0a25dc79 67
+  s_b365136a975c11::t_7c944a8ae82b21 130
+  s_b365136a975c11::t_ecffa49b6430ca 51
+src/Solver/DES/Physical.hs
+  s_b365136a975c11::t_cd0a618fef2d1b 102
+  s_b365136a975c11::t_98081f5d27af19 428-435,439
+src/Solver/HybridDAE.hs
+  s_b365136a975c11::t_3fa97d355dfd61 44,52
+  s_b365136a975c11::t_a16a9db5354cc7 624-632,638-652
+  s_b365136a975c11::t_514afc084247dc 195-203,205-208
+  s_b365136a975c11::t_f3223d0cd37b09 366-371
+src/Solver/IDA.hs
+  s_b365136a975c11::t_cb2c2d5ac6d862 607-624
+  s_b365136a975c11::t_00e23927031e7b 725
+src/Solver/SymbolicDAE/Kron.hs
+  s_b365136a975c11::t_5408f2021e3e10 391-401
+  s_b365136a975c11::t_88f02cf26daa9e 21
+  s_b365136a975c11::t_96e8168cc927b3 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "79fc9c98cf91c765847de6da0db1221220296494",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
