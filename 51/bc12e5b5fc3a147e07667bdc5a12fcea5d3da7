@@ -1,0 +1,85 @@
+example/Main.hs
+  s_b365136a975c11::t_db38fee85b620c 186,406
+src/Solver/Risk/Portfolio.hs
+  s_b365136a975c11::t_24a3ad0e54fccd 2
+  s_b365136a975c11::t_b63190e5da4c64 48
+  s_b365136a975c11::t_efdbff894bcff6 3,9-33,49-50,53-57,59-63,67-70,84-95,97-99,101-103,118,123,129-130,133-147,149-150,153-156
+  s_b365136a975c11::t_eb4e73edf08645 1,4-8,34-47,51-52,58,64-66,71-83,100,104-105,119-121,124-128,131-132,148
+  s_b365136a975c11::t_10bd2e3f464c77 151-152
+  s_b365136a975c11::t_f5a5ef6f519ef8 96,106-117,122
+src/Solver/DES/Unified.hs
+  s_b365136a975c11::t_59f0fc02feb836 286-321
+  s_b365136a975c11::t_81862e4b6c523c 333,340,378,385,403,410,429,436
+  s_b365136a975c11::t_857e50da93d7ef 49
+  s_b365136a975c11::t_26bfa1cce939a5 32-33
+  s_b365136a975c11::t_05cbf4633ce12b 43
+  s_b365136a975c11::t_a7d6f7bbb64c14 127-132
+  s_b365136a975c11::t_c38c843b655eb5 110-112
+  s_b365136a975c11::t_2138ff02948c0b 216-231
+  s_b365136a975c11::t_18cf33db6044df 253-264
+  s_b365136a975c11::t_0e4ade96e65abe 322
+docs/bank-risk/PROTOTYPE_STATUS.md
+  s_b365136a975c11::t_af9c65bed216f9 287,289-292,294-298,300-318,320-333
+  s_b365136a975c11::t_b16b463c0a577c 81-113
+  s_b365136a975c11::t_a7d54202aece77 352-505
+  s_b365136a975c11::t_bfc45ebcb057e4 114-142
+  s_b365136a975c11::t_9b12d1f32dc59b 178-271
+  s_b365136a975c11::t_d689da886ab575 6-7,10
+  s_b365136a975c11::t_1c38a43fe4f6c6 8-9
+  s_b365136a975c11::t_71603bd8c4e461 39-79
+  s_b365136a975c11::t_881cc919af9bb9 143-177
+  s_b365136a975c11::t_65e5609378f302 1-5,11-38,80,272-286,288,293,299,319,334-339,348-351
+  s_b365136a975c11::t_57d24af36139f1 340-347
+docs/bank-risk/BOOKING_SETTLEMENT.md
+  s_b365136a975c11::t_d8b5216831326f 1-118
+src/Solver/Risk/SignalPulse.hs
+  s_b365136a975c11::t_4c5cf2e02d75b1 37
+  s_b365136a975c11::t_90ae8920f036d6 54-55
+  s_b365136a975c11::t_f6fa19d1b7a79e 1-32,34-36,38-53,56-76
+  s_b365136a975c11::t_b5a55295622824 33
+docs/bank-risk/EOD_AGING_MECHANICS.md
+  s_b365136a975c11::t_3e648e8cb9c4f4 1-153
+src/Examples/RiskPortfolioDES.hs
+  s_b365136a975c11::t_406a180756c586 10-21,31,36-42,44,62-64,87-95,100-103,106-109,115-130
+  s_b365136a975c11::t_6c275724194464 27-28
+  s_b365136a975c11::t_1469e720fb7e3d 49
+  s_b365136a975c11::t_a735dea1ddc8d8 1-9,22-26,29-30,32-35,43,45,47-48,50-61,65-86,96-99,104-105,110-114,131-139
+  s_b365136a975c11::t_59345d227d6d2d 46
+sprinkler-solver.cabal
+  s_b365136a975c11::t_db38fee85b620c 275-281
+src/Solver/Risk/Quantile.hs
+  s_b365136a975c11::t_0f0ea871757d99 1-50
+src/Solver/Risk/TaggedSignal.hs
+  s_b365136a975c11::t_698bf88c0343e0 122
+  s_b365136a975c11::t_7b86ea4eabcf63 67
+  s_b365136a975c11::t_5e9be649f34a86 8
+  s_b365136a975c11::t_6d7d568fcad4b3 1-7,9-40,42-45,47-66,68-117,123-124
+  s_b365136a975c11::t_ce9a6217775dae 118-121
+  s_b365136a975c11::t_bca07cc5f4a851 41
+  s_b365136a975c11::t_93326a5cf10f44 46
+docs/bank-risk/TRADER_LIMITS_MARGIN_CALLS.md
+  s_b365136a975c11::t_c07f4a2e43a34a 1-106
+src/Solver/DES/Orchestrate.hs
+  s_b365136a975c11::t_916ac3d5e6d7d2 3-72
+  s_b365136a975c11::t_b2e0b9c4dca231 1-2
+src/Solver/Risk/StateMachine.hs
+  s_b365136a975c11::t_12251a599605b5 1-64
+docs/bank-risk/FRAMEWORK_MAPPING.md
+  s_b365136a975c11::t_9f94becddfa895 1-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "51bc12e5b5fc3a147e07667bdc5a12fcea5d3da7",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
