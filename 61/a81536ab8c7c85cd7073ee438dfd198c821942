@@ -1,0 +1,37 @@
+src/Solver/IDAS.hs
+  s_84c76f795d80ef::t_039961dd591df8 1-30,32-44,46-67
+  s_84c76f795d80ef::t_8ff537f81981ea 31
+  s_84c76f795d80ef::t_7a0051519c5a45 45
+example/IDASSensitivityExperiment.hs
+  s_84c76f795d80ef::t_00295bc65f731f 207-210
+  s_84c76f795d80ef::t_5d19ea6c7ced9e 211
+  s_84c76f795d80ef::t_22b4ac712e58c6 68-69
+  s_84c76f795d80ef::t_7272f613468747 170-171
+  s_84c76f795d80ef::t_8af28a7f08f2b3 63
+  s_84c76f795d80ef::t_9f650f55f49f5f 212-213
+  s_84c76f795d80ef::t_f871ee60c80c0f 23-43
+  s_84c76f795d80ef::t_2890057892e09e 1-22,44-62,64-67,70-169,172-206,214-292
+sprinkler-solver.cabal
+  s_84c76f795d80ef::t_18f0b71298bfef 576-577
+  s_84c76f795d80ef::t_03e8dea1ff0a9a 246
+  s_84c76f795d80ef::t_b3b99c48e006b4 587-588
+  s_84c76f795d80ef::t_1db5d96a202a13 1689-1696
+  s_84c76f795d80ef::t_d4976b4933600e 1697
+  s_84c76f795d80ef::t_7b83ce01aa3e60 564-574
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "61a81536ab8c7c85cd7073ee438dfd198c821942",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
