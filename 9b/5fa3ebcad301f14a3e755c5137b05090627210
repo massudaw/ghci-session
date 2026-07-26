@@ -1,0 +1,44 @@
+docs/bank-risk/PROTOTYPE_STATUS.md
+  s_b365136a975c11::t_d7f381b94f38c4 506-739
+src/Solver/DES/Unified.hs
+  s_b365136a975c11::t_9dc65e099be7ff 59-62,327-340
+  s_b365136a975c11::t_7e0dfcebd291b9 341
+src/Solver/DES.hs
+  s_b365136a975c11::t_f86d980b964910 84-87,187-196,215,291-355,599
+  s_b365136a975c11::t_186f9f3780f801 96-97,276-289
+  s_b365136a975c11::t_5117c805ab3f6a 290
+src/Solver/DES/Orchestrate.hs
+  s_b365136a975c11::t_b752a7c3794156 29,31,41-42,72-99
+  s_b365136a975c11::t_8c6e51aadb2812 100
+golden/RiskPortfolioDES/fingerprint.txt
+  s_b365136a975c11::t_fc2eb083e36138 1-252
+src/Solver/DES/Partition.hs
+  s_b365136a975c11::t_3f4b45b8525d33 213-225,234,236-240,373,379,384,387,389,452-454,456
+  s_b365136a975c11::t_044f4479aa0a67 243,252-259,261-267
+  s_b365136a975c11::t_73ad5924f03a4c 1-120,122-135,138,140-212,226-233,235,241-242,244,246-251,260,268-372,374-378,380-383,385-386,388,390-451,455,457-487
+  s_b365136a975c11::t_d4a4868239cc0c 121,136-137,139,245
+src/Examples/RiskPortfolioDES.hs
+  s_b365136a975c11::t_351589cbf01bb3 11-25,35-36,41-42,46-49,72-79,104-107,110-118,126-129,131-132,135,141
+sprinkler-solver.cabal
+  s_b365136a975c11::t_6889b0563b4b30 281
+golden/RiskPortfolioDES/status.txt
+  s_b365136a975c11::t_fc2eb083e36138 1
+golden/RiskPortfolioDES/tapestats.txt
+  s_b365136a975c11::t_fc2eb083e36138 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "9b5fa3ebcad301f14a3e755c5137b05090627210",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
