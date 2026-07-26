@@ -1,0 +1,63 @@
+src/JIT/jit_trampoline.c
+  s_abe6e4a9994e22::t_07cad11481e0f8 870
+  s_84c76f795d80ef::t_9a9b6bc18a9812 109,111-116,122-127,132-134,136-138,145,149,153
+  s_abe6e4a9994e22::t_935b96b4b3f180 805-814
+  s_abe6e4a9994e22::t_83ec2535cffec4 55-70
+  s_84c76f795d80ef::t_d1bed420d5ecb2 617
+  s_84c76f795d80ef::t_3f840b617a5661 264
+  s_84c76f795d80ef::t_2ad0a4c85d54f5 289
+  s_84c76f795d80ef::t_502c2e1df4d060 651
+  s_abe6e4a9994e22::t_e079554442ffea 839,846
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 2-10
+src/Examples/DESExploreDistilleryNative.hs
+  s_abe6e4a9994e22::t_f71f62ecb48ca0 236-244
+  s_abe6e4a9994e22::t_e18c240da91988 28
+  s_abe6e4a9994e22::t_16118c74d5e688 45
+  s_abe6e4a9994e22::t_7c0ce2ce13848d 233
+  s_abe6e4a9994e22::t_ba454eee3368fb 87,89,95-104
+  s_abe6e4a9994e22::t_748c656eeb9afc 105
+golden/DESDispatch/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 33-40
+golden/DESExploreDistillery/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 1-4,6-20
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_abe6e4a9994e22::t_9241e1f533d280 130-146,152-159
+  s_abe6e4a9994e22::t_2f29063c943dfc 105
+  s_abe6e4a9994e22::t_8aae30f94261aa 68-83,91,93-94,96,112-114
+  s_abe6e4a9994e22::t_12424e9d006faf 95,97-104,106-111
+golden/DESDistillery/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 4,6,8,11,13-14,17-18,20
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 4,6,8,11,13-14,17-18,20
+golden/DESMctsFalsify/fingerprint.txt
+  s_abe6e4a9994e22::t_c11dc8b3e40da1 2-10
+src/Solver/IDA.hs
+  s_abe6e4a9994e22::t_9d4ba5e1075ff8 480-485
+  s_abe6e4a9994e22::t_c05f9c1fbaebfb 486-501
+  s_abe6e4a9994e22::t_d3ee36fb3e4008 55-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "85b8c23a72afc25231dc45de0a77a17a197c228d",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_abe6e4a9994e22": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6969cb77-54b5-4dc1-aa73-0f9a404e91cd",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
