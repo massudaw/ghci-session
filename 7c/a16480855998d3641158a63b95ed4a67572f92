@@ -1,0 +1,32 @@
+src/Solver/Risk/SignalPulse.hs
+  s_b365136a975c11::t_5159fc302bd971 31
+  s_b365136a975c11::t_401de73342bf89 78-107,110-111,113-117,129-130
+  s_b365136a975c11::t_1044b7c511dd7d 108-109,112,118-128
+src/Solver/Risk/Portfolio.hs
+  s_b365136a975c11::t_370b20cc982a54 227-229
+  s_b365136a975c11::t_948383c5de5734 86
+  s_b365136a975c11::t_14c943354aacec 64-65
+  s_b365136a975c11::t_e51cd1dc544033 98
+  s_b365136a975c11::t_807555bec572c7 128-132
+  s_b365136a975c11::t_8939de4d5f2045 18-24
+golden/RiskPortfolioDES/fingerprint.txt
+  s_b365136a975c11::t_8727b40fbf4d48 82-93
+docs/bank-risk/PROTOTYPE_STATUS.md
+  s_b365136a975c11::t_b20924fdfa5046 905-946
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "7ca16480855998d3641158a63b95ed4a67572f92",
+  "prompts": {},
+  "sessions": {
+    "s_b365136a975c11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7abd2c03-5fd4-4f29-8da4-1d80309d569d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
