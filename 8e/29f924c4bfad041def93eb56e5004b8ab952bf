@@ -1,0 +1,40 @@
+src/Examples/ModelBouncingBall.hs
+  s_84c76f795d80ef::t_2881515908865f 68-69
+  s_84c76f795d80ef::t_98aed20bcf4523 86-87
+src/Transient.hs
+  s_84c76f795d80ef::t_793e6bb4c2030c 226
+  s_84c76f795d80ef::t_5bc0efc2677238 1253-1254,1262,1276,1282-1283
+  s_84c76f795d80ef::t_ae96ce15420a92 1616,1618
+  s_84c76f795d80ef::t_a7c53411581d36 1389
+  s_84c76f795d80ef::t_ca25f75d00d940 1646
+  s_84c76f795d80ef::t_9345ffebb1ce45 1330
+  s_84c76f795d80ef::t_5a65dca07f4491 1332-1341,1343-1344,1346
+  s_84c76f795d80ef::t_c6e7df986dfc89 243
+  s_84c76f795d80ef::t_7005c6880ff826 1069
+  s_84c76f795d80ef::t_0cb483391879a4 1309
+  s_84c76f795d80ef::t_b4de3efc9d7da3 679,1172,1214
+example/QuadcopterLiveJointDemo.hs
+  s_84c76f795d80ef::t_b3f4b587261264 445
+example/ModelSensitivityDemo.hs
+  s_84c76f795d80ef::t_655481c86f5632 60-63
+  s_84c76f795d80ef::t_477b9ac3de4e0b 16-19
+  s_84c76f795d80ef::t_7f21a0bf1ce8dc 114
+src/Solver/IDA.hs
+  s_84c76f795d80ef::t_4714195cbf06e8 631-632
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "8e29f924c4bfad041def93eb56e5004b8ab952bf",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
