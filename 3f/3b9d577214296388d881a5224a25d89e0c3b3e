@@ -1,0 +1,45 @@
+sprinkler-solver.cabal
+  s_84c76f795d80ef::t_dae61154b0964b 305
+  s_84c76f795d80ef::t_911efa2d7edf96 92
+golden/ModelParamFD/tapestats.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1
+golden/ModelParamFD/selective_report.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1-220
+src/Model/SignalTorqueSource.hs
+  s_84c76f795d80ef::t_8bb96ad439961a 1-72
+golden/ModelParamFD/fingerprint.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1-13
+golden/ModelParamFD/status.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1
+src/Examples/ModelParamFD.hs
+  s_84c76f795d80ef::t_812990267f58c3 30,32
+  s_84c76f795d80ef::t_8ae4637bd1656b 62
+  s_84c76f795d80ef::t_71ff8b5d8ce2d3 89-90
+  s_84c76f795d80ef::t_0b4f5cd353c2c2 91
+  s_84c76f795d80ef::t_111476a17612a0 3
+  s_84c76f795d80ef::t_f675783d70879e 1-2,4-29,33-61,63-88,92-128
+  s_84c76f795d80ef::t_d6e5dc8c6bfb77 31
+golden/ModelParamFD/equations.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1-340
+golden/ModelParamFD/solver_audit.txt
+  s_84c76f795d80ef::t_0e3e999de47e42 1-6
+example/Main.hs
+  s_84c76f795d80ef::t_7f8d802cb14111 356
+  s_84c76f795d80ef::t_6c4480e5c25aea 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "3f3b9d577214296388d881a5224a25d89e0c3b3e",
+  "prompts": {},
+  "sessions": {
+    "s_84c76f795d80ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b4c42f0-a41c-4a7d-968a-7615f0cd7270",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
