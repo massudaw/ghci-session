@@ -1,0 +1,24 @@
+index.html
+  s_7f5c8d2289c4a3::t_1d0058cbf5112e 759-769
+  s_7f5c8d2289c4a3::t_12406788d80bb1 3163-3165
+  s_7f5c8d2289c4a3::t_838657efdead39 3249
+  s_7f5c8d2289c4a3::t_cab529037e7552 1876-1943
+  s_7f5c8d2289c4a3::t_63c6ec2cee5a4c 1819-1821,1823-1825,1827-1831,1833
+  s_7f5c8d2289c4a3::t_3dd07a3d35b892 1854-1856
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "57ff3433822eed942621c8726fc861be6a0023f8",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
