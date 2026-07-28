@@ -1,0 +1,47 @@
+test_timewarp_api.sh
+  s_7f5c8d2289c4a3::t_fe00c348f9abc5 5-10,37-39,70-71,80,87,90-96,100-118,123-124,128-132,134-140,142-143,150-151,153-154,158
+  s_7f5c8d2289c4a3::t_c65b3575c2ddf9 120-122
+  s_7f5c8d2289c4a3::t_f13165f9e840c1 159
+example/TestBankTimeWarp.hs
+  s_7f5c8d2289c4a3::t_3c92e6746363e4 59-70
+example/TestTimeWarp.hs
+  s_7f5c8d2289c4a3::t_857881d954361c 66-71
+example/BankDayServer.hs
+  s_7f5c8d2289c4a3::t_19e082d7ab5332 360-368
+  s_7f5c8d2289c4a3::t_5ef8c6a6c2d5ef 72-73
+src/Solver/DES/TimeWarp.hs
+  s_7f5c8d2289c4a3::t_669d82fdbc6e37 385
+  s_7f5c8d2289c4a3::t_9ca5c3076d75a7 142-145,147
+  s_7f5c8d2289c4a3::t_e0240c234002e8 156-168
+  s_7f5c8d2289c4a3::t_1a3c714440eced 256
+  s_7f5c8d2289c4a3::t_4a08c8185e164c 322-324,335
+  s_7f5c8d2289c4a3::t_311916126727bb 228-231,238-239,241-242,246-247
+  s_7f5c8d2289c4a3::t_5af31f0d98ff13 367
+src/Examples/BankDayDesRuntime.hs
+  s_7f5c8d2289c4a3::t_c3eba7f21fcda3 3899-3900
+  s_7f5c8d2289c4a3::t_9400cc91a48e49 3
+  s_7f5c8d2289c4a3::t_ffffd54fae29c6 367-369
+  s_7f5c8d2289c4a3::t_5eea20e4e82568 1103,1105-1109,1116-1123
+  s_7f5c8d2289c4a3::t_4a1fc59048f957 945-1093
+  s_7f5c8d2289c4a3::t_5401000dca21dc 1245-1246,1248-1251,1253-1262,1267,1272,1277,1282,1287,1292,1297,1304-1311,1317
+  s_7f5c8d2289c4a3::t_4346d4231e1f8e 1196,1200,1202,1206,1210-1214,1216-1223
+  s_7f5c8d2289c4a3::t_f3604e2e7e9a88 394-397
+  s_7f5c8d2289c4a3::t_f006180fc2aebc 1508-1512
+  s_7f5c8d2289c4a3::t_adfaeee27a990b 3348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "238761fce0398236cff9ea650288086a3798389d",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
