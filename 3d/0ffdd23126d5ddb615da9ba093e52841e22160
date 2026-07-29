@@ -1,0 +1,55 @@
+src/JIT/tw_engine.h
+  s_7f5c8d2289c4a3::t_859b69a95128b4 81
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_e354e5b76f306d 1041-1045,1047-1049
+  s_7f5c8d2289c4a3::t_99bad41eb47079 940-941
+  s_7f5c8d2289c4a3::t_19b143c414496b 992-1000
+  s_7f5c8d2289c4a3::t_091f8861df1ffc 1065-1080
+  s_7f5c8d2289c4a3::t_c4495c28293e30 70-133
+  s_7f5c8d2289c4a3::t_1db14da0765b68 942-953
+  s_7f5c8d2289c4a3::t_62e2a5a253ccda 913-939,954-968,1004,1018-1027,1030-1040,1046,1050-1064,1081-1171
+  s_7f5c8d2289c4a3::t_45c82d0deb4acc 969-972,1003,1007-1008,1015-1017
+  s_7f5c8d2289c4a3::t_7174d46f62a5c4 973-975
+  s_7f5c8d2289c4a3::t_5b68cf908c0a13 1005
+  s_7f5c8d2289c4a3::t_38ecb32a690669 5
+  s_7f5c8d2289c4a3::t_22ea5a01be7a07 181-193
+  s_7f5c8d2289c4a3::t_1c12d9d12aa14b 980,983-985,988-991,1001-1002
+  s_7f5c8d2289c4a3::t_afcfec29883936 1028-1029
+  s_7f5c8d2289c4a3::t_3216f247d580c2 174-180
+  s_7f5c8d2289c4a3::t_13ca1904b57aad 976-979
+  s_7f5c8d2289c4a3::t_81d2045335c218 981-982,986-987
+  s_7f5c8d2289c4a3::t_2ae32ca9f94e4e 6
+  s_7f5c8d2289c4a3::t_dde91dbc80549b 1006,1009-1014
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_62de5c44060c9a 1280,1283-1294
+  s_7f5c8d2289c4a3::t_a2d15e91acce4b 70
+  s_7f5c8d2289c4a3::t_3304daf3929284 1114-1117
+  s_7f5c8d2289c4a3::t_319f8752a0ec4f 1682-1704
+  s_7f5c8d2289c4a3::t_95360c5b0a402c 1850-1870
+  s_7f5c8d2289c4a3::t_ccc02bb6ab6e6a 1910
+  s_7f5c8d2289c4a3::t_c90267a16dc921 1439
+  s_7f5c8d2289c4a3::t_b2ddd5dd2fbb52 1210-1256
+  s_7f5c8d2289c4a3::t_60592b56a6029c 1926
+  s_7f5c8d2289c4a3::t_add51cd3d6b276 959-990
+  s_7f5c8d2289c4a3::t_f85f8f7ec80a98 1011
+  s_7f5c8d2289c4a3::t_bb83ee85c3c370 1346-1379
+  s_7f5c8d2289c4a3::t_54d7222afce2ac 1455
+  s_7f5c8d2289c4a3::t_b697c7909b65ff 1056
+  s_7f5c8d2289c4a3::t_e65ad23254f9aa 1105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "3d0ffdd23126d5ddb615da9ba093e52841e22160",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
