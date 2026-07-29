@@ -1,0 +1,26 @@
+example/TWProfile.hs
+  s_7f5c8d2289c4a3::t_5a4c6e7ac3b694 31-32
+  s_7f5c8d2289c4a3::t_429d8baa2aeb24 1-30,33-73
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_953f4211b017e3 2133-2142
+src/JIT/jit_trampoline.c
+  s_7f5c8d2289c4a3::t_067f3bb2b1b296 1364-1365
+  s_7f5c8d2289c4a3::t_74e042b169d9bc 1461-1467,1469-1493
+  s_7f5c8d2289c4a3::t_a460b4413b725e 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "bb43a3055587555b2ad21c9cbb5b7f7cfe8e94d2",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
