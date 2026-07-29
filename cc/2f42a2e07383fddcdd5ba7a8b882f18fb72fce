@@ -1,0 +1,47 @@
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_988c32ecb8e09d 53-78
+  s_7f5c8d2289c4a3::t_71ea119170caa8 282,411,671,840
+src/Solver/DES/TimeWarpPlant.hs
+  s_7f5c8d2289c4a3::t_0faf2a85adeb56 1-149
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_46d359cd6a6e0b 276
+  s_7f5c8d2289c4a3::t_af62ec4675684e 2107
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_d5631e3fdd622b 121-122,128-140
+  s_7f5c8d2289c4a3::t_fb40316059b8fb 190-196
+  s_7f5c8d2289c4a3::t_2f8bee2e3a9295 454-463
+  s_7f5c8d2289c4a3::t_410586e2e67e4f 44
+  s_7f5c8d2289c4a3::t_e64f1d52d8f306 222-223,227-228,230-231
+  s_7f5c8d2289c4a3::t_1a7f0fb4676657 144,149-156,159-181
+  s_7f5c8d2289c4a3::t_7605c6b7d12048 57-59
+  s_7f5c8d2289c4a3::t_5b17ba3fb64667 276
+  s_7f5c8d2289c4a3::t_e15c440d693764 298-302
+  s_7f5c8d2289c4a3::t_c8f7f23e08a174 206
+  s_7f5c8d2289c4a3::t_b83e1fe12bca45 323-325,327-329
+  s_7f5c8d2289c4a3::t_907b763d7f60cb 189
+  s_7f5c8d2289c4a3::t_3e9b3d65ac1bb6 361-365
+  s_7f5c8d2289c4a3::t_c70335459150c8 94-113
+  s_7f5c8d2289c4a3::t_6ceb391281e0eb 182
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_1a964f3e2553ac 9-10,13
+  s_7f5c8d2289c4a3::t_5babb372b41426 78
+  s_7f5c8d2289c4a3::t_048e5036817621 186-233
+  s_7f5c8d2289c4a3::t_2fe03c348ccd9c 234-253
+  s_7f5c8d2289c4a3::t_62ebbf7b00e21b 65-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "cc2f42a2e07383fddcdd5ba7a8b882f18fb72fce",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
