@@ -1,0 +1,49 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_b53192d9362d0c 91-95,97
+  s_7f5c8d2289c4a3::t_6eabd9dd8d1a1e 312-313,317
+  s_7f5c8d2289c4a3::t_74f0e5fdab070c 279
+example/TimeWarpJitBench.hs
+  s_7f5c8d2289c4a3::t_a7db48778d7af6 12-13,15-27,30,33-46,49-50,61-63,66-67,69-79,81-85
+  s_7f5c8d2289c4a3::t_8ece9c1e699e0b 59-60,65,86-88,90
+  s_7f5c8d2289c4a3::t_aee9ced592037d 1-11,14,47-48,51-58,64,68,80
+  s_7f5c8d2289c4a3::t_1be31b74856ec8 89
+  s_7f5c8d2289c4a3::t_2dba7641799191 28-29,31-32
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_35cb5582c6fceb 125,141
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_5902dc6f81bde0 95-141
+  s_7f5c8d2289c4a3::t_06dba300454b3f 468
+  s_7f5c8d2289c4a3::t_4e2b5072a134bb 425-434
+  s_7f5c8d2289c4a3::t_8b35f70003caf1 615
+  s_7f5c8d2289c4a3::t_36f7cc4e389cb5 254-258
+  s_7f5c8d2289c4a3::t_0d21aadd616135 586,588
+  s_7f5c8d2289c4a3::t_ebf4e2795f0dee 620-633
+  s_7f5c8d2289c4a3::t_ef4b49edaca3b6 637-641
+  s_7f5c8d2289c4a3::t_74b8aefb7ecbbd 142-143
+  s_7f5c8d2289c4a3::t_4bc676dcacde43 219-220,224,229
+  s_7f5c8d2289c4a3::t_9df00c6e3c3882 174-176
+  s_7f5c8d2289c4a3::t_9de01cd527b9c2 240
+  s_7f5c8d2289c4a3::t_41ac658f919b1f 713,715-716
+  s_7f5c8d2289c4a3::t_84fef8ac5efd83 728-729
+  s_7f5c8d2289c4a3::t_6124d05408f129 742
+  s_7f5c8d2289c4a3::t_1ee7a90c5b1e16 513-515
+  s_7f5c8d2289c4a3::t_14caace8d6ccc3 605
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_4944a45e19e598 2109-2118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "2bcde25f88fa04f073bb739a0ce94a2ffe4ac00c",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
