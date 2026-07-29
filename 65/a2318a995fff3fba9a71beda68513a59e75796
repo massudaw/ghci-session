@@ -1,0 +1,26 @@
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_5ec201eb7f8a1d 804-873
+  s_7f5c8d2289c4a3::t_d72273d650ab41 490-493
+  s_7f5c8d2289c4a3::t_f01ce749fefd76 372-374
+  s_7f5c8d2289c4a3::t_03758f845f46b0 778-780,783
+  s_7f5c8d2289c4a3::t_2c162e811ae188 800
+  s_7f5c8d2289c4a3::t_c6d1b65b0b9943 391
+  s_7f5c8d2289c4a3::t_5a738a3a956f91 40-51
+  s_7f5c8d2289c4a3::t_ce339da2e6eec3 952
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "65a2318a995fff3fba9a71beda68513a59e75796",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
