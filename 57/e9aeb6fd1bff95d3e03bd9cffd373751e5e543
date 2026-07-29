@@ -1,0 +1,21 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_725646cc2510b3 23-25,27,210-268,390-400,469-482,487-505
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_bc6900b2b6ad78 1204-1210,1255
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "57e9aeb6fd1bff95d3e03bd9cffd373751e5e543",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
