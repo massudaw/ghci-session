@@ -1,0 +1,19 @@
+example/TimeWarpJitBench.hs
+  s_7f5c8d2289c4a3::t_00db81f26a6ea6 85-86,188-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "72c88067f5432051ce26c6cc64ede6cbc3780b4a",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
