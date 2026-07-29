@@ -1,0 +1,22 @@
+src/Solver/DES/TimeWarpMolding.hs
+  s_7f5c8d2289c4a3::t_3be1116d81ad23 54-57
+  s_7f5c8d2289c4a3::t_b69056fca7f48b 25-38
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_ba39e9ffbd611d 24-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "6ecbc5c1eca0b4da5268aae17241765ed9956b78",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
