@@ -1,0 +1,23 @@
+example/TimeWarpJitBench.hs
+  s_7f5c8d2289c4a3::t_ecb455ccff9df8 165-173
+  s_7f5c8d2289c4a3::t_64379a5aeb4cda 178-179,184-185
+  s_7f5c8d2289c4a3::t_077e87d0d97cbd 12
+  s_7f5c8d2289c4a3::t_64ca522395d3df 156-164,174-177,180-183,186-189
+  s_7f5c8d2289c4a3::t_282b4b5d0dd080 73-80,82,88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "c9e42e1706d3442fc2b194da004b93a1b4216827",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
