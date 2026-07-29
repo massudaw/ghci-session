@@ -1,0 +1,20 @@
+example/TWMoldingReference.hs
+  s_7f5c8d2289c4a3::t_c16ef0d48971d1 85-97
+  s_7f5c8d2289c4a3::t_e165953332842f 1-84,98-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d4abf740b51c66b538dc8dc9432423ee9f0b198f",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
