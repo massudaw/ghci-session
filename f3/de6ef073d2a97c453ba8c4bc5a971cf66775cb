@@ -1,0 +1,27 @@
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_9b7b1cf1465a45 9
+  s_7f5c8d2289c4a3::t_dce8c9e1d53cf4 779-783,1260-1261,1285-1291,1293-1294,1299
+  s_7f5c8d2289c4a3::t_c9de030ea5011b 127-143,1268-1284,1292,1295-1298,1300-1325
+src/Solver/DES/TimeWarpPlant.hs
+  s_7f5c8d2289c4a3::t_bc64ae1621edd1 64-69,482-678
+src/JIT/tw_plant.c
+  s_7f5c8d2289c4a3::t_f8da584dd6de2e 100-110,113-115,163,166,168,172,175-182,330,334-336,399-402,420-423
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_98babe6071b784 301-309,531,533-534,540-555,1209-1213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f3de6ef073d2a97c453ba8c4bc5a971cf66775cb",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
