@@ -1,0 +1,27 @@
+src/Solver/DES/TimeWarpPlant.hs
+  s_7f5c8d2289c4a3::t_64f56b42205e64 341-343
+  s_7f5c8d2289c4a3::t_8f7ddec69e9c64 175-185
+  s_7f5c8d2289c4a3::t_e40238e028e50e 172-174
+  s_7f5c8d2289c4a3::t_99c45ba71fdc1d 186-188
+  s_7f5c8d2289c4a3::t_4c5d0759729b21 338-340
+  s_7f5c8d2289c4a3::t_16bb22c347da59 344-346
+  s_7f5c8d2289c4a3::t_dd177993693d01 66,156,162-171,189-190,318,325-337,347-348
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_87d3d02cd1d9e3 587,611,626,640,909,982-987,1008-1011,1158-1161,1234-1235,1305,1348-1353,1382-1385,1504-1505,1566-1569,1689-1703,1784-1785
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "646310014cec513816f0ddf0d41a59f9a864a200",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
