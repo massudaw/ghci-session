@@ -1,0 +1,48 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_b2f87663406f8b 111,497,505-511
+  s_7f5c8d2289c4a3::t_f5895c0b1ac795 85
+  s_7f5c8d2289c4a3::t_45886e516e7213 102
+  s_7f5c8d2289c4a3::t_17c3d4a00706a5 306,309-313,315,329-337,344
+  s_7f5c8d2289c4a3::t_126a060fdc16fb 290-303,307-308,314,499-501,504,526,528-532
+  s_7f5c8d2289c4a3::t_09c96cd02e4bb4 413,430,467,486-496,498,502-503,512-524,527,533-550,642,1180-1193
+  s_7f5c8d2289c4a3::t_0ec45a94d8091d 525,1194
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_d82cf310fa9cfe 651-655
+example/TimeWarpJitBench.hs
+  s_7f5c8d2289c4a3::t_3761affd9f3371 158-160,204-207
+example/TWMoldingReference.hs
+  s_7f5c8d2289c4a3::t_3761affd9f3371 102-104
+src/JIT/jit_trampoline.c
+  s_7f5c8d2289c4a3::t_63df3993499d87 1331-1519
+src/Solver/DES/TimeWarpPlant.hs
+  s_7f5c8d2289c4a3::t_3728e01d9009bf 96-175
+  s_7f5c8d2289c4a3::t_eb9287ea0635dc 64-67,73-75
+  s_7f5c8d2289c4a3::t_f5870b10d5d228 199-205,285,287-288,349-350,447-450
+src/Solver/IDA.hs
+  s_7f5c8d2289c4a3::t_714a0389b93360 1567-1617
+  s_7f5c8d2289c4a3::t_16c02f8dde3f36 1636-1637
+  s_7f5c8d2289c4a3::t_6bb2d6f18d287d 573-580
+  s_7f5c8d2289c4a3::t_ca1941a19b8424 884-903
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_3761affd9f3371 323-324,389-391,465-468,577-579,643-645,756-757,759-761
+src/JIT/tw_plant.c
+  s_7f5c8d2289c4a3::t_a470df5842f23b 293-306,314
+  s_7f5c8d2289c4a3::t_db757a6f216acd 340,370,391
+  s_7f5c8d2289c4a3::t_c36956ddd4e21c 1-292,307-313,315-339,341-369,371-390,392-403
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "bea51c8fa16485c136c79d6f64edc30104260d10",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
