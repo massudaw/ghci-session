@@ -1,0 +1,23 @@
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_fe3c1360b51e3b 14
+  s_7f5c8d2289c4a3::t_48b69755383fc4 416-422
+  s_7f5c8d2289c4a3::t_b9b657249f3d94 392-415,425-541
+  s_7f5c8d2289c4a3::t_765bf2f4cf97b2 423-424
+  s_7f5c8d2289c4a3::t_f2102ab4012914 542
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b1b78133500f47e2795bf418b9ce6bf43ba24341",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
