@@ -1,0 +1,23 @@
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_ba51dd05eb8ace 294,323
+  s_7f5c8d2289c4a3::t_a0860b910e8dba 279-293,295-322,324-347,349-355,357,360-362,364,366-375,377-378,380-383,385-390,392-395
+  s_7f5c8d2289c4a3::t_2cc219ce4b42cd 358-359,379
+  s_7f5c8d2289c4a3::t_34e128e664a02b 348,356,365,376,384
+  s_7f5c8d2289c4a3::t_031435f9b90d35 363
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f4552e73826696be05a2e6468eb9f347badd2c78",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    }
+  }
+}
