@@ -1,0 +1,27 @@
+src/Solver/DES/TimeWarpMolding.hs
+  s_7f5c8d2289c4a3::t_8a5a8038f5ecae 132-164,168
+  s_7f5c8d2289c4a3::t_5398d3ab2be797 1-71,73,76-131,165-167,169-185,191-193,195-200,204,212-296
+  s_7f5c8d2289c4a3::t_8aa9ed2730772b 186-190,194,201-203,205-211
+  s_7f5c8d2289c4a3::t_7a16aebb19db12 72,74-75
+src/Solver/DES/TimeWarpPlant.hs
+  s_7f5c8d2289c4a3::t_c21da29ca518b7 85-89
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_9d795c04d0846e 2113-2122
+  s_7f5c8d2289c4a3::t_bb1c9e6d6422c2 277
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f187cd5059b0f30ed06d66afa768b02f8664604a",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
