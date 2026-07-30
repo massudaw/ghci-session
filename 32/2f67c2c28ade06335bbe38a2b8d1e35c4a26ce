@@ -1,0 +1,24 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_8ea0dd63901323 29
+  s_7f5c8d2289c4a3::t_f997055820e705 907-908
+src/Solver/IDA.hs
+  s_7f5c8d2289c4a3::t_f6c9efafd0028c 966-970,1692-1696,1699-1702
+implementation_plan.md
+  s_7f5c8d2289c4a3::t_a86080455893c1 202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "322f67c2c28ade06335bbe38a2b8d1e35c4a26ce",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
