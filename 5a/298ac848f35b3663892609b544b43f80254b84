@@ -1,0 +1,27 @@
+golden/DESMoldingShopTW/fingerprint.txt
+  s_7f5c8d2289c4a3::t_6aa214469197b9 2-3
+src/JIT/tw_model.h
+  s_7f5c8d2289c4a3::t_db692c13a7ce95 387-392
+  s_7f5c8d2289c4a3::t_2400735579b968 246-263
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_06bed828059c77 2589-2592
+  s_7f5c8d2289c4a3::t_0e50031541056e 2663-2669
+  s_7f5c8d2289c4a3::t_57ddfbd51fefd7 2685-2694
+  s_7f5c8d2289c4a3::t_e3f902ee90d1b1 1921-1924
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "5a298ac848f35b3663892609b544b43f80254b84",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
