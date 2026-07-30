@@ -1,0 +1,30 @@
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_4a27cd6fdafe0a 405
+example/Main.hs
+  s_7f5c8d2289c4a3::t_04c2169c3a9e4d 199,421
+src/Examples/DESMoldingShopTW.hs
+  s_7f5c8d2289c4a3::t_2ebbbc6df4c502 339-340,342-344
+  s_7f5c8d2289c4a3::t_13ce65fb62fa4f 1-29,41-50,83-142,145,147-232,234-295,300-324,336-338,341,345-389
+  s_7f5c8d2289c4a3::t_6255bd6a778b95 143-144,146
+  s_7f5c8d2289c4a3::t_a07e72d198ddf7 51-82
+  s_7f5c8d2289c4a3::t_ff53ead425776d 325-335
+  s_7f5c8d2289c4a3::t_50609968713599 30-40
+  s_7f5c8d2289c4a3::t_5b031d0e346b4e 233
+  s_7f5c8d2289c4a3::t_cd96efc4969a87 296-299
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "e17a9a9300655f412bb5eca90bc9e17d4952ac51",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
