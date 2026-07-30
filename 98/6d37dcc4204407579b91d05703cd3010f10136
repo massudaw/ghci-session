@@ -1,0 +1,25 @@
+implementation_plan.md
+  s_7f5c8d2289c4a3::t_68fe25b9371868 202,209-223,225-227,234-237
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_4e05dd3fc33831 489-495,497-508
+  s_7f5c8d2289c4a3::t_fc5e9a07249a31 111-147,150-164,181-193,204,210-215
+  s_7f5c8d2289c4a3::t_00c66d34eb415e 930-939,944-945,948-979
+  s_7f5c8d2289c4a3::t_8659d3708ef53c 165-179
+  s_7f5c8d2289c4a3::t_080d478a65b943 180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "986d37dcc4204407579b91d05703cd3010f10136",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
