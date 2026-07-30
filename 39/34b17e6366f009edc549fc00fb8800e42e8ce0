@@ -1,0 +1,82 @@
+golden/DESDispatch/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 33-38
+golden/ModelContactArrayStress/transient.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 7-8
+golden/DESControlPolicyFalsifyV3/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2-4
+golden/HybridGuardRearmCLoop/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3
+golden/ModelContactArrayStress/solver_audit.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2,11-14
+golden/ModelRelaxationOsc/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3
+golden/DESBench/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-8
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2-4
+golden/DESControlPolicyFalsifyV5/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2-5
+golden/DESQueue/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-4
+golden/DESFanOut/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-12
+golden/DESUnifiedLine/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-7
+golden/DESSharedRoom/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-7
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_ca1942814683b6 261-278
+golden/DESMoldingShop/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-8
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2-10
+src/Examples/DESExploreDistilleryNative.hs
+  s_7f5c8d2289c4a3::t_202a2225466269 102-110
+golden/BankRiskMaster/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 52-150
+golden/DESMctsFalsify/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 2-10
+golden/RiskPortfolioDES/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 52-160
+golden/DESPureParity/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 6-11
+golden/DESReactorTank/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-4
+golden/ModelTorqueVector/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-4
+golden/DESFactoryLine/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-12
+golden/DESDistillery/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 4-20
+src/Solver/HybridDAE.hs
+  s_7f5c8d2289c4a3::t_71d0b9c1c7660e 416-418,420-421
+golden/ModelSupervisedCooling/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-4
+golden/DESParallelLines/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-16
+golden/DESElectricLoad/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 3-5
+golden/DESExploreShopNative/fingerprint.txt
+  s_7f5c8d2289c4a3::t_09cfc6dc31b315 39-44
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_7f5c8d2289c4a3::t_c5d4ddea902ae3 4-20
+HYBRID_DAE_STATE_MACHINE.md
+  s_7f5c8d2289c4a3::t_5be4e0c2559aef 498-499
+  s_7f5c8d2289c4a3::t_387c73f3cf354c 534-623
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "3934b17e6366f009edc549fc00fb8800e42e8ce0",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
