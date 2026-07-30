@@ -1,0 +1,58 @@
+src/JIT/tw_runtime.c
+  s_7f5c8d2289c4a3::t_8ddf419a8a6a8a 292-295
+  s_7f5c8d2289c4a3::t_69672fa85ccb82 328
+  s_7f5c8d2289c4a3::t_21962f0642bedb 166-170
+  s_7f5c8d2289c4a3::t_6696f518aa8ca1 1059,1068
+  s_7f5c8d2289c4a3::t_3b634b9d2a38b8 1049-1053
+  s_7f5c8d2289c4a3::t_b38b9e9389aaf6 1077,1083
+  s_7f5c8d2289c4a3::t_3825a99ca83acc 516-541
+  s_7f5c8d2289c4a3::t_c760195fc83fd8 432-435
+  s_7f5c8d2289c4a3::t_bdfdf4cdf208b0 93-97
+  s_7f5c8d2289c4a3::t_3b46e70fbe8400 1142-1153,1158-1161,1164-1179
+  s_7f5c8d2289c4a3::t_245dd87d1b96c6 454-486
+  s_7f5c8d2289c4a3::t_9d1aa7e0679d72 2737-2749
+src/JIT/tw_model.h
+  s_7f5c8d2289c4a3::t_802f312dbaa777 80-84
+  s_7f5c8d2289c4a3::t_90b492c70634da 139-143,148-170
+  s_7f5c8d2289c4a3::t_98a024417da5f0 171
+src/JIT/tw_engine.h
+  s_7f5c8d2289c4a3::t_d25a423e9778cb 153-159
+  s_7f5c8d2289c4a3::t_149a19b3172fdb 213-223
+  s_7f5c8d2289c4a3::t_c8311fc0d6c626 285-289
+  s_7f5c8d2289c4a3::t_e658de114e5cab 60-104
+  s_7f5c8d2289c4a3::t_be66281a2396e9 320-333
+  s_7f5c8d2289c4a3::t_0023a8546da6e0 479
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_b2eb3719111e3c 1480-1482
+  s_7f5c8d2289c4a3::t_c4f2f8ad242a90 1646-1650
+  s_7f5c8d2289c4a3::t_2b390d6d7f090d 1609-1617
+  s_7f5c8d2289c4a3::t_5f07fe5ef2ebab 459-460,463-480
+  s_7f5c8d2289c4a3::t_23bf2b4f4eb1b0 106
+  s_7f5c8d2289c4a3::t_0023c0fa0c7097 1122-1126,1128-1130
+  s_7f5c8d2289c4a3::t_7024ad0d3dec56 1561-1567
+  s_7f5c8d2289c4a3::t_cdcdda63b85f90 88-89
+  s_7f5c8d2289c4a3::t_987c1c2d795da2 1784-1790
+  s_7f5c8d2289c4a3::t_5b6cfea3b2dc88 422-433
+  s_7f5c8d2289c4a3::t_9e4833352856bc 1635-1637
+  s_7f5c8d2289c4a3::t_9223f226ef7f6d 1093-1109,1116
+  s_7f5c8d2289c4a3::t_c66f4019714be8 1280-1316
+  s_7f5c8d2289c4a3::t_a9bfd9d0cdd701 1005-1024,1026-1027
+  s_7f5c8d2289c4a3::t_f30feb2ae9111a 72-75
+  s_7f5c8d2289c4a3::t_7cea8250bf4e16 481
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b286dcfb7b8fc0d9bdc9426035a5a7023fcbdb2a",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
