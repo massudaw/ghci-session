@@ -1,0 +1,23 @@
+tools/BankNativePlantProbe.hs
+  s_7f5c8d2289c4a3::t_ed8cc77d8bab7a 11,14-19,28,31,34-36,58-60,73-87,93-95,101-102,104,106-114
+  s_7f5c8d2289c4a3::t_15e29424273580 1-10,12-13,20-27,29-30,32,37-57,61-72,88-92,96-100,103,105,115-126
+  s_7f5c8d2289c4a3::t_6ae8e892a32cc9 33
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_bf9a322a2a2229 2144-2153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "cfa90ab46be301b0b9ee72383a844d2fd7fc6401",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
