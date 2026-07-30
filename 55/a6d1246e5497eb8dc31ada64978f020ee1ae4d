@@ -1,0 +1,19 @@
+src/JIT/tw_plant.c
+  s_7f5c8d2289c4a3::t_ebb839f6520121 30-37,42-43,439
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "55a6d1246e5497eb8dc31ada64978f020ee1ae4d",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
