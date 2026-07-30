@@ -1,0 +1,41 @@
+tools/ResetConsistencyAudit.hs
+  s_7f5c8d2289c4a3::t_803fff4fbbf99f 1,191
+  s_7f5c8d2289c4a3::t_819cefdf51c4ed 2-46,48-49,51-52,54-174,176-190,192-213
+  s_7f5c8d2289c4a3::t_ca6bc49319dba9 47,50,53,175
+src/Solver/GuardRearm.hs
+  s_7f5c8d2289c4a3::t_d40d2889d20b5a 303-348
+  s_7f5c8d2289c4a3::t_47d959345c569e 116-119,124-125
+sprinkler-solver.cabal
+  s_7f5c8d2289c4a3::t_ca6bc49319dba9 2157-2161
+  s_7f5c8d2289c4a3::t_c167c04cf181f8 2154-2156
+src/Solver/HybridDAE.hs
+  s_7f5c8d2289c4a3::t_947c72653edc15 1019-1020
+  s_7f5c8d2289c4a3::t_8ab85243e43f53 1340-1341
+  s_7f5c8d2289c4a3::t_f8da9c87c3858d 1358-1369
+  s_7f5c8d2289c4a3::t_a1d77e22b1c449 1058-1065
+  s_7f5c8d2289c4a3::t_6e29de877ee57c 45
+src/Solver/UnionSession.hs
+  s_7f5c8d2289c4a3::t_6e29de877ee57c 58
+  s_7f5c8d2289c4a3::t_6f46a7ff5b319b 594-595
+  s_7f5c8d2289c4a3::t_f8da9c87c3858d 615-623
+src/JIT/jit_trampoline.c
+  s_7f5c8d2289c4a3::t_c7c78c9f0d25b3 1233-1244
+  s_7f5c8d2289c4a3::t_11073a33aec326 1435-1441
+  s_7f5c8d2289c4a3::t_e204086c338e4a 98-165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "c209616c9e9b79d21bb5aace44b7ccc67e0531a8",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
