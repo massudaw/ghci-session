@@ -1,0 +1,26 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_84a139b4fc0251 342-350
+  s_7f5c8d2289c4a3::t_9d421853485627 589-590,596-597,600,602-610
+  s_7f5c8d2289c4a3::t_0e42a0ae242c87 1648
+  s_7f5c8d2289c4a3::t_04a6efdf16ce02 614
+  s_7f5c8d2289c4a3::t_3d2bf723217e0f 1624
+  s_7f5c8d2289c4a3::t_5ad4885bc95530 1502-1507
+  s_7f5c8d2289c4a3::t_4392340b62ec89 409
+  s_7f5c8d2289c4a3::t_544dd48ce05b0c 1143-1144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "c955fb60513af99f03176b4639b18fb3c138a02a",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
