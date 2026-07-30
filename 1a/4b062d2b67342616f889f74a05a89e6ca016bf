@@ -1,0 +1,21 @@
+HYBRID_DAE_STATE_MACHINE.md
+  s_7f5c8d2289c4a3::t_4bb5c74e417460 533-603
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_dbb09dab1eea0a 249-265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "1a4b062d2b67342616f889f74a05a89e6ca016bf",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
