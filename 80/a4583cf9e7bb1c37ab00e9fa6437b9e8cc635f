@@ -1,0 +1,25 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_375c02e9804e21 28
+  s_7f5c8d2289c4a3::t_1fd00cf6e24fc2 717-734
+  s_7f5c8d2289c4a3::t_72515f1314bd85 735
+golden/DESMoldingShopTW/status.txt
+  s_7f5c8d2289c4a3::t_3dc5363a3518f9 1
+golden/DESMoldingShopTW/fingerprint.txt
+  s_7f5c8d2289c4a3::t_3dc5363a3518f9 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "80a4583cf9e7bb1c37ab00e9fa6437b9e8cc635f",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
