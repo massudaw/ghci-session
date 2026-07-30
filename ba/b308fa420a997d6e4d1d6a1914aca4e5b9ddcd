@@ -1,0 +1,26 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_63fec53f2bc0c2 225-226,229-248
+  s_7f5c8d2289c4a3::t_3a3239ece957bf 227-228
+HYBRID_DAE_STATE_MACHINE.md
+  s_7f5c8d2289c4a3::t_afefd0c11919f6 493-515
+  s_7f5c8d2289c4a3::t_5b2201dbb6ee70 423-492,516-544
+implementation_plan.md
+  s_7f5c8d2289c4a3::t_3389c12013d0e9 254-255
+  s_7f5c8d2289c4a3::t_b5e95e81c50693 253,256-264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "bab308fa420a997d6e4d1d6a1914aca4e5b9ddcd",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
