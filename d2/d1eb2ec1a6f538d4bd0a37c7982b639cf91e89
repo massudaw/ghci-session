@@ -1,0 +1,42 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_7f5c8d2289c4a3::t_6011a1f04bb848 185-188
+  s_7f5c8d2289c4a3::t_c2973b49ccd74e 30
+  s_7f5c8d2289c4a3::t_16f1665b4ef261 357-376,378
+  s_7f5c8d2289c4a3::t_e22de0a31b24b6 624
+  s_7f5c8d2289c4a3::t_e5a268ba7f84d3 308-321
+  s_7f5c8d2289c4a3::t_3893804bf8c972 693
+  s_7f5c8d2289c4a3::t_db0b82178da28a 128-129
+  s_7f5c8d2289c4a3::t_3a437ac4d23cf2 265-268,270,272-274
+  s_7f5c8d2289c4a3::t_b5cf52a6364442 71-76
+  s_7f5c8d2289c4a3::t_05b903a9c8c74d 301-307
+  s_7f5c8d2289c4a3::t_55860d3204fa69 278-279
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_6b834261a6e360 108
+  s_7f5c8d2289c4a3::t_1bd9c113d3487b 1819-1837
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_a2c3ebf7283fe9 1756-1768
+  s_7f5c8d2289c4a3::t_8df8ba09738de4 350-355
+  s_7f5c8d2289c4a3::t_c0829bcfc4e50e 1732-1733
+  s_7f5c8d2289c4a3::t_d220baebedef5b 1744-1748
+  s_7f5c8d2289c4a3::t_678255d35ef2c9 274-277,285-349,356-370
+  s_7f5c8d2289c4a3::t_2bcc7d2ce9b1c0 1920-1968,1977-2041,2044-2046
+  s_7f5c8d2289c4a3::t_9b58d0dcc18a05 1969-1976
+  s_7f5c8d2289c4a3::t_0cf4700de3c156 371
+  s_7f5c8d2289c4a3::t_bbf648fe05563d 2047
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "d2d1eb2ec1a6f538d4bd0a37c7982b639cf91e89",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
