@@ -1,0 +1,27 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_abefe536a329da 18
+  s_7f5c8d2289c4a3::t_0e70591fa82af9 77-79
+  s_7f5c8d2289c4a3::t_2a5097f3f39024 699-746
+  s_7f5c8d2289c4a3::t_65a9cdff5ddc87 20
+  s_7f5c8d2289c4a3::t_8e16542bcb4a4e 344-396
+  s_7f5c8d2289c4a3::t_4e1dd1ab7d345e 28,609-610
+  s_7f5c8d2289c4a3::t_a897c7989dade5 640-642
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_3ff4b8d52aa71e 1446-1469
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "8e0b2aa2dad6efbcdcf36087983944792c92d455",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
