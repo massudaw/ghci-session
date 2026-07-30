@@ -1,0 +1,25 @@
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_2c8815eda1cce9 2912
+  s_7f5c8d2289c4a3::t_bdb714bc69420a 2730-2733,2735,2744-2747,2796-2799,2807
+  s_7f5c8d2289c4a3::t_53959c134b1c3e 2835-2840,2842,2844-2849,2878-2887,2894
+  s_7f5c8d2289c4a3::t_6728e57ccdb375 2734
+  s_7f5c8d2289c4a3::t_6586f51eb4beca 2785-2795,2800-2806,2808
+tools/TWCondHybridCompare.hs
+  s_7f5c8d2289c4a3::t_848e7fb5814e30 117-121,124,126,128,180-183,190-192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "1308e4fb188a546c638b65487f4379d805909559",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
