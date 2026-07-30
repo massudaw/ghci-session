@@ -1,0 +1,26 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_71c89470e997ba 78-81
+  s_7f5c8d2289c4a3::t_b32d38a976a4ba 891-945
+  s_7f5c8d2289c4a3::t_5212f70f6a8574 163-165
+  s_7f5c8d2289c4a3::t_525a86b16e1807 177-218
+tools/BankLoweringProbe.hs
+  s_7f5c8d2289c4a3::t_d0978884a292fa 19,24,26-29,57
+  s_7f5c8d2289c4a3::t_4df7fe2e5d7dc6 82-85
+  s_7f5c8d2289c4a3::t_52a156737cc06b 88-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "c34684afd2a33dbab4eaf97467ae29f6c1310af7",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
