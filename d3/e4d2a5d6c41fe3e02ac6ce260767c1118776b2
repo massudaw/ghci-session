@@ -1,0 +1,20 @@
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_56a4e5567cda5f 117-142
+  s_7f5c8d2289c4a3::t_22689ea8d971bd 963-1013
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "d3e4d2a5d6c41fe3e02ac6ce260767c1118776b2",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
