@@ -1,0 +1,20 @@
+implementation_plan.md
+  s_7f5c8d2289c4a3::t_1fec5e1bd02817 146-183
+  s_7f5c8d2289c4a3::t_7794910a0c30ca 66,192,200,208,296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "c6b4c504ba21e11b6409dd304b7679e16df8be24",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
