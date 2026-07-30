@@ -1,0 +1,23 @@
+src/JIT/tw_plant.c
+  s_7f5c8d2289c4a3::t_a2f59599c5e517 482
+src/JIT/jit_trampoline.c
+  s_7f5c8d2289c4a3::t_db96927aa7d8d7 1395-1405,1408-1422,1436-1439,1446,1452
+  s_7f5c8d2289c4a3::t_a2f59599c5e517 1527-1553,1555,1557-1565,1568-1609,1611-1613,1616-1617,1619,1621-1622,1629-1630,1636-1639
+  s_7f5c8d2289c4a3::t_e8afec5a541fda 1370,1480,1486-1521
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "56abf5aa69ea30a3480dc3fca83d536b3643cf39",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
