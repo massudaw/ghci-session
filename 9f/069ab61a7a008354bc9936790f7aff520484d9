@@ -1,0 +1,59 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_8cdec0cb873ef6 1190
+  s_7f5c8d2289c4a3::t_73700ca0112b4c 1425-1436
+  s_7f5c8d2289c4a3::t_c6d0f66dc0060f 187-189
+  s_7f5c8d2289c4a3::t_af964124408ad8 1587-1589
+  s_7f5c8d2289c4a3::t_9fc59c480c295f 1596-1597
+  s_7f5c8d2289c4a3::t_6e04462f399282 978,982-992
+  s_7f5c8d2289c4a3::t_639f827cd7bee2 1200,1202
+  s_7f5c8d2289c4a3::t_6c3bd10f2d653a 471
+  s_7f5c8d2289c4a3::t_3ef492d982556a 1638-1639,1641
+  s_7f5c8d2289c4a3::t_b26fa7f08f0409 108
+  s_7f5c8d2289c4a3::t_5d89e026b2393b 1679-1688
+  s_7f5c8d2289c4a3::t_0e1d682a4cb9df 1398-1424,1437-1454
+  s_7f5c8d2289c4a3::t_3ec973b9e7ac6c 1567-1568
+  s_7f5c8d2289c4a3::t_5cd28f34929820 441-444
+  s_7f5c8d2289c4a3::t_92e08a9ed5d7c1 90
+  s_7f5c8d2289c4a3::t_071b76ddf2ce13 1223-1224
+  s_7f5c8d2289c4a3::t_1ccc7f5dbd8c70 1309-1311,1314-1324
+  s_7f5c8d2289c4a3::t_b377320ee75802 493-523
+  s_7f5c8d2289c4a3::t_b9f81da6ae25b0 2020-2033
+  s_7f5c8d2289c4a3::t_d2a4c9e08e02f3 1355
+  s_7f5c8d2289c4a3::t_2c645eceee58d3 1152,1155-1157,1161-1162,1165-1180
+  s_7f5c8d2289c4a3::t_4b7ec81997e749 1966-1971
+  s_7f5c8d2289c4a3::t_b3d3ed2c84f592 1211,1216
+  s_7f5c8d2289c4a3::t_f3b36b9032f9f1 1843-1848
+  s_7f5c8d2289c4a3::t_21847d3e5e2a19 1247-1249
+  s_7f5c8d2289c4a3::t_4f997523bf08fc 111
+  s_7f5c8d2289c4a3::t_9d174b49b86665 1738,1740
+  s_7f5c8d2289c4a3::t_966560a6b17abb 1610-1625
+  s_7f5c8d2289c4a3::t_399b7a2f674e9e 993-994
+  s_7f5c8d2289c4a3::t_6470ec6f184a21 1455
+  s_7f5c8d2289c4a3::t_67b8d650a52bef 1972-1973
+  s_7f5c8d2289c4a3::t_edfda60371b7bd 2034-2036
+  s_de062ab7aa4f61::t_36799650498ba9 2037-2038
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "9f069ab61a7a008354bc9936790f7aff520484d9",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_de062ab7aa4f61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a983d4eb538742f36",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
