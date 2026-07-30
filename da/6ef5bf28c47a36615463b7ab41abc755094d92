@@ -1,0 +1,21 @@
+src/JIT/tw_engine.h
+  s_7f5c8d2289c4a3::t_e4d627e0d09dd8 602-607
+TIMEWARP.md
+  s_7f5c8d2289c4a3::t_10b5868c77e51b 380-389
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "da6ef5bf28c47a36615463b7ab41abc755094d92",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
