@@ -1,0 +1,31 @@
+example/TestTimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_1ed605a26cc02e 1752-1761,1764-1815
+  s_7f5c8d2289c4a3::t_9fecbc3fbdb15e 1762-1763
+  s_7f5c8d2289c4a3::t_d523a19d236999 13-17
+src/Solver/DES/TimeWarpJit.hs
+  s_7f5c8d2289c4a3::t_d78bd0c9fbe083 911-940
+  s_7f5c8d2289c4a3::t_13b96e11f6e4a5 871-875
+  s_7f5c8d2289c4a3::t_c33622117fdd51 117
+  s_7f5c8d2289c4a3::t_3149d76da0cfa7 421-426
+  s_7f5c8d2289c4a3::t_8a439f6e053e9e 443-470
+  s_7f5c8d2289c4a3::t_cd8ce3a193dd8e 1707-1720
+  s_7f5c8d2289c4a3::t_0f328ed7124512 1563-1564
+  s_7f5c8d2289c4a3::t_f405a5a28f909f 87
+  s_7f5c8d2289c4a3::t_f5fc2081d9e414 1732-1740
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d7fbc95602a976339fa592097e198bf7747f5c5b",
+  "prompts": {},
+  "sessions": {
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
