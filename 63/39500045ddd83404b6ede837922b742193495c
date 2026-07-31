@@ -1,0 +1,62 @@
+src/JIT/jit_trampoline.c
+  s_91ad71944aefa5::t_42e80725a8218f 838-842
+  s_91ad71944aefa5::t_f698360901ef77 150-156
+  s_91ad71944aefa5::t_2d0d346a5345b2 1938-1942
+  s_91ad71944aefa5::t_86b993a7b2f65b 1969
+  s_91ad71944aefa5::t_8cb176258d70a0 1978-1982
+  s_91ad71944aefa5::t_2215cea5ed132e 1742-1749
+  s_91ad71944aefa5::t_de0ac01eaf3046 1963,1974
+  s_91ad71944aefa5::t_94d453354d73df 2286-2287
+  s_91ad71944aefa5::t_7f853d44c1b3da 1514-1619,1629-1633
+  s_91ad71944aefa5::t_fd0f0f0ee8fed4 1707-1715
+  s_91ad71944aefa5::t_0b4c4ccc75359e 170-178
+  s_91ad71944aefa5::t_2f704771877a5a 1996-1997
+  s_91ad71944aefa5::t_34bb76567e264b 1197-1223
+  s_91ad71944aefa5::t_06e1857c9f6a20 1361-1363
+  s_91ad71944aefa5::t_b60d49a1593595 252-253,256-257
+  s_91ad71944aefa5::t_8bfa947b9581fc 1953-1962,1964-1967,1971-1973,1975
+  s_91ad71944aefa5::t_1a717088c43cd1 118-140
+  s_91ad71944aefa5::t_2e9a12afbb27cc 1283-1308,1976
+  s_91ad71944aefa5::t_ddadb868ff4e68 1637,1639,1705,1977
+  s_91ad71944aefa5::t_a10895cb323c41 200-216,218-247
+  s_91ad71944aefa5::t_cd608edb30d40c 217
+  s_91ad71944aefa5::t_afd7e7810fc15a 2267
+  s_91ad71944aefa5::t_15fc4bb32c75c2 1309
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_1a5cbb2f570227 871
+  s_91ad71944aefa5::t_0c7bfe435c458d 1149-1152,1217-1218,1502-1503,1558-1559
+  s_91ad71944aefa5::t_eb5044707a47b3 1214
+  s_91ad71944aefa5::t_038c6b2c16f103 1543-1553
+  s_91ad71944aefa5::t_e19034b5393dfe 843-845
+  s_91ad71944aefa5::t_4353b737bd4707 1190-1207
+  s_91ad71944aefa5::t_2a34673f7abac5 1127-1141
+  s_91ad71944aefa5::t_a0c436ed52f162 1488-1497
+  s_91ad71944aefa5::t_65edd7a150322a 1142,1208,1498,1554
+  s_91ad71944aefa5::t_62a0469ecd314d 846-870
+src/Solver/GuardRearm.hs
+  s_91ad71944aefa5::t_5bfb8cccab8670 127
+  s_91ad71944aefa5::t_fca1aa0d873eb8 388-396
+  s_91ad71944aefa5::t_554af6bd6b0e14 123-126,128-129
+  s_91ad71944aefa5::t_723ed93dc0a386 339-387,397-404
+src/Solver/UnionSession.hs
+  s_91ad71944aefa5::t_09d0908f8a99f2 594,596-606
+  s_91ad71944aefa5::t_24ddda121ff8ff 650-660
+  s_91ad71944aefa5::t_65edd7a150322a 607,661
+  s_91ad71944aefa5::t_0c7bfe435c458d 611-612,665-666
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "6339500045ddd83404b6ede837922b742193495c",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
