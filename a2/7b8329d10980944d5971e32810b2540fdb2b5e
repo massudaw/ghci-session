@@ -1,0 +1,24 @@
+HYBRID_DAE_STATE_MACHINE.md
+  s_91ad71944aefa5::t_c402007d0874af 534-594
+  s_91ad71944aefa5::t_cf06b49d5a1b52 1085-1145
+MODEL_SEMANTICS.md
+  s_91ad71944aefa5::t_e291e76e58bdf8 203
+  s_91ad71944aefa5::t_b88bb68ed13905 207-228
+  s_91ad71944aefa5::t_571a64945d1be9 159-191,322-342
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "a27b8329d10980944d5971e32810b2540fdb2b5e",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
