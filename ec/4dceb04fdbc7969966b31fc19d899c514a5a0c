@@ -1,0 +1,19 @@
+ROW_PROVENANCE_DESIGN.md
+  s_91ad71944aefa5::t_2fefd1dd176161 1-568
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "ec4dceb04fdbc7969966b31fc19d899c514a5a0c",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
