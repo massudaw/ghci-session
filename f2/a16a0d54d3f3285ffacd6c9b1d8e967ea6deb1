@@ -1,0 +1,36 @@
+golden/ResetConsistencyTest/fingerprint.txt
+  s_91ad71944aefa5::t_9c5b8acccebf64 6,8,12-14,16,24
+src/Examples/ResetConsistencyTest.hs
+  s_91ad71944aefa5::t_ba28aa659aae97 152-199
+  s_91ad71944aefa5::t_e3fa9c2e0bd61a 330
+src/JIT/jit_trampoline.c
+  s_91ad71944aefa5::t_bfb425307c8d0a 1265-1267
+  s_91ad71944aefa5::t_123b6471a1212b 999,2393-2394,2406
+  s_91ad71944aefa5::t_2622cd1b0b78fa 1244-1262,1268
+  s_91ad71944aefa5::t_87a7ffc29c51c6 1553-1560,1562-1572,1581-1608,1614-1615
+  s_91ad71944aefa5::t_78f4c39ccab11c 939-946
+  s_91ad71944aefa5::t_fe589422d000b7 1617-1618
+src/Solver/GuardRearm.hs
+  s_91ad71944aefa5::t_43005785b731ae 132
+  s_91ad71944aefa5::t_2bf776303f1531 65-94
+  s_91ad71944aefa5::t_f82b6fdcac6dbe 240,242,244,248-267
+  s_91ad71944aefa5::t_8791191cb6a6d1 268
+golden/ResetConsistencyTest/tapestats.txt
+  s_91ad71944aefa5::t_9c5b8acccebf64 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "f2a16a0d54d3f3285ffacd6c9b1d8e967ea6deb1",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
