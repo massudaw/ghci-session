@@ -1,0 +1,30 @@
+example/Main.hs
+  s_91ad71944aefa5::t_52727402fcede8 113,489
+src/Transient.hs
+  s_91ad71944aefa5::t_c0a5a9ca846a44 1084,1086-1096
+sprinkler-solver.cabal
+  s_91ad71944aefa5::t_52727402fcede8 470
+src/Domains.hs
+  s_91ad71944aefa5::t_b2c792312fe94d 391-393,396-419
+  s_91ad71944aefa5::t_68e68545442b4d 420
+src/Examples/DerivSlotSettleTest.hs
+  s_91ad71944aefa5::t_27a8851dfeed67 51-56
+  s_91ad71944aefa5::t_8b2ad89dd8cc7f 1-50,57-189,193-299
+  s_91ad71944aefa5::t_e28cd5b64f213c 190-192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "a10be7b1a810bc773a0fd9c5407458640fd2c440",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
