@@ -1,0 +1,35 @@
+sprinkler-solver.cabal
+  s_91ad71944aefa5::t_39e6b0fedfae1f 408
+example/Main.hs
+  s_91ad71944aefa5::t_39e6b0fedfae1f 205,428
+golden/BankRiskTW/fingerprint.txt
+  s_91ad71944aefa5::t_3120baf223161d 1-35
+golden/BankRiskTW/status.txt
+  s_91ad71944aefa5::t_3120baf223161d 1
+src/Examples/BankRiskTW.hs
+  s_91ad71944aefa5::t_599b96b0822689 376-377,470-485,491-495
+  s_91ad71944aefa5::t_a00beb022477e5 143,167
+  s_91ad71944aefa5::t_ca5653df2cd8bb 315-336,340-347,354,360-375,378-406
+  s_91ad71944aefa5::t_0545bed94d3290 430-431
+  s_91ad71944aefa5::t_db22d103214aac 407-411
+  s_91ad71944aefa5::t_ecaf5648e2ec07 128-129
+  s_91ad71944aefa5::t_cc78ebc7e2b35b 109,112,116-117,487-489
+  s_91ad71944aefa5::t_5f17065bd05c83 1-58,98-102,107-108,110-111,113-115,118-127,130-142,144-166,168-314,337-339,348-353,355-359,412-429,432-469,486,490,496
+  s_91ad71944aefa5::t_7546712b28e655 59-97,103-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "55413f5117a5f05f378e7934ad5e95f9ba2f1258",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
