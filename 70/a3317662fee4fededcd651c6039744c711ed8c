@@ -1,0 +1,61 @@
+src/Examples/ResetConsistencyTest.hs
+  s_91ad71944aefa5::t_937de1b1aec871 42-43,193-271,314-333,338
+src/Model/LockClutchCoupling.hs
+  s_91ad71944aefa5::t_9ce776b3231326 110
+  s_91ad71944aefa5::t_b46a05d1079d99 39,82-109,111
+  s_91ad71944aefa5::t_e19b16b476513e 43
+src/Domains.hs
+  s_91ad71944aefa5::t_852f295a736056 453-459
+  s_91ad71944aefa5::t_2082a37baa7468 37
+  s_91ad71944aefa5::t_02cded77b2dcdf 387-415
+src/Model.hs
+  s_91ad71944aefa5::t_fd165d32790c2a 606-607
+  s_91ad71944aefa5::t_cb531ce4b27bf9 65
+  s_91ad71944aefa5::t_13f51cc7d3ffd7 1166-1175
+  s_91ad71944aefa5::t_750dad70613665 525-553
+src/Transient.hs
+  s_91ad71944aefa5::t_c8047b10c6dffa 1084,1114-1127
+  s_91ad71944aefa5::t_706134ae1f39dc 89,1648-1658,1660-1661,1683,1703-1708
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_5f7c287674ff1a 42
+  s_91ad71944aefa5::t_a9c4b05464595d 405-416
+  s_91ad71944aefa5::t_caf45dd76f7108 169-192,195-220,228,246-252,254-258,261-265,307-312
+  s_91ad71944aefa5::t_dca6e896e98f93 38-39
+src/Solver/IDA.hs
+  s_91ad71944aefa5::t_b9abbf335a3eac 45,668-681,683
+  s_91ad71944aefa5::t_93adf252e6f3b4 725-738,927
+  s_91ad71944aefa5::t_5a23a526a2b37e 682
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_c40768ffae125a 58
+  s_91ad71944aefa5::t_e0d94cb7b22845 366,710-727,774-813
+  s_91ad71944aefa5::t_7b5308f5a0070c 1550-1554
+  s_91ad71944aefa5::t_712e2454dbbae0 1544-1549,1555
+  s_91ad71944aefa5::t_b75392e66f91f4 64
+  s_91ad71944aefa5::t_9ea23fb4424e08 57,822-830,865-872,1540
+src/Solver/UnionSession.hs
+  s_91ad71944aefa5::t_2dd5d28d887f64 75,86,248-257,262,274-279
+  s_91ad71944aefa5::t_e34ce7f84378ed 353-363
+src/Solver/DES/TimeWarpPlant.hs
+  s_91ad71944aefa5::t_e27c991a1641f8 111-112,127,940-943,946-950,954-955
+  s_91ad71944aefa5::t_1d03a26c4a0c37 944-945
+  s_91ad71944aefa5::t_2d1f822a65882f 125
+  s_91ad71944aefa5::t_de4e88f8ec581c 965-972,977
+  s_91ad71944aefa5::t_b0239c8c58a2a5 973-976
+  s_91ad71944aefa5::t_e655039d01b179 126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "70a3317662fee4fededcd651c6039744c711ed8c",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
