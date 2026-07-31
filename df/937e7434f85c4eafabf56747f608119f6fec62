@@ -1,0 +1,24 @@
+DEBUGGER_ROADMAP.md
+  s_91ad71944aefa5::t_219a0b791ea3ae 29-40,115,128-154,287-290,295-311
+  s_91ad71944aefa5::t_0736c0339d6bc3 312
+src/Solver/SolveJournal.hs
+  s_91ad71944aefa5::t_a47198cb7eef2e 44,86-97,99-101
+tools/IDAReplay.hs
+  s_91ad71944aefa5::t_fb66c528e848c8 331-335,338-340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "df937e7434f85c4eafabf56747f608119f6fec62",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
