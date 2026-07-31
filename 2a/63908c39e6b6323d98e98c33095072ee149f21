@@ -1,0 +1,27 @@
+src/Solver/CrashReplay.hs
+  s_91ad71944aefa5::t_7cc6ecb3580469 48
+  s_91ad71944aefa5::t_12d8ca5eaf820a 290-296
+  s_91ad71944aefa5::t_5162c7a5363825 297-326,329-343
+  s_91ad71944aefa5::t_0054783ed95403 380-384
+tools/IDAReplay.hs
+  s_91ad71944aefa5::t_92418b7e37a72c 292-299
+  s_91ad71944aefa5::t_0054783ed95403 27,34,155-157,356,365-368
+  s_91ad71944aefa5::t_fec8570ad12ef8 396-400,402-404
+  s_91ad71944aefa5::t_7cc6ecb3580469 315,341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "2a63908c39e6b6323d98e98c33095072ee149f21",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
