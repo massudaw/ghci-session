@@ -1,0 +1,34 @@
+src/Solver/IDA.hs
+  s_91ad71944aefa5::t_abd324f2d43a99 54-55,1020-1035
+  s_91ad71944aefa5::t_6613429856060f 1006-1007,2213-2219,2221-2222,2255-2256
+  s_91ad71944aefa5::t_ca0e78fdebd03e 1707,2259-2266
+tools/IDAReplay.hs
+  s_91ad71944aefa5::t_ab583bc3cea355 1-40,42-279,289-316,318-322,327-343,346,348-381,387-399
+  s_91ad71944aefa5::t_852b920536c501 280-288
+  s_91ad71944aefa5::t_d7af4a2e97b14d 41,382-386
+  s_91ad71944aefa5::t_6d3fb24eb88a86 317,323-326
+  s_91ad71944aefa5::t_c812660b351b97 344-345,347
+sprinkler-solver.cabal
+  s_91ad71944aefa5::t_b71cf8d731ea2e 2143-2151
+  s_91ad71944aefa5::t_b540d9b8bd6b49 250
+src/Solver/CrashReplay.hs
+  s_91ad71944aefa5::t_9decbaa6d7335e 53,247-248,257-280,315,332
+  s_91ad71944aefa5::t_677d54fcf52b80 1-52,54-70,72-246,249-256,281-302,308-314,316-331,333-388
+  s_91ad71944aefa5::t_c2c4187d3c00f8 71,303-307
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "3f061888f3ae82497063e33a0ba3ea70f2a6fbc2",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
