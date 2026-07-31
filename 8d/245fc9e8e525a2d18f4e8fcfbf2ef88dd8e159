@@ -1,0 +1,19 @@
+DERIVATIVE_STRUCTURE_REVIEW.md
+  s_91ad71944aefa5::t_633e63c658e549 1-574
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "8d245fc9e8e525a2d18f4e8fcfbf2ef88dd8e159",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
