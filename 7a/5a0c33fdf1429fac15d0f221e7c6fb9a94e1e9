@@ -1,0 +1,23 @@
+golden/ResetConsistencyTest/fingerprint.txt
+  s_91ad71944aefa5::t_b02948c99d6246 4,11,19
+golden/ModelContactArrayStress/solver_audit.txt
+  s_91ad71944aefa5::t_b02948c99d6246 2,10
+golden/ModelContactArrayStress/transient.txt
+  s_91ad71944aefa5::t_b02948c99d6246 5,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "7a5a0c33fdf1429fac15d0f221e7c6fb9a94e1e9",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
