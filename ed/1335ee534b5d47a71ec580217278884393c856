@@ -1,0 +1,39 @@
+golden/timings.tsv
+  s_91ad71944aefa5::t_f5104b71b2d068 17
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_063739e409aba9 319-320,322
+  s_91ad71944aefa5::t_235be015490327 302,306-307,323-334
+  s_91ad71944aefa5::t_0a150ee072d7ac 305,308-318,321
+HYBRID_DAE_STATE_MACHINE.md
+  s_91ad71944aefa5::t_49738a2baf5104 685-687,694-697,700-705,866-883,885-896
+  s_91ad71944aefa5::t_a982b72ea454b2 898-1025
+  s_91ad71944aefa5::t_3507df0d1369ba 897
+golden/ResetConsistencyTest/fingerprint.txt
+  s_91ad71944aefa5::t_f3aae471cae118 2,6,12,15
+tools/ResetConsistencyAudit.hs
+  s_91ad71944aefa5::t_794a609afe90a2 124-130,132-137,139-143
+  s_91ad71944aefa5::t_dc6a15c0628991 98-99,205-207,335-338,342,344,347,350
+golden/ResetConsistencyTest/tapestats.txt
+  s_91ad71944aefa5::t_f3aae471cae118 4
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_063739e409aba9 420-421
+  s_91ad71944aefa5::t_235be015490327 415-416,422
+golden/timings_history.tsv
+  s_91ad71944aefa5::t_f5104b71b2d068 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "ed1335ee534b5d47a71ec580217278884393c856",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
