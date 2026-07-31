@@ -1,0 +1,23 @@
+tools/ResetConsistencyAudit.hs
+  s_91ad71944aefa5::t_c23402b92bda13 181-197,217-230,278,280
+  s_91ad71944aefa5::t_1a64376a47e009 28-34,90-99,104
+  s_91ad71944aefa5::t_abd18645e01f78 122-125,127-130,132-134,136-137
+  s_91ad71944aefa5::t_94b5a1ee98e94f 336
+  s_91ad71944aefa5::t_443d42a84769ac 312-335,337
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "3120b44d393e3f8e7dc744ea8b5666623b823dad",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
