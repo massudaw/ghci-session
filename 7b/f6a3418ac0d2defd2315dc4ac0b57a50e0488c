@@ -1,0 +1,32 @@
+src/Solver/IDA.hs
+  s_91ad71944aefa5::t_b36ba6d75edcca 48-53
+  s_91ad71944aefa5::t_f43f77b23f64f3 123
+  s_91ad71944aefa5::t_534b98d1b61ea2 981-1024
+  s_91ad71944aefa5::t_28aa74abfd599a 2193,2217-2228
+  s_91ad71944aefa5::t_97550616ef018f 2919-2949
+  s_91ad71944aefa5::t_5f82882af10fe5 3402-3407,3544-3547,3704-3707,3857-3864,3955-3959
+  s_91ad71944aefa5::t_d4a2b2909d731a 919-979
+  s_91ad71944aefa5::t_60c693c85602ae 980
+src/Solver/CrashDump.hs
+  s_91ad71944aefa5::t_135439dc6d0629 409,411-419
+  s_91ad71944aefa5::t_8fbd80ae28765e 19,26-31
+  s_91ad71944aefa5::t_7117157f626812 164-270
+  s_91ad71944aefa5::t_5daaa6fb198133 36,38,41
+  s_91ad71944aefa5::t_de23d0dee6e8ae 84-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "7bf6a3418ac0d2defd2315dc4ac0b57a50e0488c",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
