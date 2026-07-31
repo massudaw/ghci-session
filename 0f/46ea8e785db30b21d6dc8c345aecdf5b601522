@@ -1,0 +1,55 @@
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_fa36ec79f625fc 63-64
+  s_91ad71944aefa5::t_2a57b2503be812 315-316
+  s_91ad71944aefa5::t_319df1cd298cab 407-410,420,426,439-447,449-451,456-457,459-460,462-468,470,475,477-478,523-534,536,538-539,541,545-547,557
+  s_91ad71944aefa5::t_30af7363e0c871 540,542-544,548
+  s_91ad71944aefa5::t_8732c5c3e7d5bb 818-819
+  s_91ad71944aefa5::t_f47786d13cc0b5 821-822
+  s_91ad71944aefa5::t_7767100e0fefef 845,847-854,868-869,875-890
+  s_91ad71944aefa5::t_e3019238156f8c 789-796,799-800
+  s_91ad71944aefa5::t_3b61450ee7c07b 855-857
+  s_91ad71944aefa5::t_dde0841f98e6b1 54,550-556
+  s_91ad71944aefa5::t_4632c3663be07c 337-338,352-370,399-401
+  s_91ad71944aefa5::t_6f1519ed83e22a 867
+  s_91ad71944aefa5::t_f31b05b553e9e6 65-67
+  s_91ad71944aefa5::t_9441bece28108c 797-798
+  s_91ad71944aefa5::t_90c47144631067 51-53
+  s_91ad71944aefa5::t_546819dce74405 71,402,404-405,469,471-473,476,535,537,549
+  s_91ad71944aefa5::t_a82568c1814c9c 317,344-349,820
+  s_91ad71944aefa5::t_1efc5a981e5d11 504,506-522
+  s_91ad71944aefa5::t_daba86781aad30 479-503,505
+  s_91ad71944aefa5::t_be70c1e703d2f8 275
+  s_91ad71944aefa5::t_49350d89c7b1c0 274,282-314,318-336,339,350-351,371-398,403,406,558-567
+  s_91ad71944aefa5::t_4f421575c0189c 808-817,823
+  s_91ad71944aefa5::t_9b21aa28fd19a4 411-419,421-425,427-438,448,452-455,458,461,474
+  s_91ad71944aefa5::t_e5fb5dc5991dd0 340-343
+  s_91ad71944aefa5::t_a7a4ed5b1a1f13 568
+tools/ResetConsistencyAudit.hs
+  s_91ad71944aefa5::t_799526ae7ab5f7 100-102
+  s_91ad71944aefa5::t_46ac5d65f07e7e 224-233
+  s_91ad71944aefa5::t_6e48eb26509648 392,394-400,402,407-416,419-424
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_e5ae3072fce8e9 401
+  s_91ad71944aefa5::t_dde0841f98e6b1 58,396-400,402-404
+  s_91ad71944aefa5::t_196c8c72b36f52 405
+DERIVATIVE_STRUCTURE_REVIEW.md
+  s_91ad71944aefa5::t_703834e2c1849a 678-808
+MODEL_SEMANTICS.md
+  s_91ad71944aefa5::t_8aef981e0a1653 361-383
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "0f46ea8e785db30b21d6dc8c345aecdf5b601522",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
