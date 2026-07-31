@@ -1,0 +1,23 @@
+src/Examples/ResetConsistencyTest.hs
+  s_91ad71944aefa5::t_937de1b1aec871 42-43,193-271,314-333,338
+src/Model/LockClutchCoupling.hs
+  s_91ad71944aefa5::t_e19b16b476513e 43
+  s_91ad71944aefa5::t_b46a05d1079d99 39,82-109,111
+  s_91ad71944aefa5::t_9ce776b3231326 110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "3bc0a20c4e1f7fa1f9f2a3b83f7a1360431e91cf",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
