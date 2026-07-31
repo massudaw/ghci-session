@@ -1,0 +1,33 @@
+golden/ResetConsistencyTest/tapestats.txt
+  s_91ad71944aefa5::t_fe237298c95263 2
+src/Examples/ResetConsistencyTest.hs
+  s_91ad71944aefa5::t_01eed1ce4b0eaa 183-191,193-195
+  s_91ad71944aefa5::t_d83e674df98d8c 177-182,192
+  s_91ad71944aefa5::t_2337f72699fc79 114-154
+  s_91ad71944aefa5::t_0e0cf1e698afb7 201
+  s_91ad71944aefa5::t_96ac32bbb9358c 44-48,50,197-199
+  s_91ad71944aefa5::t_cf41b2446587a2 196
+tools/ResetConsistencyAudit.hs
+  s_91ad71944aefa5::t_6c1d78c418f283 90-116,121-127
+  s_91ad71944aefa5::t_59bdc62eb16c12 247-267
+  s_91ad71944aefa5::t_1f78bb476c212e 117-120
+  s_91ad71944aefa5::t_d31822eb1578f5 268
+golden/ResetConsistencyTest/fingerprint.txt
+  s_91ad71944aefa5::t_fe237298c95263 3-4,9-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "2507181853c747b97c747636c9c5021645bed3c7",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
