@@ -1,0 +1,21 @@
+src/Solver/CrashReplay.hs
+  s_91ad71944aefa5::t_472257cbded2d4 255,257-262,362-364
+tools/IDAReplay.hs
+  s_91ad71944aefa5::t_472257cbded2d4 334-337
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "771a3f8cfca8b0ddd9c446512af5045ab02cd97e",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
