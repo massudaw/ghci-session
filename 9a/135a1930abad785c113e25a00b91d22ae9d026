@@ -1,0 +1,56 @@
+src/Solver/DES/TimeWarpPlant.hs
+  s_91ad71944aefa5::t_34152f2c541134 123
+  s_91ad71944aefa5::t_e64c0f504e1977 1016-1024,1030-1046
+  s_91ad71944aefa5::t_8c8fde0417350c 125-128
+  s_91ad71944aefa5::t_da255ff4d16da3 904-968
+src/JIT/jit_trampoline.c
+  s_91ad71944aefa5::t_248a1e65bebede 2777-2871,3098
+  s_91ad71944aefa5::t_0ea60efc64db19 2492-2493
+  s_91ad71944aefa5::t_d6284b80a91c8e 945-953,956-1006
+  s_91ad71944aefa5::t_3eeff692298bf6 2693-2720
+  s_91ad71944aefa5::t_bc38dda8d7833d 2322
+  s_91ad71944aefa5::t_97aa8d8bc44d5f 3027
+  s_91ad71944aefa5::t_87ab2e6ace01b9 3042-3044
+  s_91ad71944aefa5::t_8e2e0b08200c92 3074-3084
+  s_91ad71944aefa5::t_bf44ced443a06c 2545-2566
+  s_91ad71944aefa5::t_8a39417e2ab352 2263-2267
+  s_91ad71944aefa5::t_3345b0e5844f8a 2277-2278
+  s_91ad71944aefa5::t_83216d6190f1ae 2743-2744
+  s_91ad71944aefa5::t_900611af406359 1007
+example/TestTimeWarpJit.hs
+  s_91ad71944aefa5::t_766f45e194cf64 2878-2880,2885-2896
+  s_91ad71944aefa5::t_d6067ce9a7ff87 2856-2865,2867
+src/Solver/IDA.hs
+  s_91ad71944aefa5::t_48b1231074976a 900
+  s_91ad71944aefa5::t_eac54215e81539 1812-1817
+  s_91ad71944aefa5::t_bc9b5a1642d2ed 2167-2189
+  s_91ad71944aefa5::t_3c35d023bda383 635-645
+  s_91ad71944aefa5::t_0a42c1e0af0636 1054-1069
+  s_91ad71944aefa5::t_87e9d30a8ae608 2459-2462,2468,2470
+  s_91ad71944aefa5::t_3f9dfae4170a1a 2757-2760,3852-3859
+  s_91ad71944aefa5::t_16d6b474d63e81 2046,2068-2070,2742
+  s_91ad71944aefa5::t_ce834fbb78d8ff 1945-1954
+  s_91ad71944aefa5::t_701ff43b188906 2250-2262
+  s_91ad71944aefa5::t_59cb887792c352 2013-2036,2039-2040
+  s_91ad71944aefa5::t_fc372fbe7c76dc 766-789
+  s_91ad71944aefa5::t_5f2971c1601762 1123-1125
+  s_91ad71944aefa5::t_5d4d15f00b0411 1847-1878,1881-1886
+tools/TWCondHybridCompare.hs
+  s_91ad71944aefa5::t_d2c2b186ebed37 17-23,26-29,191-196,198,203-205,208-210,216-218,220-229,231-240,242-245,247-248
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "9a135a1930abad785c113e25a00b91d22ae9d026",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
