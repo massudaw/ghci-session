@@ -1,0 +1,22 @@
+implementation_plan.md
+  s_91ad71944aefa5::t_bae308412e57f2 304-329,333-340
+  s_91ad71944aefa5::t_33542bc86bc0dd 66,416,424,512
+  s_91ad71944aefa5::t_e9145a508dbaec 342-408
+  s_91ad71944aefa5::t_dae1edcecae5a7 341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "ad2c6e0b6f04cbe677df4bd7dc6afb4cc0a116b1",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
