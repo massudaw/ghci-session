@@ -1,0 +1,100 @@
+src/Examples/DESMoldingShopTW.hs
+  s_0217a9a425227b::t_18fe95119eb83a 35,52,96,257,272
+DEBUGGER_ROADMAP.md
+  s_0217a9a425227b::t_18fe95119eb83a 487
+tools/BankNativePlantProbe.hs
+  s_0217a9a425227b::t_18fe95119eb83a 8
+src/Examples/DESControlPolicyFalsifyV3.hs
+  s_0217a9a425227b::t_18fe95119eb83a 7,40,332
+src/Examples/DESControlPolicyFalsify.hs
+  s_0217a9a425227b::t_18fe95119eb83a 10,50,273
+src/Solver/DES/Search.hs
+  s_0217a9a425227b::t_18fe95119eb83a 11,311
+MODEL_SEMANTICS.md
+  s_0217a9a425227b::t_18fe95119eb83a 11
+src/Examples/DESControlPolicyFalsifyV5.hs
+  s_0217a9a425227b::t_18fe95119eb83a 7,40,402
+src/JIT/des_kernel.c
+  s_0217a9a425227b::t_18fe95119eb83a 278
+src/Solver/Debug.hs
+  s_0217a9a425227b::t_18fe95119eb83a 19
+src/JIT/tw_runtime.c
+  s_0217a9a425227b::t_18fe95119eb83a 1167
+src/Solver/DES/TimeWarpPlant.hs
+  s_0217a9a425227b::t_18fe95119eb83a 139,314,434,440,961
+src/Solver/DES.hs
+  s_0217a9a425227b::t_18fe95119eb83a 424,431,1013,1163,1197,1221
+HYBRID_DAE_STATE_MACHINE.md
+  s_0217a9a425227b::t_18fe95119eb83a 1178
+src/Examples/DESMctsFalsify.hs
+  s_0217a9a425227b::t_18fe95119eb83a 19,47,118,156,251,265
+src/Examples/BankRiskTW.hs
+  s_0217a9a425227b::t_18fe95119eb83a 18
+  s_adc5d146da44fd::t_f48ed8f98615fd 372,601,628
+src/JIT/tw_engine.h
+  s_0217a9a425227b::t_18fe95119eb83a 192
+src/Solver/DES/Physical.hs
+  s_0217a9a425227b::t_18fe95119eb83a 317
+src/Solver/IDA.hs
+  s_0217a9a425227b::t_18fe95119eb83a 874,1271,2267,2290
+src/JIT/tw_plant.c
+  s_0217a9a425227b::t_18fe95119eb83a 3,136,541,624
+CLAUDE.md
+  s_0217a9a425227b::t_18fe95119eb83a 130
+  s_0217a9a425227b::t_a961d2d1fe7191 142-148
+SETTLE_TEARING.md
+  s_0217a9a425227b::t_18fe95119eb83a 460
+src/JIT/tw_search.h
+  s_0217a9a425227b::t_18fe95119eb83a 16
+src/Solver/DES/TimeWarpJit.hs
+  s_0217a9a425227b::t_18fe95119eb83a 218
+  s_0217a9a425227b::t_e1dcb757d4b963 417,441,539,621,1342,1401,2103
+implementation_plan.md
+  s_0217a9a425227b::t_18fe95119eb83a 202,205,264,293,321
+src/JIT/tw_model.h
+  s_0217a9a425227b::t_18fe95119eb83a 458,501
+src/JIT/jit_trampoline.c
+  s_0217a9a425227b::t_18fe95119eb83a 985,2489,2763,2867,3008
+doc/des/DES_ELEMENT_ROADMAP.md
+  s_0217a9a425227b::t_9c0a70e4ef33b1 196-232
+  s_0217a9a425227b::t_89726ed981a7a2 1-188,190-195,233-272,274,279,284-357,359,363,367-464
+  s_0217a9a425227b::t_0928eb8915d681 189
+  s_0217a9a425227b::t_4c7024cd28663e 273,275-278,280-283,358,360-362,364-366
+example/TestTimeWarpJit.hs
+  s_0217a9a425227b::t_7cef79ae21aa36 1551
+src/Examples/BankCurveTW.hs
+  s_adc5d146da44fd::t_320a80b0dc0d7a 77,620
+src/Solver/DES/TimeWarpUnified.hs
+  s_0217a9a425227b::t_14bae7556d8784 819
+src/Solver/DES/Unified.hs
+  s_0217a9a425227b::t_e9caac06cf917a 516
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "f115a815333fb9a092302acc6c00d16e172b4c89",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0217a9a425227b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb9ed6ef-68bb-4907-8dfc-8193b3ba0468",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
