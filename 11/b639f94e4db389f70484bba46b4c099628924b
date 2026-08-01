@@ -1,0 +1,21 @@
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_0b428d8bca977c 334-336,369,372-373,936
+SETTLE_TEARING.md
+  s_91ad71944aefa5::t_9528993705eaff 615-642
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "11b639f94e4db389f70484bba46b4c099628924b",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
