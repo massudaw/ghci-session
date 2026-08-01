@@ -1,0 +1,19 @@
+MODEL_SEMANTICS.md
+  s_91ad71944aefa5::t_eca35ad2c4033d 235-237,239-243,246-247,250-263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "e10360dc56d099bed580a6921f932826f9057cca",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
