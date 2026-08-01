@@ -1,0 +1,42 @@
+golden/BankRiskTW/fingerprint.txt
+  s_adc5d146da44fd::t_7c445f77b43819 1-5,7,14-17,23-26,32-35,37,53
+src/Examples/BankRiskTW.hs
+  s_adc5d146da44fd::t_d84f0827bbf142 123
+  s_adc5d146da44fd::t_d38644b9e876a7 294-295,298-309,312-313,326-328,333-336
+  s_adc5d146da44fd::t_420b07106ad8e8 410-412
+  s_adc5d146da44fd::t_7b165a04375367 137
+  s_adc5d146da44fd::t_b9b4641acbf8f2 569-671
+  s_adc5d146da44fd::t_0742fe904f5cb9 45,55-70
+  s_adc5d146da44fd::t_dceb4636b14ccd 131,133-135
+  s_adc5d146da44fd::t_d2f6c1f8447997 269-293,296-297,310-311,314-325,329-332,337-343,346-364
+  s_adc5d146da44fd::t_c98281f10d5531 391
+  s_adc5d146da44fd::t_68d15befcec832 560-561,563-568
+  s_adc5d146da44fd::t_3a9723bfc09fbd 190-198
+  s_adc5d146da44fd::t_7492736c7e6675 344-345
+implementation_plan.md
+  s_adc5d146da44fd::t_3aa864955b62eb 296,299-305
+  s_adc5d146da44fd::t_1df11e78244a93 407-438
+golden/BankRiskTW/tapestats.txt
+  s_adc5d146da44fd::t_7c445f77b43819 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "02728bd348c626481db6714683c73ba4619f83b9",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
