@@ -1,0 +1,19 @@
+golden/ModelRelayReactor/transient.txt
+  s_91ad71944aefa5::t_e74c63b2fe3f33 9,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "e19eb57344d8a4b45910d683ab1f9ba434b3eb36",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
