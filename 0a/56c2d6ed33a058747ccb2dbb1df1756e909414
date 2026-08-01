@@ -1,0 +1,24 @@
+golden/ModelRocketLiftoff/transient.txt
+  s_91ad71944aefa5::t_64295a262d3400 3-14,49-70,76-77
+src/Examples/ModelRocketLiftoff.hs
+  s_91ad71944aefa5::t_d3d7296666eaa4 97-106
+  s_91ad71944aefa5::t_74de3b9a1a1c56 107-111
+golden/ModelRocketLiftoff/fingerprint.txt
+  s_91ad71944aefa5::t_64295a262d3400 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "0a56c2d6ed33a058747ccb2dbb1df1756e909414",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
