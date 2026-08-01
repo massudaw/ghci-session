@@ -1,0 +1,27 @@
+tools/TearingGate.hs
+  s_91ad71944aefa5::t_ae9f3e23c1c438 32,34-39,41-43,45-51,53-67
+  s_91ad71944aefa5::t_08d57ca0ce9ab3 107
+src/JIT/CopyPatch.hs
+  s_91ad71944aefa5::t_a4a54263e38ca2 464-465
+  s_91ad71944aefa5::t_1ed8266784cf1c 398-401,458-462
+  s_91ad71944aefa5::t_efcaad07cc7508 432-444,453-457
+  s_91ad71944aefa5::t_49b47dcabb72f3 419-423
+SETTLE_TEARING.md
+  s_91ad71944aefa5::t_83be77d1c3c31e 484-527
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "15a75f2a3994e028872b03038090a456def33723",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
