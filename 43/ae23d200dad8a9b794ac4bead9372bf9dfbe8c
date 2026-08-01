@@ -1,0 +1,49 @@
+src/Solver/IDA.hs
+  s_91ad71944aefa5::t_4760656e6f1fd5 1094
+  s_91ad71944aefa5::t_bd0abefd087a8c 726-735
+golden/LqgClosedLoopExample/solver_audit.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 2-4,6
+golden/HybridGuardRearmCLoop/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 4-5,7
+golden/HybridGroupedTest/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 1
+golden/LqgOffsetFreeExample/solver_audit.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 2-4,6
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_72e50161bef85d 887-901,905,1844-1851
+  s_91ad71944aefa5::t_4760656e6f1fd5 902,904
+golden/KalmanObserverExample/solver_audit.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 2-4,6
+golden/ModelBouncingBall/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 3-10
+golden/ModelDiodeClamp/transient.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 10
+golden/ModelRelaxationOsc/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 4-5
+golden/ModelSupervisedCooling/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 5-8
+golden/ModelTorqueVector/fingerprint.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 5-8
+src/Examples/ResetConsistencyTest.hs
+  s_91ad71944aefa5::t_1de47600e7ac44 230,233-234,238-244
+golden/ModelRelayReactor/transient.txt
+  s_91ad71944aefa5::t_d4ef99cdb44e0d 9,13
+MODEL_SEMANTICS.md
+  s_91ad71944aefa5::t_2148db8d468cef 345-379
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "43ae23d200dad8a9b794ac4bead9372bf9dfbe8c",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
