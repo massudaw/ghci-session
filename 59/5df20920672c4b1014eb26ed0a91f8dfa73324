@@ -1,0 +1,26 @@
+MODEL_SEMANTICS.md
+  s_91ad71944aefa5::t_7ecdf6fbf279d2 258-306
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_510d0e6fec85a2 63,1445-1446
+  s_91ad71944aefa5::t_adb5769b113cb3 1887-1888,1890-1906,1943,1947
+  s_91ad71944aefa5::t_f5ac65c514e927 1856-1886,1889
+  s_91ad71944aefa5::t_fdf2efce70c37a 1907-1932,1938-1942,1944-1946,1948-1949
+  s_91ad71944aefa5::t_1cfb5cdb27c1ba 1933-1937
+  s_91ad71944aefa5::t_b0044c9944c9ac 1443-1444
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "595df20920672c4b1014eb26ed0a91f8dfa73324",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
