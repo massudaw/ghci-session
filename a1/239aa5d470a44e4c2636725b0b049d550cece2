@@ -1,0 +1,25 @@
+tools/TearingGate.hs
+  s_91ad71944aefa5::t_05de3d6ad5ba5b 19-20,73,77,94
+  s_91ad71944aefa5::t_4dbf8643e2dca5 1-18,21-72,74-76,78-93,95-97,99-127
+  s_91ad71944aefa5::t_3cea98fc298ebf 98
+sprinkler-solver.cabal
+  s_91ad71944aefa5::t_fc49e45937d736 2171-2180
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_3000c3e2d3d780 54-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "a1239aa5d470a44e4c2636725b0b049d550cece2",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
