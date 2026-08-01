@@ -1,0 +1,20 @@
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_a43b5d577c1f0f 1124-1129,1131-1139,1141,1143-1165
+  s_91ad71944aefa5::t_909e6db364f45b 1130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "0371f7bdcbae848d3f2e669e5bb3cac45fc73a9e",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
