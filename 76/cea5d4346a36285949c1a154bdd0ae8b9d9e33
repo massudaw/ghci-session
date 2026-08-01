@@ -1,0 +1,24 @@
+src/Solver/HybridDAE.hs
+  s_91ad71944aefa5::t_732ed11c8421f7 61,1061-1072
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_91ad71944aefa5::t_d041c03d1a7d09 73
+  s_91ad71944aefa5::t_ee8e1d3a13a33d 56,240,597,603-605,649-657,736,745,774,1069-1081
+SETTLE_TEARING.md
+  s_91ad71944aefa5::t_cfc606f8cd1258 240-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "76cea5d4346a36285949c1a154bdd0ae8b9d9e33",
+  "prompts": {},
+  "sessions": {
+    "s_91ad71944aefa5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5ce1d572-d163-4aba-9ed1-d49446bf64a8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
