@@ -1,0 +1,97 @@
+src/Examples/ActorGraph.hs
+  s_adc5d146da44fd::t_1bc2ecdb5dea17 52-58,69,163
+  s_adc5d146da44fd::t_203843bd9e58f3 1-51,59-68,70-162,164-169
+.gitignore
+  h_fd5809635b36a3 6
+src/Solver/DES/Unified.hs
+  s_0217a9a425227b::t_18fe95119eb83a 360
+  s_adc5d146da44fd::t_0428a17c637218 354-359,361-382
+  s_adc5d146da44fd::t_ebd93c692138ae 450,463,509,535,562
+  s_adc5d146da44fd::t_b8c1f64b150a83 55,142-147
+src/Solver/DES/TimeWarpMolding.hs
+  s_adc5d146da44fd::t_419ffa37c3de34 307,322-323
+golden/BankCurveTW/fingerprint.txt
+  s_adc5d146da44fd::t_0381f1ef6fbe42 1,3,5-6,10-11,13-15,18-21,25-26,28-30,33-34,36,38-39,42-44,46,48-51,53,56-57,59-60,62-63,67
+sprinkler-solver.cabal
+  s_adc5d146da44fd::t_3dd22b3c8cbe0a 427
+src/Solver/DES/TimeWarpUnified.hs
+  s_adc5d146da44fd::t_465172160616a0 126,803-804
+  s_adc5d146da44fd::t_00ac2e70fab4f6 469-470,557-558,602
+  s_adc5d146da44fd::t_e67f45b4c4fe13 482-486
+  s_adc5d146da44fd::t_b52b5c35975de1 363-366,368,371
+  s_adc5d146da44fd::t_8068f710985109 851-861
+  s_adc5d146da44fd::t_488c734aea4db6 339-348
+  s_adc5d146da44fd::t_8fcbb5b9733c78 369-370
+  s_adc5d146da44fd::t_a402b2d1eb7852 318-338,349-352,354-362,375-376
+  s_adc5d146da44fd::t_548cad20e27703 683-686
+  s_adc5d146da44fd::t_5ef3bdf97d41cd 839
+  s_adc5d146da44fd::t_962d84dd46bc96 211-220,601
+  s_adc5d146da44fd::t_3ee0abf42a94a8 160-161
+  s_adc5d146da44fd::t_041f549107e804 699,703-705
+  s_adc5d146da44fd::t_853c649738cd96 653-672
+  s_adc5d146da44fd::t_76e9edb7e255aa 847-850
+  s_adc5d146da44fd::t_09a0795ff0bfcf 367
+src/Solver/DES/TimeWarpJit.hs
+  s_adc5d146da44fd::t_5ef3bdf97d41cd 355
+  s_adc5d146da44fd::t_67aaf7e5f6fcd9 284-289,704,1207,1294,1723,1726-1732
+  s_7f5c8d2289c4a3::t_8dfedf92f0f482 1172
+example/TestTimeWarpJit.hs
+  s_adc5d146da44fd::t_419ffa37c3de34 151-152,168-170,196-199,207
+  s_adc5d146da44fd::t_5ef3bdf97d41cd 192
+src/Examples/BankRiskTW.hs
+  s_adc5d146da44fd::t_3dd22b3c8cbe0a 136-137,278-282,313-315,324-343
+src/Examples/BankCurveTW.hs
+  s_adc5d146da44fd::t_2ebb90a6d9eaed 462-463
+  s_adc5d146da44fd::t_2f35a6f8a88bed 78-79,81-85,87-101,107-109
+  s_adc5d146da44fd::t_54586c9007f17e 672-674,677,679-680,682-687,696
+  s_0217a9a425227b::t_18fe95119eb83a 74
+  s_adc5d146da44fd::t_5987fa1bb0d008 701,704-705,707-709,711-745,748-749,753-755,766
+  s_adc5d146da44fd::t_1bc2ecdb5dea17 593-599
+  s_adc5d146da44fd::t_8ae332b481ecde 539-544,546-547,556-562
+  s_adc5d146da44fd::t_3b37f2dd777f33 114,746-747,750-752,756-765
+  s_adc5d146da44fd::t_f776dbaaec821e 130-131,198-207
+  s_adc5d146da44fd::t_2abace641f3ed7 222-226,250,263,268,281,286,299,359-360,402,411-413,432,483-484,524
+  s_adc5d146da44fd::t_914313a6ff6e6d 70
+  s_adc5d146da44fd::t_d0e42a65b08c21 124
+  s_adc5d146da44fd::t_320a80b0dc0d7a 80
+  s_adc5d146da44fd::t_8548189bbb8cb8 72-73,76
+  s_adc5d146da44fd::t_ff587fd6358d77 113,134-135,563-592,600-601
+  s_adc5d146da44fd::t_99cf31b4d5f55c 75,208,464
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "4bcff141fb03fcbafd913199bd76cdd4dd5a8e94",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0217a9a425227b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb9ed6ef-68bb-4907-8dfc-8193b3ba0468",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_7f5c8d2289c4a3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "774949c0-0855-4e13-9b62-99f586ad37d5",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
