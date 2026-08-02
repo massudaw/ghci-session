@@ -1,0 +1,14 @@
+docs/bank-risk/RESIDUAL_IDAS_PREPARE_COST.md
+  h_fd5809635b36a3 1-173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "1864c9357154bea6eae14de3b883dbd230c50746",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
