@@ -1,0 +1,29 @@
+tools/TwReplay.hs
+  s_7a72b97b046e0a::t_c08cf19cf6fcb1 1-290
+src/Solver/CrashDump.hs
+  s_7a72b97b046e0a::t_c08cf19cf6fcb1 35-44,259-265,267-268,272,277
+src/Solver/DES/TimeWarpJit.hs
+  s_7a72b97b046e0a::t_c08cf19cf6fcb1 136-140,536-548,557-558,752-760,762,766-809,828-832,839,848-852,1150,1152,1160-1164,2332-2384
+  s_7a72b97b046e0a::t_98cf25fad1083b 2385
+sprinkler-solver.cabal
+  s_7a72b97b046e0a::t_c08cf19cf6fcb1 294,2237-2241
+  s_7a72b97b046e0a::t_50772b1a660921 2242-2245
+src/Solver/DES/TwCrashDump.hs
+  s_7a72b97b046e0a::t_c08cf19cf6fcb1 1-292
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "19c09a3f5051a38edb0e54777a641799131ec317",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
