@@ -1,0 +1,36 @@
+sprinkler-solver.cabal
+  s_7a72b97b046e0a::t_f99fde242f7597 295
+src/JIT/tw_runtime.c
+  s_7a72b97b046e0a::t_023cf27b88872c 3061-3062
+  s_7a72b97b046e0a::t_c0488d6ab7c2f8 1693-1704
+  s_7a72b97b046e0a::t_14d543b9a78ea8 1726
+  s_7a72b97b046e0a::t_ced9e7bcde9111 1679-1683
+  s_7a72b97b046e0a::t_6af9d036de0099 1825-1847
+  s_7a72b97b046e0a::t_d4b4a78d8c465c 2392-2393
+src/JIT/tw_model.h
+  s_7a72b97b046e0a::t_46674ce7f39f31 515-530
+src/Solver/DES/TwBreak.hs
+  s_7a72b97b046e0a::t_d099b968db1198 1-182,184,186-347
+  s_7a72b97b046e0a::t_c520af7d405406 183,185
+src/Solver/DES/TimeWarpJit.hs
+  s_7a72b97b046e0a::t_5f2f29c11c5558 1689-1723
+  s_7a72b97b046e0a::t_f46c5361b49d3f 1745-1758
+  s_7a72b97b046e0a::t_7f76085fa9a36a 104
+  s_7a72b97b046e0a::t_9d77be7e53dd8a 816-853
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "f508d5817c780f3a4635a2de7e262e5a4b681db7",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
