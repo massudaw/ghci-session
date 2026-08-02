@@ -1,0 +1,26 @@
+example/BankDayCointegratedProfile.hs
+  h_fd5809635b36a3 19-25
+sprinkler-solver.cabal
+  h_fd5809635b36a3 1873
+src/Examples/BankDayDesRuntime.hs
+  h_fd5809635b36a3 2813-2814,2816-2830,2833,2940-2961,2968,2989-2999
+src/Solver/HybridDAE.hs
+  h_fd5809635b36a3 74-75,1242,1263-1265,1268-1269,1273-1274,1279,1281-1287,1290-1291,1297
+src/Solver/IDA.hs
+  h_fd5809635b36a3 162,165,1263-1265,1270,2070-2071,2075-2076,2079,3962-3963,3971-3972,3978
+src/Solver/JumpTape.hs
+  h_fd5809635b36a3 28,134-135,157-186
+src/Solver/SensitivityJump.hs
+  h_fd5809635b36a3 42-43,52-56,137-139,154-191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "fee37fbd936a87b1219d87de4d24fc3ee8c08734",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
