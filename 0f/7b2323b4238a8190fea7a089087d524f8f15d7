@@ -1,0 +1,27 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_7a72b97b046e0a::t_9e8a6474c33614 103
+src/Solver/DES/TwCrashDump.hs
+  s_7a72b97b046e0a::t_1762d4a3a40796 84-90
+  s_7a72b97b046e0a::t_74792c5713433d 93-94
+  s_7a72b97b046e0a::t_3b6a4e45692f6a 302-457
+tools/TwReplay.hs
+  s_7a72b97b046e0a::t_aa2583932d4c3e 42-43,50
+  s_7a72b97b046e0a::t_f7303e068e8a43 427,431-447
+  s_7a72b97b046e0a::t_f2cdb2cbb830ef 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "0f7b2323b4238a8190fea7a089087d524f8f15d7",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
