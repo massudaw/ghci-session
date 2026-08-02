@@ -1,0 +1,43 @@
+golden/PortfolioDelinquency/fingerprint.txt
+  s_adc5d146da44fd::t_f6bf5596ef03c2 1-160
+sprinkler-solver.cabal
+  s_adc5d146da44fd::t_b80c9544c46f1b 429
+src/Examples/PortfolioDelinquency.hs
+  s_adc5d146da44fd::t_1c17b01b992ed8 75-76,81
+  s_adc5d146da44fd::t_67246d16d1e654 72,89
+  s_adc5d146da44fd::t_b80c9544c46f1b 66,111
+  s_adc5d146da44fd::t_fdf956aac7aa5f 60,156-157,161
+  s_adc5d146da44fd::t_584dcf1f316255 67,115
+  s_adc5d146da44fd::t_77bf32d790d055 1-29,50-59,61-65,68-71,73-74,83-88,93-110,112-114,116-155,163-165,169-170,172-173,178-185,191-199,201-203,208-211
+  s_adc5d146da44fd::t_2ca98a0b613f72 77-80,82,158-160,162,166-168,171,176,186-190,200,204-207
+  s_adc5d146da44fd::t_d6f3815ce81b45 90-92
+  s_adc5d146da44fd::t_40fff90faec800 30-49,174-175,177
+src/Solver/Risk/StateMachine.hs
+  s_adc5d146da44fd::t_4588e4188960f5 56-64,67
+golden/PortfolioDelinquency/tapestats.txt
+  s_adc5d146da44fd::t_f6bf5596ef03c2 1
+src/Solver/Risk/Portfolio.hs
+  s_adc5d146da44fd::t_f6bf5596ef03c2 64-76,817-818,844-850
+  s_adc5d146da44fd::t_2fd205ce5563d7 152-157,175,858-944
+  s_adc5d146da44fd::t_eb8546bbb0c459 184-185,205,207,212-213,268-272,685-686
+golden/PortfolioDelinquency/status.txt
+  s_adc5d146da44fd::t_f6bf5596ef03c2 1
+example/Main.hs
+  s_adc5d146da44fd::t_b80c9544c46f1b 209,437
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "7526303a8978a2557b84474eedbfb704e0d723b0",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
