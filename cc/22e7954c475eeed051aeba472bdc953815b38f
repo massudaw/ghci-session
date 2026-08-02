@@ -1,0 +1,23 @@
+golden/BankCurveTW/fingerprint.txt
+  s_adc5d146da44fd::t_3e961a546b4b1b 26,32,39-40
+golden/BankRiskTW/fingerprint.txt
+  s_adc5d146da44fd::t_3e961a546b4b1b 59,70
+src/Solver/DES/TimeWarpUnified.hs
+  s_adc5d146da44fd::t_0c468956e981c6 861-873,878-879
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "cc22e7954c475eeed051aeba472bdc953815b38f",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
