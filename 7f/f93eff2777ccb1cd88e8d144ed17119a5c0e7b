@@ -1,0 +1,14 @@
+src/Solver/HybridDAE.hs
+  h_fd5809635b36a3 799,801-803,805-816,818-834,836-837,978,982
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "7ff93eff2777ccb1cd88e8d144ed17119a5c0e7b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
