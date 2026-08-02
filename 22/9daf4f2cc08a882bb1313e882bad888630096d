@@ -1,0 +1,21 @@
+doc/des/TIMEWARP_HOT_RELOAD.md
+  s_7a72b97b046e0a::t_93b83454b10943 213-362
+  s_7a72b97b046e0a::t_61530e0065f49b 370-373,375-379
+  s_7a72b97b046e0a::t_5cdd8dabf02dc2 381
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "229daf4f2cc08a882bb1313e882bad888630096d",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
