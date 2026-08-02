@@ -1,0 +1,42 @@
+doc/des/STATE_MACHINE_PLAN.md
+  s_adc5d146da44fd::t_964912d8e60a31 1,10-18,23-27,29-31,33-37,39,41-44,46-47,50-56,59,61-118,122-138,145-146,148-177
+  s_adc5d146da44fd::t_5a8e85f6df7065 2-9,19-22,28,32,38,40,45,48-49,57-58,60,119-121,139-144,147
+src/Solver/DES/Partition.hs
+  s_adc5d146da44fd::t_4644015b7061c3 573
+src/Solver/Temporal.hs
+  s_adc5d146da44fd::t_649a7ef9bd7fe6 36,41,192-213
+  s_adc5d146da44fd::t_0d8932d624533c 214
+sprinkler-solver.cabal
+  s_adc5d146da44fd::t_27c8b34bb02651 427
+src/Solver/DES/Unified.hs
+  s_adc5d146da44fd::t_cc74d7ece5b4ae 56-59,153-156,355-418,432-442,446-460,474,486,569-570,572,577-580,594,607,654,681,709
+  s_adc5d146da44fd::t_b09ca2c01bcbc4 124
+  s_adc5d146da44fd::t_9bca00b00dd9d5 125,419-431,443-445,461-473,475-485
+  s_adc5d146da44fd::t_585c6eaed3277c 126
+  s_adc5d146da44fd::t_4644015b7061c3 615,662,689,717
+src/Examples/StateMachineTest.hs
+  s_adc5d146da44fd::t_d15a8054557302 132
+  s_adc5d146da44fd::t_400b8731a993cf 8-18
+  s_adc5d146da44fd::t_919d59770a66c0 1-7,19-60,64,68-74,77-78,80-84,86-103
+  s_adc5d146da44fd::t_353bda7e749ac5 76,109,127-131
+  s_adc5d146da44fd::t_819d589e26451d 150
+  s_adc5d146da44fd::t_a02167f1639c3d 61,63,65-67,75,79,104-108,110-126,133-141,143-149,151-156,158-210
+  s_adc5d146da44fd::t_6d1c5280eb7908 85,142
+  s_adc5d146da44fd::t_27c8b34bb02651 62,157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "aeb984fb7ef7db13835dbe1eacb9891047f23f1d",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
