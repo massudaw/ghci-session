@@ -1,0 +1,26 @@
+docs/shipping/SHIPPING_OPERATIONS_MODEL.md
+  h_fd5809635b36a3 24
+docs/shipping/SHIPPING_ROUTES_CURRENCY_CONTRACTS.md
+  h_fd5809635b36a3 4,372,439-454
+example/ShippingOpsServer.hs
+  h_fd5809635b36a3 1-276
+shipping.html
+  h_fd5809635b36a3 1-713
+sprinkler-solver.cabal
+  h_fd5809635b36a3 433,741-755
+src/Examples/ShippingOps.hs
+  h_fd5809635b36a3 55,58,69,72-73,75-80,1084-1167
+src/Examples/ShippingOpsRuntime.hs
+  h_fd5809635b36a3 1-295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "23b23a20d507d3128e75907d247988d0263b6a2a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
