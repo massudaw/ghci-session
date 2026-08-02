@@ -1,0 +1,26 @@
+tools/TwReplay.hs
+  s_7a72b97b046e0a::t_93cc1b7d785df0 215-217
+  s_7a72b97b046e0a::t_6a5307254cd7f5 19,21-30,36,45-46,49-54
+  s_7a72b97b046e0a::t_4fa3be1b2b1a05 326
+  s_7a72b97b046e0a::t_9049aa2af669d0 102-104,108,114-116,129-136,150
+  s_7a72b97b046e0a::t_660950504a97c8 310-312
+  s_7a72b97b046e0a::t_ddb48f37813b02 301-309,313-319,321-325,328-371
+  s_7a72b97b046e0a::t_cea09024e3e51d 320,327
+  s_7a72b97b046e0a::t_c4cd68ce0a0ffd 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "65bf84c2472c9d44f93bcc685ca8abfd68f311c9",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
