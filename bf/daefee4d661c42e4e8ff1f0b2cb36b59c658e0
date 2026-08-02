@@ -1,0 +1,14 @@
+docs/shipping/SHIPPING_OPS_EXTENSION_RESEARCH.md
+  h_fd5809635b36a3 1-327
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "bfdaefee4d661c42e4e8ff1f0b2cb36b59c658e0",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
