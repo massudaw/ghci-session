@@ -1,0 +1,78 @@
+doc/des/TIMEWARP.md
+  h_fd5809635b36a3 34-36
+doc/des/TIMEWARP_HOT_RELOAD.md
+  h_fd5809635b36a3 569,589-593,602-603,613-615
+example/BankDayServer.hs
+  h_fd5809635b36a3 3-10,18,39,47-57,62,65-69,83-86,92,115-116,119-121,127,132-136,145-156,163-164,166-189,191-199,206,270-271,274,286-584,589,647-698,801-802,921-1009,1018-1020
+example/Main.hs
+  h_fd5809635b36a3 211-214,446-449
+example/TestTimeWarpJit.hs
+  h_fd5809635b36a3 871-880
+golden/BankBookLedgerCommit/status.txt
+  h_fd5809635b36a3 1
+golden/BankMarketFeedActor/fingerprint.txt
+  h_fd5809635b36a3 1-9
+golden/BankMarketFeedActor/status.txt
+  h_fd5809635b36a3 1
+golden/BankMarketFeedJournal/status.txt
+  h_fd5809635b36a3 1
+golden/BankTicketSlotsTW/fingerprint.txt
+  h_fd5809635b36a3 1-2,4-316,318-321,323
+golden/BankTicketSlotsTW/tapestats.txt
+  h_fd5809635b36a3 1
+golden/TwMtPauseInspect/fingerprint.txt
+  h_fd5809635b36a3 1-5
+golden/TwMtPauseInspect/status.txt
+  h_fd5809635b36a3 1
+implementation_plan.md
+  h_fd5809635b36a3 566-582,586-587,589-600,604-656,724-732,736-737
+index.html
+  h_fd5809635b36a3 2715-2716,2721-2729
+sprinkler-solver.cabal
+  h_fd5809635b36a3 336-337,438-441
+src/Examples/BankBookLedgerCommit.hs
+  h_fd5809635b36a3 1-143
+src/Examples/BankDayCRuntime.hs
+  h_fd5809635b36a3 1-1024
+src/Examples/BankDayDesRuntime.hs
+  h_fd5809635b36a3 45-48,87-98,176,203-206,355-359,404-409,515,742-880,1154-1164,1166-1181,1191-1220,1229-1239,1244-1264,1266,1268,1309,1342-1346,1441-1442,1506-1525,1674-1690,2774,3444,3475,3506,3754,4046,4128
+src/Examples/BankDayTW.hs
+  h_fd5809635b36a3 1-441
+src/Examples/BankMarketFeedActor.hs
+  h_fd5809635b36a3 1-257
+src/Examples/BankMarketFeedJournal.hs
+  h_fd5809635b36a3 1-124
+src/Examples/BankRiskTW.hs
+  h_fd5809635b36a3 503-505
+src/Examples/BankTicketSlotsTW.hs
+  h_fd5809635b36a3 2,9-13,15,17-25,37,45,49-53,57,59-60,68,70-72,79-85,87-100,106,123-131,138,140,143-154,194-233,250-252,261-265,270-273,275-320,324-349,365,372-374,378-382,384-391,394-396
+src/Examples/TwMtPauseInspect.hs
+  h_fd5809635b36a3 1-159
+src/JIT/tw_model.h
+  h_fd5809635b36a3 590-592,604-607,610-624,693-807,811-816
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 2377,2531,2552,2671-2672,2689-2745,2889,2989-2990,2993-2998,3388-3401,3413-3427,3466-3469,3472-3473,3481-3593,3595-3599,3602-3603,3605-3624,3627-3628,3630-3635,3647-3648,3650-3655,3657-3659,3661-3672,3674-3690,3692-3823,3825-3838,3840-3874,3877-3883,3885-3889,3891,3893-3908,3910-3943,3945-4068,4196-4215,4222-4224
+src/Solver/DES/TimeWarpJit.hs
+  h_fd5809635b36a3 106-111,116-144,161,995,999-1021,1028-1041,1044-1048,1062-1071,1390-1454,2808-2824,2832-3173
+src/Solver/Risk/DayOperations.hs
+  h_fd5809635b36a3 27-38,41,93-98,100-106,108,118-122,131-134,140-169,172-186,204-211,225-228,280-312,314-317,326-330,339-371
+src/Solver/Risk/MarketDataFeed.hs
+  h_fd5809635b36a3 6-12,21-33,36,41,150-291
+tools/smoke_bankday_c_interactive.sh
+  h_fd5809635b36a3 1-58
+tools/smoke_bankday_tw.sh
+  h_fd5809635b36a3 1-94
+tools/smoke_live_market_ticks.sh
+  h_fd5809635b36a3 1-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "07dff500d5ab43ad7d9d5063323da1e972636435",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
