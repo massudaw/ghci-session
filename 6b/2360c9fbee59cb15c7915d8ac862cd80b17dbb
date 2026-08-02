@@ -1,0 +1,20 @@
+src/Examples/BankDayDesRuntime.hs
+  h_fd5809635b36a3 2279-2283,2472,2595
+src/Solver/HybridDAE.hs
+  h_fd5809635b36a3 951-984
+src/Solver/IDA.hs
+  h_fd5809635b36a3 122,1926-1931,1938-1949,1952,1954,1981-1983,1985-1994,2021-2087,2090-2096,2101-2113,2369-2374
+src/Solver/JumpTape.hs
+  h_fd5809635b36a3 72-74,99-102,110-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "6b2360c9fbee59cb15c7915d8ac862cd80b17dbb",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
