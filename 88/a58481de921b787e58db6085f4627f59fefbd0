@@ -1,0 +1,34 @@
+sprinkler-solver.cabal
+  s_adc5d146da44fd::t_819d1725c4befa 432
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_adc5d146da44fd::t_3743e3c05fc987 1-295
+src/Examples/BankTicketSlotsTW.hs
+  s_adc5d146da44fd::t_47006035c17e11 298
+  s_adc5d146da44fd::t_8a406315879e08 136,189-190
+  s_adc5d146da44fd::t_ac68b97e78042a 255-256,288-297,299,302-303
+  s_adc5d146da44fd::t_36e6db84d419ce 1-83,85-86,88-92,94-98,101-135,137-188,191-254,257-273,277,287,300-301,304-350,352-355
+  s_adc5d146da44fd::t_a4586164f7f53e 274-276,278-286,351
+  s_adc5d146da44fd::t_08aa0b7ed789b6 84,87,93,99-100
+golden/BankTicketSlotsTW/status.txt
+  s_adc5d146da44fd::t_3743e3c05fc987 1
+example/Main.hs
+  s_adc5d146da44fd::t_e2882d80d0c39f 210,441
+golden/BankTicketSlotsTW/tapestats.txt
+  s_adc5d146da44fd::t_3743e3c05fc987 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "88a58481de921b787e58db6085f4627f59fefbd0",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
