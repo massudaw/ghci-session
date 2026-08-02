@@ -1,0 +1,18 @@
+docs/shipping/SHIPPING_OPERATIONS_MODEL.md
+  h_fd5809635b36a3 19,24
+docs/shipping/SHIPPING_ROUTES_CURRENCY_CONTRACTS.md
+  h_fd5809635b36a3 4,370,396,398-402,404-405,407
+src/Examples/ShippingOps.hs
+  h_fd5809635b36a3 37-41,202-209,223-224,227-229,232-239,287-298,300,566-569,664,671-672,680-687,697-699,724-728,736,744,752,756,783-785,834-835,852-853,856,867-869,951-954,964,967,1059,1115-1134,1142,1154,1156-1158,1233,1280
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "5eae6cee41e9cf11e54f8a2e29aca43fbe7c7e85",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
