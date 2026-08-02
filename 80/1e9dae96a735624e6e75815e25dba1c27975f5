@@ -1,0 +1,23 @@
+src/Solver/DES/TwDebug.hs
+  s_7a72b97b046e0a::t_12e2bd8da1117d 261-274
+  s_7a72b97b046e0a::t_0c772c426f9e88 1-163,170-172,174-260,275-297
+  s_7a72b97b046e0a::t_54aefe5a60cc71 164-169,173
+sprinkler-solver.cabal
+  s_7a72b97b046e0a::t_ec48d9c285fefc 295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "801e9dae96a735624e6e75815e25dba1c27975f5",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
