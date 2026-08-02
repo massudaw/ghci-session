@@ -1,0 +1,42 @@
+src/Examples/BankRiskTW.hs
+  s_adc5d146da44fd::t_66cf6991ca3634 143,145-148,500,520,530-538,540-605,607-630
+  s_adc5d146da44fd::t_6fe829325d6fed 606
+  s_adc5d146da44fd::t_f4df59ec4f28e0 539
+  s_adc5d146da44fd::t_8f265052168f06 631
+golden/BankCurveTW/fingerprint.txt
+  s_adc5d146da44fd::t_0e9428869dc392 1-4,6-64
+src/Examples/BankCurveTW.hs
+  s_adc5d146da44fd::t_b6b486e3f79a7e 3-4,6-9,11-13,15,17-23,25,27-28,32-38,40-44,46-48,50,52-59,61-65,71,79,84,89-90,93,96-98,103-105,111-113,119-145,147-151,156-159,167-172,185-194,198,201-206,210,212-214,216,224-226,228-229,234-245,247,249-269,273-275,279,282,284,286-292,297-304,332-357,359-374,376,378-403,405-411,413-414,416,418-419,423,427-430,434-436
+  s_adc5d146da44fd::t_91ce140e08f25e 74-77,311-324,326,358
+  s_adc5d146da44fd::t_cbaac9516570ee 377
+  s_adc5d146da44fd::t_f4df59ec4f28e0 82,221,306-310,325,375
+  s_adc5d146da44fd::t_0082143a9b007b 91-92,94-95,161-165,217
+golden/BankRiskTW/fingerprint.txt
+  s_adc5d146da44fd::t_0e9428869dc392 7,13,15,21-22,32,34,40-41,49,53,56,58,69,72,81,83,92,94-95,99
+  s_adc5d146da44fd::t_3946969d23af29 9,14,19,24-25,27,29,33,38,43-44,46,48,50,59,61,64,66-67,70-71,86,90
+src/Solver/Risk/Portfolio.hs
+  s_adc5d146da44fd::t_79016f29aca5b2 128,753-768,776,778-783,785,790
+  s_adc5d146da44fd::t_842d13f61704c9 147
+  s_adc5d146da44fd::t_cc28eec642a2eb 129-138,159-160,378-458,461-462,465-466,469-470,473,508-512,514-533
+  s_adc5d146da44fd::t_e1e1cc3976f504 290-291
+  s_adc5d146da44fd::t_dafe7b2834884d 202-208,343-344,357,373-377,546-548,552,593-601
+  s_adc5d146da44fd::t_3569dcdf2a82a4 2-4,152,186,189,459-460,463-464,467-468,471-472,474-507
+  s_adc5d146da44fd::t_a70b7e3a43d1d7 169-170,182-185,187-188,191,196
+  s_adc5d146da44fd::t_90eab99cf3cbbe 190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "3fe88e372f8dfb79d2a824692a06cb64b1f8ddce",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
