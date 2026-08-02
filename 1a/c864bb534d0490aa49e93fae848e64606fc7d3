@@ -1,0 +1,21 @@
+sprinkler-solver.cabal
+  s_7a72b97b046e0a::t_cfb836ddb17387 2179-2187
+tools/TwReplay.hs
+  s_7a72b97b046e0a::t_878d605f194fdf 1-274
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "1ac864bb534d0490aa49e93fae848e64606fc7d3",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
