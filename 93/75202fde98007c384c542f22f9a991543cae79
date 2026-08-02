@@ -1,0 +1,30 @@
+sprinkler-solver.cabal
+  s_adc5d146da44fd::t_9f5b9d80fd48f8 428
+example/Main.hs
+  s_adc5d146da44fd::t_9f5b9d80fd48f8 208,434
+src/Examples/DelinquencyLadder.hs
+  s_adc5d146da44fd::t_1d2d5319271a0b 1-131,135-249
+  s_adc5d146da44fd::t_5574fb755a3048 132-134
+golden/DelinquencyLadder/fingerprint.txt
+  s_adc5d146da44fd::t_51cd62286ccdaf 1-44
+golden/DelinquencyLadder/status.txt
+  s_adc5d146da44fd::t_b3835f88c3d82b 1
+golden/DelinquencyLadder/tapestats.txt
+  s_adc5d146da44fd::t_edc6c4ae390585 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "9375202fde98007c384c542f22f9a991543cae79",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
