@@ -1,0 +1,16 @@
+docs/shipping/SHIPPING_OPERATIONS_MODEL.md
+  h_fd5809635b36a3 4,13-14,17,344,346-348,430
+src/Examples/ShippingOps.hs
+  h_fd5809635b36a3 14,17,20-28,32-33,69,92-101,118,121-125,127-131,133-134,138-139,148,150-155,165,178-182,195,204-210,213-214,216,223,225-227,238-241,266-273,285,291-337,342,345-346,349-352,358,382,385,387,393-394,396-401,404-406,417-418,426,430-431,433-436,451
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "9ca0e698fa686e823180a97aacd84c55116908a2",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
