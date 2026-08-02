@@ -1,0 +1,36 @@
+src/Solver/Temporal.hs
+  s_adc5d146da44fd::t_91dbdb9ca7e173 77-82
+src/Transient.hs
+  s_adc5d146da44fd::t_754da6d5c1dd2f 100,1478
+doc/des/STATE_MACHINE_PLAN.md
+  s_adc5d146da44fd::t_62bd01a55b6e6c 89,94-138,191-199
+src/Solver/DES/Partition.hs
+  s_adc5d146da44fd::t_754da6d5c1dd2f 157,334
+golden/StateMachineTest/fingerprint.txt
+  s_adc5d146da44fd::t_62bd01a55b6e6c 1-16
+golden/StateMachineTest/status.txt
+  s_adc5d146da44fd::t_62bd01a55b6e6c 1
+src/Solver/DES/Unified.hs
+  s_adc5d146da44fd::t_5a50663bce3faf 472,479-482,485,487-489
+  s_adc5d146da44fd::t_754da6d5c1dd2f 550
+example/Main.hs
+  s_adc5d146da44fd::t_1de759eeafe1dc 207,432
+golden/StateMachineTest/tapestats.txt
+  s_adc5d146da44fd::t_62bd01a55b6e6c 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "b8815862384db93e99c0e00a5ac48a76d4d65a27",
+  "prompts": {},
+  "sessions": {
+    "s_adc5d146da44fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98cf3dfc-3457-4b31-be5e-42db4a1db8d9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
