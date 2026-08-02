@@ -1,0 +1,20 @@
+src/Solver/DES/TwCrashDump.hs
+  s_7a72b97b046e0a::t_70cca87c6120ef 84-90
+  s_7a72b97b046e0a::t_24a8414e4f1ec4 300-447
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "0adcfa7be3c0b9d88f7632720026c172d498ff4a",
+  "prompts": {},
+  "sessions": {
+    "s_7a72b97b046e0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "844034fd-fc7b-4afb-b9c1-7d96d954ce98",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
