@@ -1,0 +1,20 @@
+docs/shipping/SHIPPING_OPERATIONS_MODEL.md
+  h_fd5809635b36a3 1-429
+example/Main.hs
+  h_fd5809635b36a3 205,441
+sprinkler-solver.cabal
+  h_fd5809635b36a3 432
+src/Examples/ShippingOps.hs
+  h_fd5809635b36a3 1-273
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "6ede4cf196bf7808a365a1ec65f6089e230b87c9",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
