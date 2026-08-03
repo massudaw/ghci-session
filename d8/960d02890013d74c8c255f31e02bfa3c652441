@@ -1,0 +1,278 @@
+golden/BankCurveTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 5-25
+golden/DESControlPolicyFalsifyV5/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 2-13
+golden/DESBench/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-20
+golden/StateMachineTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 4-17
+golden/JITTest/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 1
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 4-315
+src/Solver/SymbolicDAE.hs
+  s_c089b0e0db1e81::t_1cd89b38dc7491 487-500
+  s_c089b0e0db1e81::t_6141e6e4c3d7f3 909-914
+  s_c089b0e0db1e81::t_072d1d50c12bb0 3835
+  s_c089b0e0db1e81::t_0c380390686bab 26
+  s_c089b0e0db1e81::t_de15d21bac8141 2732-2733
+  s_c089b0e0db1e81::t_397eb16d81b8f6 3540
+  s_c089b0e0db1e81::t_6dedd4ff3e8b19 2397
+  s_c089b0e0db1e81::t_3c5e84ac4fe981 1698
+  s_c089b0e0db1e81::t_5b6c90fc172b99 613
+  s_c089b0e0db1e81::t_053cff0329a0a5 2817
+  s_c089b0e0db1e81::t_6248948474133f 1461
+  s_c089b0e0db1e81::t_4b750c13199ca9 1392
+  s_c089b0e0db1e81::t_aa5591fee49d4a 3219
+  s_c089b0e0db1e81::t_3a44eee406c48a 3863
+  s_c089b0e0db1e81::t_bd8a3726f662fd 3598
+golden/HybridGuardRearmCLoop/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-5
+golden/BankMarketFeedActor/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-5
+golden/DelinquencyLadder/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 6-43
+golden/DelinquencyLadderTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-14
+golden/DESFanOut/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-32
+src/Examples/ShippingOpsRuntime.hs
+  s_c089b0e0db1e81::t_ad39e58d3e4803 31
+  s_c089b0e0db1e81::t_06baa43dd56df1 28
+  s_c089b0e0db1e81::t_8ae02fa1bee6b2 156
+  s_c089b0e0db1e81::t_0ef17cd265c4e0 158-160
+  s_c089b0e0db1e81::t_d65bd32a8aa2cf 49
+  s_c089b0e0db1e81::t_c5ace3d258c908 41
+  s_c089b0e0db1e81::t_b4fba3bc0ade95 47
+  s_c089b0e0db1e81::t_83715c9a2fbd6a 152
+  s_c089b0e0db1e81::t_a4a1b5cd99d0e9 161-167
+  s_c089b0e0db1e81::t_96c8166fd971eb 189
+  s_c089b0e0db1e81::t_8017af2c9b0f53 184-185
+  s_c089b0e0db1e81::t_52d5a256da1971 170-172
+  s_c089b0e0db1e81::t_281be40292ac3f 157
+shipping_finance.html
+  s_c089b0e0db1e81::t_585d24dd903a0a 372-380
+  s_c089b0e0db1e81::t_0c563deb6d3aac 550,558-560
+  s_c089b0e0db1e81::t_b2098ff1165295 367-368
+  s_c089b0e0db1e81::t_e3b8f4194f8173 1-366,369-371,381-399,401,403-421,424-477,480-481,483-485,487-494,497-510,515-519,523-549,551-557,561-648
+  s_c089b0e0db1e81::t_2db5b5e3afff43 478-479,482,486,495-496
+  s_c089b0e0db1e81::t_0a81b3738802d4 511-514,520-522
+  s_c089b0e0db1e81::t_8f8c94e58a6257 422-423
+  s_c089b0e0db1e81::t_beef6fb2e6f572 400,402
+src/Examples/ShippingOps.hs
+  s_c089b0e0db1e81::t_5d79f759ca0bd2 229
+  s_c089b0e0db1e81::t_e24eb614407f81 733
+  s_c089b0e0db1e81::t_7ef4b64a5a24a2 100
+  s_c089b0e0db1e81::t_2fa5de0cf13265 2934-2937
+  s_c089b0e0db1e81::t_c46ad7af3510b0 2408-2411
+  s_c089b0e0db1e81::t_96af269f0d8c98 1153-1154,1157-1164,1178-1181,1188-1192
+  s_c089b0e0db1e81::t_4e91dcc337d7e3 1183,1194
+  s_c089b0e0db1e81::t_c2ca863bdff98b 41
+  s_c089b0e0db1e81::t_453198b8ffd147 226-227
+  s_c089b0e0db1e81::t_16918ca21c4f1c 1385-1405,1407,1413-1419
+  s_c089b0e0db1e81::t_2e75e285dc45cb 2602-2604
+  s_c089b0e0db1e81::t_ea3113c757ed8a 2816
+  s_c089b0e0db1e81::t_0f8fda371840a2 2908
+  s_c089b0e0db1e81::t_8a7b39b4f64d3b 2909,2911
+  s_c089b0e0db1e81::t_7405dfb479376f 537-539,541
+  s_c089b0e0db1e81::t_50bedf60040a0f 557-564
+  s_c089b0e0db1e81::t_f3ef108a82d715 808
+  s_c089b0e0db1e81::t_e9a159e64007d3 487-490,494-498
+  s_c089b0e0db1e81::t_14748b69b4f994 2561-2566
+  s_c089b0e0db1e81::t_d9256b5174c27a 183
+  s_c089b0e0db1e81::t_43a931ae5f6096 2785
+  s_c089b0e0db1e81::t_5aacb39eb53cd9 712
+  s_c089b0e0db1e81::t_1bb501ab442203 999
+  s_c089b0e0db1e81::t_53968ee05c3dfe 112
+  s_c089b0e0db1e81::t_9128707e381130 2764
+  s_c089b0e0db1e81::t_1c275e197c091f 2836
+  s_c089b0e0db1e81::t_5072ea33c78c40 2950-2951
+  s_c089b0e0db1e81::t_a9443298d85aea 565-577
+  s_c089b0e0db1e81::t_ffa61f3ba1f063 858
+  s_c089b0e0db1e81::t_20072f83d55809 1125-1126,1129-1141,1144-1149
+  s_c089b0e0db1e81::t_7c0ff22a93c161 2748,2750-2756,2759-2761,2763
+  s_c089b0e0db1e81::t_8182befc7e9779 1575
+  s_c089b0e0db1e81::t_bb0e13b2824847 1047-1048
+  s_c089b0e0db1e81::t_1c2858cfc5f293 1142-1143,1150-1151
+  s_c089b0e0db1e81::t_599aa528eb52f8 1167-1177,1182,1185,1187,1193,1196,1198
+  s_c089b0e0db1e81::t_298ba42f6add2d 1012-1018,1028-1031
+  s_c089b0e0db1e81::t_7e43af2beb0408 1595-1596
+  s_c089b0e0db1e81::t_43eaee10e7003b 816
+  s_c089b0e0db1e81::t_ce378176825cb0 2782
+  s_c089b0e0db1e81::t_ef216667d750c1 785
+  s_c089b0e0db1e81::t_8fc8735ed2ab15 829-830
+  s_c089b0e0db1e81::t_9e09c7ae9f19b4 1021-1022,1034-1035
+  s_c089b0e0db1e81::t_74d2ab88555f86 1962-1964,1969
+  s_c089b0e0db1e81::t_a4f705f841ba4f 1041-1044
+  s_c089b0e0db1e81::t_2e341f334deb51 832-835,838,841-842
+  s_c089b0e0db1e81::t_fe024c39c337d8 2424-2425
+  s_c089b0e0db1e81::t_af914c2af50f73 1496-1497
+  s_c089b0e0db1e81::t_105a486c92f88a 1857-1858
+  s_c089b0e0db1e81::t_710450441531af 747-749,755-757,762-765,772
+  s_c089b0e0db1e81::t_1eb9a3c00714b3 995-996,1002-1003,1006
+  s_c089b0e0db1e81::t_4b955f98e15c6e 648-657
+  s_c089b0e0db1e81::t_a2da5dba48d893 2450
+  s_c089b0e0db1e81::t_14617131265f20 2786
+  s_c089b0e0db1e81::t_747e6ab211224a 2787,2789-2790
+  s_c089b0e0db1e81::t_af194cda254957 1406,1408-1412
+  s_c089b0e0db1e81::t_780163dfd5c17d 1503
+  s_c089b0e0db1e81::t_5d937010e40e6b 2758,2762
+  s_c089b0e0db1e81::t_291e9f1446b49c 2817
+  s_c089b0e0db1e81::t_15ea14a7888ec3 2554-2557
+  s_c089b0e0db1e81::t_25768edb699396 2218-2220,2229,2243-2245,2252-2254
+  s_c089b0e0db1e81::t_df4ebd8f73fc5a 820
+  s_c089b0e0db1e81::t_f1f0270817a870 2985-2988
+  s_c089b0e0db1e81::t_36da34563b807c 2971-2972,2974-2975,2978
+  s_c089b0e0db1e81::t_70dce1f8d7b4e1 891,898
+  s_c089b0e0db1e81::t_5fabf093c69243 2743-2747,2749
+  s_c089b0e0db1e81::t_6ebb31bb5fa496 235-237
+  s_c089b0e0db1e81::t_f46ff3baa32e65 698-700,707,722-723,725-726,728-729,731-732,734-735
+  s_c089b0e0db1e81::t_a4e70c851209e6 2064,2068
+  s_c089b0e0db1e81::t_40d67d306731e3 2080,2083
+  s_c089b0e0db1e81::t_94970a9b99b3d5 2441-2442
+  s_c089b0e0db1e81::t_3165962a98e288 1600
+  s_c089b0e0db1e81::t_db8641a2913850 2680-2681
+  s_c089b0e0db1e81::t_8852419f9958c4 2682-2683
+  s_c089b0e0db1e81::t_c606ca1e1beb42 2255
+  s_c089b0e0db1e81::t_38fae199e9818e 2670-2672
+  s_c089b0e0db1e81::t_03287dfa470023 2783-2784,2788
+  s_c089b0e0db1e81::t_734fe33953ebda 189-191
+  s_c089b0e0db1e81::t_d36f64c420d038 994,997-998,1000-1001,1004-1005,1007
+  s_c089b0e0db1e81::t_46a3f572ce30b2 2594,2601
+  s_c089b0e0db1e81::t_e2f129f28746ac 40
+  s_c089b0e0db1e81::t_4f067550a9b321 1165-1166,1184,1186,1195,1197
+  s_c089b0e0db1e81::t_2dbb3dfa94a0c2 2199-2208
+  s_c089b0e0db1e81::t_f04659d50e561c 864
+  s_c089b0e0db1e81::t_e21f475bd13f47 2333-2347
+  s_c089b0e0db1e81::t_5b1e8817a4c3bb 178-181
+  s_c089b0e0db1e81::t_53f9d45a450268 2662-2663,2668-2669
+  s_c089b0e0db1e81::t_729c766e08d82e 1039-1040
+  s_c089b0e0db1e81::t_70b7905d036863 843
+  s_c089b0e0db1e81::t_452a85abe6a188 1152
+golden/DESExploreShopNative/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 39-56
+golden/RiskPortfolioDES/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 52-378
+golden/StateMachineTest/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-14
+docs/shipping/SHIPPING_OPS_FINANCIAL_DYNAMICS_PLAN.md
+  s_c089b0e0db1e81::t_98206a2fce9bc2 377-412
+  s_c089b0e0db1e81::t_262de5fe59d386 22
+  s_c089b0e0db1e81::t_bf8f4ba317d8c5 23
+  s_c089b0e0db1e81::t_1dd726f12e1153 24
+  s_c089b0e0db1e81::t_42564606e4c57c 303-338
+  s_c089b0e0db1e81::t_b1d60dff5bb599 339-360,370,374-376
+  s_c089b0e0db1e81::t_2b6b66f131d8a1 361-369,371-373
+golden/PortfolioDelinquency/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-197
+src/JIT/tw_engine.h
+  s_c089b0e0db1e81::t_b7d0920edb4d0c 248
+  s_c089b0e0db1e81::t_af6c8e3ca3e717 582-585,601-606
+golden/ResetConsistencyTest/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 12-14
+golden/DESDispatch/fingerprint.txt
+  s_c089b0e0db1e81::t_5a790572833e04 33-54
+golden/ModelRelaxationOsc/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-5
+golden/DESParallelLines/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-44
+src/Solver/DES/Physical.hs
+  s_c089b0e0db1e81::t_7069d7af291d85 416-419,427-435,461-462
+  s_c089b0e0db1e81::t_216c86a11d9bdc 102,408-415,442,459-460,463,552-555
+  s_c089b0e0db1e81::t_87350c05223e61 420-422,425-426
+  s_c089b0e0db1e81::t_26584beb78cd79 466
+  s_c089b0e0db1e81::t_98a573d1739165 436-441,443-458,464-465,467
+  s_c089b0e0db1e81::t_6da3fdd2d42573 556-557
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 4-54
+golden/ModelTorqueVector/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-8
+src/Solver/DES.hs
+  s_c089b0e0db1e81::t_a0fced2752dbb8 99-100
+src/JIT/Tape.hs
+  s_c089b0e0db1e81::t_619bc7686b9528 113
+  s_c089b0e0db1e81::t_c3ea26c8e5848b 1431
+golden/BankRiskTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 10-51
+golden/DESControlPolicyFalsifyV3/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 2-10
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 2-10
+golden/DESMoldingShop/fingerprint.txt
+  s_c089b0e0db1e81::t_2c05445e7bf0d2 3-28
+golden/DESReactorTank/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-8
+golden/DESQueue/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-8
+golden/DESUnifiedLine/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-17
+example/ShippingOpsServer.hs
+  s_c089b0e0db1e81::t_8c34e7e5b40728 49,52
+  s_c089b0e0db1e81::t_0e6d33765cebb8 144-145
+  s_c089b0e0db1e81::t_9302e898bc1bca 293-300
+  s_c089b0e0db1e81::t_55b503ec5d3a27 104-114
+  s_c089b0e0db1e81::t_7592ec66634ef9 22
+shipping.html
+  s_c089b0e0db1e81::t_9eeea79b59067b 1689-1692
+  s_c089b0e0db1e81::t_457c1b2d95f246 337
+golden/DESFactoryLine/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-32
+src/Solver/DES/TimeWarpUnified.hs
+  s_c089b0e0db1e81::t_0f70368be8a383 163
+  s_c089b0e0db1e81::t_216b6fcd032426 749-751
+golden/DESPureParity/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 6-23
+src/Solver/DES/TimeWarpJit.hs
+  s_c089b0e0db1e81::t_7b29031e7fc565 1841-1847,1851
+  s_c089b0e0db1e81::t_42efcbf7ea526f 1694-1697,1699
+  s_c089b0e0db1e81::t_73866b971db800 2423-2424
+  s_c089b0e0db1e81::t_ae22c907f04ba7 679-681
+  s_c089b0e0db1e81::t_5e730a72eb40f0 1501-1502
+  s_c089b0e0db1e81::t_490b621e47d8d5 1854
+  s_c089b0e0db1e81::t_f6ad80c9cf0f7f 1840,1849-1850,1852
+  s_c089b0e0db1e81::t_1e0bbb6bbcee1d 826-832
+  s_c089b0e0db1e81::t_99fd904a874de5 181
+  s_c089b0e0db1e81::t_b75dd2c857500e 1848
+  s_c089b0e0db1e81::t_9aef7f9b6a102e 1772,1781
+  s_c089b0e0db1e81::t_18c73806d13bc1 1752-1759,1764,1767-1771
+  s_c089b0e0db1e81::t_908ba67cc4500c 2258
+  s_c089b0e0db1e81::t_93b07451207870 1765
+  s_c089b0e0db1e81::t_a3cf63330e79cb 1801-1811,1813
+golden/DESDistillery/fingerprint.txt
+  s_c089b0e0db1e81::t_2c05445e7bf0d2 4-54
+golden/BankFullBookTW/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 4-15
+src/JIT/tw_runtime.c
+  s_c089b0e0db1e81::t_5033fbc91e2668 2734-2739
+  s_c089b0e0db1e81::t_333fe976c069a7 820-823
+golden/BankRiskMaster/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 52-348
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 2-28
+golden/ModelSupervisedCooling/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-8
+golden/ModelBouncingBall/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 3-10
+golden/DESMctsFalsify/fingerprint.txt
+  s_c089b0e0db1e81::t_4a2f34926e7d3e 2-28
+golden/DESSharedRoom/fingerprint.txt
+  s_c089b0e0db1e81::t_2c05445e7bf0d2 3-17
+golden/DESElectricLoad/fingerprint.txt
+  s_c089b0e0db1e81::t_5a790572833e04 3-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "d8960d02890013d74c8c255f31e02bfa3c652441",
+  "prompts": {},
+  "sessions": {
+    "s_c089b0e0db1e81": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0397022abffema8S00S34aOV5U",
+        "model": "deepseek-v4-flash-free"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
