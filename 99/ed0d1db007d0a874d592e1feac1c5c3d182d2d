@@ -1,0 +1,38 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 53-55
+doc/des/DES_EVENT_KERNEL.md
+  h_fd5809635b36a3 241
+shipping.html
+  h_fd5809635b36a3 243,512-513,717-720,815-833,896-897,918-923,1021-1022
+src/Examples/DESCKernel.hs
+  h_fd5809635b36a3 26,45,51-52,61,80-86,110-117,153-156,158-159
+src/Examples/ShippingOps.hs
+  h_fd5809635b36a3 10-11,56-59,113,161-162,164,194-195,197,261,265-272,304,306-321,379-387,513,516,519-522,531-533,704-707,860-862,864-865,867-869,1177-1179,1222,1224-1225,1332-1335
+src/Examples/ShippingOpsRuntime.hs
+  h_fd5809635b36a3 43,87-89
+src/JIT/des_kernel.c
+  h_fd5809635b36a3 4-5,27-29,40-43,54-64,130-131,133,137-139,151-164,178-179,182-190,193,196-211,223-233,259-265,287,294,319,326,391-396
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 148-150,291-293,472-484,665-680,696-706,708-733,735-741,996-1005,1007-1008,1025-1030,1039-1048,1084-1090
+src/JIT/tw_model.h
+  h_fd5809635b36a3 126-130
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 294-295,434-465,1340-1346
+src/Solver/DES.hs
+  h_fd5809635b36a3 67,971-979,989-990,1023-1024,1031-1033,1076,1108-1110,1128-1138,1160,1166-1167,1175-1176
+src/Solver/DES/TimeWarpJit.hs
+  h_fd5809635b36a3 2358-2359,2516-2521,2655-2657
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 43,271-279
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "99ed0d1db007d0a874d592e1feac1c5c3d182d2d",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
