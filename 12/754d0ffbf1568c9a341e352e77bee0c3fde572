@@ -1,0 +1,35 @@
+src/Solver/DES.hs
+  s_974114e5e9da26::t_5299a698f13363 304,311-318,327-329
+index.html
+  s_974114e5e9da26::t_da96a713cec4b7 1172
+  s_974114e5e9da26::t_bf634468ed8326 1405,1407-1409,1412,1414,1416,1418,1420,1424-1430
+  s_974114e5e9da26::t_35304964d6c1ee 1365-1367
+  s_974114e5e9da26::t_a5fd0a36a30f1c 1168
+  s_974114e5e9da26::t_7c61686ab78447 1431
+example/BankDayServer.hs
+  s_974114e5e9da26::t_e83029d4a4f851 53
+  s_974114e5e9da26::t_80f5f52fa39cfb 320-324
+src/Examples/BankDayCRuntime.hs
+  s_974114e5e9da26::t_51049f84a9a463 192
+  s_974114e5e9da26::t_09794e99b0a354 38
+  s_974114e5e9da26::t_ebb2a4e8ce3e35 189-191
+  s_974114e5e9da26::t_45deec153d97db 1324-1326
+  s_974114e5e9da26::t_a12fb9d2cbbc8b 1094-1130,1133,1135-1181
+  s_974114e5e9da26::t_8db59742eef776 1131-1132,1134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "12754d0ffbf1568c9a341e352e77bee0c3fde572",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
