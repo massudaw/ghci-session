@@ -1,0 +1,21 @@
+src/JIT/tw_runtime.c
+  s_974114e5e9da26::t_11055898abf71a 1399-1406
+src/JIT/tw_engine.h
+  s_974114e5e9da26::t_bc084c06092b8a 628-635,638,642
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "af18316158d2603888241d5456448fbfd94ca419",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
