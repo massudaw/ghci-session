@@ -1,0 +1,21 @@
+src/Solver/Risk/TaggedSignal.hs
+  s_974114e5e9da26::t_28552fc759b7c3 7-8
+  s_974114e5e9da26::t_e0a19379719241 79-84
+  s_974114e5e9da26::t_2713dc92cec8c5 43-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "1b379512c283f6e9ba29f926e58515962335e1ac",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
