@@ -1,0 +1,29 @@
+index.html
+  s_974114e5e9da26::t_ef4175e7160b99 1417-1478
+  s_974114e5e9da26::t_29e6150afb0530 1556,1561
+  s_974114e5e9da26::t_b7187490b86068 1390
+  s_974114e5e9da26::t_312513f6cf0156 1585,1589
+  s_974114e5e9da26::t_59003be32ac05d 1512
+shipping.html
+  s_974114e5e9da26::t_27554f1e0ef5b1 2471
+  s_974114e5e9da26::t_383f7aa509b782 2343
+  s_974114e5e9da26::t_ff5ea94e5253d2 2160-2222
+  s_974114e5e9da26::t_96890fb12fc531 2377
+  s_974114e5e9da26::t_f36026eaabdbe6 2278
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "f49f2633a6614a4b9cb7ca78d1152ad74ed2f9de",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
