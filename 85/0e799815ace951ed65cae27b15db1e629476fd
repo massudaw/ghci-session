@@ -1,0 +1,30 @@
+src/Examples/BankDayDesRuntime.hs
+  s_974114e5e9da26::t_837d2801972207 4668-4672
+  s_974114e5e9da26::t_9bbb592897a31b 4731
+  s_974114e5e9da26::t_62305fd7335244 4692-4697
+  s_974114e5e9da26::t_bbc29faadf7bb3 4741
+src/Examples/BankDayCRuntime.hs
+  s_974114e5e9da26::t_a8ea1598200f86 50
+  s_974114e5e9da26::t_50b540e1d4f5c3 267-273
+  s_974114e5e9da26::t_e6960d897e6fdf 979-981,988,997-999,1001-1088
+index.html
+  s_974114e5e9da26::t_558542f1cacde1 1409
+  s_974114e5e9da26::t_ee34712cf557b5 1435-1440,1456-1467
+  s_974114e5e9da26::t_b948f526bdc0c6 1523-1527,1530-1536,1543-1567
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "850e799815ace951ed65cae27b15db1e629476fd",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
