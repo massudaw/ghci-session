@@ -1,0 +1,22 @@
+index.html
+  s_974114e5e9da26::t_217330af756e0a 1168-1172
+  s_974114e5e9da26::t_9fd4438d38bc74 1399-1402,1404-1406,1408-1412,1414-1418,1420-1427,1429-1445,1447-1462,1464-1480,1482-1496,1498-1524,1526-1528,1531-1532
+  s_974114e5e9da26::t_1c2bd4a73613d3 1403,1407,1413
+  s_974114e5e9da26::t_e9e13819eb1f7e 1533
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "ec8358148c73e3948adb8e089b3992564e5d219a",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
