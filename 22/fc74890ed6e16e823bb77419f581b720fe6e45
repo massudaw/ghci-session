@@ -1,0 +1,19 @@
+src/Solver/DES/TimeWarpPlant.hs
+  s_974114e5e9da26::t_191203b275ce68 488,948
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "22fc74890ed6e16e823bb77419f581b720fe6e45",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
