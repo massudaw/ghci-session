@@ -1,0 +1,25 @@
+src/Examples/ShippingOpsRuntime.hs
+  s_974114e5e9da26::t_cff7748cd35621 250-282
+  s_974114e5e9da26::t_28ff331cb6ae0e 577-584,589,592
+  s_974114e5e9da26::t_866542cf23ea12 93-94
+  s_974114e5e9da26::t_e8f166d8a04f2e 574-576
+shipping.html
+  s_974114e5e9da26::t_7a49a079a277e8 2056-2065
+  s_974114e5e9da26::t_74483e01184499 338
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "272180e6be14c012dc83f88cf34abe06e4848269",
+  "prompts": {},
+  "sessions": {
+    "s_974114e5e9da26": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_034d55400ffe7ESC1ZLBsLxN3X",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
