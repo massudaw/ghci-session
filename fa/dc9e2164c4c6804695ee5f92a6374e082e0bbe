@@ -1,0 +1,40 @@
+golden/DESAgentHarness/des.txt
+  s_ab6bd45a6d67a8::t_b8f5766e58aa36 1-58
+src/Examples/DESAgentHarness.hs
+  s_ab6bd45a6d67a8::t_a9b1ea102d1344 178-181
+  s_ab6bd45a6d67a8::t_8346d6d6abe6e4 1-33,35-177,182-190,192-195,197-198,207-215,218-222
+  s_ab6bd45a6d67a8::t_6587fbc63a7c93 191,196,199-206,216-217
+  s_ab6bd45a6d67a8::t_5fee8c0ee2be96 34
+golden/DESAgentHarness/tapestats.txt
+  s_ab6bd45a6d67a8::t_b8f5766e58aa36 1-4
+golden/DESAgentHarness/status.txt
+  s_ab6bd45a6d67a8::t_b8f5766e58aa36 1
+example/Main.hs
+  s_ab6bd45a6d67a8::t_2069ebeafceeaa 233
+  s_ab6bd45a6d67a8::t_4df131f55d4da8 471
+extract_agent_traces.py
+  s_ab6bd45a6d67a8::t_5c810f77039e63 125,130-133,137,145
+  s_ab6bd45a6d67a8::t_dc7173c0a55a64 1-124,126-129,134-136,138-144,146-345
+sprinkler-solver.cabal
+  s_ab6bd45a6d67a8::t_eb2f1a4ae1385f 464
+golden/DESAgentHarness/fingerprint.txt
+  s_ab6bd45a6d67a8::t_b8f5766e58aa36 1-515
+.gitignore
+  s_ab6bd45a6d67a8::t_63eea5d253c97c 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "fadc9e2164c4c6804695ee5f92a6374e082e0bbe",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
