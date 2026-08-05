@@ -1,0 +1,28 @@
+tools/tool_event_hook.py
+  s_ab6bd45a6d67a8::t_209115b4e47e3f 46-51
+src/Examples/DESLiveMonitor.hs
+  s_ab6bd45a6d67a8::t_c17c20fb914384 207-221,223-236,238-263,267-274
+  s_ab6bd45a6d67a8::t_9d22cae2b413b8 237
+  s_ab6bd45a6d67a8::t_49caa46eb0099a 55
+  s_ab6bd45a6d67a8::t_fe017da219b809 222
+  s_ab6bd45a6d67a8::t_93982b8d78b521 297-300
+  s_ab6bd45a6d67a8::t_673ebec5e740e9 68
+  s_ab6bd45a6d67a8::t_22c7f75def3eda 11-20
+  s_ab6bd45a6d67a8::t_5dbe0c20112fe0 69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "55bc83978e0d37c58629f4e1c3e7e553b746c084",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
