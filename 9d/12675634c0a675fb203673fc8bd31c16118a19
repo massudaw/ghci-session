@@ -1,0 +1,32 @@
+src/Examples/DESPortTerminal.hs
+  s_ab6bd45a6d67a8::t_a4b1ceb800bcbc 167
+  s_ab6bd45a6d67a8::t_3e7503da0fd530 202-204
+  s_ab6bd45a6d67a8::t_f478770ef3e9df 55
+  s_ab6bd45a6d67a8::t_41fd1ae277f7dc 185-188,198-201
+  s_ab6bd45a6d67a8::t_c37d5bd682a69c 276-281
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_e8c9ad4a3ac51b 3099-3100,3281-3282,3426-3427,3756,3796,4458,4554
+  s_ab6bd45a6d67a8::t_dcbdcffef9444c 2824-2825,3112-3113,3293-3294,3437,3771
+  s_ab6bd45a6d67a8::t_7a28b620f8cd4a 965-979,981
+  s_ab6bd45a6d67a8::t_aa6b0cc1292a67 105
+golden/DESPortTerminal/des.txt
+  s_ab6bd45a6d67a8::t_f7b74f0d4c0e2b 1-49
+.gitignore
+  s_ab6bd45a6d67a8::t_b583bfe7b3eb8a 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "9d12675634c0a675fb203673fc8bd31c16118a19",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
