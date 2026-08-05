@@ -1,0 +1,51 @@
+tools/tool_event_hook.py
+  s_ab6bd45a6d67a8::t_c6300b91edc075 66-78,90
+  s_ab6bd45a6d67a8::t_4ba5e1265dbcff 218,220-221,227,231,233-234
+  s_ab6bd45a6d67a8::t_d4507b45c50525 216-217
+  s_ab6bd45a6d67a8::t_ceab91a205b73d 99-128
+  s_ab6bd45a6d67a8::t_66a28d7986ca8a 164-167,169
+des_live_monitor.html
+  s_ab6bd45a6d67a8::t_753829c4893042 311-380,384
+  s_ab6bd45a6d67a8::t_ec8a72b92b7a3c 216
+  s_ab6bd45a6d67a8::t_a33b729bb9bad5 63
+  s_ab6bd45a6d67a8::t_f6b5208df5ae29 135-138
+  s_ab6bd45a6d67a8::t_1bdb57d079edde 188,192-196
+  s_ab6bd45a6d67a8::t_bdd91b0a45eee3 256
+  s_ab6bd45a6d67a8::t_2f3ca213a25830 78-101
+  s_ab6bd45a6d67a8::t_243b80d04983be 62
+  s_ab6bd45a6d67a8::t_eafd0ee3272997 134
+  s_ab6bd45a6d67a8::t_ed213e2a3fa288 197
+src/Examples/DESLiveMonitor.hs
+  s_ab6bd45a6d67a8::t_ea4929e022c418 458
+  s_ab6bd45a6d67a8::t_655eb974101cfe 611
+  s_ab6bd45a6d67a8::t_a95148483efdd2 191
+  s_ab6bd45a6d67a8::t_c18180f260dddd 402
+  s_ab6bd45a6d67a8::t_c54698c8cf1347 520
+  s_ab6bd45a6d67a8::t_e86c9010d55340 282-285,299-304,306-308,310-320,322-326,337,344-350,352-353,355
+  s_ab6bd45a6d67a8::t_a2d2c786df20c3 414
+  s_ab6bd45a6d67a8::t_689c7469fbebfd 281,286-298,305,309,321,333-336,338-343,351,354,356-358
+  s_ab6bd45a6d67a8::t_a8fc9484b11e7a 560
+  s_ab6bd45a6d67a8::t_6a8a62ca49593e 716-717
+  s_ab6bd45a6d67a8::t_e09f080dde3ae4 139-146,148-149,153
+  s_ab6bd45a6d67a8::t_77ec4045b49264 52
+  s_ab6bd45a6d67a8::t_bd2720f16429cb 391-392
+  s_ab6bd45a6d67a8::t_ca50aebffab839 55
+  s_ab6bd45a6d67a8::t_c2482a2fe2ec2a 327-332
+  s_ab6bd45a6d67a8::t_a85dd59d592b5c 236-246,251,253-265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "80cd267ae983c01223447ed4588827448d1ddab1",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
