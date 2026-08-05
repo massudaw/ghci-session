@@ -1,0 +1,68 @@
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_e28fe0fb921819 117
+  s_ab6bd45a6d67a8::t_d2433894a9bf39 3747-3752,3755,3764-3775
+  s_ab6bd45a6d67a8::t_05fc0f77707ce8 4145-4151,4153-4154
+  s_ab6bd45a6d67a8::t_0a9d189b140801 4301-4306,4308-4309
+golden/timings.tsv
+  s_ab6bd45a6d67a8::t_1e7af34d619593 18
+golden/timings_history.tsv
+  s_ab6bd45a6d67a8::t_1e7af34d619593 39
+golden/DESPortTerminal/fingerprint.txt
+  s_ab6bd45a6d67a8::t_86271b7ae6ef14 1-460
+golden/DESPortTerminal/status.txt
+  s_ab6bd45a6d67a8::t_cebe9e670c3268 1
+src/Solver/DES/Dump.hs
+  s_ab6bd45a6d67a8::t_43424845b270f2 1-8,10-16,18-21,31-77,79-80,99-102,104-108
+  s_ab6bd45a6d67a8::t_566f890e463b3f 27
+  s_ab6bd45a6d67a8::t_f1778c95774d5b 96-98,103
+  s_ab6bd45a6d67a8::t_f75ce578f38189 9,17,22-26,28-30,78,81-95,109-116
+golden/DESPortTerminal/tapestats.txt
+  s_ab6bd45a6d67a8::t_86271b7ae6ef14 1-3
+src/Solver/DES.hs
+  s_ab6bd45a6d67a8::t_d39348079e2006 196-197
+  s_ab6bd45a6d67a8::t_5760a25f326df5 131,133
+  s_ab6bd45a6d67a8::t_abf19a653ef60b 613,617
+  s_ab6bd45a6d67a8::t_39968d9ef61161 635-664,670-681
+  s_ab6bd45a6d67a8::t_83e722ab3db477 953-958
+  s_ab6bd45a6d67a8::t_5cb563d061c44a 665-669
+  s_ab6bd45a6d67a8::t_45f76d877a8764 986-1010
+  s_ab6bd45a6d67a8::t_efa8924a68bc0f 64
+src/Examples/DESPortTerminal.hs
+  s_ab6bd45a6d67a8::t_aeddd8f06f18f5 1-57,59-108,115-137,139-140,146,154,199-217,230-231,234-255,259-274,296-302
+  s_ab6bd45a6d67a8::t_c6bacd9ece605f 138
+  s_ab6bd45a6d67a8::t_70e08e5faf8e11 141
+  s_ab6bd45a6d67a8::t_b8b86f5519b246 290-295
+  s_ab6bd45a6d67a8::t_79674844416344 142-145
+  s_ab6bd45a6d67a8::t_c46c7258efc458 109-114
+  s_ab6bd45a6d67a8::t_38a27d44b2ff81 166
+  s_ab6bd45a6d67a8::t_77bd72fbabc340 147-153
+  s_ab6bd45a6d67a8::t_6b971391be1605 256-258
+  s_ab6bd45a6d67a8::t_42161b376aeda7 58
+  s_ab6bd45a6d67a8::t_2f79a4f9e4239e 275-289
+  s_ab6bd45a6d67a8::t_75967d38724f52 155,163-165,167-169,172-186,198
+  s_ab6bd45a6d67a8::t_1d636f7bf374b6 218-221,233
+  s_ab6bd45a6d67a8::t_74212e9b925e9e 156-162,170-171,187-197
+  s_ab6bd45a6d67a8::t_a0ab02f6ae2559 222-229,232
+sprinkler-solver.cabal
+  s_ab6bd45a6d67a8::t_5a9033f888e202 463
+  s_ab6bd45a6d67a8::t_8f1b88131098a7 291
+example/Main.hs
+  s_ab6bd45a6d67a8::t_aa02b34e2f7309 469
+  s_ab6bd45a6d67a8::t_f756ec3607aa27 232
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "4a967027d902bb00684fbfbfc9f8dba60bb5ab60",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
