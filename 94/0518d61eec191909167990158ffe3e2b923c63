@@ -1,0 +1,25 @@
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_db668caa1efc00 5368,5404,5519,6383
+  s_ab6bd45a6d67a8::t_770b637e17aed7 687-688
+  s_ab6bd45a6d67a8::t_afb0b7fab946b1 690,799-808,810-811,839,845,3416
+  s_ab6bd45a6d67a8::t_9954d0436e29c2 838
+  s_ab6bd45a6d67a8::t_8f85ecee005875 1567-1571,2852-2855
+src/Examples/ShippingOpsRuntime.hs
+  s_ab6bd45a6d67a8::t_e06835d4dccb6f 205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "940518d61eec191909167990158ffe3e2b923c63",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
