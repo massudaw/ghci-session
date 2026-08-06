@@ -1,0 +1,37 @@
+src/Examples/ShippingOpsRuntime.hs
+  s_ab6bd45a6d67a8::t_4e4c1deaedaac4 26,710,805-825
+  s_ab6bd45a6d67a8::t_57b814eb866c0c 418,670
+  s_ab6bd45a6d67a8::t_8265e978abf9d1 384
+  s_ab6bd45a6d67a8::t_ef4ecca561fe9a 60,86-91,187,233-234,236-237,702-709
+  s_ab6bd45a6d67a8::t_1505d6d8341c16 826
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_ef4ecca561fe9a 100
+  s_ab6bd45a6d67a8::t_4f96bcf869e706 933
+shipping.html
+  s_ab6bd45a6d67a8::t_a566e611af102e 439-444,477,2237,2302-2312,2314,2317,2319-2320,2334,2359,2588-2590
+  s_ab6bd45a6d67a8::t_d8c5d1dc5d7bde 2567
+golden/ShippingOps/des.txt
+  s_ab6bd45a6d67a8::t_811b9b3cbcb544 1399,1405
+golden/timings.tsv
+  s_ab6bd45a6d67a8::t_de840e6e17a5a6 17
+golden/ShippingOps/fingerprint.txt
+  s_ab6bd45a6d67a8::t_811b9b3cbcb544 4,6-8,10-11,14-15,19,26
+golden/timings_history.tsv
+  s_ab6bd45a6d67a8::t_de840e6e17a5a6 194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "8817aad71b6e9a85985e44b9cfdc3ea7487d2ebe",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
