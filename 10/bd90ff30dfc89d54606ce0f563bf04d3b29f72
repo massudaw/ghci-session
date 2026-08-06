@@ -1,0 +1,20 @@
+shipping.html
+  s_ab6bd45a6d67a8::t_193f036932e1bb 1876,1878-1881
+  s_ab6bd45a6d67a8::t_e9a08ea8263be7 510-514,524,2312-2332,2334,2336,2383-2384,2592-2596
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "10bd90ff30dfc89d54606ce0f563bf04d3b29f72",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
