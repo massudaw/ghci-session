@@ -1,0 +1,30 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_91913002af12ac::t_b76ae81e1e2424 689-715
+  s_91913002af12ac::t_6c12386d82d1f0 747-750,752
+src/Solver/DES/TimeWarpJit.hs
+  s_91913002af12ac::t_c235c4f991dca1 168
+  s_91913002af12ac::t_140357f97fc29a 2389-2392,2395-2396,2399-2402,2404,2407-2410
+  s_91913002af12ac::t_e4816ce46bcfd0 738-753
+doc/des/FANIN_ACCUMULATOR.md
+  s_91913002af12ac::t_d546ffea40b185 104-123,128-136
+src/JIT/tw_engine.h
+  s_91913002af12ac::t_9e5f59326ad195 186-197
+docs/accounting/DESIGN.md
+  s_91913002af12ac::t_7134f884c1e93b 297-331
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "f5b5e445f0d3220170800882c86aa16cf4d649c3",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
