@@ -1,0 +1,19 @@
+src/JIT/tw_engine.h
+  s_91913002af12ac::t_7f3f5e87aeff13 892-910,912-917,919-929,932-937
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a503462ac6dddb05b21a25db2e5c1458ccbd282e",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
