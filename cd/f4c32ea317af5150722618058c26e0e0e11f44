@@ -1,0 +1,27 @@
+src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_550ad6192ca8fa 6997
+  s_91913002af12ac::t_426ed5ca518c3c 111
+  s_91913002af12ac::t_b0cf351516165c 6546-6550,6572-6576,6578,6603-6608
+  s_91913002af12ac::t_23e473e574f83a 6891-6899
+  s_91913002af12ac::t_1dcb44c7d25382 132
+  s_91913002af12ac::t_f35b6dbf5fe993 6975-6976,6983
+  s_91913002af12ac::t_c415f92131b348 6551-6571,6577,6579-6602
+  s_91913002af12ac::t_be1d2982fca607 6900-6944,6946-6974,6977-6982
+  s_91913002af12ac::t_44e8f65c3f643e 6945
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "cdf4c32ea317af5150722618058c26e0e0e11f44",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
