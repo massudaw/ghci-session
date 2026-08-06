@@ -1,0 +1,33 @@
+src/Solver/DES.hs
+  s_ab6bd45a6d67a8::t_87be5c63283d1d 52,54
+  s_ab6bd45a6d67a8::t_219c54e5e4afeb 232-238,244-246
+  s_ab6bd45a6d67a8::t_b48d09cb402744 247
+src/Solver/DES/TimeWarpUnified.hs
+  s_ab6bd45a6d67a8::t_fbdc0a5fcc215b 282,684,1038
+  s_ab6bd45a6d67a8::t_d900f73be48930 685
+  s_ab6bd45a6d67a8::t_efbd6bb79a6b00 947-953
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_735fdd4070b25b 2107,2109-2115,2577,2623,2640,2661,2812-2817,2831-2836,2850,2862,2879,2888,2895,2909
+  s_ab6bd45a6d67a8::t_839668f068852a 6009-6030
+  s_ab6bd45a6d67a8::t_b2f6ec737d2bc6 2230-2232,2317-2318,2321-2323,2374-2375,2384-2385,2451-2453
+  s_ab6bd45a6d67a8::t_8da29184947441 146-147
+src/Solver/DES/Unified.hs
+  s_ab6bd45a6d67a8::t_ce6bc3ecb888db 44-45
+  s_ab6bd45a6d67a8::t_f441f4c5c32031 281-285,298-308
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "cc3eed0c83a758aac1b629ac8b94269122267f1b",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
