@@ -1,0 +1,35 @@
+src/Examples/ShippingOps.hs
+  s_ab6bd45a6d67a8::t_b533ddc1dcca9d 758-772,794-797,809,811,919-921,936-942,987-995,1000-1001,1007,3738,6005
+  s_ab6bd45a6d67a8::t_ee0e97c6827220 1751,1770-1771,1783-1786,1806,2615,3174-3175,5836-5842,5882-5888,6881-6887
+shipping.html
+  s_ab6bd45a6d67a8::t_2180dfde05167e 2055,2977-2980
+  s_ab6bd45a6d67a8::t_f76e41685868f0 221-231,393-411
+  s_ab6bd45a6d67a8::t_eeee6f49bdddcb 373-374,545,641,2426-2431
+  s_ab6bd45a6d67a8::t_33260293a3d94f 279-303
+  s_ab6bd45a6d67a8::t_ca2b23cdf030cb 246-258,263,265-278,412,450-457,2038-2041
+  s_ab6bd45a6d67a8::t_48053d81c0d25e 434-449
+  s_ab6bd45a6d67a8::t_05dc5b92586751 1944-2002,2021-2028
+  s_ab6bd45a6d67a8::t_d96de038d21407 614-618,628,2974-2976,2981-2987
+  s_ab6bd45a6d67a8::t_bc0ac7d89a41b5 259-262,264
+  s_ab6bd45a6d67a8::t_8dac48e97c1e20 1176-1182,1184,1186,1192,1195,1910-1914
+  s_ab6bd45a6d67a8::t_e4e599f2735144 433
+src/Examples/ShippingOpsRuntime.hs
+  s_ab6bd45a6d67a8::t_024d18c789d2f6 202-203,256,258
+  s_ab6bd45a6d67a8::t_27d67e5d92b3d5 257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c16c8233fab49cf447ba6b2c96b976aa4aeb918e",
+  "prompts": {},
+  "sessions": {
+    "s_ab6bd45a6d67a8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f855d25f-55d1-4d3c-aa4d-ce5f8576d195",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
