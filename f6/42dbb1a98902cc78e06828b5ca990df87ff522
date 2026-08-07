@@ -1,0 +1,26 @@
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_9bb1885aa3ab42 404-413
+doc/des/GATE_RELEASE_EVALUATION.md
+  s_91913002af12ac::t_4cf70e77e162c5 885-890
+  s_91913002af12ac::t_9c867cc7b31f85 12-31
+  s_91913002af12ac::t_1ec176d0ea2489 1-11,32-884,891-946
+doc/des/PLANT_GROUP_LOWERING.md
+  s_91913002af12ac::t_41f4830eb58285 1-11,22-82
+  s_91913002af12ac::t_8f3101daef008d 12-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "f642dbb1a98902cc78e06828b5ca990df87ff522",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
