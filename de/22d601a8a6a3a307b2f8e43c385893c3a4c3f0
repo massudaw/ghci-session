@@ -1,0 +1,30 @@
+cabal.project
+  s_91913002af12ac::t_650e339d5c4752 75-78
+src/JIT/jit_klu_noreanalyze.c
+  s_91913002af12ac::t_1aad64d2dc204c 55,70-95
+  s_91913002af12ac::t_6754a92a89cea8 96-97
+src/JIT/jit_trampoline.c
+  s_91913002af12ac::t_0bd3537520d2d1 3088-3096
+  s_91913002af12ac::t_28eece520eeb95 2544
+src/Solver/IDA.hs
+  s_91913002af12ac::t_c46cab1e18b8ab 136
+  s_91913002af12ac::t_860dd2d1395b29 358-368
+  s_91913002af12ac::t_4fb4ff91618e30 349-357
+  s_91913002af12ac::t_757a84498dce4c 2911,3383
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "de22d601a8a6a3a307b2f8e43c385893c3a4c3f0",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
