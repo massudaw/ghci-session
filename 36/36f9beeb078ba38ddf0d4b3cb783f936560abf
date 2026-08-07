@@ -1,0 +1,38 @@
+src/Model/LockClutchCoupling.hs
+  s_91913002af12ac::t_fd0ed181d73365 100
+src/Model/ScheduledCooler.hs
+  s_91913002af12ac::t_fd0ed181d73365 107
+sprinkler-solver-examples/src/Examples/DerivSlotSettleTest.hs
+  s_91913002af12ac::t_fd0ed181d73365 166
+src/Model/MixtureReactionCoupling.hs
+  s_91913002af12ac::t_fd0ed181d73365 140
+sprinkler-solver-examples/src/Examples/SurfaceSlotSettleTest.hs
+  s_91913002af12ac::t_fd0ed181d73365 142
+src/Model.hs
+  s_91913002af12ac::t_fd0ed181d73365 45,547-553,559,562,610-647,700-701,1267,1270-1274
+src/Solver/Risk/SignalPulse.hs
+  s_91913002af12ac::t_4e4c5e799a5438 321
+  s_91913002af12ac::t_0d3021732dbb06 159
+  s_91913002af12ac::t_46af09866e5ae6 547
+  s_91913002af12ac::t_fccd0a82a829cd 681
+  s_91913002af12ac::t_92d9b0762a953e 162
+  s_91913002af12ac::t_fd0ed181d73365 1,44,46,51,53,58-106,122-124,145-158,160-161,184-185,218-234,265-266,298-320,344-345,384-404,428-429,460-482,504-505,527-546,583-584,614-631,647-648,667-680,705-706,723-737,769-770,799-823
+src/Solver/DES/TimeWarpPlant.hs
+  s_91913002af12ac::t_2f3376a1b655a2 1039-1041
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "3636f9beeb078ba38ddf0d4b3cb783f936560abf",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
