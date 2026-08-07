@@ -1,0 +1,38 @@
+docs/shipping/DEVELOPMENT_LOOP.md
+  s_91913002af12ac::t_764e322410b5de 146-149,156,159-160,167
+  s_91913002af12ac::t_0678144f23678b 179
+  s_91913002af12ac::t_e9413a009d6f4c 114
+  s_91913002af12ac::t_1f112ea6738cf4 24-26,35,37,42
+  s_91913002af12ac::t_dfdfa370ef7db8 77-79
+  s_91913002af12ac::t_84f57d29ab717e 12-17
+  s_91913002af12ac::t_0f97222fc8b0a1 4-5
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_91913002af12ac::t_d714d1efc73e8b 1-5,16,43,45-294,296-351
+  s_91913002af12ac::t_300d71f4cf35b1 44
+  s_91913002af12ac::t_e473d655d6e994 17-32
+  s_91913002af12ac::t_a19a826a678483 295,357
+  s_91913002af12ac::t_a01e2a1db91a25 6-15,33-42,352-356,358-1078
+cabal.project
+  s_91913002af12ac::t_807162bdae5f38 3
+  s_91913002af12ac::t_3ba9ce69669ff5 2
+sprinkler-solver-shipping/sprinkler-solver-shipping.cabal
+  s_91913002af12ac::t_a19a826a678483 1-114
+.gitignore
+  s_91913002af12ac::t_3a8bfc2c661821 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "328dc842929d909a132c638353ea9253e661fbc1",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
