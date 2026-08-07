@@ -1,0 +1,29 @@
+src/JIT/tw_engine.h
+  s_91913002af12ac::t_706392e83ebb63 262-265,441-461,740-770,772-779,803-831,834-835,837-841,876-877,882,893,901,955-956,971-984,1064,1092,1109,1113-1133,1145,1167-1170,1185-1186,1202-1203,1246-1258,1609-1610,1639,1665-1668,1670,1683-1684
+src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_706392e83ebb63 6908-6928,7059-7071
+src/Solver/DES/TimeWarpJit.hs
+  s_91913002af12ac::t_706392e83ebb63 2836-2859,2986-2988
+doc/des/FANIN_ACCUMULATOR.md
+  s_91913002af12ac::t_706392e83ebb63 138-154
+src/JIT/tw_model.h
+  s_91913002af12ac::t_706392e83ebb63 275-297
+src/JIT/tw_runtime.c
+  s_91913002af12ac::t_706392e83ebb63 362-365,875-905,2477-2482,2487-2500,2502,2504-2505,2507-2508,2515,3506-3508,3511-3513,3515,3517-3518,3520-3521,3528
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "7e690217fee8fadccfb67c8f4e30caad8048dbd4",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
