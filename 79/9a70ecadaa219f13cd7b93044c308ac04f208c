@@ -1,0 +1,65 @@
+src/Examples/ShippingOpsRuntime.hs
+  s_91913002af12ac::t_f0cc113229ad8d 28,33,35
+  s_91913002af12ac::t_1b7ffe76fec4d8 30
+  s_91913002af12ac::t_2f6f9688eab199 487-490
+  s_91913002af12ac::t_7dc4d1e5222031 648
+  s_91913002af12ac::t_04167822c6c62c 408-410
+  s_91913002af12ac::t_198cebc111f31b 725-738
+  s_91913002af12ac::t_ef7cd6777bbdd2 346-352,354-355,360-361,364-365,367-369,377,384,389-391,393-400,407,411-420
+  s_91913002af12ac::t_31d4c4cb00e141 50-51
+  s_91913002af12ac::t_b74da5168f52b8 366
+  s_91913002af12ac::t_28b977bbb779a5 392
+  s_91913002af12ac::t_40821525616b58 422,424-425,431,434,438,444,451,453-457,459-460,476,478-486,491-505,516-521
+  s_91913002af12ac::t_4a3ba918f9e29c 52
+  s_91913002af12ac::t_45f0f9f821c943 283,289
+  s_91913002af12ac::t_0e06fe7b9557c5 227-228
+  s_91913002af12ac::t_76fba31626beac 452,461-462,477,506-507
+  s_91913002af12ac::t_64d2a9ab3ad431 23,47,49,71
+  s_91913002af12ac::t_1737a0836e8cde 581,583-586,588-589,595,597-598,600,605,608
+  s_91913002af12ac::t_7855f715f3fc60 236-261
+  s_91913002af12ac::t_284335afeb8e99 888-894,896,899-904,913-982
+  s_91913002af12ac::t_497a93873fc0c3 702-703
+  s_91913002af12ac::t_ccbc18986e7d53 216-226,229-235
+  s_91913002af12ac::t_31134aa6b02e6a 282
+  s_91913002af12ac::t_b3548c11b55c96 332-345,363
+  s_91913002af12ac::t_40a66983949554 285-288
+  s_91913002af12ac::t_5ba1c6c37db49c 439-443,458
+  s_91913002af12ac::t_92ebbf011b9477 401-406
+  s_91913002af12ac::t_36d54d69149b6e 421
+  s_91913002af12ac::t_3bef7274bdc36c 983
+shipping.html
+  s_91913002af12ac::t_24d055ee89b9b8 2490-2563
+  s_91913002af12ac::t_f02ef3d504432b 409-411
+src/JIT/tw_model.h
+  s_91913002af12ac::t_0f11bf56629282 811-824
+golden_parallel_lib.sh
+  s_91913002af12ac::t_ef0f6d43981263 226-237,248,262-264,266
+src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_2afefc3b40e6f7 101-103
+sprinkler-solver.cabal
+  s_91913002af12ac::t_fec6ef42d6752e 659-662
+src/Solver/DES/TimeWarpJit.hs
+  s_91913002af12ac::t_4f937f99412d9a 3354-3400
+  s_91913002af12ac::t_4d5c356d11f8ab 3450-3461
+  s_91913002af12ac::t_3532a8a8825152 110
+  s_91913002af12ac::t_fc5ad6bea49c4b 3276-3277
+  s_91913002af12ac::t_ba50b3dc16d71d 140
+src/JIT/tw_runtime.c
+  s_91913002af12ac::t_9bb5b0ef4faa43 3983-3990
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "799a70ecadaa219f13cd7b93044c308ac04f208c",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
