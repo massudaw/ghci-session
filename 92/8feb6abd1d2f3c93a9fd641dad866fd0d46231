@@ -1,0 +1,44 @@
+src/JIT/tw_runtime.c
+  s_91913002af12ac::t_00a549ca8f412d 1368-1377
+src/JIT/tw_engine.h
+  s_91913002af12ac::t_0d6533a1ef5c1f 518-519
+  s_91913002af12ac::t_9ea328ff0bc528 1131,1134
+  s_91913002af12ac::t_c1f0e4bc313be4 1428-1439,1441,1462-1463,1476,1478-1479,1492-1493,1512-1513
+  s_91913002af12ac::t_af6f2dc873bc44 1343-1348,1354-1355
+  s_91913002af12ac::t_d23e37d1cc8b13 1046-1051,1053
+  s_91913002af12ac::t_b8411909b4e44a 1103-1112,1119,1121,1124-1125,1132-1133
+  s_91913002af12ac::t_6095e130ab4f9d 582-642
+  s_91913002af12ac::t_83c9852575964f 1342,1349
+  s_91913002af12ac::t_5586c9a4bd7ad2 520-524
+  s_91913002af12ac::t_2146c56caf172f 644-720
+  s_91913002af12ac::t_bc6101b5c11a85 1398-1402,1408,1415,1419,1423
+  s_91913002af12ac::t_138b4df5938e87 1018-1032
+  s_91913002af12ac::t_e1b9c81b5b78e2 1306-1311
+  s_91913002af12ac::t_a2ee5d759a1ce0 1522-1525,1533-1534
+  s_91913002af12ac::t_8dc09467ad14b5 966-984,995,1013-1017
+  s_91913002af12ac::t_6c953d762e48e9 643
+src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_ee3fff215e070a 7006-7012
+  s_91913002af12ac::t_2a0bb2457802bd 6979-7005
+  s_91913002af12ac::t_ba5c5cb9a42259 126
+  s_91913002af12ac::t_7786da7c9c3185 7013,7020-7021,7023,7026-7032
+  s_91913002af12ac::t_f86393b00f4061 7022,7024-7025
+  s_91913002af12ac::t_41dc9a7381f05e 6609-6624
+  s_91913002af12ac::t_536cd9ae9b4ede 7014-7019
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "928feb6abd1d2f3c93a9fd641dad866fd0d46231",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
