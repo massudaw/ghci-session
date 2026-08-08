@@ -1,0 +1,26 @@
+src/Solver/SymbolicDAE.hs
+  s_0e7cbae0c0bc1f::t_0ea69b927ba168 61
+  s_0e7cbae0c0bc1f::t_e33d7d782720a0 3566
+  s_0e7cbae0c0bc1f::t_42ed93cd23995d 3564
+  s_0e7cbae0c0bc1f::t_85eb3f9a3a6f93 3502-3525
+  s_0e7cbae0c0bc1f::t_5ab817d5e0217f 3534
+src/Solver/DES/Physical.hs
+  s_0e7cbae0c0bc1f::t_5dde1229cef61f 545-554,556
+  s_0e7cbae0c0bc1f::t_5438d5c17f1daf 107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "89a15c8cdec3651a33862bf279bddc7b1090417d",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
