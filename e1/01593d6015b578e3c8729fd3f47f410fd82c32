@@ -1,0 +1,28 @@
+src/Solver/DES/Physical.hs
+  s_0e7cbae0c0bc1f::t_d540982d618c39 573-582
+  s_0e7cbae0c0bc1f::t_ed03a335019a21 493-541,543
+  s_0e7cbae0c0bc1f::t_afb303c28dd3bc 107
+  s_0e7cbae0c0bc1f::t_2879bd28fe9ce0 559-563,565-572,583-589,600-610,612-613
+  s_0e7cbae0c0bc1f::t_0e11950d9627ea 688-694
+FRAMEWORK_SYSTEMATIZATION.md
+  s_0e7cbae0c0bc1f::t_ce786ec399a166 537-617
+src/Solver/DES.hs
+  s_0e7cbae0c0bc1f::t_f54da60ec4aae7 129-133,136
+  s_0e7cbae0c0bc1f::t_192749b92c72cf 134-135,137-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "e101593d6015b578e3c8729fd3f47f410fd82c32",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
