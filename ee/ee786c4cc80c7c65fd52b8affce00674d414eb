@@ -1,0 +1,33 @@
+example/Main.hs
+  s_0e7cbae0c0bc1f::t_dd389e01d1741d 450
+  s_0e7cbae0c0bc1f::t_cfcf74d465768f 205
+golden/DESTimeWarpParity/final_state.txt
+  s_0e7cbae0c0bc1f::t_7b26461605ee18 1-4
+sprinkler-solver-examples/src/Examples/DESTimeWarpParity.hs
+  s_0e7cbae0c0bc1f::t_3f9c2da9862315 102,105,107-108,112,118-119
+  s_0e7cbae0c0bc1f::t_b26123f90ed7cb 1-59,62,71-72,77-97,99-101,103-104,106,109-111,113-117,120-123
+  s_0e7cbae0c0bc1f::t_190e38318ac7e7 60-61,63-70,73-76
+  s_0e7cbae0c0bc1f::t_1e3e99fc16225c 98
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_0e7cbae0c0bc1f::t_44e36ea4abfd82 145
+FRAMEWORK_SYSTEMATIZATION.md
+  s_0e7cbae0c0bc1f::t_2e14e4deac1c3e 410-466
+golden/DESTimeWarpParity/status.txt
+  s_0e7cbae0c0bc1f::t_7b26461605ee18 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "eeee786c4cc80c7c65fd52b8affce00674d414eb",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
