@@ -1,0 +1,32 @@
+FRAMEWORK_SYSTEMATIZATION.md
+  s_0e7cbae0c0bc1f::t_6ddfa5f5309947 360-408
+src/JIT/Compiler.hs
+  s_0e7cbae0c0bc1f::t_91a13c4ade88a3 77-79
+  s_0e7cbae0c0bc1f::t_106031c1d82514 458
+  s_0e7cbae0c0bc1f::t_df828f076965ff 406-434
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_0e7cbae0c0bc1f::t_bd8f89777b444d 1719
+  s_0e7cbae0c0bc1f::t_d5dba56aeb7696 124
+  s_0e7cbae0c0bc1f::t_dd826e9cbfb583 1275
+  s_0e7cbae0c0bc1f::t_d42a190b161ce9 1064-1065,1114-1115
+  s_0e7cbae0c0bc1f::t_723a5f2880f2cd 1152
+example/NativeGlueProto.hs
+  s_0e7cbae0c0bc1f::t_ff525ffccc17d6 34
+  s_0e7cbae0c0bc1f::t_405e71e8066fce 349-350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "3f2da5ed009b1b72db1bc69dd422f7169aa77faa",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
