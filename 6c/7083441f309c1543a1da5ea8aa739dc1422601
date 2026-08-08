@@ -1,0 +1,20 @@
+FRAMEWORK_SYSTEMATIZATION.md
+  s_0e7cbae0c0bc1f::t_e8d58d96eeaa69 499-501,506-516
+  s_0e7cbae0c0bc1f::t_e607d76f8fdd4b 517
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "6c7083441f309c1543a1da5ea8aa739dc1422601",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
