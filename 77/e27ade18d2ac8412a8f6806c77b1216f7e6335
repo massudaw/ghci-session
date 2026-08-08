@@ -1,0 +1,97 @@
+sprinkler-solver-examples/src/Examples/DelinquencyLadderTW.hs
+  s_91913002af12ac::t_b92d05de893755 251-254
+  s_91913002af12ac::t_a7c0d85ec46d58 40
+  s_91913002af12ac::t_7cc7790ab2a16c 203-208
+  s_91913002af12ac::t_044b003838d421 250
+validate_golden_tests.sh
+  s_91913002af12ac::t_bba8e7e3a2b91f 381-384
+  s_91913002af12ac::t_c4b343bdf53184 48
+  s_91913002af12ac::t_aeecf8c0161879 373
+  s_91913002af12ac::t_6423ad021ad19c 268-286
+  s_91913002af12ac::t_c0866e3566539e 244
+  s_91913002af12ac::t_8cf353c6767e51 28-30
+sprinkler-solver-examples/src/Examples/BankRiskTW.hs
+  s_91913002af12ac::t_9e4f20cae07f83 128
+  s_91913002af12ac::t_9855c7b645290c 364-382,612-613,694-696
+sprinkler-solver-examples/src/Examples/BankTicketSlotsTW.hs
+  s_91913002af12ac::t_e104f664739fe2 394-408
+  s_91913002af12ac::t_82b2062bb76b01 37
+golden/DESAccountingLedgerStressTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-6
+golden/ShippingOps/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-36
+golden/TwMtPauseInspect/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-4
+sprinkler-solver-examples/src/Examples/DESAccountingLedgerStressTW.hs
+  s_91913002af12ac::t_c04a4846dc78a7 93
+  s_91913002af12ac::t_2a129913c6ef01 240-253
+golden_extract_lib.sh
+  s_91913002af12ac::t_49107179dc742f 257
+  s_91913002af12ac::t_ef3801ca21a695 21-23
+  s_91913002af12ac::t_21d320f832c8d4 44
+  s_91913002af12ac::t_d9360032be6784 104
+  s_91913002af12ac::t_e1f618f99a6edf 125
+  s_91913002af12ac::t_a7f5ae77c9c59a 205
+  s_91913002af12ac::t_28d4350bd3ed57 180-199
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_91913002af12ac::t_4122e735b0f91c 127,3843-3887,6962
+sprinkler-solver-examples/src/Examples/StateMachineTW.hs
+  s_91913002af12ac::t_ed376e833c1fcc 41
+  s_91913002af12ac::t_993a46d61e12d5 256-268
+sprinkler-solver-examples/src/Examples/BankFullBookTW.hs
+  s_91913002af12ac::t_c62b9a4f349bc4 231-237
+  s_91913002af12ac::t_1556493812e174 65
+golden/DESMoldingShopTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-13
+golden/BankRiskTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-18
+sprinkler-solver-examples/src/Examples/BankMarketFeedActor.hs
+  s_91913002af12ac::t_5a9b09c4da1bf6 32
+  s_91913002af12ac::t_efb41aa6b4c96c 239-249
+golden/BankCurveTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-8
+sprinkler-solver-examples/src/Examples/TwMtPauseInspect.hs
+  s_91913002af12ac::t_60bd55ef7ce74b 144-154
+  s_91913002af12ac::t_71efe5221b3b46 34
+golden/BankFullBookTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-3
+sprinkler-solver-examples/src/Examples/BankCurveTW.hs
+  s_91913002af12ac::t_b20a13b5dd58d5 75,407,443
+  s_91913002af12ac::t_270191fde29d58 286-295
+src/Golden/FinalState.hs
+  s_91913002af12ac::t_4b312fe2eed828 1-89
+sprinkler-solver.cabal
+  s_91913002af12ac::t_fdb419d09bd623 43
+golden/BankMarketFeedActor/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-6
+golden/BankTicketSlotsTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-8
+golden/DelinquencyLadderTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-6
+golden/StateMachineTW/final_state.txt
+  s_91913002af12ac::t_c90ef65ea69087 1-7
+CLAUDE.md
+  s_91913002af12ac::t_b2604979529b6a 392-408
+golden/README.md
+  s_91913002af12ac::t_490d65f8c8f7cf 15,17,20-51
+  s_91913002af12ac::t_f8ca2ee2928dd7 52
+sprinkler-solver-examples/src/Examples/DESMoldingShopTW.hs
+  s_91913002af12ac::t_73deb2ca3c3664 133
+  s_91913002af12ac::t_634a717a3c6cdd 366-388
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "77e27ade18d2ac8412a8f6806c77b1216f7e6335",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
