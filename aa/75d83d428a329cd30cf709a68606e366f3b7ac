@@ -1,0 +1,31 @@
+src/Solver/Temporal.hs
+  s_0e7cbae0c0bc1f::t_7277689f2c6598 260
+  s_0e7cbae0c0bc1f::t_5f9ea8c29bc985 135-140,142-164,167,170
+  s_0e7cbae0c0bc1f::t_55e7fb27fbf468 265
+  s_0e7cbae0c0bc1f::t_8f8bb7264c562f 78-87
+  s_0e7cbae0c0bc1f::t_6966a320ca3074 61
+  s_0e7cbae0c0bc1f::t_b4aa1400f8058d 41
+src/Solver/DES/Unified.hs
+  s_0e7cbae0c0bc1f::t_5ca635dcdfa219 134-135
+src/Transient.hs
+  s_0e7cbae0c0bc1f::t_ed03a8f5f289be 99
+src/Solver/DES/Partition.hs
+  s_0e7cbae0c0bc1f::t_72fb0cd8bdcbcf 157
+  s_0e7cbae0c0bc1f::t_e3b1aa3cccbbbb 334
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "aa75d83d428a329cd30cf709a68606e366f3b7ac",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
