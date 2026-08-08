@@ -1,0 +1,27 @@
+golden/DESMoldingShopTW/final_state.txt
+  s_0e7cbae0c0bc1f::t_6db14a3863b666 1-3,6-7,10,13
+doc/des/RELEASE_SEARCH_COST.md
+  s_0e7cbae0c0bc1f::t_43c315b7b332b0 539-543,545-633
+  s_0e7cbae0c0bc1f::t_56f96f98690f0b 13-15,89-119,704-709
+  s_0e7cbae0c0bc1f::t_7594d8991dd409 10-12,120-134,143-519,634-696,698-703,710-712
+golden/ShippingOps/final_state.txt
+  s_0e7cbae0c0bc1f::t_6db14a3863b666 9,12,20-21,23,35
+CLAUDE.md
+  s_0e7cbae0c0bc1f::t_1dbbee6fbecf03 156-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "fc9c43ab3d61f9eb958a6e16c2068767e78c9088",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
