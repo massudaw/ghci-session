@@ -1,0 +1,40 @@
+src/Solver/IDA.hs
+  s_91913002af12ac::t_67cb460082870c 2055-2064
+  s_91913002af12ac::t_329c46311e08cf 718-725,1389-1399,2065-2086,2456-2457,2488-2489,2503
+  s_91913002af12ac::t_f728953b35050a 1868-1885,1891
+src/Solver/HybridDAE.hs
+  s_91913002af12ac::t_356a5c75b760eb 1693
+  s_91913002af12ac::t_d1da072d5113dd 521
+MODEL_SEMANTICS.md
+  s_91913002af12ac::t_15ef718fcf5f48 801-911
+src/JIT/jit_trampoline.c
+  s_91913002af12ac::t_d1cfb767d6c217 2739-2767
+  s_91913002af12ac::t_e5dbb3e5408f2f 3134-3139
+  s_91913002af12ac::t_b9687ff1b67dbf 3191-3192
+  s_91913002af12ac::t_5f11ed687e1921 2598-2616
+  s_91913002af12ac::t_09df4004bb7ca9 2833-2847
+sprinkler-solver-examples/src/Examples/UnionSessionValidate.hs
+  s_91913002af12ac::t_d1da072d5113dd 162
+src/Solver/DES/TimeWarpPlant.hs
+  s_91913002af12ac::t_ac2c82499df19e 132
+  s_91913002af12ac::t_950d06d666692b 1159-1168,1222
+  s_91913002af12ac::t_d0deaa14f931db 1223
+  s_91913002af12ac::t_18ba358fadef32 1044-1065,1072,1086-1087,1092
+  s_91913002af12ac::t_d1da072d5113dd 501,686
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "efd9255c28c3c90a0bbed4c2ee9624a69c1f3d07",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
