@@ -1,0 +1,69 @@
+src/Solver/SymbolicDAE/SelectivePantelides.hs
+  s_0e7cbae0c0bc1f::t_d9c971f95b1493 566-567
+  s_0e7cbae0c0bc1f::t_33961c8faa424d 266-267
+src/JIT/Tape.hs
+  s_0e7cbae0c0bc1f::t_8fb48f9bf3143b 437
+  s_0e7cbae0c0bc1f::t_91ed47f8f963c8 177-203
+  s_0e7cbae0c0bc1f::t_24a4e3f806f556 1188
+  s_0e7cbae0c0bc1f::t_d29a42c254926c 1744-1753
+  s_0e7cbae0c0bc1f::t_e0e32436be185b 1468-1477
+  s_0e7cbae0c0bc1f::t_f8b697522b395c 479-484
+  s_0e7cbae0c0bc1f::t_c3d1ee84846df6 1219
+  s_0e7cbae0c0bc1f::t_1d41cc62311e46 113
+  s_0e7cbae0c0bc1f::t_4b2846ef7a1ee5 2010-2020
+src/JIT/Stencil/X86_64.hs
+  s_0e7cbae0c0bc1f::t_fa0d9d07371a51 172
+  s_0e7cbae0c0bc1f::t_6088de19194b09 194
+src/JIT/Stencil/ARM64.hs
+  s_0e7cbae0c0bc1f::t_223cc92206c559 97-130
+  s_0e7cbae0c0bc1f::t_dfcd249dcd7e03 427-432
+  s_0e7cbae0c0bc1f::t_54190fbafc5adf 492-517,519-520,523-525
+  s_0e7cbae0c0bc1f::t_f97d3cc4b5afea 518
+  s_0e7cbae0c0bc1f::t_243840b08dd5b3 521-522
+src/Solver/SymbolicDAE/ExprDAG.hs
+  s_0e7cbae0c0bc1f::t_04833e57e1226d 217-218
+  s_0e7cbae0c0bc1f::t_6f74dc22aeb661 318-319
+  s_0e7cbae0c0bc1f::t_b8bee85b937dba 76
+src/Solver/SymbolicDAE.hs
+  s_0e7cbae0c0bc1f::t_b6b6537c2bcf9b 3921
+  s_0e7cbae0c0bc1f::t_ff92da1d05d423 3950
+  s_0e7cbae0c0bc1f::t_0b0383712bc5be 4355-4356
+  s_0e7cbae0c0bc1f::t_b36dd14127a663 5705-5706
+  s_0e7cbae0c0bc1f::t_8a0d0ce4704d32 1750
+  s_0e7cbae0c0bc1f::t_27b1a253b9ebdf 949-952
+  s_0e7cbae0c0bc1f::t_4655eb2ba0f3ba 3147-3148
+  s_0e7cbae0c0bc1f::t_974e15a7320a0b 2789
+  s_0e7cbae0c0bc1f::t_dabd85dc819402 3683
+  s_0e7cbae0c0bc1f::t_d9fc57e062ceb2 5760-5761
+  s_0e7cbae0c0bc1f::t_6c1a8f392c05e2 2450
+  s_0e7cbae0c0bc1f::t_1a5bd415b5ded4 5641-5644
+  s_0e7cbae0c0bc1f::t_098ccf8dfc881e 3624
+  s_0e7cbae0c0bc1f::t_4c751d5a9ee81a 26
+  s_0e7cbae0c0bc1f::t_c50a1cb15cc7ec 645
+  s_0e7cbae0c0bc1f::t_959dc696f290e4 230
+  s_0e7cbae0c0bc1f::t_58ca742efaf65b 2681-2682
+  s_0e7cbae0c0bc1f::t_380f8a38507cb6 953-956
+  s_0e7cbae0c0bc1f::t_30f9750dff52bc 1439-1440
+  s_0e7cbae0c0bc1f::t_7dc8a34ce68831 1358-1363
+  s_0e7cbae0c0bc1f::t_fc78bbf55929ff 1511-1512
+  s_0e7cbae0c0bc1f::t_d83448757779cd 2874
+  s_0e7cbae0c0bc1f::t_e83a6b2ebeb47c 231
+  s_0e7cbae0c0bc1f::t_72b5de8f2a564d 504-531
+  s_0e7cbae0c0bc1f::t_cc022c53023550 3279
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "ca384176094bc2c47157ba75c982071a9f106bd5",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
