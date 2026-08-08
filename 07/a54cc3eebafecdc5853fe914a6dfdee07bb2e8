@@ -1,0 +1,39 @@
+golden/DESMoldingShopTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 2-4
+golden/ShippingOps/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-6
+golden/BankCurveTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-10
+golden/BankFullBookTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-8
+golden/StateMachineTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 2-4
+golden/TwMtPauseInspect/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-2
+golden/DESAccountingLedgerStressTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-3
+golden/BankMarketFeedActor/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-2
+golden/BankRiskTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1,4-21
+golden/DelinquencyLadderTW/fingerprint.txt
+  s_91913002af12ac::t_d1b190b0632bab 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "07a54cc3eebafecdc5853fe914a6dfdee07bb2e8",
+  "prompts": {},
+  "sessions": {
+    "s_91913002af12ac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d4eb10-20d8-427d-88c6-7b8f9e3a8710",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
