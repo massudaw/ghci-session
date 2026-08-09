@@ -1,0 +1,48 @@
+CLAUDE.md
+  s_4b2da8b2d44e8b::t_268f30391683d0 162-166
+doc/des/MULTIRATE_DES.md
+  s_4b2da8b2d44e8b::t_948764addcf392 37-39
+  s_4b2da8b2d44e8b::t_23be56bd3fd64d 228-278,331-334
+  s_4b2da8b2d44e8b::t_cd45b4bc13b5fe 136-138
+  s_4b2da8b2d44e8b::t_50b1533781fcfc 7-9
+  s_4b2da8b2d44e8b::t_3b15293091ee46 279-330
+  s_4b2da8b2d44e8b::t_118a963a37c167 1-6,10-36,40-135,139-227,335-341
+tools/ShippingGroupDims.hs
+  s_4b2da8b2d44e8b::t_e0aa0a4c5b76af 83-86
+  s_4b2da8b2d44e8b::t_f36d848aa4d92c 92-104,111-112
+  s_4b2da8b2d44e8b::t_73ce7503403fad 1-26,28-62,72,79-82,87-91,105-110,113-115,117-118,120-121,124-126,130,132,142-143
+  s_4b2da8b2d44e8b::t_0196bbfe774882 63-71,73-78
+  s_4b2da8b2d44e8b::t_9455eadf77035a 116,119,122-123,127-129,131,133-141
+  s_4b2da8b2d44e8b::t_684add108beaa2 27
+doc/des/DES_SEMANTICS.md
+  s_4b2da8b2d44e8b::t_5702a1a140f9db 229-234
+tools/DESRateProbe.hs
+  s_4b2da8b2d44e8b::t_7c69c42e644751 276,278
+  s_4b2da8b2d44e8b::t_d3b9f123ea6d0a 119-159
+  s_4b2da8b2d44e8b::t_8e0565f846b078 174-185,187-189,192-193
+  s_4b2da8b2d44e8b::t_573d7e1223a198 275
+  s_4b2da8b2d44e8b::t_48b66fe2f02471 1-33,35,37-38,40-85,96-100,109-112,118,195-225,227-266,269-271
+  s_4b2da8b2d44e8b::t_521b05cb8c480c 267-268,272-274,277
+  s_4b2da8b2d44e8b::t_4c337ec836d028 104-107
+  s_4b2da8b2d44e8b::t_41a33ee4f2fc64 34,36,39
+  s_4b2da8b2d44e8b::t_b5e426260904fb 226
+  s_4b2da8b2d44e8b::t_e556dbb3e37687 160-173,186,190-191,194
+  s_4b2da8b2d44e8b::t_bff85ad5afa499 113,115,117
+  s_4b2da8b2d44e8b::t_aa30d75a0afee1 86-95,101-103,108,114,116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "090b0e3369f7dfc8eda97d51947092f3d26129ab",
+  "prompts": {},
+  "sessions": {
+    "s_4b2da8b2d44e8b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfe22732-99bb-49a4-b019-ac0f639adac6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
