@@ -1,0 +1,34 @@
+sprinkler-solver-examples/src/Examples/ModelThermostatDES.hs
+  s_2cd7a656622f40::t_1c7cd65c3da274 1-42,44,54-97,99-141
+  s_2cd7a656622f40::t_7f7234f957f0c1 43,45-53
+  s_2cd7a656622f40::t_4d76033c31ab3d 98
+example/Main.hs
+  s_2cd7a656622f40::t_e5beebc106335a 41,391
+golden/ModelThermostatDES/fingerprint.txt
+  s_2cd7a656622f40::t_08cafbe160577f 1-4
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_2cd7a656622f40::t_e5beebc106335a 86
+golden/ModelThermostatDES/final_state.txt
+  s_2cd7a656622f40::t_08cafbe160577f 1
+  s_2cd7a656622f40::t_f2452f85cd54fe 2-6
+golden/ModelThermostatDES/tapestats.txt
+  s_2cd7a656622f40::t_08cafbe160577f 1
+golden/ModelThermostatDES/status.txt
+  s_2cd7a656622f40::t_bc11e04380e124 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "aa4dea6b1cbb07289e844c2978f0259d3190d12d",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
