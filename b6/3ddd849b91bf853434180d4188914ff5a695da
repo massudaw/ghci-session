@@ -1,0 +1,33 @@
+doc/des/MULTIRATE_DES.md
+  s_4b2da8b2d44e8b::t_532f95d82027b4 22-25,239-241,317-324
+  s_4b2da8b2d44e8b::t_b31d68348240b3 433-506
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_4b2da8b2d44e8b::t_d01e1a64f6b75c 2969-2972,2974
+  s_4b2da8b2d44e8b::t_6e8f3bd253177a 2990-2991
+  s_4b2da8b2d44e8b::t_eee3b071dc91f9 2874-2889,2891-2896,2898-2903,2906-2917
+  s_4b2da8b2d44e8b::t_84e0b54b3f20cd 2980-2985
+golden/ShippingOps/fingerprint.txt
+  s_4b2da8b2d44e8b::t_7c7a3107d7b98e 3,7-8,10,13,15,17,22,24,26,31-32,34,39-41,48-49,53
+golden/ShippingOps/des.txt
+  s_4b2da8b2d44e8b::t_7c7a3107d7b98e 3,7,10,13,19,2918,2955,2972,2976,3139-3140,4262,4267,4272,4277,7297,7471,7539,7607,7675
+CLAUDE.md
+  s_4b2da8b2d44e8b::t_97ae894472f81e 166-174
+golden/ShippingOps/final_state.txt
+  s_4b2da8b2d44e8b::t_7c7a3107d7b98e 9-13,18,20-21,23,34-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "b63ddd849b91bf853434180d4188914ff5a695da",
+  "prompts": {},
+  "sessions": {
+    "s_4b2da8b2d44e8b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfe22732-99bb-49a4-b019-ac0f639adac6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
