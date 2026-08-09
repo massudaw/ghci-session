@@ -1,0 +1,48 @@
+doc/des/RELEASE_SEARCH_COST.md
+  s_2cd7a656622f40::t_c8c164914f96e8 1165-1172
+  s_2cd7a656622f40::t_313f20c4318d02 965-1152
+src/JIT/jit_trampoline.c
+  s_2cd7a656622f40::t_6ab1c70bb78722 3113-3127,3131-3132,3137
+  s_2cd7a656622f40::t_a1f042bfac2539 3270-3283
+  s_2cd7a656622f40::t_224918353c1fed 3233-3234
+  s_2cd7a656622f40::t_50a1e5cd48aa6c 2755,2757-2768
+  s_2cd7a656622f40::t_70137e2f903a7b 3078-3080
+  s_2cd7a656622f40::t_7276d6f77bc947 3615-3616,3619,3622-3626,3632-3639,3643
+  s_2cd7a656622f40::t_3af7924d52e7f0 3242-3243,3245,3249
+  s_2cd7a656622f40::t_e1d02acfd5e603 3094-3096
+src/JIT/tw_rootprobe.h
+  s_2cd7a656622f40::t_31089f3e6286b7 552-607,609-643
+  s_2cd7a656622f40::t_ab3965f7a9ebf0 150-172,176-196
+  s_2cd7a656622f40::t_ab2697db4516d7 173-175,359-363,608
+  s_2cd7a656622f40::t_7ce98d5eee3c18 426-428
+  s_2cd7a656622f40::t_8450d7923688df 352-358,364-422
+  s_2cd7a656622f40::t_1dfad8e1cfc624 527-531,533
+src/JIT/tw_plant.c
+  s_2cd7a656622f40::t_8d7f81913e04fb 1175,1189-1218
+  s_2cd7a656622f40::t_7432d0a19c990e 1106-1112
+  s_2cd7a656622f40::t_1f23ec6fdac7b7 283-284
+  s_2cd7a656622f40::t_25072f0719db54 1145-1149
+  s_2cd7a656622f40::t_128dae28f5fc6f 1129
+  s_2cd7a656622f40::t_a862c2fec2adc0 1219
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_43401ff7426645 2000-2077,2082-2171
+  s_2cd7a656622f40::t_b74cc63f6e1747 2078-2081
+  s_2cd7a656622f40::t_066c55f9d6322f 2446-2447,2461-2462,2623,2637-2638
+  s_2cd7a656622f40::t_7136746581f3b0 1943-1956
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "42cd661ff19e680280d9ffeaac28e3ab4ac7030d",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
