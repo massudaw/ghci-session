@@ -1,0 +1,56 @@
+src/Model.hs
+  s_2cd7a656622f40::t_7fcadea1ec3816 612,618-619,626,632
+  s_2cd7a656622f40::t_51ef9a626312ab 657-658
+  s_2cd7a656622f40::t_23b6ebc280a308 502-509,517,522,528
+  s_2cd7a656622f40::t_b375a891724e62 1207-1208,1215-1216
+src/Model/CyclicRatchetCoupling.hs
+  s_2cd7a656622f40::t_60834d77eb6bd9 94
+src/Model/ThermostatCoupling.hs
+  s_2cd7a656622f40::t_bd3410e556fbd3 238,243,255
+  s_2cd7a656622f40::t_d3967a059b134d 222-237,239-242,244-254,256-257
+  s_2cd7a656622f40::t_7cb4a3ade5c06a 161-162
+  s_2cd7a656622f40::t_3e498d121f932d 211
+  s_2cd7a656622f40::t_a36b32762a7638 158,160,188
+  s_2cd7a656622f40::t_29e6b880974ea6 61-66
+  s_2cd7a656622f40::t_ce89f9b01d0213 19,28-31,33-46,48-60,98-101,105,115,121,143-148,151-152,175-179,182,197,200-210,212-221,258-267,269-270
+  s_2cd7a656622f40::t_06816f55610f9a 67-97
+  s_2cd7a656622f40::t_866a4defa12779 183-187,189-190,192-195,199
+  s_2cd7a656622f40::t_340e292d8cd140 180
+  s_2cd7a656622f40::t_2cfa03398f1e9a 167-174
+  s_2cd7a656622f40::t_ca3163333b423e 111,119
+  s_2cd7a656622f40::t_be1c3c09c6748b 153-157,159
+  s_2cd7a656622f40::t_39c55c754df72a 198
+  s_2cd7a656622f40::t_f9b6e130116882 1
+golden/ModelThermostatHysteresis/tapestats.txt
+  s_2cd7a656622f40::t_54c81593e42ae4 1
+sprinkler-solver-examples/src/Examples/ModelThermostatHysteresis.hs
+  s_2cd7a656622f40::t_c42d39cbe8652c 76-78,81-86
+  s_2cd7a656622f40::t_52d4fab026e8b9 90-94,99,108-114,124,128
+  s_2cd7a656622f40::t_0d0ea932318dd1 26,28-52
+golden/ModelThermostatHysteresis/transient.txt
+  s_2cd7a656622f40::t_54c81593e42ae4 6,9-34
+golden/ModelThermostatHysteresis/fingerprint.txt
+  s_2cd7a656622f40::t_54c81593e42ae4 1-10
+src/Model/BounceCoupling.hs
+  s_2cd7a656622f40::t_ecbbf3196d018b 117
+golden/ModelThermostatHysteresis/solver_audit.txt
+  s_2cd7a656622f40::t_54c81593e42ae4 4-5,7
+src/Model/CrowbarDiodeCoupling.hs
+  s_2cd7a656622f40::t_beaae53b921be3 156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "57346c68f64a70bfe5f11f66dc0226a6733aeb74",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
