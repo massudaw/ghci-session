@@ -1,0 +1,29 @@
+src/JIT/jit_klu_noreanalyze.c
+  s_0e7cbae0c0bc1f::t_28b9c3c2826b9a 41-61
+src/JIT/tw_plant.c
+  s_0e7cbae0c0bc1f::t_fdaf5c73f4ec49 272-274,393-418
+doc/des/TIMEWARP.md
+  s_0e7cbae0c0bc1f::t_3d72047cd67077 486-503
+src/JIT/jit_trampoline.c
+  s_0e7cbae0c0bc1f::t_0cfe43a6610a33 2576-2595,2700-2705
+  s_0e7cbae0c0bc1f::t_1a72867902529d 3184
+  s_0e7cbae0c0bc1f::t_4eca25ed55ce84 2706-2707
+src/JIT/tw_engine.h
+  s_0e7cbae0c0bc1f::t_9b0096aba4ca0e 1790-1816,1821,1828,1830-1831
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a33bc9c088884613bd28758bb2cca12c754c5bcc",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
