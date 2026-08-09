@@ -1,0 +1,40 @@
+src/JIT/tw_engine.h
+  s_0e7cbae0c0bc1f::t_e8a6d3d7334d20 2128-2132
+  s_0e7cbae0c0bc1f::t_0143750da5ef4b 2137-2157,2159-2171,2173-2185,2187,2191-2193,2198-2205
+  s_0e7cbae0c0bc1f::t_fb8da8b48abe25 352
+  s_0e7cbae0c0bc1f::t_4ed8df5547d625 353-354
+  s_0e7cbae0c0bc1f::t_e2da83ac2809ad 2100-2101,2106,2113-2127,2133-2136,2158,2172,2186,2188-2190,2194-2197,2206-2207
+  s_0e7cbae0c0bc1f::t_f4bdcc605c92fe 2208
+src/JIT/tw_runtime.c
+  s_0e7cbae0c0bc1f::t_be7185e419eb01 3795-3797,3822
+  s_0e7cbae0c0bc1f::t_4ed8df5547d625 297,506-507,517
+  s_0e7cbae0c0bc1f::t_fb8da8b48abe25 2757-2761,2803-2804,2976,4115
+  s_0e7cbae0c0bc1f::t_dde1de4379d4ae 3823
+src/Solver/DES/TimeWarpJit.hs
+  s_0e7cbae0c0bc1f::t_81881e7a880812 3400-3401,3529-3532,3534-3535
+  s_0e7cbae0c0bc1f::t_e75653f3b38e84 3183-3185
+src/Solver/DES/TwHotReload.hs
+  s_0e7cbae0c0bc1f::t_348041b1dffb7f 87-88,260-267,295-298
+src/Solver/DES.hs
+  s_0e7cbae0c0bc1f::t_e3eaaaa97aa5b9 1187,1292
+  s_0e7cbae0c0bc1f::t_1c4a8b883b2760 1067-1100,1103-1105,1107
+  s_0e7cbae0c0bc1f::t_e84169aab3b4c8 1130-1144
+src/JIT/tw_model.h
+  s_0e7cbae0c0bc1f::t_81881e7a880812 121-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c1e6156176872180615d1c9d499ffa72e98a29c3",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
