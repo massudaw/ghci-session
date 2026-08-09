@@ -1,0 +1,30 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_2cd7a656622f40::t_de330afa0f0f5e 638-649
+src/Solver/DES/Unified.hs
+  s_2cd7a656622f40::t_ceb03af8eb6abc 136
+  s_2cd7a656622f40::t_55489b0a2475e3 488-497
+  s_2cd7a656622f40::t_0b7b3b0eb8b69a 443-480
+  s_2cd7a656622f40::t_24f6840c261414 221-230
+  s_2cd7a656622f40::t_fc0de9da861106 499-504
+  s_2cd7a656622f40::t_bbf4e03d11de1e 56
+sprinkler-solver-examples/src/Examples/ModelThermostatDES.hs
+  s_2cd7a656622f40::t_dd024952c249a0 20-24
+  s_2cd7a656622f40::t_9dd72bf804f2d3 46-67
+  s_2cd7a656622f40::t_cbeb26b7a3e068 123-132
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "bc0ff7fb21db4af260441b4cc6c77ea182c04916",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
