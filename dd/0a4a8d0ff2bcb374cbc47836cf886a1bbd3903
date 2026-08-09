@@ -1,0 +1,147 @@
+sprinkler-solver-examples/src/Examples/ModelThermoElectric.hs
+  s_2cd7a656622f40::t_14d59df190541b 62-64
+src/Model.hs
+  s_2cd7a656622f40::t_14d59df190541b 797
+sprinkler-solver-examples/src/Examples/ModelBattery.hs
+  s_2cd7a656622f40::t_14d59df190541b 60
+sprinkler-solver-examples/src/Examples/ModelThermalPlateStress.hs
+  s_2cd7a656622f40::t_14d59df190541b 60,62,66,72-73,78
+sprinkler-solver-examples/src/Examples/StructuralAnalysis.hs
+  s_2cd7a656622f40::t_14d59df190541b 36
+sprinkler-solver-examples/src/Examples/ModelPneumaticDissipation.hs
+  s_2cd7a656622f40::t_14d59df190541b 16,35,38
+sprinkler-solver-examples/src/Examples/DESAccountingLedgerStress.hs
+  s_2cd7a656622f40::t_14d59df190541b 13-14,16,113
+sprinkler-solver-examples/src/Examples/ModelACStress.hs
+  s_2cd7a656622f40::t_14d59df190541b 72,77
+src/Thermal.hs
+  s_2cd7a656622f40::t_321839e95cc770 408,413
+  s_2cd7a656622f40::t_3db304b032a72e 96
+  s_2cd7a656622f40::t_14d59df190541b 95,133,168,252-253,364,390,409-411,414-415
+sprinkler-solver-examples/src/Examples/DESDistillery.hs
+  s_2cd7a656622f40::t_14d59df190541b 85,210,227-228,270-271
+sprinkler-solver-examples/src/Examples/ModelRelayReactor.hs
+  s_2cd7a656622f40::t_14d59df190541b 82
+sprinkler-solver-examples/src/Examples/DESMoldingShop.hs
+  s_2cd7a656622f40::t_14d59df190541b 92-93,157,169-170
+src/Backend/CSG.hs
+  s_2cd7a656622f40::t_14d59df190541b 245
+sprinkler-solver-examples/src/Examples/StabilityAuditTest.hs
+  s_2cd7a656622f40::t_14d59df190541b 59
+sprinkler-solver-examples/src/Examples/ModelJouleHeating.hs
+  s_2cd7a656622f40::t_14d59df190541b 56-57,75-76
+src/Backend/Graphviz.hs
+  s_2cd7a656622f40::t_ee988cd1486139 141
+  s_2cd7a656622f40::t_1bae109fc9c4ff 145
+  s_2cd7a656622f40::t_10d4dfdb4fa7e5 6-7
+sprinkler-solver-examples/src/Examples/ModelFluidThermal.hs
+  s_2cd7a656622f40::t_14d59df190541b 16,84-87
+sprinkler-solver-examples/src/Examples/ModelThermoacousticEngine.hs
+  s_2cd7a656622f40::t_14d59df190541b 43,46
+sprinkler-solver-examples/src/Examples/ModelRelayBank.hs
+  s_2cd7a656622f40::t_14d59df190541b 68
+sprinkler-solver-examples/src/Examples/ModelSeebeckValidation.hs
+  s_2cd7a656622f40::t_14d59df190541b 52-54
+sprinkler-solver-examples/src/Examples/ModelSupervisedCooling.hs
+  s_2cd7a656622f40::t_14d59df190541b 55
+sprinkler-solver-examples/src/Examples/ModelQuadcopter.hs
+  s_2cd7a656622f40::t_14d59df190541b 526,531
+sprinkler-solver-examples/src/Examples/DESUnifiedLine.hs
+  s_2cd7a656622f40::t_14d59df190541b 45
+sprinkler-solver-examples/src/Examples/ThermalSourceCircuit.hs
+  s_2cd7a656622f40::t_14d59df190541b 28,30,47,49,51
+sprinkler-solver-examples/src/Examples/ModelACConditioner.hs
+  s_2cd7a656622f40::t_14d59df190541b 249,256,261
+sprinkler-solver-examples/src/Examples/ModelReactionHeating.hs
+  s_2cd7a656622f40::t_14d59df190541b 19,39,42,63
+src/Model/SpeedDependentCooling.hs
+  s_2cd7a656622f40::t_14d59df190541b 16,36
+sprinkler-solver-examples/src/Examples/ModelCoolingLoopDC.hs
+  s_2cd7a656622f40::t_14d59df190541b 21,112-115,118-119,122,125-127
+sprinkler-solver-examples/src/Examples/DESAccountingLedgerStressTW.hs
+  s_2cd7a656622f40::t_14d59df190541b 74
+sprinkler-solver-examples/src/Examples/InputAPIDemo.hs
+  s_2cd7a656622f40::t_14d59df190541b 16,102,111,116,127
+  s_2cd7a656622f40::t_8785e6d30d73c0 33-34
+  s_2cd7a656622f40::t_7e2631318712b3 6-7
+sprinkler-solver-examples/src/Examples/ModelPeltierCoupled.hs
+  s_2cd7a656622f40::t_14d59df190541b 48-49
+sprinkler-solver-examples/src/Examples/DESSharedRoom.hs
+  s_2cd7a656622f40::t_14d59df190541b 69
+example/WarmStartDataGenerator.hs
+  s_2cd7a656622f40::t_14d59df190541b 141-146
+sprinkler-solver-examples/src/Examples/ModelThermostat.hs
+  s_2cd7a656622f40::t_14d59df190541b 13,20,43,46,63
+sprinkler-solver-examples/src/Examples/BentDuctExample.hs
+  s_2cd7a656622f40::t_14d59df190541b 75
+src/Solver/DES/TimeWarpMolding.hs
+  s_2cd7a656622f40::t_14d59df190541b 44,226
+sprinkler-solver-examples/src/Examples/ModelPneumaticCompressor.hs
+  s_2cd7a656622f40::t_14d59df190541b 29,64,67,98
+sprinkler-solver-examples/src/Examples/ModelRotationalMotorMagnetic.hs
+  s_2cd7a656622f40::t_14d59df190541b 149,155,161
+sprinkler-solver-examples/src/Examples/ThermalCircuit.hs
+  s_2cd7a656622f40::t_14d59df190541b 23,25-28
+sprinkler-solver-examples/src/Examples/ModelAcousticHeating.hs
+  s_2cd7a656622f40::t_14d59df190541b 19,39,42,61
+example/TestTimeWarpJit.hs
+  s_2cd7a656622f40::t_14d59df190541b 249,280-281,364,393-394,448,455,483-484,567,581,607-608,659,688-689,1933,3255
+sprinkler-solver-examples/src/Examples/ModelThermostatHysteresis.hs
+  s_2cd7a656622f40::t_14d59df190541b 12,20,105,109,111,113,125
+src/Domains.hs
+  s_2cd7a656622f40::t_14d59df190541b 541
+src/Solver/DES/Physical.hs
+  s_2cd7a656622f40::t_14d59df190541b 186
+sprinkler-solver-examples/src/Examples/ModelFertilizerThermal.hs
+  s_2cd7a656622f40::t_14d59df190541b 146,149-157,163-164
+sprinkler-solver-examples/src/Examples/ModelFertilizerDAE.hs
+  s_2cd7a656622f40::t_14d59df190541b 65-70
+src/Backend/Mecha.hs
+  s_2cd7a656622f40::t_14d59df190541b 123
+sprinkler-solver-examples/src/Examples/GenericSparseSolve.hs
+  s_2cd7a656622f40::t_14d59df190541b 60
+tools/TWCondHybridCompare.hs
+  s_2cd7a656622f40::t_14d59df190541b 79
+sprinkler-solver-examples/src/Examples/ModelEnergyBalanceDemo.hs
+  s_2cd7a656622f40::t_14d59df190541b 59-60
+sprinkler-solver-examples/src/Examples/SurfaceSlotSettleTest.hs
+  s_2cd7a656622f40::t_14d59df190541b 215
+sprinkler-solver-examples/src/Examples/ModelCarDrive.hs
+  s_2cd7a656622f40::t_14d59df190541b 49,283,388,393
+src/Solver/DES/TimeWarpPlant.hs
+  s_2cd7a656622f40::t_14d59df190541b 408,461,586,631,639-640,748,753,756,835,840,869,874,890,898-899,905
+sprinkler-solver-examples/src/Examples/ModelCoupledDemo.hs
+  s_2cd7a656622f40::t_14d59df190541b 63
+sprinkler-solver-examples/src/Examples/DESAccountingLedger.hs
+  s_2cd7a656622f40::t_14d59df190541b 16,32,69,71,102
+sprinkler-solver-examples/src/Examples/ModelClosedLoopEnergyCycle.hs
+  s_2cd7a656622f40::t_14d59df190541b 108
+sprinkler-solver-examples/src/Examples/DerivSlotSettleTest.hs
+  s_2cd7a656622f40::t_14d59df190541b 244
+sprinkler-solver-examples/src/Examples/HeatEquationExample.hs
+  s_2cd7a656622f40::t_14d59df190541b 18,59,61
+sprinkler-solver-examples/src/Examples/ModelThermalExpansion.hs
+  s_2cd7a656622f40::t_14d59df190541b 45,62,88
+sprinkler-solver-examples/src/Examples/RoomAirConditioningExample.hs
+  s_2cd7a656622f40::t_14d59df190541b 98
+sprinkler-solver-examples/src/Examples/ModelMultiStageThermalTransient.hs
+  s_2cd7a656622f40::t_14d59df190541b 50,54,58
+sprinkler-solver-examples/src/Examples/ModelFertilizerTransient.hs
+  s_2cd7a656622f40::t_14d59df190541b 84-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "dd0a4a8d0ff2bcb374cbc47836cf886a1bbd3903",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
