@@ -1,0 +1,37 @@
+src/JIT/tw_engine.h
+  s_2cd7a656622f40::t_574ab1167fea2e 446-454
+src/Solver/DES/TwHotReload.hs
+  s_2cd7a656622f40::t_a3dcb16cb318b6 209,261-263
+src/JIT/tw_model.h
+  s_2cd7a656622f40::t_8242513ed24ef3 114-121
+golden/ShippingOps/final_state.txt
+  s_2cd7a656622f40::t_070ee1fb3ad2a4 8-15,19-21,23-25,31,34-36
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_8242513ed24ef3 392
+  s_2cd7a656622f40::t_574ab1167fea2e 279-280,292-294,393-395,406,427,978-980,1157
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_2cd7a656622f40::t_c466d0396d3631 2262-2272
+src/Solver/DES/TimeWarpJit.hs
+  s_2cd7a656622f40::t_42203b6bddfaea 3514-3516
+  s_2cd7a656622f40::t_a3dcb16cb318b6 3502-3513,3517,3520,3827,4980
+  s_2cd7a656622f40::t_9fb249a8bcdb89 5031,5050
+  s_2cd7a656622f40::t_645d1225d0118e 3062,3117
+  s_2cd7a656622f40::t_213fddf3aab36c 3052-3061
+  s_2cd7a656622f40::t_9c22247715c490 5069,5089
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "900a0ac81edf653879356d0d61227535596cfdb2",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
