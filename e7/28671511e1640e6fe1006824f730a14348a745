@@ -1,0 +1,30 @@
+golden/ShipFleetTW/final_state.txt
+  s_2cd7a656622f40::t_39dd8ac2481880 1-10
+sprinkler-solver-shipping/src/Examples/ShipFleetTW.hs
+  s_2cd7a656622f40::t_da73a49fec3396 51,54-55,788-804,806-808,812-816
+  s_2cd7a656622f40::t_19759e473db1d4 324-334
+  s_2cd7a656622f40::t_f45bac9c3b8713 697-704,707-708,776-778
+  s_2cd7a656622f40::t_f96621708119a3 48
+  s_2cd7a656622f40::t_63745558158a86 679-682
+golden/ShipFleetTW/status.txt
+  s_2cd7a656622f40::t_fdac33d03def26 1
+golden/ShipFleetTW/fingerprint.txt
+  s_2cd7a656622f40::t_39dd8ac2481880 2-3,5-11,14
+  s_2cd7a656622f40::t_fdac33d03def26 1,4,12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "e728671511e1640e6fe1006824f730a14348a745",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
