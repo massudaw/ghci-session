@@ -1,0 +1,21 @@
+golden/ShipFleetTW/final_state.txt
+  s_2cd7a656622f40::t_15de7c60b8dcad 11-25
+sprinkler-solver-shipping/src/Examples/ShipFleetTW.hs
+  s_2cd7a656622f40::t_6d6c8d2d4ecefd 847-909,926-941,945-947
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "e8cdae4942bb8d18d54509c44cd154e0a82bb489",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
