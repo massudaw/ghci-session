@@ -1,0 +1,31 @@
+src/JIT/tw_model.h
+  s_2cd7a656622f40::t_571f1fc1146f03 97-109
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_ad36880cdd8e0d 6177-6182
+  s_2cd7a656622f40::t_625624e63fa04d 744-751
+  s_2cd7a656622f40::t_a6fd9ea3e9955c 482-484
+  s_2cd7a656622f40::t_b930fedb81e242 622,626-664
+  s_2cd7a656622f40::t_6e323111d93b94 691
+  s_2cd7a656622f40::t_4d8563fe5def18 100-106
+  s_2cd7a656622f40::t_f4a58b63a4a339 716,823,843,888,930,1017,1338,1419,1556
+  s_2cd7a656622f40::t_89554e980a2167 665
+src/Solver/DES/TimeWarpJit.hs
+  s_2cd7a656622f40::t_8ce3f6aa4fb253 3791-3792
+  s_2cd7a656622f40::t_5e1e3832fb4a60 3719-3723
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "8b02bd87f3193c8070a213c2b0afe3cce1ed8c9c",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
