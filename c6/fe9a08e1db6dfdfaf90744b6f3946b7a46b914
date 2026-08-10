@@ -1,0 +1,36 @@
+src/JIT/jit_trampoline.c
+  s_2cd7a656622f40::t_fa0e3ee8aca467 155-167
+  s_2cd7a656622f40::t_b7a802f2194036 3510-3511,3515-3516,3522-3530
+  s_2cd7a656622f40::t_ada15fed95b232 289-295
+  s_2cd7a656622f40::t_9200832175d90d 3499
+  s_2cd7a656622f40::t_b73164af81d9f5 4145-4146
+  s_2cd7a656622f40::t_78c38193e9d66e 3465-3466,3469-3470,3472,3477,3482,3484,3488-3491
+  s_2cd7a656622f40::t_fe630fd04c220d 3492-3493
+src/Solver/DES/TimeWarpPlant.hs
+  s_2cd7a656622f40::t_fd6c2be3c4199b 597-598
+  s_2cd7a656622f40::t_911fcd878d9c77 545-554
+  s_2cd7a656622f40::t_a3b9c6bbd8ac69 729-732,742-743,746-751,773-774
+  s_2cd7a656622f40::t_4fed95322f8338 579-580
+  s_2cd7a656622f40::t_59f6dc452497bf 521-530,542-543
+MODEL_SEMANTICS.md
+  s_2cd7a656622f40::t_4509d4077cbfaa 997-1066
+src/Solver/IDA.hs
+  s_2cd7a656622f40::t_b783bd02b6880d 631-632
+  s_2cd7a656622f40::t_8ebc8806bac49d 2551-2552,2589,3324,3919
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c6fe9a08e1db6dfdfaf90744b6f3946b7a46b914",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
