@@ -1,0 +1,24 @@
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_8a10ec5e671e99 2508-2518,2520-2536,2538-2541
+  s_2cd7a656622f40::t_66e0a975feddca 2440-2446,2550-2552
+  s_2cd7a656622f40::t_77876df9824685 5673-5680
+  s_2cd7a656622f40::t_9c91d66a1b9591 2447-2458
+  s_2cd7a656622f40::t_ea407512a6458e 2519,2537
+  s_2cd7a656622f40::t_deae586bb7b1e1 5724-5752
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c2e1e19898e8124f03548aa01b3534f2f85cfca9",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
