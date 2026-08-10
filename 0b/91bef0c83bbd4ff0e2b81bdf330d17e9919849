@@ -1,0 +1,22 @@
+src/JIT/jit_trampoline.c
+  s_2cd7a656622f40::t_86a93e6d4effe8 2624,2628-2629,2668,3631-3634
+  s_2cd7a656622f40::t_701ad438f94a87 2502-2566
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_9797b2eee73328 2600-2625
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "0b91bef0c83bbd4ff0e2b81bdf330d17e9919849",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
