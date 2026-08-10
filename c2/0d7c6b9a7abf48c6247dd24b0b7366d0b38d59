@@ -1,0 +1,20 @@
+sprinkler-solver-shipping/sprinkler-solver-shipping.cabal
+  s_2cd7a656622f40::t_d4eadbadae3d45 14-28
+  s_2cd7a656622f40::t_0cd94bd91eb9af 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c20d7c6b9a7abf48c6247dd24b0b7366d0b38d59",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
