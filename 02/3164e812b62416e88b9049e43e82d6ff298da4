@@ -1,0 +1,46 @@
+tools/twcalllog_diff.py
+  s_2cd7a656622f40::t_e8051351649515 102,128-159,161-180,186-196,202
+  s_2cd7a656622f40::t_d138d89dc28891 160
+  s_2cd7a656622f40::t_ee32c849eec019 205
+  s_2cd7a656622f40::t_3b97f00173aeed 46-68,72,81-87,101
+  s_2cd7a656622f40::t_ee8ef81fbb7211 88-100
+  s_2cd7a656622f40::t_4536549bd2c1d1 181-185
+  s_2cd7a656622f40::t_157ccdbde63b43 232
+  s_2cd7a656622f40::t_e1e2f2b65b5ba6 16-27
+src/JIT/tw_plant.c
+  s_2cd7a656622f40::t_6d28cc31af5159 827-843
+src/Solver/IDA.hs
+  s_2cd7a656622f40::t_cea51a7c77a80e 122-124
+  s_2cd7a656622f40::t_b691f722fd2d3a 2754
+  s_2cd7a656622f40::t_94bb3a98d69582 1475-1493
+  s_2cd7a656622f40::t_800d7a81fe97aa 2625-2630
+  s_2cd7a656622f40::t_e84c06b9418c32 2611-2624,2631-2656,2660,2665-2712
+  s_2cd7a656622f40::t_c17650ed14ea22 132
+  s_2cd7a656622f40::t_59874d846c5be2 1507-1544
+  s_2cd7a656622f40::t_53d27e5b3970a0 2657-2659,2661-2664
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_8ecbfda056aaea 2626-2640,2643-2649
+src/JIT/jit_trampoline.c
+  s_2cd7a656622f40::t_6e7ae703cbe015 4363-4524
+src/Solver/DES/TimeWarpPlant.hs
+  s_2cd7a656622f40::t_72f3be626071bd 190-194
+  s_2cd7a656622f40::t_7530434031f718 167-172
+  s_2cd7a656622f40::t_f4dbbb43707fa9 354-379
+  s_2cd7a656622f40::t_574fe37876e107 205-210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "023164e812b62416e88b9049e43e82d6ff298da4",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
