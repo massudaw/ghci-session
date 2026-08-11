@@ -1,0 +1,34 @@
+sprinkler-solver-shipping/src/Examples/Vessel.hs
+  s_2cd7a656622f40::t_02563103a007f5 84,474-479,535,538-547,551-552,556-558,663-667,1113-1117
+  s_2cd7a656622f40::t_9dbf5bf0665efb 1118
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_2cd7a656622f40::t_02563103a007f5 2429
+sprinkler-solver-shipping/src/Examples/ShipFleetTW.hs
+  s_2cd7a656622f40::t_02563103a007f5 498
+golden/ShipFleetTW/final_state.txt
+  s_2cd7a656622f40::t_3cc64818dcdd72 1-2,4,26
+golden/ShipFleetTW/fingerprint.txt
+  s_2cd7a656622f40::t_53b408812fa3ed 1,4-10,12,14
+golden/ShippingOps/des.txt
+  s_2cd7a656622f40::t_7fb2ba0b1a94da 94,107,110,113,116,143,151,316,329,332,335,338,365,373,538,551,554,557,560,587,595,760,773,776,779,782,809,817,982,995,998,1001,1004,1031,1039,1204,1217,1220,1223,1226,1253,1261,1426,1439,1442,1445,1448,1475,1483,1648,1661,1664,1667,1670,1697,1705,1870,1883,1886,1889,1892,1919,1927,2092,2105,2108,2111,2114,2141,2149,2314,2327,2330,2333,2336,2363,2371,2536,2549,2552,2555,2558,2585,2593,2758,2771,2774,2777,2780,2807,2815
+golden/ShippingOps/final_state.txt
+  s_2cd7a656622f40::t_b52222c5738af0 9-10,12,21,23,34
+golden/ShippingOps/fingerprint.txt
+  s_2cd7a656622f40::t_152770333adc02 6,10,13,15-16,18-20,22,24-25,27-30,33-34,36-38,41,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "e4b16eff478fac60044d83419d6a65d2a568e827",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
