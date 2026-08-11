@@ -1,0 +1,38 @@
+example/TestTimeWarpJit.hs
+  s_2cd7a656622f40::t_7242d630ad11be 3747
+  s_2cd7a656622f40::t_1141727149024c 3719-3732
+  s_2cd7a656622f40::t_d30b680c2c0bff 3616-3630
+  s_2cd7a656622f40::t_7ef57eb4b4e050 3718
+  s_2cd7a656622f40::t_1727a844ad717d 3745-3746
+  s_2cd7a656622f40::t_66524c3cc9eff4 46
+  s_2cd7a656622f40::t_67fb4c74575a6b 3547-3548
+  s_2cd7a656622f40::t_162955a80e38fb 3741-3744
+  s_2cd7a656622f40::t_5d0d1e824a0991 3688-3689
+  s_2cd7a656622f40::t_798a30cb9c84a5 3682-3687,3690-3692
+  s_2cd7a656622f40::t_120e724098715d 3737-3740
+  s_2cd7a656622f40::t_dbaade6c01be9b 3560-3563
+  s_2cd7a656622f40::t_9a64ec711ae990 3733-3736,3748-3749
+  s_2cd7a656622f40::t_973f512156aedf 3607-3611,3613-3614,3631-3649,3651
+  s_2cd7a656622f40::t_ddd38db7ef966c 3615
+  s_2cd7a656622f40::t_b51c1692e86ff7 3545-3546,3549,3558-3559,3564-3566,3612
+src/Solver/DES/Unified.hs
+  s_2cd7a656622f40::t_332091e90efed3 69-70,143
+  s_2cd7a656622f40::t_2b465788bd714c 790-861
+  s_2cd7a656622f40::t_efe7d49b86645f 862
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "780f5b11427b79b70c1dee96265c03600c931cf4",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
