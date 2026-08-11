@@ -1,0 +1,63 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_2cd7a656622f40::t_a9fcc126ddb505 684-705
+  s_2cd7a656622f40::t_160a664f16cade 2124-2125
+  s_2cd7a656622f40::t_b9444edc11cdf7 3314-3318
+  s_2cd7a656622f40::t_172d2b5dbcd300 2151-2169
+  s_2cd7a656622f40::t_794a03c8253553 3298-3301
+  s_2cd7a656622f40::t_7a0cbec3f4c75e 3018-3023
+  s_2cd7a656622f40::t_561e0b5288ec9a 3156-3201
+  s_2cd7a656622f40::t_1505fd833308e8 2241-2242
+  s_2cd7a656622f40::t_b652365afc5a34 3082-3088
+src/Solver/DES/TimeWarpUnified.hs
+  s_2cd7a656622f40::t_e95bcaf2603381 729-769
+  s_2cd7a656622f40::t_ecafcd63723772 796
+  s_2cd7a656622f40::t_239483ce776ad2 699-704
+  s_2cd7a656622f40::t_c4be08715a9c46 846
+  s_2cd7a656622f40::t_fb561046c634a1 184
+src/JIT/tw_runtime.c
+  s_2cd7a656622f40::t_aca4aefd666cca 6263-6277
+src/Solver/DES/Unified.hs
+  s_2cd7a656622f40::t_fcf49373eec5a0 750-787
+  s_2cd7a656622f40::t_72645be53542c7 67-69
+  s_2cd7a656622f40::t_dfd382d1f0be53 220-226
+  s_2cd7a656622f40::t_e7ac9825d980c7 208-209
+  s_2cd7a656622f40::t_338cc9e584ed6b 179-185
+example/TestTimeWarpJit.hs
+  s_2cd7a656622f40::t_972b44f8225548 3567-3569
+  s_2cd7a656622f40::t_2a70193e10ef4c 3615-3635,3642-3643,3651-3652,3660-3664,3666,3681
+  s_2cd7a656622f40::t_de7579a88608b3 3668,3670-3672
+  s_2cd7a656622f40::t_c1f178ab318d1a 3549-3551,3554,3556
+  s_2cd7a656622f40::t_e4d3af873807e3 3654,3656,3658
+  s_2cd7a656622f40::t_4ce8e7d0a024d2 3665
+  s_2cd7a656622f40::t_f6711e96c8ea55 3543-3544
+  s_2cd7a656622f40::t_69d9a44d9955e8 3552-3553
+  s_2cd7a656622f40::t_8fe3032e719636 3555
+  s_2cd7a656622f40::t_56a0bd8a549578 3644-3650,3653,3655,3657,3659
+  s_2cd7a656622f40::t_12e3ab700f17df 3669,3673,3677
+  s_2cd7a656622f40::t_a8875584b1578a 3528-3542,3546-3548,3557-3566,3570-3612
+  s_2cd7a656622f40::t_db9981dcb82c5c 3636-3641
+  s_2cd7a656622f40::t_461586603b0f1b 3545
+  s_2cd7a656622f40::t_e22b1ea670767a 46
+  s_2cd7a656622f40::t_e680716cf30027 3667,3674-3676,3678-3680
+doc/des/DES_SEMANTICS.md
+  s_2cd7a656622f40::t_c84691bd3af79c 134-158
+doc/des/DES_ELEMENT_ROADMAP.md
+  s_2cd7a656622f40::t_1654baa30332d9 31
+  s_2cd7a656622f40::t_4a6649773f8f4e 316-317
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "bb6af294b99f4699690541e78102332de04637fd",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
