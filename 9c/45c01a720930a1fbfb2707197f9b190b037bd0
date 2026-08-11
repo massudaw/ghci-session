@@ -1,0 +1,27 @@
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_2cd7a656622f40::t_6f645df714ac62 305-311,350-356
+  s_2cd7a656622f40::t_f50d2e940bfd9b 31,332
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_2cd7a656622f40::t_096afb5dc4db21 7588-7589
+  s_2cd7a656622f40::t_47c0053f787670 7900-7901,7903-7908
+  s_2cd7a656622f40::t_125f7a0683ce24 7914
+  s_2cd7a656622f40::t_9394490ae6fd0b 6370-6375,6383,6441-6442,6444-6446,6450
+  s_2cd7a656622f40::t_441dfd3bb954b5 1609-1614,1619-1621,3411-3416,3422,6352-6356,6358-6366
+  s_2cd7a656622f40::t_09c245c3ed4144 5098-5105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "9c45c01a720930a1fbfb2707197f9b190b037bd0",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
