@@ -1,0 +1,23 @@
+golden/ShippingOps/des.txt
+  s_2cd7a656622f40::t_6251136a1405c0 3
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_2cd7a656622f40::t_00d1edcaf0e6ba 118
+  s_2cd7a656622f40::t_9db3cdfd8c8649 5582-5588,5719-5724
+  s_2cd7a656622f40::t_932010b62b66bb 5718,5725,5732-5745
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c7d74c9bf88f3cd92f77984d44ae4101ee503657",
+  "prompts": {},
+  "sessions": {
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
