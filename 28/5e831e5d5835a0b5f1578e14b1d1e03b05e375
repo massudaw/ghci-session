@@ -1,0 +1,41 @@
+construction.html
+  s_2cd7a656622f40::t_ed658833186250 6,20-21,112,117-160,177,183,189,208-209,213,215-224,227,239-247,249-252,263-310,319-321,343-353,363-364,371-378,392-458,460-462,466,471-495,497,499-503,505-506,514-538,541-697,699-708,710-727,729-1113,1115-1117,1135-1137,1141-1144,1146-1152,1191-1194,1197-1203,1205,1216-1725
+docs/construction/DESIGN.md
+  s_2cd7a656622f40::t_5c080c2f62652a 4,21-26,43-44,97-105,144,146-147,149-153,155
+golden/DESConstructionSite/final_state.txt
+  s_2cd7a656622f40::t_52d90aaff326f4 4,6-9,11-12,14-16,21-22,24-29
+golden/DESConstructionSite/fingerprint.txt
+  s_2cd7a656622f40::t_898ccceed0a763 1-778
+golden/DESConstructionSite/tapestats.txt
+  s_2cd7a656622f40::t_7727bba00fd39a 1
+sprinkler-solver-examples/src/Examples/ConstructionSiteRuntime.hs
+  s_2cd7a656622f40::t_08ab70f9ba6108 27,29,42-43,55,59,74,101,104-297,308-311,317,328-333,335-340,349,351-352,358-370,372,376-387,390-392,401-407,411-425,428,459-460,465-469,500-502,504-538,585,588,600,604,611-612,633-639,643,648-656,725,797-798,800-802,804,809,820-822,867-877,969
+src/JIT/tw_engine.h
+  s_0e7cbae0c0bc1f::t_7c57415a85bdfc 153-157
+docs/construction/README.md
+  s_0e7cbae0c0bc1f::t_457784c2027171 10-16,21-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "285e831e5d5835a0b5f1578e14b1d1e03b05e375",
+  "prompts": {},
+  "sessions": {
+    "s_0e7cbae0c0bc1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ba09b43-58d9-42a5-9882-eaa3c805fd85",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_2cd7a656622f40": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea62a69f-dc51-44eb-a22d-c0bbb81ef2a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
