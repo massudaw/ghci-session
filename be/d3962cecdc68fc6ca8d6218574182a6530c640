@@ -1,0 +1,14 @@
+golden/RouteField/final_state.txt
+  h_fd5809635b36a3 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bed3962cecdc68fc6ca8d6218574182a6530c640",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
