@@ -1,0 +1,29 @@
+tools/compare_lng_daily.py
+  s_9c8853c6717134::t_fdee96c6c399ac 143-156,161-162
+  s_9c8853c6717134::t_14941394c30a2a 130-142,157-160,163-203,222-223,233-234,259-271
+  s_9c8853c6717134::t_0d47810b9089e6 53-60,62-69,225-228,235-237
+  s_9c8853c6717134::t_388fcffe4eed6a 1-52,61,70-129,204-221,224,229-232,238-258,272-278
+sprinkler-solver-shipping/src/Examples/Vessel.hs
+  s_9c8853c6717134::t_fb375b81eb2a03 357-362,383
+  s_9c8853c6717134::t_e0b5a70f2b71b5 31,363-382
+tools/calibrate_vessel.py
+  s_9c8853c6717134::t_476be5eb0337b7 189-190,268-283
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_9c8853c6717134::t_fb375b81eb2a03 6195-6206
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d077a9cd36f84a24425694c82a7d52adaf25c8a2",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
