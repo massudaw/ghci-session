@@ -1,0 +1,19 @@
+golden_examples_lib.sh
+  s_9c8853c6717134::t_ff91ab4746f468 39-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0edbf46de35ba8423b5ad7170f663ebd44574563",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
