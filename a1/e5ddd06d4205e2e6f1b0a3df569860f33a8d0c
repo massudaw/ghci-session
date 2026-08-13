@@ -1,0 +1,26 @@
+tools/model_session/session.py
+  s_0dce5c88138ff6::t_228d85f8d4806b 643-645,647-648,658-666,826-841,846
+  s_0dce5c88138ff6::t_d922631beec76e 318-330,345-359,364-369,373-375,377-386,445,468-473,506,537
+  s_0dce5c88138ff6::t_1698186ac449a4 855-858
+tools/model_session/README.md
+  s_0dce5c88138ff6::t_fe454c85c4346a 54,57-83
+  s_0dce5c88138ff6::t_3a0ad48272802a 84
+CLAUDE.md
+  s_0dce5c88138ff6::t_180f957bee242c 43-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a1e5ddd06d4205e2e6f1b0a3df569860f33a8d0c",
+  "prompts": {},
+  "sessions": {
+    "s_0dce5c88138ff6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "619f4aec-7aab-4f2e-86e7-bd2ef579be26",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
