@@ -1,0 +1,27 @@
+golden/DESConstructionSite/tapestats.txt
+  s_de3e997c10a19b::t_acd8fce1dfb97d 1
+golden/DESConstructionSite/fingerprint.txt
+  s_de3e997c10a19b::t_25514e22b568fe 2-3,6,8,11,762-763,767,770,774-776,779
+  s_de3e997c10a19b::t_acd8fce1dfb97d 1,4-5,7,9-10,12-761,764-766,768-769,771-773,777-778
+sprinkler-solver-construction/src/Examples/DESConstructionSite.hs
+  s_de3e997c10a19b::t_4998aa2f8a274f 551
+  s_de3e997c10a19b::t_23b55c1a2c57bd 1026,1029
+  s_de3e997c10a19b::t_3d1021eee3b717 507-509,511-517,519-524
+  s_de3e997c10a19b::t_d1cf018f6404d2 78-80,510,518,525-543,550,553-554,1001-1002,1004-1005,1027,1030,1032,1034,1036,1905-1906,1908-1909,1912-1924,1928
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ff28dbe5bdafc6f82e6563756ea92093ef46561c",
+  "prompts": {},
+  "sessions": {
+    "s_de3e997c10a19b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "202126c2-0656-42e1-85e5-909ec2cfd6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
