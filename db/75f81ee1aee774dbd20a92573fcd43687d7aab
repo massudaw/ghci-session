@@ -1,0 +1,36 @@
+tools/model_session/session.py
+  s_de3e997c10a19b::t_23c089e9d45c39 69
+  s_de3e997c10a19b::t_0da93e6f34ed4b 505-516
+  s_de3e997c10a19b::t_a4a8888876e745 535-543
+  s_de3e997c10a19b::t_a2746c6f670127 178-185
+tools/model_session/targets.json
+  s_de3e997c10a19b::t_d796df43643b3e 240-256,258-259,261-262
+  s_de3e997c10a19b::t_96f9aabacd26df 260
+  s_de3e997c10a19b::t_9255673f169a77 265-267
+  s_de3e997c10a19b::t_6b26ae770af1ad 257
+  s_de3e997c10a19b::t_070060d0b3acc3 263-264,268
+tools/model_session/build_clib.sh
+  s_de3e997c10a19b::t_20a140cba112bb 10-16
+  s_de3e997c10a19b::t_e723649267a1de 1-9,17-28,31,37
+  s_de3e997c10a19b::t_7f90b486b5364b 29-30,32-36
+CLAUDE.md
+  s_de3e997c10a19b::t_727cb81904d632 62-93
+.gitignore
+  s_de3e997c10a19b::t_872f86da419b32 61-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "db75f81ee1aee774dbd20a92573fcd43687d7aab",
+  "prompts": {},
+  "sessions": {
+    "s_de3e997c10a19b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "202126c2-0656-42e1-85e5-909ec2cfd6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
