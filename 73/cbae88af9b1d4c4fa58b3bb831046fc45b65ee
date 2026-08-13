@@ -1,0 +1,55 @@
+tools/model_session/targets.json
+  s_61522d9c9702fe::t_f02cba8d583eb8 332,360-377
+  s_61522d9c9702fe::t_0854fd53965d94 333-359
+.gitignore
+  s_61522d9c9702fe::t_4fcafc5c68dbb0 63,70
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_37b87888e2c8da 113
+  s_61522d9c9702fe::t_2512062e339252 68
+  s_61522d9c9702fe::t_2beeba386a4be4 405-420
+  s_61522d9c9702fe::t_1d428ccfb91a07 421
+sprinkler-solver-examples/src/Examples/LNGOps.hs
+  s_61522d9c9702fe::t_3693d33b90d352 449-455
+  s_61522d9c9702fe::t_a7d72125c1df91 476
+  s_61522d9c9702fe::t_af1537d7db37b1 69-73,75
+  s_61522d9c9702fe::t_510eeadb8a0477 492-530,539-540,550,552,556-557,559-561,568-625
+  s_61522d9c9702fe::t_e177dfe707fecc 81
+  s_61522d9c9702fe::t_126e1e5a95175f 470,472-475
+  s_61522d9c9702fe::t_2c958d55fe0572 669-701
+  s_61522d9c9702fe::t_5eed833bbc273b 217-225
+  s_61522d9c9702fe::t_874dc309e0ed9a 50-52
+  s_61522d9c9702fe::t_bc7119d1f29e76 53-54
+  s_61522d9c9702fe::t_20e174428c6e67 189-192
+  s_61522d9c9702fe::t_7fe21e39349c54 379-380
+  s_61522d9c9702fe::t_e6627d2f0b779e 626
+  s_61522d9c9702fe::t_9e9629dbea28d2 702
+example/LNGOpsServer.hs
+  s_61522d9c9702fe::t_49efddc4170925 1-13
+docs/lng-plant/MODEL_NOTES.md
+  s_61522d9c9702fe::t_a2aa30937e677f 156-157,164-203
+  s_61522d9c9702fe::t_0576331c4ec491 204
+lng.html
+  s_61522d9c9702fe::t_3c877ea2200c9e 1-466
+example/Main.hs
+  s_61522d9c9702fe::t_7a0c48bac8621f 66
+  s_61522d9c9702fe::t_4ae39d4c00f6c2 429
+  s_61522d9c9702fe::t_5de75d6141da9b 309
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_61522d9c9702fe::t_458fa9d071a58e 1-462
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "73cbae88af9b1d4c4fa58b3bb831046fc45b65ee",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
