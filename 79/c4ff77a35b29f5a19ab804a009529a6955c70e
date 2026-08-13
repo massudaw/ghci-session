@@ -1,0 +1,47 @@
+shipping_finance.html
+  s_0dce5c88138ff6::t_40da3a89decd68 357-358
+shipping.html
+  s_0dce5c88138ff6::t_40da3a89decd68 2632-2633
+golden/ShippingOps/des.txt
+  s_0dce5c88138ff6::t_ccd7083a44efb3 3,2492,2494,2531,2533,2550,2552,2556,2558-2560,2684,2686,3948,3950-3962,4231,4233,7703,7735-7747
+docs/shipping/SHIPPING_ROUTES_CURRENCY_CONTRACTS.md
+  s_0dce5c88138ff6::t_40da3a89decd68 439-442
+golden/ShippingOps/fingerprint.txt
+  s_0dce5c88138ff6::t_ccd7083a44efb3 7,9,13-14,17,23-24,27,32,35,37,49,54
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_0dce5c88138ff6::t_dce780fb7247fa 3545-3557,3562
+  s_de3e997c10a19b::t_7466022ec73fcc 8031-8039,8192
+  s_0dce5c88138ff6::t_47031c1bc94a21 4060-4067,4353-4362,4366,4436-4437,4523-4524,4869-4870,4889,4973-4974,5163-5164
+  s_0dce5c88138ff6::t_328f1fb0ab2bc7 4156-4174,4176,4179
+  s_0dce5c88138ff6::t_1dd7c1e2faabb5 6328
+  s_0dce5c88138ff6::t_a05546296ab440 6050,6067-6068,6392
+  s_0dce5c88138ff6::t_c8bf9df6354cc1 3766,4108-4110,4401,4574,4583,8022
+  s_0dce5c88138ff6::t_ab53adaac1f69d 2810-2814
+  s_0dce5c88138ff6::t_4b7b1a52186a33 4410,4412,4420-4423,4425-4426
+golden/ShippingOps/final_state.txt
+  s_0dce5c88138ff6::t_ccd7083a44efb3 9-10,12-16,20-21,23,25,27,33,36-37,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "79c4ff77a35b29f5a19ab804a009529a6955c70e",
+  "prompts": {},
+  "sessions": {
+    "s_0dce5c88138ff6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "619f4aec-7aab-4f2e-86e7-bd2ef579be26",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_de3e997c10a19b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "202126c2-0656-42e1-85e5-909ec2cfd6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
