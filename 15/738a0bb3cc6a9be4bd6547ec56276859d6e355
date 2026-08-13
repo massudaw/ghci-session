@@ -1,0 +1,19 @@
+doc/des/API_INVARIANTS_PROPOSAL.md
+  s_de3e997c10a19b::t_74a248e5c9a28f 493-525
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "15738a0bb3cc6a9be4bd6547ec56276859d6e355",
+  "prompts": {},
+  "sessions": {
+    "s_de3e997c10a19b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "202126c2-0656-42e1-85e5-909ec2cfd6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
