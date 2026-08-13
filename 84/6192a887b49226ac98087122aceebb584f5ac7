@@ -1,0 +1,49 @@
+golden/LNGOps/fingerprint.txt
+  s_61522d9c9702fe::t_747a014fefe127 1-124
+tools/model_session/targets.json
+  s_61522d9c9702fe::t_8dc3325911c657 281-299,301-321,326-331
+  s_61522d9c9702fe::t_0212829eec6db1 300
+  s_61522d9c9702fe::t_0eb3c2cb10f425 322-325
+example/Main.hs
+  s_61522d9c9702fe::t_77f93154993d59 21,319,382
+.gitignore
+  s_61522d9c9702fe::t_59eae64480688a 62
+  s_61522d9c9702fe::t_c9745fc9f87639 68
+docs/lng-plant/MODEL_NOTES.md
+  s_61522d9c9702fe::t_b2e7cb3f57eb34 75-164
+  s_61522d9c9702fe::t_031bd38e703262 167-171
+sprinkler-solver-examples/src/Examples/LNGNetwork.hs
+  s_61522d9c9702fe::t_3c367e8e37e1f9 1-219
+golden/LNGOps/des.txt
+  s_61522d9c9702fe::t_747a014fefe127 1-162
+sprinkler-solver-examples/src/Examples/LNGOps.hs
+  s_61522d9c9702fe::t_0212829eec6db1 15-20,35-41
+  s_61522d9c9702fe::t_9f464d07a45d9c 81,138-139,145
+  s_61522d9c9702fe::t_c6ae75336f692e 192-204,212-217,220-227,237,239-240,274-286,297-301,303-310,331,333,349-355,363-364,381
+  s_61522d9c9702fe::t_8055e86bce6075 235,325-330,332,386-389,391-395,397,408-413,415
+  s_61522d9c9702fe::t_9fa72decff743e 1-14,21-34,42-80,82-137,140-144,146-191,205-211,218-219,228-234,236,238,241-273,287-296,302,311-324,334-348,356-362,365-380,382-385,390,396,398-407,414,416-663
+golden/LNGOps/status.txt
+  s_61522d9c9702fe::t_747a014fefe127 1
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_fd2ea0508c0db9 66-67
+golden/LNGOps/tapestats.txt
+  s_61522d9c9702fe::t_747a014fefe127 1
+golden/LNGOps/final_state.txt
+  s_61522d9c9702fe::t_747a014fefe127 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "846192a887b49226ac98087122aceebb584f5ac7",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
