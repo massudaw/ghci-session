@@ -1,0 +1,47 @@
+docs/CANDIDATE_VERTICALS.md
+  s_de3e997c10a19b::t_3f91f5bfc562df 111-113
+  s_de3e997c10a19b::t_837a806c0ef55e 1-110,114-130
+docs/fertilizer/data/cf_quarterly_ops.csv
+  s_de3e997c10a19b::t_0fdb10ae07aeda 1-23
+docs/fertilizer/data/fetch_epa_ghgrp.py
+  s_de3e997c10a19b::t_a5a4733d33d6c3 1-52
+docs/fertilizer/RESEARCH.md
+  s_de3e997c10a19b::t_80af9a4d039a58 598
+  s_de3e997c10a19b::t_2d2591f3cfee5a 485,527,585
+  s_de3e997c10a19b::t_0e758cdcea49cc 224-292
+  s_de3e997c10a19b::t_0e13984738ae06 388,390-411,414-420,422-428,431-436
+  s_de3e997c10a19b::t_5784d1077318fe 458-484,486-504,590-597,599-619
+  s_de3e997c10a19b::t_4743867e81c382 505-526
+  s_de3e997c10a19b::t_2132b63f0b6027 1-223,293-317,325-360,387,389,412-413,421,429-430,437,439-455,621-634
+  s_de3e997c10a19b::t_01405364586261 456-457,620
+  s_de3e997c10a19b::t_c1f9acbe84cf43 635-643
+  s_de3e997c10a19b::t_f9014bbd5cba3a 529,534,538,542-544
+  s_de3e997c10a19b::t_67c27e46955029 528,530-533,535-537,539-541,545-564,579-584
+  s_de3e997c10a19b::t_d4900f063d9b43 361-386
+  s_de3e997c10a19b::t_0c4ac85a873a84 438
+  s_de3e997c10a19b::t_c53d5241c3c264 565-578
+  s_de3e997c10a19b::t_c48863c8809ee5 586-589
+  s_de3e997c10a19b::t_bd2e37f13ffd71 318-324
+docs/fertilizer/data/cf_subpartG_co2.csv
+  s_de3e997c10a19b::t_cb1abe330cf325 1-79
+docs/fertilizer/data/.gitignore
+  s_de3e997c10a19b::t_03e9a62a6719a0 1
+docs/fertilizer/data/fetch_cf_quarterly.py
+  s_de3e997c10a19b::t_6a512bf5c44b6d 1-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "551be7b32d095173adeb94d2de0c5f52eeb20e37",
+  "prompts": {},
+  "sessions": {
+    "s_de3e997c10a19b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "202126c2-0656-42e1-85e5-909ec2cfd6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
