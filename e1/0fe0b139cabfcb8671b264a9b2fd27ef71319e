@@ -1,0 +1,23 @@
+docs/mc-ir-prototype/CHECKS.md
+  s_bb5c954b65fb3b::t_d372a0f9ed1e65 1-134
+tools/mcir/CheckShipping.hs
+  s_bb5c954b65fb3b::t_46a59852bed0b8 201-203
+  s_bb5c954b65fb3b::t_8ffe589108f88e 210-213
+  s_bb5c954b65fb3b::t_54b0803ff28ef5 128-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e10fe0b139cabfcb8671b264a9b2fd27ef71319e",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
