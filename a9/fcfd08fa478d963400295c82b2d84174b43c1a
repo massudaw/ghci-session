@@ -1,0 +1,28 @@
+CLAUDE.md
+  s_d51ff5a425a16f::t_07a849ebf42f80 256-285
+src/Solver/SymbolicDAE/Scaling.hs
+  s_d51ff5a425a16f::t_5da01ba9eee2d2 1-73,79-98,100-106,108-113,125,127,133,138-139,146-148,150,155-158,160-204,206-221,225-227
+  s_d51ff5a425a16f::t_20d5f9b434dfd2 74-78,151-154,159,205,222-224
+  s_d51ff5a425a16f::t_cec5d62f10757a 99,107
+  s_d51ff5a425a16f::t_0927342f2e91b9 114-124,126,128-132,134-137,140-145,149
+sprinkler-solver.cabal
+  s_d51ff5a425a16f::t_880e0f241a4931 235
+DIMENSIONS.md
+  s_d51ff5a425a16f::t_62e36b10f081a8 1-278
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a9fcfd08fa478d963400295c82b2d84174b43c1a",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
