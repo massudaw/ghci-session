@@ -1,0 +1,22 @@
+docs/mc-ir-prototype/CHECKS.md
+  s_bb5c954b65fb3b::t_13dc218ea9048b 23
+  s_bb5c954b65fb3b::t_e774e878a0e0f5 117-152
+tools/mcir/guard_headroom.sh
+  s_bb5c954b65fb3b::t_f90abbde2de9b5 1-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1a77ffdea4df5eff0808cad567323a3d36da4b58",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+tools/mcir/ExtractShipping.hs
+  s_bb5c954b65fb3b::t_4c72148f0fea17 8-12,15,30-35,46-47,49-53,62,64-80,83-86,89-90,92-93
+tools/mcir/CheckShipping.hs
+  s_bb5c954b65fb3b::t_1da52fc42ce055 1,12-13,20-21,25-33,36-40,42-66,68-89,91-106,112-114,116,120-127,142-145,147-152,156-162,169-185,189-190,193,196-200,221-224,226,228-230
+  s_bb5c954b65fb3b::t_b736a6eeed2608 107-111,115,118-119
+  s_bb5c954b65fb3b::t_0e58721d8e4d25 191-192,194-195
+  s_bb5c954b65fb3b::t_0db99d52b86da8 201-220
+  s_bb5c954b65fb3b::t_e689fd108b5f3d 186-188
+  s_bb5c954b65fb3b::t_b2228f182082a1 128-141
+docs/mc-ir-prototype/shipping.mcir.sample
+  s_bb5c954b65fb3b::t_62117a00a2baaa 103-2387
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "52d9b9370a872e32e35d9d1c35474e5752cdcc43",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

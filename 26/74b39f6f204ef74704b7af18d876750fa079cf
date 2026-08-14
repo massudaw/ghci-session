@@ -1,0 +1,23 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_bb5c954b65fb3b::t_3a998fc8df4488 3953-3961
+  s_bb5c954b65fb3b::t_c51dec751d3d72 1130-1138
+docs/mc-ir-prototype/CHECKS.md
+  s_bb5c954b65fb3b::t_ea9f39d6a026bc 154-193
+  s_bb5c954b65fb3b::t_1322d405775bd9 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2674b39f6f204ef74704b7af18d876750fa079cf",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

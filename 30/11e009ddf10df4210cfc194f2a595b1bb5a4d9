@@ -1,0 +1,21 @@
+tools/mcir/SMT.hs
+  s_bb5c954b65fb3b::t_edeee0022d83cf 1-88
+tools/mcir/P7Check.hs
+  s_bb5c954b65fb3b::t_9b88672ab6ac59 1-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3011e009ddf10df4210cfc194f2a595b1bb5a4d9",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+tools/mcir/MCIRCore.hs
+  s_bb5c954b65fb3b::t_7882df47d54ba9 1-98
+tools/mcir/Scenarios.hs
+  s_bb5c954b65fb3b::t_7882df47d54ba9 1-160
+tools/mcir/CheckShipping.hs
+  s_bb5c954b65fb3b::t_9d5bb834448aa7 1-33,35-143
+  s_bb5c954b65fb3b::t_a156ee6dc1b69c 34
+tools/mcir/ExtractShipping.hs
+  s_bb5c954b65fb3b::t_af3e51e995cc44 1-85
+docs/mc-ir-prototype/PLANT_GROUP_RULE.md
+  s_bb5c954b65fb3b::t_f75cfa8d96b5d2 1-138
+docs/mc-ir-prototype/shipping.mcir.sample
+  s_bb5c954b65fb3b::t_773c3b46aebcfd 1-1805
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e3b8981c0d259892d37f159ec38241bd1f1272fe",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
