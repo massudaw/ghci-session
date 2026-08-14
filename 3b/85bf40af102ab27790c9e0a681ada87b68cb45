@@ -1,0 +1,52 @@
+sprinkler-solver.cabal
+  s_61522d9c9702fe::t_f1bc0c46c1580f 311
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_61522d9c9702fe::t_14cb90a6acd4c4 69
+  s_61522d9c9702fe::t_fcd14b2615bbf9 9-10,14-19,46,65-68,70-72,94-97,104-107,111,113,131,216,254-255,257-259,261-291,304-305,315,326-336,341,351,362,375-378,380-383,392,395,399,403,409,412-413,417,424-429,431,440-442,447-452
+  s_61522d9c9702fe::t_c73a4f468c2302 379
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_61522d9c9702fe::t_095623951809fc 8-9,12-13,54,56,75-82,105-108,117-123,139,229,265-270,272-298,319-320,342,356-366,371,386,396,408-413,416-421,430,433,437,441,447,450-451,455,462-466,475,484-485,488-490,495-503
+lng.html
+  s_61522d9c9702fe::t_8f1a399d05db02 275-278,280
+  s_61522d9c9702fe::t_a88e06ecb6543f 150-173
+  s_61522d9c9702fe::t_36413405e8a2a1 382
+  s_61522d9c9702fe::t_f06a20114f6b47 404
+CLAUDE.md
+  s_61522d9c9702fe::t_5f355b20e1ac2b 256-267
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_61522d9c9702fe::t_03d2167e9ab8b2 1-253
+src/Solver/DES/TimeWarpRuntimeHTTP.hs
+  s_61522d9c9702fe::t_eb39954c25139a 285-304
+  s_61522d9c9702fe::t_e119675de354a7 492-499
+  s_61522d9c9702fe::t_8eda34674870fe 385-397
+  s_61522d9c9702fe::t_9b589244d34a30 79-80
+  s_61522d9c9702fe::t_0f8d87039da850 453-455
+  s_61522d9c9702fe::t_f7fd2230852478 1-78,81-88,90-284,305-384,398-440,446-452,456-491,500-522,524-540,544-545,548-549,553-562,564,566-568,570-572,582-585
+  s_61522d9c9702fe::t_4030b27a435a71 523
+  s_61522d9c9702fe::t_efbaa07bf97ff6 541-543,546-547,550-552
+  s_61522d9c9702fe::t_fc488df1624550 563,565,569,573-581
+  s_61522d9c9702fe::t_8ece7acc65f75e 89
+  s_61522d9c9702fe::t_fc577af36d0885 441-445
+lng-au.html
+  s_61522d9c9702fe::t_1d9fdfc2b1ebf8 306-309,311
+  s_61522d9c9702fe::t_82888b49395e79 514-520,523,526-531
+  s_61522d9c9702fe::t_7e691b932baa01 553
+sim-controls.js
+  s_61522d9c9702fe::t_de848bf46ff2a4 1-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3b85bf40af102ab27790c9e0a681ada87b68cb45",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
