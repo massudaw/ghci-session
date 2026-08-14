@@ -1,0 +1,44 @@
+example/LNGAUShippingBridge.hs
+  s_61522d9c9702fe::t_3e090981c75581 211-221,230-231,233-235,238-249,252-258
+  s_61522d9c9702fe::t_277865f30ee45c 70
+  s_61522d9c9702fe::t_5d02dd9ae592c0 222-229,236-237
+  s_61522d9c9702fe::t_6fc6e4ce680ba5 197,201,204
+  s_61522d9c9702fe::t_090012763e8ca8 422-437
+  s_61522d9c9702fe::t_fc60e0dc52332b 46-55,58-60
+  s_61522d9c9702fe::t_be53a5eb255212 292-294
+  s_61522d9c9702fe::t_c322c771774510 250-251
+  s_61522d9c9702fe::t_9ab2d5cc81f421 61
+lng-au.html
+  s_61522d9c9702fe::t_495eba63ea03ef 173-185
+  s_61522d9c9702fe::t_45c91794ce5b7e 277-284
+  s_61522d9c9702fe::t_40ef2eef27a44f 608
+  s_61522d9c9702fe::t_8c4621a63dd734 550-585,589,591
+  s_61522d9c9702fe::t_635c7ecae6a387 542
+tools/start_lng_au_shipping.sh
+  s_61522d9c9702fe::t_492d88b694b726 109
+  s_61522d9c9702fe::t_f1617dffab97f7 42-46,48,51-54,56-69,76
+  s_61522d9c9702fe::t_fefa3fd5793ba1 124-154
+  s_61522d9c9702fe::t_142653d7464e43 13-14,19-25,27-28
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_2e4c595dcfa335 474-477
+docs/lng-plant/MODEL_NOTES_AU.md
+  s_61522d9c9702fe::t_0f67a9ec269a53 667-696
+doc/des/CROSS_PROCESS_GVT.md
+  s_61522d9c9702fe::t_b3b250adff7feb 502-590
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "dfa386a3cd48c36c68d3bbbaa2dcd8f8b8dcf8b8",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
