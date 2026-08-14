@@ -1,0 +1,26 @@
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_61522d9c9702fe::t_6bc81886b0949d 254-309
+fertilizer.html
+  s_61522d9c9702fe::t_bec3fceb0db687 345
+  s_61522d9c9702fe::t_300f7ddb4a9ea5 367
+  s_61522d9c9702fe::t_1a8f7cf8f55f89 244-247,249
+  s_61522d9c9702fe::t_3128dfda1915a2 134-156
+sprinkler-solver-fertilizer/src/Examples/FertilizerOpsRuntime.hs
+  s_61522d9c9702fe::t_6be2f80e88b16a 5-6,9-10,14-26,41,44,53-59,80-84,87-90,96,100-105,113,125,175-207,212,221,230,243-246,248-249,251-253,255-257,260-261,268-275,283-284,289-292
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d0d7611a999eab14df89ddabe76e59816ba380ae",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
