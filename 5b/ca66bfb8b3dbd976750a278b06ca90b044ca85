@@ -1,0 +1,21 @@
+lng-au.html
+  s_61522d9c9702fe::t_9963a91c7f1311 152
+lng.html
+  s_61522d9c9702fe::t_9ae61f7b2a79b1 139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5bca66bfb8b3dbd976750a278b06ca90b044ca85",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
