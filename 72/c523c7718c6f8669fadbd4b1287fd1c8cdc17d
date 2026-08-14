@@ -1,0 +1,35 @@
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_61522d9c9702fe::t_576f6744a9bce4 610
+  s_61522d9c9702fe::t_bc74f55a76284f 4,7-9,12-33,43,45,62-67,94-99,101,119-121,449-456,463-491,493-495,497-514,518,560-561,563-584,586-609,611,613,615-646,648-658,661,666,690,692,696,708,716-718,720-721,723-789,798-800,841-843
+  s_61522d9c9702fe::t_f8ff1a3867fec1 44,46
+  s_61522d9c9702fe::t_1838de080a070c 647
+  s_61522d9c9702fe::t_638de6c419a13a 659-660
+  s_61522d9c9702fe::t_4d3bd978f11d13 702-706,712-713
+  s_61522d9c9702fe::t_e1d8f298f05610 722
+construction.html
+  s_61522d9c9702fe::t_ae19e8154ec113 1271-1272
+  s_61522d9c9702fe::t_fa0172c613f985 329-331
+  s_61522d9c9702fe::t_61d0836007b553 1183-1198,1200-1209,1211-1214,1218-1233,1236-1240,1242-1243,1248-1250,1254-1257,1261-1263
+  s_61522d9c9702fe::t_5cbec4bdbf7ba0 1275-1276
+  s_61522d9c9702fe::t_5f6eb1ba7a6e14 1289-1291
+  s_61522d9c9702fe::t_1e2081b7698f81 1809-1811,1813
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_61522d9c9702fe::t_57e50fb4610e9d 310-426
+  s_61522d9c9702fe::t_f0b279c0dc3e04 427-558
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "72c523c7718c6f8669fadbd4b1287fd1c8cdc17d",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
