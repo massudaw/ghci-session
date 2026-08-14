@@ -1,0 +1,31 @@
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_61522d9c9702fe::t_c5244add2e745a 66
+  s_61522d9c9702fe::t_ba11f0b3ac3229 603-609
+  s_61522d9c9702fe::t_21ec7e021aca79 41-42,44-46
+  s_61522d9c9702fe::t_d93d097b102bfb 500-502
+  s_61522d9c9702fe::t_bbb18eb6dc0986 526-546
+tools/start_lng_au_shipping.sh
+  s_61522d9c9702fe::t_59e9e475a402ee 1-90,97-109
+  s_61522d9c9702fe::t_eb3748393eff1b 91-96
+docs/lng-plant/MODEL_NOTES_AU.md
+  s_61522d9c9702fe::t_bd4d1c13cd0efd 610-641,643-666
+  s_61522d9c9702fe::t_bdae9e452aa214 607-609,667
+lng-au.html
+  s_61522d9c9702fe::t_3afafb45e75047 1-604
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "59aae810a91552e3c5bea04d84aedb7c425cd30a",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
