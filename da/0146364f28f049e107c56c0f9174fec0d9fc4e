@@ -1,0 +1,23 @@
+tools/mcir/CheckShipping.hs
+  s_bb5c954b65fb3b::t_c9f185160a3062 224-237,239-240
+tools/mcir/ExtractShipping.hs
+  s_bb5c954b65fb3b::t_b69ce1ff29ce04 86-88
+docs/mc-ir-prototype/shipping.mcir.sample
+  s_bb5c954b65fb3b::t_16629d1226fe00 686-1107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "da0146364f28f049e107c56c0f9174fec0d9fc4e",
+  "prompts": {},
+  "sessions": {
+    "s_bb5c954b65fb3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3bd844f8-09f8-4885-b493-d0ea462503ec",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
