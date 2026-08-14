@@ -1,0 +1,48 @@
+sprinkler-solver-examples/src/Examples/LNGAUShippingBridgeCore.hs
+  s_61522d9c9702fe::t_7a6d30225875d7 162
+  s_61522d9c9702fe::t_d2d9eafbf6ae6b 1-128,134-146,148-161,163-603
+  s_61522d9c9702fe::t_bbea7318094d64 129-133
+  s_61522d9c9702fe::t_21396ceda8f51a 147
+tools/model_session/targets.json
+  s_61522d9c9702fe::t_5818620e2ce3a0 499-500,512-534
+  s_61522d9c9702fe::t_7b58de815dbc64 535
+shipping.html
+  s_61522d9c9702fe::t_4a12baf019596c 3940-3955
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_f0b318335d3511 73-77,477-480,489-498
+  s_61522d9c9702fe::t_be24db5b36d85f 499-502
+lng-au.html
+  s_61522d9c9702fe::t_f12e75f463e10c 659-670
+example/LNGAUShippingBridge.hs
+  s_61522d9c9702fe::t_50e2b468468ffb 3,8-19,26,42-43,45,50-52,60-62,73,75-77,82-84,91,94-96,101-105,108-109,120-121
+example/LNGAUShippingControlServer.hs
+  s_61522d9c9702fe::t_e8425ff7462e9b 1-15
+tools/start_lng_au_shipping.sh
+  s_61522d9c9702fe::t_24e471d3b9d42d 14-15,20-33,37-38,49,58-65,68,71-72,91-105,146,163-201
+  s_61522d9c9702fe::t_f5af977509e4b6 113,154,159
+  s_61522d9c9702fe::t_c82126e5f28869 106
+lng-au-shipping-control.html
+  s_61522d9c9702fe::t_3107f5881b41f2 1-251
+doc/des/CROSS_PROCESS_GVT.md
+  s_61522d9c9702fe::t_d6d8da583f99ae 591-663
+docs/lng-plant/MODEL_NOTES_AU.md
+  s_61522d9c9702fe::t_a436f9b1511c81 696-720
+sprinkler-solver-examples/src/Examples/LNGAUShippingControl.hs
+  s_61522d9c9702fe::t_9485f73b2ae0c1 1-385
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0beee5bde24a5d355f240ce9196fb6941e8bb562",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
