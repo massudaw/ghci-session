@@ -1,0 +1,83 @@
+example/LNGShippingBridge.hs
+  s_61522d9c9702fe::t_995771dbe1e949 292-297
+  s_61522d9c9702fe::t_f5cf051d6bbd70 1-291,298-369
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_61522d9c9702fe::t_9415e0697fdc61 498-501
+  s_61522d9c9702fe::t_8c67438bdd0fac 832-838
+  s_61522d9c9702fe::t_9ab2c3f95de75c 1283-1293
+  s_61522d9c9702fe::t_5eb15b0cf3b371 142-146
+  s_61522d9c9702fe::t_1c402cccb6242d 1061-1083
+  s_61522d9c9702fe::t_4e544849182233 106-115
+  s_61522d9c9702fe::t_d069dfc0de80e6 282-283
+  s_61522d9c9702fe::t_0c487a56ac6baf 607-616,622-651
+  s_61522d9c9702fe::t_d1fa0ac78594b0 983-984
+  s_61522d9c9702fe::t_9ba1e56d65bb2d 888-892,900,902,905-906,911-913,921-923
+  s_61522d9c9702fe::t_e4c31cb2de5119 200-253
+  s_61522d9c9702fe::t_9fc7e8556b44ed 46-53,55,57,60
+  s_61522d9c9702fe::t_27a79ecb826b91 284
+  s_61522d9c9702fe::t_23375ca608a870 30
+  s_61522d9c9702fe::t_463309ba9c7c2a 177-181
+  s_61522d9c9702fe::t_328b67b75ac3a1 668-712
+  s_61522d9c9702fe::t_7b226d122d66e4 509,721,744,772
+  s_61522d9c9702fe::t_d258adc499db07 880
+  s_61522d9c9702fe::t_25e27c203815e3 116-119
+  s_61522d9c9702fe::t_b30623bb8f7025 195-198
+  s_61522d9c9702fe::t_1434d48aae86a1 886-887
+  s_61522d9c9702fe::t_d9fa948d76c001 199
+  s_61522d9c9702fe::t_115f69a74f259a 652
+  s_61522d9c9702fe::t_eb267d0cffb933 877-879
+  s_61522d9c9702fe::t_1f5ca4312233a0 881-885
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_61522d9c9702fe::t_98b0e961c5ec5d 509-510,512-513,518-540
+  s_61522d9c9702fe::t_1b148c71da06e7 63-66
+  s_61522d9c9702fe::t_d7bfb549b4fc96 45
+  s_61522d9c9702fe::t_6d044a0fb57cc2 301-312,314-318
+  s_61522d9c9702fe::t_53828bac126650 421-424,426,430
+  s_61522d9c9702fe::t_859d7fddde91a6 128
+  s_61522d9c9702fe::t_d0a406cecb0a58 564-568,572-573,582-587
+  s_61522d9c9702fe::t_38e013ecda3877 338,340
+  s_61522d9c9702fe::t_38bd2aa133fa7a 313
+  s_61522d9c9702fe::t_e4548783200530 472-473,479
+  s_61522d9c9702fe::t_d5c8ccffdb3f93 93-101,112-116
+  s_61522d9c9702fe::t_ddff22058c1609 541-546,550
+  s_61522d9c9702fe::t_c5472717fc2204 59-62,68-69,71-72
+  s_61522d9c9702fe::t_80e3def2b7e6d8 355,358,366-404
+  s_61522d9c9702fe::t_9f715fe73ba6ec 460,462
+  s_61522d9c9702fe::t_f8797a1fa51722 287
+  s_61522d9c9702fe::t_97f3a1b7eeef39 195-203,217-262,265-266
+  s_61522d9c9702fe::t_f815cfdce593c9 621-643
+  s_61522d9c9702fe::t_fc880fde5ce4fa 204-216
+  s_61522d9c9702fe::t_0775c20fe8812c 405
+doc/des/CROSS_PROCESS_GVT.md
+  s_61522d9c9702fe::t_45a90cfe19a4b2 205-363
+  s_61522d9c9702fe::t_a45382762e7dd9 3-15
+  s_61522d9c9702fe::t_3f1e13fd05cdb6 25-27
+sprinkler-solver.cabal
+  s_61522d9c9702fe::t_4a9e9772ad4e4f 310
+tools/model_session/targets.json
+  s_61522d9c9702fe::t_1da3f9c4d70409 378-379,381,383-384,387-391,393,395
+  s_61522d9c9702fe::t_eb5a7fdd7bbe28 380,382,385-386,392
+src/Solver/DES/CrossProcessBoundary.hs
+  s_61522d9c9702fe::t_96e5de0494778a 1-2
+  s_61522d9c9702fe::t_a61fc8e5fedc00 3-208,211,214-245,248-269
+  s_61522d9c9702fe::t_891e0bd2b875bf 246-247
+  s_61522d9c9702fe::t_e017296e6259db 209-210,212-213
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_5db337374ce6ae 422-438
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ce3d37a1cd281ce67476cb118b9607e9a4bb4c8c",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
