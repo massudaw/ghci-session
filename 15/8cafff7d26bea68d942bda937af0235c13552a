@@ -1,0 +1,49 @@
+doc/des/CROSS_PROCESS_GVT.md
+  s_61522d9c9702fe::t_105b4d830e215b 365-501
+  s_61522d9c9702fe::t_4061c04c47499a 364
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_61522d9c9702fe::t_e11980396e3fb8 1-700
+tools/model_session/targets.json
+  s_61522d9c9702fe::t_4c7fd950e54984 495-510
+  s_61522d9c9702fe::t_e27b0ef4494635 434-460
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_17d36181bb5c41 72,443-476
+  s_61522d9c9702fe::t_a1739ec0b7c7ba 477
+example/LNGOpsAUServer.hs
+  s_61522d9c9702fe::t_333302aa7d5b44 1-16
+src/Solver/DES/CrossProcessBoundary.hs
+  s_61522d9c9702fe::t_d4594b86f2a7d9 41-44
+  s_61522d9c9702fe::t_1e98ac762de4ce 93-120
+example/LNGAUShippingBridge.hs
+  s_61522d9c9702fe::t_ace4edb0356e92 1-61,63-341,344-470
+  s_61522d9c9702fe::t_246b5647a249f8 62
+  s_61522d9c9702fe::t_e68f0dc6c2566c 342-343
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_61522d9c9702fe::t_23f8b1fe8936ed 593
+  s_61522d9c9702fe::t_29ff758d5a21cb 1054,1056
+  s_61522d9c9702fe::t_e0e2ca22560768 1147-1148
+  s_61522d9c9702fe::t_cfb2352ec93859 148-153
+  s_61522d9c9702fe::t_feca6380d1a75c 1248-1270
+  s_61522d9c9702fe::t_0027537be9a471 250-329
+  s_61522d9c9702fe::t_80a9416bbe45ae 188-192
+  s_61522d9c9702fe::t_e8fc0c8886d134 52-53
+  s_61522d9c9702fe::t_fb8495a06c6220 1067-1074
+  s_61522d9c9702fe::t_1af71e22cfe3e5 772-831
+  s_61522d9c9702fe::t_b188ff407c11c6 1039-1040
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "158cafff7d26bea68d942bda937af0235c13552a",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
