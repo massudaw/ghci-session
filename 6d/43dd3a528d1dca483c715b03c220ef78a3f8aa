@@ -1,0 +1,20 @@
+lng-au-shipping-control.html
+  s_61522d9c9702fe::t_b8857a7144cd03 140-165
+  s_61522d9c9702fe::t_ebee82dfd5cf97 113-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6d43dd3a528d1dca483c715b03c220ef78a3f8aa",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
