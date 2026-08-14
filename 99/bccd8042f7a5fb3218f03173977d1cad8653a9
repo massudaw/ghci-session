@@ -1,0 +1,20 @@
+shipping.html
+  s_61522d9c9702fe::t_cd9ca8a8fb1a85 440-446
+  s_61522d9c9702fe::t_bcefa427327714 240
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "99bccd8042f7a5fb3218f03173977d1cad8653a9",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
