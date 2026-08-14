@@ -1,0 +1,43 @@
+sprinkler-solver-examples/src/Examples/CrossProcessBridgeGoldenTest.hs
+  s_61522d9c9702fe::t_add5f14eb89370 78
+  s_61522d9c9702fe::t_d09579e183bb8f 90-91
+  s_61522d9c9702fe::t_0aeeb6f80a1bdc 178-187,189-201,204,208-209
+  s_61522d9c9702fe::t_ac15b07d593ac1 217-255
+  s_61522d9c9702fe::t_ecdef48859752c 142-149,151-153
+  s_61522d9c9702fe::t_eb87b34efc0c4f 259
+  s_61522d9c9702fe::t_300d4f5c825830 166-169
+  s_61522d9c9702fe::t_1b0c2f662bbc6a 126-138
+  s_61522d9c9702fe::t_5c133f636d6fd2 1-49,65-77,79-88,92-125,139-141,150,154-165,170-177,188,202-203,205-207,210-216,256-258,260-287
+  s_61522d9c9702fe::t_b2ebee7405d50f 89
+  s_61522d9c9702fe::t_e117b6b555f94f 50-64
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_61522d9c9702fe::t_5d3e27fb667f8f 78-81
+doc/des/CROSS_PROCESS_GVT.md
+  s_61522d9c9702fe::t_cb3f6e7a8f6a07 982
+  s_61522d9c9702fe::t_29cd21f9f9b352 983-1018,1023-1031,1034-1035,1041-1042,1062-1076
+  s_61522d9c9702fe::t_1a8e43e32f5180 1032-1033,1036-1040,1043-1061
+  s_61522d9c9702fe::t_13b987512c6ba8 1019-1022
+example/Main.hs
+  s_61522d9c9702fe::t_260990ed9c72f9 69,313,438
+golden/CrossProcessBridgeGoldenTest/status.txt
+  s_61522d9c9702fe::t_954736126bd2b1 1
+golden/CrossProcessBridgeGoldenTest/final_state.txt
+  s_61522d9c9702fe::t_954736126bd2b1 1-2,4,6,8,10
+  s_61522d9c9702fe::t_34802bdbc69ba7 3,5,7,9,11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "783b446f5f0add95bb6ac1dece6d8080c0b1ac7b",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
