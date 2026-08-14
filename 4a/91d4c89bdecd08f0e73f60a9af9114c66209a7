@@ -1,0 +1,29 @@
+lng.html
+  s_61522d9c9702fe::t_102a898ca41ad2 171-172
+  s_61522d9c9702fe::t_763000e025dce0 174-176
+  s_61522d9c9702fe::t_1b6c63350deefc 177
+shipping.html
+  s_61522d9c9702fe::t_bc075d0be9db40 437-439
+  s_61522d9c9702fe::t_1b497954e15834 440-442,444
+  s_61522d9c9702fe::t_d6f35169c79650 443
+lng-au.html
+  s_61522d9c9702fe::t_2b7d282bb8c383 199
+  s_61522d9c9702fe::t_55cc3bbb0c2608 196-198
+  s_61522d9c9702fe::t_6a3339f84cec7f 191-194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4a91d4c89bdecd08f0e73f60a9af9114c66209a7",
+  "prompts": {},
+  "sessions": {
+    "s_61522d9c9702fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5d5df4-7351-4f1b-a9fe-713c2d20ca2b",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
