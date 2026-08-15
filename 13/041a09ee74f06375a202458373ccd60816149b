@@ -1,0 +1,34 @@
+tools/dsh-dev-loop/package.json
+  s_0f0909cc1b0ef2::t_d9a29aeb35b9d2 1-22
+tools/dsh-dev-loop/tsconfig.json
+  s_0f0909cc1b0ef2::t_eac24a810064a1 1-12
+tools/dsh-dev-loop/src/index.ts
+  s_0f0909cc1b0ef2::t_07f980cfebb8da 1-24,27-28,30-44,53-102,114-172
+  s_0f0909cc1b0ef2::t_2856fcffbf5420 29
+  s_0f0909cc1b0ef2::t_29a081ef1ff928 25-26
+  s_0f0909cc1b0ef2::t_8e55ba486c8f09 103-113
+  s_0f0909cc1b0ef2::t_9308a878652e3e 45-52
+.gitignore
+  s_0f0909cc1b0ef2::t_ea5161e2ba5296 77-79
+tools/dsh-dev-loop/cordis.yml
+  s_0f0909cc1b0ef2::t_0a104451ab7e35 1-10,21,42-141,146-148,150
+  s_0f0909cc1b0ef2::t_6e5d0a9f7a2fbb 22-41
+  s_0f0909cc1b0ef2::t_9ce9ba1d5a71f3 11-20
+  s_0f0909cc1b0ef2::t_d6b67ce238c2b2 142-145,149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "13041a09ee74f06375a202458373ccd60816149b",
+  "prompts": {},
+  "sessions": {
+    "s_0f0909cc1b0ef2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c57aa1c1-2410-4965-ae47-4364459a4385",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
