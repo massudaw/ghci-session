@@ -1,0 +1,51 @@
+src/Model/ElectroacousticCoupling.hs
+  s_d51ff5a425a16f::t_0869f590cc14a1 35-36,67
+src/Model/ThermalDerateCoupling.hs
+  s_d51ff5a425a16f::t_cebc8d124c4787 39-40,73
+src/Solver/Dim.hs
+  s_d51ff5a425a16f::t_0869f590cc14a1 158-160,716-728
+  s_d51ff5a425a16f::t_b999db0541c08a 161,729-733
+  s_d51ff5a425a16f::t_15fd48efa101bf 734
+golden/ModelBattery/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 23,47
+src/Model/ElectrolysisCoupling.hs
+  s_d51ff5a425a16f::t_0869f590cc14a1 34-35,66
+src/Model/VectoredVoltageCoupling.hs
+  s_d51ff5a425a16f::t_cebc8d124c4787 33-34,61-65
+src/Model/ElectroPneumaticCoupling.hs
+  s_d51ff5a425a16f::t_0869f590cc14a1 31-32,64
+src/Model/ThermoacousticCoupling.hs
+  s_d51ff5a425a16f::t_b999db0541c08a 40-41,74
+src/Model/ThrottleVoltageCoupling.hs
+  s_d51ff5a425a16f::t_cebc8d124c4787 42-43,71-73,77
+golden/ModelCarDrive/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 179,187,189,191,197,199,201,207,209,211,217,219,221
+golden/ModelElectrolysis/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 12
+golden/ModelElectroPneumatic/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 12
+golden/ModelThermoacousticEngine/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 9
+golden/ModelTorqueVector/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 41,47,53,59,65
+golden/ModelLoudspeaker/equations.txt
+  s_d51ff5a425a16f::t_db50b850f5e22f 12
+src/Model/YawVectorCoupling.hs
+  s_d51ff5a425a16f::t_b999db0541c08a 34-35,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4578c259f387ee4f3b0f22e2f0fa8141e2be57fa",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
