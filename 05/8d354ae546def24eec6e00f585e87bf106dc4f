@@ -1,0 +1,45 @@
+src/Solver/Dim.hs
+  s_d51ff5a425a16f::t_38ff318bb3358a 155-157,696-710
+  s_d51ff5a425a16f::t_57c8b4feb83b50 711
+golden/ModelDCMotorCTMS/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 16,33
+golden/ModelDCPump/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 27,55
+golden/ModelLiftRegen/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 60
+golden/ModelTorqueVector/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 43,49,55,61
+golden/ModelThermalExpansion/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 12,31
+golden/ModelRotationalMotor/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 14,29
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 51,109
+src/Model/ConvectiveCoupling.hs
+  s_d51ff5a425a16f::t_38ff318bb3358a 28,79-84
+  s_d51ff5a425a16f::t_9f1810e3ad2ff3 29
+  s_d51ff5a425a16f::t_b9fbc1a9b47be5 77-78
+golden/ModelCarDrive/equations.txt
+  s_d51ff5a425a16f::t_a2bcdafc207481 183,193,203,213,223
+src/Model/ThermalExpansionCoupling.hs
+  s_d51ff5a425a16f::t_dd8fd978010a06 33-34
+  s_d51ff5a425a16f::t_38ff318bb3358a 83,87-92
+src/Model/RotationalMotorCoupling.hs
+  s_d51ff5a425a16f::t_e909864bb864e8 31-32,67-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "058d354ae546def24eec6e00f585e87bf106dc4f",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
