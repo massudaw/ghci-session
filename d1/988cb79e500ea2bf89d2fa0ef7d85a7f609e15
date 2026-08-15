@@ -1,0 +1,86 @@
+src/Solver/DimAudit.hs
+  s_d51ff5a425a16f::t_bfedaf94d15e5a 66-67,79-80,97-98
+src/Rotational.hs
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 229
+src/Equation.hs
+  s_d51ff5a425a16f::t_bfedaf94d15e5a 736,788
+  s_d51ff5a425a16f::t_e216d2a3578937 429,447,450,456,459,466,472,503,555-556,580-581,591,594,602,605,613,616,673-674
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 426
+src/Financial.hs
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 303
+src/Hydraulic.hs
+  s_d51ff5a425a16f::t_d8a067a61d3494 578
+  s_d51ff5a425a16f::t_cefc075dd90a02 273-279,281-282
+  s_d51ff5a425a16f::t_8091010988f795 579-583
+  s_d51ff5a425a16f::t_0898c0c142b8b2 105-108,387
+src/Acoustic.hs
+  s_d51ff5a425a16f::t_bfedaf94d15e5a 184
+src/Solver/SymbolicDAE/Dim.hs
+  s_d51ff5a425a16f::t_c0b316cfae889c 308-314,486-494
+  s_d51ff5a425a16f::t_636b1018c3a645 495
+src/Domains.hs
+  s_d51ff5a425a16f::t_45cc319a3aeb7c 900-901
+  s_d51ff5a425a16f::t_fa048d45cf3266 688-695
+  s_d51ff5a425a16f::t_ec1a5fc0e846ac 871-872
+src/Grid.hs
+  s_d51ff5a425a16f::t_505894ae5b9ccb 47
+  s_d51ff5a425a16f::t_86e77bd1e6c297 100-101,131
+  s_d51ff5a425a16f::t_eebbcd30a12eef 189,193,196,199
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 202
+src/Mixture.hs
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 415
+src/Solver/SymbolicPreSys.hs
+  s_d51ff5a425a16f::t_bfedaf94d15e5a 366-367,432-433
+src/Magnetic.hs
+  s_d51ff5a425a16f::t_5fb3005f6b9b5e 118
+src/NDomain/Slot.hs
+  s_d51ff5a425a16f::t_3e10da44bbf707 51,142,151,171,188,225,293,306
+  s_d51ff5a425a16f::t_50438f8d96db9f 163
+src/Model.hs
+  s_d51ff5a425a16f::t_53dc6e4fb8e0cf 256,359,366
+  s_d51ff5a425a16f::t_e9a5f2b5769d11 827-828
+  s_d51ff5a425a16f::t_50438f8d96db9f 826
+  s_d51ff5a425a16f::t_e826ef66606a2f 159
+golden/ModelCoolingLoopDC/equations.txt
+  s_d51ff5a425a16f::t_272fef61588a84 11-12,74
+golden/ModelDCPump/equations.txt
+  s_d51ff5a425a16f::t_8b821c655cef67 14-15
+golden/ModelFertilizerThermal/equations.txt
+  s_d51ff5a425a16f::t_65f4d54da4fb45 89-91
+golden/ModelFluidThermal/equations.txt
+  s_d51ff5a425a16f::t_ca64647678ef9c 5,7
+golden/ModelHydraulicAirDuct/equations.txt
+  s_d51ff5a425a16f::t_ef42140bf56138 7
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_d51ff5a425a16f::t_af7104d52e275b 6,10
+golden/ModelHydraulicTransient/equations.txt
+  s_d51ff5a425a16f::t_6bc8aa7c159ed1 5,7,18
+golden/ModelLNGTrain/equations.txt
+  s_d51ff5a425a16f::t_5a07c58bdee58d 39,41
+golden/ModelLNGTrain/transient.txt
+  s_d51ff5a425a16f::t_4392eff4569baf 65,67
+golden/ModelLNGTrainAU/equations.txt
+  s_d51ff5a425a16f::t_7ea58e8edd6f34 38
+golden/ModelLNGTrainAU/transient.txt
+  s_d51ff5a425a16f::t_8e25dfa448cf56 34
+golden/ModelSimple/equations.txt
+  s_d51ff5a425a16f::t_5742957963c7b1 15-16
+golden/ModelSimple2/equations.txt
+  s_d51ff5a425a16f::t_d212f26ca419b2 4-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d1988cb79e500ea2bf89d2fa0ef7d85a7f609e15",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
