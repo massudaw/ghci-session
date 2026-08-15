@@ -1,0 +1,45 @@
+src/Model/FireSprinklerCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 282
+src/Model/PositionHoldCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 72
+src/Model/ValveFlow.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 85
+src/Model/AttitudeHoldCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 127
+src/Model.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 422-429,671-672,1193
+src/Model/HybridControllerCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 96
+src/Model/CarDriveCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 65
+src/Model/AxleSuspensionCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 77
+src/Model/BatteryPackCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 70
+src/Model/ThermostatCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 164
+src/Model/SuspensionCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 84
+src/Model/CrowbarDiodeCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 130
+src/Model/CarDriveGripCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 68
+src/Model/HEVCoupling.hs
+  s_d51ff5a425a16f::t_86aa7cd32e6bc6 76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "85107bded1f64a231a027ee608917678843495a9",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
