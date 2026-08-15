@@ -1,0 +1,82 @@
+src/Solver/SymbolicDAE/Scaling.hs
+  s_d51ff5a425a16f::t_d15a0c52e4cd65 135-139
+  s_d51ff5a425a16f::t_d655f289c80747 183
+golden/ModelLNGTrainAU/transient.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 31-34
+golden/ModelLNGTrain/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 35-38,43-48
+golden/ModelSimple2/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-4,7-10
+src/Solver/SymbolicDAE/ExprDAG.hs
+  s_d51ff5a425a16f::t_d15a0c52e4cd65 208
+golden/ModelHydraulicTransient/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-4,9-12,15-18,28-30
+src/Solver/SymbolicDAE.hs
+  s_d51ff5a425a16f::t_0273e2d191cb23 547,682,709-710,1374-1381,1763,1797,2521,2637,2648-2649,2659-2660,2670,2763,2850,2937,3211,3368,3677,3757,3978,4027,4269,4287,4423,5809,5865
+golden/ModelFireSprinkler/fingerprint.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 3-4
+src/JIT/Tape.hs
+  s_d51ff5a425a16f::t_d15a0c52e4cd65 1513,1804
+golden/ModelFluidThermal/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-4,9-13
+src/Solver/SymbolicDAE/SelectivePantelides.hs
+  s_d51ff5a425a16f::t_d15a0c52e4cd65 208,529
+golden/ModelFertilizerThermal/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 88,93-95
+golden/ModelSimple/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-15,18-29
+golden/ModelCoolingLoopDC/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-10,14-20,65-74,128-136
+golden/ModelDCPump/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 12-13,17-19,40-41,58
+src/Solver/SymbolicDAE/Dim.hs
+  s_d51ff5a425a16f::t_d655f289c80747 354,356,359
+  s_d51ff5a425a16f::t_da95453c87fc49 71,262-286,536-537
+src/Hydraulic.hs
+  s_d51ff5a425a16f::t_a21fefa5ecb73c 12,474,478-480
+  s_d51ff5a425a16f::t_b05f4d0d58119e 13,195-197,554-561,646-654
+  s_d51ff5a425a16f::t_e564d516be0f2a 93,189,401,655-663
+  s_d51ff5a425a16f::t_ea71c831bd9a3f 92,471
+  s_d51ff5a425a16f::t_0b75711687de1e 178,224
+  s_d51ff5a425a16f::t_360db6bd529a7b 476
+  s_d51ff5a425a16f::t_677c7e4e1ac000 60-64,71,161-162,168,341
+src/Hydraulic/Tee.hs
+  s_d51ff5a425a16f::t_044ce69e50ed42 190-193
+DIMENSIONS.md
+  s_d51ff5a425a16f::t_990e7ceb120b4d 161,163-166,168-181,198,242-262
+src/Solver/Dim.hs
+  s_d51ff5a425a16f::t_9731c40487dfc1 76-83,152-162,169,173,178,187,217,222,232,258,270,285,289-291,307,309-311,326,338-345,356-428
+  s_d51ff5a425a16f::t_86ab9909921587 429
+golden/ModelHydraulicAirDuct/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 9-12
+golden/ModelLNGTrain/transient.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 61-64,69-74
+golden/ModelLNGTrainAU/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 35-38
+golden/ModelSaoJorge/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-6,18-21,33-36,48-51,63-66,78-81,93-96,108-111,123-126,138-141,153-156,168-171,183-186,198-201,213-216,228-231,243-246,258-261,273-276,288-291,303-306,318-321,333-336,348-351,363-366,378-381,393-406
+golden/ModelExcavatorArm/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 24
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_d51ff5a425a16f::t_38079bd07415a6 2-6,12-17
+src/Solver/Unit.hs
+  s_d51ff5a425a16f::t_d042e86ee6fb16 1-2,4-7,9-11,13-16,22-28,30-31,34-36,42-43,48-50,52-54,56-58,60-62,64-66,68,70-71,73-74,76-77,79-81,83-84,86-91
+golden_examples_lib.sh
+  s_d51ff5a425a16f::t_f04014f37c4613 42-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "448109c98c6d28a0b81bf6a17cb064b944a4182c",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
