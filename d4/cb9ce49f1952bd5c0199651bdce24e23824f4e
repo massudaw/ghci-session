@@ -1,0 +1,37 @@
+src/Mixture.hs
+  s_d51ff5a425a16f::t_54eddd4e9e6621 84-85
+  s_d51ff5a425a16f::t_5452c64ac6aca1 328-342
+src/Financial.hs
+  s_d51ff5a425a16f::t_73c93469c75608 246
+  s_d51ff5a425a16f::t_4b2e74efb9a329 116
+src/Field.hs
+  s_d51ff5a425a16f::t_2fa2eebf479a73 276
+src/Bioelectric.hs
+  s_d51ff5a425a16f::t_5452c64ac6aca1 104-109
+src/Signal.hs
+  s_d51ff5a425a16f::t_2fa2eebf479a73 66-80
+sprinkler-solver-shipping/src/Examples/ShipFleetOpt.hs
+  s_d51ff5a425a16f::t_cb9be7ac52539b 61-62,89-90,205-239,245-261,345-347,349-350,365,379,412-416,477-482,553-568,572,617-621,623,626-632,651,653,656-659,771,783,829-854,941-946,954-967,983-989,991-996,1098-1100,1178-1182,1198,1202,1207-1227,1269-1270,1276,1286,1290,1295,1306,1343,1350-1359,1361,1365,1375-1393,1400,1462,1467-1471,1477-1480,1488-1501,1504,1511-1551
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_d51ff5a425a16f::t_d02275bee2d72b 1994
+sprinkler-solver-shipping/src/Examples/Vessel.hs
+  s_d51ff5a425a16f::t_15f97c67838905 115-116,118,671-672,696-703,792,801-808,814-835
+src/Solver/Risk/SignalPulse.hs
+  s_d51ff5a425a16f::t_0519dee1c0cf33 37,423-499
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d4cb9ce49f1952bd5c0199651bdce24e23824f4e",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
