@@ -1,0 +1,46 @@
+src/Model/Peltier.hs
+  s_d51ff5a425a16f::t_714bb52a25aab0 28-29,65-68
+golden/ThermalSourceCircuit/equations.txt
+  s_d51ff5a425a16f::t_a9483ff1324b52 4,11,15
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_d51ff5a425a16f::t_a9483ff1324b52 33
+src/Solver/Dim.hs
+  s_d51ff5a425a16f::t_714bb52a25aab0 154,681-691
+  s_d51ff5a425a16f::t_7f65ed610bd6e8 692
+golden/ModelPeltierCoupled/equations.txt
+  s_d51ff5a425a16f::t_a9483ff1324b52 12
+golden/ModelThermoElectric/equations.txt
+  s_d51ff5a425a16f::t_a9483ff1324b52 14-15,17
+DIMENSIONS.md
+  s_d51ff5a425a16f::t_2422752e8f7844 183-198
+src/Solver/Unit.hs
+  s_d51ff5a425a16f::t_714bb52a25aab0 142
+src/Thermal.hs
+  s_d51ff5a425a16f::t_0fef3314ec7d3f 138-143
+  s_d51ff5a425a16f::t_a01cb9aea57504 404
+  s_d51ff5a425a16f::t_1ca034e76bbb6c 144
+  s_d51ff5a425a16f::t_ee19afa65ba8c3 337
+  s_d51ff5a425a16f::t_a4e5786bcf075b 389-393,420
+src/Model/Seebeck.hs
+  s_d51ff5a425a16f::t_64a5af2d958a98 28
+  s_d51ff5a425a16f::t_714bb52a25aab0 29,69
+  s_d51ff5a425a16f::t_75f1a2120af94d 58-68
+golden/ModelSeebeckValidation/equations.txt
+  s_d51ff5a425a16f::t_a9483ff1324b52 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c38cce5b8721af0f64b0c25f8dcc178047593707",
+  "prompts": {},
+  "sessions": {
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
