@@ -1,0 +1,21 @@
+doc/des/SUPERPOSITION_EVALUATION.md
+  s_4dc2c6b530bf0e::t_f2699b8dddb54d 1-150
+doc/des/TIMEWARP.md
+  s_4dc2c6b530bf0e::t_9ef371086f9104 1233-1235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ef0eeef565fb3f690df0bf185d000c88d2bb1503",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
