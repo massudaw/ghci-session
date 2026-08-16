@@ -1,0 +1,47 @@
+embraer/ROADMAP.md
+  s_53cd4f7830a8fd::t_26d1c36d7ad24b 44-66,93
+  s_53cd4f7830a8fd::t_d8a8b4d8a305b1 67-92
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_53cd4f7830a8fd::t_fe8b40ad1e22bd 3667-3674
+  s_53cd4f7830a8fd::t_479cb8b38f617a 4813-4825,4833,4836
+  s_53cd4f7830a8fd::t_cb9278aa2ac25a 5180-5185
+  s_53cd4f7830a8fd::t_f96f27fe2d52dc 5419-5436
+  s_53cd4f7830a8fd::t_c386fb307eed4b 3526-3531
+  s_53cd4f7830a8fd::t_52ba2b1de29b4c 4604-4625
+  s_53cd4f7830a8fd::t_af80e6f43b2075 4567-4579
+  s_53cd4f7830a8fd::t_3b8b2acd8e0e19 3940
+  s_53cd4f7830a8fd::t_91b45c182c4054 4826-4832,4834-4835
+  s_53cd4f7830a8fd::t_ce28ab352a2372 5375-5377
+  s_53cd4f7830a8fd::t_f09136d0ce5182 5531
+  s_53cd4f7830a8fd::t_cf6eadfd7c0b05 5456-5494
+  s_53cd4f7830a8fd::t_e6bcace523d44d 5437-5443
+  s_53cd4f7830a8fd::t_6f4f6dc4facd75 4545,4547,4558-4560
+  s_53cd4f7830a8fd::t_db2a9a331ba68d 4580-4586
+  s_53cd4f7830a8fd::t_56b2deac2e2078 4973-4984,4987-4990,4997,4999-5000
+  s_53cd4f7830a8fd::t_7e141beb24911c 5298-5308
+  s_53cd4f7830a8fd::t_0c60d792810cbc 5235
+  s_53cd4f7830a8fd::t_7acb8c3ff0cdc6 5166-5179,5186-5187,5189-5201
+  s_53cd4f7830a8fd::t_124142822d34e0 5390-5395
+  s_53cd4f7830a8fd::t_a3117650d11151 4550,4552
+  s_53cd4f7830a8fd::t_c0db35df22957c 4954-4962
+  s_53cd4f7830a8fd::t_a434d8e92d2c18 4991-4996,4998
+  s_53cd4f7830a8fd::t_d0e2050e00ea3b 5188
+  s_53cd4f7830a8fd::t_198223cca72c6f 4985
+  s_53cd4f7830a8fd::t_6af7723ba1f10d 3513-3525
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8b50a70de799043d9b25056e2a5191c57c001759",
+  "prompts": {},
+  "sessions": {
+    "s_53cd4f7830a8fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "45ce471b-bdee-4036-90f9-b3b6fff45449",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
