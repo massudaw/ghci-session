@@ -1,0 +1,26 @@
+src/JIT/tw_runtime.c
+  s_4dc2c6b530bf0e::t_585dbc0eec35c5 2691-2693,2708,2716-2717,3197-3200
+  s_4dc2c6b530bf0e::t_4165989f07918c 2688
+  s_4dc2c6b530bf0e::t_dec3734358d082 2736-2739,2746-2749,2751-2754,2762
+  s_4dc2c6b530bf0e::t_6ac4461268aa19 2690,2706-2707,2714-2715,3186-3189,3196,3201-3202,3204-3211
+  s_4dc2c6b530bf0e::t_a7bd59e3f2c3af 2678-2687,2694-2704,2709-2710,2718-2730
+  s_4dc2c6b530bf0e::t_38c7ed94bd0e5d 2689,2705,2711-2713,3339-3343
+doc/des/RELEASE_SEARCH_COST.md
+  s_4dc2c6b530bf0e::t_de8832ec58a1e4 1501-1502,1504-1505,1512-1515,1519-1558
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9e0767148472faa74a241ead8cb856bd569aa592",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
