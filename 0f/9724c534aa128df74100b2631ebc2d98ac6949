@@ -1,0 +1,19 @@
+sprinkler-solver-shipping/src/Examples/ShipFleetOpt.hs
+  s_4dc2c6b530bf0e::t_fd20702fbd71ac 1390-1404
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0f9724c534aa128df74100b2631ebc2d98ac6949",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
