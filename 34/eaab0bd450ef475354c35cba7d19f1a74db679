@@ -1,0 +1,39 @@
+src/JIT/tw_plant.c
+  s_53cd4f7830a8fd::t_46a37b119293e7 1593
+  s_53cd4f7830a8fd::t_617df74fbadabb 1676-1680
+  s_53cd4f7830a8fd::t_0321cb08a40960 1681,1684
+  s_53cd4f7830a8fd::t_e91bec49555760 139-215,234,242-246,251,262-273,291-302,427-428,1499,1504-1511,1525-1527,1552-1555,1561,1565-1569,1572,1577,1596-1603,1612-1629,1649,1701,1705-1724
+src/JIT/jit_trampoline.c
+  s_53cd4f7830a8fd::t_55baf192a6f313 3684,3711,3764,3833,3951-3956,3967-3969,3992-4009,4091,4992,4997,5010
+  s_53cd4f7830a8fd::t_a6e5c11afdf87f 3683
+  s_53cd4f7830a8fd::t_ed512fb353ed62 3685-3687
+  s_53cd4f7830a8fd::t_d5cb5514ef1bf0 3761-3763
+  s_53cd4f7830a8fd::t_949042b9b29ccf 3765-3767
+  s_53cd4f7830a8fd::t_3f4aa87575ecfc 3830-3832
+  s_53cd4f7830a8fd::t_24eca28a05608e 3950
+  s_53cd4f7830a8fd::t_7ecb59d2bd45f6 4010-4012
+  s_53cd4f7830a8fd::t_b7ed70e1062fb9 4990-4991
+  s_53cd4f7830a8fd::t_148af995934568 4993-4996
+  s_53cd4f7830a8fd::t_757c3a84259c5e 4998-5000,5007-5009
+  s_53cd4f7830a8fd::t_4b12f1862519ee 5011-5012
+doc/des/TIMEWARP_OPTIMIZATION_AUDIT.md
+  s_53cd4f7830a8fd::t_f36f335c5a566b 360-377
+  s_53cd4f7830a8fd::t_d7c534bddf693c 357-359
+  s_53cd4f7830a8fd::t_891300058d9bb4 378-380
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "34eaab0bd450ef475354c35cba7d19f1a74db679",
+  "prompts": {},
+  "sessions": {
+    "s_53cd4f7830a8fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "45ce471b-bdee-4036-90f9-b3b6fff45449",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
