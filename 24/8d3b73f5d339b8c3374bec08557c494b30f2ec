@@ -1,0 +1,31 @@
+example/TimeWarpJitBench.hs
+  s_4dc2c6b530bf0e::t_cb43ff55734f5d 279-286
+doc/des/TIMEWARP.md
+  s_4dc2c6b530bf0e::t_38cd6791f67236 729-746
+src/JIT/tw_runtime.c
+  s_4dc2c6b530bf0e::t_31c1897da345df 4072,4119,4530,4786,5679,5857,5954-5955,5996,6014,6021,6048,6055
+  s_4dc2c6b530bf0e::t_6636e17595a581 53,4037-4071,4073-4118,4120-4159,4165,4364,4414,4527-4529,4616,4782-4785,4787-4789,5331,5360-5371,5417-5430,5433-5434,5475,5527,5676-5678,5747,5839-5841,5847-5856,5858-5865,5890-5953,5995,5997,6003-6013,6015-6020,6022-6026,6029,6034,6039-6041,6054,6142-6149,6202,6654-6655,6658-6671
+golden_examples_lib.sh
+  s_4dc2c6b530bf0e::t_f13211cd3bbdc2 50-52,54-64
+  s_4dc2c6b530bf0e::t_672ef5d2a479c9 39-41
+  s_4dc2c6b530bf0e::t_bd5eb2d7657742 42-49,66-78
+  s_4dc2c6b530bf0e::t_cacb37cf1947fa 65
+src/JIT/tw_plant.c
+  s_4dc2c6b530bf0e::t_42a86e47a87263 57,67-91,1052,1083
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "248d3b73f5d339b8c3374bec08557c494b30f2ec",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
