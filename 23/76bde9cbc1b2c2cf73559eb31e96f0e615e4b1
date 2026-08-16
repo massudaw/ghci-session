@@ -1,0 +1,46 @@
+aog.html
+  s_6eef7f27ef3488::t_2a84df8c1886a7 1719-1727,1734-1743,1747-1748,1751,1755,1757,1759,1761
+  s_6eef7f27ef3488::t_eeef47fbd2fc68 192-197
+  s_6eef7f27ef3488::t_3ad1933cffeab3 637-638
+  s_6eef7f27ef3488::t_ef880bdaf8757c 2465-2467,2470,2473-2479,2481-2483,2485
+  s_6eef7f27ef3488::t_9983a735c04cb0 454-459
+  s_6eef7f27ef3488::t_35df43e5a83217 2018-2026,2028-2031
+  s_6eef7f27ef3488::t_27639f91b5b7ab 218
+  s_6eef7f27ef3488::t_5791e3df20f0ca 205-210,217,219-223
+  s_6eef7f27ef3488::t_a43ee5a8f5f9b6 604-611
+  s_6eef7f27ef3488::t_b203766b3d32a8 475-478
+  s_6eef7f27ef3488::t_c7dcb6b4454491 952
+  s_6eef7f27ef3488::t_ffb415eca909b7 231
+  s_6eef7f27ef3488::t_78d1d86cc87e11 433-434
+  s_6eef7f27ef3488::t_d1d23f0f08e842 1784-1795
+  s_6eef7f27ef3488::t_3fa49932bb99b6 1898
+  s_6eef7f27ef3488::t_fd95ff66fde67d 1926-1960
+  s_6eef7f27ef3488::t_3a4983fd742ce3 445
+  s_6eef7f27ef3488::t_40c2e2b1a0c90e 2060-2061
+  s_6eef7f27ef3488::t_8bb8a3afde6c0b 2510-2522
+  s_6eef7f27ef3488::t_5aadf8cb6c13a1 2584-2586
+  s_6eef7f27ef3488::t_72bb19d5bbb59a 199-203
+  s_6eef7f27ef3488::t_09ee5f48ec67ef 2490-2496
+  s_6eef7f27ef3488::t_c182775c3d5cd8 2228-2229
+  s_6eef7f27ef3488::t_8c91007e32701b 2574
+  s_6eef7f27ef3488::t_4aaa4fecf09c4c 2814
+  s_6eef7f27ef3488::t_92822ee82f0a1a 204,211-216
+  s_6eef7f27ef3488::t_327172180d48e6 436-438
+  s_6eef7f27ef3488::t_2dc0b402a59e16 235-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2376bde9cbc1b2c2cf73559eb31e96f0e615e4b1",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
