@@ -1,0 +1,43 @@
+src/Model/BusyGatedRate.hs
+  s_53cd4f7830a8fd::t_cc6fb403aa5278 1-113
+golden/AogOps/fingerprint.txt
+  s_53cd4f7830a8fd::t_5e55cbe9a86a5b 1-3,5-6,9-10,12-14,16,19-21,24,26-31
+embraer/ROADMAP.md
+  s_53cd4f7830a8fd::t_b1d17795d03c1f 603-684
+  s_53cd4f7830a8fd::t_60cdb542433f85 573-601
+  s_53cd4f7830a8fd::t_167c76ffeefe70 602
+sprinkler-solver.cabal
+  s_53cd4f7830a8fd::t_264b48dc2e3f1f 109
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_53cd4f7830a8fd::t_02183daee81873 55-56,212-220
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_53cd4f7830a8fd::t_e985ffd964bb79 1549-1551
+  s_53cd4f7830a8fd::t_d6905f235d20c7 3044-3060
+  s_53cd4f7830a8fd::t_f2865a01befc25 2880-2884,2886-2910,2919-2920
+  s_53cd4f7830a8fd::t_f1c67d14ce57b0 104,486-494,498,1324-1338,1547-1548,1552-1563,1566,1577-1586,1588-1597,1639-1644,1660-1696,1715-1725,1728-1730,1732,1734,1749-1754,1804-1811,1859-1868,2407-2420,2422,2424
+  s_53cd4f7830a8fd::t_5073e26d953611 81-84,91,3270-3271
+  s_53cd4f7830a8fd::t_af8fd9c09450c2 1697
+  s_53cd4f7830a8fd::t_a9eea685d340f2 2949-3032,3034-3043
+  s_53cd4f7830a8fd::t_7e4634e4f15806 551-557,577,2317-2322,3033
+  s_53cd4f7830a8fd::t_e9e8f369cc15f6 1813,1870
+golden/AogOps/final_state.txt
+  s_53cd4f7830a8fd::t_5e55cbe9a86a5b 5-23,39-42,48-51,54,63-67,69,74,77,79,81-82,86-98,100,102-115
+golden/AogOps/des.txt
+  s_53cd4f7830a8fd::t_5e55cbe9a86a5b 3,6-3063,3902-4730
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0b520c3f727ac02ff116b0b68c433d9928b16414",
+  "prompts": {},
+  "sessions": {
+    "s_53cd4f7830a8fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "45ce471b-bdee-4036-90f9-b3b6fff45449",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
