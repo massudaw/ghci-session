@@ -1,0 +1,39 @@
+embraer/ROADMAP.md
+  s_53cd4f7830a8fd::t_a7a8a4d891d864 1201-1271
+aog.html
+  s_53cd4f7830a8fd::t_a7203345889b52 916-921
+  s_53cd4f7830a8fd::t_b3d423e2ef5fe1 135-138,143,145-146
+  s_53cd4f7830a8fd::t_8518f767c5278e 100-108
+  s_53cd4f7830a8fd::t_f5fbc9cef5d571 1610-1614,1616,1618-1637,1639-1640,1642
+  s_53cd4f7830a8fd::t_1a619178919961 1537,1540,1545-1546,1560,1565,1570,1591,1603-1604,1796,1805,1808
+  s_53cd4f7830a8fd::t_d41ef03e62267a 159-168,170-172,174-176
+  s_53cd4f7830a8fd::t_03b6b1dee9ba1c 22-30
+  s_53cd4f7830a8fd::t_6b3d6f8ec2eb10 348-352
+  s_53cd4f7830a8fd::t_02c4dc98da8a3c 894,898,900
+  s_53cd4f7830a8fd::t_57f6bc7b16ab0f 962-963
+  s_53cd4f7830a8fd::t_c1105fec23e7d5 675-740
+  s_53cd4f7830a8fd::t_5eff6dd7ebbe40 776-782
+  s_53cd4f7830a8fd::t_1d544602071c8a 1382-1424,1430-1434
+  s_53cd4f7830a8fd::t_360e5d4d5a7c7a 187-192,1734
+  s_53cd4f7830a8fd::t_793e0a47ba7265 543-550,552-558
+  s_53cd4f7830a8fd::t_919fb3aca48658 1281-1286,1571,2104-2109,2111
+  s_53cd4f7830a8fd::t_5447bd64c06d4c 986-992
+  s_53cd4f7830a8fd::t_1520e68acbe0bd 1500-1506,1508-1510
+  s_53cd4f7830a8fd::t_9d673567811237 2385-2388
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4217555e8352ca2c7b38819d69e4139626b0a258",
+  "prompts": {},
+  "sessions": {
+    "s_53cd4f7830a8fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "45ce471b-bdee-4036-90f9-b3b6fff45449",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
