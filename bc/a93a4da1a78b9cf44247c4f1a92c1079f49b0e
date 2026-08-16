@@ -1,0 +1,20 @@
+aog.html
+  s_6eef7f27ef3488::t_865dd0fffaccc8 9-31
+  s_6eef7f27ef3488::t_9fca377bfccd21 47,54,69,79,96,198,236,259,299,303-304,342,345,372,535,538,638-640,649-654,731-732,1446,1504,1520,1523,1538,1556,1563,1567,1605-1606,1815,1904,1925,1929,2057,2088,2099,2157,2209,2212,2492,2736
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bca93a4da1a78b9cf44247c4f1a92c1079f49b0e",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
