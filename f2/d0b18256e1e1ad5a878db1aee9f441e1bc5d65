@@ -1,0 +1,35 @@
+src/JIT/tw_plant.c
+  s_bd4f26339d071a::t_910d17070c4855 1384-1402,1422-1456
+  s_bd4f26339d071a::t_040ff3c6ba6736 1479,1545-1548,1553-1554
+  s_bd4f26339d071a::t_0c98ba9165b7c8 1403-1421
+  s_bd4f26339d071a::t_5afdae83e50ef2 1489
+  s_bd4f26339d071a::t_99842e86c40b81 1470,1472,1474-1478
+  s_bd4f26339d071a::t_32899073dd466a 1457
+src/JIT/tw_runtime.c
+  s_bd4f26339d071a::t_ddfa7d5934718f 3232-3247,3255-3257,3422,3617
+doc/des/RELEASE_SEARCH_COST.md
+  s_bd4f26339d071a::t_ffff8197f9194b 1618-1666
+  s_bd4f26339d071a::t_fea5a7d3f18142 1553-1617
+src/JIT/jit_trampoline.c
+  s_bd4f26339d071a::t_e3b6723a928b1d 30
+  s_bd4f26339d071a::t_3c2b44fbe80230 2593,2606,2620-2621,2631,2641
+  s_bd4f26339d071a::t_feffca3c5e46d1 3946,3950,3989,4001,4014,4019,4034
+  s_bd4f26339d071a::t_f57562170c51a2 3961
+  s_bd4f26339d071a::t_14e3147cd094cb 2505-2556
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f2d0b18256e1e1ad5a878db1aee9f441e1bc5d65",
+  "prompts": {},
+  "sessions": {
+    "s_bd4f26339d071a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f134ed86-8cc7-4544-ac8c-db18b07572fa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
