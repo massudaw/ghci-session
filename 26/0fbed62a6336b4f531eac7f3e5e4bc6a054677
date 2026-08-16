@@ -1,0 +1,22 @@
+src/JIT/tw_runtime.c
+  s_4dc2c6b530bf0e::t_6039d0e1b5b6f8 4065-4070,5983,6081
+  s_4dc2c6b530bf0e::t_0bbda8f0f28f0d 4153-4168
+doc/des/TIMEWARP.md
+  s_4dc2c6b530bf0e::t_40e51344ce3d03 1209-1234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "260fbed62a6336b4f531eac7f3e5e4bc6a054677",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
