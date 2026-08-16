@@ -1,0 +1,58 @@
+embraer/CLIMATE_WEAR_RESEARCH.md
+  s_53cd4f7830a8fd::t_6f4213eb632a93 1-110
+embraer/ROADMAP.md
+  s_53cd4f7830a8fd::t_becee55dcc1587 1098-1139
+  s_53cd4f7830a8fd::t_562727d6a4c527 1034-1096
+  s_53cd4f7830a8fd::t_66f85d3ca69b41 1097
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_53cd4f7830a8fd::t_577982f4c42eeb 1444-1453
+  s_53cd4f7830a8fd::t_eaba1207d66e4d 1498-1501
+  s_53cd4f7830a8fd::t_ea7877ff70ab75 3931-3933,3935-3937
+  s_53cd4f7830a8fd::t_8244a21b033a1f 3412,3415
+  s_53cd4f7830a8fd::t_6952433712d146 4025-4030
+  s_53cd4f7830a8fd::t_4617329d52e569 2499,2503
+  s_53cd4f7830a8fd::t_2987c58c87a866 4541-4549
+  s_53cd4f7830a8fd::t_21b1f8fafadec3 4205-4207
+  s_53cd4f7830a8fd::t_2af73e7ccffe1e 1414-1417
+  s_53cd4f7830a8fd::t_0fd257c9abf1a3 4451,4468
+  s_53cd4f7830a8fd::t_05e321e302794d 4492-4497
+  s_53cd4f7830a8fd::t_52aea36510283b 5980
+  s_53cd4f7830a8fd::t_4c46f4633e8882 6010
+  s_53cd4f7830a8fd::t_a573f825eb9efd 332-435,437-449
+  s_53cd4f7830a8fd::t_b87af4072ee3bc 2522
+  s_53cd4f7830a8fd::t_010ecc61d3ae6b 4064
+  s_53cd4f7830a8fd::t_7bb6d1b92062c1 5087-5094
+  s_53cd4f7830a8fd::t_6e3c68934d99cb 3715
+  s_53cd4f7830a8fd::t_fb213612e46de5 5122-5123
+  s_53cd4f7830a8fd::t_d9234459739afe 77-84
+  s_53cd4f7830a8fd::t_75ffe9a6a98242 1773
+  s_53cd4f7830a8fd::t_1a9fbb302c7b8f 3728-3730
+  s_53cd4f7830a8fd::t_ff720d9ec3af9e 5989-5994,5996-5997,5999-6002
+  s_53cd4f7830a8fd::t_e5f526a5905cb9 1173-1260
+  s_53cd4f7830a8fd::t_887dd2421f7cb5 4440-4450,4452-4467,4469-4486,4490-4491
+  s_53cd4f7830a8fd::t_0b5a1b6b3cdc35 4284-4365
+  s_53cd4f7830a8fd::t_0902664f24da0f 6011-6029
+  s_53cd4f7830a8fd::t_28e6d3ba23f188 4204
+  s_53cd4f7830a8fd::t_335588e83eb427 5930-5979,5981-5988,5995,5998,6003-6009,6030-6161
+  s_53cd4f7830a8fd::t_709ee48208d2a4 3934
+golden/AogOps/final_state.txt
+  s_53cd4f7830a8fd::t_0e46662aea3d2a 189-211
+golden/AogOps/fingerprint.txt
+  s_53cd4f7830a8fd::t_0e46662aea3d2a 1-3,5-6,10,16,20,23,25-26,28,31-32,37,39,47,52,54,57-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ad573a5335bb8c3f010368011cce37f8e36dfbca",
+  "prompts": {},
+  "sessions": {
+    "s_53cd4f7830a8fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "45ce471b-bdee-4036-90f9-b3b6fff45449",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
