@@ -1,0 +1,105 @@
+golden/ModelRotationalTranslational/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 27-28,30-31
+golden/ForceQuarterCar/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 2-3,5-6,8-9
+golden/ModelDiodeClamp/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 3,5
+golden/ModelDCMotorCTMS/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 25,33
+golden/ModelRocketTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 33-35,82-84
+golden/ModelDCPump/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 30,40-41,55
+src/Transient.hs
+  s_d51ff5a425a16f::t_114aa7404bcbb5 636-650,654-655
+golden/ModelMagneticTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 17,24-25
+golden/ModelPneumaticAccumulator/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 9
+golden/ModelLiftRegen/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 12-17,20,31-32,34-35,60
+golden/GasChamberHeating/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 7-9
+golden/ModelSliderCrank/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 26-34
+golden/ModelCombustionEngine/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 30-38
+golden/ModelExcavatorArm/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 2-4,8-12,24
+golden/ModelBattery/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 26-27,31,47
+golden/ModelClosedLoopEnergyCycle/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 54-55,65-66,68-69,81,109
+golden/ModelOttoCycle/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 6-8
+golden/ModelRelaxationOsc/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 3,5
+golden/ModelPneumaticSuspension/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 2-3,5-6,18
+golden/ModelRotationalMotorMagnetic/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 3,11-12
+golden/ModelMotorBackEMF/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 24-25,27-28,40
+golden/ModelMotorInertia/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 2-3,5-6,18
+golden/ModelCoolingLoopDC/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 65-74,107-110,120-125
+golden/ModelRotationalMotor/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 22,29
+golden/ModelLNGTrainAU/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 70,72-73,107,109-110,136,138-139
+golden/ModelThermoEngine/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 48-56,64-66
+golden/ModelRLCTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 4
+golden/ModelTorqueVector/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 27,29,31,33,41,43,47,49,53,55,59,61,65
+golden/ModelLNGTrain/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 74,76-77,111,113-114,140,142-143
+golden/ModelFertilizerTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 57-61,70,72
+golden/GasCompression/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 7-9
+golden/ModelGasPiston/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 25-26,28-29,41-43
+golden/ModelHydraulicTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 15-18
+golden/ModelChemicalTransient/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 9
+golden/ModelPneumaticGasSpring/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 24-25,27-28,40
+golden/ForceOscillator/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 2-3,5-6
+golden/ModelRocketLiftoff/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 7-8,10-11
+golden/ModelACConditioner/equations.txt
+  s_4dc2c6b530bf0e::t_0e0112c5ef67dc 85
+golden/ModelCarDrive/equations.txt
+  s_d51ff5a425a16f::t_18f2451293f05b 16,22,25,31,34,40,43,49-61,117,119,121,123,125,179,183,187,189,191,193,197,199,201,203,207,209,211,213,217,219,221,223
+src/JIT/tw_runtime.c
+  s_4dc2c6b530bf0e::t_d07c38380b80d6 3230,3240-3252,3321-3353
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b0c83f5245b15037a6707d7ba414f447b00154c1",
+  "prompts": {},
+  "sessions": {
+    "s_4dc2c6b530bf0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "da0da0ef-a3f1-48ae-a512-b927bbe098cd",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_d51ff5a425a16f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8497e661-2521-481a-95b9-31b4ebf142c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
