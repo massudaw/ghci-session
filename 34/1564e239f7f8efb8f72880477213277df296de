@@ -1,0 +1,28 @@
+doc/des/GATE_SAMPLED.md
+  s_2b2464dac28ffe::t_817d7ef6f0980c 511-528
+  s_2b2464dac28ffe::t_5b51a077c7fc34 432-510
+  s_2b2464dac28ffe::t_22a4554206ced2 431
+sprinkler-solver-examples/src/Examples/DESProcessChainTW.hs
+  s_2b2464dac28ffe::t_69f87a251d3707 611-614,616
+  s_2b2464dac28ffe::t_41f4b80d961a98 501-511,513-514,516-518,520-521,524-530
+doc/des/GATE_RELEASE_EVALUATION.md
+  s_2b2464dac28ffe::t_db37f4308a5622 29-36
+doc/des/DES_PROCESS_CHAIN.md
+  s_2b2464dac28ffe::t_fccf399275568e 220-226
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "341564e239f7f8efb8f72880477213277df296de",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
