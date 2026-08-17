@@ -1,0 +1,23 @@
+src/Solver/DES.hs
+  s_2b2464dac28ffe::t_ab233a40d32059 2278-2295
+  s_2b2464dac28ffe::t_895dbcbfb70d5b 1427-1432
+sprinkler-solver-examples/src/Examples/DESEntityAttrStressTW.hs
+  s_2b2464dac28ffe::t_96dd9549bcec87 78-92
+  s_2b2464dac28ffe::t_2f6801ada2f04b 371
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d6ada9035decd3e207afefafd1882e44a8ceabcf",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
