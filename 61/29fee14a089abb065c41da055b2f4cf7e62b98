@@ -1,0 +1,22 @@
+embraer/ROADMAP.md
+  s_6eef7f27ef3488::t_24f5a66cba6298 1933-1975
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_d3cf758f2975ee 6872-6886,6889-6892
+  s_6eef7f27ef3488::t_d19ac56e2566d1 144-145
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6129fee14a089abb065c41da055b2f4cf7e62b98",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
