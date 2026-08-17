@@ -1,0 +1,22 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_2b2464dac28ffe::t_fbe6120c9a5e00 492-536
+  s_2b2464dac28ffe::t_70ab56aa0f5a79 474-478,482
+  s_2b2464dac28ffe::t_20efd2f93044ce 689-697,709-738
+  s_2b2464dac28ffe::t_2d9f07887ef085 444-456
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "04ad2974550b68954894874f78ee25ce5bc21721",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
