@@ -1,0 +1,23 @@
+doc/des/PROCESS_CALCULUS.md
+  s_2b2464dac28ffe::t_5c7d7c58f9e53b 798
+  s_2b2464dac28ffe::t_5709997e3aa371 1-138,141-249,251-586,589-797,799-879
+  s_2b2464dac28ffe::t_b4bc11e5fc9f13 587-588
+  s_2b2464dac28ffe::t_ba76f9ebd322e9 250
+  s_2b2464dac28ffe::t_7e8d372348e62e 139-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8fed33d4e794959bde1cb23badb061b00a82bcce",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
