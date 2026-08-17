@@ -1,0 +1,19 @@
+embraer/ROADMAP.md
+  s_6eef7f27ef3488::t_95a9ccc4a702e2 1933-1979
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c5cd4dd3f73d785890df4703dfd39cfe9bb60bec",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
