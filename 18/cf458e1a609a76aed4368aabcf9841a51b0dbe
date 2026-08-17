@@ -1,0 +1,29 @@
+doc/des/GATE_SAMPLED.md
+  s_2b2464dac28ffe::t_73563bcb6c7fa1 1-309
+doc/des/DES_EVENT_KERNEL.md
+  s_2b2464dac28ffe::t_2e5530503338cd 8-16
+CLAUDE.md
+  s_2b2464dac28ffe::t_89e72e2c60f986 323-327
+doc/des/CROSS_ACTOR_EXTENSIBILITY_SURVEY.md
+  s_2b2464dac28ffe::t_6f2e0593f5e4f2 21-22,52,57-62,147
+  s_2b2464dac28ffe::t_f89fc1219de75f 198-222,444-462,482
+  s_2b2464dac28ffe::t_2e5530503338cd 26-28
+doc/des/FANIN_ACCUMULATOR.md
+  s_2b2464dac28ffe::t_89e72e2c60f986 189-198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "18cf458e1a609a76aed4368aabcf9841a51b0dbe",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
