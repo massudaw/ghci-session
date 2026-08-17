@@ -1,0 +1,28 @@
+src/JIT/tw_runtime.c
+  s_2b2464dac28ffe::t_0b5fb24fcb2a34 3715,3717-3729
+  s_2b2464dac28ffe::t_33b1f290ec4322 7084-7087,7099-7124
+  s_2b2464dac28ffe::t_6d15be91487324 3730
+  s_2b2464dac28ffe::t_e3718615ae79ac 925-932,939
+  s_2b2464dac28ffe::t_30d9d49ca2eb8b 883-894
+src/JIT/tw_engine.h
+  s_2b2464dac28ffe::t_9dab118ed1bfcd 64-66
+  s_2b2464dac28ffe::t_e12e465c1a201c 106-137
+  s_2b2464dac28ffe::t_6cfa22654fc4a7 509-512
+  s_2b2464dac28ffe::t_91b3bc0db48a2e 282-302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "72071720deb75e451e9303651460d5d362c6491e",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
