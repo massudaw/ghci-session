@@ -1,0 +1,37 @@
+example/Main.hs
+  s_2b2464dac28ffe::t_eb14301c7eea87 220,492
+golden/DESEntityAttrStressTW/status.txt
+  s_2b2464dac28ffe::t_06ca6d0bfaf0d2 1
+golden/DESEntityAttrStressTW/final_state.txt
+  s_2b2464dac28ffe::t_06ca6d0bfaf0d2 1-16
+sprinkler-solver-examples/src/Examples/DESEntityAttrStressTW.hs
+  s_2b2464dac28ffe::t_f7dd31a974c76f 319,330-331,356-357
+  s_2b2464dac28ffe::t_6eca5d71a2c9af 87,455-469,471-481,488-490,493-518
+  s_2b2464dac28ffe::t_1f47ae1b274fac 429-454,470
+  s_2b2464dac28ffe::t_d80ca95b8a39a9 2-10,229,482-487
+  s_2b2464dac28ffe::t_c78132d0e6a3db 342-344,365,367-375,386-393,520-528,530,532
+  s_2b2464dac28ffe::t_61eea6a17ce8ef 1,11-63,72-86,88-228,230-318,320-329,332,340-341,345-350,352-355,358-364,366,394,519,529,531,533-535
+  s_2b2464dac28ffe::t_d4331bb8cb6e99 333-339,351
+  s_2b2464dac28ffe::t_c8426a2f4af2a0 395-428
+  s_2b2464dac28ffe::t_6a7343d4f957bd 491-492
+  s_2b2464dac28ffe::t_e25ea5ae233da8 64-71
+  s_2b2464dac28ffe::t_f8d8bffd444f46 376-385
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_2b2464dac28ffe::t_eb14301c7eea87 172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "45a7bc7282982520593d379631b83a0be11aa4d6",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
