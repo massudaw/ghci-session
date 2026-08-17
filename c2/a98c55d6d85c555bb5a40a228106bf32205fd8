@@ -1,0 +1,30 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 473-483,563-564
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 409-429
+doc/des/DES_QUEUE_DISCIPLINE.md
+  h_fd5809635b36a3 216-219,237,240-271
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 897-928
+golden/DESProcessChainTW/final_state.txt
+  h_fd5809635b36a3 14-22
+sprinkler-solver-examples/src/Examples/DESProcessChainTW.hs
+  h_fd5809635b36a3 70-90,96,109-113,115-117,124-127,337-667,985-1129,1131-1132,1134-1135
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 2303-2341,2343-2347,2353,2358-2361
+src/Solver/DES.hs
+  h_fd5809635b36a3 823-837,877-889,891-899
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 83-85,100-102,338-468
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c2a98c55d6d85c555bb5a40a228106bf32205fd8",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
