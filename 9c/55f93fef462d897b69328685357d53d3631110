@@ -1,0 +1,20 @@
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 169,172-173,181,205,209,211,564,661
+doc/des/PROCESS_CALCULUS.md
+  h_fd5809635b36a3 783,795
+golden/DESQueueDisciplineStressTW/final_state.txt
+  h_fd5809635b36a3 1-26
+golden/DESQueueDisciplineStressTW/status.txt
+  h_fd5809635b36a3 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9c55f93fef462d897b69328685357d53d3631110",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
