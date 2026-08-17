@@ -1,0 +1,36 @@
+doc/des/DES_ORACLE_COVERAGE.md
+  h_fd5809635b36a3 1-115
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 371-414,473-475
+doc/des/DES_QUEUE_DISCIPLINE.md
+  h_fd5809635b36a3 271-273
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 926-932
+example/TestTimeWarpJit.hs
+  h_fd5809635b36a3 80-138,896-908
+golden/DESExploreDistillery/fingerprint.txt
+  h_fd5809635b36a3 1-4,6-20
+golden/DESExploreShop/fingerprint.txt
+  h_fd5809635b36a3 1-28,30-40
+golden/DESExploreShopNative/fingerprint.txt
+  h_fd5809635b36a3 1-27,29-37
+golden/DESProcessChainTW/final_state.txt
+  h_fd5809635b36a3 23-24
+golden/DESQueueDisciplineStressTW/final_state.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-examples/src/Examples/DESProcessChainTW.hs
+  h_fd5809635b36a3 131-132,670-686,1096-1108,1119-1120,1162-1167,1171,1174-1175
+src/Solver/DES.hs
+  h_fd5809635b36a3 1513-1520,1523-1524
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b5ea3bf1de7b7cf6acbb2b1f23879424feb2fa87",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
