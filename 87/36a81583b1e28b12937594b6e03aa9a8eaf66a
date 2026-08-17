@@ -1,0 +1,19 @@
+doc/des/CROSS_ACTOR_EXTENSIBILITY_SURVEY.md
+  s_6eef7f27ef3488::t_b957db9577057f 1-477
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8736a81583b1e28b12937594b6e03aa9a8eaf66a",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
