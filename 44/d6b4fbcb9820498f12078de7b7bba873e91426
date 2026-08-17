@@ -1,0 +1,19 @@
+doc/des/GATE_SAMPLED.md
+  s_2b2464dac28ffe::t_28998ec6d6597b 198-221,334-374
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "44d6b4fbcb9820498f12078de7b7bba873e91426",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
