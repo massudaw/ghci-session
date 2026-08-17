@@ -1,0 +1,61 @@
+embraer/SERVICES_OPERATIONS_RESEARCH.md
+  s_6eef7f27ef3488::t_907875b466f24e 1-437
+embraer/DELIVERY_EIS_RESEARCH.md
+  s_6eef7f27ef3488::t_b5957bc154b56b 1-562
+embraer/ADSB_CAMPAIGN_RESEARCH.md
+  s_6eef7f27ef3488::t_dcc344fc07972b 1-274
+example/Main.hs
+  s_2b2464dac28ffe::t_6eef01c5745c72 219,488
+src/JIT/tw_runtime.c
+  s_2b2464dac28ffe::t_ab124d20d30b8f 3751-3783,3785
+  s_2b2464dac28ffe::t_cbbc07b51ae9e3 3711-3715,3733-3737,3748-3750,3796,3807,3815-3817
+  s_2b2464dac28ffe::t_06cdb5c4af69e1 3784,3789,3791
+  s_2b2464dac28ffe::t_df33985155e617 3792-3795,3797-3806,3808-3814
+sprinkler-solver-aog/src/Examples/AogNetwork.hs
+  s_6eef7f27ef3488::t_1e35a85c308739 57-74
+  s_6eef7f27ef3488::t_4dee734dd1e8bb 145-165
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_a0fca6cedbf8b4 5672
+  s_6eef7f27ef3488::t_dbdbebcaf9846f 4185
+  s_6eef7f27ef3488::t_b8a606057cab6f 2266-2285
+  s_6eef7f27ef3488::t_889a71b61ce66b 4506-4510
+  s_6eef7f27ef3488::t_c40bc598606277 5006-5027
+embraer/PARTS_INVENTORY_SPEC.md
+  s_6eef7f27ef3488::t_41db97535bc470 83-111
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_2b2464dac28ffe::t_0240d2eb7bb3df 171
+sprinkler-solver-examples/src/Examples/DESGateSampledStressTW.hs
+  s_2b2464dac28ffe::t_6b05332eb96316 459
+  s_2b2464dac28ffe::t_2d7e6a770df701 1-2,5-8,11-12,14,17-19,24,29,36,38,42,55-57,59-60,64-65,73,76-81,83-85,87-89,97,99-106,109-115,144,152,154,160-172,175,250,275-277,280-284,286-287,290-293,300-304,385-388,390,396-399,402-404,409-410,412-414,420,422-423,427-435,437-440,442,445,447-448,451-454,457,462,464,469-470,474,484-485,508,521,524-526,528-530
+  s_2b2464dac28ffe::t_dae7dcbb6c6215 155-159,203-209,270-271,337-344
+  s_2b2464dac28ffe::t_3966aaeeaa6c03 3-4,9-10,13,15-16,20-23,25-28,30-35,37,39-41,43-54,58,61-63,66-72,74,86,90-96,107-108,116-143,145-151,153,173-174,176-202,210-249,251-269,272-274,278-279,285,288-289,294-299,305,331-335,389,391-395,400-401,405-408,411,421,424-426,436,441,443-444,458,460-461,463,465-468,471-473,475-483,486-507,520,522-523
+  s_2b2464dac28ffe::t_04c549a0f5f324 75,351-384
+  s_2b2464dac28ffe::t_50c212927c3f63 82,98,306-330,336,345-350,415-419,449-450,455-456,509-519,527
+  s_2b2464dac28ffe::t_4a258d1f3e4792 446
+src/JIT/tw_engine.h
+  s_2b2464dac28ffe::t_25e7e732bbd249 121-127,134-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4da3abfafffc33088c773e3e3b57bd20f30fc3ed",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
