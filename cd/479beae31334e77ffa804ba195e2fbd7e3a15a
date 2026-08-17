@@ -1,0 +1,22 @@
+doc/des/PROCESS_CALCULUS.md
+  s_2b2464dac28ffe::t_a127372ae4a2a6 392-430
+  s_2b2464dac28ffe::t_4c62920c5fd6aa 301,303-306,315
+doc/des/DES_PROCESS_CHAIN.md
+  s_2b2464dac28ffe::t_838a4ad0cef0bd 313
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "cd479beae31334e77ffa804ba195e2fbd7e3a15a",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
