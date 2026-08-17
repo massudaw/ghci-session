@@ -1,0 +1,39 @@
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_45a6b33279fb77 7047-7049
+  s_6eef7f27ef3488::t_828830a5328f24 6861,6863,6867-6868,6870-6873
+  s_6eef7f27ef3488::t_2bb487931bc673 62
+  s_6eef7f27ef3488::t_5e18b31a4280ac 6502-6509
+  s_6eef7f27ef3488::t_3c2f07fb871c01 6962-6992
+  s_6eef7f27ef3488::t_a0c44d6ae458c5 7440-7441
+  s_6eef7f27ef3488::t_6fb195883de04a 92-95
+  s_6eef7f27ef3488::t_4b57b50be96af0 6713-6727,6729-6730,6737
+  s_6eef7f27ef3488::t_638ec45df93a63 6733-6735
+  s_6eef7f27ef3488::t_0ff8010f439ae2 7059-7076
+  s_6eef7f27ef3488::t_52ea44acad6f9a 7613-7626
+  s_6eef7f27ef3488::t_cd3983d0ab6555 1275-1280
+  s_6eef7f27ef3488::t_42551621cb00e7 1297-1376,1383-1397,1399,1401-1402,1404
+  s_6eef7f27ef3488::t_a16f31c5dd3afb 6840-6852
+  s_6eef7f27ef3488::t_bf0cead453b59a 6857-6858
+  s_6eef7f27ef3488::t_32a1a501d40424 6889,6893-6894,6896-6921
+  s_6eef7f27ef3488::t_e2030fcd7515c0 3994-4012,4023-4024
+  s_6eef7f27ef3488::t_b86365d099040d 6746
+  s_6eef7f27ef3488::t_0e05c5c800f30a 7010
+  s_6eef7f27ef3488::t_f4b0fc4dc7e4ae 4013-4022,4025-4026
+  s_6eef7f27ef3488::t_6cd97648f973aa 7043,7046,7050
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f84c9b7342b72ef8d950a566472945d508cef240",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
