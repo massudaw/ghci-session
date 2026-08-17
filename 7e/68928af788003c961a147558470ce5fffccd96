@@ -1,0 +1,23 @@
+sprinkler-solver.cabal
+  s_2b2464dac28ffe::t_d1803bb0dddf78 303
+src/Solver/DES/Process.hs
+  s_2b2464dac28ffe::t_34eb44269acbc3 1-86,88-320,322-398
+  s_2b2464dac28ffe::t_9661a482547cc4 87
+  s_2b2464dac28ffe::t_802e31b321a220 321
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7e68928af788003c961a147558470ce5fffccd96",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
