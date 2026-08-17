@@ -1,0 +1,67 @@
+src/JIT/tw_engine.h
+  s_2b2464dac28ffe::t_6c72fc5acad22f 542-570
+  s_2b2464dac28ffe::t_c32ebf143b949d 1363-1416,1418-1419,1421-1425
+  s_2b2464dac28ffe::t_24e16e636bcb39 1445-1460
+  s_2b2464dac28ffe::t_0daf97c2645c3f 200-208
+  s_2b2464dac28ffe::t_b3848b33c746c6 1907-1913
+  s_2b2464dac28ffe::t_c7bd8179580cf0 1417,1420
+  s_2b2464dac28ffe::t_b09c816b3f535a 1986-1990
+  s_2b2464dac28ffe::t_c16c96dbbdd8d8 2032-2034,2039-2058
+src/JIT/tw_runtime.c
+  s_2b2464dac28ffe::t_5c4f14b21a7f57 828-833
+  s_2b2464dac28ffe::t_2667184f2db8c4 785-827,834-866,869-880
+  s_2b2464dac28ffe::t_8817a401f0dc12 349-365
+  s_2b2464dac28ffe::t_fbe17d38e0a74b 867-868
+  s_2b2464dac28ffe::t_fa19b7e7dc13c3 7486-7521
+src/JIT/tw_model.h
+  s_2b2464dac28ffe::t_d1756df06116a7 202-230
+src/Solver/DES.hs
+  s_2b2464dac28ffe::t_48c3b03effcb24 864,866
+  s_2b2464dac28ffe::t_1b8440b621b612 1232-1235,1237,1239-1299
+  s_2b2464dac28ffe::t_6a3bf3b3b28dc2 352
+  s_2b2464dac28ffe::t_f759784d0942bc 2138-2154
+  s_2b2464dac28ffe::t_865cfd56019e79 1651-1658
+  s_2b2464dac28ffe::t_37494db61ce64f 60-72
+  s_2b2464dac28ffe::t_b6f934a05943d4 1347-1352
+  s_2b2464dac28ffe::t_efa6f7c1e3d5b4 1582-1594,1597-1614,1626-1650,1659-1676,1680-1688
+  s_2b2464dac28ffe::t_198dbb44367282 1615-1625
+  s_2b2464dac28ffe::t_a74ef167c3f832 598
+  s_2b2464dac28ffe::t_a620326c7c6a2f 914
+  s_2b2464dac28ffe::t_f7a69f58036dfc 1595-1596
+  s_2b2464dac28ffe::t_e3fc35cca9ec34 57
+  s_2b2464dac28ffe::t_67225041ddd84f 735-742
+  s_2b2464dac28ffe::t_391307f9b6d32a 289-306,309-351,353-431
+  s_2b2464dac28ffe::t_cdb937c8c80575 1677-1679
+  s_2b2464dac28ffe::t_9c0330a7e5cd19 445
+  s_2b2464dac28ffe::t_40b25394bba1b8 937
+  s_2b2464dac28ffe::t_a11261b36fe0da 89-91
+  s_2b2464dac28ffe::t_8ab76c15c73227 1174-1181,1184-1187
+  s_2b2464dac28ffe::t_071404093da36d 1203,1208-1216
+  s_2b2464dac28ffe::t_13e75f5e07e15e 1751-1761
+  s_2b2464dac28ffe::t_57eda9cb271881 970
+  s_2b2464dac28ffe::t_ed2a47e6511c26 846-850
+  s_2b2464dac28ffe::t_0eac2e39b27f7a 1825-1831,1833-1836
+  s_2b2464dac28ffe::t_5836ea85b9b6f9 508-532
+  s_2b2464dac28ffe::t_565006a20d9018 432
+src/Solver/DES/TimeWarpJit.hs
+  s_2b2464dac28ffe::t_b65c1fecf11c31 3821-3825
+  s_2b2464dac28ffe::t_e2c204d7100264 201
+  s_2b2464dac28ffe::t_eaa0db6a1349d2 4123-4152
+  s_2b2464dac28ffe::t_8e8ab1169f7123 4359-4368
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e1db7e253c9f17baddb4a0d55a574a6b93f52dc8",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
