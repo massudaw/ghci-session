@@ -1,0 +1,41 @@
+doc/des/PROCESS_CALCULUS.md
+  s_2b2464dac28ffe::t_08579890debc29 773,785
+  s_2b2464dac28ffe::t_94d55a68068119 744-770
+  s_2b2464dac28ffe::t_b32c6644be47df 712-718
+doc/des/PROCESS_API_ANALYSIS.md
+  s_2b2464dac28ffe::t_43a6ed87e56755 812-874
+  s_2b2464dac28ffe::t_430b4104a597ca 201
+  s_2b2464dac28ffe::t_68aebc3efea8c3 172-173,181,538,564,581,668
+  s_2b2464dac28ffe::t_6497982c01d7dc 169,200,209,211
+  s_2b2464dac28ffe::t_08579890debc29 535-537,645,661
+  s_2b2464dac28ffe::t_45ceb8a2d6f984 205
+doc/des/DES_ATTRIBUTE_WRITE.md
+  s_2b2464dac28ffe::t_84c78bf45ab0c8 355,357-391,400-411
+  s_2b2464dac28ffe::t_6f303cf5a6b6c4 1-239,244-354,356,392-399
+  s_2b2464dac28ffe::t_e25ea5ae233da8 240-243
+doc/des/DES_PROCESS_CHAIN.md
+  s_2b2464dac28ffe::t_7619842ca6b37a 381-388
+  s_2b2464dac28ffe::t_7bc1e24ca73815 342-359
+  s_2b2464dac28ffe::t_dcf38e2be99015 389
+doc/des/DES_ELEMENT_ROADMAP.md
+  s_2b2464dac28ffe::t_9182610f865b11 374-397
+  s_2b2464dac28ffe::t_0847515df05723 373
+CLAUDE.md
+  s_2b2464dac28ffe::t_e67149196f6dfa 323-325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d3e161025f19ef43c8da7a65ffe9227f6c94b7a3",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
