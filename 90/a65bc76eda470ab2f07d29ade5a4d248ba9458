@@ -1,0 +1,21 @@
+embraer/ROADMAP.md
+  s_6eef7f27ef3488::t_6c261e8aa1229c 219-228,2057-2084
+  s_6eef7f27ef3488::t_faf02ca011e3ab 2293-2349
+  s_6eef7f27ef3488::t_ff4b0a0632d188 2085,2459-2480
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "90a65bc76eda470ab2f07d29ade5a4d248ba9458",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
