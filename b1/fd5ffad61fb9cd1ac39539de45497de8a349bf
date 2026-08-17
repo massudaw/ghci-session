@@ -1,0 +1,24 @@
+doc/des/DES_ATTRIBUTE_WRITE.md
+  h_fd5809635b36a3 297-303
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 29,398-401,441-477,517,544-546,553-557
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 360-370,401-414
+doc/des/DES_QUEUE_DISCIPLINE.md
+  h_fd5809635b36a3 1-254
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 879-902
+doc/des/PROCESS_CALCULUS.md
+  h_fd5809635b36a3 719-727,772-774,791,803-830
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b1fd5ffad61fb9cd1ac39539de45497de8a349bf",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
