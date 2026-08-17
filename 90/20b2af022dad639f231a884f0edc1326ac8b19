@@ -1,0 +1,30 @@
+example/Main.hs
+  h_fd5809635b36a3 221,494
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  h_fd5809635b36a3 173
+sprinkler-solver-examples/src/Examples/DESQueueDisciplineStressTW.hs
+  h_fd5809635b36a3 1-835
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 209-215,459-470,503-508,510-517,600-643,958-960,963-987,1018-1030,1415,1419-1525,1648-1677,1683-1685,1688,1695-1699,1713-1718,1734-1739,1750-1755,2127,2193,2270,2287,2303-2341,2449-2496,2502-2503,2517-2518,2943,2956-2962
+src/JIT/tw_model.h
+  h_fd5809635b36a3 231-258
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 116-121,275,373-393,590-604,924-1003,1039-1070,4387,4389,4391-4392,4404-4405,4746-4750,4753-4760,4947-4948,4957,5159-5160,5232,5275-5276,5280-5281,5291-5292,5296-5302,5381-5394,5436-5438,5441-5442,6127,6129,6132-6133,6372-6375,6459-6460,6463-6466,6538-6549,6592-6594,6597-6600,7805-7849,7912
+src/Solver/DES.hs
+  h_fd5809635b36a3 84,144
+src/Solver/DES/TimeWarpJit.hs
+  h_fd5809635b36a3 201,3701-3710,3835-3842,4082-4086,4175-4190,4379-4380,4409-4416
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 478
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9020b2af022dad639f231a884f0edc1326ac8b19",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
