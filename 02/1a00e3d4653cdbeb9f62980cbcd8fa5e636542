@@ -1,0 +1,36 @@
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_9390bc7ce36456 3246-3257
+  s_6eef7f27ef3488::t_477a00fc94fa5e 3219-3227
+  s_6eef7f27ef3488::t_89b2bdafddf250 6698
+  s_6eef7f27ef3488::t_2669800863cd4a 76
+  s_6eef7f27ef3488::t_cae4d81c19858a 7454-7474
+  s_6eef7f27ef3488::t_32222d6ecb68f2 75
+  s_6eef7f27ef3488::t_3c9f8fdc46f6fc 4603,4607
+  s_6eef7f27ef3488::t_f4066f59db0732 1810-1826
+  s_6eef7f27ef3488::t_93aa833896bd3c 5540
+  s_6eef7f27ef3488::t_6b7d05f9defe63 7428-7453
+  s_6eef7f27ef3488::t_bdf40f983c44ff 1865-1867,1871-1872
+  s_6eef7f27ef3488::t_baa4bdf676fbcf 77
+  s_6eef7f27ef3488::t_fae6b668684b4a 7389,7392
+  s_6eef7f27ef3488::t_87f896ba910920 7366-7388,7390-7391,7393-7412,7424-7425,7427
+  s_6eef7f27ef3488::t_ddb7b53d67212b 2349
+  s_6eef7f27ef3488::t_12507a0c043843 7413-7423,7426
+  s_6eef7f27ef3488::t_6cd2f851b49bfd 4941
+  s_6eef7f27ef3488::t_0266054a8bff07 7475
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "021a00e3d4653cdbeb9f62980cbcd8fa5e636542",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
