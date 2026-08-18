@@ -1,0 +1,22 @@
+sprinkler-solver-process-tests/src/Examples/DESProcessMatchTW.hs
+  s_6eef7f27ef3488::t_fbcca11a3bf013 247-251,254,373-374,385-386
+  s_6eef7f27ef3488::t_dc619779c79925 71,75-76,190-246,252-253,255-288
+  s_6eef7f27ef3488::t_c97ec1f9ea3c09 555-587,597-598
+  s_6eef7f27ef3488::t_49a26727d7333f 289,554
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6e82f216159a07bb07106f975a5df63e43172f53",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
