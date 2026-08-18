@@ -1,0 +1,36 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 533-543
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 415-445
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 933-962
+example/Main.hs
+  h_fd5809635b36a3 223,497
+golden/DESProcessLoopTW/final_state.txt
+  h_fd5809635b36a3 1-12
+golden/DESProcessLoopTW/fingerprint.txt
+  h_fd5809635b36a3 1-4
+golden/DESProcessLoopTW/status.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  h_fd5809635b36a3 175
+sprinkler-solver-examples/src/Examples/DESProcessLoopTW.hs
+  h_fd5809635b36a3 1-576
+src/Solver/DES.hs
+  h_fd5809635b36a3 58,675-687
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 3-4,7-11,21-23,30-32,35-39,89,104,112-115,127-134,200-206,211-215,328,462,499-629,661
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 57,495-511
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c66905bb731a8f8f3a381466089a41e915fe719a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
