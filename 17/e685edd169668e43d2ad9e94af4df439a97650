@@ -1,0 +1,26 @@
+doc/des/DES_ORACLE_COVERAGE.md
+  h_fd5809635b36a3 83-104
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 416-420,427-460
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 945-960
+golden/DESProcessLoopTW/final_state.txt
+  h_fd5809635b36a3 1-6,13-19
+sprinkler-solver-examples/src/Examples/DESProcessLoopTW.hs
+  h_fd5809635b36a3 71,74,84,118-126,128,135,216-218,233,235-236,239,443-734,863-995,997-998,1000-1001
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 1033-1057,2271-2276
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 115-116,129-132,134-135,213-217,336-343,466-470,474-491,497-500,526-527,560-561,564,570,572-573,575-582,585-586,595-606,609-610,614,679
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "17e685edd169668e43d2ad9e94af4df439a97650",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
