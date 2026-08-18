@@ -1,0 +1,14 @@
+doc/des/DES_MIXED_REALTIME_PROCESS.md
+  h_fd5809635b36a3 1-249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a51634a6257f5e6f4ad92260ab9cf6e4182f7c84",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
