@@ -1,0 +1,43 @@
+sprinkler-solver-examples/src/Examples/DESQueueDisciplineStressTW.hs
+  s_6eef7f27ef3488::t_9ec0cd87ff38f0 458-472,475-478,485-507,509-543,545-551,554-574,852
+  s_6eef7f27ef3488::t_5d5cfb5abca113 807-809
+  s_6eef7f27ef3488::t_9918ed03956560 820-821
+  s_6eef7f27ef3488::t_5861f51cd4bd7b 830-835,842-851
+  s_6eef7f27ef3488::t_57932d77d3cc49 1066-1067,1071,1073
+  s_6eef7f27ef3488::t_a165b945d73e97 791-806,810-819,822-829,836-841,854-857,864-865
+  s_6eef7f27ef3488::t_b0128e270c7c04 99-100
+  s_6eef7f27ef3488::t_6c9478d9e278ac 142-193,195,206-227,238
+  s_6eef7f27ef3488::t_32623289d24920 194,196-205
+  s_6eef7f27ef3488::t_a7df259ac25a4e 228-237
+  s_6eef7f27ef3488::t_29e9c3375e61a5 508
+  s_2b2464dac28ffe::t_905440a9273989 853
+golden/DESQueueDisciplineStressTW/final_state.txt
+  s_6eef7f27ef3488::t_464d8701057ca5 8-13
+tools/model_session/targets.json
+  s_6eef7f27ef3488::t_2820e5d0437519 610-628,631,633-635,639,642,644-646
+  s_6eef7f27ef3488::t_6b6c09220210a4 629-630,632,636-638,640-641,643,647
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e400cf1256bb0d5db201eb15cff2e96d1ea15ecf",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
