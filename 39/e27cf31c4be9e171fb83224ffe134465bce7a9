@@ -1,0 +1,24 @@
+example/Main.hs
+  s_2b2464dac28ffe::t_b3928da90b9e09 226
+  s_2b2464dac28ffe::t_81527fe274a26d 506
+golden/DESJoinTW/final_state.txt
+  s_2b2464dac28ffe::t_0337906cc5f3b5 1-9
+golden/DESJoinTW/status.txt
+  s_2b2464dac28ffe::t_0337906cc5f3b5 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "39e27cf31c4be9e171fb83224ffe134465bce7a9",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
