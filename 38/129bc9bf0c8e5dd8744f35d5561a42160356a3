@@ -1,0 +1,28 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 593-611
+doc/des/DES_FORK_JOIN.md
+  h_fd5809635b36a3 3,11-14,321-333,365-409
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  h_fd5809635b36a3 32
+sprinkler-solver-process-tests/src/Examples/DESProcessForkTW.hs
+  h_fd5809635b36a3 1-468
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 2080-2085,2087-2089
+src/Solver/DES.hs
+  h_fd5809635b36a3 2099-2104,2106-2109
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 62-70,105-106,120,654-725
+tools/model_session/targets.json
+  h_fd5809635b36a3 318-319
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "38129bc9bf0c8e5dd8744f35d5561a42160356a3",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
