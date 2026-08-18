@@ -1,0 +1,42 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 503-511
+doc/des/DES_WAIT_SETS.md
+  h_fd5809635b36a3 3-9,115-117,120-121,123-126,128-134,137-140
+example/Main.hs
+  h_fd5809635b36a3 224,499
+golden/DESWaitSetTW/final_state.txt
+  h_fd5809635b36a3 1-10
+golden/DESWaitSetTW/status.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  h_fd5809635b36a3 28
+sprinkler-solver-process-tests/src/Examples/DESWaitSetTW.hs
+  h_fd5809635b36a3 1-2,4-5,7-10,12-45,47-48,50,52-62,64-103,105-106,110,113-213,215-336,340-446
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 471-481,529-533,660-671,1004-1016,1029-1039,1083-1092,1122-1125,1128-1133,1619-1730,2451-2481,3188-3192
+src/JIT/tw_model.h
+  h_fd5809635b36a3 259-268
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 391-396,585,611-634,4417,4419,4423,4437,4793-4797,4994,5197,5269-5270,5319,5330,5338,5432-5441,5487,5491,6176,6178,6183,6423,6514,6599-6606,6653,6657,7872-7875,7886-7912,7999
+src/Solver/DES.hs
+  h_fd5809635b36a3 887-890,943
+src/Solver/DES/TimeWarpJit.hs
+  h_fd5809635b36a3 4191-4197,4424-4426
+src/Solver/DES/TimeWarpUnified.hs
+  h_fd5809635b36a3 430-432
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 59-61,530-547
+tools/model_session/targets.json
+  h_fd5809635b36a3 315
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b04c0f0b04f7244d640794a2a7c93bdccd28d250",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
