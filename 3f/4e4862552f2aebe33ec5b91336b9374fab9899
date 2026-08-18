@@ -1,0 +1,19 @@
+doc/des/THREADED_INTERMITTENTS.md
+  s_2b2464dac28ffe::t_82d16a07157926 64,66-67,69,71-112,114-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3f4e4862552f2aebe33ec5b91336b9374fab9899",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
