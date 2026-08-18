@@ -1,0 +1,36 @@
+golden/DESWaitSetTW/final_state.txt
+  s_6eef7f27ef3488::t_464d8701057ca5 1-16
+sprinkler-solver-process-tests/src/Examples/DESWaitSetTW.hs
+  s_6eef7f27ef3488::t_77641e6899551d 132-143,157,159-164,166-174
+  s_6eef7f27ef3488::t_792236e4f8b7b6 158
+  s_6eef7f27ef3488::t_99c2150f622cde 543-558
+  s_6eef7f27ef3488::t_bce02251e2b169 50-60,144-156
+  s_6eef7f27ef3488::t_46360d3c2918f1 93-94
+  s_6eef7f27ef3488::t_f50582ce7fbe3f 609-620
+  s_6eef7f27ef3488::t_19f73439a7b1b1 461-492
+  s_6eef7f27ef3488::t_191da4defd7782 607-608
+  s_6eef7f27ef3488::t_19291837a37b19 99,342-344,358-360,636-638,652-656
+  s_6eef7f27ef3488::t_2ae1ac8c06f36c 205-207,209,213-214,218
+  s_6eef7f27ef3488::t_9dd35b4f243452 541-542,559
+  s_6eef7f27ef3488::t_e9494f3b2bd6a8 179-181,183,187-188,193-196
+  s_6eef7f27ef3488::t_f3dac7b07e8e03 165
+  s_6eef7f27ef3488::t_971694b2aca22f 365-399,410
+  s_6eef7f27ef3488::t_4dc9e1181a75fd 400-409
+  s_6eef7f27ef3488::t_1d6743c4c8e814 89,175,560
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9f4b8734200a0e45e7fe1434b4be2af7c9bb756e",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
