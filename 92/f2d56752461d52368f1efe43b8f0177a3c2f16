@@ -1,0 +1,32 @@
+example/Main.hs
+  s_6eef7f27ef3488::t_1f21e235cd1e66 226-228
+  s_6eef7f27ef3488::t_0c3f22629901b8 505-507
+golden/DESProcessForkKTW/status.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1
+golden/DESProcessForkTW/final_state.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1-7
+golden/DESProcessMatchTW/final_state.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1-6
+golden/DESProcessForkKTW/final_state.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1-8
+golden/DESProcessForkTW/status.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1
+golden/DESProcessMatchTW/status.txt
+  s_6eef7f27ef3488::t_50240fcf9b93a2 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "92f2d56752461d52368f1efe43b8f0177a3c2f16",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
