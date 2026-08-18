@@ -1,0 +1,16 @@
+tools/model_session/README.md
+  h_fd5809635b36a3 27
+tools/model_session/session.py
+  h_fd5809635b36a3 443-448,752-758,795-798,806-829,1074
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "29cd356e4b6f5e55e9eb14bd14167cb1a17bd472",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
