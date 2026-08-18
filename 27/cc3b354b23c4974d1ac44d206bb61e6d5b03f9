@@ -1,0 +1,22 @@
+doc/des/DES_WAIT_SETS.md
+  h_fd5809635b36a3 1-134
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  h_fd5809635b36a3 28
+sprinkler-solver-process-tests/src/Examples/DESWaitProbe.hs
+  h_fd5809635b36a3 1-70
+src/Solver/DES.hs
+  h_fd5809635b36a3 88-89,240-241,355-360,593,740-782,933,1179,1268,1271,1546-1548,1551-1555,1562-1571,1573,1609-1610,1612-1614,1621-1623,1627-1629,1632,1641-1675,2206,2218,2230-2232,2258-2286,2298,2490-2495,2512,2514,2578
+tools/model_session/targets.json
+  h_fd5809635b36a3 311-316,602
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "27cc3b354b23c4974d1ac44d206bb61e6d5b03f9",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
