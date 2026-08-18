@@ -1,0 +1,38 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 609-632,708-709
+doc/des/DES_FORK_JOIN.md
+  h_fd5809635b36a3 3,14-19,184-188,361-363,417-477
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 582-583
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  h_fd5809635b36a3 33
+sprinkler-solver-process-tests/src/Examples/DESProcessRaceTW.hs
+  h_fd5809635b36a3 1-500
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 216-219,486-499,734-751,1097-1124,1201-1210,1246-1287,1322,1331-1337,2018-2108,3071-3076,3796-3801
+src/JIT/tw_model.h
+  h_fd5809635b36a3 303-312
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 416-422,759-791,4962-4966,5611-5623,6789-6796,8178-8209
+src/Solver/DES.hs
+  h_fd5809635b36a3 94,431-441,687,1025-1051,1925,1927-1934,1943,1964-1966,1968,2004-2005,2007-2013,2022-2027,2034-2038,2041,2052-2053,2087-2130,2948,3001-3046,3326-3332,3457
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 62-68,105-107,121,727-820
+src/Solver/DES/TimeWarpJit.hs
+  h_fd5809635b36a3 4204-4213,4477-4479
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 62,603-614
+tools/model_session/targets.json
+  h_fd5809635b36a3 319-320
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f03ba30610fc28501a839d54275b035d5341df81",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
