@@ -1,0 +1,18 @@
+doc/des/DES_ELEMENT_ROADMAP.md
+  h_fd5809635b36a3 539-563,587-593,634-639
+doc/des/DES_FORK_JOIN.md
+  h_fd5809635b36a3 1-280
+doc/des/DES_WAIT_SETS.md
+  h_fd5809635b36a3 168-172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "296d525b169f8f36ebd839b3876ea85de2231cd9",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
