@@ -1,0 +1,21 @@
+golden/timings.tsv
+  s_6eef7f27ef3488::t_ec4b1bd04e1050 23,131,134,142,151,159,168,182,220,252
+golden/timings_history.tsv
+  s_6eef7f27ef3488::t_ec4b1bd04e1050 6,22,32-34,81-83,102,112,131,157-158,187,209,240-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "24076c58164101c92db9ce38edfca2f9c740ad16",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
