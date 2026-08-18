@@ -1,0 +1,19 @@
+doc/des/DES_FORK_JOIN.md
+  s_2b2464dac28ffe::t_d9a2df23499e1a 477-486
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9400c5ce5febeebc8c812c7deb06825ee0c76f59",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
