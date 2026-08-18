@@ -1,0 +1,34 @@
+sprinkler-solver-process-tests/src/Examples/DESJoinTW.hs
+  s_2b2464dac28ffe::t_1b851b38cd52dd 669-671
+  s_2b2464dac28ffe::t_ece86255886b92 475-576
+  s_2b2464dac28ffe::t_60ed33c60a41e2 338-351
+  s_2b2464dac28ffe::t_63e87269ba6612 78
+  s_2b2464dac28ffe::t_c571784c32dd23 53-54,79,675
+  s_2b2464dac28ffe::t_11b5450adde8ff 580,676,681,690
+  s_2b2464dac28ffe::t_809ed0bc0ff6d3 366-421,423-472
+  s_2b2464dac28ffe::t_86edfbbf4c76fe 40-45,47-48,422,473,674,689
+  s_2b2464dac28ffe::t_b00fac34a4b8e3 355-360
+  s_2b2464dac28ffe::t_37915947a6c724 46
+  s_2b2464dac28ffe::t_90b84b7b8c460a 474
+src/JIT/tw_runtime.c
+  s_2b2464dac28ffe::t_9470311130efce 5621-5623
+  s_2b2464dac28ffe::t_0ae355f08801b3 5609
+  s_2b2464dac28ffe::t_30f35e3bd9e8bf 6772-6779
+  s_2b2464dac28ffe::t_8c79a729562e0f 5567-5608,5610-5611
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "dc5e6c96cf0d5b0578122c6aa95cc196a8fcba22",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
