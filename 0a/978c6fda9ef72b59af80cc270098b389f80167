@@ -1,0 +1,20 @@
+doc/des/DES_PROCESS_CHAIN.md
+  h_fd5809635b36a3 451-470
+doc/des/PROCESS_API_ANALYSIS.md
+  h_fd5809635b36a3 962-978
+golden/DESProcessLoopTW/final_state.txt
+  h_fd5809635b36a3 20-27
+sprinkler-solver-process-tests/src/Examples/DESProcessLoopTW.hs
+  h_fd5809635b36a3 53-63,80,746-1013,1275-1379,1382-1383,1386-1388
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0a978c6fda9ef72b59af80cc270098b389f80167",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
