@@ -1,0 +1,28 @@
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_847a39a235f71d 129
+  s_6eef7f27ef3488::t_e8bd9afbe1d967 4760-5017,5105-5417,5423-5430,5435-5523,5526-5917,8341,8349
+  s_6eef7f27ef3488::t_869846c29d1cb9 5048-5056,5063-5068,5070-5104
+  s_6eef7f27ef3488::t_ae824d82d0f3c1 5018-5047,5418-5422,5431-5434
+  s_6eef7f27ef3488::t_8ba23c09542e1f 6494-6499,6558-6563,6565-6566
+  s_6eef7f27ef3488::t_ffca714ad11bae 5057-5062,5069
+  s_6eef7f27ef3488::t_ea00de051439e0 5524-5525
+  s_6eef7f27ef3488::t_724497ebb29bf4 6564
+  s_6eef7f27ef3488::t_d48fa09caad0f9 1314-1328
+  s_6eef7f27ef3488::t_d3d0617b308ace 8340,8342-8348,8350-8353,8355
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fcd1c8de73f9b976c9d1b31a34f25de7823bbf39",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
