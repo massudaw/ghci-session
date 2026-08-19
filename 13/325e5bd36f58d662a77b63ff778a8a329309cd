@@ -1,0 +1,21 @@
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_63aafe37c65544 1355-1359,1361
+  s_6eef7f27ef3488::t_b48fe32419be39 115,964-984
+  s_6eef7f27ef3488::t_8e0a062d9cff4c 985
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "13325e5bd36f58d662a77b63ff778a8a329309cd",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
