@@ -1,0 +1,41 @@
+src/Solver/DES/Analysis.hs
+  s_6eef7f27ef3488::t_bf56791f35dd21 192-195
+  s_6eef7f27ef3488::t_d58a5569cf41dd 44-45,142-148,152,160,171,175,197
+  s_6eef7f27ef3488::t_b657e140dbbe9c 149-151,153-159,161-170,172-174,186-191,196,198-210,216-228,235-249
+  s_6eef7f27ef3488::t_639ce63c0514c6 176-185,211-215,229-234
+  s_6eef7f27ef3488::t_d262fee65f5a52 250
+doc/des/DES_ANALYSES.md
+  s_6eef7f27ef3488::t_0d98a62f324950 17-25,38,139-173,193-198
+golden/DESAnalysisTW/final_state.txt
+  s_6eef7f27ef3488::t_5f9bc5d3206544 9-12
+src/Solver/DES/TimeWarpUnified.hs
+  s_6eef7f27ef3488::t_7c2e3daea48a17 383,385-386
+  s_6eef7f27ef3488::t_d58a5569cf41dd 181,390
+  s_6eef7f27ef3488::t_068be629cec98b 2023-2032
+  s_6eef7f27ef3488::t_0ba0cdb1d5cc43 147
+  s_6eef7f27ef3488::t_86c6c59a117425 297-308,380,391
+  s_6eef7f27ef3488::t_888a5d4521f4b9 397-412,1270
+  s_6eef7f27ef3488::t_bf56791f35dd21 381-382,384,387-389
+sprinkler-solver-process-tests/src/Examples/DESAnalysisTW.hs
+  s_6eef7f27ef3488::t_c89fd5750ee19b 256-292,382-383,392-405,432-433,438
+  s_6eef7f27ef3488::t_32b3a4b903a1c5 381
+  s_6eef7f27ef3488::t_ad80510dbd8c11 71,229-255,384-391,430-431
+  s_6eef7f27ef3488::t_b8482813cf1a06 74-75
+  s_6eef7f27ef3488::t_773bcef896d7b8 406
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4ec9cc44be89e36b7ada4d28e7b351bc7279751d",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
