@@ -1,0 +1,41 @@
+golden/DESProcessAogTW/status.txt
+  s_6eef7f27ef3488::t_eb5449dcf01f3b 1
+example/Main.hs
+  s_6eef7f27ef3488::t_23bdb8c0ba1db0 227,508
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_092f47a68293b8 935-937,940,984-988,991,998,1040-1064,1069-1071
+  s_6eef7f27ef3488::t_1707fb5dc92ce4 134
+golden/DESProcessAogTW/fingerprint.txt
+  s_6eef7f27ef3488::t_eb5449dcf01f3b 1-7
+sprinkler-solver-process-tests/src/Examples/DESProcessAogTW.hs
+  s_6eef7f27ef3488::t_e19277f3dfdb8c 362-366,368,370-373,383-384
+  s_6eef7f27ef3488::t_333e37274a1818 122,319,414-417
+  s_6eef7f27ef3488::t_561b840aa9295b 226-227,338,402
+  s_6eef7f27ef3488::t_c707cffe806186 825-837,874
+  s_6eef7f27ef3488::t_23bdb8c0ba1db0 19-52
+  s_6eef7f27ef3488::t_7c09150e78c4bf 320
+  s_6eef7f27ef3488::t_0da973d3bd369f 118-119
+  s_6eef7f27ef3488::t_19b955bccf9a00 260-271,273-274,303-304,306,312-318,321,350-351,353
+  s_6eef7f27ef3488::t_1cc4f8917aa478 464-472,477
+  s_6eef7f27ef3488::t_8c058fecc630d7 322-323,367,369,418-426
+  s_6eef7f27ef3488::t_6b0f70bd601910 406-407
+  s_6eef7f27ef3488::t_95a5b541083340 427
+golden/DESProcessAogTW/final_state.txt
+  s_6eef7f27ef3488::t_eb5449dcf01f3b 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "43bc980717d3908682be098ca09baf9cad5ea510",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
