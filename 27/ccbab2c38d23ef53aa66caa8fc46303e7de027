@@ -1,0 +1,19 @@
+doc/des/DES_PROCESS_CHAIN.md
+  s_2b2464dac28ffe::t_011f1a3ab40069 157-172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "27ccbab2c38d23ef53aa66caa8fc46303e7de027",
+  "prompts": {},
+  "sessions": {
+    "s_2b2464dac28ffe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061061f3-7709-4489-8115-a12bee66da18",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
