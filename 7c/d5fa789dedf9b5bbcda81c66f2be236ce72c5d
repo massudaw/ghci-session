@@ -1,0 +1,21 @@
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_868e5dc07000c1 5232-5247
+golden/AogOps/des.txt
+  s_6eef7f27ef3488::t_bd59d6d7fa0d06 6-8,12,986-988,992,2215-2217,2221,4361-4363,4367,5904,5907,6048,6051,6330,6333,6981,6984,7125,7357,7654,8166,8739-8740,8798-8799,8914-8915,9179-9180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7cd5fa789dedf9b5bbcda81c66f2be236ce72c5d",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
