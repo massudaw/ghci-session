@@ -1,0 +1,49 @@
+sprinkler-solver-rendering/src/Backend/ProjectRender.hs
+  s_507aea4eee5259::t_02514503a4802a 1-10,12-47
+  s_507aea4eee5259::t_c5ea223fd71b15 11
+sprinkler-solver-rendering/src/Backend/ForceRender.hs
+  s_507aea4eee5259::t_3f405671125814 1-176
+sprinkler-solver-rendering/sprinkler-solver-rendering.cabal
+  s_507aea4eee5259::t_cb1170a3200e5a 28-30
+  s_507aea4eee5259::t_cb331acbd5ea3b 31-34
+sprinkler-solver-examples/src/Examples/ForceSimple.hs
+  s_507aea4eee5259::t_7c673cd8f71452 34
+  s_507aea4eee5259::t_50d309ec6781a8 32-33
+sprinkler-solver-examples/src/Examples/BentDuctExample.hs
+  s_507aea4eee5259::t_b7db9386850fea 48-49
+sprinkler-solver-examples/src/Examples/Convection2DExample.hs
+  s_507aea4eee5259::t_c3e8c36d7c381a 36-37
+sprinkler-solver-examples/src/Examples/Convection3DExample.hs
+  s_507aea4eee5259::t_9611ec1d06c984 33-34
+sprinkler-solver-examples/src/Examples/FieldVariableExample.hs
+  s_507aea4eee5259::t_e548e18838d8f0 41-42
+sprinkler-solver-examples/src/Examples/KalmanFilterExample.hs
+  s_507aea4eee5259::t_b6c55a41335b69 55
+sprinkler-solver-examples/src/Examples/LiftChainRender.hs
+  s_507aea4eee5259::t_287ba82b5beffb 40
+sprinkler-solver-examples/src/Examples/RoomAirConditioningExample.hs
+  s_507aea4eee5259::t_7c233d286147ef 53-54
+sprinkler-solver-examples/src/Examples/SpaceTimeFieldExample.hs
+  s_507aea4eee5259::t_71cc04c862f6d6 47-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "62407ba1b58f242d2c265387d536c83a770b66cf",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": null
+    }
+  }
+}

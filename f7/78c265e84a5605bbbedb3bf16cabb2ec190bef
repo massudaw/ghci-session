@@ -1,0 +1,30 @@
+sprinkler-solver-examples/src/Examples/EkfNonlinearControlExample.hs
+  s_507aea4eee5259::t_ac69587c1d1a31 468-482
+golden/EkfNonlinearControlExample/fingerprint.txt
+  s_507aea4eee5259::t_8831811a2f6c0c 1
+golden/EkfNonlinearControlExample/residuals.txt
+  s_507aea4eee5259::t_b9a3d81224158c 2-12,14-48,50-54,60-75,77-112,114-115,117-169,173-183,185-199,229-232,234-237,239-252
+golden/EkfNonlinearControlExample/solutions.txt
+  s_507aea4eee5259::t_02a9393a079edc 2-219,221-233
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f778c265e84a5605bbbedb3bf16cabb2ec190bef",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

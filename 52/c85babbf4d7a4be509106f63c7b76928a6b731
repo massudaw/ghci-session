@@ -1,0 +1,28 @@
+src/JIT/micro_dae_ida_shim.c
+  s_507aea4eee5259::t_db62c2ca7f511c 1037-1038,1040-1048
+  s_507aea4eee5259::t_84a7975d4925a4 859-879,881,893-894,903-904
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_4d3766e85d96e6 712-724
+  s_507aea4eee5259::t_a415e19dcecdc8 739-750
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "52c85babbf4d7a4be509106f63c7b76928a6b731",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
