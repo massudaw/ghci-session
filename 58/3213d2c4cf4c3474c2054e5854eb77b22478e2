@@ -1,0 +1,25 @@
+src/JIT/jit_trampoline.c
+  s_6eef7f27ef3488::t_1a775298b5124a 207,247,251-252,256,269,2038,2308
+  s_6eef7f27ef3488::t_16578916f1b981 179-182
+src/Solver/GuardRearm.hs
+  s_6eef7f27ef3488::t_e70df292557235 395-396,398
+  s_6eef7f27ef3488::t_d4ee5de3370210 442-444,447
+doc/des/PROCESS_SHIPPING_GAPS.md
+  s_6eef7f27ef3488::t_914c9e0fbf93c7 397-470
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "583213d2c4cf4c3474c2054e5854eb77b22478e2",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
