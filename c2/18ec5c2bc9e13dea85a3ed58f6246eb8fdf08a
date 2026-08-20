@@ -1,0 +1,39 @@
+src/Solver/DES/ProcessClass.hs
+  s_6eef7f27ef3488::t_8e1f43afac925c 473-477
+golden/ShipFleetTW/process.txt
+  s_6eef7f27ef3488::t_cf9c6b9160f766 61-230
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_dd09b543f2f7d6 147
+  s_6eef7f27ef3488::t_ff1b967b6f86b1 151
+  s_6eef7f27ef3488::t_f9126a4afcd91f 1912,1914,1916-1920,2186-2191
+  s_6eef7f27ef3488::t_dce1cce757c803 2192
+sprinkler-solver-shipping/src/Examples/ShipFleetTW.hs
+  s_6eef7f27ef3488::t_3f8c30e1247d7c 69-70
+  s_6eef7f27ef3488::t_c82d649a255b21 1114
+  s_6eef7f27ef3488::t_8e1f43afac925c 1123
+  s_6eef7f27ef3488::t_67017f4da79561 74,1119-1122,1124
+  s_6eef7f27ef3488::t_826b63c4e792f7 441-442,447-448,456-457,462-463,479-480,488-489,496-497,506-507,511-512,537-538,554-555
+  s_6eef7f27ef3488::t_e645720b8f1861 1115-1118,1125
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_5cd11c2c71cbba 127,1495-1523,1526-1528,1530-1532,1534-1537,1539-1541
+  s_6eef7f27ef3488::t_9ec463d69c9bee 126,128,326,1542-1553
+  s_6eef7f27ef3488::t_f97fc3726c69fe 187
+  s_6eef7f27ef3488::t_011f564abe298c 226-232,250-255
+  s_6eef7f27ef3488::t_8e1f43afac925c 1524-1525,1529,1533,1538
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c218ec5c2bc9e13dea85a3ed58f6246eb8fdf08a",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
