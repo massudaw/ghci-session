@@ -1,0 +1,20 @@
+doc/des/PROCESS_PLANT_DESIGN.md
+  s_6eef7f27ef3488::t_b2d5ce37194428 346
+  s_6eef7f27ef3488::t_b337b6bf604f08 364-662
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5ec6cb0a5f591e9031479a0b074345fef5fbc94e",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
