@@ -1,0 +1,26 @@
+doc/microdae/REMAINING_FAILURES_2026-08-20.md
+  s_507aea4eee5259::t_8e048cafa274fa 331-406
+doc/microdae/FAILING_MODELS.md
+  s_507aea4eee5259::t_fb465e7d3b4a67 1,4-35,44-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "cb0f098bcc460380c7badd2dd46cb3b52fd11f9b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
