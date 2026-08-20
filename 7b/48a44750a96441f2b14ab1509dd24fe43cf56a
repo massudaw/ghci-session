@@ -1,0 +1,29 @@
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_d35c1a0f4c2d4a 370-394,1916
+  s_6eef7f27ef3488::t_6dd5ff48fc128a 160-161
+src/Solver/DES.hs
+  s_6eef7f27ef3488::t_8c851b8f37fd5e 56,748-755
+src/Solver/DES/ProcessClass.hs
+  s_6eef7f27ef3488::t_0d815fd00f51c2 191-194
+src/Solver/DES/ProcessSig.hs
+  s_6eef7f27ef3488::t_d35c1a0f4c2d4a 170-182
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_6dd5ff48fc128a 53,452-467
+  s_6eef7f27ef3488::t_064f3acde06a5c 468-469
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7b48a44750a96441f2b14ab1509dd24fe43cf56a",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
