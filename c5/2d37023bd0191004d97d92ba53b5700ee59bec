@@ -1,0 +1,55 @@
+validate_golden_tests.sh
+  s_6eef7f27ef3488::t_aa10df79aa1c19 286
+  s_6eef7f27ef3488::t_f8566dbafc56b1 438
+  s_6eef7f27ef3488::t_8f9b2f132cdb37 311-324
+  s_6eef7f27ef3488::t_73e47ef044760e 430
+golden_extract_lib.sh
+  s_6eef7f27ef3488::t_5ef6696cd755a6 82,96,98
+  s_6eef7f27ef3488::t_e60700078e45d6 307
+  s_6eef7f27ef3488::t_6e561461845192 77-81,92-93,95,99-100
+  s_6eef7f27ef3488::t_baf3dd58ac9b7b 83-91,94,97
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_6eef7f27ef3488::t_566b61c759a492 9305-9310
+  s_6eef7f27ef3488::t_b629c4a91548c6 136
+golden/ShippingOps/process.txt
+  s_6eef7f27ef3488::t_0b75f0ac0360fd 1-8
+golden/README.md
+  s_6eef7f27ef3488::t_7bd920f2fa9080 18,21-45
+  s_6eef7f27ef3488::t_5ce4647b1dc851 46
+src/Solver/DES/ProcessClass.hs
+  s_6eef7f27ef3488::t_1768f60eba751c 201-240,248-249,251-252
+  s_6eef7f27ef3488::t_180ad203d39e0a 241-247,250
+  s_6eef7f27ef3488::t_e7f319d0a91a9e 55-57
+golden/DESProcessFinalTW/process.txt
+  s_507aea4eee5259::t_a12345ecb076fd 1-44
+sprinkler-solver-process-tests/src/Examples/DESProcessFinalTW.hs
+  s_6eef7f27ef3488::t_94ac9e0fc95b4f 182,185
+  s_6eef7f27ef3488::t_dbeae96bff0b11 218
+  s_6eef7f27ef3488::t_38f3f251a40328 138-143,145-148
+  s_6eef7f27ef3488::t_fc0d8d09f67870 173-181,183-184,186
+  s_6eef7f27ef3488::t_001bae605adf5c 51-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c52d37023bd0191004d97d92ba53b5700ee59bec",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
