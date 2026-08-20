@@ -1,0 +1,48 @@
+golden/ShippingOps/des.txt
+  s_6eef7f27ef3488::t_248837c30c85db 2758-2763,2770-2772,2809-2814,2821-2823,2860-2865,2872-2874,2911-2916,2923-2925,2962-2967,2974-2976,3013-3018,3025-3027,3064-3069,3076-3078,3115-3120,3127-3129,3166-3171,3178-3180,3217-3222,3229-3231,3268-3273,3280-3282,3319-3324,3331-3333,3370-3375,3382-3384,8482-8484,8492-8496,8507-8509,8517-8521,8532-8534,8542-8546,8557-8559,8567-8571,8582-8584,8592-8596,8607-8609,8617-8621,8632-8634,8642-8646,8657-8659,8667-8671,8682-8684,8692-8696,8707-8709,8717-8721,8732-8734,8742-8746,8757-8759,8767-8771,8782-8784,8792-8796
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_6eef7f27ef3488::t_e81c0a397191c7 1724-1728,1730-1735,1738-1743
+  s_6eef7f27ef3488::t_f9741422b809ed 2864-2865
+  s_6eef7f27ef3488::t_cad7c6da65034a 3180,3207,3213-3220
+  s_6eef7f27ef3488::t_11b0e6493cbb4d 3325-3332,3403-3404,3435
+  s_6eef7f27ef3488::t_b598339333abf4 4025,4031
+  s_6eef7f27ef3488::t_703d73b53acb0a 2846-2848
+  s_6eef7f27ef3488::t_1fa5d24ad6aaab 1615-1624
+  s_507aea4eee5259::t_a28d76e4cf8047 3701-3702
+  s_507aea4eee5259::t_9c04aedfa9e389 1934-1936,3229-3231
+  s_6eef7f27ef3488::t_dedad6eb04eba9 4024,4030
+  s_6eef7f27ef3488::t_802a06113b483e 2841-2845,2849-2850,2852,2855,3008-3009,3418-3419
+golden/ShippingOps/fingerprint.txt
+  s_6eef7f27ef3488::t_248837c30c85db 7,11,13,15,17-21,23,25,27-31,33-34,37-41,47,55
+doc/des/PROCESS_SHIPPING_GAPS.md
+  s_6eef7f27ef3488::t_451d2cd4ea13e0 282,284-322
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9de913137c1a967366501b86ee89a31524af85b6",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
