@@ -1,0 +1,24 @@
+golden/ShipFleetOpt/fingerprint.txt
+  s_6eef7f27ef3488::t_053bef04328cd0 1-42
+doc/des/PROCESS_SHIPPING_GAPS.md
+  s_6eef7f27ef3488::t_832086d568a537 357-396
+sprinkler-solver-shipping/src/Examples/ShipFleetOpt.hs
+  s_6eef7f27ef3488::t_eeb60f0ddc0580 511-514,516-523,525-531,533-537,539-547
+  s_6eef7f27ef3488::t_0eb78eafc6bce2 508-509,548,551
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0613906de1981f1d8d1aac584115af6414d83568",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
