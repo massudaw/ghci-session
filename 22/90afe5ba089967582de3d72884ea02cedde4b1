@@ -1,0 +1,25 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_6eef7f27ef3488::t_d3742051100063 548-556
+sprinkler-solver-construction/src/Examples/DESConstructionSite.hs
+  s_6eef7f27ef3488::t_4dc02e08700a67 553,697-698,711,780,785-788,806,854,862,865-866,877,880-881,926,928,930,932,937,939,942,944-945,1110,1117,1124,1197
+golden/DESConstructionSite/fingerprint.txt
+  s_6eef7f27ef3488::t_5fc2e249873130 263-272,274-303,305-307,309-310,313-315,317,324-338,340-365,367-368,370-373,376-378,384,387-394,396-429,431-436,438-441,445,450-491,493-494,496-497,500-503,511,513-522,524-553,555-557,559-560,563-565,567,574-588,590-615,617-618,620-623,626-628,634,637-644,646-679,681-686,688-691,695,700-741,743-744,746-747,750-753,761
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_c2ffc56e75e8ea 100,274-290,308,758-779
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2290afe5ba089967582de3d72884ea02cedde4b1",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
