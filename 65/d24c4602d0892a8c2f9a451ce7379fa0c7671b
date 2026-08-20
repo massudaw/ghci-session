@@ -1,0 +1,34 @@
+golden/ShipFleetOpt/final_state.txt
+  s_6eef7f27ef3488::t_824dbd9e3ee5fe 1-3
+sprinkler-solver-shipping/src/Examples/ShipFleetOpt.hs
+  s_6eef7f27ef3488::t_f009e5cfcbbd6a 1591-1600
+  s_6eef7f27ef3488::t_3a5233eddfb7d0 508-509,511-537,546
+  s_6eef7f27ef3488::t_447c8c98fc5c48 81
+  s_6eef7f27ef3488::t_c0f557a1e3e63e 61,566,568-579,833
+  s_6eef7f27ef3488::t_fac399fdfa4930 83,465,510,538-545,547-565,1075,1087,1092,1102,1150
+  s_6eef7f27ef3488::t_a8d6de5334e276 82
+  s_6eef7f27ef3488::t_ea65992a5d1927 816-832,834-844,1128,1186
+  s_6eef7f27ef3488::t_ea77f49722ef1d 845
+golden/ShipFleetOpt/fingerprint.txt
+  s_6eef7f27ef3488::t_917a127d05b816 1-42
+example/Main.hs
+  s_6eef7f27ef3488::t_6cd0ea2dedf8c0 244,527
+golden/ShipFleetOpt/status.txt
+  s_6eef7f27ef3488::t_917a127d05b816 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "65d24c4602d0892a8c2f9a451ce7379fa0c7671b",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
