@@ -1,0 +1,30 @@
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_92fc1d3364382d 101,162,774-787
+  s_6eef7f27ef3488::t_1de820e3708960 788
+src/Solver/DES/ProcessClass.hs
+  s_6eef7f27ef3488::t_92fc1d3364382d 65,109-112
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_159efe32392421 1775
+src/Solver/DES/ProcessSig.hs
+  s_6eef7f27ef3488::t_6124ce557338ae 1-3
+  s_6eef7f27ef3488::t_92fc1d3364382d 31,60-66
+  s_6eef7f27ef3488::t_159efe32392421 43-51,74-77
+sprinkler-solver-process-tests/src/Examples/DESProcessFinalTW.hs
+  s_6eef7f27ef3488::t_1efd6cc05747c5 80-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "cb52dcda645d55a7ce56ad5a301b5883641576fe",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
