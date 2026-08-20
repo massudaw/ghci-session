@@ -1,0 +1,39 @@
+sprinkler-solver-process-tests/src/Examples/DESAnalysisTW.hs
+  s_6eef7f27ef3488::t_29174586772cef 59-60,63,296-334,461,466,475-480,515,521-531
+  s_6eef7f27ef3488::t_a5cc67a4f67b43 64,335-345,467-474
+  s_6eef7f27ef3488::t_a9cb1c9a69723e 70,460,462-465
+  s_6eef7f27ef3488::t_5a09f3a7002be1 509-510
+  s_6eef7f27ef3488::t_e719bdfc2588ef 2
+  s_6eef7f27ef3488::t_4d832ee14dfad2 481,532
+src/Solver/DES/Process.hs
+  s_6eef7f27ef3488::t_e8d135ae02c795 126,129,2138-2152,2154,2163
+  s_6eef7f27ef3488::t_1a338428f05787 127,1948-2000
+  s_6eef7f27ef3488::t_f878e194cde442 2014-2031,2034,2061-2064
+  s_6eef7f27ef3488::t_334bc75611434c 151,158
+  s_6eef7f27ef3488::t_02069dc3740281 2001
+golden/DESAnalysisTW/final_state.txt
+  s_6eef7f27ef3488::t_5a09f3a7002be1 13-14
+doc/des/PROCESS_SHIPPING_GAPS.md
+  s_6eef7f27ef3488::t_e44e808b0613ea 111-132,135-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c4b333c2b2b9de44d6ec54b2e4db805d79feb2ac",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
