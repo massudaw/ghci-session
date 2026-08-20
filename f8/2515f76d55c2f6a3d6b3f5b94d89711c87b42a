@@ -1,0 +1,30 @@
+golden/ModelACConditioner/fingerprint.txt
+  s_507aea4eee5259::t_459104b80d6203 1
+golden/ModelACConditioner/residuals.txt
+  s_507aea4eee5259::t_64f96b7b2c0343 2-5,7,9,11-13,17,20,22,26,31-36,42-43,47-54,57-63,65-66,74,80-81,85
+golden/ModelACConditioner/solutions.txt
+  s_507aea4eee5259::t_fd0f24f7be99f8 2-11,13,15,19-21,23,25-32,34-40,43,46-48,50
+golden/ModelACConditioner/transient.txt
+  s_507aea4eee5259::t_90d3707e90ea72 3-13,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f82515f76d55c2f6a3d6b3f5b94d89711c87b42a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

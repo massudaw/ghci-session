@@ -1,0 +1,18 @@
+cabal.project
+  h_fd5809635b36a3 2
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  h_fd5809635b36a3 323-324,388,412,437,457,473,494,516,526,537,555,574,593,609,627,641,655,669,683,697,712,726,740,755,770,784,797,814,827,839,854,869,884,895,910,928,955,974,995,1014,1029,1042,1054,1065,1077,1089,1102,1114,1133,1154,1170,1186,1202,1216,1230,1243,1256
+sprinkler-solver-rendering/sprinkler-solver-rendering.cabal
+  h_fd5809635b36a3 1-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "68f9e9112244a4be34228c0807182f26b3c70614",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

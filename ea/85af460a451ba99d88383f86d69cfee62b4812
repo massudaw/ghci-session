@@ -1,0 +1,33 @@
+sprinkler-solver.cabal
+  s_507aea4eee5259::t_b88df808ed304b 239
+src/Solver/KINSOLLeaf.hs
+  s_507aea4eee5259::t_1f8484d443ec72 123-132
+  s_507aea4eee5259::t_f3b4fab6d625ff 1-122,133-193
+src/Grid.hs
+  s_507aea4eee5259::t_f10e2de9a7f691 25,27-28
+  s_507aea4eee5259::t_6fb9ef163e6023 144-148
+  s_507aea4eee5259::t_f03f98dbc93ce0 149
+  s_507aea4eee5259::t_3ef507f12d5fba 29-40
+  s_507aea4eee5259::t_feef09ad8cdcc3 142-143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ea85af460a451ba99d88383f86d69cfee62b4812",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

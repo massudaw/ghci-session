@@ -1,0 +1,26 @@
+golden/ModelCombustionEngine/residuals.txt
+  s_507aea4eee5259::t_97876cb53be525 2-9,11,13,15,18,25,29,32
+golden/ModelCombustionEngine/solutions.txt
+  s_507aea4eee5259::t_f059141e0c9f1e 2,5,11,14,18-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3384426c142b75cf122de39cf1182a8e722da038",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
