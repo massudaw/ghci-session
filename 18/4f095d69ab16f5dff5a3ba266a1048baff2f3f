@@ -1,0 +1,30 @@
+doc/microdae/VARIABLE_COEFFICIENT_BDF_PLAN.md
+  s_507aea4eee5259::t_9703980b05f855 3-5
+  s_507aea4eee5259::t_bbb160bae585f3 286-301,305-313,317-321,326-330
+  s_507aea4eee5259::t_77accfadb6ab44 415-441
+  s_507aea4eee5259::t_7178ab87e652e0 198-266
+  s_507aea4eee5259::t_2b2bcf11b552a4 452-465
+  s_507aea4eee5259::t_524e853b55d8aa 1-2,6-197,267-285,302-304,314-316,322-325,331-414,442-451,466-529,549-609
+  s_507aea4eee5259::t_5e061a64940be7 530-548
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "184f095d69ab16f5dff5a3ba266a1048baff2f3f",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
