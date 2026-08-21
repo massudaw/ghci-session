@@ -1,0 +1,28 @@
+doc/microdae/REMAINING_FAILURES_2026-08-20.md
+  s_507aea4eee5259::t_0815ab86098242 739-768
+sprinkler-solver-examples/src/Examples/DESAccountingLedger.hs
+  s_507aea4eee5259::t_59aeb2717ba82c 41
+  s_507aea4eee5259::t_6ae67bc87fffe5 149
+  s_507aea4eee5259::t_21af779ff6e587 165-169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "b66580e55f666ef61ac074496809f5bdc414826e",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
