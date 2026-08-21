@@ -1,0 +1,34 @@
+example/Main.hs
+  s_6eef7f27ef3488::t_f44c1b79b0fed5 233,518
+golden/DESEmitOnCrossingTW/fingerprint.txt
+  s_6eef7f27ef3488::t_8a2bc4994f6cbb 1-4
+sprinkler-solver-examples/src/Examples/DESEmitOnCrossingTW.hs
+  s_6eef7f27ef3488::t_93b16ba087f2d6 48
+  s_6eef7f27ef3488::t_15f70b2f45b231 1-47,49-61,63,65-93,96-127,129-137,139-143,168-169
+  s_6eef7f27ef3488::t_3c476da8900ca7 64
+  s_6eef7f27ef3488::t_fb6ea9056ce00c 62,94-95,128,138,144-167
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_6eef7f27ef3488::t_f44c1b79b0fed5 174
+golden/DESEmitOnCrossingTW/final_state.txt
+  s_6eef7f27ef3488::t_8a2bc4994f6cbb 1-2
+golden/DESEmitOnCrossingTW/status.txt
+  s_6eef7f27ef3488::t_8a2bc4994f6cbb 1
+src/JIT/tw_engine.h
+  s_6eef7f27ef3488::t_0a77e0a11caeac 3830,3868-3884,4016
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "634870ee59e754246bc42f0a82e2c0c46d4fdd28",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
