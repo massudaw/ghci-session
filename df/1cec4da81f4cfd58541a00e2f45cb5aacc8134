@@ -1,0 +1,49 @@
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_6eef7f27ef3488::t_1b55b9cd883b6c 178
+  s_6eef7f27ef3488::t_1219a0f28217d7 8689,8859,8940
+sprinkler-solver-process-tests/src/Examples/DESProcessFinalTW.hs
+  s_6eef7f27ef3488::t_64a288384ed4fe 578,580-581,646,657,743,762
+  s_6eef7f27ef3488::t_ac96d9effd5dfd 777-798,800,805-832
+  s_6eef7f27ef3488::t_d63e44f53fd229 50
+  s_6eef7f27ef3488::t_024d9addb0d29d 833
+src/Solver/DES/Analysis.hs
+  s_6eef7f27ef3488::t_006ecc8c30c03e 416
+  s_6eef7f27ef3488::t_3387db194a0920 58
+src/Solver/DES/Partition.hs
+  s_6eef7f27ef3488::t_006ecc8c30c03e 405,568
+  s_6eef7f27ef3488::t_202144ba3e32fa 168,562-567
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_cd84c9338f8ed8 107,256-262,1820-1837,1921-1927,1929-1948,2164,2244,2257,2290,2316,2343
+  s_6eef7f27ef3488::t_b8772643cf896e 436-447
+  s_6eef7f27ef3488::t_a5cada5aefc3c4 1928
+sprinkler-solver-aog/src/Examples/AogOps.hs
+  s_6eef7f27ef3488::t_1219a0f28217d7 8183,8193
+src/Solver/DES/TimeWarpUnified.hs
+  s_6eef7f27ef3488::t_e16373b0015056 203
+  s_6eef7f27ef3488::t_006ecc8c30c03e 513-514,1383
+sprinkler-solver-process-tests/src/Examples/DESAnalysisTW.hs
+  s_6eef7f27ef3488::t_1b55b9cd883b6c 76
+  s_6eef7f27ef3488::t_1219a0f28217d7 584
+sprinkler-solver-process-tests/src/Examples/DESProcessChainTW.hs
+  s_6eef7f27ef3488::t_1b55b9cd883b6c 110
+  s_6eef7f27ef3488::t_1219a0f28217d7 926
+sprinkler-solver-shipping/src/Examples/HullHybridTW.hs
+  s_6eef7f27ef3488::t_1b55b9cd883b6c 47
+  s_6eef7f27ef3488::t_1219a0f28217d7 193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "df1cec4da81f4cfd58541a00e2f45cb5aacc8134",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
