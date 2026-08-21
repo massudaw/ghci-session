@@ -1,0 +1,24 @@
+sprinkler-solver-process-tests/src/Examples/ProcessLayerProbe.hs
+  s_6eef7f27ef3488::t_57dc9ee6ccbcad 1-51
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_6eef7f27ef3488::t_1a06c2c04b3bc5 27
+src/Solver/DES/ProcessSig.hs
+  s_6eef7f27ef3488::t_51889e7aabe048 25-36,58
+  s_6eef7f27ef3488::t_f9a86fc2a64bd7 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "7e21503f4cdfa5ea818d48896ce9edcb31749a09",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
