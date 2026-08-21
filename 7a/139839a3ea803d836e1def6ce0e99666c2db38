@@ -1,0 +1,78 @@
+src/Model/RotationalMotorBackEMF.hs
+  s_4dbf7228fb767f::t_d3a8e48862ff54 30
+  s_4dbf7228fb767f::t_38ea1be338a56d 93,109
+  s_4dbf7228fb767f::t_38d9f98353f8bb 85-92,94-108,110
+  s_4dbf7228fb767f::t_eabc709ae9d2e8 36
+src/Model/RackPinionCoupling.hs
+  s_4dbf7228fb767f::t_1426dd0b001e86 14-35
+  s_4dbf7228fb767f::t_55374df1e8a684 70-72
+  s_4dbf7228fb767f::t_48d1a9b7050821 116-136
+src/Model/TimeControlledSwitch.hs
+  s_4dbf7228fb767f::t_095bfa27982709 103,106-110,112-124,126-133,136-137,145-148
+  s_4dbf7228fb767f::t_69414bc6b7f068 104
+  s_4dbf7228fb767f::t_0d66501ce608c1 134-135,138-144
+  s_4dbf7228fb767f::t_da4dbd50964487 111
+  s_4dbf7228fb767f::t_cde8d73d0fd919 12-31,65
+  s_4dbf7228fb767f::t_9796bf7fef901c 32-33
+  s_4dbf7228fb767f::t_5cf0cef91e2e65 34-55
+example/Main.hs
+  s_4dbf7228fb767f::t_047023b6c1e482 374
+  s_4dbf7228fb767f::t_ed8ab2bfb39759 130
+  s_4dbf7228fb767f::t_32d09e9e759011 634
+  s_4dbf7228fb767f::t_a3962690193649 373
+  s_4dbf7228fb767f::t_7c0ca48a44a6dd 131
+  s_4dbf7228fb767f::t_9e321b18a30e85 633
+  s_4dbf7228fb767f::t_ac19eec7e6bbe3 375
+  s_4dbf7228fb767f::t_2cc43d2d813d07 129
+  s_4dbf7228fb767f::t_e4e1f56688282f 132
+  s_4dbf7228fb767f::t_41fb19135dfbb6 372
+  s_4dbf7228fb767f::t_0dc69df4e56c30 632
+  s_4dbf7228fb767f::t_f60b8389a778cf 635
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_4dbf7228fb767f::t_791a3b6092b6f0 26-27,34,43-44,46-72
+  s_4dbf7228fb767f::t_afdc97c162f8d2 39-42
+  s_4dbf7228fb767f::t_3e4fc58b93eb8b 1-25,28-33,35-38,45,73-294
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_4dbf7228fb767f::t_7f191e86806231 396
+sprinkler-solver-hybrid-des-lowering/sprinkler-solver-hybrid-des-lowering.cabal
+  s_4dbf7228fb767f::t_6f5b3f75b01ecb 1-54
+tools/model_session/targets.json
+  s_4dbf7228fb767f::t_03a2c31bd369cb 102-119
+  s_4dbf7228fb767f::t_4adee2af2acb28 345-348
+src/Model/HybridControlSwitch.hs
+  s_4dbf7228fb767f::t_7abf0b9cee3ec1 12-39,49
+  s_4dbf7228fb767f::t_9834b1b0e65fbf 79,87,90,95-96,98-115,117-127,132-135,137-138,140-144
+  s_4dbf7228fb767f::t_6a3717a9394943 128-131
+cabal.project
+  s_4dbf7228fb767f::t_24ffc9fd0f315c 9
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelDesSwitchRC.hs
+  s_4dbf7228fb767f::t_2c6ee45fafe3e3 1-147
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelIdealSwitchRC.hs
+  s_4dbf7228fb767f::t_b813a00a3b358f 1-118
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelSyncSwitchRC.hs
+  s_4dbf7228fb767f::t_7134f5ba4cb7d1 1-198
+sprinkler-solver-hybrid-des-lowering/src/Model/DesHybridControlSwitch.hs
+  s_4dbf7228fb767f::t_d99a0c7984ef72 1-135
+sprinkler-solver-hybrid-des-lowering/src/Model/DesModeSwitch.hs
+  s_4dbf7228fb767f::t_fb60c7cc428b57 1-106
+sprinkler-solver-hybrid-des-lowering/src/Model/IdealTimedSwitch.hs
+  s_4dbf7228fb767f::t_8c617ae0138cce 1-91
+sprinkler-solver-hybrid-des-lowering/src/Solver/DES/ScheduledLowering.hs
+  s_4dbf7228fb767f::t_8f0c6f6ae3fa5d 1-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "7a139839a3ea803d836e1def6ce0e99666c2db38",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
