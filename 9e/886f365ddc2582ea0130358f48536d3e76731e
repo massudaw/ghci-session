@@ -1,0 +1,57 @@
+sprinkler-solver-examples/src/Examples/DESCKernel.hs
+  s_6eef7f27ef3488::t_7f5ec1765aba50 28
+  s_6eef7f27ef3488::t_8cbd274f94c395 150-153
+  s_6eef7f27ef3488::t_eb7fe131381f32 46-47,57-59,65
+src/Solver/DES/Physical.hs
+  s_6eef7f27ef3488::t_6a73c7c84736e5 634-644
+src/JIT/des_kernel.c
+  s_507aea4eee5259::t_a2539a1f1e7908 310-311,317,343-344,350
+  s_6eef7f27ef3488::t_70091b734b76c8 27-32,53-55,61-74,167,216,417
+golden/DESConstructionSite/fingerprint.txt
+  s_6eef7f27ef3488::t_1967f9fdd37757 262-761
+golden/RiskPortfolioDES/fingerprint.txt
+  s_6eef7f27ef3488::t_1967f9fdd37757 164-174,176-185,187-198,200-209,211-221,223-234,236-245,247-249,258-259,268,272,274-283,285-295,297-307,309-318,320-330,332-343,345-354,356-358,367-368,377
+src/Solver/DES.hs
+  s_6eef7f27ef3488::t_158af5c83b8f8a 2123
+  s_6eef7f27ef3488::t_5f0117457c101b 2093-2105,2118-2120,2122
+  s_6eef7f27ef3488::t_19ee79697f4b5b 3541-3546,3719,3819,3865,3890-3891,3960-3965,3976-3979,3984,3996-4001
+  s_6eef7f27ef3488::t_62317bfb4049ba 3931-3934
+  s_6eef7f27ef3488::t_f7b4d8e501b53a 163,2107-2115,2800-2803
+  s_6eef7f27ef3488::t_c3d7a4f208fc56 118,2106,4002
+src/Solver/DES/TimeWarpJit.hs
+  s_6eef7f27ef3488::t_47098f0287561b 3795
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_6eef7f27ef3488::t_1967f9fdd37757 23,26,28,30,32-33,41-42,44,47,49-50
+golden/BankRiskMaster/fingerprint.txt
+  s_6eef7f27ef3488::t_72dd5326018853 153,155-164,166-176,178-187,189-199,201-212,214-223,225-227,237,246-247,249,252,254-262,264-274,276-287,289-298,300-310,312-323,325-326,335,345-346,348
+golden/DESDistillery/fingerprint.txt
+  s_6eef7f27ef3488::t_cef5fe49c19cc0 23,26,28,30,32-33,41-42,44,47,49-50
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_6eef7f27ef3488::t_cf9ef1f92172f9 12-17,21-26
+golden/PortfolioDelinquency/fingerprint.txt
+  s_6eef7f27ef3488::t_7dc925ca457e03 69-78,80-89,91-100,102-111,113-117,123,129-132,134-143,145-154,156-165,167-176,178-182,188,194-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9e886f365ddc2582ea0130358f48536d3e76731e",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
