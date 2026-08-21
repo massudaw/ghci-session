@@ -1,0 +1,70 @@
+example/Main.hs
+  s_6eef7f27ef3488::t_9296b3c088179c 234,520
+sprinkler-solver-examples/src/Examples/DESCompoundCrossingTW.hs
+  s_6eef7f27ef3488::t_46e9f07fb43775 61
+  s_6eef7f27ef3488::t_203d5ab33f70af 74-87,124-127,150-151
+  s_6eef7f27ef3488::t_91595d8108abcb 1-60,62-73,88-91,93-95,108-123,128-149,152-165,168-178,185,188-200,220,230-231
+  s_6eef7f27ef3488::t_dfaf1827a2cfcf 92,96-107,166-167,179-184,186-187,201-219,221-229
+src/Solver/DES/TimeWarpUnified.hs
+  s_6eef7f27ef3488::t_3e802b58a8402c 1129-1134
+  s_6eef7f27ef3488::t_cd79d16b52e26e 1103-1115,1117-1121
+  s_6eef7f27ef3488::t_4a5948909177bf 1116
+  s_6eef7f27ef3488::t_3b7f9f309bf131 202,1164-1165,1167
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_6eef7f27ef3488::t_9296b3c088179c 175
+sprinkler-solver-process-tests/src/Examples/DESProcessFinalTW.hs
+  s_6eef7f27ef3488::t_a67ce9d77e4e15 341-352,354,366-372
+  s_6eef7f27ef3488::t_69189f86378aee 711-720,722,724-733,735
+  s_6eef7f27ef3488::t_9ea3c582e77e8b 34
+  s_6eef7f27ef3488::t_74b8ca24d519b0 37,336-337,721,734
+  s_6eef7f27ef3488::t_d121ce37916a7a 52-54,723,736-737
+src/Solver/DES/TimeWarpJit.hs
+  s_6eef7f27ef3488::t_51225f3e21ab2a 828-837,1975,1981
+  s_6eef7f27ef3488::t_1090c0a3fc9677 1976-1980,2481-2482,4132-4133,4136
+  s_6eef7f27ef3488::t_ccbd52ed605a9c 2688-2707,2740,4129-4131,4134-4135,4137-4143,4713-4718
+  s_6eef7f27ef3488::t_bf97891301944f 2464-2468,2474-2480,2483,2579
+src/JIT/tw_engine.h
+  s_6eef7f27ef3488::t_795aa0e31f1556 905-913
+  s_6eef7f27ef3488::t_419d6f792c682f 2836-2848
+  s_6eef7f27ef3488::t_d76054731cfc59 3923-3929,3931
+  s_6eef7f27ef3488::t_afaab172648f87 3909-3922,3930,3932
+  s_6eef7f27ef3488::t_6b7037af3213ae 868-889,914
+  s_6eef7f27ef3488::t_eacab5fd8d8c14 890-904
+  s_6eef7f27ef3488::t_faa573efd750fd 2849-2850
+golden/DESCompoundCrossingTW/fingerprint.txt
+  s_6eef7f27ef3488::t_009b373e7971d0 1-4
+golden/DESCompoundCrossingTW/final_state.txt
+  s_6eef7f27ef3488::t_009b373e7971d0 1-6
+src/JIT/tw_runtime.c
+  s_6eef7f27ef3488::t_ca484dd082524c 4792-4826
+  s_6eef7f27ef3488::t_1e43c85c13d8bb 551-568,571,1952-1970,1978-2007,2012
+  s_6eef7f27ef3488::t_795aa0e31f1556 569-570,2008-2011
+  s_6eef7f27ef3488::t_5ae2413604f2ee 1542-1549
+  s_6eef7f27ef3488::t_b8d2864392b334 1971-1977
+  s_6eef7f27ef3488::t_4696f568705a73 2013,8404-8410
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_4a5948909177bf 439-444,446-453
+  s_6eef7f27ef3488::t_f08673da1e0b8f 106-107,420-438,445
+  s_6eef7f27ef3488::t_af761d5fe568e7 181
+  s_6eef7f27ef3488::t_7ed3284d6dbe5f 454
+golden/DESCompoundCrossingTW/status.txt
+  s_6eef7f27ef3488::t_009b373e7971d0 1
+src/JIT/tw_model.h
+  s_6eef7f27ef3488::t_c7dd830c475c21 481-501
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "792d0e30f080b5b2fc85ed6fcc723dbcd739d4e7",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
