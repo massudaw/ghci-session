@@ -1,0 +1,59 @@
+golden/ModelThermostatTW/final_state.txt
+  s_6eef7f27ef3488::t_6b61d7df667727 2-3,5,7-8,10
+golden/ModelThermostatTW/fingerprint.txt
+  s_6eef7f27ef3488::t_6b61d7df667727 1-3,5-20
+sprinkler-solver-examples/src/Examples/ModelThermostatTW.hs
+  s_6eef7f27ef3488::t_431a6cb11a7229 320-335
+  s_6eef7f27ef3488::t_8f8792cfa0981b 180-195,201,230,246
+  s_6eef7f27ef3488::t_a401f92a96b4cc 144
+  s_6eef7f27ef3488::t_04ca405c62baa6 239,267
+  s_6eef7f27ef3488::t_b5291ca7b4c945 356
+golden/ModelThermostatTW/tapestats.txt
+  s_6eef7f27ef3488::t_6b61d7df667727 1
+src/JIT/tw_engine.h
+  s_6eef7f27ef3488::t_1ebe210837e463 834-864,3813-3822
+src/Solver/DES/TimeWarpJit.hs
+  s_6eef7f27ef3488::t_481ea32a487a0f 4057-4068,4606-4609
+  s_6eef7f27ef3488::t_edb0cae67f8bb1 822-833,1954-1956,2442-2443
+  s_6eef7f27ef3488::t_19e8f63d2a3117 2633-2636,2640
+  s_6eef7f27ef3488::t_0fc87acda76ba5 2625-2632,2637-2639,2641-2647
+  s_6eef7f27ef3488::t_18f419e13c425c 2680
+src/JIT/tw_runtime.c
+  s_6eef7f27ef3488::t_ed76f379586825 530-545
+  s_6eef7f27ef3488::t_e08fd3f7f2c766 1890-1917
+src/Solver/DES/Unified.hs
+  s_6eef7f27ef3488::t_e73454148aba17 1017-1021
+  s_6eef7f27ef3488::t_76133f2b715ca0 1093-1100
+  s_6eef7f27ef3488::t_522ce69d4ea436 96,985-1009,1013-1016,1022-1024,1026
+  s_6eef7f27ef3488::t_d4d5c352d6da81 223
+  s_6eef7f27ef3488::t_b9043982311ee1 1
+  s_6eef7f27ef3488::t_4a33ae661a7d69 355-373,383,407-422,1010-1012,1025
+  s_6eef7f27ef3488::t_74421b8934ca6f 1081-1092,1101-1105
+  s_6eef7f27ef3488::t_b904fcadd14488 99
+  s_6eef7f27ef3488::t_70d8971ff8eb4e 196
+  s_6eef7f27ef3488::t_490942f2bb25f5 171
+  s_6eef7f27ef3488::t_02cbede15fca30 191
+  s_6eef7f27ef3488::t_119f00472c209b 384-396,981,1061
+  s_6eef7f27ef3488::t_318c8924de2e6e 1027
+src/JIT/tw_model.h
+  s_6eef7f27ef3488::t_9d1e5e19e2f98f 434-455
+src/Solver/DES/TimeWarpUnified.hs
+  s_6eef7f27ef3488::t_866e5bb1da26c2 1110-1114,1116-1123,1126-1127
+  s_6eef7f27ef3488::t_b904fcadd14488 200,1115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bd0217d1d04202fce2dd767c7954ff7448161397",
+  "prompts": {},
+  "sessions": {
+    "s_6eef7f27ef3488": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061e4dbb-b03d-400a-bef9-1712667311ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
