@@ -1,0 +1,35 @@
+sprinkler-solver-examples/src/Examples/ModelThermostatTW.hs
+  s_507aea4eee5259::t_c6f1468fa78bdc 279-289
+  s_507aea4eee5259::t_b3f1268dc813b2 88
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_6ca301b7ee55c3 876
+  s_507aea4eee5259::t_e9b0f647a268ee 1590,1601,1620-1624,1638-1639
+  s_507aea4eee5259::t_74ccc2f977497c 82-85
+  s_507aea4eee5259::t_584641a9f62780 1591-1600,1602-1619
+  s_507aea4eee5259::t_4b2fbb89fff651 1034
+  s_507aea4eee5259::t_e5d8f2bee76d36 1537
+  s_507aea4eee5259::t_0c323b0daf6537 86-97
+  s_507aea4eee5259::t_e34d14059ceae9 1634
+  s_507aea4eee5259::t_de5e3715a84595 1625-1633,1635-1637
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "becf77d32239635d294f2c9e20f0fd79d9533907",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": null
+    }
+  }
+}
