@@ -1,0 +1,20 @@
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_232456f23ee837 2044-2065
+  s_4dbf7228fb767f::t_9186833fadb27e 2100-2101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "5600072767d07556fad065fd5e5a7cdd0bbb8d0e",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
