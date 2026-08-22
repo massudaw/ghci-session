@@ -1,0 +1,26 @@
+EVENT_TRANSITION_PIPELINE.md
+  s_4dbf7228fb767f::t_e3434c64ea4b37 572-646
+  s_4dbf7228fb767f::t_1e72c4b4bdd133 667
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_687bad6e367325 1748-1768
+  s_4dbf7228fb767f::t_61407c827b34a8 2451-2458
+  s_4dbf7228fb767f::t_b87a127f6cdaad 2351-2356,2358
+  s_4dbf7228fb767f::t_cf1d2b9b551beb 2384
+  s_4dbf7228fb767f::t_e2ffa97ab75cf1 2357,2359-2375
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "23f95b92ee4f20ac40ddd6ef0173feb22b034a9b",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
