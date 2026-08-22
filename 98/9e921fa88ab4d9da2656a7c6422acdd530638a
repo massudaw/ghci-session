@@ -1,0 +1,28 @@
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_4dbf7228fb767f::t_0a37fdd0279413 69-70
+  s_4dbf7228fb767f::t_1026b0590b4091 845-889,893-894
+  s_4dbf7228fb767f::t_dd849d3bc62f9f 890-892
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_a3571add5ae78e 1898
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_af2680e9303687 63-64
+  s_4dbf7228fb767f::t_d0678b5856d9b7 588,591
+  s_4dbf7228fb767f::t_2f9447c38b69a6 537-573,578-586,593-604
+  s_4dbf7228fb767f::t_c02fb166052b72 587,589-590
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "989e921fa88ab4d9da2656a7c6422acdd530638a",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
