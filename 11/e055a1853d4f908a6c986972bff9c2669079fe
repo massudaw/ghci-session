@@ -1,0 +1,24 @@
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_977357492b42ed 2247,2249-2250,2282
+  s_4dbf7228fb767f::t_bd8cbc5e5ddbec 1967-1985
+  s_4dbf7228fb767f::t_6d8107845267ad 2283
+golden/resetmiss_allowlist.txt
+  s_4dbf7228fb767f::t_3b3b3813a53b60 109
+  s_4dbf7228fb767f::t_c3871de489f1b3 96-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "11e055a1853d4f908a6c986972bff9c2669079fe",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
