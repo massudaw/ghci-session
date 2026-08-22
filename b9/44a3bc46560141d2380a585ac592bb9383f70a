@@ -1,0 +1,42 @@
+tools/driver_shadow_diff.py
+  s_4dbf7228fb767f::t_fc6217c710e43c 45,52,65,102-107
+  s_4dbf7228fb767f::t_5bd6430bfa14b6 1-22,24-44,46-51,53-64,66-83,85-101,108-130,135-136,140-155,164,170-182
+  s_4dbf7228fb767f::t_891c568d5b35d6 23,84,131-134,137-139,156-163,165-169
+CLAUDE.md
+  s_247a9a653b66fc::t_499c273894be52 316-322
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_b973641aca9267 1996-2007,2009-2017
+  s_4dbf7228fb767f::t_11639191e5eb9a 2439-2448
+  s_4dbf7228fb767f::t_fc6217c710e43c 1871-1883,2008
+EVENT_TRANSITION_PIPELINE.md
+  s_247a9a653b66fc::t_e47f824f757ee1 633-640,667-673,796-800
+EVENT_TRANSITION_PRIOR_ART.md
+  s_247a9a653b66fc::t_818a576772b44c 1-278
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_5b37954fa4166a 2648-2668,2670-2692
+  s_4dbf7228fb767f::t_fc6217c710e43c 2669,3007-3038
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "b944a3bc46560141d2380a585ac592bb9383f70a",
+  "prompts": {},
+  "sessions": {
+    "s_247a9a653b66fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25cd3ded-5dad-460e-a070-ebd5f676c6cf",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
