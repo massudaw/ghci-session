@@ -1,0 +1,23 @@
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_7777fd31feb276 577-589
+EVENT_TRANSITION_PIPELINE.md
+  s_4dbf7228fb767f::t_7e6e61b1b78800 318-330
+  s_4dbf7228fb767f::t_138da0ea76162d 566-601
+  s_4dbf7228fb767f::t_f6d66c31a5801e 652
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "8000755ee9b9b99b28c159531d135756a0bc50f0",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
