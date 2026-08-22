@@ -1,0 +1,121 @@
+golden/ModelFireSprinkler/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_4dbf7228fb767f::t_6e38ffceb0490c 658-665
+  s_4dbf7228fb767f::t_9a420ebc750ab4 273-289
+  s_4dbf7228fb767f::t_47b09ed45ca32b 1258-1259,1272-1277
+  s_4dbf7228fb767f::t_d7f36d4276ff99 1246-1247
+  s_4dbf7228fb767f::t_f6805890447973 82-83
+  s_4dbf7228fb767f::t_864a111f2802e2 809-820
+  s_4dbf7228fb767f::t_44c7517c25a5ad 1253-1256
+  s_4dbf7228fb767f::t_675d4c5a138fbf 854-857
+  s_4dbf7228fb767f::t_57cfacbe561ecf 89-90
+  s_4dbf7228fb767f::t_28359d7972623d 1261-1265
+  s_4dbf7228fb767f::t_ef80497fe5432f 86
+  s_4dbf7228fb767f::t_21d97958dd8d38 858,943
+  s_4dbf7228fb767f::t_984006c5bf738e 627-633
+  s_4dbf7228fb767f::t_4dd46c4740f2a9 45
+  s_4dbf7228fb767f::t_134e3a38420d35 1257,1271
+src/Transient.hs
+  s_4dbf7228fb767f::t_f5da4d17e53419 1986
+src/Solver/SymbolicDAE/Kron.hs
+  s_4dbf7228fb767f::t_3eab9300fb51bf 398-405,409
+  s_4dbf7228fb767f::t_90f6736d515bdb 362-370,377,379
+golden/ModelDiodeClamp/equations.txt
+  s_4dbf7228fb767f::t_ceb309d3416bab 13
+src/Model/HybridControlSwitch.hs
+  s_4dbf7228fb767f::t_51a336f39dcef8 96-100,110-113,115
+  s_4dbf7228fb767f::t_1853a453aed9b3 116-118
+  s_4dbf7228fb767f::t_14fa7d268901a6 132-140
+  s_4dbf7228fb767f::t_27e46bc8995717 108,114,121
+  s_4dbf7228fb767f::t_ac52aa4fe8ebd3 119-120
+  s_4dbf7228fb767f::t_ed4c83c1da9fa3 32-35
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_a145f242e22630 1387-1394,1396-1401
+  s_4dbf7228fb767f::t_aa5d7258f71f84 1346-1348
+  s_4dbf7228fb767f::t_4d342130f8a311 1368-1381
+  s_4dbf7228fb767f::t_49c99cc942435d 67
+  s_4dbf7228fb767f::t_fa466c4e00d049 1395,1402
+  s_4dbf7228fb767f::t_69b6211c0005ec 1367
+  s_4dbf7228fb767f::t_c0b31960890fc8 1403-1411
+  s_4dbf7228fb767f::t_b3afdc3d5796a5 71
+  s_4dbf7228fb767f::t_1986a6e8ab3bca 1333-1345
+  s_4dbf7228fb767f::t_b07d83b6f61b54 1421-1488
+src/Model/RotationalMotorBackEMF.hs
+  s_4dbf7228fb767f::t_7ac3ee401bb783 88-104,107-110,112-119,125-127
+src/Model/SmoothDiodeCoupling.hs
+  s_4dbf7228fb767f::t_a21710f6a0a1dc 104-114
+  s_4dbf7228fb767f::t_0d5000384bc92e 102-103
+  s_4dbf7228fb767f::t_1efdc53ca53f31 1-101,116-117,140-142
+  s_4dbf7228fb767f::t_8ad1f5695a4036 115
+  s_4dbf7228fb767f::t_97f3f59feedca4 118-139,143-144
+tools/ResetConsistencyAudit.hs
+  s_4dbf7228fb767f::t_1d0ff8f36e41de 366
+src/Model/DiodeCoupling.hs
+  s_4dbf7228fb767f::t_5ee38682a94ad7 115
+  s_4dbf7228fb767f::t_f799ee740e6ece 16-17,22,48,61,87,89-114,116-120
+  s_4dbf7228fb767f::t_435e670d7f61d6 25-47
+golden/ModelLiftRegen/fingerprint.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 1-4
+golden/ModelLiftRegen/selective_report.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 8,11,20
+golden/ModelDiodeClamp/transient.txt
+  s_4dbf7228fb767f::t_ceb309d3416bab 10
+golden/ModelCombustionEngine/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+golden/ModelTEFull/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+src/Project.hs
+  s_4dbf7228fb767f::t_44ac2588f46ff7 803
+src/Model/TimeControlledSwitch.hs
+  s_4dbf7228fb767f::t_ecabbb2867b672 38,40-53
+  s_4dbf7228fb767f::t_df681c730c97d0 125,130,137,156
+  s_4dbf7228fb767f::t_f296b9a424202a 168-175
+  s_4dbf7228fb767f::t_32bf7c60e2d057 132-133,135-136,138-153
+  s_4dbf7228fb767f::t_0d001d4951ed5c 154-155
+  s_4dbf7228fb767f::t_17b24dc318f786 134
+  s_4dbf7228fb767f::t_8ef41a87572a3e 109-118,127-129,131
+golden/ModelACConditioner/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+golden/ModelLiftRegen/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4-5,7
+golden/ModelDiodeClamp/fingerprint.txt
+  s_4dbf7228fb767f::t_ceb309d3416bab 2,4
+sprinkler-solver.cabal
+  s_4dbf7228fb767f::t_45508565358531 91
+src/Solver/KINSOL.hs
+  s_4dbf7228fb767f::t_12643e04a75055 105-107
+  s_4dbf7228fb767f::t_f5ff0036a61afa 213-218
+  s_4dbf7228fb767f::t_3c6f663b748645 129-139
+golden/ModelLiftRegen/tapestats.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 1
+golden/ModelLiftRegen/transient.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 6-18
+golden/ModelLiftRegen/equations.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 7-11,32,46-51,53,55-57,59-62,64,66,69-73,81,84,93
+golden/ModelSliderCrank/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+sprinkler-solver-examples/src/Examples/ModelLiftRegen.hs
+  s_4dbf7228fb767f::t_d77c9dfde46c4b 120-125,129
+  s_4dbf7228fb767f::t_c4eb4ed98fd64b 126-128
+  s_4dbf7228fb767f::t_45d5eda39c72e4 47,56,103-116,156-161
+  s_4dbf7228fb767f::t_a898150400866b 162
+golden/ModelThermoEngine/solver_audit.txt
+  s_4dbf7228fb767f::t_286a135c2e4967 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f01bf8e3440522f53f6bd7ae565ad6d1e1324780",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
