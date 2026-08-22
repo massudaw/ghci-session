@@ -1,0 +1,36 @@
+src/Solver/IDA.hs
+  s_4dbf7228fb767f::t_9797371c2fca5e 2440-2449,2460
+  s_4dbf7228fb767f::t_5583b085e161ce 2570
+  s_4dbf7228fb767f::t_69cd810d9f3b59 2499-2506,2509-2510,2512-2515
+  s_4dbf7228fb767f::t_8f665e6023c9fa 596-602,606-608
+  s_4dbf7228fb767f::t_a7369f5fdb54ec 3616-3617
+  s_4dbf7228fb767f::t_6595ad12920279 3391
+  s_4dbf7228fb767f::t_734ee6e076c641 2517-2533,2535-2536,2538,2540-2541,2543-2547,2549-2550,2555-2556,2559-2560
+  s_4dbf7228fb767f::t_14c659f07fd6d2 2409-2420,2423
+  s_4dbf7228fb767f::t_d72686834f6417 2136-2155
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_4a1c4b738664af 1355,1369-1371
+  s_4dbf7228fb767f::t_9de46f30b7cf32 2047-2061,2063-2064
+  s_4dbf7228fb767f::t_d0aa2a24682eb2 1119-1135
+  s_4dbf7228fb767f::t_d3921aa635311a 3305
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_88a3dc60a8ea38 582-601,612-614
+  s_4dbf7228fb767f::t_d388d210d4b5c9 620,624-628
+  s_4dbf7228fb767f::t_77469d4d4ad50b 602-611,615-616
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "ced463f27cc2406ad2ff1a1f7a1eb2508cc071f2",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
