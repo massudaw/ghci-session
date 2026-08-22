@@ -1,0 +1,52 @@
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_e54526b0fcea3b 1824-1893,1895-1903,1916-1917,1922-1923,1925-1977
+  s_4dbf7228fb767f::t_4578f3537d41f3 2197-2208
+  s_4dbf7228fb767f::t_34f26d5d0c48e8 1075-1097
+  s_4dbf7228fb767f::t_52f76866bcffb6 3192
+  s_4dbf7228fb767f::t_6f68953345ac40 1315-1316,1328
+  s_4dbf7228fb767f::t_138a1bf30a8d88 1904-1915,1918-1921,1924
+  s_4dbf7228fb767f::t_57ba5beff0adb6 1309-1314,1317-1327,1329-1330
+  s_4dbf7228fb767f::t_18bc9cb5bc451e 1098-1102
+  s_4dbf7228fb767f::t_3fb1a2aeeab3fe 2591-2595
+  s_4dbf7228fb767f::t_46c9d69b7a1953 1894
+  s_4dbf7228fb767f::t_fa5c91bd1a022d 3189-3191
+sprinkler-solver-examples/src/Examples/UnionSessionValidate.hs
+  s_4dbf7228fb767f::t_b6b6a867138693 162
+src/Solver/IDA.hs
+  s_4dbf7228fb767f::t_f9d7a45a0eed09 3464-3465,3468
+  s_4dbf7228fb767f::t_a6af636dff6662 2124-2149,2155
+  s_4dbf7228fb767f::t_8d423a2e7f62b2 2343-2417
+  s_4dbf7228fb767f::t_cee0da5f38a672 172
+  s_4dbf7228fb767f::t_ed69bbee94abac 2418-2425
+  s_4dbf7228fb767f::t_bd7a6533498dec 2785,2932,2949,2990,3509,3629,3756,4675,5077
+  s_4dbf7228fb767f::t_25598f9199972a 3230-3231
+  s_4dbf7228fb767f::t_5013e887ec3da3 3493
+  s_4dbf7228fb767f::t_9495145340eb97 3242-3244
+  s_4dbf7228fb767f::t_6e7542a76fff5b 3460-3463,3466-3467
+  s_4dbf7228fb767f::t_19712270b3bec9 585-594
+  s_4dbf7228fb767f::t_ae8c1c9865c07d 198
+  s_4dbf7228fb767f::t_a2b4d15c55af29 595-596
+  s_4dbf7228fb767f::t_e5466a91c36c45 138
+src/Solver/DES/TimeWarpPlant.hs
+  s_4dbf7228fb767f::t_b0d75e6bdf0256 611,811,1221,1241
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_87e4ac9a8e653a 1781
+  s_4dbf7228fb767f::t_88890078429e78 534-548,551
+  s_4dbf7228fb767f::t_922f107cc2e775 63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "8e1371f1ef7db3e089e7a809b36e6b5bc88418e3",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
