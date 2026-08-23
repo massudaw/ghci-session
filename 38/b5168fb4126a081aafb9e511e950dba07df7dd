@@ -1,0 +1,21 @@
+EVENT_TRANSITION_PRIOR_ART.md
+  s_4dbf7228fb767f::t_c2c2335e3c5036 202,267-282
+doc/des/DES_SEMANTICS.md
+  s_4dbf7228fb767f::t_388017258096c8 335-358
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "38b5168fb4126a081aafb9e511e950dba07df7dd",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
