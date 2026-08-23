@@ -1,0 +1,23 @@
+doc/microdae/INTEGRATOR_PRECISION.md
+  s_507aea4eee5259::t_ef11d881d5994b 204-205,209-242
+  s_507aea4eee5259::t_71288cd1ac41f4 243
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_6f257714a7e2e5 1103-1111
+  s_507aea4eee5259::t_598ffc5fa33c76 1487-1489,1491,2488-2489,2491
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9c5c843d6604d58983951c24685255e7838348c3",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

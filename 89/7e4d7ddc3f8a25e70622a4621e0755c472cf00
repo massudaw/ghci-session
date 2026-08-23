@@ -1,0 +1,27 @@
+doc/microdae/INTEGRATOR_PRECISION.md
+  s_507aea4eee5259::t_da37ac0fa5f18b 252-293
+sprinkler-solver-examples/src/Examples/ModelBouncingBallDamped.hs
+  s_507aea4eee5259::t_bbda32b1119d8a 54-58,65-73,81,105-113
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_6eda6e147859b2 1089-1095,1097-1100,2499-2507,2509
+src/Solver/IDA.hs
+  s_507aea4eee5259::t_b6437583ffb644 96,423-425,907-918,1364,3751-3752,4247-4248
+src/Transient.hs
+  s_507aea4eee5259::t_6fca9eb386becd 211-221,363,714,1142,1355,1384,1392-1393,1422,1437,1470,1693
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "897e4d7ddc3f8a25e70622a4621e0755c472cf00",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
