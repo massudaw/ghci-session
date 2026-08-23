@@ -1,0 +1,29 @@
+golden/ModelLiftRegenDES/transient.txt
+  s_4dbf7228fb767f::t_fbae97e5ceecc6 14-18
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_ff702a46c93acf 1378-1413,2216
+  s_4dbf7228fb767f::t_3601814297eae7 1997,2020,2024-2037,2059-2064
+  s_4dbf7228fb767f::t_69848e7b7b8f4f 1999-2019,2021-2023,2042-2046
+EVENT_ITERATION_FINDINGS.md
+  s_4dbf7228fb767f::t_4bff65048b3ccd 3-5,75,138-139,141-143,150-153,155-159,161-185,284-285
+EVENT_TRANSITION_PRIOR_ART.md
+  s_4dbf7228fb767f::t_d185ec8c698362 199
+golden/resetmiss_allowlist.txt
+  s_4dbf7228fb767f::t_01b3baf6a1fafc 97,109-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "1bd20b9534137f502a18f332b7dd99170a4a16f0",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
