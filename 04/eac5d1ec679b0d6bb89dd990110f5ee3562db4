@@ -1,0 +1,25 @@
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_9037c46b74e18c 3201-3221,3224-3230
+  s_4dbf7228fb767f::t_59001e9beea36d 1879-1897,1908-1920
+  s_4dbf7228fb767f::t_19b2d3af1ed695 3222-3223
+EVENT_ITERATION_FINDINGS.md
+  s_4dbf7228fb767f::t_ab68ab4af6f62a 3-4,74,137-139,141-167,184,202-216,264-271
+EVENT_TRANSITION_PRIOR_ART.md
+  s_4dbf7228fb767f::t_90d2649dd06df6 199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "04eac5d1ec679b0d6bb89dd990110f5ee3562db4",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
