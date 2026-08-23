@@ -1,0 +1,29 @@
+golden/ModelLiftRegenDES/fingerprint.txt
+  s_4dbf7228fb767f::t_df5424a738340e 3-4
+golden/resetmiss_allowlist.txt
+  s_4dbf7228fb767f::t_01f5fa88fa84d3 97-121,123-129
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_4dbf7228fb767f::t_384f2c5259bcf4 220-221
+sprinkler-solver-hybrid-des-lowering/src/Model/DesModeSwitch.hs
+  s_4dbf7228fb767f::t_01f5fa88fa84d3 83-106
+golden/ModelLiftRegenDES/final_state.txt
+  s_4dbf7228fb767f::t_df5424a738340e 1
+golden/ModelLiftRegenDES/transient.txt
+  s_4dbf7228fb767f::t_df5424a738340e 4-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "33e239edd5d68faa08f69b1b8d88161052304aa0",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
