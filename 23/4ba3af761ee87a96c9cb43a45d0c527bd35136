@@ -1,0 +1,19 @@
+Setup.hs
+  s_507aea4eee5259::t_a16bfa0f1fa75f 1-2,42-43,80-99,101-102,104,150-152,169-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "234ba3af761ee87a96c9cb43a45d0c527bd35136",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
