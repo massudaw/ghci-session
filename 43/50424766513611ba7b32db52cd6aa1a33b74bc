@@ -1,0 +1,24 @@
+src/Solver/Transition.hs
+  s_4dbf7228fb767f::t_5d8de2033b2a62 1-60,62-167
+  s_4dbf7228fb767f::t_dbe62b052609d7 61
+sprinkler-solver.cabal
+  s_4dbf7228fb767f::t_5666048e25d3e6 288
+src/Solver/UnionSession.hs
+  s_4dbf7228fb767f::t_60014ead329801 74,219-230,722-729,731,734-735,737,740,747-748,754,759
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "4350424766513611ba7b32db52cd6aa1a33b74bc",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
