@@ -1,0 +1,19 @@
+doc/des/SEARCH_VIA_SOLVER_INTERNALS.md
+  s_507aea4eee5259::t_0a610c81e7a7c8 1-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3c8a378492df06de8a3d3d8bc66062dbf9092e71",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
