@@ -1,0 +1,31 @@
+MODEL_SEMANTICS.md
+  s_4dbf7228fb767f::t_ba0c895ae46a57 226,234-273
+  s_4dbf7228fb767f::t_531071032e2498 274
+src/Solver/GuardRearm.hs
+  s_4dbf7228fb767f::t_d781ae80fc3ecd 159,463-488
+  s_4dbf7228fb767f::t_bf5de71748be49 489-490
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_d781ae80fc3ecd 1556-1646,2862-2863,3216-3217
+golden/resetmiss_allowlist.txt
+  s_4dbf7228fb767f::t_87cd23736e31e0 52-78
+EVENT_TRANSITION_PIPELINE.md
+  s_4dbf7228fb767f::t_abe7aacecee3a2 685,687,701
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_d781ae80fc3ecd 1327-1354,1924-1925,2111-2112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "6575ae1fce2fa78b01ac17ad42c3b60a4b430d94",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
