@@ -1,0 +1,27 @@
+EVENT_TRANSITION_PIPELINE.md
+  s_4dbf7228fb767f::t_5c2b486e19f1a7 685,687
+src/Solver/HybridDAE.hs
+  s_4dbf7228fb767f::t_95284f1f12d277 1356-1377,1946-1947,2127-2128,2465-2466,2532-2533
+src/Solver/UnionSession.hs
+  s_4dbf7228fb767f::t_73004a97fbfdbf 665-670,740-744
+src/JIT/jit_trampoline.c
+  s_4dbf7228fb767f::t_fabc9735a34b64 1647-1673,2838,3199
+EVENT_TRANSITION_PRIOR_ART.md
+  s_4dbf7228fb767f::t_5c2b486e19f1a7 201,242,246-263,286-287
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "1148cb6753a6aa196ff0708434811cf9bdb2c2f5",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
