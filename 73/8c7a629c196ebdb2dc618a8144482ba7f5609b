@@ -1,0 +1,21 @@
+src/Solver/SymbolicDAE/Kron.hs
+  s_4dbf7228fb767f::t_903e1fa30854e1 438-449
+golden/resetmiss_allowlist.txt
+  s_4dbf7228fb767f::t_8c689e4a7e1521 101-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "738c7a629c196ebdb2dc618a8144482ba7f5609b",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
