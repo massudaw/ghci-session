@@ -1,0 +1,23 @@
+doc/des/THREADED_TW_NONDETERMINISM.md
+  s_507aea4eee5259::t_d1371099b7192b 1-92
+sprinkler-solver-examples/src/Examples/BankMarketFeedActor.hs
+  s_507aea4eee5259::t_5d9802318ca956 215-253
+sprinkler-solver.cabal
+  s_507aea4eee5259::t_efd44ecbdd1c11 51-70,78-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3286782bf76f52089e3e7a15e7db210491a61261",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
