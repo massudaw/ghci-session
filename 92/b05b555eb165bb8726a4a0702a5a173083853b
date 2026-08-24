@@ -1,0 +1,23 @@
+doc/microdae/DRIVER_PARITY_H0.md
+  s_507aea4eee5259::t_f54f70a423c01b 1-73
+sprinkler-solver-examples/src/Examples/BankRiskTW.hs
+  s_507aea4eee5259::t_f333d07775e5ef 716-734
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_8cf4429adba7e9 1904-1921
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "92b05b555eb165bb8726a4a0702a5a173083853b",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
