@@ -1,0 +1,20 @@
+golden/timings.tsv
+  h_fd5809635b36a3 17-25,27-28,30,32,34-41,44-47,51-52,55-56,61-62,66,68,70-73,75,79-80,89,91,95-96,98-99,104-105,108,113-114,123,132,143,147,150,152,154,158,165,167-169,171,179,188,196,199,206,226,240,242-243,281-282,287
+golden/timings_history.tsv
+  h_fd5809635b36a3 2-4,7-65,67-281
+src/JIT/sundials_warm.c
+  h_fd5809635b36a3 13-65,68-89,104-105,113-139,142-143,157-182,186-187,191-203
+test/SundialsWarmTest.c
+  h_fd5809635b36a3 1-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "7b71299fe84ff4e60ef2eb26f7840c4d119d17e4",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
