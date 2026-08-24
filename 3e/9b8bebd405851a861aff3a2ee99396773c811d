@@ -1,0 +1,29 @@
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_417d92ae429fa2 789
+  s_507aea4eee5259::t_fff4e9bc19d100 1431-1437
+  s_507aea4eee5259::t_e06b9cce7c8133 1447-1453,1457,1461-1463
+  s_507aea4eee5259::t_40bbf974053d93 1496-1497
+  s_507aea4eee5259::t_35317a26d33cd8 1357-1368
+  s_507aea4eee5259::t_53a5109a921b56 1312
+  s_507aea4eee5259::t_6fa0a263ba92af 1164-1170,1177,1192,1204-1206,1212-1216
+src/JIT/micro_dae.h
+  s_507aea4eee5259::t_e10e3bf7a06ee5 204-211,217-220
+tools/btf_bench.c
+  s_507aea4eee5259::t_83de8771d3471a 1-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "3e9b8bebd405851a861aff3a2ee99396773c811d",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
