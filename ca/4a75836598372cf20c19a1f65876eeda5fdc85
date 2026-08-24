@@ -1,0 +1,21 @@
+golden_examples_lib.sh
+  s_507aea4eee5259::t_3268f2ecfbea92 35-44,46-49
+src/JIT/tw_engine.h
+  s_507aea4eee5259::t_f86e60efa4b0f9 1440-1449,1528-1546,1548
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "ca4a75836598372cf20c19a1f65876eeda5fdc85",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
