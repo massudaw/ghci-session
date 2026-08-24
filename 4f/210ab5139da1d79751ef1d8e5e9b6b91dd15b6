@@ -1,0 +1,19 @@
+sprinkler-solver-examples/src/Examples/BankMarketFeedActor.hs
+  s_507aea4eee5259::t_cf339c49ba397a 251-257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "4f210ab5139da1d79751ef1d8e5e9b6b91dd15b6",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
