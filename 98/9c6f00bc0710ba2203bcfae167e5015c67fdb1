@@ -1,0 +1,22 @@
+golden/BankRiskTW/final_state.txt
+  h_fd5809635b36a3 1,7,14-15,17
+sprinkler-solver.cabal
+  h_fd5809635b36a3 484
+src/JIT/jit_trampoline.c
+  h_fd5809635b36a3 38-39,2608-2614,3006-3011,3013-3024,3510-3516,3540-3541
+src/JIT/sundials_warm.c
+  h_fd5809635b36a3 1-377
+src/JIT/sundials_warm.h
+  h_fd5809635b36a3 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "989c6f00bc0710ba2203bcfae167e5015c67fdb1",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
