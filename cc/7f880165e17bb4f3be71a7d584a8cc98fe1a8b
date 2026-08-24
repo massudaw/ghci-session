@@ -1,0 +1,21 @@
+golden/timings_microdae.tsv
+  s_507aea4eee5259::t_3ede3294c6e5af 1-289
+golden/timings_microdae_history.tsv
+  s_507aea4eee5259::t_c1b99bdfbb55c6 1-279
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "cc7f880165e17bb4f3be71a7d584a8cc98fe1a8b",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
