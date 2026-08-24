@@ -1,0 +1,25 @@
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_19c96f8c6683c9 3507-3510
+  s_507aea4eee5259::t_09dd0416760da5 5144-5147
+  s_507aea4eee5259::t_57da20352df8a2 4569-4572,4575-4580,4582
+  s_507aea4eee5259::t_c23d32ac12e8a5 5117-5122,5125-5127
+  s_507aea4eee5259::t_77e5fb1e381063 3254-3258,3262-3264
+  s_507aea4eee5259::t_435bc7852d319e 3144-3149
+  s_507aea4eee5259::t_1a1395f7061e84 3362-3365
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "ecec47dc2bb6591e065bc8911906960533b5f7b3",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
