@@ -1,0 +1,21 @@
+golden/BankRiskTW/final_state.txt
+  s_507aea4eee5259::t_69d411518a4878 1,7,14-15,17
+sprinkler-solver-examples/src/Examples/BankRiskTW.hs
+  s_507aea4eee5259::t_b1e51e560a6261 717-738,743,754-756
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "93a8b5981843908b02b6581f307f529b29403385",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
