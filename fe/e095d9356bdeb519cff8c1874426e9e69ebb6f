@@ -1,0 +1,16 @@
+sprinkler-solver-examples/src/Examples/DESBackPressure.hs
+  h_fd5809635b36a3 79-80,85-86,91
+src/Solver/DES/RunProcess.hs
+  h_fd5809635b36a3 30,66,68,86-88,92,95,116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "fee095d9356bdeb519cff8c1874426e9e69ebb6f",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
