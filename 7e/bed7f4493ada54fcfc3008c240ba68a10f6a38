@@ -1,0 +1,20 @@
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_ff6b7baa709637 225-229
+  s_3ea8e1f2b3128a::t_a668d659dcbdf4 43,80-82,90,92,130,136,147,155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "7ebed7f4493ada54fcfc3008c240ba68a10f6a38",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
