@@ -1,0 +1,14 @@
+src/JIT/micro_dae_ida_shim.c
+  h_fd5809635b36a3 572-576,581-586,848-856,862-874
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "23c605d225bd9c27a1d9d3909d396636b4be9214",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
