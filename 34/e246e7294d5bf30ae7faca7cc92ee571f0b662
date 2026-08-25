@@ -1,0 +1,18 @@
+src/JIT/jit_trampoline.c
+  h_fd5809635b36a3 3006-3008,4349-4354
+src/JIT/sundials_warm.c
+  h_fd5809635b36a3 323-363
+src/JIT/sundials_warm.h
+  h_fd5809635b36a3 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "34e246e7294d5bf30ae7faca7cc92ee571f0b662",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
