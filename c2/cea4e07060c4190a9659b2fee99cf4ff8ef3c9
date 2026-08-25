@@ -1,0 +1,14 @@
+golden/DESPortTerminal/des.txt
+  h_fd5809635b36a3 2,4,6,10-11,15-16,20-21,25-26,30-31,35-36,40-41,45-46,48,56,58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "c2cea4e07060c4190a9659b2fee99cf4ff8ef3c9",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
