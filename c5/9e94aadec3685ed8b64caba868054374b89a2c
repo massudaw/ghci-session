@@ -1,0 +1,14 @@
+src/JIT/jit_trampoline.c
+  h_fd5809635b36a3 3029-3042
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "c59e94aadec3685ed8b64caba868054374b89a2c",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
