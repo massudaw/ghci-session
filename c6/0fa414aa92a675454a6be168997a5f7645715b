@@ -1,0 +1,14 @@
+golden_extract_lib.sh
+  h_fd5809635b36a3 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "c60fa414aa92a675454a6be168997a5f7645715b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
