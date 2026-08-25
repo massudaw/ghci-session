@@ -1,0 +1,18 @@
+golden/DESFanOut/fingerprint.txt
+  h_fd5809635b36a3 2-3,6,10,12,14,22,28,30,32,39,45-46,48,57,59
+golden/DESFanOut/tapestats.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-examples/src/Examples/DESFanOut.hs
+  h_fd5809635b36a3 15,17-23,52-77,122-129,131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "fff06b16a04e69d57507b9280f586d398c74d293",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
