@@ -1,0 +1,29 @@
+src/JIT/sundials_warm.c
+  s_3ea8e1f2b3128a::t_6a48a3add6b5fa 117,121,152-154,156-158,998
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_456620ee219b1d 3096-3103,3111-3117,3121,3124-3129,3132,3134,3137
+  s_3ea8e1f2b3128a::t_cddf2a911c9cfb 3065,3072-3082,3089-3090
+src/JIT/sundials_warm.h
+  s_3ea8e1f2b3128a::t_6a48a3add6b5fa 15
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_2d041cae270e33 108-112
+  s_3ea8e1f2b3128a::t_974c19d53967ff 76-78,103,125,127-146,148-150,152-156,158-161,163-164,171,241-243
+  s_3ea8e1f2b3128a::t_406e09b41e32e0 48-49
+  s_3ea8e1f2b3128a::t_851f3a9ae37dd6 123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "9a9c30737f182667696eb27fc71632d83f9cbbee",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
