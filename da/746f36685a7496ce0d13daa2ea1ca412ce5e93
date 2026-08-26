@@ -1,0 +1,913 @@
+golden-microdae/ModelRocketLiftoff/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LNGOps/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-369
+golden-microdae/GasChamberHeating/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelSliderCrank/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/DESProcessChainTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/BermudanSwaptionExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2125
+golden-microdae/LqgOffsetFreeExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-75
+golden-microdae/OptionVegaExample/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ShippingOps/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelBattery/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-13
+golden-microdae/FXAccumulatorExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-39
+golden-microdae/BankCurveTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-55
+golden-microdae/ModelRotationalMotorMagnetic/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-69
+golden-microdae/BermudanSwaptionExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRotationalMotor/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelPneumaticAccumulator/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-31
+golden-microdae/BermudanSwaptionExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelFertilizerTransient/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-117
+golden-microdae/ModelLNGTrain/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-80
+golden-microdae/FokkerPlanckExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCoolingLoopDC/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-157
+golden-microdae/HeatEquationExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-141
+golden-microdae/ModelClosedLoopEnergyCycle/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelBattery/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/LqgClosedLoopExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ForceSimple/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-125
+golden-microdae/LqgOffsetFreeExample/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-72
+golden-microdae/ModelACConditioner/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelGasPiston/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRotationalMotor/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelSimple/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-35
+golden-microdae/ModelClosedLoopEnergyCycle/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-128
+golden-microdae/ModelMotorBackEMF/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/BankRiskTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-18
+golden-microdae/ModelACConditioner/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-90
+golden-microdae/ModelThermoEngine/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LNGOps/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCoolingLoopDC/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/FokkerPlanckExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/DESExploreDistillery/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/FXAccumulatorExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/EkfNonlinearControlExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelDCMotorCTMS/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCoolingLoopDC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelRocketLiftoff/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-63
+golden-microdae/KalmanObserverExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/NonlinearBayesExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelDCMotorCTMS/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelGasPiston/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-28
+golden-microdae/ModelACConditioner/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-51
+golden-microdae/ModelGasPiston/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-18
+golden-microdae/BermudanSwaptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRotationalMotorMagnetic/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/OptionVegaExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelCombustionEngine/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-32
+golden-microdae/ModelRocketTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-62
+golden-microdae/DESExploreShopNative/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LqgClosedLoopExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-71
+golden-microdae/FokkerPlanckExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelMotorBackEMF/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/GasChamberHeating/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelDCPump/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelMotorBackEMF/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelThermostatDES/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-6
+golden-microdae/ModelThermostatDES/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/FXAccumulatorExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelQuadcopter/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketTransient/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketLiftoff/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelRotationalMotorMagnetic/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+validate_golden_tests.sh
+  s_3ea8e1f2b3128a::t_a3a4f24d4dad17 194-223,233,274-275
+  s_3ea8e1f2b3128a::t_dcaeb6d915812e 90-91,94-95
+golden-microdae/ModelBattery/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-17
+golden-microdae/ModelLNGTrainAU/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-41
+golden-microdae/DESCompoundCrossingTW/status.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1
+golden-microdae/ModelACConditioner/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/GasChamberHeating/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelLNGTrain/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-216
+golden-microdae/LqgOffsetFreeExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelTEFull/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/AmericanOptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-19
+golden-microdae/NonlinearBayesExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelLiftRegen/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/PendulumTransient/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelPneumaticAccumulator/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/ModelNeuronSpike/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelFertilizerTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-41
+golden-microdae/ModelRocketTransient/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/HelmholtzResonator/status.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1
+golden-microdae/ModelBattery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelCombustionEngine/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelGasPiston/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDesSwitchRC/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/HelmholtzResonator/solver_audit.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-7
+golden-microdae/GasChamberHeating/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-29
+golden-microdae/ModelLNGTrain/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/ModelQuadcopter/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/ModelSliderCrank/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelThermoEngine/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/PendulumTransient/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelFertilizerTransient/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-32
+golden-microdae/HelmholtzResonator/transient.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-4,6,8-10
+  s_3ea8e1f2b3128a::t_25703f6e88d852 5,7
+golden-microdae/HeatEquationExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelCoolingLoopDC/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-74
+golden-microdae/ModelGasPiston/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-13
+golden-microdae/OptionVegaExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/FXAccumulatorExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelLNGTrainAU/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/ModelLNGTrainAU/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/GasCompression/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/OptionVegaExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/DESExploreShopNative/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-62
+golden-microdae/ModelNeuronSpike/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-15
+golden-microdae/ModelRocketLiftoff/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-62
+golden-microdae/AmericanOptionExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/BankRiskTW/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelTEFull/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/DESExploreShopNative/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LNGOps/des.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-162
+golden-microdae/ModelLNGTrain/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-34
+golden-microdae/BankRiskTW/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDCPump/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelMotorBackEMF/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-65
+golden-microdae/ModelCombustionEngine/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelNeuronSpike/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelThermoEngine/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-34
+golden-microdae/ModelCombustionEngine/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/NonlinearBayesExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+.gitignore
+  s_3ea8e1f2b3128a::t_71c4e2cace51ed 20-22
+golden-microdae/ModelNeuronSpike/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/EkfNonlinearControlExample/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-233
+golden-microdae/ModelDCPump/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCoolingLoopDC/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/AmericanOptionExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/HeatEquationExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/GasChamberHeating/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/FokkerPlanckExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-27
+golden-microdae/ModelContactArrayStress/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/ModelSimple/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelSimple/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-29
+golden-microdae/ShippingOps/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-57
+golden-microdae/ModelGasPiston/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelFertilizerTransient/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelMotorBackEMF/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/GenericSparseTransient/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-122
+golden-microdae/HeatEquationExample/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-16
+golden-microdae/ModelRotationalMotorMagnetic/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-19
+golden-microdae/ModelSliderCrank/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/OptionVegaExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-60
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-32
+golden-microdae/ModelRotationalMotorMagnetic/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/AmericanOptionExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelOttoCycle/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-15
+golden-microdae/ModelRelaxationOsc/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDCPump/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/ModelLNGTrainAU/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/AmericanOptionExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelFertilizerTransient/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-46
+CLAUDE.md
+  s_3ea8e1f2b3128a::t_aad4a413d2b311 666-682
+golden-microdae/ModelClosedLoopEnergyCycle/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ForceSimple/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-22
+golden-microdae/LNGOpsAU/des.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-147
+golden-microdae/ModelPneumaticAccumulator/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelFertilizerTransient/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/KalmanObserverExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelSliderCrank/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/GasCompression/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/GasChamberHeating/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/FokkerPlanckExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelDesSwitchRC/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/ModelOttoCycle/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelFrictionSlide/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelClosedLoopEnergyCycle/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-37
+golden-microdae/LqgClosedLoopExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelACConditioner/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelPneumaticAccumulator/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelCoolingLoopDC/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRelaxationOsc/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-34
+golden-microdae/LqgClosedLoopExample/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-79
+golden-microdae/LqgOffsetFreeExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelLNGTrainAU/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-162
+golden-microdae/ForceSimple/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-90
+golden-microdae/ModelFrictionSlide/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/KalmanObserverExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-64
+golden-microdae/ModelDCMotorCTMS/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-12
+golden-microdae/ModelFrictionSlide/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelLNGTrainAU/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-74
+golden-microdae/ModelThermoEngine/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-53
+golden-microdae/ModelThermoEngine/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-17
+golden-microdae/GenericSparseTransient/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-12
+golden-microdae/ModelBeamContactStress/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/DESProcessChainTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-28
+golden-microdae/KalmanObserverExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelGasPiston/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-67
+golden-microdae/GasCompression/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelACConditioner/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-168
+golden-microdae/ModelCombustionEngine/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelDCMotorCTMS/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelLNGTrainAU/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-171
+golden-microdae/LqgClosedLoopExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDiodeClamp/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/DESExploreShop/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-43
+golden-microdae/DESCompoundCrossingTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-4
+golden-microdae/EkfNonlinearControlExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/HeatEquationExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/GasCompression/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelCoolingLoopDC/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelMotorBackEMF/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketTransient/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-123
+golden-microdae/ModelSliderCrank/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/GasCompression/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/HeatEquationExample/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-59
+golden-microdae/ModelDCMotorCTMS/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelRotationalMotor/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-24
+golden-microdae/ModelACConditioner/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDCPump/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/LqgOffsetFreeExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRotationalMotor/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ShippingOps/des.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9225
+tools/golden_overlay.sh
+  s_3ea8e1f2b3128a::t_f3b4df7b09cb92 1-54,60-122
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 55-59
+golden-microdae/ModelRocketLiftoff/energy.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-16
+golden-microdae/PendulumTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/DESExploreShop/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/GasChamberHeating/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/ModelPneumaticAccumulator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/OptionVegaExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/GasCompression/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/BankCurveTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelThermoEngine/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/DESExploreShop/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelNeuronSpike/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/BankRiskTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-99
+golden/README.md
+  s_3ea8e1f2b3128a::t_aad4a413d2b311 161-222
+golden-microdae/GasChamberHeating/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelOttoCycle/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/KalmanObserverExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HybridGroupedTest/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelCombustionEngine/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-15
+golden-microdae/ModelLNGTrain/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelCombustionEngine/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelLNGTrainAU/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/ModelMotorBackEMF/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-16
+golden-microdae/ModelPneumaticAccumulator/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelBeamContactStress/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-17
+golden-microdae/ModelRotationalMotor/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelThermoEngine/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelLiftRegen/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-93
+golden-microdae/ModelDCMotorCTMS/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-53
+golden-microdae/BankCurveTW/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelBattery/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelClosedLoopEnergyCycle/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketTransient/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-22
+golden-microdae/RouteField/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDCMotorCTMS/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ModelOttoCycle/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelTEFull/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-436
+golden-microdae/LNGOpsAU/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelFrictionSlide/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/EkfNonlinearControlExample/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-252
+golden-microdae/ModelThermoEngine/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-107
+golden-microdae/BermudanSwaptionExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-100
+golden-microdae/GasCompression/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/RouteField/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-6
+golden-microdae/ModelDCPump/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelNeuronSpike/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDCMotorCTMS/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRelaxationOsc/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-13
+golden-microdae/ModelCoolingLoopDC/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelTEFull/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-44
+golden-microdae/PendulumTransient/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/DESCompoundCrossingTW/final_state.txt
+  s_3ea8e1f2b3128a::t_25703f6e88d852 2-3,5-6
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1,4
+golden-microdae/LNGOpsAU/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRelaxationOsc/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/LqgClosedLoopExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LNGOpsAU/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-324
+golden-microdae/ModelDCPump/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-41
+golden-microdae/ModelDiodeClamp/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/BermudanSwaptionExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelClosedLoopEnergyCycle/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelClosedLoopEnergyCycle/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/OptionVegaExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/AmericanOptionExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/GenericSparseTransient/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/DESMoldingShopTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-13
+golden-microdae/EkfNonlinearControlExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelLNGTrain/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/ModelGasPiston/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelMotorBackEMF/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-28
+golden-microdae/ModelRelaxationOsc/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelCoolingLoopDC/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-57
+golden-microdae/PendulumTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/ModelSliderCrank/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-27
+golden-microdae/ModelLiftRegen/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelRocketLiftoff/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-5
+golden-microdae/ModelLNGTrainAU/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelRocketTransient/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-34
+golden-microdae/ModelLiftRegenDES/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/NonlinearBayesExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-27
+golden-microdae/ModelThermostatDES/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HelmholtzResonator/tapestats.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1
+golden-microdae/ModelBattery/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-36
+golden-microdae/ModelClosedLoopEnergyCycle/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelDesSwitchRC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ModelLNGTrainAU/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-30
+golden-microdae/NonlinearBayesExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDesSwitchRC/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelGasPiston/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelDesSwitchRC/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelOttoCycle/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-36
+golden-microdae/ModelThermostatDES/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelGasPiston/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/FXAccumulatorExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCombustionEngine/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/DESMoldingShopTW/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelPneumaticAccumulator/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HybridGroupedTest/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelSliderCrank/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-17
+golden-microdae/ModelBeamContactStress/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/EkfNonlinearControlExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelSimple/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelCombustionEngine/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-73
+golden-microdae/GenericSparseTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-15
+golden-microdae/ModelLNGTrain/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-46
+golden-microdae/ModelPneumaticAccumulator/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-42
+golden-microdae/GasCompression/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-29
+golden-microdae/FokkerPlanckExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRotationalMotor/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ShippingOps/process.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-47
+golden-microdae/ModelBattery/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-67
+golden-microdae/HeatEquationExample/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-66
+golden-microdae/LqgOffsetFreeExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelClosedLoopEnergyCycle/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/DESExploreDistillery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-23
+golden-microdae/ModelDCPump/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelDiodeClamp/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelNeuronSpike/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRotationalMotor/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-49
+golden-microdae/GasCompression/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/DESGateSampledStressTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/KalmanObserverExample/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-71
+golden-microdae/ModelDCPump/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelLNGTrain/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/BermudanSwaptionExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketLiftoff/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/NonlinearBayesExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-51
+golden-microdae/ModelQuadcopter/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/LqgOffsetFreeExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelCombustionEngine/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelMotorBackEMF/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/KalmanObserverExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelPneumaticAccumulator/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelSliderCrank/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/BermudanSwaptionExample/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelTEFull/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-71
+golden-microdae/ModelLiftRegen/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRotationalMotor/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelLiftRegenDES/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/LqgClosedLoopExample/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-68
+golden-microdae/ModelLiftRegen/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelACConditioner/energy.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-17
+golden-microdae/ModelFrictionSlide/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelOttoCycle/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/HybridGroupedTest/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/ModelThermoEngine/position_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-3
+golden-microdae/ModelLNGTrain/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-166
+run_golden_tests.sh
+  s_3ea8e1f2b3128a::t_a3a4f24d4dad17 48-50,56,76-77,82-84,89,92,99-101
+  s_3ea8e1f2b3128a::t_25703f6e88d852 36-41,44
+  s_3ea8e1f2b3128a::t_dcaeb6d915812e 42-43,45-46
+  s_3ea8e1f2b3128a::t_80c3c64c66f276 47
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-41
+golden-microdae/ModelCoolingLoopDC/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-9
+golden-microdae/ModelDiodeClamp/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-33
+golden-microdae/ModelSliderCrank/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-65
+golden-microdae/GasChamberHeating/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelLNGTrainAU/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-80
+golden-microdae/OptionVegaExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-429
+golden-microdae/ModelOttoCycle/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HelmholtzResonator/selective_report.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-20
+golden-microdae/ModelRocketTransient/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelRocketTransient/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+tools/golden_overlay_report.py
+  s_3ea8e1f2b3128a::t_c3b49c86cfded2 1-88,92-108
+  s_3ea8e1f2b3128a::t_25703f6e88d852 89-91
+golden-microdae/ModelACConditioner/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-84
+golden-microdae/ModelQuadcopter/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/LNGOps/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/AmericanOptionExample/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/AmericanOptionExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-204
+golden-microdae/ModelNeuronSpike/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-8
+golden-microdae/ModelRelaxationOsc/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelTEFull/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelMotorBackEMF/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelDCPump/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-80
+golden-microdae/RouteField/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/ModelSliderCrank/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDiodeClamp/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HelmholtzResonator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-4
+golden-microdae/ModelLiftRegenDES/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelLiftRegen/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-18
+golden-microdae/ModelRocketLiftoff/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelContactArrayStress/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ModelTEFull/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRotationalMotorMagnetic/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ForceSimple/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-90
+golden-microdae/ModelSimple/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-28
+golden-microdae/EkfNonlinearControlExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/LqgClosedLoopExample/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelACConditioner/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HelmholtzResonator/equations.txt
+  s_3ea8e1f2b3128a::t_ed2c9638c60cb6 1-29
+golden-microdae/ModelRotationalMotor/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/GenericSparseTransient/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-132
+golden-microdae/ModelThermoEngine/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/GenericSparseTransient/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRocketTransient/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-40
+golden-microdae/RouteField/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-587
+golden-microdae/DESExploreDistillery/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/KalmanObserverExample/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-62
+golden-microdae/ModelACConditioner/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/DESGateSampledStressTW/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelFertilizerTransient/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelLiftRegen/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/DESMoldingShopTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/RouteField/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-2
+golden-microdae/GenericSparseTransient/solutions.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-122
+golden-microdae/ModelBattery/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDiodeClamp/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-10
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-40
+golden-microdae/EkfNonlinearControlExample/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-240
+golden-microdae/ModelLNGTrain/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-79
+golden-microdae/ForceSimple/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/HeatEquationExample/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/ModelBattery/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-7
+golden-microdae/ModelFertilizerTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelFertilizerTransient/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-44
+golden-microdae/DESGateSampledStressTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-11
+golden-microdae/ModelContactArrayStress/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelDiodeClamp/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-4
+golden-microdae/ModelClosedLoopEnergyCycle/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-70
+golden-microdae/ModelQuadcopter/transient.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-16
+golden-microdae/LqgOffsetFreeExample/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-83
+golden-microdae/ModelNeuronSpike/equations.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-27
+golden-microdae/HeatEquationExample/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelRelaxationOsc/tapestats.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+golden-microdae/ModelLNGTrain/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-14
+golden-microdae/ModelDCMotorCTMS/residuals.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-26
+golden-microdae/ModelRotationalMotorMagnetic/selective_report.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1-20
+golden-microdae/DESProcessChainTW/status.txt
+  s_3ea8e1f2b3128a::t_f3d4a91c0839a9 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "da746f36685a7496ce0d13daa2ea1ca412ce5e93",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
