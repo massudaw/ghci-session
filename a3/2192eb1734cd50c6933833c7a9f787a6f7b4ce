@@ -1,0 +1,23 @@
+tools/microdae_vc_test.c
+  s_3ea8e1f2b3128a::t_b6e4b52ee2715c 1100-1106,1108-1111
+  s_3ea8e1f2b3128a::t_cacbaafb803c37 1171-1172
+  s_3ea8e1f2b3128a::t_ff33dd7786ef80 1177-1183
+  s_3ea8e1f2b3128a::t_48b5a7c40400e7 1066-1085,1092-1096,1107,1112
+  s_3ea8e1f2b3128a::t_1e1a5ba8a51774 1121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a32192eb1734cd50c6933833c7a9f787a6f7b4ce",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
