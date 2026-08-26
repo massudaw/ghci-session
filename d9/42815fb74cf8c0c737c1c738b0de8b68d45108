@@ -1,0 +1,39 @@
+tools/microdae_vc_test.c
+  s_3ea8e1f2b3128a::t_cc20d487ef8ee5 1069,1071,1077-1084
+  s_3ea8e1f2b3128a::t_f09b4d4cfa2b62 1720-1732
+  s_3ea8e1f2b3128a::t_13622bb3f2e2fe 1733-1743
+  s_3ea8e1f2b3128a::t_0bfd9ec253fa29 1096-1102,1104-1112,1121-1127,1143-1146
+  s_3ea8e1f2b3128a::t_08fababe8ffe51 1113-1120,1128-1136,1139-1141
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_a71dbf66b301b2 5751
+  s_3ea8e1f2b3128a::t_fae4a60997471e 5759-5778
+  s_3ea8e1f2b3128a::t_d5b6ad8e08da2a 5820-5825
+  s_3ea8e1f2b3128a::t_f07986c9efe32f 5717
+  s_3ea8e1f2b3128a::t_c988cb1ccb4fcf 5826-5838
+  s_3ea8e1f2b3128a::t_fe7292b65a9a10 6001
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 508-511,3614,4200-4201,4215-4216,4218,4515,5722-5750,5752-5753,5756,5779-5799,5801-5804,6838-6844,6847
+  s_3ea8e1f2b3128a::t_355f0392eebe13 5996-5999,6002
+  s_3ea8e1f2b3128a::t_894e74367b33c6 5847-5854
+  s_3ea8e1f2b3128a::t_93ba401d03dcbd 2904-2912,2931,2933
+  s_3ea8e1f2b3128a::t_afe487022f8ff5 517-523
+  s_3ea8e1f2b3128a::t_df9a7898d3cf56 6000
+  s_3ea8e1f2b3128a::t_93aba67215bbb9 2913-2930,2932
+  s_3ea8e1f2b3128a::t_f2d45e5ef22548 5754-5755
+  s_3ea8e1f2b3128a::t_ebb8dc775ed6ba 5800
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "d942815fb74cf8c0c737c1c738b0de8b68d45108",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
