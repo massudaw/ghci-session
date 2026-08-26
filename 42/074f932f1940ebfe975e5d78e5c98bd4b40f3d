@@ -1,0 +1,25 @@
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_e246c726700e7f 1317,1475-1497,3905-3909,4559
+src/Solver/IDA.hs
+  s_3ea8e1f2b3128a::t_26c6492ca3dae8 627-630,3352-3359,3370-3372,3650-3660,3668-3671
+  s_3ea8e1f2b3128a::t_54d0023b5adc87 3661-3667
+  s_3ea8e1f2b3128a::t_3529efae6a5722 175,3360-3369
+doc/des/DES_SEMANTICS.md
+  s_3ea8e1f2b3128a::t_9f66199828768d 438,440-485
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "42074f932f1940ebfe975e5d78e5c98bd4b40f3d",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
