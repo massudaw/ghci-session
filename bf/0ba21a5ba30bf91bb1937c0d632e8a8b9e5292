@@ -1,0 +1,177 @@
+golden-microdae/HelmholtzResonator/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5,7
+golden-microdae/DESCompoundCrossingTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2-3,5-6
+golden-microdae/ModelBouncingBall/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-12
+src/Solver/GuardRearm.hs
+  s_3ea8e1f2b3128a::t_237824f0037e73 137,312-329
+golden-microdae/ModelLNGTrainAU/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-4,21-24,26-29
+golden-microdae/DESProcessChainTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 3
+golden-microdae/ModelMotorBackEMF/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-8
+golden-microdae/BankCurveTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-2,4,7-8
+golden-microdae/ModelBeamContactStress/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-5
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2
+golden-microdae/ModelRocketTransient/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-14,42
+golden-microdae/ModelRotationalMotor/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-8
+golden-microdae/ShipFleetTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-2,4-5,19-21,23-26
+golden-microdae/ModelTEFull/selective_report.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-44
+golden-microdae/ModelThermostatTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-11
+golden-microdae/DESMoldingShopTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-4,6-7,13
+golden-microdae/ModelRotationalMotorMagnetic/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-19
+golden-microdae/ModelTEFull/solver_audit.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-7
+golden-microdae/ModelClosedLoopEnergyCycle/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-8
+golden-microdae/BermudanSwaptionExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2-4
+golden-microdae/ModelTEFull/equations.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-436
+golden-microdae/ModelBouncingBall/solver_audit.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-7
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2876-2880,2882
+golden-microdae/ModelGasPiston/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-13
+golden-microdae/ModelThermostatTW/status.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/GasCompression/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-8
+golden-microdae/HybridGroupedTest/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2
+golden-microdae/ModelThermostatTW/tapestats.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelLiftRegen/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-18
+golden-microdae/AmericanOptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 6-9
+golden-microdae/ModelLNGTrain/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-4,24-26,29-32
+golden-microdae/ModelLNGTrainAU/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-27
+golden-microdae/ModelACConditioner/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-13,23,33-34,37-40,43,76-77,80,82-84
+golden-microdae/ModelFertilizerTransient/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-26,28,30-33,40
+golden-microdae/ModelTEFull/tapestats.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/GasChamberHeating/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-8
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5-9,12,15,21
+golden-microdae/RouteField/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5
+golden-microdae/DESExploreDistillery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-18,20
+golden-microdae/ModelLNGTrain/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2
+golden-microdae/DESGateSampledStressTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-3
+golden-microdae/ModelThermostatDES/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelTEFull/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-4
+golden-microdae/BankFullBookTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-3
+golden-microdae/ModelRocketLiftoff/energy.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5-6
+golden-microdae/BankRiskTW/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1,7,14-15,17
+golden-microdae/DESExploreShop/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-2,4-17,20-35,37-40
+golden-microdae/ModelBouncingBall/tapestats.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelTEFull/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-71
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-19
+golden-microdae/RouteField/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-170,172-556,558-580
+golden-microdae/ModelRelaxationOsc/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5,7-13
+golden-microdae/BankFullBookTW/status.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelThermostatTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-20
+golden-microdae/ModelBouncingBall/selective_report.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-20
+golden-microdae/ModelQuadcopter/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 3-7,9,13-14
+golden-microdae/ModelTEFull/status.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelRocketLiftoff/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-14,19-39,51-52
+golden-microdae/ModelBouncingBall/status.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelBouncingBall/equations.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-38
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-5,8-11,15-16,21-34,37
+golden-microdae/BankFullBookTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-39
+golden-microdae/ModelDCPump/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-9
+golden-microdae/ModelBeamContactStress/solver_audit.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 2
+golden-microdae/ModelFrictionSlide/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-9
+golden-microdae/ModelDiodeClamp/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-10
+golden-microdae/ModelThermoEngine/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-17
+golden-microdae/NonlinearBayesExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-37,39-48
+golden-microdae/FokkerPlanckExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-4
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 9-14,19-23,25,36-38
+golden-microdae/ModelLNGTrain/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-27
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-2
+golden-microdae/ModelBouncingBall/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-16
+golden-microdae/ModelLNGTrainAU/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1
+golden-microdae/ModelOttoCycle/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-15
+golden-microdae/ModelRelayReactor/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 4-13,15
+golden-microdae/FXAccumulatorExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 1-8,10-22,24-27,29-36
+golden-microdae/ModelACConditioner/energy.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 9-10,13,15-17
+golden-microdae/ModelDCMotorCTMS/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 3-10
+golden-microdae/BermudanSwaptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_b6e7aa247d6310 5-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "bf0ba21a5ba30bf91bb1937c0d632e8a8b9e5292",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
