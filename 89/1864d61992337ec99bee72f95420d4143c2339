@@ -1,0 +1,59 @@
+golden-microdae/ModelBeamContactStress/solver_audit.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 2
+tools/golden_overlay.sh
+  s_3ea8e1f2b3128a::t_500b5e0183e6f4 67-81
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-2
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_53833cfec994c7 5565-5571,5576-5577
+golden-microdae/ModelRelaxationOsc/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 7,9,11-13
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-3,6,8,11-12,15-21,24-25,27
+golden-microdae/ModelRelayReactor/tapestats.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1
+golden-microdae/ModelRelayReactor/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-15
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-3,10-11,13-14,18-21,27-33,40-41
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 7-19
+golden-microdae/HybridGroupedTest/fingerprint.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 2
+golden-microdae/DESExploreShop/fingerprint.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 6,9-10,20-21,24-25,28-29,36,39-40
+golden-microdae/ModelBeamContactStress/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 5,8
+golden-microdae/ModelLiftRegen/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 7,13-18
+golden-microdae/DESExploreShopNative/fingerprint.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 8-9,19,22-23,26-27,34,37
+golden-microdae/DESCompoundCrossingTW/final_state.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 2-3,5-6
+golden-microdae/ModelRelayReactor/fingerprint.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-4
+golden-microdae/ModelRelayReactor/status.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1
+golden-microdae/ModelTEFull/transient.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 5-18,41-49,56,60,62
+golden-microdae/ModelRelayReactor/solver_audit.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 1-7
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_689de9eac2419b 9-14,20-22,25,36-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "891864d61992337ec99bee72f95420d4143c2339",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
