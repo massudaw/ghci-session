@@ -1,0 +1,57 @@
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 4-19
+golden-microdae/ModelDCMotorCTMS/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 3-10
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 1-2
+golden-microdae/ModelRelayReactor/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 6-13,15
+golden-microdae/ModelLNGTrain/fingerprint.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 2
+golden-microdae/ModelLNGTrainAU/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 4-27
+golden-microdae/ModelLNGTrainAU/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 2-4,23
+golden-microdae/ModelLNGTrainAU/fingerprint.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 4
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 5-9
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 9-11,16,32-33
+golden-microdae/DESExploreDistillery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 1-14,16-17,19
+golden-microdae/ModelLNGTrain/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 4-27
+golden-microdae/DESMoldingShopTW/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 13
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 9-14,20-23,25,36-38
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 2
+golden-microdae/ModelLNGTrain/final_state.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 2-4,30
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_3320bb8586ee23 4735-4747
+  s_3ea8e1f2b3128a::t_e46ed1881c0ba8 4864-4868
+  s_3ea8e1f2b3128a::t_8c69f154c5cf97 5016-5027
+  s_3ea8e1f2b3128a::t_fe7dc460862468 2445,2448-2462
+  s_3ea8e1f2b3128a::t_1e2d4860e53ee3 4995-5015,5032
+golden-microdae/ModelRocketTransient/transient.txt
+  s_3ea8e1f2b3128a::t_467476922f9148 4-14,42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ee86ea7fa298a76ee02b8ee075b020a5c5c5fa77",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
