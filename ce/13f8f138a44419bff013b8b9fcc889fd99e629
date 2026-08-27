@@ -1,0 +1,58 @@
+tools/model_session/session.py
+  s_6822da4b73a395::t_22c43205942e8f 23
+  s_6822da4b73a395::t_fdee48ab94398f 907-1023
+  s_6822da4b73a395::t_06b18beaf9e475 1183-1193
+  s_6822da4b73a395::t_12d4cfd356130e 1182
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 60-61,63-67,79,81,165
+  s_6822da4b73a395::t_d6a48d53b21d91 17
+  s_6822da4b73a395::t_7b8d2cc512cec9 200-216
+  s_6822da4b73a395::t_8a344ff7e30797 870-871,878
+  s_6822da4b73a395::t_10f171faf1c987 763-765,767,778
+docs/lng-plant/MODEL_NOTES.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 341-342
+docs/lng-plant/MODEL_NOTES_AU.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 25
+tools/model_session/targets.json
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 3,19,22,37,40,55-56,60,63,71,74,81-91,97,100,112,115,136,153,168,174,179-180,189,211,235,258,279,290,293,304,307,324,327,345,348,366,369,388,391,406-407,414,417,432-433,440,443,456,459,461-462,470,473,476-477,485,488,506,517,532,546,548
+  s_6822da4b73a395::t_c332bbee943884 31-32,53-54,146-147,177-178,222-223,246-247,338-339,381-382,404-405,430-431
+tools/model_session/README.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 92,127,133-135,152-167
+  s_3ea8e1f2b3128a::t_5e5cfb6852494c 168
+tools/dimcheck.sh
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 7,19,27
+tools/dsh-dev-loop/src/index.ts
+  s_3ea8e1f2b3128a::t_74f293ee931533 11,130
+  s_3ea8e1f2b3128a::t_94f65fdb84f01c 80-84,87-88
+CLAUDE.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 62,64-68,71,73,107-110,112-115,117-118,121,124-126,141-143,145,148-154,160,282
+doc/des/PROCESS_PLANT_DESIGN.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 306,308
+DIMENSIONS.md
+  s_3ea8e1f2b3128a::t_7f9935a3ea2828 442
+.gitignore
+  s_6822da4b73a395::t_737ad42fdc21dd 61-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "ce13f8f138a44419bff013b8b9fcc889fd99e629",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
