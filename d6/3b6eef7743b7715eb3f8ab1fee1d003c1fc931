@@ -1,0 +1,21 @@
+golden-microdae/AmericanOptionExample/review.txt
+  s_3ea8e1f2b3128a::t_e00070f2aed410 1-48
+tools/golden_overlay.sh
+  s_3ea8e1f2b3128a::t_0c5662e1023eeb 46-48,51-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d63b6eef7743b7715eb3f8ab1fee1d003c1fc931",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
