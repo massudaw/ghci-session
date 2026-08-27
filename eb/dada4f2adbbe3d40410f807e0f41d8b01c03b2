@@ -1,0 +1,20 @@
+sprinkler-solver-examples/src/Examples/DESQueue.hs
+  s_6822da4b73a395::t_26cbbede2b7da9 23-26,35,42-52
+  s_6822da4b73a395::t_500cc797d2080b 133-139,141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ebdada4f2adbbe3d40410f807e0f41d8b01c03b2",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
