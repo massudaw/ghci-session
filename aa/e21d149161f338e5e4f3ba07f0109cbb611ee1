@@ -1,0 +1,21 @@
+tools/golden_overlay.sh
+  s_3ea8e1f2b3128a::t_4b4881a3ff3bf9 30-50
+golden/resetmiss_allowlist.txt
+  s_3ea8e1f2b3128a::t_c2926e9d45bcba 56-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "aae21d149161f338e5e4f3ba07f0109cbb611ee1",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
