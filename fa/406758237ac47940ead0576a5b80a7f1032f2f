@@ -1,0 +1,26 @@
+sprinkler-solver-examples/src/Examples/LNGOps.hs
+  s_6822da4b73a395::t_fb73fe8903b00a 483,491-494
+  s_6822da4b73a395::t_cbf0e4be8b0d51 272,484-490
+golden/LNGOps/des.txt
+  s_6822da4b73a395::t_dab59e70ad22f3 13,16,19,22-24,31,34,37,40-42,49,52,55,58-60,67,70,73,76-78,85,88,91,94-96,103,106,109,112-114,129,134,139,144,149,154
+golden/LNGOps/final_state.txt
+  s_6822da4b73a395::t_46dba9212b8018 5-9
+golden/LNGOps/fingerprint.txt
+  s_6822da4b73a395::t_e162f7bb82da68 1-2,4-369
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fa406758237ac47940ead0576a5b80a7f1032f2f",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
