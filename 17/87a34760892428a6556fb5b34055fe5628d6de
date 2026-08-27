@@ -1,0 +1,41 @@
+golden-microdae/ModelCoolingLoopDC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 1
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 8-19
+golden-microdae/EkfNonlinearControlExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 1
+golden-microdae/ModelNeuronSpike/transient.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 8-9
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 1-2
+golden-microdae/EkfNonlinearControlExample/solutions.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 2-29,44-211
+golden-microdae/ModelThermoEngine/residuals.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 2-3,9-10,13,35,39,53
+golden-microdae/ModelThermoEngine/solutions.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 6,9,31
+golden-microdae/ModelNeuronSpike/fingerprint.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 1
+golden-microdae/ModelPneumaticAccumulator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 1
+golden-microdae/ModelLiftRegen/transient.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 15-18
+golden-microdae/ModelSliderCrank/solutions.txt
+  s_3ea8e1f2b3128a::t_555a7234d2a109 15,17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "1787a34760892428a6556fb5b34055fe5628d6de",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
