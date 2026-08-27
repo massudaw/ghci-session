@@ -1,0 +1,25 @@
+golden-microdae/ModelCoolingLoopDC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b93cbc1018553 1
+src/JIT/micro_dae_ida_shim.c
+  s_3ea8e1f2b3128a::t_1e37efabfe8ea1 1088,1109-1110,1478-1497,1504-1507,1509-1511,1520-1528,1538-1540,1545-1548
+  s_3ea8e1f2b3128a::t_58adae472c944c 1529-1537,1541-1544
+  s_3ea8e1f2b3128a::t_73f3fb314d4ebb 1549
+golden-microdae/ModelPneumaticAccumulator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b93cbc1018553 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "3219536850bb1c6e8a0e8c66dbf27a7285f3b819",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
