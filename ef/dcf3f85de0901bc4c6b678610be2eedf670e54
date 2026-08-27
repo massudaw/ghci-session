@@ -1,0 +1,33 @@
+src/JIT/micro_dae_ida_shim.c
+  s_3ea8e1f2b3128a::t_d875b55e886e04 1684-1706,1708
+  s_3ea8e1f2b3128a::t_e01aa8f8b60fa9 1312,1494-1537,1539-1542,1544-1545,1547,1549-1553,1555-1559,1561-1605,1608-1624,1627-1676,1678-1683,1711-1723
+  s_3ea8e1f2b3128a::t_c222350b81442c 1220,1236-1249,1254
+golden-microdae/ModelCoolingLoopDC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_7335efb4a7e427 1
+golden-microdae/ModelPneumaticAccumulator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_7335efb4a7e427 1
+golden-microdae/EkfNonlinearControlExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_e4e424d1233ad3 1
+golden-microdae/EkfNonlinearControlExample/solutions.txt
+  s_3ea8e1f2b3128a::t_8cd134ba3acea1 2-29,44-211
+golden-microdae/ModelACConditioner/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f467d05148634d 1
+golden-microdae/ModelACConditioner/transient.txt
+  s_3ea8e1f2b3128a::t_52ec2fa9e74802 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "efdcf3f85de0901bc4c6b678610be2eedf670e54",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
