@@ -1,0 +1,25 @@
+doc/des/PROCESS_MIGRATION_WORKFLOW.md
+  s_6822da4b73a395::t_a4374a520c6a10 157-181
+validate_golden_tests.sh
+  s_6822da4b73a395::t_79047b92ebdbc9 94-117,135-165,385
+  s_6822da4b73a395::t_bf8ec942478dc3 118-126,133-134,559-560
+  s_6822da4b73a395::t_a4374a520c6a10 127-132
+  s_6822da4b73a395::t_fa899c73cba2fb 573-591
+  s_6822da4b73a395::t_ac147845487e3a 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a4af7d8ef29e2bb4187c719458d1dfad86091cb8",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
