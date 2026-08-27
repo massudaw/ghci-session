@@ -1,0 +1,34 @@
+validate_golden_tests.sh
+  s_6822da4b73a395::t_8350424cd780e1 664-698,720-721
+sprinkler-solver-examples/src/Examples/DESFactoryLine.hs
+  s_6822da4b73a395::t_da13ca7b4c9e06 21,109-113
+  s_6822da4b73a395::t_ffcb34e55f90c6 114
+golden/DESQueue/final_state.txt
+  s_6822da4b73a395::t_8f3afb7276731b 1-7
+sprinkler-solver-examples/src/Examples/DESQueue.hs
+  s_6822da4b73a395::t_da13ca7b4c9e06 27,141-150
+  s_6822da4b73a395::t_e3b60bc41f0322 151
+sprinkler-solver-examples/src/Examples/DESFanOut.hs
+  s_6822da4b73a395::t_da13ca7b4c9e06 22,129-133
+  s_6822da4b73a395::t_85a516bb1250fd 134
+golden/DESFanOut/final_state.txt
+  s_6822da4b73a395::t_8f3afb7276731b 1-5
+golden/DESFactoryLine/final_state.txt
+  s_6822da4b73a395::t_8f3afb7276731b 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b64293902c054b7e5ebbe4dac48d9c2e5de4dc4d",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
