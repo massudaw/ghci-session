@@ -1,0 +1,23 @@
+golden-microdae/ModelLiftRegenDES/review.txt
+  s_3ea8e1f2b3128a::t_eda943d02e89f1 1-61
+golden_parallel_lib.sh
+  s_3ea8e1f2b3128a::t_638775df573b7b 371-386,394-404,406,412
+golden/resetmiss_allowlist.txt
+  s_3ea8e1f2b3128a::t_6429d491e5340c 8-14,136-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3e4e59e65507f2ef7c47b4bff6d23e689ad62c19",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
