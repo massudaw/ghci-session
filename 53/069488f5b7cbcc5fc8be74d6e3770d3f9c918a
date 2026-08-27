@@ -1,0 +1,21 @@
+golden-microdae/ModelThermostatTW/final_state.txt
+  s_3ea8e1f2b3128a::t_42a06e0e380d54 2-3,5
+golden-microdae/ModelContactArrayStress/transient.txt
+  s_3ea8e1f2b3128a::t_42a06e0e380d54 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "53069488f5b7cbcc5fc8be74d6e3770d3f9c918a",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
