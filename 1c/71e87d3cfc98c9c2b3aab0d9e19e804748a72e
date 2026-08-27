@@ -1,0 +1,31 @@
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_48183d6b79d7a9 4475,4510
+  s_3ea8e1f2b3128a::t_5e676ed9fba1fd 5665-5671,5673-5675,5677-5678
+  s_3ea8e1f2b3128a::t_571bb736febbb5 4432-4437,4448
+  s_3ea8e1f2b3128a::t_fdbe2b1a707234 4461,4511,4521,4531
+  s_3ea8e1f2b3128a::t_94b6408f615277 4476-4505,4507-4509
+  s_3ea8e1f2b3128a::t_b60a5f1dedb1f6 7122-7132
+  s_3ea8e1f2b3128a::t_a87d1c2ecee1f4 4405-4407,4506
+  s_3ea8e1f2b3128a::t_658199b8ffa05c 5672,5676
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_7d682b108c523c 6975-6996
+  s_3ea8e1f2b3128a::t_265906221d8c7d 7129-7140
+  s_3ea8e1f2b3128a::t_7da0a469fc200a 7038-7057
+  s_3ea8e1f2b3128a::t_d8a789f105e851 5597-5599,6384-6400,6402,6414-6415
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "1c71e87d3cfc98c9c2b3aab0d9e19e804748a72e",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
