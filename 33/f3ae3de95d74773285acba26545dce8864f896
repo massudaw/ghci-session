@@ -1,0 +1,29 @@
+golden-microdae/LNGOpsAU/final_state.txt
+  s_6822da4b73a395::t_1494f5d152416f 1-2,13-14,18-21,28-31,40-41
+golden-microdae/LNGOps/final_state.txt
+  s_6822da4b73a395::t_ae2831f3d1acad 24-25
+golden-microdae/ShipFleetOpt/final_state.txt
+  s_6822da4b73a395::t_e0b124924898f1 1-3
+golden-microdae/ShipFleetOpt/fingerprint.txt
+  s_6822da4b73a395::t_6cc88624be5b5a 1-42
+golden-microdae/ShipFleetOpt/status.txt
+  s_6822da4b73a395::t_ec28f20101ff53 1
+golden-microdae/ShippingOps/final_state.txt
+  s_6822da4b73a395::t_cf91463dbec127 9-14,20-23,25,36-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "33f3ae3de95d74773285acba26545dce8864f896",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
