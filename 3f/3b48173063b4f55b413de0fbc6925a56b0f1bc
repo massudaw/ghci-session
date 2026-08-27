@@ -1,0 +1,23 @@
+sprinkler-solver-construction/src/Examples/DESConstructionSite.hs
+  s_6822da4b73a395::t_973d6d23d8e41d 680-682,684-685,1024,1106-1127
+golden/DESConstructionSite/fingerprint.txt
+  s_6822da4b73a395::t_a42d64f986a04d 1,10,12-762,775
+golden/DESConstructionSite/final_state.txt
+  s_6822da4b73a395::t_a42d64f986a04d 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3f3b48173063b4f55b413de0fbc6925a56b0f1bc",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
