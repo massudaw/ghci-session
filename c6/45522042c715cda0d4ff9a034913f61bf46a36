@@ -1,0 +1,19 @@
+tools/golden_overlay_report.py
+  s_3ea8e1f2b3128a::t_84ac94eaf5416f 17-25,90-96,106-110,112,121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c645522042c715cda0d4ff9a034913f61bf46a36",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
