@@ -1,0 +1,23 @@
+tools/golden_overlay_report.py
+  s_3ea8e1f2b3128a::t_b47cb3222e910c 39-63
+  s_3ea8e1f2b3128a::t_320f19f93ba951 64
+  s_3ea8e1f2b3128a::t_5031b9e08444d0 5-7,67-69,72-75,85-86,110
+  s_3ea8e1f2b3128a::t_27ea457f232f7b 70
+  s_3ea8e1f2b3128a::t_8a042923de122e 71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6d64b1aa5d4d853be3b41ca833606092a2e26317",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
