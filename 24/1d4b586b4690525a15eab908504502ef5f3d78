@@ -1,0 +1,29 @@
+src/Solver/DES/DST.hs
+  s_3ea8e1f2b3128a::t_b904eb40f22b43 86-93,134,173
+sprinkler-solver-examples/src/Examples/DESExploreShopNative.hs
+  s_3ea8e1f2b3128a::t_0779e2a2b5e873 37
+  s_3ea8e1f2b3128a::t_e621649fa4a1bd 175-184
+  s_3ea8e1f2b3128a::t_adb52eeb3a875c 186-214,217,220,222-223
+golden-microdae/DESExploreShopNative/tapestats.txt
+  s_3ea8e1f2b3128a::t_878e31a4802e3a 1
+golden-microdae/DESExploreShopNative/fingerprint.txt
+  s_3ea8e1f2b3128a::t_878e31a4802e3a 1-62
+golden-microdae/DESExploreShopNative/status.txt
+  s_3ea8e1f2b3128a::t_878e31a4802e3a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "241d4b586b4690525a15eab908504502ef5f3d78",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
