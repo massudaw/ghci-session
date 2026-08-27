@@ -1,0 +1,21 @@
+golden-microdae/review.txt
+  s_3ea8e1f2b3128a::t_e7e30c13e85745 1-309
+tools/golden_overlay.sh
+  s_3ea8e1f2b3128a::t_b95db2f09e8db6 21-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f56054bebe2a9afb6886c97f07f0e48840e3e3a0",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
