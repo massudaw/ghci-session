@@ -1,0 +1,26 @@
+.gitignore
+  s_6822da4b73a395::t_737ad42fdc21dd 57-60
+tools/model_session/session.py
+  s_6822da4b73a395::t_d6a48d53b21d91 17
+  s_6822da4b73a395::t_7b8d2cc512cec9 200-216
+  s_6822da4b73a395::t_8a344ff7e30797 870-871,878
+  s_6822da4b73a395::t_10f171faf1c987 763-765,767,778
+tools/model_session/targets.json
+  s_6822da4b73a395::t_c332bbee943884 31-32,53-54,146-147,177-178,222-223,246-247,338-339,381-382,404-405,430-431
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f27f339cbd7b79f7e1653388f6bdfb06e1e92bf5",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
