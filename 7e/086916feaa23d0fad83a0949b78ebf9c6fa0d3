@@ -1,0 +1,24 @@
+sprinkler-solver-examples/src/Examples/DESFanOut.hs
+  s_6822da4b73a395::t_19ac8c26f661c0 13,16,18-21,38-40,51-75
+  s_6822da4b73a395::t_3d2cfd5a74ae3e 121-127,129
+sprinkler-solver-examples/src/Examples/DESFactoryLine.hs
+  s_6822da4b73a395::t_e89c6d8ddbaa52 101-107,109
+  s_6822da4b73a395::t_3be62315ba22eb 12,15,17-20,39-45,49-57
+  s_6822da4b73a395::t_6cfeb570b085d0 29-32,38,46-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7e086916feaa23d0fad83a0949b78ebf9c6fa0d3",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
