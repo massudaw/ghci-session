@@ -1,0 +1,58 @@
+golden-microdae/ModelThermoEngine/residuals.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 2-3,9-10,13,35,39,53
+golden-microdae/ModelThermoEngine/solutions.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 6,9,31
+golden-microdae/ModelSimple/residuals.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-35
+golden-microdae/ModelSliderCrank/solutions.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 15,17
+golden-microdae/ModelACConditioner/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+golden-microdae/ModelNeuronSpike/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+golden-microdae/ModelPneumaticAccumulator/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+golden-microdae/ModelSimple/status.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-2
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 8-19
+golden-microdae/EkfNonlinearControlExample/solutions.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 2-29,44-211
+golden-microdae/EkfNonlinearControlExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+src/JIT/micro_dae_ida_shim.c
+  s_3ea8e1f2b3128a::t_2e2ae59352450e 1508-1522
+  s_3ea8e1f2b3128a::t_2462d2c82d6d2e 1195-1215,1219-1221
+  s_3ea8e1f2b3128a::t_c383d91f577e99 1087,1156-1164,1174,1216,1449-1464
+  s_3ea8e1f2b3128a::t_989e64d5bccd00 1465-1466
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-2
+golden-microdae/ModelSimple/equations.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-29
+golden-microdae/ModelNeuronSpike/transient.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 8-9
+golden-microdae/ModelSimple/solutions.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-28
+golden-microdae/ModelCoolingLoopDC/fingerprint.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1
+golden-microdae/ModelSimple/position_audit.txt
+  s_3ea8e1f2b3128a::t_6b11b5cdf28e62 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "2f960c52df9d15f7041bc1703aab0621b9148760",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
