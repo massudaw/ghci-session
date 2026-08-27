@@ -1,0 +1,29 @@
+src/Solver/IDA.hs
+  s_3ea8e1f2b3128a::t_1aa3783f8dca0f 642-646,649
+golden/DESExploreDistillery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_fdafd0e27fe432 1-19
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_1aa3783f8dca0f 3897-3899,3902
+golden/DESExploreShop/fingerprint.txt
+  s_3ea8e1f2b3128a::t_fdafd0e27fe432 1-4,6-16,19-32,34-40
+golden/DESExploreShopNative/fingerprint.txt
+  s_3ea8e1f2b3128a::t_fdafd0e27fe432 1-4,6-16,19-30,32-37
+doc/des/DES_SEMANTICS.md
+  s_3ea8e1f2b3128a::t_71fa076180975a 515-535
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "6668a56bd267ce314ad18522d0e3e03d61a3306e",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

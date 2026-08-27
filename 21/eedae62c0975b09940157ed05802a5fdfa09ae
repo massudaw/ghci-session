@@ -1,0 +1,23 @@
+tools/band_lu_test.c
+  s_507aea4eee5259::t_80c7b227b50730 1-370
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_7f71678c1e6a99 359-372,1199-1235,1242,1244-1246,1248-1264,1267-1294,1296-1314,1318-1340,1347,1836-1838,1978-1998,2000-2030
+src/JIT/micro_dae.h
+  s_507aea4eee5259::t_295b2948e2f67e 142-159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "21eedae62c0975b09940157ed05802a5fdfa09ae",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

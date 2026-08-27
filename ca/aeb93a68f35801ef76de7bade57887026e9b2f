@@ -1,0 +1,30 @@
+src/JIT/micro_dae_ida_shim.h
+  s_3ea8e1f2b3128a::t_952e4569d6bc44 169-170
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_ce9cda33ac484e 3029-3032,3093-3101,3110-3126,3128-3139
+  s_3ea8e1f2b3128a::t_ebfeb657b98fcd 3102-3109,3127
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_40069acd4c8316 4034,4042-4043,4046-4048,4052,4055-4056,4079-4083,4086-4090,4103
+validate_golden_tests.sh
+  s_3ea8e1f2b3128a::t_374d4a9e09d6f9 84-93
+.gitignore
+  s_3ea8e1f2b3128a::t_732d6f115d8989 4
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_b90085130b3821 1152-1219
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "caaeb93a68f35801ef76de7bade57887026e9b2f",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

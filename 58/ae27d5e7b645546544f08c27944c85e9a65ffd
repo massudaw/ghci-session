@@ -1,0 +1,129 @@
+golden-microdae/ModelLiftRegenDES/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1
+golden-microdae/ModelDesSwitchRC/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1
+golden-microdae/ModelRotationalMotorMagnetic/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-19
+golden-microdae/ModelDCPump/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-9
+golden-microdae/ModelDesSwitchRC/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-19
+golden-microdae/FXAccumulatorExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1,5-6,9-10,12,14-17,19-22,26-32,36
+golden-microdae/ModelLNGTrainAU/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-4,21-24,29
+golden-microdae/HelmholtzResonator/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-5,7
+golden-microdae/HybridGroupedTest/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 2
+golden-microdae/ModelOttoCycle/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-15
+golden-microdae/ModelThermostatDES/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1
+golden-microdae/DESProcessChainTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 3
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 9-13,20-23,25,36-38
+golden-microdae/ModelLNGTrain/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-27
+golden-microdae/ModelRocketTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-11,13-14,42
+golden-microdae/ModelACConditioner/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-13,33-34,37-40,76-77,80,82-84
+golden-microdae/ModelRelaxationOsc/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5-7,9,11-13
+golden-microdae/RouteField/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5
+golden-microdae/ModelRocketTransient/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1
+golden-microdae/NonlinearBayesExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-32,34-48
+golden-microdae/ShipFleetTW/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-17
+golden-microdae/ModelRotationalMotor/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-8
+golden-microdae/AmericanOptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 6-9
+golden-microdae/ModelQuadcopter/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 3-7,9
+golden-microdae/ModelDCMotorCTMS/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 3-10
+golden-microdae/ShipFleetTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-26
+golden-microdae/ModelLiftRegen/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-18
+golden-microdae/ModelACConditioner/energy.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 9-10,13,15-17
+golden-microdae/ShipFleetTW/status.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1
+golden-microdae/ModelThermoEngine/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-17
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 8-11,16,32-33
+golden-microdae/ModelGasPiston/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-13
+golden-microdae/ModelBeamContactStress/solver_audit.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 2,12-14
+golden-microdae/ModelLNGTrainAU/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-27
+golden-microdae/DESExploreDistillery/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-19
+golden-microdae/BermudanSwaptionExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 2-4
+golden-microdae/DESGateSampledStressTW/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 2-3
+golden-microdae/GasCompression/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-8
+golden-microdae/ModelFertilizerTransient/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-16,18-28,30,32-33,39-40
+golden-microdae/ModelFrictionSlide/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-9
+golden-microdae/ModelLiftRegenDES/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-18
+golden-microdae/ModelClosedLoopEnergyCycle/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-8
+golden-microdae/ModelDiodeClamp/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4,10
+golden-microdae/ModelLNGTrain/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-4,24-26,32
+golden-microdae/ShipFleetTW/process.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-246
+golden-microdae/FokkerPlanckExample/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-4
+golden-microdae/BermudanSwaptionExample/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 3,5-7
+golden-microdae/OptionVegaExample/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5-7,9,14-19
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5-9
+golden-microdae/ModelBattery/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5,8-13
+golden-microdae/ModelBeamContactStress/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 5
+golden-microdae/ModelMotorBackEMF/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-8
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_1224548d19da1a 2860-2863,2865
+golden-microdae/ModelRocketLiftoff/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 4-14,19-39
+golden-microdae/RouteField/fingerprint.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 1-149,151-542,544-580
+golden-microdae/ModelRelayReactor/transient.txt
+  s_3ea8e1f2b3128a::t_f67b9ae7028f50 10-13,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "58ae27d5e7b645546544f08c27944c85e9a65ffd",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

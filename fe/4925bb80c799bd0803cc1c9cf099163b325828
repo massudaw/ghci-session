@@ -1,0 +1,23 @@
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_ad2653166237da 3837-3846
+  s_3ea8e1f2b3128a::t_6d14b99de2bf58 976-977,1313-1316,3799-3821,3825,3827-3836,3847-3865,3872-3888,3890-3899,4529-4530,4556
+  s_3ea8e1f2b3128a::t_e66dbc74c73c67 3822-3824,3826
+doc/des/DES_SEMANTICS.md
+  s_3ea8e1f2b3128a::t_77e48613c13c97 399-444
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "fe4925bb80c799bd0803cc1c9cf099163b325828",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

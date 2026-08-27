@@ -1,0 +1,24 @@
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_70910b10ffc8f7 4196-4203
+  s_3ea8e1f2b3128a::t_8cff2f1e8ffc40 4151-4171
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_de8d30ca56e8a8 4983-5005,5007
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_9d14f6b9158632 1259-1322
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "d2548416dea9c3154048c16037e02d84ad0eb716",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

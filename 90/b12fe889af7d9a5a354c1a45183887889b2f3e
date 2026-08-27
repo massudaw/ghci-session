@@ -1,0 +1,23 @@
+doc/des/THREADED_TW_NONDETERMINISM.md
+  s_507aea4eee5259::t_e6dc24c7215202 74-128
+sprinkler-solver-examples/src/Examples/BankMarketFeedActor.hs
+  s_507aea4eee5259::t_37cf7a986612ab 229-235,251-256
+src/Solver/DES/TimeWarpPlant.hs
+  s_507aea4eee5259::t_255ab925c64dcb 1392-1415
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "90b12fe889af7d9a5a354c1a45183887889b2f3e",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

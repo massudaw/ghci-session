@@ -1,0 +1,16 @@
+src/JIT/sundials_warm.c
+  h_fd5809635b36a3 107-109,334,383,488,529-535
+test/SundialsWarmTest.c
+  h_fd5809635b36a3 1219-1338,1368
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "78dc795499c961290c34b44bf89008d1ecab0084",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

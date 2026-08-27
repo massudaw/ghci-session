@@ -1,0 +1,23 @@
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_0575e89283fc75 2625-2626,2630,2681-2698
+  s_3ea8e1f2b3128a::t_d793006a858b29 2664-2680
+  s_3ea8e1f2b3128a::t_f501cbb24d3845 2631-2648
+  s_3ea8e1f2b3128a::t_2aa6ee6679e0a7 2614-2624,2627-2629,2656,2699-2701
+  s_3ea8e1f2b3128a::t_f09353c32d1cd3 2649-2655,2657-2663
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "973c0a13eb491e8f55f6a6315a0f7dcc4a611e37",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

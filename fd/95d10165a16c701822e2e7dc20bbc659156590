@@ -1,0 +1,63 @@
+golden/DESBench/fingerprint.txt
+  s_507aea4eee5259::t_b20a79d682d00e 1-26
+golden/DESBench/tapestats.txt
+  s_507aea4eee5259::t_abf28682718709 1
+golden/DESDistillery/fingerprint.txt
+  s_507aea4eee5259::t_41ed93d954ac6d 1-64
+golden/DESDistillery/tapestats.txt
+  s_507aea4eee5259::t_23b44fa48be50f 1-2
+golden/DESExploreDistillery/fingerprint.txt
+  s_507aea4eee5259::t_ce8cda7018b395 1-23
+golden/DESExploreDistillery/tapestats.txt
+  s_507aea4eee5259::t_7b66c09395b549 1
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_507aea4eee5259::t_dc54a1e6a9824d 1-64
+golden/DESExploreDistilleryNative/tapestats.txt
+  s_507aea4eee5259::t_3bc3abe30bfbe5 1
+golden/DESExploreShop/fingerprint.txt
+  s_507aea4eee5259::t_3e58e4f477b54d 1-43
+golden/DESExploreShop/tapestats.txt
+  s_507aea4eee5259::t_69bf2a57e3884f 1
+golden/DESExploreShopNative/fingerprint.txt
+  s_507aea4eee5259::t_7642a2692ff276 1-62
+golden/DESExploreShopNative/tapestats.txt
+  s_507aea4eee5259::t_44810a3e303a60 1
+golden/DESFactoryLine/fingerprint.txt
+  s_507aea4eee5259::t_d87beffacf4ed2 1-43
+golden/DESFactoryLine/tapestats.txt
+  s_507aea4eee5259::t_b6b82e22a5a008 1
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_507aea4eee5259::t_ca6b5bef381973 1-33
+golden/DESFanOut/fingerprint.txt
+  s_507aea4eee5259::t_b31017cc3930e5 1-43
+golden/DESFanOut/tapestats.txt
+  s_507aea4eee5259::t_5d588eacf7200b 1
+golden/DESMoldingShop/fingerprint.txt
+  s_507aea4eee5259::t_3a174ea23b02ed 1-33
+golden/DESMoldingShop/tapestats.txt
+  s_507aea4eee5259::t_a2866952a873a6 1
+golden/DESParallelLines/fingerprint.txt
+  s_507aea4eee5259::t_125e64d1435fb3 1-58
+golden/DESParallelLines/tapestats.txt
+  s_507aea4eee5259::t_865e56272dc831 1
+golden/DESUnifiedLine/fingerprint.txt
+  s_507aea4eee5259::t_34b7d7bfea148d 1-22
+golden/DESUnifiedLine/tapestats.txt
+  s_507aea4eee5259::t_767f147f8f88a8 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "fd95d10165a16c701822e2e7dc20bbc659156590",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

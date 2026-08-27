@@ -1,0 +1,19 @@
+doc/des/DES_SEMANTICS.md
+  s_3ea8e1f2b3128a::t_7d6a1fa50e1412 359-398
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "52133f34bcf2b2ad08b321456e4ec77e7488fc74",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

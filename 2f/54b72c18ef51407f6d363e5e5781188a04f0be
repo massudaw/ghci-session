@@ -1,0 +1,23 @@
+example/TestTimeWarpJit.hs
+  s_3ea8e1f2b3128a::t_3da3daeb1b8203 2539
+  s_3ea8e1f2b3128a::t_4f0780bda72620 205-207,209,233-234,262-263
+  s_3ea8e1f2b3128a::t_497d06db4c8f18 2537-2538
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_acf27b70f5f010 870-905
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "2f54b72c18ef51407f6d363e5e5781188a04f0be",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

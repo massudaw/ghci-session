@@ -1,0 +1,20 @@
+src/Solver/GuardRearm.hs
+  s_3ea8e1f2b3128a::t_ac6544a9448504 169-171,288,293-300,305-306
+  s_3ea8e1f2b3128a::t_0f9a8e32ec3884 285-287,289-292,301-304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "445fbf3ffa83cfafcfece78645d40a76d46383f0",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

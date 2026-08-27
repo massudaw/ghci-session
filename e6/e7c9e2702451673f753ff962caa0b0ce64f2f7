@@ -1,0 +1,26 @@
+sprinkler-solver-examples/src/Examples/DESBackPressure.hs
+  h_fd5809635b36a3 29-32,49-63,148-154,156-157
+sprinkler-solver-examples/src/Examples/DESSharedRoom.hs
+  h_fd5809635b36a3 40-43,51-59,168-173,176
+sprinkler-solver.cabal
+  h_fd5809635b36a3 311
+src/JIT/jit_trampoline.c
+  h_fd5809635b36a3 973
+src/JIT/sundials_warm.c
+  h_fd5809635b36a3 402,513-516
+src/Solver/DES/RunProcess.hs
+  h_fd5809635b36a3 1-117
+test/SundialsWarmTest.c
+  h_fd5809635b36a3 69-125,1551-2007,2040-2044,2052-2053
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "e6e7c9e2702451673f753ff962caa0b0ce64f2f7",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+doc/des/THREADED_TW_NONDETERMINISM.md
+  s_507aea4eee5259::t_17cb439e03774a 1-20
+golden_examples_lib.sh
+  s_507aea4eee5259::t_bc69c73693b290 35-42
+src/JIT/tw_engine.h
+  s_507aea4eee5259::t_8d82b95ce58840 3858-3875,3877
+src/JIT/tw_runtime.c
+  s_507aea4eee5259::t_65d4b9afd3779d 6077-6098,6101-6102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "31d156413a5fb5ef29be753a19605f0673ee49b7",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

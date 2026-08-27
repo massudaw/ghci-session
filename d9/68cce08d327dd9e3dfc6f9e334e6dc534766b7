@@ -1,0 +1,27 @@
+tools/microdae_vc_test.c
+  s_3ea8e1f2b3128a::t_f236dfbf517532 1505-1534,1537-1540,1542-1590,1606-1629,1635-1641,1643,1657-1660,1668,1682-1686
+  s_3ea8e1f2b3128a::t_5cf3ac0fb15db7 1535-1536,1541,1591-1605,1644,1648-1653
+  s_3ea8e1f2b3128a::t_6ef3b78984d53d 1630-1634,1642,1645-1647,1654-1656
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_6ef3b78984d53d 4284,4286-4292
+  s_3ea8e1f2b3128a::t_20cc9f98165fd4 4275-4283,4285,4293-4304
+  s_3ea8e1f2b3128a::t_b0af7e93500af0 311-314
+  s_3ea8e1f2b3128a::t_d28825613e87ac 4933-4943
+  s_3ea8e1f2b3128a::t_0ede58b1dd38ac 5004-5008
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "d968cce08d327dd9e3dfc6f9e334e6dc534766b7",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

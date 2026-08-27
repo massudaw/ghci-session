@@ -1,0 +1,19 @@
+doc/microdae/GENERAL_IMPROVEMENTS.md
+  s_3ea8e1f2b3128a::t_ec80e1ba0d8d9d 42-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "85d6a4e53527a227b41fa6649e8a3eb8da474d36",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+docs/dae/ALGORITHM_DESIGN.md
+  h_fd5809635b36a3 1-110
+docs/dae/API_SPECIFICATION.md
+  h_fd5809635b36a3 1-249
+docs/dae/MIGRATION_AND_VALIDATION_PLAN.md
+  h_fd5809635b36a3 1-80
+docs/dae/README.md
+  h_fd5809635b36a3 1-59
+docs/dae/WASM_COMPILATION_PLAN.md
+  h_fd5809635b36a3 1-126
+sprinkler-solver.cabal
+  h_fd5809635b36a3 37-41,46-48,459-465,471-483,495-496
+src/JIT/jit_trampoline.c
+  h_fd5809635b36a3 36-39,368,376,965,971,4060,4091
+src/JIT/micro_dae.c
+  h_fd5809635b36a3 1-1103
+src/JIT/micro_dae.h
+  h_fd5809635b36a3 1-264
+src/JIT/micro_dae_ida_shim.c
+  h_fd5809635b36a3 1-1000
+src/JIT/micro_dae_ida_shim.h
+  h_fd5809635b36a3 1-161
+test/MicroDAETest.c
+  h_fd5809635b36a3 1-407
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7b982312912c55c27cc94c2246d6a6e3d7d7e6f3",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

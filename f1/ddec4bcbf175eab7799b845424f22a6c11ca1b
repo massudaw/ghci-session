@@ -1,0 +1,22 @@
+doc/microdae/GOLDEN_DIFF_CLASSIFICATION.md
+  s_3ea8e1f2b3128a::t_6fb6b9ca6e4ab7 107-145
+src/JIT/micro_dae.c
+  s_3ea8e1f2b3128a::t_809a29d6a98e60 2763-2766,2777-2780
+  s_3ea8e1f2b3128a::t_6fb6b9ca6e4ab7 2767-2776
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f1ddec4bcbf175eab7799b845424f22a6c11ca1b",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+tools/sparse_lu_btf_test.c
+  s_507aea4eee5259::t_d171ce7eb82125 288-348
+src/JIT/micro_dae.h
+  s_507aea4eee5259::t_2239c39af8dfe1 253-256
+  s_507aea4eee5259::t_84b084e6859970 91-97
+  s_507aea4eee5259::t_951bba938a8f27 223-237,240-252,257-264
+  s_507aea4eee5259::t_462f845fb499bd 265
+tools/btf_block_density.c
+  s_507aea4eee5259::t_b71cb3833c1a60 1-136
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_000762bd392b25 791-800
+  s_507aea4eee5259::t_5ba1e9734aa93c 1215-1250,1252-1272
+  s_507aea4eee5259::t_c61be07305637a 1273-1287
+  s_507aea4eee5259::t_cc7dc8ef620d3d 1957-1962
+  s_507aea4eee5259::t_0ae9f1ffe78956 1251
+  s_507aea4eee5259::t_e738c366ef86ef 1478-1489
+  s_507aea4eee5259::t_53707aa4edb923 1357-1379
+  s_507aea4eee5259::t_a3a28020b36bb4 1452-1456,1458-1465,1467,1469
+  s_507aea4eee5259::t_ed7e73fff7c391 1501-1506
+  s_507aea4eee5259::t_74471095fd4904 1333-1339
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "69d04d1f1a1709aa2c6caf209755a243f78e95a1",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

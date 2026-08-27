@@ -1,0 +1,19 @@
+src/Solver/Temporal.hs
+  s_3ea8e1f2b3128a::t_234f202f20a8de 54-57,511-532,587-593
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "db242a6a6ff3c8ec44e4f4b7bdc63b19c637f9a7",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

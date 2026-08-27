@@ -1,0 +1,33 @@
+doc/microdae/DRIVER_PARITY_H0.md
+  s_507aea4eee5259::t_d8e52a7e3d9b1c 74-121
+sprinkler-solver-examples/src/Examples/BankRiskTW.hs
+  s_507aea4eee5259::t_c0f1751ee6fad7 123
+src/JIT/jit_trampoline.c
+  s_507aea4eee5259::t_702a1e9b22dbcd 2997,3359,3475,4824-4870,5924,5977
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_fca84cb8993662 239-248,1758-1787,1945-1949,1955-1966
+src/JIT/micro_dae.h
+  s_507aea4eee5259::t_cdc32728d87338 201
+src/JIT/micro_dae_ida_shim.c
+  s_507aea4eee5259::t_3bb714d9d6d0c3 556-559,614-632
+src/JIT/micro_dae_ida_shim.h
+  s_507aea4eee5259::t_8f24e6879cebad 73-82
+src/Solver/IDA.hs
+  s_507aea4eee5259::t_b4215c2b9b0723 399-405
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a65d179cf74d2ba73bce21be1cf6db895bb868fa",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+sprinkler-solver-examples/src/Examples/DESExploreDistilleryNative.hs
+  s_3ea8e1f2b3128a::t_31703d2ca41af6 29,82-91
+sprinkler-solver-examples/src/Examples/DESExploreShopNative.hs
+  s_3ea8e1f2b3128a::t_31703d2ca41af6 35,76-85
+src/JIT/sundials_warm.c
+  s_3ea8e1f2b3128a::t_4bc54c84872ea8 162-167
+  s_3ea8e1f2b3128a::t_c775f841c7dc91 160-161,168-182,188
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_e3d249eaf36686 833-870
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "0ca7fd9f2518e4b10b50c5705492d943e6ed24f1",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

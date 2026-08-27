@@ -1,0 +1,37 @@
+golden-microdae/ModelBattery/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 4-13
+golden-microdae/ModelPneumaticAccumulator/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 9,11-12,20-21,25,34-35
+golden-microdae/ModelSliderCrank/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 11
+golden-microdae/HeatEquationExample/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 6-8
+golden-microdae/PendulumTransient/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 4-10
+golden-microdae/ModelNeuronSpike/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 4,11,13,15
+golden-microdae/ModelCombustionEngine/transient.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 8
+golden-microdae/LNGOpsAU/final_state.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 1-5,13-14,18-31,34,37,40-41
+golden-microdae/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 12,15,21,24-25
+golden-microdae/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_ab944837c1c659 9-14,20-22,25,36-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a0ce261e9b8a54b90afe201d76236468f46d2f96",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

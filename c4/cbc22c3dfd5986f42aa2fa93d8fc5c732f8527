@@ -1,0 +1,59 @@
+src/JIT/jit_trampoline.c
+  s_3ea8e1f2b3128a::t_3ef9babb1e12d2 999-1003,1005-1008
+  s_3ea8e1f2b3128a::t_a59acb90695ff5 975-981,1021,1028
+  s_3ea8e1f2b3128a::t_64c468eb56b303 3084-3085
+  s_3ea8e1f2b3128a::t_5bf95464a30e3f 3130-3138,3149-3150,3157-3158,3163,3174-3175,3177-3183
+  s_3ea8e1f2b3128a::t_5f87b87803212e 3173,3176,3186,3190-3191
+  s_3ea8e1f2b3128a::t_e9d6a9c5750017 3139-3142
+  s_3ea8e1f2b3128a::t_34e33e788cccd3 3099-3129,3184-3185,3187-3189,3192-3194,3196
+  s_3ea8e1f2b3128a::t_51990b4ef7a898 2615-2627
+  s_3ea8e1f2b3128a::t_e818306e7be2b0 3159-3162,3165-3172
+  s_3ea8e1f2b3128a::t_377c783215cc9c 1009-1019
+  s_3ea8e1f2b3128a::t_f7d103e118f5cd 982,1020,1025-1027
+  s_3ea8e1f2b3128a::t_1a1615c5e4d4f5 4089-4098
+  s_3ea8e1f2b3128a::t_0f20cde07e0976 984-998,1004
+  s_3ea8e1f2b3128a::t_a7e18bc639ae16 983,1022-1024,1029-1030
+  s_3ea8e1f2b3128a::t_46a7e6b3a2ff90 3264-3269
+  s_3ea8e1f2b3128a::t_5f48e8b09d07f9 3143-3148,3151-3156,3164
+  s_3ea8e1f2b3128a::t_8ada9c20f6536d 974
+test/SundialsWarmTest.c
+  s_3ea8e1f2b3128a::t_ea3437d3de4e99 2035,2093,2136,2187,2219,2272,2305
+  s_3ea8e1f2b3128a::t_356b4bb01112fa 4-29
+  s_3ea8e1f2b3128a::t_6f1ce4be3570ca 2034,2036-2092,2094-2135,2137-2186,2188-2218,2220-2271,2273-2304,2306-2351,2389-2393
+  s_3ea8e1f2b3128a::t_1c22d8bbd908fe 158
+src/JIT/sundials_warm.c
+  s_3ea8e1f2b3128a::t_d42655c8e48f78 674-677
+  s_3ea8e1f2b3128a::t_99eb5b4d0f4849 166-222,226
+  s_3ea8e1f2b3128a::t_5f87b87803212e 117-122,972-979
+  s_3ea8e1f2b3128a::t_b2d561a21b1d04 237,351-354,836,945
+  s_3ea8e1f2b3128a::t_ea627dd222f48e 633-673,678-730,778-825
+  s_3ea8e1f2b3128a::t_f12440e509d3ef 142-155,161
+  s_3ea8e1f2b3128a::t_e6766c6f62e917 233-236,350
+  s_3ea8e1f2b3128a::t_1836c7a615a3ff 731-777
+doc/microdae/SUNDIALS_WARM.md
+  s_3ea8e1f2b3128a::t_668f8a969bc585 128-191
+  s_3ea8e1f2b3128a::t_1ca23ea2613f12 1-54,86-127,233-243
+  s_3ea8e1f2b3128a::t_2327f0a6d4720d 192-232
+  s_3ea8e1f2b3128a::t_ed5e87a5c072f6 55-85
+src/JIT/sundials_warm.h
+  s_3ea8e1f2b3128a::t_372d16a72cd765 29-32
+  s_3ea8e1f2b3128a::t_ea3437d3de4e99 22-23
+  s_3ea8e1f2b3128a::t_5f87b87803212e 8-19
+  s_3ea8e1f2b3128a::t_b2d561a21b1d04 20-21,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "c4cbc22c3dfd5986f42aa2fa93d8fc5c732f8527",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

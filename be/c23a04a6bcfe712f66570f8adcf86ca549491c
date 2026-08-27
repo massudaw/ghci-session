@@ -1,0 +1,21 @@
+golden_examples_lib.sh
+  s_507aea4eee5259::t_e9ee1555084ad5 35-44
+src/JIT/micro_dae.c
+  s_507aea4eee5259::t_648dc00970ee2f 1904,1910-1973,2035-2055
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "bec23a04a6bcfe712f66570f8adcf86ca549491c",
+  "prompts": {},
+  "sessions": {
+    "s_507aea4eee5259": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4b21952-9f9c-434c-8675-93b7a10f39e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
