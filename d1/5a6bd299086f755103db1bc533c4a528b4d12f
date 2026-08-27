@@ -1,0 +1,49 @@
+golden/ModelRocketFeed/solutions.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 13
+golden/ModelDesSwitchRC/transient.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 10-19
+golden/ModelMagneticSaturable/residuals.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 2-4,6,10
+golden/ModelFluidThermal/residuals.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 2-4,9,33-34
+golden/ModelDiodeClamp/transient.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 10
+golden/LNGOps/final_state.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 5-9
+golden/ModelRocket/solutions.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 9,13
+golden/ModelFluidThermal/solutions.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 19,22
+golden/ModelMagneticSaturable/solutions.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 2
+golden/DESConstructionSite/final_state.txt
+  s_3ea8e1f2b3128a::t_8854d812bf4826 15
+golden/ModelSolenoidActuator/residuals.txt
+  s_3ea8e1f2b3128a::t_13281ca5664e73 2-4,9-10,24-25,32
+golden/ModelSolenoidActuator/solutions.txt
+  s_3ea8e1f2b3128a::t_a34a08f0e2889f 3,9
+golden/ModelSyncSwitchRC/transient.txt
+  s_3ea8e1f2b3128a::t_26e620162e02d9 11-18
+golden/ModelThermostatTW/final_state.txt
+  s_3ea8e1f2b3128a::t_c0e24b2bd0f719 2-3,5
+golden/ShipFleetTW/final_state.txt
+  s_3ea8e1f2b3128a::t_0337eb357a5132 1-2,4,26
+golden/ShippingOps/final_state.txt
+  s_3ea8e1f2b3128a::t_21c08d1a5f972c 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d15a6bd299086f755103db1bc533c4a528b4d12f",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
