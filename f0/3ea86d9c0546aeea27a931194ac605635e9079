@@ -1,0 +1,42 @@
+sprinkler-solver-examples/src/Examples/DESBackPressure.hs
+  s_6822da4b73a395::t_7dee4175ed0488 35-36
+sprinkler-solver-examples/src/Examples/DESQueue.hs
+  s_6822da4b73a395::t_7dee4175ed0488 29-30
+src/Solver/DES/ProcessPure.hs
+  s_6822da4b73a395::t_36cd7379adcfc2 66-67,486,493-500,502-504,508-520,526,528-546
+src/Solver/DES/Process.hs
+  s_6822da4b73a395::t_b98f14405e7cc2 1859-1876,1891,1893-1910,1915-1918,1921-1923,1928-1933,1991
+  s_6822da4b73a395::t_52863b1fb02263 1838-1840,1848-1850,1852-1855
+sprinkler-solver-examples/src/Examples/DESMoldingShop.hs
+  s_6822da4b73a395::t_7dee4175ed0488 69-70
+sprinkler-solver-shipping/src/Examples/HullHybridTW.hs
+  s_6822da4b73a395::t_7dee4175ed0488 62-63
+sprinkler-solver-process-tests/src/Examples/DESProcessFinalTW.hs
+  s_6822da4b73a395::t_7dee4175ed0488 79-80
+sprinkler-solver-examples/src/Examples/DESFactoryLine.hs
+  s_6822da4b73a395::t_7dee4175ed0488 23-24
+sprinkler-solver-examples/src/Examples/DESFanOut.hs
+  s_6822da4b73a395::t_7dee4175ed0488 24-25
+src/Solver/DES/ProcessClass.hs
+  s_6822da4b73a395::t_dffd1b034ee529 72,272-277
+sprinkler-solver-examples/src/Examples/DESSharedRoom.hs
+  s_6822da4b73a395::t_7dee4175ed0488 47-48
+src/Solver/DES/ProcessSig.hs
+  s_6822da4b73a395::t_da9ca65069bae6 29-30,85-105,537,647,652,656-667
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f03ea86d9c0546aeea27a931194ac605635e9079",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
