@@ -1,0 +1,41 @@
+golden/DESFanOut/process.txt
+  s_6822da4b73a395::t_bff5064ea4e230 1-7
+sprinkler-solver-examples/src/Examples/LNGOpsAU.hs
+  s_6822da4b73a395::t_48aeb058a10b24 102,1227-1230
+  s_6822da4b73a395::t_2ac6f938e6a6b4 470-485,517-518
+  s_6822da4b73a395::t_08527c75957956 1231
+sprinkler-solver-examples/src/Examples/DESFactoryLine.hs
+  s_6822da4b73a395::t_aa5ab599e9aa39 17,103-105
+sprinkler-solver-examples/src/Examples/DESQueue.hs
+  s_6822da4b73a395::t_aa5ab599e9aa39 23,135-137
+golden/DESFactoryLine/process.txt
+  s_6822da4b73a395::t_bff5064ea4e230 1-6
+golden/DESQueue/process.txt
+  s_6822da4b73a395::t_bff5064ea4e230 1-4
+golden/LNGOpsAU/process.txt
+  s_6822da4b73a395::t_856928fb938ac2 1-4
+golden/LNGOps/process.txt
+  s_6822da4b73a395::t_856928fb938ac2 1-4
+sprinkler-solver-examples/src/Examples/DESFanOut.hs
+  s_6822da4b73a395::t_aa5ab599e9aa39 18,123-125
+sprinkler-solver-examples/src/Examples/LNGOps.hs
+  s_6822da4b73a395::t_48aeb058a10b24 108,1080-1083
+  s_6822da4b73a395::t_2ac6f938e6a6b4 458-473,501-502
+  s_6822da4b73a395::t_2237be863b3a9d 1084
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c68d0f4f766a430e3c01fe2aba521cb353aa5e2f",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
