@@ -1,0 +1,30 @@
+golden/DESUnixSandbox/fingerprint.txt
+  s_773bec49b0cd92::t_ad6501ffc37b50 1-3
+golden/DESUnixSandbox/final_state.txt
+  s_773bec49b0cd92::t_ad6501ffc37b50 1-8,10-12,14-15
+sprinkler-solver-unix/src/Examples/DESUnixSandbox.hs
+  s_773bec49b0cd92::t_e4f0055ca048b3 87,342,345,365,370
+  s_773bec49b0cd92::t_0076b058c27dc5 190-209,211
+  s_773bec49b0cd92::t_200dc972003a8e 323-329
+  s_773bec49b0cd92::t_d90b31860e8c63 111-115,183-189,210,212-218,310-314,316-322,331-341,343-344,346-364,366-369,371-372,477-488,662-667,695,726-731,744-746
+golden/DESUnixSandbox/tapestats.txt
+  s_773bec49b0cd92::t_ad6501ffc37b50 1
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_bfc1e6e3fb4b16 701-743
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ab1d921f44942ff37c3983048a64fd3768b33bab",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
