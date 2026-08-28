@@ -1,0 +1,21 @@
+src/Solver/DES/ProcessPure.hs
+  s_6822da4b73a395::t_9be6c6893b868f 353-356,358-366
+doc/des/DES_FORK_JOIN.md
+  s_6822da4b73a395::t_5b53c27103507c 203-239
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c3e0414a8db0396eea69c79c87a69e4d8446993a",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
