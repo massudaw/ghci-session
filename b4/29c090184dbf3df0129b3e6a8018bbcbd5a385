@@ -25,6 +25,11 @@ sprinkler-solver-process-tests/src/Examples/DESProcessAogTW.hs
 sprinkler-solver-process-tests/src/Examples/DESProcessLoopTW.hs
   s_6822da4b73a395::t_faaac717bc2a88 85
   s_6822da4b73a395::t_8749a7c74a748a 507,515,535,539,567,594-596,806,811,827,829,847,865-867
+tools/model_session/session.py
+  s_6822da4b73a395::t_22c43205942e8f 23
+  s_6822da4b73a395::t_fdee48ab94398f 959-1075
+  s_6822da4b73a395::t_06b18beaf9e475 1235-1245
+  s_6822da4b73a395::t_12d4cfd356130e 1234
 ---
 {
   "schema_version": "authorship/3.0.0",
