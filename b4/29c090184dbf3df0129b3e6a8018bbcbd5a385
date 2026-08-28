@@ -1,0 +1,44 @@
+src/Solver/DES/ProcessSig.hs
+  s_6822da4b73a395::t_d89c635fc9e39c 25,359-360,496-501
+  s_6822da4b73a395::t_a6266331445caa 502
+  s_6822da4b73a395::t_962dbde0c9f2cf 348-358
+src/Solver/DES/ProcessClass.hs
+  s_6822da4b73a395::t_61de1e34e8c3f4 214-221,230
+  s_6822da4b73a395::t_9d1b140e758b21 67
+sprinkler-solver-process-tests/src/Examples/DESProcessChainTW.hs
+  s_6822da4b73a395::t_8749a7c74a748a 124,644,653,672,690,754,773,783-785
+  s_6822da4b73a395::t_faaac717bc2a88 120
+src/Solver/DES/Process.hs
+  s_6822da4b73a395::t_9cbc82a65cc6e6 726,728-729,739,743-744,750-752,757-758,767-768,843-845,871,873-874,876,880,882-883,885,891,898,903,909-913
+  s_6822da4b73a395::t_d89c635fc9e39c 2090,2093
+  s_6822da4b73a395::t_f8ec990bb1db02 118,644-663
+  s_6822da4b73a395::t_7224b2d52ab2a9 608-643,664
+  s_6822da4b73a395::t_a36869562f2ffe 116-117,2091-2092,2094-2095
+  s_6822da4b73a395::t_a390c5370c49cb 677,694-696,827
+src/Solver/DES/ProcessPure.hs
+  s_6822da4b73a395::t_02a22ac7c49c05 386-392,626-658,661-669,671-672,675,679-682,684-685,687
+  s_6822da4b73a395::t_9d5c97ee50863c 40,65,102-110,118,131-133,138,141-142,659-660,670,673-674,676-678,683,686
+  s_6822da4b73a395::t_fbf5490e976802 378,380-385
+sprinkler-solver-process-tests/src/Examples/DESProcessAogTW.hs
+  s_6822da4b73a395::t_8749a7c74a748a 310-311,315,353,369,413,449,485-487,489-491
+  s_6822da4b73a395::t_faaac717bc2a88 180
+sprinkler-solver-process-tests/src/Examples/DESProcessLoopTW.hs
+  s_6822da4b73a395::t_faaac717bc2a88 85
+  s_6822da4b73a395::t_8749a7c74a748a 507,515,535,539,567,594-596,806,811,827,829,847,865-867
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b429c090184dbf3df0129b3e6a8018bbcbd5a385",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
