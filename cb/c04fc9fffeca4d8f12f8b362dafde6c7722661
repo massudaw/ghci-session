@@ -1,0 +1,30 @@
+example/Main.hs
+  s_9c8853c6717134::t_39eb916c63f96b 246
+  s_9c8853c6717134::t_8b18a801c0b389 498
+golden/DESEntityIdentity/status.txt
+  s_9c8853c6717134::t_2d5b5a6d78c189 1
+sprinkler-solver-examples/src/Examples/DESEntityIdentity.hs
+  s_9c8853c6717134::t_a0b1bad22ecb3b 157
+  s_9c8853c6717134::t_f86a7cf9bab965 1-117,128-140,142-156,158-168,170-204
+  s_9c8853c6717134::t_5c9281b30ffe23 169
+  s_9c8853c6717134::t_ed5901a94f6647 141
+  s_9c8853c6717134::t_7ce678d514c566 118-127
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_9c8853c6717134::t_95b48d7f0bb6e4 184
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "cbc04fc9fffeca4d8f12f8b362dafde6c7722661",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

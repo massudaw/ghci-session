@@ -1,0 +1,19 @@
+shipping.html
+  s_23057748927a5b::t_3cfeb84276e504 3248-3254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c79cc1cd27280fb86ad1c20e7cd4c3b715910504",
+  "prompts": {},
+  "sessions": {
+    "s_23057748927a5b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "df590f6c-fd7b-4b78-945d-df951d470942",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

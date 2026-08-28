@@ -1,0 +1,38 @@
+golden/ShippingOps/fingerprint.txt
+  s_9c8853c6717134::t_684c8a4109342a 6,13-14,16,18-21,23-24,26,28-32,35,37-41,43,54
+golden/ShippingOps/final_state.txt
+  s_9c8853c6717134::t_684c8a4109342a 9-10,12-13,22,24,35
+golden/ShippingOps/des.txt
+  s_9c8853c6717134::t_684c8a4109342a 3,93-94,111,273-274,291,453-454,471,633-634,651,813-814,831,993-994,1011,1173-1174,1191,1353-1354,1371,1533-1534,1551,1713-1714,1731,1893-1894,1911,2073-2074,2091,2253-2254,2271,8045,8049,8071,8075,8097,8101,8123,8127,8149,8153,8175,8179,8201,8205,8227,8231,8253,8257,8279,8283,8305,8309,8331,8335,8357,8361
+golden/ShipFleetTW/final_state.txt
+  s_9c8853c6717134::t_684c8a4109342a 1-2,4,19-21,23-26
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_9c8853c6717134::t_7a3780b2831ecc 318-320
+golden/ShipFleetTW/fingerprint.txt
+  s_9c8853c6717134::t_684c8a4109342a 2,5-14,17
+sprinkler-solver-shipping/src/Examples/Vessel.hs
+  s_9c8853c6717134::t_7a3780b2831ecc 33,197-214
+  s_9c8853c6717134::t_28a8c92367daad 215
+tools/calibrate_vessel.py
+  s_9c8853c6717134::t_6ac45d9d0cc88b 87
+  s_9c8853c6717134::t_5912d542615901 127-128,143-146,148,196,213,276-298
+  s_9c8853c6717134::t_59949d805d41fa 299
+docs/shipping/SPREADSHEET_COLUMN_MAP.md
+  s_9c8853c6717134::t_61320edfa60dc4 27,76-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "babc9dcb6baf14a1015fc6dcbc919965398329f0",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

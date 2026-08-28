@@ -1,0 +1,55 @@
+golden/RouteField/final_state.txt
+  s_9c8853c6717134::t_76a238e219e9c1 1-3
+sprinkler-solver-shipping/src/Examples/RouteGeometry.hs
+  s_9c8853c6717134::t_2463e31eab0f0c 1-206
+tools/route_geometry.py
+  s_9c8853c6717134::t_d693ba70a69108 39-45
+  s_9c8853c6717134::t_db942ed23eac01 66-94
+sprinkler-solver-shipping/src/Examples/RouteField.hs
+  s_9c8853c6717134::t_cfb8ef7ff8790b 251-257,260-261,265-266,269-285,347,376
+  s_9c8853c6717134::t_d2c861fe2d13cb 79,366-369,486-504
+  s_9c8853c6717134::t_24c046d1f636ff 390-407,409-411,413
+  s_9c8853c6717134::t_9b1c36b5b2f145 351-365,374
+  s_9c8853c6717134::t_4f5bd2b8cb3d72 377-381
+  s_9c8853c6717134::t_9f4046f887d746 418-441,458-462,464
+  s_9c8853c6717134::t_bf8cf8111c36d5 475-485,505
+  s_9c8853c6717134::t_5cf341672364d5 327-333,415-417,442-444,453-457,465-467,469,471-474,515-517,519-521,523,527,547-551
+  s_9c8853c6717134::t_321c2d5be16096 371,445-452
+  s_9c8853c6717134::t_94fbe8a2fec8f5 176-185,188,190-191,344-346
+  s_9c8853c6717134::t_c6779290a4e00c 85-86
+  s_9c8853c6717134::t_c01a4809b18e15 470
+  s_9c8853c6717134::t_fce215f1f6aa8f 1-75,77-78,80-84,87-175,186-187,189,192-250,258-259,262-264,267-268,286-326,334-343,348-350,370,372-373,375,382-389,408,412,414,463,506,510,514,522
+  s_9c8853c6717134::t_9b5f87f24660ed 468,507-509,511-513,518,524-526,528-546,552-553
+  s_9c8853c6717134::t_339dd4f9e7e764 76,554-561
+golden/RouteField/fingerprint.txt
+  s_9c8853c6717134::t_76a238e219e9c1 1-807
+golden/RouteField/solver_audit.txt
+  s_9c8853c6717134::t_76a238e219e9c1 1-14
+golden/RouteField/status.txt
+  s_9c8853c6717134::t_76a238e219e9c1 1
+golden/RouteField/tapestats.txt
+  s_9c8853c6717134::t_76a238e219e9c1 1-2
+example/Main.hs
+  s_9c8853c6717134::t_0289bd7a613ede 219,472
+docs/shipping/ROUTE_FIELD_PDE_DESIGN.md
+  s_9c8853c6717134::t_17d7698ee3123a 293-367
+  s_9c8853c6717134::t_aa4910390ca6b5 368-420
+sprinkler-solver-shipping/sprinkler-solver-shipping.cabal
+  s_9c8853c6717134::t_9790b5bf19d129 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a0e7593d72ef0604663152e65a024cbfd555ff76",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

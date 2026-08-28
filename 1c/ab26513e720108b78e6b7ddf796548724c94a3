@@ -1,0 +1,27 @@
+docs/shipping/CALIBRATION_PROCEDURE.md
+  s_9c8853c6717134::t_f6a66cbc908ef9 1-177
+sprinkler-solver-shipping/src/Examples/Vessel.hs
+  s_9c8853c6717134::t_2daa479105fff2 30,34-38,198-230,238-317
+  s_9c8853c6717134::t_7c6bf8d5f3f0b5 231-237
+  s_9c8853c6717134::t_739b9607f38dc9 318
+tools/calibrate_vessel.py
+  s_9c8853c6717134::t_b4b5e92a6b2583 1-250
+docs/shipping/REAL_FLEET_DATA_CALIBRATION.md
+  s_9c8853c6717134::t_7c6bf8d5f3f0b5 318-325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1cab26513e720108b78e6b7ddf796548724c94a3",
+  "prompts": {},
+  "sessions": {
+    "s_9c8853c6717134": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51bf2714-ef36-4adc-9f98-71d96a360472",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
