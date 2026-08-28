@@ -1,0 +1,32 @@
+src/Solver/DES/ProcessClass.hs
+  s_773bec49b0cd92::t_336b56fc429c7c 161-163
+  s_773bec49b0cd92::t_42df6212255718 365-366,379-380
+src/Solver/DES/ProcessSig.hs
+  s_773bec49b0cd92::t_4a1dd41076d8c2 60,204-215,231,1020-1025,1039-1046
+  s_773bec49b0cd92::t_715337adbe6030 564-584
+  s_773bec49b0cd92::t_e793b69436497f 216-230
+  s_773bec49b0cd92::t_07a9aa7595b035 1047
+src/Solver/DES/ProcessPure.hs
+  s_773bec49b0cd92::t_3daea83513ea6b 62
+  s_773bec49b0cd92::t_336b56fc429c7c 468-470
+src/Solver/DES/Process.hs
+  s_773bec49b0cd92::t_42df6212255718 2185-2188,2201,2311-2325
+  s_773bec49b0cd92::t_336b56fc429c7c 2052-2055
+  s_773bec49b0cd92::t_8d7873aea0cc82 2326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "03433d954e099d921b9b8dd9652546eb78f07589",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
