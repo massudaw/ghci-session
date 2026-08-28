@@ -1,0 +1,21 @@
+sprinkler-solver-unix/src/Examples/DESUnixSandbox.hs
+  s_773bec49b0cd92::t_84bbab7b285e60 87,312-316
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_5401d65fc61968 814-849
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3d152dd22be14dacc8081e4e2544a30660c0e586",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
