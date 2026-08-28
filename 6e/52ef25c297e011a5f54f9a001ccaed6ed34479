@@ -1,0 +1,21 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_3ea8e1f2b3128a::t_081b6de3b230b6 2516-2519,2560-2562
+sprinkler-solver-shipping/src/Examples/ShipFleetTW.hs
+  s_3ea8e1f2b3128a::t_4466f6d1fe80a0 856-873
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6e52ef25c297e011a5f54f9a001ccaed6ed34479",
+  "prompts": {},
+  "sessions": {
+    "s_3ea8e1f2b3128a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea91ff7e-e0e4-4ede-82ac-6af57366d9b1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
