@@ -1,0 +1,19 @@
+doc/des/PURE_DES_WITHOUT_PLANT.md
+  s_773bec49b0cd92::t_64c6689fe4d43c 116-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c0520e7dd0d2e970375d40c33febe51dd124f2c2",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
