@@ -1,0 +1,104 @@
+golden/DESAccountingLedger/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 4-7
+golden/DESDispatch/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 12-15,20-23
+golden/DESMoldingShop/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 9-16,20-27
+golden/DESPureParity/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 9-20
+golden/LNGOps/final_state.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 6-8,26
+golden/RiskPortfolioDES/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 115,117-126,128-137,139-149,151-161,163-174,176-186,188-198,200-201,210-211,220,225-234,236-247,249-259,261-270,272-282,284-295,297-306,308-310,319-320,329
+golden/DESSharedRoom/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 7-9,12-14
+golden/ModelDesSwitchRC/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 4-7
+golden/DESReactorTank/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 4-7
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_00ed7213cab398 908-912
+  s_773bec49b0cd92::t_be795c3c32f606 746-750,898-900
+golden/LNGOpsAU/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 107-316
+golden/DESPortTerminal/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 146-429
+golden/DESUnifiedLine/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 8-10,14-16
+golden/DESParallelLines/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 20,29-33,38,47-51
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 110-317
+golden/DESConstructionSite/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 261-760
+golden/LNGOps/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 122-361
+golden/ModelThermostatTW/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 8-9,12-13
+golden/BankRiskMaster/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 105,107-116,118-128,130-139,141-151,153-163,165-176,178-179,189,198-199,201,205-215,217-226,228-238,240-250,252-263,265-274,276-278,287,297-298,300
+golden/StateMachineTW/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 10-19
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_f57e3404bfcbe7 394-415,419-423,426-447,461-485
+golden/DESFanOut/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 15,19-21,28,32-34
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 22,24-33,35,42-52,54
+golden/PortfolioDelinquency/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 68-77,79-88,90-99,101-110,112-116,122,128-131,133-142,144-153,155-164,166-175,177-181,187,193-196
+golden/ShipFleetOpt/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 16-18,21-27,29-31,34-40
+golden/DESAccountingLedgerStress/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 42-121
+golden/DESQueue/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 4-7
+golden/LNGOpsAU/final_state.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 9-11,16
+golden/DelinquencyLadder/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 15-40
+golden/DESAgentHarness/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 166-487
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 5-10
+golden/DESDistillery/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 22,24-33,35,42-52,54
+golden/ShipFleetOpt/final_state.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 1-3
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_1c179cae036706 3962-3972,4008-4032,4045,4087-4088,4090,4094-4106,4121
+  s_773bec49b0cd92::t_00ed7213cab398 166
+  s_773bec49b0cd92::t_be795c3c32f606 167-169,2242-2260,2279-2282,4394-4404,4602-4613,4641
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 13-18,23-28
+golden/DESElectricLoad/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 5-10
+golden/DESControlPolicyFalsifyV5/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 6-13
+golden/DESFactoryLine/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 15,19-21,28,32-34
+golden/DESControlPolicyFalsifyV3/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 5-10
+golden/DESBench/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 9-12,16-19
+golden/StateMachineTest/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 6-13
+golden/DESExploreShopNative/fingerprint.txt
+  s_773bec49b0cd92::t_c471999e3fb67e 9-12,16-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f08518444c897998ea5a256b6ebc69c374355150",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
