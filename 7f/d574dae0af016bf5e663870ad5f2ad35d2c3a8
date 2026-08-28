@@ -1,0 +1,24 @@
+sprinkler-solver-unix/src/Examples/DESUnixSandbox.hs
+  s_773bec49b0cd92::t_c48007bd60af6a 227
+  s_773bec49b0cd92::t_7342526d8111b2 470-481,485-488
+  s_773bec49b0cd92::t_7a3b18bd924dbc 482-483
+  s_773bec49b0cd92::t_7018bc6a296715 484
+doc/des/PURE_DES_WITHOUT_PLANT.md
+  s_773bec49b0cd92::t_dbcf8ad6883037 403-449
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7fd574dae0af016bf5e663870ad5f2ad35d2c3a8",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
