@@ -1,0 +1,40 @@
+src/Solver/DES/Unified.hs
+  s_6822da4b73a395::t_01db032bbe8127 89,1086-1089
+golden/DESProcessChainTW/final_state.txt
+  s_6822da4b73a395::t_6a5e5968fecbfb 18
+src/Solver/DES.hs
+  s_6822da4b73a395::t_a84ab859ca563e 101,664-679
+  s_6822da4b73a395::t_7b4bff2bbc0974 680-682
+src/Solver/DES/Process.hs
+  s_6822da4b73a395::t_01db032bbe8127 169
+  s_6822da4b73a395::t_3c68eedfaf46c4 249-261,300,351-361,379,2416-2417
+  s_6822da4b73a395::t_8719b349744c81 672-677
+  s_6822da4b73a395::t_15bcddd6afa02c 644-645,650-665,684,694-698,703,706-709,711
+src/Solver/DES/TimeWarpJit.hs
+  s_6822da4b73a395::t_48da73551f50b6 4304-4313
+src/Solver/DES/ProcessPure.hs
+  s_6822da4b73a395::t_57f633ddebf867 627-643,647,663,678-679
+  s_6822da4b73a395::t_651ddb9cef75be 62
+  s_6822da4b73a395::t_f445d8f05703da 77-84,88,209-211,214,218-233
+  s_6822da4b73a395::t_c087da119b9e37 615
+  s_6822da4b73a395::t_9e615038a96bfb 328,404,410-414,416-417,420
+  s_6822da4b73a395::t_8cc41251eed737 90-93,244,260,323,448,480,499,516,539,558,601
+  s_6822da4b73a395::t_8719b349744c81 393-398
+  s_6822da4b73a395::t_6bef6c383d25b6 89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b18170ef6da499cc57a133817d4c8d9045e6fd28",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
