@@ -1,0 +1,19 @@
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_6822da4b73a395::t_25f750a9ff3d12 88-91,133-134,696-702,705-712,714-716
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a6ca6657d77956a82bec6ec7a83e7c90154b334e",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
