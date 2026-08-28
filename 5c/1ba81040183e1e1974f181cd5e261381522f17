@@ -1,0 +1,21 @@
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_63a311a97124ea 963-972
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_bed288003c17fd 477-548
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5c1ba81040183e1e1974f181cd5e261381522f17",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
