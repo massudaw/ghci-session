@@ -1,0 +1,63 @@
+sprinkler-solver-process-tests/src/Examples/DESProcessChainTW.hs
+  s_6822da4b73a395::t_3232bbdc774de1 1379-1380,1392-1405,1407-1412
+sprinkler-solver-process-tests/src/Examples/DESPoolTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 73
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 377
+sprinkler-solver-process-tests/src/Examples/DESProcessAogTW.hs
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 778
+  s_6822da4b73a395::t_b4c4200f16868a 191
+golden/DESBackPressure/des.txt
+  s_6822da4b73a395::t_c6a94d30cfd0a6 47,49-52,54-56
+sprinkler-solver-process-tests/src/Examples/DESProcessForkKTW.hs
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 500
+  s_6822da4b73a395::t_b4c4200f16868a 99
+doc/des/DES_RESOURCE_POOL.md
+  s_6822da4b73a395::t_776fa03b729ddf 276-295
+golden/DESProcessChainTW/final_state.txt
+  s_6822da4b73a395::t_c6a94d30cfd0a6 18-19
+sprinkler-solver-process-tests/src/Examples/DESProcessLoopTW.hs
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 457,749,1017
+  s_6822da4b73a395::t_b4c4200f16868a 99
+sprinkler-solver-process-tests/src/Examples/DESProcessForkTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 87
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 487
+sprinkler-solver-process-tests/src/Examples/DESJoinTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 72
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 321
+sprinkler-solver-process-tests/src/Examples/DESWaitSetTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 90
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 496
+sprinkler-solver-process-tests/src/Examples/DESBalkingJoinTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 77
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 375
+sprinkler-solver-process-tests/src/Examples/DESProcessRaceTW.hs
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 382
+  s_6822da4b73a395::t_b4c4200f16868a 93
+src/Solver/DES.hs
+  s_6822da4b73a395::t_7d2411c0d798f6 3032-3045,3049-3050,3164-3165
+sprinkler-solver-process-tests/src/Examples/DESForkJoinTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 67
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 337
+src/Solver/DES/RunProcess.hs
+  s_6822da4b73a395::t_8faf60b777e6d8 29,132
+  s_6822da4b73a395::t_7756f9daa38d6c 109-117
+sprinkler-solver-process-tests/src/Examples/DESProcessMatchTW.hs
+  s_6822da4b73a395::t_b4c4200f16868a 66
+  s_6822da4b73a395::t_8a7a0f8fbf0fcd 445
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5198aa9d17e102e8c98dfe4deb7806cd68232dc7",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
