@@ -1,0 +1,26 @@
+sprinkler-solver-unix/src/Examples/DESUnixSandbox.hs
+  s_773bec49b0cd92::t_b3e1364335a3fb 731,733,749
+  s_773bec49b0cd92::t_85985d74158bda 734-736,744-745,751
+  s_773bec49b0cd92::t_127099235230fb 770
+  s_773bec49b0cd92::t_95ca01501b90ec 732,741
+  s_773bec49b0cd92::t_e5ef3f376ce087 58,712-730,737-740,742-743,746-748,750,752-768,771-776
+  s_773bec49b0cd92::t_2e43ddce56ba1a 769,777
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_8bec4cca4f2617 970-1040
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4abb165c269f680d1ce49aba07c445cafbff8976",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
