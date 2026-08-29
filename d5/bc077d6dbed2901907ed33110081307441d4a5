@@ -16,6 +16,8 @@ src/Solver/DES/Physical.hs
   s_6822da4b73a395::t_ffb6a2fb8cd648 354
   s_6822da4b73a395::t_fc7c16a85f2bc7 556-568,571,591,611,639,961
   s_6822da4b73a395::t_9efdc3aed5d276 1056-1060,1074
+  s_6822da4b73a395::t_252d5c2c7a029b 959-960
+  s_6822da4b73a395::t_e77663cde538b1 973,978-986
 example/TestTimeWarp.hs
   s_6822da4b73a395::t_ffb6a2fb8cd648 36
 sprinkler-solver-examples/src/Examples/BankDayDesRuntime.hs
