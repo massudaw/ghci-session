@@ -1,0 +1,23 @@
+src/JIT/des_kernel.c
+  s_6822da4b73a395::t_aae5dfef3f9904 167-180,182
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_6822da4b73a395::t_5fdfafe43de7fa 272-281
+doc/des/DES_ORACLE_COVERAGE.md
+  s_6822da4b73a395::t_cfe1789b627b77 59-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8cac5d0595dd1336f51c6795fabe134884fcc11b",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
