@@ -1,0 +1,42 @@
+sprinkler-solver-process-tests/src/Examples/DESProcessStormTW.hs
+  s_773bec49b0cd92::t_65a039672170d8 106-112
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_e3fde653cb6b12 1-143,146-155,157-170,176,182-183,186-223,226,231,239-242,245-246,250-255
+  s_773bec49b0cd92::t_2babe072904d55 144-145
+  s_773bec49b0cd92::t_403542cc73e9bc 156
+  s_773bec49b0cd92::t_ec37c885c0bce0 171-175
+  s_773bec49b0cd92::t_738d02832cb8b0 177-181
+  s_773bec49b0cd92::t_c9f245880797b6 184-185
+  s_773bec49b0cd92::t_c980b072226c20 224-225
+  s_773bec49b0cd92::t_017bd34f4135cc 227-230
+  s_773bec49b0cd92::t_e1c61e6ef7f1c5 232-234,236-238
+  s_773bec49b0cd92::t_75c7c03a1fd9bb 243-244
+  s_773bec49b0cd92::t_8f37cc5d1d9983 247-249
+  s_773bec49b0cd92::t_8035e874903661 235
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_65a039672170d8 2164-2244
+example/Main.hs
+  s_773bec49b0cd92::t_b7808eaf948dc3 231,525
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_16d3aadda40002 1-10
+golden/DESProcessFuzzTW/status.txt
+  s_773bec49b0cd92::t_c3c44a6fd7b2a6 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_773bec49b0cd92::t_7b8219d5619ed9 42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b0eb172411fa5d6db781d345dbe5745da4bba949",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
