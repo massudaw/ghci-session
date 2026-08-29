@@ -1,0 +1,24 @@
+golden/DESEngineParitySpace/final_state.txt
+  s_6822da4b73a395::t_bf9a2f47a69c3f 19-58
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_6822da4b73a395::t_909776dddf570f 90,130-147,149-155,157-161,166-202,204-211
+  s_6822da4b73a395::t_8370e8aef8fce3 76,381-397,399-409
+  s_6822da4b73a395::t_64e4dc7e844ed5 148,156,162-165,203
+  s_6822da4b73a395::t_fb8c2f8c118a55 31-49,212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "64768c886fbef41f6f717b040c67cb5480ea29f1",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
