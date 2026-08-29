@@ -1,0 +1,46 @@
+sprinkler-solver-examples/src/Examples/DESCKernel.hs
+  s_6822da4b73a395::t_8ab77092c16951 24-25
+  s_6822da4b73a395::t_d4fb933f59326f 16,18-23,35
+src/Solver/DES.hs
+  s_6822da4b73a395::t_e13f4c89120b57 3381-3387,3392
+example/Main.hs
+  s_6822da4b73a395::t_3aa7ccad7818d8 220,511
+doc/des/DES_EVENT_KERNEL.md
+  s_6822da4b73a395::t_c82eb3a021117e 264-309
+sprinkler-solver.cabal
+  s_6822da4b73a395::t_42531321bfc0fd 326
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_6822da4b73a395::t_3aa7ccad7818d8 167
+src/Solver/DES/DST.hs
+  s_6822da4b73a395::t_bf44ae8ec2cce2 26,45-47,200-230,253-261,264-269
+  s_6822da4b73a395::t_e13f4c89120b57 27,231-252,262-263
+golden/DESEngineParitySpace/status.txt
+  s_6822da4b73a395::t_c82eb3a021117e 1
+src/JIT/des_kernel.c
+  s_6822da4b73a395::t_5b24a338756d07 302,312,318-325
+src/Solver/DES/CKernel.hs
+  s_6822da4b73a395::t_fb69357ac8e0c5 1-104
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_6822da4b73a395::t_bee4053575516d 1-42,44-115,139,142-148,150-155,158,160-162,167-185,201-212,215-219
+  s_6822da4b73a395::t_d977b8123d39ec 43
+  s_6822da4b73a395::t_fd242e9a777b1e 116-138
+  s_6822da4b73a395::t_675186710df353 140-141,149,156-157,159,163-166,186-200,213-214
+golden/DESEngineParitySpace/final_state.txt
+  s_6822da4b73a395::t_c82eb3a021117e 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "32ffc3b90da735352bd95099b2c1a32375e07191",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
