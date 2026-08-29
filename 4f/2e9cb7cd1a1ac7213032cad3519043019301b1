@@ -1,0 +1,22 @@
+tools/model_session/build_clib.sh
+  s_773bec49b0cd92::t_4c63fb86fef2d2 69-78,87-95
+  s_773bec49b0cd92::t_6dc7a633f0234b 96
+doc/des/PURE_DES_WITHOUT_PLANT.md
+  s_773bec49b0cd92::t_bb270221f7f610 450-513
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4f2e9cb7cd1a1ac7213032cad3519043019301b1",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
