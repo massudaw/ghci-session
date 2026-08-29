@@ -1,0 +1,34 @@
+src/JIT/jit_trampoline.c
+  s_6822da4b73a395::t_836db5f592454c 183,3741
+  s_6822da4b73a395::t_f66e6eff54a968 2930,2933,2971,3115,3117,3785
+  s_6822da4b73a395::t_ef87a6086093f3 3760-3784,3786-3802,3804-3829
+  s_6822da4b73a395::t_b5c0584a8dd971 1422-1430
+  s_6822da4b73a395::t_596874fad228f6 3803
+  s_6822da4b73a395::t_754ab388d8376e 4009-4010,4045,4047
+  s_6822da4b73a395::t_c4e968ef4ed291 1431,3830
+src/Solver/Transition.hs
+  s_6822da4b73a395::t_1ba4103cf1c359 536-546,549-568,573-575,577-579,583,585,587-588,590
+  s_6822da4b73a395::t_f66e6eff54a968 547-548,586,589,628-631,634
+  s_6822da4b73a395::t_3323252d30ca96 569-572
+  s_6822da4b73a395::t_d6e3172a5d2924 576
+EVENT_TRANSITION_PIPELINE.md
+  s_6822da4b73a395::t_e6ea0791454873 674-685,738-794,804
+tools/driver_stage_diff.py
+  s_6822da4b73a395::t_024f5748cf413b 1-185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8b27ce8a0c72ac0fbfca488c433fc3e80525b6a4",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
