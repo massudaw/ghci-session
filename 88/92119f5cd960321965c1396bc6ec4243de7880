@@ -1,0 +1,19 @@
+sprinkler-solver-examples/src/Examples/PolicyHeader.hs
+  s_6822da4b73a395::t_ee313ef2dab13f 23,39-51,63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8892119f5cd960321965c1396bc6ec4243de7880",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
