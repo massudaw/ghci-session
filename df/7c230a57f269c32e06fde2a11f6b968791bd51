@@ -1,0 +1,29 @@
+sprinkler-solver-examples/src/Examples/BankDayDesRuntime.hs
+  s_6822da4b73a395::t_9c37683f04d136 4571,4573
+src/Solver/HybridDAE.hs
+  s_6822da4b73a395::t_f2b48e300a288a 133-144
+src/Solver/DES/Unified.hs
+  s_6822da4b73a395::t_41cbeab461f6cb 193
+src/Solver/DES/DST.hs
+  s_6822da4b73a395::t_df5a26d5f549a5 40,155-164,166-173
+src/Solver/DES/Physical.hs
+  s_6822da4b73a395::t_41cbeab461f6cb 355-356,556
+sprinkler-solver-examples/src/Examples/BankDayCRuntime.hs
+  s_6822da4b73a395::t_9c37683f04d136 1089
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "df7c230a57f269c32e06fde2a11f6b968791bd51",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
