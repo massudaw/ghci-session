@@ -1,0 +1,23 @@
+sprinkler-solver-examples/src/Examples/BankRiskMaster.hs
+  s_6822da4b73a395::t_39e52cb4e5bd3c 263-265,271-272
+  s_6822da4b73a395::t_b492c206d8c0ed 39
+sprinkler-solver-examples/src/Examples/RiskPortfolioDES.hs
+  s_6822da4b73a395::t_cc16c9a3f59d8c 35
+  s_6822da4b73a395::t_1a4eeace238690 257-260,288-294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e0559de6b8bc60d7c093ecd10530d1921354e7ed",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
