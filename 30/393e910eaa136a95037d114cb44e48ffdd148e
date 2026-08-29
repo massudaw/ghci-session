@@ -1,0 +1,22 @@
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_6822da4b73a395::t_ec973f223a9451 269-281
+EVENT_TRANSITION_PIPELINE.md
+  s_6822da4b73a395::t_ec973f223a9451 735
+  s_6822da4b73a395::t_e038f645543816 789,791-793,795-852,860-862,864,866-870,872-873,875,877-883
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "30393e910eaa136a95037d114cb44e48ffdd148e",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
