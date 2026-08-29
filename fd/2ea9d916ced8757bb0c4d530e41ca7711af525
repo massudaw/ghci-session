@@ -1,0 +1,22 @@
+src/Solver/DES/Unified.hs
+  s_6822da4b73a395::t_dcb2fd23e2aca9 199
+src/Solver/DES.hs
+  s_6822da4b73a395::t_dcb2fd23e2aca9 131-133,210-228
+  s_6822da4b73a395::t_ff5eba1d6a8294 229,4400
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fd2ea9d916ced8757bb0c4d530e41ca7711af525",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
