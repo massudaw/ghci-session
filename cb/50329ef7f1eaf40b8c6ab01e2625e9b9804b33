@@ -1,0 +1,60 @@
+sprinkler-solver-examples/src/Examples/DESControlPolicyFalsifyV5.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 140
+sprinkler-solver-examples/src/Examples/DESExploreShopNative.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 7,71
+src/Solver/DES/Runtime.hs
+  s_6822da4b73a395::t_9efdc3aed5d276 40-42
+sprinkler-solver-examples/src/Examples/DESMctsFalsify.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 112
+src/Solver/DES/Partition.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 585
+src/Solver/DES/MonteCarlo.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 58
+sprinkler-solver-shipping/src/Examples/ShipFleetOpt.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 1390,1427,1640,1661,1701,1728
+src/Solver/DES/Physical.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 354
+  s_6822da4b73a395::t_fc7c16a85f2bc7 556-568,571,591,611,639,961
+  s_6822da4b73a395::t_9efdc3aed5d276 1056-1060,1074
+  s_6822da4b73a395::t_252d5c2c7a029b 959-960
+  s_6822da4b73a395::t_e77663cde538b1 973,978-986
+example/TestTimeWarp.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 36
+sprinkler-solver-examples/src/Examples/BankDayDesRuntime.hs
+  s_6822da4b73a395::t_7ef6bc6f157ffe 148,1821-1826
+  s_6822da4b73a395::t_9efdc3aed5d276 11
+  s_6822da4b73a395::t_ffb6a2fb8cd648 495,2344,2874,2876
+sprinkler-solver-examples/src/Examples/DESControlPolicyFalsify.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 139
+src/Solver/DES/Unified.hs
+  s_6822da4b73a395::t_ac3f6f3055d560 2334-2339,2342,2367,2393
+  s_6822da4b73a395::t_fc7c16a85f2bc7 2346,2349,2371,2374,2397,2400
+sprinkler-solver-examples/src/Examples/BankRiskMaster.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 265
+sprinkler-solver-examples/src/Examples/DESControlPolicyFalsifyV3.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 130
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 274,308,311,318,331
+sprinkler-solver-examples/src/Examples/DESFalsifyDistillery.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 135
+sprinkler-solver-examples/src/Examples/RiskPortfolioDES.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 260
+sprinkler-solver-examples/src/Examples/DESExploreDistilleryNative.hs
+  s_6822da4b73a395::t_ffb6a2fb8cd648 97,150,195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "cb50329ef7f1eaf40b8c6ab01e2625e9b9804b33",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
