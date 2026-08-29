@@ -1,0 +1,43 @@
+example/Main.hs
+  s_6822da4b73a395::t_c0cc328b40f0e6 270,559
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_6822da4b73a395::t_94dba70c5d468b 202
+golden/DESExploreShopAgreement/fingerprint.txt
+  s_6822da4b73a395::t_13aaf7791f0dfe 1-25
+golden/DESExploreShopAgreement/tapestats.txt
+  s_6822da4b73a395::t_13aaf7791f0dfe 1
+sprinkler-solver-examples/src/Examples/DESExploreShopNative.hs
+  s_6822da4b73a395::t_f5df4507d86914 70
+  s_6822da4b73a395::t_81245a7b71f3cc 7-8,25-30,39,45-46,110
+src/Solver/Transition.hs
+  s_6822da4b73a395::t_1213ec9dddebe4 215-216
+sprinkler-solver-examples/src/Examples/DESExploreShopAgreement.hs
+  s_6822da4b73a395::t_b91fb6e9e45e2a 1-67,69-174
+  s_6822da4b73a395::t_c0cc328b40f0e6 68
+tools/DESRateProbe.hs
+  s_6822da4b73a395::t_1213ec9dddebe4 43
+sprinkler-solver-examples/src/Examples/DESMoldingShop.hs
+  s_6822da4b73a395::t_1213ec9dddebe4 36
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_6822da4b73a395::t_0cc74389063474 77-78
+golden/DESExploreShopAgreement/status.txt
+  s_6822da4b73a395::t_13aaf7791f0dfe 1
+sprinkler-solver-examples/src/Examples/DESExploreDistilleryNative.hs
+  s_6822da4b73a395::t_1213ec9dddebe4 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9ee51de1171a83574550c9027ae3e131b33a61d5",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
