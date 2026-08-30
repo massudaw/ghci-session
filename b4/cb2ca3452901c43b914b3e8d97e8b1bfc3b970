@@ -1,0 +1,26 @@
+golden/DESProcessFuzzTW/final_state.txt
+  s_773bec49b0cd92::t_0e300ace25c3d2 5-6
+src/Solver/HybridDAE.hs
+  s_773bec49b0cd92::t_ce6a2707a70bc2 2348-2349
+  s_773bec49b0cd92::t_71c3505c090888 1949-1965,1967,2350-2351
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_3e91313d5077ab 1073-1075,1077-1082,1084-1088,1117,1120
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_2308bde0b1ad6f 4215-4266
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b4cb2ca3452901c43b914b3e8d97e8b1bfc3b970",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
