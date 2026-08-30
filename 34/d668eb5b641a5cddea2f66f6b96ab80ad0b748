@@ -1,0 +1,38 @@
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_7364398373282d 37,39-46,48-50,52-63
+src/Solver/DES/SymbolicPhase.hs
+  s_773bec49b0cd92::t_b815d7763e9538 82-83,92,104-105
+  s_773bec49b0cd92::t_025d2ad37977be 1-81,84-91,93-103,106-324
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_711209d00da05b 35,53,108-121,123-137,140-142,225,250,270
+  s_773bec49b0cd92::t_6fc782a757c6d1 122
+  s_773bec49b0cd92::t_b815d7763e9538 181,207
+  s_773bec49b0cd92::t_6959212db09a82 174-180,182-183,187,189,220,237,258
+sprinkler-solver-des-phase/app/Main.hs
+  s_773bec49b0cd92::t_8d84cf3f851557 1-16
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_8d84cf3f851557 166,3901,4426,4428-4432,4434-4437,4439-4441,4443
+sprinkler-solver.cabal
+  s_773bec49b0cd92::t_6962afa98c4494 290
+sprinkler-solver-des-phase/sprinkler-solver-des-phase.cabal
+  s_773bec49b0cd92::t_8d84cf3f851557 39-50
+  s_773bec49b0cd92::t_6962afa98c4494 22-26
+sprinkler-solver-des-phase/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_b815d7763e9538 555,558,609
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "34d668eb5b641a5cddea2f66f6b96ab80ad0b748",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
