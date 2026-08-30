@@ -1,0 +1,30 @@
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_3a1c4b9e92a203 369-370,373-374
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_b78e16f67bee88 1191-1225,1227
+  s_773bec49b0cd92::t_5612cf8783f827 1271-1273,1275-1276,1280,1283,1290,1293,1295
+  s_773bec49b0cd92::t_26b1d97719301b 1274
+  s_773bec49b0cd92::t_4e0b3755857202 1139-1149,1190,1265-1270,1277-1279,1281-1282,1284-1286
+  s_773bec49b0cd92::t_4e2088e3f49384 1226,1228
+src/Solver/DES/SymbolicPhase.hs
+  s_773bec49b0cd92::t_bd2e8752f3c535 372,437-441,445-446
+  s_773bec49b0cd92::t_26b1d97719301b 442-444
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_7491476d47f6c6 4909-4971
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d323a3ca50bedd6efde3db31c0ff28173081fa5a",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
