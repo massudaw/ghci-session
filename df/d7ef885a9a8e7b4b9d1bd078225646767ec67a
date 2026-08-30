@@ -1,0 +1,41 @@
+src/JIT/tw_engine.h
+  s_773bec49b0cd92::t_18f2cdb6c4f96b 199,207,214-216
+sprinkler-solver-examples/src/Examples/TwLimitsHeader.hs
+  s_773bec49b0cd92::t_f29d7717e5b028 1-73
+src/Solver/DES/TwLimits.hs
+  s_773bec49b0cd92::t_4b0fa9422eea71 1-90
+golden/TwLimitsHeader/status.txt
+  s_773bec49b0cd92::t_ecf54dc5686ed9 1
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_773bec49b0cd92::t_f29d7717e5b028 204
+src/JIT/tw_limits.h
+  s_773bec49b0cd92::t_649b02c422667c 1-20
+example/Main.hs
+  s_773bec49b0cd92::t_f29d7717e5b028 274,568
+sprinkler-solver.cabal
+  s_773bec49b0cd92::t_56e9faa90bd0d5 290
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_ab732f45f56a2b 250,3466-3468,3470
+src/Solver/DES/Process.hs
+  s_773bec49b0cd92::t_23ea6ba1028b76 875-879
+  s_773bec49b0cd92::t_d598a08a179353 162
+  s_773bec49b0cd92::t_0126e199776ee3 866-874
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_62078a00cb83cf 3450-3500
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "dfd7ef885a9a8e7b4b9d1bd078225646767ec67a",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
