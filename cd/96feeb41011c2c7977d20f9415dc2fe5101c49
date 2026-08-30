@@ -1,0 +1,63 @@
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_3c83b12412bd07 3963-3991
+  s_773bec49b0cd92::t_77afb37834bb42 3856-3910,3912-3914,3920,4031-4045,4064
+  s_773bec49b0cd92::t_3b429fabe8ab40 3911,3915-3919,3921-3962,3992-4002,4026-4029,4046-4063,4065-4070
+  s_773bec49b0cd92::t_ec290b6de17ed2 4003-4025,4030
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_516a8d6877a3fd 707-727
+  s_773bec49b0cd92::t_3471bb0836a1c6 38,413-437
+  s_773bec49b0cd92::t_d70e88b9d351e4 903,919-949,1032-1039
+  s_773bec49b0cd92::t_8700045fa09a16 983-984,1106
+  s_773bec49b0cd92::t_ffeec587f5876c 775,782-813,821,915-918
+  s_773bec49b0cd92::t_abdbdf03a9a057 40-42,57,352-383
+  s_773bec49b0cd92::t_cd46df3f073d9c 92,665,685,705,732,744,753-763
+  s_773bec49b0cd92::t_de7c5928df29f1 384,706
+src/Solver/IDA.hs
+  s_773bec49b0cd92::t_fc75e787c45b72 204
+  s_773bec49b0cd92::t_6808b3e061de43 2444,2454,2462
+  s_773bec49b0cd92::t_4fb5f78b1554b8 177,2443,2445-2453,2455-2461,2463-2480
+  s_773bec49b0cd92::t_846d001d592c44 178,2481,2494-2514,2516-2517
+  s_773bec49b0cd92::t_0626684c87c356 2515
+src/Solver/DES/Unified.hs
+  s_773bec49b0cd92::t_600e36dc4c400c 2352-2371,2373,2606-2607
+  s_773bec49b0cd92::t_859bf47331f2ff 2372
+  s_773bec49b0cd92::t_2ca160619572d2 198-199
+  s_773bec49b0cd92::t_3471bb0836a1c6 197,2559-2560
+golden/ShipFleetOpt/final_state.txt
+  s_773bec49b0cd92::t_a6f9de7f4d2b8b 1-3
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_f6c4c6fc559a2f 1017,1025
+  s_773bec49b0cd92::t_c27d5d99419b0b 816
+  s_773bec49b0cd92::t_401ced04013bad 1018-1024,1026-1032,1050,1055-1064,1070,1095
+  s_773bec49b0cd92::t_5568d525e4205f 1007-1011
+  s_773bec49b0cd92::t_279dde8d89eb45 750-758,784-815
+  s_773bec49b0cd92::t_362e57b6e1d02e 976-981,983-991,1072,1099-1101
+  s_773bec49b0cd92::t_220479869164bf 749
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_01ce4891724a4e 2322,2337-2348,2350,2353-2355,4633,4639,4642-4643,4842,4849,4853-4855,4883,4916
+  s_773bec49b0cd92::t_668ce19a348157 4320
+  s_773bec49b0cd92::t_ac7a3d0f85fc9f 146,4555-4568
+  s_773bec49b0cd92::t_8700045fa09a16 4213,4253-4254,4256,4268,4316-4319,4321,4333-4335
+golden/DESProcessFuzzTW/final_state.txt
+  s_773bec49b0cd92::t_6064de031e05b0 5-7
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_cf49c6cdb50872 9-12,15-16,18-19,23,26-27,29,31-33,35-40,42,44,47-49,51,53-56,58-64,67,71-72,74-79,81-82,84-87,89-90,92,94-102,106-107,109,112-114,116-118,120-124,127-135,137,139-141,144-146,156,159,161-163,167,171-173,176,179,184
+golden/DESProcessFuzzTW/tapestats.txt
+  s_773bec49b0cd92::t_e414dfc4249c52 2,8-9,11-12,14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "cd96feeb41011c2c7977d20f9415dc2fe5101c49",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
