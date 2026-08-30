@@ -1,0 +1,22 @@
+tools/process_migration_status.py
+  s_6822da4b73a395::t_21303e5f7027ae 120-130,133,135,139-143,150
+  s_6822da4b73a395::t_dc367a5937e15a 1-36,43-51,57-101,104-105,107-108,116-119,131-132,134,136-138,144-149,151-156
+  s_6822da4b73a395::t_94a8a3c101a70d 37-42,52-56,102-103
+  s_6822da4b73a395::t_36d40581244735 106,109-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7fc6b898c6088f2295e1e46426566472f4c14c9a",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
