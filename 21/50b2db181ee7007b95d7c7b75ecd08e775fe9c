@@ -1,0 +1,54 @@
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_2b38ccb7187859 4292-4294,4430-4431,4472-4473,4586-4595,4619-4625
+  s_773bec49b0cd92::t_6d4679760b56cc 4369-4380,4386-4392
+  s_773bec49b0cd92::t_2fc5c27abca61d 4295,4626,4632
+  s_773bec49b0cd92::t_6b4eaf924c4f02 4423-4429,4449-4450,4454,4458,4470-4471
+  s_773bec49b0cd92::t_9af30b066cded7 4289-4291,4574-4585,4613-4618,4631
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_ac771dc1c652d6 87,91,94-95,98,101,104,109,111-113,116,119,124,127,130-131,133,139-141,143-144,147-148,150,152-153,155,162-163,167-168,170,172,174,178-179,181,183,185,187,194-195,199,201,204-206,213-214,217-221
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_773bec49b0cd92::t_ac771dc1c652d6 3,5-6,9-11,15-37,40,45-46
+golden/DESSymbolicPhaseTest/tapestats.txt
+  s_773bec49b0cd92::t_ac771dc1c652d6 1-2
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_88191637c234a1 361
+  s_773bec49b0cd92::t_d331bf5d0f6e15 219-220,225-228,230-236,241-242,245,257,268
+  s_773bec49b0cd92::t_9e5c90c14362d6 271-301,380,401-404,410,434-435,438
+  s_773bec49b0cd92::t_2fc5c27abca61d 144-155,229,467-468,620-621,631-632
+  s_773bec49b0cd92::t_e3a7119534f2e5 39-42,134-143,269,302-330
+  s_773bec49b0cd92::t_c2e7503098646b 436,617-619,630
+  s_773bec49b0cd92::t_172915d08fe75b 350-360,376-379,405-409
+  s_773bec49b0cd92::t_9934306cdc30c9 457-466,469-491,614-616,628-629
+  s_773bec49b0cd92::t_4052dbba9f2569 36-38,107-133
+  s_773bec49b0cd92::t_037bc7237d9d64 270
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_85deb2437e126c 186,188-202,212,618,817-819
+  s_773bec49b0cd92::t_f37020845fac45 187,203-211,213,596-617,619-620,790,816,862-863
+  s_773bec49b0cd92::t_2cf99ace971cfe 517-521,523-527,565-568,571,824-828,866-867
+  s_773bec49b0cd92::t_c602bcf5102899 544-554
+  s_773bec49b0cd92::t_1e4628f895896a 538-543,555-562,569-570
+  s_773bec49b0cd92::t_3b8d3b3d04da25 535-537,563-564
+  s_773bec49b0cd92::t_b530597ae8329c 173-185,572-595,820-823,864-865
+  s_773bec49b0cd92::t_f3e9051c72fa11 155-172,510-516,522,528-534
+golden/DESSymbolicPhaseTest/final_state.txt
+  s_773bec49b0cd92::t_ac771dc1c652d6 23-28
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_8c9bf661f9ff18 5247-5269
+  s_773bec49b0cd92::t_5abead46eff4ab 5155-5246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2150b2db181ee7007b95d7c7b75ecd08e775fe9c",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
