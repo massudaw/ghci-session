@@ -1,0 +1,42 @@
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_2be3c15154b186 5263-5269
+  s_773bec49b0cd92::t_6bf30eca95cf71 5270-5356
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_982c4315fbca50 565-579,581,602-607
+  s_773bec49b0cd92::t_5299159e4b4d04 634-654
+  s_773bec49b0cd92::t_8421d71fd65df2 608-609
+src/Solver/DES/CKernel.hs
+  s_773bec49b0cd92::t_1808ab4d2e5baf 28,50,73-78,80,82
+  s_773bec49b0cd92::t_9cebcadd572749 34-48
+  s_773bec49b0cd92::t_d552854c015191 49
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_2be3c15154b186 199-203
+src/JIT/tw_runtime.c
+  s_773bec49b0cd92::t_4abbdd62161e25 1310-1327
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_a0a8fa08606ca4 234,4564-4586,4649
+golden/DESEngineParitySpace/final_state.txt
+  s_773bec49b0cd92::t_e9b91448d6ada9 19-54
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_773bec49b0cd92::t_c167ede015f3e2 112-130,141,146-152,157-190
+  s_773bec49b0cd92::t_7cb8b1e56b158c 76,271-281,284-285,339-344,423-426,430-434
+  s_773bec49b0cd92::t_2c6da750d7dc62 131-140,142-145,153-156,427-429,464-465
+  s_773bec49b0cd92::t_9f6c3d7f9fc456 381-388,391-394
+  s_773bec49b0cd92::t_ade9bbd93e13c4 435
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b5df5ef8384076dc9203741cb8e5ffec79f3e7d0",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
