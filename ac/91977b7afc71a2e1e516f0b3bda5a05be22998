@@ -1,0 +1,29 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_773bec49b0cd92::t_8471cc5b70d2dc 1600-1607
+  s_773bec49b0cd92::t_63cc721090e734 1179-1186,1189
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_7385b56937f2c6 190,206
+src/Solver/DES/TimeWarpUnified.hs
+  s_773bec49b0cd92::t_6e4557d22238a6 1836-1862,1947-1949,1983-1987
+  s_773bec49b0cd92::t_921ca685f71754 2731-2738
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_d31d2d74fb98f1 677,679-683,685-688,832-835,880
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_aa3f8642468302 2950-3011
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ac91977b7afc71a2e1e516f0b3bda5a05be22998",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
