@@ -1,0 +1,25 @@
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_7a2643ac8e10ae 3-4,7,9,11-12,14-15,20-21,24-26,28,31-33,37,39,41,43,45-46,50,53,55-56,59,61-63,67-69,71-72,74,77-80,82-83,86,90,92,94-95,98-99,102-103,105-106,110-114,118,120-121,125-127,130-134,139
+golden/DESProcessFuzzTW/tapestats.txt
+  s_773bec49b0cd92::t_7a2643ac8e10ae 1,3,5-6
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_a0c5f616b5752d 2354-2399
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_71f176750a540f 36,38-39,99-103,142-152,160-237,247-269,515,520-527,561,581-583
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a8337cb728f6184801c7a7e19e4b6782a1ca5d9e",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
