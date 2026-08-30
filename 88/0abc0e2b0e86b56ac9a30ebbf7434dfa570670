@@ -1,0 +1,23 @@
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_773bec49b0cd92::t_687c0c9782d24c 90,95,337-345,347-349
+golden/DESEngineParitySpace/final_state.txt
+  s_773bec49b0cd92::t_b5fae8e6b9e408 56-78,80-86,88-99,101-115
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_68dcbd46a64ea0 3685-3735
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "880abc0e2b0e86b56ac9a30ebbf7434dfa570670",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
