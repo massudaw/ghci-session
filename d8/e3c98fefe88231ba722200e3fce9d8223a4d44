@@ -1,0 +1,27 @@
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_b012192c07330b 144-152,251,255-273,408,438,466,659-660,684-686
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_773bec49b0cd92::t_f42cf5661a1c1c 159-181,458,488-489
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_4dae9b7ef369e8 4296-4297,4620-4626,4658-4662,4668-4669
+golden/DESEngineParitySpace/final_state.txt
+  s_773bec49b0cd92::t_1eeebe91c58f00 55-63
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_a2874c465d805a 5357-5407
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d8e3c98fefe88231ba722200e3fce9d8223a4d44",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
