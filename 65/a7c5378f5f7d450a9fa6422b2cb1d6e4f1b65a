@@ -1,0 +1,43 @@
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_773bec49b0cd92::t_de642634536f17 227
+  s_773bec49b0cd92::t_b132f7eede347a 74
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_e5df799f6e8ec4 486-488
+  s_773bec49b0cd92::t_dfc7fdfbca958e 64
+  s_773bec49b0cd92::t_8287db59c1f2ba 489
+sprinkler-solver-construction/src/Examples/DESConstructionSite.hs
+  s_773bec49b0cd92::t_4e66048d8a84fe 81,2027
+sprinkler-solver-fertilizer/src/Examples/FertilizerOps.hs
+  s_773bec49b0cd92::t_b132f7eede347a 100
+  s_773bec49b0cd92::t_de642634536f17 1165
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_773bec49b0cd92::t_de642634536f17 240
+  s_773bec49b0cd92::t_b132f7eede347a 84
+src/Solver/DES/TimeWarpUnified.hs
+  s_773bec49b0cd92::t_1aaed834e84f6d 149,198,2592-2618
+sprinkler-solver-fertilizer/src/Examples/AttachSmoke.hs
+  s_773bec49b0cd92::t_b132f7eede347a 58
+  s_773bec49b0cd92::t_de642634536f17 161
+sprinkler-solver-fertilizer/src/Examples/FertilizerOpsRuntime.hs
+  s_773bec49b0cd92::t_b132f7eede347a 61
+  s_773bec49b0cd92::t_de642634536f17 137
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_773bec49b0cd92::t_de642634536f17 155
+  s_773bec49b0cd92::t_b132f7eede347a 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "65a7c5378f5f7d450a9fa6422b2cb1d6e4f1b65a",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
