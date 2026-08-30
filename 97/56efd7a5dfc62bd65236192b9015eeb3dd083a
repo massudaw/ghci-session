@@ -1,0 +1,23 @@
+sprinkler-solver-process-tests/src/Examples/DESWaitSetTW.hs
+  s_6822da4b73a395::t_1fda0a02cf6187 222-224
+  s_6822da4b73a395::t_5962aa5dee8f20 716-729,740-768
+  s_6822da4b73a395::t_081ab3da301860 84,810
+  s_6822da4b73a395::t_9e9d02c6302a19 190-191,195,211-219
+  s_6822da4b73a395::t_9bc010944c6c63 769
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9756efd7a5dfc62bd65236192b9015eeb3dd083a",
+  "prompts": {},
+  "sessions": {
+    "s_6822da4b73a395": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cd65357a-0871-5baf-a2b6-18d9300edbc0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
