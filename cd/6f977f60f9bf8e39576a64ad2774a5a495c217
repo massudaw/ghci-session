@@ -1,0 +1,32 @@
+tools/process_coverage.py
+  s_773bec49b0cd92::t_eeaf6a63b564e7 68-81,118-122
+src/Solver/DES/ProcessGrammar.hs
+  s_773bec49b0cd92::t_1ce756ee04855b 88-97,132-133,163-164,181-182
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_d14cf99dee1e57 183
+  s_773bec49b0cd92::t_77f80ebf72771f 94-96,164,261,300,318,381-385,591-592
+golden/DESProcessFuzzTW/final_state.txt
+  s_773bec49b0cd92::t_91788e729b682c 1,3,5-7,18,21,23-28,30-38
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_91788e729b682c 2,9,15,27,38,44,46,50,57,65,69,71,73-74,76,80-81,85-86,88-89,93,95,98-99,102,104-106,114,117,126,129-131,133-134,136,139,142-144,147-148,153,155,158-161,165,180-181,183,191,197,199
+golden/DESProcessFuzzTW/tapestats.txt
+  s_773bec49b0cd92::t_91788e729b682c 1,11
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_892b769a9535f0 3736-3803
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "cd6f977f60f9bf8e39576a64ad2774a5a495c217",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
