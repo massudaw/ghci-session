@@ -1,0 +1,38 @@
+src/Solver/DES/ProcessSig.hs
+  s_773bec49b0cd92::t_fb249160a373b1 59
+  s_773bec49b0cd92::t_e4ad02fe515d11 380-382,1182-1197
+  s_773bec49b0cd92::t_8c407b022fa867 1198
+sprinkler-solver-process-tests/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_f21890763e021a 59,695-698,730,888-898,949-950
+sprinkler-solver-process-tests/src/Examples/DESProcessChainTW.hs
+  s_773bec49b0cd92::t_96060179157583 994,1200
+src/Solver/DES/TimeWarpUnified.hs
+  s_773bec49b0cd92::t_8a58d76afdef41 1377,1395-1397,1470,1472-1483
+  s_773bec49b0cd92::t_5d7e69c1cf57d0 533,650,1809
+  s_773bec49b0cd92::t_153422126a4425 205
+src/Solver/DES/ProcessClass.hs
+  s_773bec49b0cd92::t_e4ad02fe515d11 372-376
+src/Solver/DES/Process.hs
+  s_773bec49b0cd92::t_e4ad02fe515d11 2255-2258
+  s_773bec49b0cd92::t_fd63516bf3f949 1822-1828
+src/Solver/DES/Unified.hs
+  s_773bec49b0cd92::t_dc6e94a2596151 132,370-386,390,1883-1895
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_b0457d37f22a6a 3150-3208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b3759ec18bbe7b49d7e61b0709a107309c2110fc",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
