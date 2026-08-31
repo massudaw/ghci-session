@@ -1,0 +1,30 @@
+sprinkler-solver-des-phase/src/Examples/DESCoupledFuzz.hs
+  s_773bec49b0cd92::t_8ee02b9f0e5156 432-436
+  s_773bec49b0cd92::t_1220810bc1be7c 437-440
+golden/DESProcessFuzzTW/final_state.txt
+  s_773bec49b0cd92::t_bfb243228508e6 5,7,10,13
+sprinkler-solver-des-phase/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_50fe83d3b35786 477-484,1402-1404,1406-1412,1479
+  s_773bec49b0cd92::t_5a5513f670ace4 33,838-862
+  s_773bec49b0cd92::t_dc6705bc2489e9 863
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_02ff699c006a5f 2033-2060
+sprinkler-solver-des-phase/app/Main.hs
+  s_773bec49b0cd92::t_5a5513f670ace4 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "595a64af115a5e83f8c60347447a1c43dfd9cfcf",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
