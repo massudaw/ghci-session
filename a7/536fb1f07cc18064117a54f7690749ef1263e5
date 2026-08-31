@@ -1,0 +1,50 @@
+sprinkler-solver-des-phase/app/Main.hs
+  s_773bec49b0cd92::t_f13cb17946e77f 18
+  s_773bec49b0cd92::t_4638b31a26e02e 3-4,10,16-17,19
+sprinkler-solver-des-phase/src/Examples/DESCoupledFuzz.hs
+  s_773bec49b0cd92::t_8133dd7248dc46 4,64,79
+  s_773bec49b0cd92::t_07fcb3af669f2f 1-3,5-52,54-63,65-78,80-130,135-207,242,265-277,284-292,294-296,305-311,313-338
+  s_773bec49b0cd92::t_d8c6799df91b8d 131-132
+  s_773bec49b0cd92::t_f13cb17946e77f 53,208-241
+  s_773bec49b0cd92::t_c312d015657471 133-134
+  s_773bec49b0cd92::t_0fa639bb0ea6b2 243-264,278-283,293,297-304,312
+sprinkler-solver-des-phase/sprinkler-solver-des-phase.cabal
+  s_773bec49b0cd92::t_18b194a6d79999 31-32
+golden/DESCoupledFuzz/fingerprint.txt
+  s_773bec49b0cd92::t_cae207ddfc40b3 1-216
+golden/DESCoupledFuzz/tapestats.txt
+  s_773bec49b0cd92::t_cae207ddfc40b3 1-15
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_6eeaa3b0f77708 1825-1838,1841
+  s_773bec49b0cd92::t_7dfaea53729bc9 1784-1794,1796
+  s_773bec49b0cd92::t_6edeae190d5d24 1766-1774,1777
+CLAUDE.md
+  s_773bec49b0cd92::t_c47420b328080a 650-651,654-657
+  s_773bec49b0cd92::t_da41c10ff40209 647-649,652-653,658-669
+tools/des_regression.sh
+  s_773bec49b0cd92::t_c47420b328080a 45
+example/Main.hs
+  s_773bec49b0cd92::t_cae207ddfc40b3 233,532
+golden/DESCoupledFuzz/final_state.txt
+  s_773bec49b0cd92::t_cae207ddfc40b3 1-5
+golden/DESCoupledFuzz/status.txt
+  s_773bec49b0cd92::t_cae207ddfc40b3 1
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_773bec49b0cd92::t_cae207ddfc40b3 48,74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a7536fb1f07cc18064117a54f7690749ef1263e5",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
