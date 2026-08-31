@@ -1,0 +1,55 @@
+golden/DESPortTerminal/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-435
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 6,14,18,21,24,27,38,41-42,47,52,58,60-61,69
+golden/LNGOps/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-367
+golden/LNGOps/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1
+golden/DESAgentHarness/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-495
+src/Solver/DES/CKernel.hs
+  s_773bec49b0cd92::t_6445541b0cbda8 38-39
+golden/DESAgentHarness/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-4
+golden/DESSymbolicPhaseTest/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 5
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_e41c2c2afaef2b 1533,1949,4299,4461,4466,4651,4674
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_5bf06b693ced66 5801-5830
+golden/LNGOpsAU/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-322
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_bc8358ac9666d8 119,121-125,127-129,517,607,692,720,746,872
+golden/DESConstructionSite/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_6445541b0cbda8 596-598,675
+golden/LNGOps/final_state.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 5-6,8-9
+golden/LNGOpsAU/final_state.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 9-11,16,32-33
+golden/DESPortTerminal/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1-3
+golden/LNGOpsAU/tapestats.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 1
+golden/DESConstructionSite/fingerprint.txt
+  s_773bec49b0cd92::t_9b08908ee95aa4 10,12-761,771,781
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "aa1d9256951e53ce0e7ab6dec027953569b5ee45",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
