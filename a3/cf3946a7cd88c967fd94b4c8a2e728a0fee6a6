@@ -1,0 +1,23 @@
+sprinkler-solver-des-phase/src/Examples/DESProcessFuzzTW.hs
+  s_773bec49b0cd92::t_6f8a2fdcc01db0 575-578,582-586,588,612-615,619-623,625
+  s_773bec49b0cd92::t_d7483b8aa06fe4 1319-1320,1452
+  s_773bec49b0cd92::t_fd2fb5089d6de7 579-581,616-618,1312-1318,1421,1455-1456
+golden/DESProcessFuzzTW/final_state.txt
+  s_773bec49b0cd92::t_451cdaefd393d5 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a3cf3946a7cd88c967fd94b4c8a2e728a0fee6a6",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
