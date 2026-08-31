@@ -1,0 +1,25 @@
+sprinkler-solver-des-phase/src/Examples/DESCoupledFuzz.hs
+  s_773bec49b0cd92::t_a18f6d10cbe8e6 595-598,600-620
+golden/DESCoupledFuzz/final_state.txt
+  s_773bec49b0cd92::t_cd58d5804f291f 1-2
+golden/DESCoupledFuzz/fingerprint.txt
+  s_773bec49b0cd92::t_cd58d5804f291f 21,72,88,174,183,190,201,216-217,221,231,313,315,325,332,362,369,386-387,452,515
+golden/DESCoupledFuzz/tapestats.txt
+  s_773bec49b0cd92::t_cd58d5804f291f 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "585c9a7ba4b17746ca10f82df5cb2ad365cb0049",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
