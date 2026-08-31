@@ -1,0 +1,33 @@
+src/Solver/DES/Process.hs
+  s_263a2f15821eaf::t_ab5d061b483989 2502-2506,2514
+  s_263a2f15821eaf::t_2f4dd072ec9c7b 2507-2513,2515-2516
+  s_918020d6a5e6f7::t_29af9c61dff398 1816,2340
+  s_918020d6a5e6f7::t_18943faf2bdbc0 1891-1919,1941-1944
+  s_918020d6a5e6f7::t_30495339b7febd 1801-1815,1817-1819,2332-2338,2341
+src/Solver/DES.hs
+  s_263a2f15821eaf::t_ab5d061b483989 4719,4721-4763
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0a4f5a3db9bfaddac41fc1962afca5e6e422f307",
+  "prompts": {},
+  "sessions": {
+    "s_263a2f15821eaf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e2dc5b21-d894-553b-a37f-d83cfbfc1611",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
