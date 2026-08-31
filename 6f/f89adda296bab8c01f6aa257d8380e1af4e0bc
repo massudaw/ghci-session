@@ -1,0 +1,28 @@
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_c0d85999c44f72 185,2608-2627,2634,2639-2645,2650,2653-2656
+  s_773bec49b0cd92::t_33225fb4f4b49f 2628-2633,3014-3017,3023,3029
+  s_773bec49b0cd92::t_d7fcb57b06b0c3 184,3197-3208,3210-3211,3214-3215,3218-3230
+  s_773bec49b0cd92::t_e2ef5b29303440 183,3391-3420,3425,3433-3434
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_d380dd3318048a 6180-6232
+src/Solver/DES/SymbolicPhase.hs
+  s_773bec49b0cd92::t_9d212561aae7d4 137,147-149,219-220
+  s_773bec49b0cd92::t_d7fcb57b06b0c3 257,273
+  s_773bec49b0cd92::t_b5940fcd27db9d 78,247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6ff89adda296bab8c01f6aa257d8380e1af4e0bc",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
