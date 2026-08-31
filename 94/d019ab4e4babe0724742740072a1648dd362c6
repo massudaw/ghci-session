@@ -1,0 +1,41 @@
+src/Solver/DES.hs
+  s_773bec49b0cd92::t_6e30530715acb2 2740,2747-2748,2752-2755
+  s_773bec49b0cd92::t_77c7b0a20f9712 1763-1774
+  s_773bec49b0cd92::t_934b99eab965c5 2738-2739,2741-2746,2749-2751,2756,2758-2761
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_773bec49b0cd92::t_300960f2c3938c 5703-5772
+  s_773bec49b0cd92::t_4626a500267b2b 5773-5800
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_773bec49b0cd92::t_65a48f8bddea63 87,91,94-95,98,103-104,108,110,112,114,118,121-122,126-127,129,133,135,140-141,143-145,148-150,153,155,161,163,167-169,171,173-174,184-185,187,190-191,194,198-199,201,204-205,208,210,212,217-221
+src/Solver/DES/Physical.hs
+  s_773bec49b0cd92::t_0336d93a9715e5 1215-1221,1277-1282,1538-1543
+  s_773bec49b0cd92::t_6af835bf128a40 1565,1567-1591,1593-1594
+golden/DESSymbolicPhaseTest/final_state.txt
+  s_773bec49b0cd92::t_65a48f8bddea63 34
+src/JIT/des_kernel.c
+  s_773bec49b0cd92::t_158d08c1cf021d 238-248
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_773bec49b0cd92::t_65a48f8bddea63 25,28-29,31-32,34-36,39-42,44-45,47-49,52,55-60
+src/JIT/tw_engine.h
+  s_773bec49b0cd92::t_de8b02d987a22d 1978-2001,2011-2012
+  s_773bec49b0cd92::t_7ccec4584bfc74 2430-2442
+sprinkler-solver-des-phase/src/Examples/DESSymbolicPhaseTest.hs
+  s_773bec49b0cd92::t_94367530884e3f 143-149,151-153,759,1013-1015
+  s_773bec49b0cd92::t_77c7b0a20f9712 125-132
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "94d019ab4e4babe0724742740072a1648dd362c6",
+  "prompts": {},
+  "sessions": {
+    "s_773bec49b0cd92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "336a1b0f-b130-5e9f-b372-b3e5ac72b3aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
