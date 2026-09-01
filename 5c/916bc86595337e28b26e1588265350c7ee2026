@@ -1,0 +1,40 @@
+sprinkler-solver-examples/src/Examples/DESEntityAttrStressTW.hs
+  s_918020d6a5e6f7::t_ec7d467c3a388c 93
+  s_918020d6a5e6f7::t_6c9c7efb926a1b 102,589-651,662,664
+src/JIT/tw_model.h
+  s_918020d6a5e6f7::t_0d439711f92885 302-308
+src/Solver/DES.hs
+  s_918020d6a5e6f7::t_96b8fcef15a39e 2716,2721,2723-2741,4380-4383
+  s_918020d6a5e6f7::t_4a3b3dacd97a76 4384-4423
+  s_918020d6a5e6f7::t_770704f4637b32 4200
+  s_918020d6a5e6f7::t_e8bdc5882fa718 4491-4500
+  s_918020d6a5e6f7::t_3c0bc0f8f7a3a9 4195-4197,4201-4202,4206-4207
+  s_918020d6a5e6f7::t_63617ee7ccd330 4029-4035,4192-4194,4204-4205,4208
+src/JIT/tw_engine.h
+  s_918020d6a5e6f7::t_f59e8edc680fcf 756-769,2562-2595,2597,2599-2602,2656,2662
+src/Solver/DES/TimeWarpJit.hs
+  s_918020d6a5e6f7::t_20d714eb3f34f0 239,241-242
+  s_918020d6a5e6f7::t_c454e564dda2b3 4698-4708,5016-5019
+  s_918020d6a5e6f7::t_660882cea8001d 2773-2787,2908,3035-3074,4301,4304
+src/JIT/tw_runtime.c
+  s_918020d6a5e6f7::t_0d439711f92885 421-434,854-880
+  s_918020d6a5e6f7::t_da67a4fd46cc87 881-883
+doc/des/CROSS_ACTOR_EXTENSIBILITY_SURVEY.md
+  s_918020d6a5e6f7::t_ff242fbc4c0bac 437-449,580
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5c916bc86595337e28b26e1588265350c7ee2026",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
