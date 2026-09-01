@@ -1,0 +1,58 @@
+doc/des/DES_ATTRIBUTE_WRITE.md
+  h_fd5809635b36a3 71-74,78-81
+example/Main.hs
+  h_fd5809635b36a3 132,389,516
+golden/TxAttrExprDemo/process.txt
+  h_fd5809635b36a3 1-91
+golden/TxAttrExprDemo/status.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-des-phase/src/Examples/DESCoupledFuzz.hs
+  h_fd5809635b36a3 313,318
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  h_fd5809635b36a3 270
+sprinkler-solver-examples/src/Examples/TxAttrExprDemo.hs
+  h_fd5809635b36a3 1-164
+sprinkler-solver-process-tests/src/Examples/DESPoolTW.hs
+  h_fd5809635b36a3 139,145,149,176
+sprinkler-solver-process-tests/src/Examples/DESProcess2PCTW.hs
+  h_fd5809635b36a3 56,58,114,137
+sprinkler-solver-process-tests/src/Examples/DESProcessAogTW.hs
+  h_fd5809635b36a3 486,490
+sprinkler-solver-process-tests/src/Examples/DESProcessChainTW.hs
+  h_fd5809635b36a3 647,954
+sprinkler-solver-process-tests/src/Examples/DESProcessLoopTW.hs
+  h_fd5809635b36a3 595,866
+sprinkler-solver-process-tests/src/Examples/DESProcessRefusals.hs
+  h_fd5809635b36a3 39-40,163
+src/Solver/DES.hs
+  h_fd5809635b36a3 309-311,747,1065,1079,1087,1089,1099,1552-1555,1680-1681,2767,3779,3786,3790-3793,4079-4081,4087-4090,4118-4124,4148-4204
+src/Solver/DES/Phase.hs
+  h_fd5809635b36a3 61,135-137,144-147,154-158,308,322,334-340
+src/Solver/DES/Process.hs
+  h_fd5809635b36a3 128,197-198,579-580,1081-1082,1227,2191,2193,2197,2270-2271,2274-2275,2326-2327,2329,2331-2332,2334,2338,2342,2348-2357,2428,2819,2935-2950
+src/Solver/DES/ProcessClass.hs
+  h_fd5809635b36a3 79,82,397-401
+src/Solver/DES/ProcessPure.hs
+  h_fd5809635b36a3 76,392-393,763,765,769,903,926-927
+src/Solver/DES/ProcessSig.hs
+  h_fd5809635b36a3 61-65,75-77,433,1231-1292
+src/Solver/DES/RunProcess.hs
+  h_fd5809635b36a3 344-346,350
+src/Solver/DES/Types.hs
+  h_fd5809635b36a3 19,24-25,68-69,149,166-168,181-182,188,192-198,218,221,226,236-238
+src/Solver/DES/Unified.hs
+  h_fd5809635b36a3 237,1114,1136
+src/Solver/SymbolicDAE.hs
+  h_fd5809635b36a3 11,110-120,1860-1869,4439,4442-4482
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e1b34e5a69bd89556320d0bf035768d5b1bb4586",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
