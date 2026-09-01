@@ -1,0 +1,35 @@
+golden/DESVRTW/fingerprint.txt
+  s_918020d6a5e6f7::t_6e93fee89ce37f 1-7
+tools/model_session/targets.json
+  s_918020d6a5e6f7::t_7dd26100b82098 93-94,586
+example/Main.hs
+  s_918020d6a5e6f7::t_77ea77e23e36e2 238,540
+sprinkler-solver-process-tests/src/Examples/DESVRTW.hs
+  s_918020d6a5e6f7::t_7dd26100b82098 1-224
+golden/DESVRTW/status.txt
+  s_918020d6a5e6f7::t_6e93fee89ce37f 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_918020d6a5e6f7::t_7dd26100b82098 43
+golden/DESVRTW/final_state.txt
+  s_918020d6a5e6f7::t_6e93fee89ce37f 1-4
+doc/des/PROCESS_VR_FINDINGS.md
+  s_918020d6a5e6f7::t_9a2ecb444141a5 1-137
+doc/des/PROCESS_2PC_FINDINGS.md
+  s_918020d6a5e6f7::t_b5d161660489dd 620-648
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "165c5fce32b4ea868ddae2583f28edfd7002a286",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
