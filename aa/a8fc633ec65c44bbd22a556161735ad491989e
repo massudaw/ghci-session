@@ -1,0 +1,24 @@
+src/JIT/des_kernel.c
+  h_fd5809635b36a3 464,469-484
+src/JIT/tw_engine.h
+  h_fd5809635b36a3 2874,2885-2900
+src/JIT/tw_runtime.c
+  h_fd5809635b36a3 1206,8671
+src/Solver/DES.hs
+  h_fd5809635b36a3 309,1553-1555,3783-3789,4075-4082
+src/Solver/DES/ProcessPure.hs
+  h_fd5809635b36a3 3
+src/Solver/DES/RunProcess.hs
+  h_fd5809635b36a3 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "aaa8fc633ec65c44bbd22a556161735ad491989e",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
