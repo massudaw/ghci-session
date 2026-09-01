@@ -1,0 +1,50 @@
+src/Solver/DES.hs
+  s_918020d6a5e6f7::t_f2c407f63e06c5 3068,3071-3101
+  s_918020d6a5e6f7::t_c9272f57190d20 4134,4374-4408,4441,4449
+  s_918020d6a5e6f7::t_3f9ab3cef4d0b1 4433-4440,4444-4448,4450-4452
+  s_918020d6a5e6f7::t_0fda91423c9eec 311-312
+  s_918020d6a5e6f7::t_355c468c183484 3951
+  s_918020d6a5e6f7::t_5e4486afecc124 3950,3952-3955,4061-4062,4127-4132,4136-4140
+  s_918020d6a5e6f7::t_573a3fd9f8ee74 3102
+src/JIT/tw_engine.h
+  s_918020d6a5e6f7::t_2a50c729ad654c 623-639,2922-2954,2957-2958
+  s_918020d6a5e6f7::t_f122b0d1c2a6b0 2198-2201
+src/Solver/DES/TimeWarpJit.hs
+  s_918020d6a5e6f7::t_81311419e72ca1 2960-3022,3024-3030,3032
+  s_918020d6a5e6f7::t_4805f1ccbc2a14 2889,2891,4243,4246,4561-4568,4947-4950
+  s_918020d6a5e6f7::t_68b55408d4011c 2752-2770,2923-2924
+  s_918020d6a5e6f7::t_884ca80c21263a 239-240,3023,3031
+doc/des/DES_ATTRIBUTE_WRITE.md
+  s_918020d6a5e6f7::t_09b4a05b168831 443-521
+src/JIT/tw_runtime.c
+  s_918020d6a5e6f7::t_869f771db2fec8 405-420,807-839
+  s_918020d6a5e6f7::t_7f3e4d03d7913c 8723-8724,8728-8736
+  s_918020d6a5e6f7::t_9c7d45384bdfc9 1255-1258
+src/Solver/DES/ProcessSig.hs
+  s_918020d6a5e6f7::t_dbe3d9add0d6c9 77-78
+  s_918020d6a5e6f7::t_9195827fc637a7 1260-1264,1266,1270,1274
+src/Solver/SymbolicDAE.hs
+  s_918020d6a5e6f7::t_8308e711b2b19c 115-119,1869-1872,4467-4495
+  s_918020d6a5e6f7::t_4a01c29ec95b6c 4496-4497
+src/JIT/tw_model.h
+  s_918020d6a5e6f7::t_869f771db2fec8 300-305
+sprinkler-solver-examples/src/Examples/DESEntityAttrStressTW.hs
+  s_918020d6a5e6f7::t_72bd902305584b 102,529-562,568-588,598,600
+  s_918020d6a5e6f7::t_19ad7841dfa318 563-567
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c337ddcee62efb8aba81f60b3fc0adc359998209",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
