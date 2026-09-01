@@ -1,0 +1,28 @@
+example/Main.hs
+  h_fd5809635b36a3 130-131,386-387,512-513
+golden/TxComplexHybridDemo/process.txt
+  h_fd5809635b36a3 1-18
+golden/TxComplexHybridDemo/status.txt
+  h_fd5809635b36a3 1
+golden/TxHybridProcessDemo/process.txt
+  h_fd5809635b36a3 1-18
+golden/TxHybridProcessDemo/status.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  h_fd5809635b36a3 268-269
+sprinkler-solver-examples/src/Examples/TxComplexHybridDemo.hs
+  h_fd5809635b36a3 1-85
+sprinkler-solver-examples/src/Examples/TxHybridProcessDemo.hs
+  h_fd5809635b36a3 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d4e92ca66a813b1f23973c3d21793424dc72555e",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
