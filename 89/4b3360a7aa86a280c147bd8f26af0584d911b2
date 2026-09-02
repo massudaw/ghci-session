@@ -1,0 +1,22 @@
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_087721e4bf0f3b 219-292
+src/Solver/Transition.hs
+  s_7e6456baf64fd7::t_dbc8f98b4ac1aa 809-817
+  s_7e6456baf64fd7::t_087721e4bf0f3b 863-871
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "894b3360a7aa86a280c147bd8f26af0584d911b2",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
