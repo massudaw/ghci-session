@@ -1,0 +1,42 @@
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_d81bff72392685 356-418
+src/Solver/Transition.hs
+  s_7e6456baf64fd7::t_e5bb4328158162 840-844,849-851,861,867,870
+  s_7e6456baf64fd7::t_70d1c66cbd19f2 594-595,597-601,738-739,750-751,758-759,772-774,785-790
+  s_7e6456baf64fd7::t_ebf9e03a3ee701 71
+  s_7e6456baf64fd7::t_3006710ba77b71 72,576-583,747-749,762-765,769-771,780
+  s_7e6456baf64fd7::t_a9f02c5255d8f1 862-865
+  s_7e6456baf64fd7::t_d394b15a487d66 59-60
+  s_7e6456baf64fd7::t_363a2cde45c886 35-38,56-58,76,562-568,571-575,584-593,596,602-612,681-684,694,696-697,710-737,740-746,752-757,760-761,766-768,775-779,781-784,791-839,845-848,854-858,866,868-869,871-874,876-931
+  s_7e6456baf64fd7::t_f87cbbe74ad63d 39-40,685-693,695,698-709,852-853,859-860,875
+src/Solver/HybridDAE.hs
+  s_7e6456baf64fd7::t_363a2cde45c886 1302-1305,1761-1765,1911-1918,2264,2289-2293,2335,2368-2372
+golden/ResCtxRepointTest/final_state.txt
+  s_7e6456baf64fd7::t_ebf9e03a3ee701 4-7
+src/Solver/SymbolicDAE.hs
+  s_7e6456baf64fd7::t_363a2cde45c886 64,3721-3733,3743,3773,3777
+src/Solver/UnionSession.hs
+  s_7e6456baf64fd7::t_1636f3d5d80fa7 653-654,724-725
+sprinkler-solver-examples/src/Examples/ResCtxRepointTest.hs
+  s_7e6456baf64fd7::t_f87cbbe74ad63d 24-30,48,66-67,69,81-91,93
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_e5bb4328158162 3192-3196
+  s_7e6456baf64fd7::t_363a2cde45c886 1807,3179,3183
+  s_7e6456baf64fd7::t_a9f02c5255d8f1 3184-3191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ec6f103bfdc9980931df3c57f8c940807addd878",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
