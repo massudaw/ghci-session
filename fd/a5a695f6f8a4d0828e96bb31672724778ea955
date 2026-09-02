@@ -1,0 +1,21 @@
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_1b22fdeeead666 1799-1822,3167-3186,3511,3526-3527,3573,3578,4452,4545-4547,4917-4922,4925-4927,4929,4934-4941,4973,5104-5114,5116-5117,5126-5127,5135,5980
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_48e789b180cf95 324-355
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fda5a695f6f8a4d0828e96bb31672724778ea955",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
