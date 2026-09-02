@@ -1,0 +1,21 @@
+tools/profile_report.py
+  s_918020d6a5e6f7::t_38a3ca8ebd4437 625-627,654-658,661-662
+  s_918020d6a5e6f7::t_5c2b7b6f2c3073 637-653,659-660,663-677
+  s_918020d6a5e6f7::t_eb50fd33342151 628-629
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "bb491d454a8dd314255063568efce5a5303df49b",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
