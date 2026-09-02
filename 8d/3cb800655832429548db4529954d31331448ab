@@ -1,0 +1,27 @@
+golden/TxAttrExprDemo/fingerprint.txt
+  s_918020d6a5e6f7::t_84b1dc19cd47f7 1-3
+tools/model_session/targets.json
+  s_918020d6a5e6f7::t_faa7a37efd1587 68,585-586,588
+  s_918020d6a5e6f7::t_296bfb4e37067b 587,589-593
+src/Solver/DES/RunProcess.hs
+  s_918020d6a5e6f7::t_242ab3fdaf4ad6 216-223,327-361
+  s_918020d6a5e6f7::t_ecd4d21733e94a 362
+golden/TxAttrExprDemo/tapestats.txt
+  s_918020d6a5e6f7::t_84b1dc19cd47f7 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8d3cb800655832429548db4529954d31331448ab",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
