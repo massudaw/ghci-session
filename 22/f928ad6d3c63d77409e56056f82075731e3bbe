@@ -1,0 +1,24 @@
+sprinkler-solver-tx/src/Solver/DES/TxSTM.hs
+  s_7e6456baf64fd7::t_9d138b3567e359 67,464-475,525-526
+sprinkler-solver-tx/src/Solver/DES/TxCoupled.hs
+  s_7e6456baf64fd7::t_8338b912b06bf5 34,56-68,125-130
+  s_7e6456baf64fd7::t_e9be8f40f0257b 131
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_d265ea2ee46605 480-534
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "22f928ad6d3c63d77409e56056f82075731e3bbe",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
