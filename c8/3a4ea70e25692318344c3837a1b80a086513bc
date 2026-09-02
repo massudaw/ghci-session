@@ -1,0 +1,19 @@
+src/Solver/Transition.hs
+  s_918020d6a5e6f7::t_7c691716eb2640 54-56,743-751,760-766,769,774-775
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c83a4ea70e25692318344c3837a1b80a086513bc",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
