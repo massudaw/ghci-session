@@ -1,0 +1,23 @@
+src/Solver/IDA.hs
+  s_918020d6a5e6f7::t_19e4a6f9e39c42 1126-1147,1391,1512
+src/Solver/HybridDAE.hs
+  s_918020d6a5e6f7::t_19e4a6f9e39c42 1283-1287
+sprinkler-solver-tx/src/Solver/DES/TxCoupled.hs
+  s_918020d6a5e6f7::t_f5a941c73c8b84 23-25,45-46,59-60,80-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "aaf6a69466ddf429886d58e3e158df1bde739021",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
