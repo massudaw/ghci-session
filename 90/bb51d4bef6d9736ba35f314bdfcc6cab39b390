@@ -1,0 +1,20 @@
+doc/des/ATOMIC_REGION_STM.md
+  s_d763cc47e32833::t_79bba2adbbca08 964-1365
+  s_d763cc47e32833::t_07ea78366a7a22 3,1366-1551
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "90bb51d4bef6d9736ba35f314bdfcc6cab39b390",
+  "prompts": {},
+  "sessions": {
+    "s_d763cc47e32833": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "37ddc2eb-5330-5f4e-b094-8feeaa991659",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
