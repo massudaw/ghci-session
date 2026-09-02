@@ -1,0 +1,43 @@
+sprinkler-solver-tx/sprinkler-solver-tx.cabal
+  s_918020d6a5e6f7::t_bc49ff057dd060 1-41
+cabal.project
+  s_918020d6a5e6f7::t_7e7c3e966371d2 10
+sprinkler-solver-shipping/sprinkler-solver-shipping.cabal
+  s_918020d6a5e6f7::t_53c145a0980e70 42
+src/Solver/DES/Physical.hs
+  s_918020d6a5e6f7::t_bece3259de4cbb 60
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_918020d6a5e6f7::t_1d6d2a4b5ce38d 188-190
+tools/model_session/targets.json
+  s_918020d6a5e6f7::t_2876c264f066c1 587
+sprinkler-solver-tx/src/Solver/DES/TxSTM.hs
+  s_918020d6a5e6f7::t_699cf594a99a34 66
+  s_918020d6a5e6f7::t_8331ea80a5c38a 1-65,67-403
+src/Solver/DES/Unified.hs
+  s_918020d6a5e6f7::t_bece3259de4cbb 200
+sprinkler-solver-tx/src/Solver/DES/TxCoupled.hs
+  s_918020d6a5e6f7::t_b77b20af9badd1 4-24,27-76
+  s_918020d6a5e6f7::t_bd6efca49903d7 1-3
+  s_918020d6a5e6f7::t_ee767daf425f19 25-26
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_918020d6a5e6f7::t_53c145a0980e70 331
+  s_918020d6a5e6f7::t_821530f1c1142b 397,425,451,472,489,511,534,545,557,576,596,616,633,652,667,682,697,712,727,743,758,773,789,805,820,834,852,866,879,895,911,927,939,955,974,1002,1022,1044,1064,1080,1094,1107,1119,1132,1145,1159,1172,1192,1214,1231,1248,1265,1280,1295,1309,1323
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_918020d6a5e6f7::t_53c145a0980e70 48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4b28c784919a8f2bcbb8ae34c812439572b58aac",
+  "prompts": {},
+  "sessions": {
+    "s_918020d6a5e6f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48ac6ace-0e97-5b5f-aef1-895dbb63d146",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
