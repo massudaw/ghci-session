@@ -1,0 +1,100 @@
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_a353a6e0c2f9a6 594-598,2443-2450,2466,2789-2811,3438,3988-3989,4000,4048-4049,4129-4135,4238-4248,4324
+  s_7e6456baf64fd7::t_edb0bf507ea2eb 126,3585,3603,3644,3654,4342,4453,4569,5549,5983
+golden/DESControlPolicyFalsifyV5/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-5
+golden/DelinquencyLadder/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 3-15
+golden/DESElectricLoad/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-4
+golden/DESCoupledFuzz/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 32-149
+golden/DESFanOut/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-14
+golden/DESPortTerminal/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 4-145
+golden/DESReactorTank/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-3
+golden/RiskPortfolioDES/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 4-112
+golden/DESExploreShopNative/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-8
+golden/BankRiskMaster/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 4-102
+golden/DESQueue/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-3
+golden/ShipFleetOpt/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-14
+golden/DESControlPolicyFalsifyV3/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-4
+golden/DESRandRouteHybrid/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-5
+golden/LNGOpsAU/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-71
+golden/DESFactoryLine/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-14
+golden/DESAccountingLedgerStress/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-41
+golden/DESParallelLines/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-19
+golden/DESUnifiedLine/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-7
+src/JIT/jit_trampoline.c
+  s_7e6456baf64fd7::t_a353a6e0c2f9a6 1214-1230,2141-2194,2210-2214,2434-2440,2442-2446,2474-2477,4094-4103,5306-5308
+src/Solver/HybridDAE.hs
+  s_7e6456baf64fd7::t_b155cf487491a4 52,764-798,803,805-806,809,2587-2597
+golden/DESDispatch/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-9
+golden/DESAgentHarness/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 5-165
+golden/DESMoldingShop/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-12
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_ea64f75a1987b5 535-586
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 6-109
+golden/DESAccountingLedger/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-3
+golden/DESConstructionSite/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 12-261
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-4
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 45-205
+golden/PortfolioDelinquency/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-66
+golden/StateMachineTest/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-5
+golden/StateMachineTW/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 6-10
+golden/DESDistillery/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 3-21
+golden/DESSharedRoom/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-6
+golden/DESPureParity/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 3-8
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-11
+golden/ModelThermostatTW/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 4-7
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 3-21
+golden/LNGOps/fingerprint.txt
+  s_7e6456baf64fd7::t_6e9116685c6f2c 2-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "398599deb7c114a62c0937284ee6bac562596ed6",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
