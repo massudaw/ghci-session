@@ -1,0 +1,24 @@
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_bdc54e79d64b7f 4245-4246,4248,4250
+  s_7e6456baf64fd7::t_5312fd3ba4b11b 594-598,4243-4244,4247,4249,4251,4339
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_566b218092f33c 587-623
+src/JIT/jit_trampoline.c
+  s_7e6456baf64fd7::t_5312fd3ba4b11b 1231-1236,1900-1919,1932-1935,1941-1956,1959,1993,5356
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9277639a8e6433e4aa73b8ab3abaf17bfa384b96",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
