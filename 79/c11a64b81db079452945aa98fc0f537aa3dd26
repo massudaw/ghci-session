@@ -1,0 +1,40 @@
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_be4417fb8a9f2b 509-513
+  s_7e6456baf64fd7::t_a801d49fa7350a 867,874
+  s_7e6456baf64fd7::t_fef984c26e3f90 304
+  s_7e6456baf64fd7::t_08bac485681aa3 583,869-873,875,944-945
+  s_7e6456baf64fd7::t_45ea75f5ebde63 46,61,63,74-79,82-105,242-243,255-256,303,305-317,477,500-508,514-517,540-542,544-574,589-590,634,638-642,645,649-650,736-737,766-770,772-775,795,829-830,832,899-900,952-953,956,959,964-965
+  s_7e6456baf64fd7::t_9b38a9f4a5444a 106-108,489-496,532,591-602,678-682
+  s_7e6456baf64fd7::t_28a5c5a2f837b8 635-637,643-644,646-648,652-656
+  s_7e6456baf64fd7::t_69329eb0d1770b 963
+  s_7e6456baf64fd7::t_65e2c07879bcfe 858-866,868,911-912,916-917,919-922,924-925,931-932,938,954-955,957-958,960-962
+  s_7e6456baf64fd7::t_4db32031321869 611-614,926-930,933-935
+  s_7e6456baf64fd7::t_f9a620ed1f8696 405,416,757
+sprinkler-solver-tx/src/Solver/DES/Tx.hs
+  s_7e6456baf64fd7::t_07c12c28c2574f 151-164
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_a801d49fa7350a 3-4,20-47
+  s_7e6456baf64fd7::t_9d21736ddd3406 48
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_7e6456baf64fd7::t_07c12c28c2574f 40-41,136-141,328,371
+golden/VtTimeWarpTest/final_state.txt
+  s_7e6456baf64fd7::t_a801d49fa7350a 2
+sprinkler-solver-examples/src/Examples/VtTimeWarpTest.hs
+  s_7e6456baf64fd7::t_43a119444c1b79 3-4,17-18,21,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "79c11a64b81db079452945aa98fc0f537aa3dd26",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
