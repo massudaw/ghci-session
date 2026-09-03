@@ -1,0 +1,19 @@
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_d182aa63cde56d 1-230
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "65800d98eea6b76992481680db1c53acd4d33b7f",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
