@@ -1,0 +1,30 @@
+src/JIT/tw_runtime.c
+  s_7e6456baf64fd7::t_93bded01e45985 8116-8130,8154-8169,8195
+  s_7e6456baf64fd7::t_505ec81a2edd49 7272,7565-7568,7903,7980,8108,8131-8153,8233
+  s_7e6456baf64fd7::t_a29b7a22dd9d76 6900-6923
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_7a5d7add7043aa 669-697,702-703,706-719
+  s_7e6456baf64fd7::t_a466e4fc8fc2a2 698-701,704-705,720-724
+src/Solver/DES/TimeWarpJit.hs
+  s_7e6456baf64fd7::t_a29b7a22dd9d76 137-138,1516,1518-1522,1525,5345-5346,5428-5456
+  s_7e6456baf64fd7::t_505ec81a2edd49 1962,1964,1974-1975,5341-5342
+  s_7e6456baf64fd7::t_600d3de327c564 1971
+  s_7e6456baf64fd7::t_93bded01e45985 1951-1961,1963,1965-1970,1972-1973,1976-1977,2002-2005,2009,5339-5340,5343-5344
+  s_7e6456baf64fd7::t_83dd3950a41022 2037
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e59295e2806d2a4d6a0011ce4ffe17e384908b19",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
