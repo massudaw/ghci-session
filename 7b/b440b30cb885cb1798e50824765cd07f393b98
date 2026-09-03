@@ -1,0 +1,48 @@
+golden/VtNativePlant/final_state.txt
+  s_7e6456baf64fd7::t_472f6d803735a2 1-3
+golden/VtNativePlant/tapestats.txt
+  s_7e6456baf64fd7::t_472f6d803735a2 1
+golden/VtNativePlant/fingerprint.txt
+  s_7e6456baf64fd7::t_472f6d803735a2 1-4
+golden/VtNativePlant/status.txt
+  s_7e6456baf64fd7::t_472f6d803735a2 1
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_28e1ce20402652 3-6,522-568
+  s_7e6456baf64fd7::t_4945b1b9393f2a 569
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_1f70a298703acc 471
+  s_7e6456baf64fd7::t_d715508187083f 35,1275,1449,1572-1573,1590-1593
+  s_7e6456baf64fd7::t_6895bb396cf045 444-445,497,552-558
+  s_7e6456baf64fd7::t_940501da51b98f 449-458,460-461,465-470,472-473,479-480,482-483,489-493,545,559-563,660-661,791,835,937,940-942,948-953
+  s_7e6456baf64fd7::t_0d0f7b083d1fbe 152,154-170,173-184,242-245,252
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_7e6456baf64fd7::t_53ec4c455ee162 263
+sprinkler-solver-examples/src/Examples/VtNativePlant.hs
+  s_7e6456baf64fd7::t_1f70a298703acc 48-57
+  s_7e6456baf64fd7::t_3c26875f4b3be3 100-101,103,126-129,158
+  s_7e6456baf64fd7::t_53ec4c455ee162 1-38,58-64,66-81,83-84,86-99,102,104-112,130-135,143-144,156-157,159-166
+  s_7e6456baf64fd7::t_c42169d3b9cbce 145-147
+  s_7e6456baf64fd7::t_624d0ec81dd1b2 148-152
+  s_7e6456baf64fd7::t_d0b56a4a488302 65,82,85
+  s_7e6456baf64fd7::t_d883e524022e6c 153-155
+  s_7e6456baf64fd7::t_5675f19f6461d2 113-125,136-142
+  s_7e6456baf64fd7::t_bac2295bcb88c0 39-47
+example/Main.hs
+  s_7e6456baf64fd7::t_53ec4c455ee162 124,665
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7bb440b30cb885cb1798e50824765cd07f393b98",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
