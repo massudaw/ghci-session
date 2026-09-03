@@ -1,0 +1,28 @@
+sprinkler-solver-tx/sprinkler-solver-tx.cabal
+  s_7e6456baf64fd7::t_c90658138f8da1 33-34,44-52
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_ff0ee1de8e476a 40-41,62-66,70,753-754,789-790,802-803,1060-1129
+  s_7e6456baf64fd7::t_4d5bfd68891ceb 1130
+sprinkler-solver-examples/src/Examples/VtTimeWarpTest.hs
+  s_7e6456baf64fd7::t_ff0ee1de8e476a 9,17-18,22,26-27
+src/Solver/DES.hs
+  s_7e6456baf64fd7::t_ff0ee1de8e476a 255-257
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_7e6456baf64fd7::t_ff0ee1de8e476a 42-43,232-274,347,358-359,407,437
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6135d0c7ab9cb226416b24ee2e2dae2f4d9a135c",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
