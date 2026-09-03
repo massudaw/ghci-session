@@ -1,0 +1,26 @@
+src/JIT/tw_runtime.c
+  s_7e6456baf64fd7::t_25a82b1e314cc9 7291-7297
+  s_7e6456baf64fd7::t_270527b6c086c5 8149-8158,8160-8172,8176,8184,8188
+  s_7e6456baf64fd7::t_5c340d5bf1f438 8159
+src/Solver/DES/TimeWarpJit.hs
+  s_7e6456baf64fd7::t_25a82b1e314cc9 1973,5459-5461
+  s_7e6456baf64fd7::t_7a2900a7aae0e0 5462
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_5c340d5bf1f438 730-742
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "14b81ee869cedebf1bacd2e6fa3a94782ea247b7",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
