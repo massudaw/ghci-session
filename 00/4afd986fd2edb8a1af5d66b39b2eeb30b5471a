@@ -1,0 +1,23 @@
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_b54aa989c1cf31 224-229
+src/JIT/tw_runtime.c
+  s_7e6456baf64fd7::t_80f27107ed4e97 7472-7478
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_b54aa989c1cf31 707-731
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "004afd986fd2edb8a1af5d66b39b2eeb30b5471a",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
