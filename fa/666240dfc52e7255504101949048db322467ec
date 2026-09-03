@@ -1,0 +1,29 @@
+TRANSITION_BUFFER_API.md
+  s_7e6456baf64fd7::t_3ef735bcb6fee6 624-668
+src/Solver/HybridDAE.hs
+  s_7e6456baf64fd7::t_1b317d3d88628e 798-802
+  s_7e6456baf64fd7::t_63854c0e4eac6b 1102-1103,2627-2631
+  s_7e6456baf64fd7::t_1e65164ebddef6 2632
+  s_7e6456baf64fd7::t_017ce113276b73 54,457,468,787,797,1075-1101,1104-1106,1155,1201,1207,1331,1351,2312,2323,2633-2636
+  s_7e6456baf64fd7::t_6d188278083bf6 2637
+golden/ModelBouncingBall/fingerprint.txt
+  s_7e6456baf64fd7::t_0f86eba5d5b72b 2-9
+golden/ModelTorqueVector/fingerprint.txt
+  s_7e6456baf64fd7::t_80791fbb42a475 2,4,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fa666240dfc52e7255504101949048db322467ec",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
