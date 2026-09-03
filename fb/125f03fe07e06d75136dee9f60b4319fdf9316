@@ -1,0 +1,30 @@
+golden/VtTimeWarpTest/final_state.txt
+  s_7e6456baf64fd7::t_dffeca41acf00b 2
+sprinkler-solver-examples/src/Examples/VtTimeWarpTest.hs
+  s_7e6456baf64fd7::t_82f1fcffc09a2d 8,14-20
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_dffeca41acf00b 3-4,18-41
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_afe42e2d221852 59-60,118-120,143-145,209,296-298,311-316,319-321,323,636-640,788-789,805
+  s_7e6456baf64fd7::t_82f1fcffc09a2d 33-39,89-115,121-123,127-129,131-142,146-155,192-194,208,278-295,299-306,317-318,324-331,397-401,458,462,552,557-562,605-610,612-617,619,623,628-629,649-650,768-787,790-803,806,808-818,831-838,846-848
+  s_7e6456baf64fd7::t_dffeca41acf00b 819-830,840-841,843-845
+  s_7e6456baf64fd7::t_7ffa8692b59aa2 464-477
+  s_7e6456baf64fd7::t_8e1f79eb079566 116-117,124-126,130,307-310,322,332,455-457,478-491,620-621,804,807,839,842
+  s_7e6456baf64fd7::t_48fd70544a26e4 333,849-850
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "fb125f03fe07e06d75136dee9f60b4319fdf9316",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
