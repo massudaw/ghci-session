@@ -1,0 +1,26 @@
+sprinkler-solver-examples/src/Examples/VtShippingRun.hs
+  s_7e6456baf64fd7::t_8b4554fdbce4aa 481-487
+  s_7e6456baf64fd7::t_2205c300ee7cc4 488-498
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_8b4554fdbce4aa 571-572
+  s_7e6456baf64fd7::t_967e0b6a84206c 1133-1143
+  s_7e6456baf64fd7::t_2205c300ee7cc4 573-577
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_a5a0d2b382c4ba 1025-1062
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d7f10256c9815fe4fe1835eeee7c7cb98a544194",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
