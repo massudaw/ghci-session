@@ -1,0 +1,23 @@
+WARM_AND_SESSION_LIFECYCLE.md
+  s_7e6456baf64fd7::t_c7a6115f6fef73 1-271
+CLAUDE.md
+  s_7e6456baf64fd7::t_8fdd46abd3cb22 324-337
+EVENT_TRANSITION_PIPELINE.md
+  s_7e6456baf64fd7::t_0ed8c8b10998a7 878-884
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f20c7b86556421e4405ca2c577a9d90cb6f8ea61",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
