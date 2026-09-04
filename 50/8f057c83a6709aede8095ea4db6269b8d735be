@@ -1,0 +1,32 @@
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_c5843ba287ee7a 338-343,346,372,379,390,396,412,755-756,771,782-783,785,854,870,883,886
+  s_7e6456baf64fd7::t_c77400b117624c 353-359,362,364,367,395,397
+  s_7e6456baf64fd7::t_f3ba5faca5ef51 429,542,719,722,728,733,742,1163,1187
+  s_7e6456baf64fd7::t_b806810e7daed3 726
+  s_7e6456baf64fd7::t_c0ee61db77e5f3 286,344,376,437-438,457,460,489,511,524-525,577,585-586,635,639,729,759,802,829,892-893
+  s_7e6456baf64fd7::t_9d5cb28e5d9ae3 937
+  s_7e6456baf64fd7::t_9fa76f0cc51a54 890,896,905-906
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_7e6456baf64fd7::t_c77400b117624c 157,245,263,358,409,436,482,497,580
+  s_7e6456baf64fd7::t_c1481fbdef7d36 592-596
+sprinkler-solver-tx/src/Solver/DES/Tx.hs
+  s_7e6456baf64fd7::t_c77400b117624c 174
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_f6711803d3fb08 684-717
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "508f057c83a6709aede8095ea4db6269b8d735be",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
