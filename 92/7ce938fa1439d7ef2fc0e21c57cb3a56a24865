@@ -1,0 +1,44 @@
+example/Main.hs
+  s_7e6456baf64fd7::t_48c8371272e764 125,667
+golden/VtShippingRun/status.txt
+  s_7e6456baf64fd7::t_4da3492168776c 1
+sprinkler-solver-examples/src/Examples/VtShippingProbe.hs
+  s_7e6456baf64fd7::t_6268a505ca197a 31-33,82-95
+sprinkler-solver-tx/sprinkler-solver-tx.cabal
+  s_7e6456baf64fd7::t_1e24b910e54bf8 35
+sprinkler-solver-tx/src/Solver/DES/VtLower.hs
+  s_7e6456baf64fd7::t_a443b889af606c 1-76,78-111,118-213
+  s_7e6456baf64fd7::t_4c0b488c226c45 77,112-117
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_7e6456baf64fd7::t_48c8371272e764 264
+golden/VtShippingRun/final_state.txt
+  s_7e6456baf64fd7::t_4da3492168776c 1-3
+sprinkler-solver-examples/src/Examples/VtShippingRun.hs
+  s_7e6456baf64fd7::t_67d56f17006a26 1-4
+  s_7e6456baf64fd7::t_18b6ed0516bfe2 23,66-87
+  s_7e6456baf64fd7::t_48c8371272e764 5-22,24-53,108-110
+  s_7e6456baf64fd7::t_9f68a6c8650b33 54-65,88-107
+golden/VtShippingRun/fingerprint.txt
+  s_7e6456baf64fd7::t_4da3492168776c 1-45
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_c980a5d3b98441 3-4,571-600
+  s_7e6456baf64fd7::t_ce0c38f7ef5602 601
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_7e6456baf64fd7::t_71dee9457ed800 110,357-359,362-396
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "927ce938fa1439d7ef2fc0e21c57cb3a56a24865",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
