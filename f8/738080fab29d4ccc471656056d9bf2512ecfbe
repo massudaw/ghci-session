@@ -1,0 +1,26 @@
+src/JIT/jit_trampoline.c
+  s_7e6456baf64fd7::t_ea7cdca7b88879 1158-1165,3817-3833
+src/JIT/sundials_warm.c
+  s_7e6456baf64fd7::t_ea7cdca7b88879 469-488
+  s_7e6456baf64fd7::t_395fce09ee2bff 9,440-468
+  s_7e6456baf64fd7::t_d1018c82210511 195-222
+src/JIT/sundials_warm.h
+  s_7e6456baf64fd7::t_395fce09ee2bff 24
+  s_7e6456baf64fd7::t_ea7cdca7b88879 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f8738080fab29d4ccc471656056d9bf2512ecfbe",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
