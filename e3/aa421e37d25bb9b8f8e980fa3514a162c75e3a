@@ -1,0 +1,29 @@
+golden/VtShippingRun/final_state.txt
+  s_7e6456baf64fd7::t_dcc3310817990f 6-9
+sprinkler-solver-tx/src/Solver/DES/VtLower.hs
+  s_7e6456baf64fd7::t_1efa0aec50a724 137-140,212-223
+sprinkler-solver-examples/src/Examples/VtShippingRun.hs
+  s_7e6456baf64fd7::t_8e3253ce9cc6f0 134-138,145-149,156-157
+  s_7e6456baf64fd7::t_dcc3310817990f 160-163,166-170
+  s_7e6456baf64fd7::t_ffd69016d77111 24,26,120-130,150-155,158-159,164-165
+  s_7e6456baf64fd7::t_2e68fc59049191 25,131-133
+  s_7e6456baf64fd7::t_bcb1d60955a861 23,139-144
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_22284e95df708a 764-795
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e3aa421e37d25bb9b8f8e980fa3514a162c75e3a",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
