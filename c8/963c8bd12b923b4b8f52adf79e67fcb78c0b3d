@@ -1,0 +1,25 @@
+src/Solver/DES/TimeWarpPlant.hs
+  s_7e6456baf64fd7::t_7e4cca7ba48107 111
+  s_7e6456baf64fd7::t_62993fbb690dd3 1468-1470
+  s_7e6456baf64fd7::t_3d4d2c3cd8a98a 1337-1345,1350-1353,1399-1401
+  s_7e6456baf64fd7::t_65198248e72020 110
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_414f1622d8edab 5322-5325,5328,7124-7132
+  s_7e6456baf64fd7::t_3cd7dd24333c7b 7133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "c8963c8bd12b923b4b8f52adf79e67fcb78c0b3d",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
