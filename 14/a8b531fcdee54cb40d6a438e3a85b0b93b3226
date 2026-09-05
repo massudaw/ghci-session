@@ -1,0 +1,21 @@
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_52d599a5aac087 725,728
+  s_7e6456baf64fd7::t_7bf1f43c5e0017 541-555
+  s_7e6456baf64fd7::t_ff2b6dc9ae03a7 692-694,743-745,748,872-874,877,1542-1546
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "14a8b531fcdee54cb40d6a438e3a85b0b93b3226",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
