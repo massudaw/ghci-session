@@ -1,0 +1,31 @@
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_7e6456baf64fd7::t_ba7fb494b5e16f 765,883-885
+  s_7e6456baf64fd7::t_daa38c47c14ba8 1845-1854,1864
+  s_7e6456baf64fd7::t_d3029f52a603d8 764,906,1123,1146,1256,1500
+  s_7e6456baf64fd7::t_3778d711ffb41e 337-345,348,350-357
+  s_7e6456baf64fd7::t_3f2703768ffdbb 1855-1863
+  s_7e6456baf64fd7::t_e10f5a9d94ec08 1870-1874
+  s_7e6456baf64fd7::t_6e0c838fbd0167 1938-1944
+  s_7e6456baf64fd7::t_790abea93dbc56 346-347,349,2007-2015
+  s_7e6456baf64fd7::t_2399546b39d64b 644-676
+  s_7e6456baf64fd7::t_e9ce1c9e014b72 562-575
+  s_7e6456baf64fd7::t_960cfc1e3e65fd 699,709-722,728
+  s_7e6456baf64fd7::t_e0a27dcdf7896a 723-727
+  s_7e6456baf64fd7::t_957fe9e34adf0d 2016
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "d53038195805a0f2a7b5ac41055f7f02abb05bed",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
