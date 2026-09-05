@@ -1,0 +1,22 @@
+doc/des/TXSTM_TIMEWARP_EXECUTOR.md
+  s_7e6456baf64fd7::t_ebcf4793004d5a 532-541,1428-1440,1477-1481
+  s_7e6456baf64fd7::t_5870cac72fd7bf 1482
+doc/des/RELEASE_SEARCH_COST.md
+  s_7e6456baf64fd7::t_50029a06d6fdbc 227-234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "03d77d621bf036820bb5ee888c53d594d4adbef4",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
