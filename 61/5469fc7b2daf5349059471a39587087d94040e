@@ -1,0 +1,21 @@
+src/Solver/IDA.hs
+  s_7e6456baf64fd7::t_aab34eb17a4ce5 2035,2085,4062,4081-4085,4087-4096,4105
+src/Solver/DES/TimeWarpPlant.hs
+  s_7e6456baf64fd7::t_20b16b579e1878 1493-1498,1503,1518-1519
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "615469fc7b2daf5349059471a39587087d94040e",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
