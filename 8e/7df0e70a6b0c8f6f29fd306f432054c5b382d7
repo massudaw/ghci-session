@@ -1,0 +1,30 @@
+aog.html
+  s_4d5f7b7dc2de52::t_ca5edc103ecc4b 426-427
+  s_4d5f7b7dc2de52::t_f24fdc5a437819 1401-1406,1419-1421
+  s_4d5f7b7dc2de52::t_930dddf7dcfa98 85,88-92
+  s_4d5f7b7dc2de52::t_6e9e5fec082c92 2524-2527,2529-2537
+  s_4d5f7b7dc2de52::t_b9fb5973b56078 86-87
+  s_4d5f7b7dc2de52::t_1d20b014be6c05 2367-2373,2375,2377-2378,2399-2403,2410-2413,2418,2420-2421,2424,2426-2427,2456,2502-2506
+sim-controls.js
+  s_4d5f7b7dc2de52::t_fe04405fba471e 158-162
+  s_4d5f7b7dc2de52::t_bb6be734d0351b 120-124,126,140-157,163-165,212-215,221-224,233,241-249,324
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_4d5f7b7dc2de52::t_084802371bb8e6 86-89,91
+  s_4d5f7b7dc2de52::t_83e90ae2362005 109-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "8e7df0e70a6b0c8f6f29fd306f432054c5b382d7",
+  "prompts": {},
+  "sessions": {
+    "s_4d5f7b7dc2de52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ceba1b34-21d5-5087-b38b-747ec0cacd14",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
