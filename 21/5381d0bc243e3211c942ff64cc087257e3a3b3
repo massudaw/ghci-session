@@ -1,0 +1,32 @@
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_4d5f7b7dc2de52::t_d28a595fd54b6e 109,118,269,271,274,386-388,410-414,417-418,659,713,884,907
+  s_4d5f7b7dc2de52::t_285b767679d31a 672-680,690,692-694,697
+  s_4d5f7b7dc2de52::t_b01b23678d8e15 63-64,681-689,691
+sprinkler-solver-airport/src/Examples/AirsideExtract.hs
+  s_4d5f7b7dc2de52::t_83c6bd68f6cb2c 47,1192-1205,1211-1212,1218-1224,1227-1230,1232-1236,1240-1242,1244,1247-1255,1257-1259
+  s_4d5f7b7dc2de52::t_0f2de44d05d2d8 1231,1237-1239,1243,1245,1256
+  s_4d5f7b7dc2de52::t_4bb5fa602dc110 1225-1226,1246
+  s_4d5f7b7dc2de52::t_2ca4d7b28ca834 1206-1210,1213-1217
+sprinkler-solver-airport/src/Examples/AirsideDriver.hs
+  s_4d5f7b7dc2de52::t_8890ad04215cec 44-48,55,318-348,350-353,355-415
+  s_4d5f7b7dc2de52::t_a119874c119604 49-50,56-60,416-433,437-462,466-468,480,487-507
+  s_4d5f7b7dc2de52::t_b01b23678d8e15 434-436
+  s_4d5f7b7dc2de52::t_0995d2226e1462 463-465,469-479,481-486,508-512
+  s_4d5f7b7dc2de52::t_2ca4d7b28ca834 349,354
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "215381d0bc243e3211c942ff64cc087257e3a3b3",
+  "prompts": {},
+  "sessions": {
+    "s_4d5f7b7dc2de52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ceba1b34-21d5-5087-b38b-747ec0cacd14",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
