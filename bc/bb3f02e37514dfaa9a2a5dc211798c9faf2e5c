@@ -1,0 +1,21 @@
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_4d5f7b7dc2de52::t_7d7d444678c85a 61-66,540-626,628-633,635-644,646-671,683-690,692-713,767-774
+  s_4d5f7b7dc2de52::t_93025eb2b0bc7d 627,634,645,672-682
+  s_4d5f7b7dc2de52::t_aab5733f62f723 691
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "bcbb3f02e37514dfaa9a2a5dc211798c9faf2e5c",
+  "prompts": {},
+  "sessions": {
+    "s_4d5f7b7dc2de52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ceba1b34-21d5-5087-b38b-747ec0cacd14",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
