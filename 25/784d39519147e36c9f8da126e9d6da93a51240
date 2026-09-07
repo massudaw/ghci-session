@@ -1,0 +1,60 @@
+sprinkler-solver-airport/sprinkler-solver-airport.cabal
+  s_4d5f7b7dc2de52::t_5ae9a88712a798 35-38,43
+  s_4d5f7b7dc2de52::t_d24dfc1f6977df 39-42
+  s_4d5f7b7dc2de52::t_42d703551d58bd 24
+sprinkler-solver-airport/src/Examples/AirsideExtract.hs
+  s_4d5f7b7dc2de52::t_58e23f45c2906a 71-81,93,681-739,741-744,746-784,796-815,817-846,848,851,859-895
+  s_4d5f7b7dc2de52::t_58c6eac652883b 48-53,294-406
+  s_4d5f7b7dc2de52::t_5001738aa89ab4 618-625
+  s_4d5f7b7dc2de52::t_d5d82f76ef9ff0 849-850,852-858
+  s_4d5f7b7dc2de52::t_4d01c370ae3188 1-2,14,16-19,42-47,59,61,86-92,94-124,129-144,146-208,210-221,224-225,258-260,263-270,275-278,281,287,291,462-463,466-469
+  s_4d5f7b7dc2de52::t_5d9690ea7589ee 58
+  s_4d5f7b7dc2de52::t_188c05c88a6098 64-70,583,626-635,642-655,657-667,671-680
+  s_4d5f7b7dc2de52::t_6cafbcd37c873c 125-128
+  s_4d5f7b7dc2de52::t_006dd94e6dcc84 20-40
+  s_4d5f7b7dc2de52::t_d860b9e1078c27 145,209,222-223,438-446,450-460
+  s_4d5f7b7dc2de52::t_d9c583e21fc9b0 474-476
+  s_4d5f7b7dc2de52::t_28a8fab46f2ade 477-582,584-617,636-641,656,668-670
+  s_4d5f7b7dc2de52::t_4da3ce1e95146c 740,745,785-795,816,847
+  s_4d5f7b7dc2de52::t_63106dcc2edd06 3-13,15,41,60,62-63,84-85,226-257,261-262,271-274,279-280,282-286,288-290,292-293,461,464-465,470-473
+  s_4d5f7b7dc2de52::t_6eb5e7ee1eded7 54-57,407-437
+  s_4d5f7b7dc2de52::t_8b1236dbac344c 82-83,896-949
+  s_4d5f7b7dc2de52::t_afbcf30a756741 447-449
+sprinkler-solver-airport/src/Examples/AirportCalib.hs
+  s_4d5f7b7dc2de52::t_407322b902fb69 283-316,502-508,620-621
+tools/airport_calibrate.py
+  s_4d5f7b7dc2de52::t_ca455d02f7363c 1243-1253
+doc/des/CALIBRATION_FROM_STRUCTURE.md
+  s_4d5f7b7dc2de52::t_625fe5090d411f 1-157
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_4d5f7b7dc2de52::t_797af5046c0300 342-344,380-381,383,592,603-632,638-641
+  s_4d5f7b7dc2de52::t_9f08135bb6183a 94,109-110,498-558
+  s_4d5f7b7dc2de52::t_480a4569d12c08 734-739,741-748,772-779,822-835,844-845
+  s_4d5f7b7dc2de52::t_a31244defd7c0a 83-84,661-671,673,675-676,695,740,754
+  s_4d5f7b7dc2de52::t_407322b902fb69 345,382,591,593,633-637
+tools/airport_replay.py
+  s_4d5f7b7dc2de52::t_b27013cd74dc80 947
+  s_4d5f7b7dc2de52::t_9c002f560e5907 937,966-982
+doc/des/AIRSIDE_ONLINE_FILTER.md
+  s_4d5f7b7dc2de52::t_625fe5090d411f 508-513
+  s_4d5f7b7dc2de52::t_b9bf5896074768 514-519
+src/Solver/DES/ProcessGraph.hs
+  s_4d5f7b7dc2de52::t_a175bc6f83baf1 33-36,58-103
+  s_4d5f7b7dc2de52::t_7f4706630316c9 104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "25784d39519147e36c9f8da126e9d6da93a51240",
+  "prompts": {},
+  "sessions": {
+    "s_4d5f7b7dc2de52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ceba1b34-21d5-5087-b38b-747ec0cacd14",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
