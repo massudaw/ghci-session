@@ -1,0 +1,26 @@
+src/JIT/tw_limits.h
+  s_e7b4fdcab90ca5::t_02469b2e34c0aa 17
+doc/des/PREDICTIVE_MONITOR.md
+  s_e7b4fdcab90ca5::t_65b814563848fd 324,326-330,333-334,337-339,341-385
+src/Solver/DES/TwLimits.hs
+  s_e7b4fdcab90ca5::t_14c265d833fbee 85-98,100
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_e7b4fdcab90ca5::t_3820856f4a7953 489-497,502,505,528,541,568,1116,1482,1547,2780,2793-2795,2816,3287
+  s_e7b4fdcab90ca5::t_6b6940d6a1802a 806-817,819
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "92bc346858186875863b5b590c437ea831e01d2a",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
