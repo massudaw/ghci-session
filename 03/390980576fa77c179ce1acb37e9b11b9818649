@@ -1,0 +1,35 @@
+sprinkler-solver-rates/sprinkler-solver-rates.cabal
+  s_e7b4fdcab90ca5::t_6fe3eee1c781c9 41-52
+  s_e7b4fdcab90ca5::t_5363d2c4084173 33,38
+  s_e7b4fdcab90ca5::t_c3c807bd902871 32
+tools/model_session/targets.json
+  s_e7b4fdcab90ca5::t_c3c807bd902871 660
+  s_e7b4fdcab90ca5::t_994182fd52fb92 670-694
+sprinkler-solver-rates/src/Examples/RatesCurveServer.hs
+  s_e7b4fdcab90ca5::t_d53dbe72ea93e8 189,198-206,212-217,224,231-233,236-239,242-246
+  s_e7b4fdcab90ca5::t_40081df176d3bc 53,225-228
+  s_e7b4fdcab90ca5::t_5363d2c4084173 1-14,17,37-52,54-62,66-77,94-108,112-125,127-134,152,154-188,190-197,207-211,218-223,229-230,234-235,240-241,247-253
+  s_e7b4fdcab90ca5::t_3246795fa284a0 15-16,18-36,63-65,78-93,109-111,126,135-151,153
+rates-curve.html
+  s_e7b4fdcab90ca5::t_5b0c3ec8e03b20 1-170
+sprinkler-solver-rates/app/RatesCurveServerMain.hs
+  s_e7b4fdcab90ca5::t_6fe3eee1c781c9 1-10
+example/Main.hs
+  s_e7b4fdcab90ca5::t_c3c807bd902871 157,420,711
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "03390980576fa77c179ce1acb37e9b11b9818649",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
