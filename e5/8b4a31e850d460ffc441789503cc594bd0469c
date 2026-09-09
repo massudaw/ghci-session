@@ -1,0 +1,28 @@
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_e7b4fdcab90ca5::t_7a014353b0d11f 3224-3235,3245-3249,3251-3253,3257-3262
+  s_e7b4fdcab90ca5::t_943167c3286657 3255-3256
+  s_e7b4fdcab90ca5::t_691857df391792 752-761,804-807,809-821,1262-1263,1265-1267
+  s_e7b4fdcab90ca5::t_c70a47d696fdd6 3237-3242,3244,3250,3254
+graph-view.js
+  s_e7b4fdcab90ca5::t_733323065d50b7 289-294,317,326-342
+  s_e7b4fdcab90ca5::t_ed182512bfc2b9 876-880,884,886-888
+  s_e7b4fdcab90ca5::t_af73f32fdd90e4 343-344
+doc/des/OUTPUT_PORTS.md
+  s_e7b4fdcab90ca5::t_579676333e0359 511-524,526-529,531-540,542-546
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "e58b4a31e850d460ffc441789503cc594bd0469c",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
