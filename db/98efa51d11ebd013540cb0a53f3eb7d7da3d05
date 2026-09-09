@@ -1,0 +1,47 @@
+golden/RatesCurveInModel/equations.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1-34
+src/Model/ParQuoteResidual.hs
+  s_e7b4fdcab90ca5::t_1dedbbe7708f53 1-94
+golden/RatesCurveInModel/status.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1
+tools/model_session/targets.json
+  s_e7b4fdcab90ca5::t_06f8ea778dde02 659
+golden/RatesCurveInModel/tapestats.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1
+sprinkler-solver-rates/src/Examples/RatesCurveInModel.hs
+  s_e7b4fdcab90ca5::t_b05611e99f5284 1-146
+  s_e7b4fdcab90ca5::t_c8b735956a10f5 147-149
+golden/RatesCurveInModel/final_state.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1-2
+sprinkler-solver.cabal
+  s_e7b4fdcab90ca5::t_1dedbbe7708f53 152
+golden/RatesCurveInModel/fingerprint.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1-3
+golden/RatesCurveInModel/solver_audit.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1-7
+golden/RatesCurveInModel/selective_report.txt
+  s_e7b4fdcab90ca5::t_9ae42a2feedd56 1-20
+sprinkler-solver-rates/sprinkler-solver-rates.cabal
+  s_e7b4fdcab90ca5::t_b05611e99f5284 31
+example/Main.hs
+  s_e7b4fdcab90ca5::t_b05611e99f5284 156,418,708
+src/Signal.hs
+  s_e7b4fdcab90ca5::t_59d6e3af3cb996 100-113,116-118
+  s_e7b4fdcab90ca5::t_bad139011533a0 42-50,99,141-144,178-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "db98efa51d11ebd013540cb0a53f3eb7d7da3d05",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
