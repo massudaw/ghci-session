@@ -1,0 +1,22 @@
+sprinkler-solver-examples/src/Examples/SwapQuoteEkfExample.hs
+  s_e7b4fdcab90ca5::t_7b20c8fa926b2d 40,88-93,95
+src/Solver/Risk/Curves.hs
+  s_e7b4fdcab90ca5::t_458f23f48fdb77 45,300-344
+  s_e7b4fdcab90ca5::t_f7a03dc6a431b2 57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "f8bb6d6120cb13c6bf2d8edac973d60803dd8211",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
