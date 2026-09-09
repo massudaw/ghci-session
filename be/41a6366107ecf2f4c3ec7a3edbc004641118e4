@@ -1,0 +1,35 @@
+doc/des/OUTPUT_PORTS.md
+  s_e7b4fdcab90ca5::t_b8e9abbf093d13 475-510,513,519
+src/Solver/DES/Process.hs
+  s_e7b4fdcab90ca5::t_3b45510f37c0e4 896,1098,1252,1897,2229,2658
+src/Solver/DES/ProcessGraph.hs
+  s_e7b4fdcab90ca5::t_258846b6645ebf 153-155,158-163
+  s_e7b4fdcab90ca5::t_bddccc9eec156a 221-228,230-231
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_e7b4fdcab90ca5::t_7343ff4fc4fd43 115
+  s_e7b4fdcab90ca5::t_f66e3ffb3b2553 112
+  s_e7b4fdcab90ca5::t_8e0091687a261f 355-360,363-364,368-370
+  s_e7b4fdcab90ca5::t_a6fa42e1b1a497 464-470,545,604-609,611
+src/Solver/DES/ProcessClass.hs
+  s_e7b4fdcab90ca5::t_f77062303d9e7d 720
+src/Solver/DES/ProcessSig.hs
+  s_e7b4fdcab90ca5::t_f77062303d9e7d 38,438-444,475-485,491,495,499
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_e7b4fdcab90ca5::t_bddccc9eec156a 482,485
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "be41a6366107ecf2f4c3ec7a3edbc004641118e4",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
