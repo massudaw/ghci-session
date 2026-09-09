@@ -1,0 +1,24 @@
+graph-view.js
+  s_e7b4fdcab90ca5::t_1664bdabd7cc68 872-875
+  s_e7b4fdcab90ca5::t_2e4b2ac407d970 444-449,835-858,860-862,864-871,876,878,880-894
+  s_e7b4fdcab90ca5::t_1479b3004dc979 895-898,901-904,907-911
+des_live_monitor.html
+  s_e7b4fdcab90ca5::t_fcb5496b9cc76f 686-719,721,729,731-750,982-985
+  s_e7b4fdcab90ca5::t_7df6e73b95aa8c 720,722-728,730
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "4bb0e38673d2cd1c0e6cc964c4da2cf786537e4b",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
