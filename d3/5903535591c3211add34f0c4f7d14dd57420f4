@@ -1,0 +1,42 @@
+sprinkler-solver-examples/src/Examples/RatesOnlineEKF.hs
+  s_e7b4fdcab90ca5::t_d6ae448d385de1 60-61,194,197,204,209-219,221-223,226-242,245-262,265-267,270-271,274,277-284
+  s_e7b4fdcab90ca5::t_901254c12fc42e 67,375-382
+  s_e7b4fdcab90ca5::t_9643ec728284e9 62,64-65,326-329,334-338,340,348,355-363,371
+  s_e7b4fdcab90ca5::t_118daf563657ac 224-225
+  s_e7b4fdcab90ca5::t_151bebe549214e 63,76-77,79,330-333
+  s_e7b4fdcab90ca5::t_4b3ddbb2573582 50
+  s_e7b4fdcab90ca5::t_a3f549af471583 339,341-347,349-354,364-370,372-374
+  s_e7b4fdcab90ca5::t_92e2efbbdb9ee9 66,192-193,195-196,198-203,205-208,220,243-244,263-264,268-269,272-273,275-276,285
+  s_e7b4fdcab90ca5::t_d46a25ae34d8ef 78
+  s_e7b4fdcab90ca5::t_6ee5aa04fdfc8d 286
+golden/RatesOnlineEKF/equations.txt
+  s_e7b4fdcab90ca5::t_4facabc8961154 1-65
+golden/RatesOnlineEKF/final_state.txt
+  s_e7b4fdcab90ca5::t_c1b8f406984aae 1-6
+golden/RatesOnlineEKF/fingerprint.txt
+  s_e7b4fdcab90ca5::t_1acbe49a90a8be 1-10
+golden/RatesOnlineEKF/selective_report.txt
+  s_e7b4fdcab90ca5::t_e5067fadfeb423 1-40
+golden/RatesOnlineEKF/solver_audit.txt
+  s_e7b4fdcab90ca5::t_7955bc770a34fa 1-7
+golden/RatesOnlineEKF/status.txt
+  s_e7b4fdcab90ca5::t_ef29b8ecb345c1 1
+golden/RatesOnlineEKF/tapestats.txt
+  s_e7b4fdcab90ca5::t_932aceb8d9e57a 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "d35903535591c3211add34f0c4f7d14dd57420f4",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
