@@ -1,0 +1,40 @@
+sprinkler-solver-desmonitor/sprinkler-solver-desmonitor.cabal
+  s_e7b4fdcab90ca5::t_608d55d17a2c92 36-41
+  s_e7b4fdcab90ca5::t_46cab680f192ad 55
+des_live_monitor.html
+  s_e7b4fdcab90ca5::t_1fb04444606437 613,658-676,1115
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_e7b4fdcab90ca5::t_842617e866ae4f 532-537,672-688,2420-2421
+  s_e7b4fdcab90ca5::t_608d55d17a2c92 106-111,1997-2028,2036-2045
+  s_e7b4fdcab90ca5::t_9da3e1ebeb0279 91-94
+  s_e7b4fdcab90ca5::t_679f05dc7688d4 479-483,1209-1213,1216-1217,1253-1255,1267-1268,1273,1279-1290
+  s_e7b4fdcab90ca5::t_a23663fdf0917f 3248-3254
+  s_e7b4fdcab90ca5::t_533f236a4ab948 348-352,367,2789-2797,2816,3748-3758,3836
+  s_e7b4fdcab90ca5::t_ba189d21d5e6f9 3177
+  s_e7b4fdcab90ca5::t_cf26d95a823e41 2352-2419,2422-2461,2908-2910
+  s_e7b4fdcab90ca5::t_93645949f8c0aa 2029-2035
+  s_e7b4fdcab90ca5::t_0c4c9749ac3db6 1169-1170
+  s_e7b4fdcab90ca5::t_abb2ca432910aa 97,105
+  s_e7b4fdcab90ca5::t_16d90a1c1ec688 509-531,1042-1043,1092-1107,1118
+  s_e7b4fdcab90ca5::t_ab429398bcfbb1 3449-3450,3458-3461
+  s_e7b4fdcab90ca5::t_68db880742db0f 1145,1152-1153,3064
+  s_e7b4fdcab90ca5::t_9201e459943753 2980,2999-3009
+  s_e7b4fdcab90ca5::t_bf4a4d1597bfc4 1143-1144,1176,2955-2959,2963
+  s_e7b4fdcab90ca5::t_9072eaf6ab3157 1291,2046,2911
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "18ffb85f2c62809ab6e6843533485eab1f7a9424",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
