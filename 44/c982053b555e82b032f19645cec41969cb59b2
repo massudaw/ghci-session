@@ -1,0 +1,50 @@
+src/Solver/DES/ProcessSig.hs
+  s_e7b4fdcab90ca5::t_f2ac1466ac16bb 32-36,38-39,85
+  s_e7b4fdcab90ca5::t_bb7e068f03eeb5 1308-1309,1315-1318,1320-1322,1324-1326,1328-1329
+  s_e7b4fdcab90ca5::t_340d3752c67ea1 37,84,456-465
+  s_e7b4fdcab90ca5::t_6ae7787576faaa 333-340,411-455,466-492
+  s_e7b4fdcab90ca5::t_dad84eadb745d9 1310-1314,1319,1323,1327
+  s_e7b4fdcab90ca5::t_69f1757eb42aa4 493
+src/Solver/DES/ProcessGraph.hs
+  s_e7b4fdcab90ca5::t_62b14a6278d59b 51
+  s_e7b4fdcab90ca5::t_cebc8295113ade 43,177-190
+  s_e7b4fdcab90ca5::t_b2cf71d08820c5 40-41,147-168,289-295,298-315
+  s_e7b4fdcab90ca5::t_293d3f590b3d17 102-104
+  s_e7b4fdcab90ca5::t_a32dea193fd4d0 191,316
+doc/des/OUTPUT_PORTS.md
+  s_e7b4fdcab90ca5::t_f87c2b6414c595 406-490
+sprinkler-solver-process-tests/src/Examples/DESProcessMatchTW.hs
+  s_e7b4fdcab90ca5::t_1b576a1919eae0 197
+sprinkler-solver-process-tests/src/Examples/DESProcessForkTW.hs
+  s_e7b4fdcab90ca5::t_1b576a1919eae0 229
+src/Solver/DES/Process.hs
+  s_e7b4fdcab90ca5::t_f591f03696eb6d 268-271,487,654,2097,2934-2938,3192,3213
+  s_e7b4fdcab90ca5::t_9f524ae2f991f1 2812-2821,2839-2840,2988-2996
+src/Solver/DES/ProcessClass.hs
+  s_e7b4fdcab90ca5::t_2eceda7f31afb6 74-75
+  s_e7b4fdcab90ca5::t_3613bf38eee5d3 374-375,399-400,715-735
+sprinkler-solver-process-tests/src/Examples/DESProcessForkKTW.hs
+  s_e7b4fdcab90ca5::t_1b576a1919eae0 241
+graph-view.js
+  s_e7b4fdcab90ca5::t_0cf66d31937321 108-112
+  s_e7b4fdcab90ca5::t_60bd2ce0098d4f 366-380
+  s_e7b4fdcab90ca5::t_44c5bfbc9c07dd 24-31
+sprinkler-solver-process-tests/src/Examples/DESProcessRaceTW.hs
+  s_e7b4fdcab90ca5::t_1b576a1919eae0 228
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "44c982053b555e82b032f19645cec41969cb59b2",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
