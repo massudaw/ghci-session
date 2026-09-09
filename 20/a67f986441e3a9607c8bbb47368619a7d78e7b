@@ -1,0 +1,31 @@
+sprinkler-solver.cabal
+  s_e7b4fdcab90ca5::t_539c62b54131af 151
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_e7b4fdcab90ca5::t_5622bbe0e1fbca 292
+src/Model/SignalAffineRate.hs
+  s_e7b4fdcab90ca5::t_a486577308a076 1-95
+sprinkler-solver-examples/src/Examples/RatesOnlineEKF.hs
+  s_e7b4fdcab90ca5::t_123be11115d74b 1-58,60,65-149,179-180
+  s_e7b4fdcab90ca5::t_ea6f8307ed505a 152
+  s_e7b4fdcab90ca5::t_b19a5bcafb3854 206-214
+  s_e7b4fdcab90ca5::t_03116dab0bd093 164
+  s_e7b4fdcab90ca5::t_5622bbe0e1fbca 59,61-64,150-151,153-163,165-178,181-205,215-219
+example/Main.hs
+  s_e7b4fdcab90ca5::t_569f4626d69e94 155,416,705
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "20a67f986441e3a9607c8bbb47368619a7d78e7b",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
