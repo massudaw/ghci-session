@@ -1,0 +1,35 @@
+doc/des/PREDICTIVE_MONITOR.md
+  s_e7b4fdcab90ca5::t_de46eaa724b97e 171-172,369-392
+  s_e7b4fdcab90ca5::t_7fc03ed8ac8d87 393-434,441-459,462
+src/Solver/DES/TwLimits.hs
+  s_e7b4fdcab90ca5::t_441b64f4be6572 86-102,105-107,109
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_e7b4fdcab90ca5::t_0645478e0554cc 489-502,504-553,556
+  s_e7b4fdcab90ca5::t_f536ebf460d99c 503
+  s_e7b4fdcab90ca5::t_c53081cb0d4c80 991-995,999-1001,1010
+  s_e7b4fdcab90ca5::t_4632827e227f46 1170-1182,1512-1513,1527
+  s_e7b4fdcab90ca5::t_fd352a91461c24 1516,1528-1540,1603-1606,1608,1623,1625,1640,1642-1648,1650,1660-1661
+  s_e7b4fdcab90ca5::t_b0136abf0293ac 2941-2946,2962-2966
+  s_e7b4fdcab90ca5::t_22020c8ab955b1 338,2508-2511,3425-3426,3428-3439
+  s_e7b4fdcab90ca5::t_0e3fae59e099f4 578,580,589-597,611-621,625
+  s_e7b4fdcab90ca5::t_83ebf245fdaa56 2884,2895-2916,2920-2921,2930-2931,2954
+  s_e7b4fdcab90ca5::t_d89031f08ea943 1547-1568,1571-1573,1589-1594
+src/JIT/tw_limits.h
+  s_e7b4fdcab90ca5::t_d89a8a807b664f 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "11c1ce920c35bf8919aedee6eff26e43f5310da3",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
