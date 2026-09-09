@@ -1,0 +1,47 @@
+src/Solver/DES/Unified.hs
+  s_e7b4fdcab90ca5::t_9e1dadd8f124b6 96,1161-1165
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_e7b4fdcab90ca5::t_4b662ccdddabe8 741-751,753,761-765
+  s_e7b4fdcab90ca5::t_ce6cfe4089a4ed 463-474,479-485
+  s_e7b4fdcab90ca5::t_6e753b78194747 495-504
+  s_e7b4fdcab90ca5::t_ad0c27dedc9027 115
+src/Solver/DES/Process.hs
+  s_e7b4fdcab90ca5::t_ee163e3230afbc 2882,2884-2885
+  s_e7b4fdcab90ca5::t_2eadaacb3c52ad 2883
+  s_e7b4fdcab90ca5::t_12080d65573e75 861-866,881
+  s_e7b4fdcab90ca5::t_0f1f9042ce2a35 2732-2748,2752-2760,2762,3024-3027,3031
+  s_e7b4fdcab90ca5::t_2e9aa330eac8f9 1206-1220,1248
+  s_e7b4fdcab90ca5::t_32294572412a0a 1258-1262
+  s_e7b4fdcab90ca5::t_fe4660031e560f 1263
+src/Solver/DES/ProcessPure.hs
+  s_e7b4fdcab90ca5::t_d3b894ad641003 586-597,904-909,913
+src/Solver/DES.hs
+  s_e7b4fdcab90ca5::t_9e1dadd8f124b6 197,771,775
+  s_e7b4fdcab90ca5::t_8e278e78b9c634 760-770,772-774,776-780
+doc/des/OUTPUT_PORTS.md
+  s_e7b4fdcab90ca5::t_ec2c93712f106c 540-595
+src/Solver/DES/ProcessSig.hs
+  s_e7b4fdcab90ca5::t_12080d65573e75 670-684
+  s_e7b4fdcab90ca5::t_9c1547219c7e23 69,563-571,1466-1467,1469
+  s_e7b4fdcab90ca5::t_c7cd9721140a70 1468
+  s_e7b4fdcab90ca5::t_8097f36f5637b7 1470
+src/Solver/DES/ProcessClass.hs
+  s_e7b4fdcab90ca5::t_d3b894ad641003 227-237
+  s_e7b4fdcab90ca5::t_ee163e3230afbc 389-390
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "8b7ab25c65cf2ee974c8e32c714c66e0ec48d522",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
