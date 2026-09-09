@@ -1,0 +1,28 @@
+airside.html
+  s_e7b4fdcab90ca5::t_a547ff86c0a417 832
+  s_e7b4fdcab90ca5::t_cc6eca61a67e78 2200-2209,2212-2219
+  s_e7b4fdcab90ca5::t_ad9f4b504944d2 692-702
+  s_e7b4fdcab90ca5::t_ed372cab319771 754-781,783-791,801,807-822,824-826,831,843
+  s_e7b4fdcab90ca5::t_2784ec55e08564 792-797,799-800,802-806,827-829,841-842
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_e7b4fdcab90ca5::t_730147242f664e 415
+  s_e7b4fdcab90ca5::t_77c7666e655992 402,416-421,424-426,428
+graph-view.js
+  s_e7b4fdcab90ca5::t_ad9f4b504944d2 996-1006
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "6bf98b1a53616a00b0c905a1f78be7aee63f08c2",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
