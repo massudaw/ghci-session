@@ -1,0 +1,23 @@
+src/JIT/micro_dae_ida_shim.c
+  s_e7b4fdcab90ca5::t_3b62146e153119 645,647-655
+  s_e7b4fdcab90ca5::t_8d0c599b43f3ab 646,656-660
+  s_e7b4fdcab90ca5::t_243e0509a1463f 661-663
+src/JIT/jit_trampoline.c
+  s_e7b4fdcab90ca5::t_b16873fd19a37f 36-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "47f2532c979d748765bbdf77e103795f30e05be5",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
