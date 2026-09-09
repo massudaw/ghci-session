@@ -1,0 +1,22 @@
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_e7b4fdcab90ca5::t_7a610a979b9982 1521-1533,1550,1558-1561,1563
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_e7b4fdcab90ca5::t_c639a47f67bb77 731-738,745,755-764
+  s_e7b4fdcab90ca5::t_da8be8ab81c9dc 640-641,674,693,739-744,746-754
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "94600028166a49b2521da66b2f7a3c9788e487cb",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
