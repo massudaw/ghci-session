@@ -1,0 +1,23 @@
+src/Solver/Risk/Bootstrap.hs
+  s_e7b4fdcab90ca5::t_355fadf8c93c75 65-66,968-1044
+golden/RatesDualCurve/final_state.txt
+  s_e7b4fdcab90ca5::t_305de44fcb5b2a 5-6
+sprinkler-solver-rates/src/Examples/RatesDualCurve.hs
+  s_e7b4fdcab90ca5::t_4dee43f7744ff4 34-35,86-87,95-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "20ad7f16c3c24e4df793ed0f83156d63b1f74690",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
