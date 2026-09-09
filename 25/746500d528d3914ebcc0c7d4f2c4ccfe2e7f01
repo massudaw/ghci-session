@@ -1,0 +1,21 @@
+airside.html
+  s_e7b4fdcab90ca5::t_61a218391bc81e 424-429
+graph-view.js
+  s_e7b4fdcab90ca5::t_61a218391bc81e 64-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "25746500d528d3914ebcc0c7d4f2c4ccfe2e7f01",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
