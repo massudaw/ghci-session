@@ -1,0 +1,25 @@
+src/Solver/Risk/HullWhite.hs
+  s_e7b4fdcab90ca5::t_24dec34e8c6dcd 39,454-493
+sprinkler-solver-rates/src/Examples/RatesDatedCurve.hs
+  s_e7b4fdcab90ca5::t_3afd84c8713ef0 666-684
+golden/RatesOnlineEKF/fingerprint.txt
+  s_e7b4fdcab90ca5::t_def27c60fde783 36,64
+src/Solver/Risk/RateHelpers.hs
+  s_e7b4fdcab90ca5::t_24dec34e8c6dcd 63,267-271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b9880e8a297e9194d9ccb3b06b0f2e7610b7ef10",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
