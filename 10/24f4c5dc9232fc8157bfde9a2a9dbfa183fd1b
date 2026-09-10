@@ -1,0 +1,45 @@
+sprinkler-solver-rates/src/Examples/RatesOnlineEKF.hs
+  s_e7b4fdcab90ca5::t_3dbe01956f83be 88,280-287,289-339
+  s_e7b4fdcab90ca5::t_44139d5116376e 68
+  s_e7b4fdcab90ca5::t_302caacb51361b 367-382,384-428,431,436-437,447-458,468,470-485,487-492,494-496,499-500,504-505,507,519,524,532,536,567-568,573,575,599-601,603,610-611,613-617,622-625,627-628,632-653
+  s_e7b4fdcab90ca5::t_3741176f9064e6 833-842,857-860
+  s_e7b4fdcab90ca5::t_df1ca9f4d6ea1d 704,890-902,904,936,993,1018
+  s_e7b4fdcab90ca5::t_fde378baa08017 863-874,880
+  s_e7b4fdcab90ca5::t_cf0415fd57c3ef 911-922,1003-1009
+  s_e7b4fdcab90ca5::t_f37581928f13a6 824-829
+  s_e7b4fdcab90ca5::t_e934ff34464986 706,720-823
+  s_e7b4fdcab90ca5::t_9f794be10e8d80 54-58
+  s_e7b4fdcab90ca5::t_c5c50346c6182f 654
+sprinkler-solver-rates/src/Examples/RatesCurveServer.hs
+  s_e7b4fdcab90ca5::t_1621d55be0d4d0 387
+  s_e7b4fdcab90ca5::t_b741d7ddfacc19 244-246,266-282,292-294,369-373,375-386
+graph-view.js
+  s_e7b4fdcab90ca5::t_4f427d7bb9ffcb 162-166,168-171
+rates-curve.html
+  s_e7b4fdcab90ca5::t_1621d55be0d4d0 261
+  s_e7b4fdcab90ca5::t_272a69dd042c63 101,103,106,207-227,254-255,259,262
+src/Solver/DES/ProcessGraph.hs
+  s_e7b4fdcab90ca5::t_4f427d7bb9ffcb 506-520
+golden/RatesOnlineEKF/fingerprint.txt
+  s_e7b4fdcab90ca5::t_129ebdfb0b736e 1,3,5-44,47,49-50,52
+golden/RatesOnlineEKF/tapestats.txt
+  s_e7b4fdcab90ca5::t_129ebdfb0b736e 2
+golden/RatesOnlineEKF/final_state.txt
+  s_e7b4fdcab90ca5::t_129ebdfb0b736e 1-2,4-17,20-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "1024f4c5dc9232fc8157bfde9a2a9dbfa183fd1b",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
