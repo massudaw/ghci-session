@@ -1,0 +1,34 @@
+golden/HFTLatencyRace/fingerprint.txt
+  s_e7b4fdcab90ca5::t_cedc7fa1869dc5 1-32
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_fa5099c7274842 523-528,530-534,536-539
+  s_e7b4fdcab90ca5::t_22164f8b0ceeb8 172-175,290-307,345-355
+  s_e7b4fdcab90ca5::t_e36b08b9c67ed8 184-194,257-283,316-344,366,391,400-402
+  s_e7b4fdcab90ca5::t_8f017874574b3d 435,441-442,444-454,456,464,471-473,548-554,559,569,573-574
+  s_e7b4fdcab90ca5::t_a7dd27094ea2db 105,130-131,233-234,237
+  s_e7b4fdcab90ca5::t_e81a22a95dfb26 156-165
+  s_e7b4fdcab90ca5::t_2e7be6616a1a12 469-470
+  s_e7b4fdcab90ca5::t_9a260ca8d2e4a1 496-515,546-547,558
+  s_e7b4fdcab90ca5::t_7e5c27ede65959 474-495,516-521,557,561-563
+  s_e7b4fdcab90ca5::t_a3f94e5e7cb6ea 284,522
+golden/HFTLatencyRace/tapestats.txt
+  s_e7b4fdcab90ca5::t_cedc7fa1869dc5 1
+golden/HFTLatencyRace/final_state.txt
+  s_e7b4fdcab90ca5::t_cedc7fa1869dc5 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8652859a741933be99a95c8f963dc575861c5b2e",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
