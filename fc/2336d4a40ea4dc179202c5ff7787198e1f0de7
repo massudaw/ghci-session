@@ -1,0 +1,28 @@
+src/Solver/Risk/Bootstrap.hs
+  s_e7b4fdcab90ca5::t_2a5bc8cf179ce9 75-76,175-193,399,1623-1673
+  s_e7b4fdcab90ca5::t_40838fd15b6277 1674
+golden/RatesDatedCurve/final_state.txt
+  s_e7b4fdcab90ca5::t_5ef9ec60ee721b 10-12
+src/Solver/Risk/RateHelpers.hs
+  s_e7b4fdcab90ca5::t_a3ec39433909f7 27-29,98-107
+  s_e7b4fdcab90ca5::t_2a5bc8cf179ce9 47,380-398
+  s_e7b4fdcab90ca5::t_fb627646f57358 108,399
+sprinkler-solver-rates/src/Examples/RatesDatedCurve.hs
+  s_e7b4fdcab90ca5::t_3a922bbde36acd 34-35,425-480,870
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fc2336d4a40ea4dc179202c5ff7787198e1f0de7",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
