@@ -1,0 +1,21 @@
+sprinkler-solver-rates/src/Examples/RatesCurveServer.hs
+  s_e7b4fdcab90ca5::t_d9397237aa1cd0 183-193
+tools/msq_autorestart.sh
+  s_e7b4fdcab90ca5::t_d9397237aa1cd0 41-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "561172e7d4c4b9383c79bc838a6cd342f47bad22",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
