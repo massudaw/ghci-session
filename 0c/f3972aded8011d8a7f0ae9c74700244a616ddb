@@ -1,0 +1,26 @@
+graph-view.js
+  s_e7b4fdcab90ca5::t_1517bb41aba18d 138,142-193,864-873,875,877-884,1080
+  s_e7b4fdcab90ca5::t_e75e50fa0eb26f 630-645,801-813
+sprinkler-solver-rates/src/Examples/RatesOnlineEKF.hs
+  s_e7b4fdcab90ca5::t_ae6df22975113b 57,88-89,620,622-635
+  s_e7b4fdcab90ca5::t_f50699b8a88d0d 87
+src/Solver/DES/ProcessGraph.hs
+  s_e7b4fdcab90ca5::t_f0fdcd4873af5b 32-38,53-55,242-265,446-598
+  s_e7b4fdcab90ca5::t_b746a340dbfbae 241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "0cf3972aded8011d8a7f0ae9c74700244a616ddb",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
