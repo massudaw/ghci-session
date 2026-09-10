@@ -1,0 +1,27 @@
+src/Solver/SymbolicDAE.hs
+  s_e7b4fdcab90ca5::t_ff3ee193142a74 1833-1852,1856,1859,1861,1961,4096-4098
+  s_e7b4fdcab90ca5::t_63d592f2477fc0 4099
+  s_e7b4fdcab90ca5::t_641e3da123d718 72,4037-4095
+  s_e7b4fdcab90ca5::t_5fa84b64d6aeda 4100
+src/Solver/DES/ProcessClass.hs
+  s_e7b4fdcab90ca5::t_1f7454ad644298 83,575
+  s_e7b4fdcab90ca5::t_0af4375ff73c98 421-422
+golden/ShipFleetTW/process.txt
+  s_e7b4fdcab90ca5::t_642fcd30b51110 197-198,246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c67919d759adc8610ebe9a69b29471e2d5e42fe8",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
