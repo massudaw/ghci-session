@@ -1,0 +1,50 @@
+hft.html
+  s_e7b4fdcab90ca5::t_8de78bedfacfe2 105,118-120,147-167,511-543,633-642
+  s_e7b4fdcab90ca5::t_1962a827e661d1 643
+golden/HFTLatencyRace/final_state.txt
+  s_e7b4fdcab90ca5::t_9d17299679f07c 1,4-11,13-23,25-35,37-46
+golden/HFTLatencyRace/tapestats.txt
+  s_e7b4fdcab90ca5::t_9d17299679f07c 1
+golden/HFTLatencyRace/fingerprint.txt
+  s_e7b4fdcab90ca5::t_c821f2947c6b96 46
+  s_e7b4fdcab90ca5::t_9d17299679f07c 1-45,47-52
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_0502c1b349c56f 184-186,442-443,448,594-611,613-615,617-627,664-671
+  s_736fd9992c0417::t_b7f62921253173 616
+  s_e7b4fdcab90ca5::t_fed01bdd2f7b08 155-159,384-385,851-853,870-871
+  s_e7b4fdcab90ca5::t_57450a4de9abf9 833,842-846,862,874,932-937,946-947,955-956,999-1003,1017-1020,1041-1042
+  s_e7b4fdcab90ca5::t_a91e781a5c5d14 297-327,329,344-345,351,474-499
+  s_e7b4fdcab90ca5::t_2b9cbf1414b0d7 1182-1203,1243-1247,1348,1363-1364
+  s_e7b4fdcab90ca5::t_9d17299679f07c 1339-1341
+  s_e7b4fdcab90ca5::t_93f678f90bc0e0 330-343,346-350,612,628-630,807
+  s_e7b4fdcab90ca5::t_962978be181a25 1214-1234,1248-1251,1331-1332,1349-1350
+  s_e7b4fdcab90ca5::t_c9e9bf56513a2b 631-637
+  s_e7b4fdcab90ca5::t_5d45430d6a2c55 328,1204-1213,1235-1242,1252-1254
+  s_e7b4fdcab90ca5::t_385df357f0cd62 500,638,1255
+sprinkler-solver-rates/src/Examples/HFTRaceRuntime.hs
+  s_e7b4fdcab90ca5::t_96768f9a11d5c8 40,54-55,68,84-92,195-211,229-230,254,279-285
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "525dc5ffb9ea4ab6824617f20eb7b682546849b8",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
