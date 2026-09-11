@@ -1,0 +1,19 @@
+EVENT_TRANSITION_PIPELINE.md
+  s_e7b4fdcab90ca5::t_ffb4621c987754 1070,1072-1075,1078-1084,1086-1092,1094-1109,1111-1126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3eb0130d853a460594b43c2e3aadd23d57522bf9",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
