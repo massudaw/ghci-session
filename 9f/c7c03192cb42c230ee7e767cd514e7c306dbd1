@@ -1,0 +1,24 @@
+src/Model/BusyProportionalRate.hs
+  s_736fd9992c0417::t_dc4d738307526f 1-92
+src/Solver/DES/Unified.hs
+  s_736fd9992c0417::t_43b9ba821ec7e9 76,1166-1185
+  s_736fd9992c0417::t_3e089ecffb52ae 75,1149-1165,1186-1190,1195
+sprinkler-solver.cabal
+  s_736fd9992c0417::t_acf29626467cb7 151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9fc7c03192cb42c230ee7e767cd514e7c306dbd1",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
