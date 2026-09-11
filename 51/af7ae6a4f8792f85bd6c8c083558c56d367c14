@@ -1,0 +1,24 @@
+hft.html
+  s_e7b4fdcab90ca5::t_70fed6af77507c 143-162,486-503
+golden/HFTLatencyRace/final_state.txt
+  s_e7b4fdcab90ca5::t_70fed6af77507c 14-17,24-27,34-37
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_5e2da65d55e38d 1009-1043,1083,1108-1111
+  s_e7b4fdcab90ca5::t_6c85413c393727 687,709,719-720,758-777,832-836,870-877
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "51af7ae6a4f8792f85bd6c8c083558c56d367c14",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
