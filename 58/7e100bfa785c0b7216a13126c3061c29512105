@@ -1,0 +1,47 @@
+src/Solver/DES/Supervisor.hs
+  s_736fd9992c0417::t_d0b035975f1dbf 226-236,257,269,445-446,450-452,454,456-459,461-469,488-493
+  s_736fd9992c0417::t_1db1c5daf7bef4 71
+  s_736fd9992c0417::t_8c06cdb44fe78e 510-513,515,523
+  s_736fd9992c0417::t_d6ea9c9c484ced 383-389,393,398-400
+  s_736fd9992c0417::t_205d544d5878be 237-243
+  s_736fd9992c0417::t_d20c03ec23e6ff 1-49,51-58,62-70,72-225,244-256,258-268,270-382,390-392,394-397,401-429,431-432
+  s_736fd9992c0417::t_291ae988070917 447,455,460,470-476,483-487,494-495,627-633
+  s_736fd9992c0417::t_4f22ea6cb72ce1 581-586
+  s_736fd9992c0417::t_c5e371ef0cd90b 482,496-509,514,516,518-522,524-580,587-626,657-667
+  s_736fd9992c0417::t_f20a6c584a4431 517,634-656
+  s_736fd9992c0417::t_da4d9f8f971f8f 50,59-61,430,433-444,448-449,453,477-481
+sprinkler-solver.cabal
+  s_736fd9992c0417::t_ef91939a670162 325
+tools/airside_supervisor_watch.sh
+  s_736fd9992c0417::t_c120b66119150f 1-83
+.gitignore
+  s_736fd9992c0417::t_02e31cd815f534 80
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_736fd9992c0417::t_fc6274e3e17d68 745-846
+  s_736fd9992c0417::t_8ba0ba5eda1882 874-884
+  s_736fd9992c0417::t_07a538e4d64e3e 847-873,885-887
+example/Main.hs
+  s_736fd9992c0417::t_ac4e58ba2faa8e 591-595,599-600
+  s_736fd9992c0417::t_92c234e1b930fe 263,585-590,596-598
+  s_736fd9992c0417::t_8c06cdb44fe78e 264,601
+golden/SupervisorSelfTest/status.txt
+  s_736fd9992c0417::t_6da2815e811c69 1
+golden/SupervisorSelfTest/final_state.txt
+  s_736fd9992c0417::t_fbe56f75696762 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "587e100bfa785c0b7216a13126c3061c29512105",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
