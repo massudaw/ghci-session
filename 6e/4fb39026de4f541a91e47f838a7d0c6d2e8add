@@ -1,0 +1,21 @@
+tools/airport_holding_points.py
+  s_736fd9992c0417::t_187a85c80f102d 1-130
+doc/des/AIRSIDE_CONTROL_FLOW.md
+  s_736fd9992c0417::t_b032a941d091dc 957-994
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6e4fb39026de4f541a91e47f838a7d0c6d2e8add",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
