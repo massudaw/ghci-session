@@ -1,0 +1,26 @@
+sprinkler-solver-airport/sprinkler-solver-airport.cabal
+  s_736fd9992c0417::t_da503d08e8f8f8 25
+sprinkler-solver-airport/src/Examples/RouteBranchProbe.hs
+  s_736fd9992c0417::t_da503d08e8f8f8 1,3-70,73-81,88-113
+  s_736fd9992c0417::t_c2d36e17402c89 2,71-72
+  s_736fd9992c0417::t_09e32623274c2a 82-87
+  s_736fd9992c0417::t_396267d0793fe1 114-134
+doc/des/AIRSIDE_CONTROL_FLOW.md
+  s_736fd9992c0417::t_2c1a8c7213614d 1083-1127
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cd84813c86816d3caf27647c2223f8ec8091d083",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
