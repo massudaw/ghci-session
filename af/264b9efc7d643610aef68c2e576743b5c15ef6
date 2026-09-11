@@ -1,0 +1,30 @@
+golden/DESForkCoupledGap/final_state.txt
+  s_e7b4fdcab90ca5::t_7231e40a0de55e 2
+src/JIT/des_kernel.c
+  s_e7b4fdcab90ca5::t_2318842030060f 82,277-300,361-362
+src/Solver/DES/Physical.hs
+  s_e7b4fdcab90ca5::t_2318842030060f 1636,1655-1672
+  s_e7b4fdcab90ca5::t_e9b54102bd26ed 2439-2446
+sprinkler-solver-process-tests/src/Examples/DESForkCoupledGap.hs
+  s_e7b4fdcab90ca5::t_8085fcc22dd352 113-115
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_e7b4fdcab90ca5::t_e9b54102bd26ed 6562-6592,6594-6606,6608-6610
+golden/DESCoupledFuzz/fingerprint.txt
+  s_e7b4fdcab90ca5::t_7231e40a0de55e 32,34-36,38-41,43,46-50,54,57,59-66,68-72,75-76,79-80,83-87,92-96,98,100,103,105-107,109-110,112,114,119-120,123-126,128-129,132-134,136-138,140-143,145-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "af264b9efc7d643610aef68c2e576743b5c15ef6",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
