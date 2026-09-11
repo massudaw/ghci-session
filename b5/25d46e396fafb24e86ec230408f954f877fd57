@@ -1,0 +1,33 @@
+golden/RatesFastPath/status.txt
+  s_e7b4fdcab90ca5::t_35ce7d5d304efa 1
+example/Main.hs
+  s_e7b4fdcab90ca5::t_9e7feb868a2a93 160,428,724
+sprinkler-solver-rates/sprinkler-solver-rates.cabal
+  s_e7b4fdcab90ca5::t_7724f6ef4796a2 38
+sprinkler-solver-rates/src/Examples/RatesFastPath.hs
+  s_e7b4fdcab90ca5::t_7724f6ef4796a2 1-88,104-161,163-183,197-220,235,237-312
+  s_e7b4fdcab90ca5::t_b377eaf1c1b0fe 89-103,162,184-196
+  s_e7b4fdcab90ca5::t_981d09bae2a361 221-234,236
+golden/RatesFastPath/fingerprint.txt
+  s_e7b4fdcab90ca5::t_35ce7d5d304efa 1-11
+golden/RatesFastPath/final_state.txt
+  s_e7b4fdcab90ca5::t_35ce7d5d304efa 1-4
+golden/RatesFastPath/tapestats.txt
+  s_e7b4fdcab90ca5::t_35ce7d5d304efa 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b525d46e396fafb24e86ec230408f954f877fd57",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
