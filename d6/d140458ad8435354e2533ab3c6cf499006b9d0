@@ -1,0 +1,23 @@
+tools/profile_model.sh
+  s_7e6456baf64fd7::t_7593a9556d61c4 144-148
+golden_timings.sh
+  s_7e6456baf64fd7::t_7593a9556d61c4 52-61
+tools/load_guard.sh
+  s_7e6456baf64fd7::t_007225467a16f0 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d6d140458ad8435354e2533ab3c6cf499006b9d0",
+  "prompts": {},
+  "sessions": {
+    "s_7e6456baf64fd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15c4c3d0-60e1-537d-9162-b7d3d449be72",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
