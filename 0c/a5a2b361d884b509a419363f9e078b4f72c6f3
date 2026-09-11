@@ -1,0 +1,21 @@
+src/JIT/jit_trampoline.c
+  s_e7b4fdcab90ca5::t_7624a4512d9066 34,3270-3304
+EVENT_TRANSITION_PIPELINE.md
+  s_e7b4fdcab90ca5::t_0ae9a6ec382623 794,1116-1136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0ca5a2b361d884b509a419363f9e078b4f72c6f3",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
