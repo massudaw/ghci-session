@@ -1,0 +1,21 @@
+hft.html
+  s_e7b4fdcab90ca5::t_f926da0be8d840 72-89,141-164,225-226,229-313,399,424-425
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_338032b8430934 686,708,718,745-755,771,777-781,807-810,844-845
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "05c2738ad970be25f7600765f1413a756f5d4941",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
