@@ -1,0 +1,40 @@
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_dce2d0c64fa2a4 787-793
+  s_e7b4fdcab90ca5::t_4e09a53b139fba 8-9,24-42,45-48,66-80,82-84,86-91
+  s_e7b4fdcab90ca5::t_af70d777332d8d 669,672-675,690,698,704,707-712,715-718,720,724-749,751-758,760-772,774-779,781-786,794-797,799-803,805-818,825-832,834-837,840-844,848-853,855
+  s_e7b4fdcab90ca5::t_6fbc7fa9ab3297 199
+  s_e7b4fdcab90ca5::t_6800f50dd41047 268-274,300
+  s_e7b4fdcab90ca5::t_73354424eca084 121
+  s_e7b4fdcab90ca5::t_238e92a35fd69f 203-236,238
+  s_e7b4fdcab90ca5::t_5e62c19e42b5d7 174,239-248,373,377-378,558
+  s_e7b4fdcab90ca5::t_f4ea8d0ac0b215 148
+  s_e7b4fdcab90ca5::t_de73c8588eb0ba 759
+  s_e7b4fdcab90ca5::t_e43c2c14b0038d 169-173,183-198,200-201
+  s_e7b4fdcab90ca5::t_b5120cbbe0dffa 320-347,351,359,368-372,376
+  s_e7b4fdcab90ca5::t_2bf2f0758b00ed 317,657,660
+  s_e7b4fdcab90ca5::t_4d8609c3427fcd 237,249-264
+  s_e7b4fdcab90ca5::t_fb82856cd814c6 434-443,494-495,520-521,523,538-557,559,636-641,646
+  s_e7b4fdcab90ca5::t_639b6b8e619f5a 202
+golden/HFTLatencyRace/final_state.txt
+  s_e7b4fdcab90ca5::t_fa49c9b5c614e1 1-25
+golden/HFTLatencyRace/fingerprint.txt
+  s_e7b4fdcab90ca5::t_fa49c9b5c614e1 1-50
+golden/HFTLatencyRace/tapestats.txt
+  s_e7b4fdcab90ca5::t_fa49c9b5c614e1 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bb5012709d31cb32836c1e3463b674e3686cbba7",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
