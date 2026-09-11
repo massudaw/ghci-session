@@ -1,0 +1,25 @@
+src/Solver/DES/Physical.hs
+  s_e7b4fdcab90ca5::t_0368eb11cf6b3c 1260-1269,2409-2419
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_e7b4fdcab90ca5::t_0368eb11cf6b3c 6487-6542,6545-6546,6549-6556
+golden/DESForkCoupledGap/final_state.txt
+  s_e7b4fdcab90ca5::t_b679f730a93870 1
+sprinkler-solver-process-tests/src/Examples/DESForkCoupledGap.hs
+  s_e7b4fdcab90ca5::t_1a5d5854bb72bd 63,77-80,82-83,218-228,236,241,246-273
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f162429abb42cef9aa26124f93068204146cdca5",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
