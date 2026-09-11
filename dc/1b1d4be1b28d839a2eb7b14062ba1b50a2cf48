@@ -1,0 +1,23 @@
+EVENT_TRANSITION_PIPELINE.md
+  s_e7b4fdcab90ca5::t_9a7caddda1ddfc 1190-1224
+src/Solver/Transition.hs
+  s_e7b4fdcab90ca5::t_9a7caddda1ddfc 955-965
+  s_e7b4fdcab90ca5::t_b4d7bf15deb9e2 81
+  s_e7b4fdcab90ca5::t_ae29f64fd5f3fd 966-977,1308-1312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dc1b1d4be1b28d839a2eb7b14062ba1b50a2cf48",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
