@@ -1,0 +1,27 @@
+tools/airport_route_geometry.py
+  s_736fd9992c0417::t_0fd62e317e1aad 1-129
+airside-routes.json
+  s_736fd9992c0417::t_0fd62e317e1aad 1
+airside.html
+  s_736fd9992c0417::t_e1d53edb4838b2 1203-1206,1963-1965,1992-2022
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_87769a74988216 1563-1570,1789-1790
+doc/des/AIRSIDE_CONTROL_FLOW.md
+  s_736fd9992c0417::t_c25cc9dcfd0f1e 1302-1331
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "18297f28f0cfc8e5872adce9bdeb32f5231e4584",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
