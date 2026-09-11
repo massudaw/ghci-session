@@ -1,0 +1,32 @@
+sprinkler-solver-rates/src/Examples/HFTRaceRuntime.hs
+  s_e7b4fdcab90ca5::t_bfda3f94c3dd83 1-240
+example/HFTRaceServer.hs
+  s_e7b4fdcab90ca5::t_bfda3f94c3dd83 1-13
+sprinkler-solver-rates/src/Examples/HFTLatencyRace.hs
+  s_e7b4fdcab90ca5::t_1f2dd93726b856 848-859,862-863,865-867,874,878-883,917,941,987,1008-1014
+  s_e7b4fdcab90ca5::t_5b301ef9ab7691 130,150,668-832
+  s_e7b4fdcab90ca5::t_4f0d3a2c564589 1016
+  s_e7b4fdcab90ca5::t_ff912f7f97e4d7 123-126
+sprinkler-solver-rates/sprinkler-solver-rates.cabal
+  s_e7b4fdcab90ca5::t_bfda3f94c3dd83 39,60-75
+hft.html
+  s_e7b4fdcab90ca5::t_6e609fe599506e 1-307
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_e7b4fdcab90ca5::t_1ceed86ea45a18 17-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1a4afdb0d2bb914fe1740dc274eeea289fefe72e",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
