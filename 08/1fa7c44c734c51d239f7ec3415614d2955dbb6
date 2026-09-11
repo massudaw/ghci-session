@@ -1,0 +1,19 @@
+doc/des/PROCESS_WHOLE_MODEL_FINDINGS.md
+  s_e7b4fdcab90ca5::t_d940be33964d06 6647-6694
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "081fa7c44c734c51d239f7ec3415614d2955dbb6",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
