@@ -1,0 +1,39 @@
+doc/des/AIRSIDE_CONTROL_FLOW.md
+  s_736fd9992c0417::t_d81e700cb4b87f 424-499
+  s_736fd9992c0417::t_866079cf1df8a5 292-357
+  s_736fd9992c0417::t_ea429ed3c52d7a 213-218,220-253,260,286-291
+  s_736fd9992c0417::t_d08db8e2718885 210-212,219,254-259,261-285
+  s_736fd9992c0417::t_3dce9d068fbe29 358-423
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_736fd9992c0417::t_facb3a5e4b2005 747-754,1357
+  s_736fd9992c0417::t_74ad4abcd8477a 391,509-510,606-625
+  s_736fd9992c0417::t_0c981e34185617 734,737,739-745
+  s_736fd9992c0417::t_5adbfe4ee0724f 807-811,813-815,1178-1185
+  s_736fd9992c0417::t_0239422f0b6be8 1334-1335,1337-1346
+  s_736fd9992c0417::t_7ccebae3384a42 109-110,204-209,211-219,652-674
+  s_736fd9992c0417::t_4d9921207b3124 755-777,1347-1356,1358
+  s_736fd9992c0417::t_ddb4ef1928eb1e 778-800,812,1336
+  s_736fd9992c0417::t_6117311d1e395e 676-733,735-736,738,746,801-806
+  s_736fd9992c0417::t_0750542c69a2eb 675
+tools/airport_taxi_speed.py
+  s_736fd9992c0417::t_ed1cda5df79512 1-57
+golden/AirsideWSSS/final_state.txt
+  s_736fd9992c0417::t_abf9d9e638a4a7 6-7
+  s_736fd9992c0417::t_0d6e61dbd09d43 2-3,5,8-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c7448de1ce5252c676d084ca98c63f818fc8ff72",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
