@@ -1,0 +1,20 @@
+sprinkler-solver-rates/src/Examples/HFTRaceRuntime.hs
+  s_e7b4fdcab90ca5::t_d1f2bd3ce6a742 120-129,154,172-173,195,197
+  s_e7b4fdcab90ca5::t_773f0a648ffb9f 55,98-119,130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "26ae2a40261491b9d9c132978468ca4f0ba4b089",
+  "prompts": {},
+  "sessions": {
+    "s_e7b4fdcab90ca5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25b9724e-b836-550f-8dae-c401558b29c3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
