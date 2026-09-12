@@ -1,0 +1,21 @@
+sprinkler-solver-airport/src/Examples/AirsideExtract.hs
+  s_736fd9992c0417::t_82791d182a7878 920-925
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_82791d182a7878 1992-2009,2114,2124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4afdda8b415c6c11fab17366972673e98defe4ed",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
