@@ -1,0 +1,46 @@
+sprinkler-solver-fertilizer/src/Examples/FertilizerOpsRuntime.hs
+  s_736fd9992c0417::t_7cea62b492c1fe 44,60
+  s_736fd9992c0417::t_7cb052f880d48a 254-255,257-261
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_736fd9992c0417::t_f6e318762e4959 34,49,261-262,264-268
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_736fd9992c0417::t_093293023a754f 424-432
+  s_736fd9992c0417::t_23b2e6db69df13 83,471
+  s_736fd9992c0417::t_27b3ce24ab92cc 53
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_736fd9992c0417::t_27b3ce24ab92cc 45
+  s_736fd9992c0417::t_dcafdd65667b67 73,386-394,428
+src/Solver/DES/TimeWarpRuntimeHTTP.hs
+  s_736fd9992c0417::t_48c679b53aeef8 1223-1226,1236,1243-1248,1265
+  s_736fd9992c0417::t_844342aefcffaa 119-124,1197-1222,1227-1235,1237-1242,1249-1264,1266-1297
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_736fd9992c0417::t_7d48e1494230f9 68
+  s_736fd9992c0417::t_78993907654aba 737-745
+  s_736fd9992c0417::t_a865757006ec05 762-792
+  s_736fd9992c0417::t_0c4f180cba4337 793
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_e32bd6ac39514c 73,2543-2551
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_736fd9992c0417::t_97d85ed06a3c63 47
+  s_736fd9992c0417::t_65a8a30eeaea9a 81-82,1469-1487
+sprinkler-solver-rates/src/Examples/HFTRaceRuntime.hs
+  s_736fd9992c0417::t_c02dc13d6feb32 42
+  s_736fd9992c0417::t_1e4836ed2e0cb0 61
+  s_736fd9992c0417::t_0b2770349a7e47 277-278,280-284
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6ce4c126af9b28ee7c9b1c7ce86c402c56fa6eeb",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
