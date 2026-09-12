@@ -1,0 +1,31 @@
+airside-routes.json
+  s_736fd9992c0417::t_79370921227fcd 1
+golden/AirsideWSSS/final_state.txt
+  s_736fd9992c0417::t_f0a82bb19efc36 13
+  s_736fd9992c0417::t_49c5625f09cf42 3,5,7-8,10-12
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_736fd9992c0417::t_c5ba2612c46137 79
+  s_736fd9992c0417::t_9e1d29297ca987 118,644-656
+  s_736fd9992c0417::t_2160693cb5359f 536-541
+  s_736fd9992c0417::t_8c85e9b14bc943 80,196-214,244,504,520-524,566,612,631,665
+  s_736fd9992c0417::t_2f819093f56dd4 835-837,853-858,860-862
+  s_736fd9992c0417::t_22c82cece8ae60 840-847,865-872
+  s_736fd9992c0417::t_a4d8f7cd1b8eeb 182-194
+  s_736fd9992c0417::t_70f6aba81d30f3 195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "573dd8def0dc97c6dc0477cd4df043f5ba15ac4e",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
