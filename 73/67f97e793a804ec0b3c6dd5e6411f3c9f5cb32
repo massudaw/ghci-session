@@ -1,0 +1,30 @@
+src/Solver/SymbolicDAE/ExprDAG.hs
+  s_736fd9992c0417::t_c72012f7155c18 63,589-594
+tools/check_global_state.py
+  s_736fd9992c0417::t_910e9b781cd797 1-33,38-97
+  s_736fd9992c0417::t_9b1fd2b957cd33 34-37
+src/Solver/IDA.hs
+  s_736fd9992c0417::t_c72012f7155c18 148,1789-1793
+tools/global_state_allowlist.txt
+  s_736fd9992c0417::t_8ac9e750614e10 1-35
+src/Solver/MemoRegistry.hs
+  s_736fd9992c0417::t_4b0e9fd8ae67e0 22-24,27,33-44,46,49-60,62,78-79,81,83-93
+src/JIT/CodeRegistry.hs
+  s_736fd9992c0417::t_c72012f7155c18 44,70-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7367f97e793a804ec0b3c6dd5e6411f3c9f5cb32",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
