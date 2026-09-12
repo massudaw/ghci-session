@@ -1,0 +1,31 @@
+src/Solver/SymbolicDAE.hs
+  s_736fd9992c0417::t_67a27f036316e2 889,891-897
+  s_736fd9992c0417::t_19a7a1cfa08d6d 134,846-847,849-852,855-860,989-994,2617-2620,2624-2627,2634-2637,3334-3337,4009-4012
+  s_736fd9992c0417::t_931e2ea761b680 36,848,879-884
+src/Solver/SymbolicDAE/CAS.hs
+  s_736fd9992c0417::t_be97a99e3375ec 34,67-70
+  s_736fd9992c0417::t_e2639584dded06 46
+src/Solver/SymbolicDAE/DerivativeReset.hs
+  s_736fd9992c0417::t_be97a99e3375ec 81,830-833
+  s_736fd9992c0417::t_cfda54dc561953 80
+sprinkler-solver.cabal
+  s_736fd9992c0417::t_e323783a15a618 238
+src/Solver/MemoRegistry.hs
+  s_736fd9992c0417::t_0c0f0f57231917 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "65e2037f0c8353c9cbdb69781e98e83256b7031d",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
