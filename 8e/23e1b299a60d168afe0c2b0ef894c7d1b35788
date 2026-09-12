@@ -1,0 +1,36 @@
+src/JIT/tw_model.h
+  s_736fd9992c0417::t_d5aa8bd37308ab 1376-1377
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_eb1ea36f73b40c 208-211,236,769,773,2317,2320,2325-2326
+  s_736fd9992c0417::t_ad7581f875cfef 207,237,2318-2319,2327,2334-2335
+  s_736fd9992c0417::t_29b3b9c03af2b7 65
+  s_736fd9992c0417::t_1fbf5871235d40 2328-2329,2336
+src/Solver/DES/TimeWarpJit.hs
+  s_736fd9992c0417::t_e9048f4975b01f 158,5560-5562,5814-5820,5822,5824
+  s_736fd9992c0417::t_4a31f292533582 5821
+  s_736fd9992c0417::t_95afe9ce4c02bf 5823,5825
+  s_736fd9992c0417::t_67108244f05dcf 5826
+src/JIT/tw_runtime.c
+  s_736fd9992c0417::t_d5aa8bd37308ab 5868,6031,6050,8407-8421,8425-8430,8432-8435,8445
+  s_736fd9992c0417::t_cedf74a97544c6 7225,7354,7370,8431
+  s_736fd9992c0417::t_4a31f292533582 7714,7730,8422-8424,8436-8444,8446-8447
+  s_736fd9992c0417::t_fa29165f630d2b 7226
+  s_736fd9992c0417::t_95afe9ce4c02bf 7227,7715-7716,7723,8448-8450
+  s_736fd9992c0417::t_f5a613f593bd4c 8451
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8e23e1b299a60d168afe0c2b0ef894c7d1b35788",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
