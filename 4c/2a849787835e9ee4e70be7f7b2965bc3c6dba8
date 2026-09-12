@@ -1,0 +1,20 @@
+src/Solver/DES/Supervisor.hs
+  s_736fd9992c0417::t_5ed339dcad4e56 607-608
+  s_736fd9992c0417::t_b5c39ede821d5d 49,72,75,163-174,176-189,192-197,224-226,228,230-231,347-348,395-404,418,573-574,577-578,582-583,586-587,597,599,601,603,605,619,656-657,674,692,704
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4c2a849787835e9ee4e70be7f7b2965bc3c6dba8",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
