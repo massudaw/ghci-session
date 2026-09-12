@@ -1,0 +1,39 @@
+tools/airport_route_geometry.py
+  s_736fd9992c0417::t_fc6fdd359ece61 163-196,198-199,203-205,210-211,217,219
+  s_736fd9992c0417::t_a89539f16a2c3c 59-64,66
+  s_736fd9992c0417::t_b6452fe11b3ce7 68-84,103-113
+  s_736fd9992c0417::t_f2d190dee6ff3c 253-277
+  s_736fd9992c0417::t_d8ebe64cf17ec5 85,96-102,133-152,159-162,214
+  s_736fd9992c0417::t_a26dd573cd0582 197,200-201,218
+  s_736fd9992c0417::t_79370921227fcd 278-279,287-290,297-305,309-341
+  s_736fd9992c0417::t_d961ead7506349 242,251
+  s_736fd9992c0417::t_fd0280bf6fdf3b 39-46,243-246,248-250
+  s_736fd9992c0417::t_e44c0088e9488b 67,252
+tools/airport_route_check.py
+  s_736fd9992c0417::t_d80bbc43826f96 1-65
+tools/airport_position_residual.py
+  s_736fd9992c0417::t_f0f809d610bf59 1-126
+airside-gate-routes.json
+  s_736fd9992c0417::t_79370921227fcd 1
+tools/airport_route_error.py
+  s_736fd9992c0417::t_7cb136675cfcd9 24,26-30,32-37,39-41
+  s_736fd9992c0417::t_742627e56f6090 1-22,42-63,70-79,87-92,123-141
+  s_736fd9992c0417::t_9147f62ae2c147 64-69,80-86,93-122
+  s_736fd9992c0417::t_61ecaafb16c75a 23,25,31,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "524f5906717cb8aa015a69c684955acf0886c39c",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
