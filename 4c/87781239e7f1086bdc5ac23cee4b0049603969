@@ -1,0 +1,35 @@
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 663
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 216
+src/Solver/DES/TimeWarpRuntimeHTTP.hs
+  s_736fd9992c0417::t_db4d4b5e107cb0 792-795,825-837,865-866,888-890,895-896,899,917,922-926,928
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_736fd9992c0417::t_f9fd9b6f611e4c 660-668
+sprinkler-solver-rates/src/Examples/HFTRaceRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 230
+sprinkler-solver-examples/src/Examples/LNGOpsRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 335
+sprinkler-solver-fertilizer/src/Examples/FertilizerOpsRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 206
+sprinkler-solver-examples/src/Examples/LNGOpsAURuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 365
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_02ffbfd6198cf0 898
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4c87781239e7f1086bdc5ac23cee4b0049603969",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
