@@ -1,0 +1,26 @@
+src/Solver/DES/TimeWarpRuntimeHTTP.hs
+  s_736fd9992c0417::t_2a5742ec628cb8 145
+  s_736fd9992c0417::t_15e6dedbf43a27 102-105,172-174,1303-1374
+sprinkler-solver-aog/src/Examples/AogOpsRuntime.hs
+  s_736fd9992c0417::t_ab15b79b9e596a 50,118,120
+sprinkler-solver-airport/src/Examples/AirsideRuntime.hs
+  s_736fd9992c0417::t_ab15b79b9e596a 73-74,309-315,317-318
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_736fd9992c0417::t_a8a0ea33f73af1 82,700-701
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "20effa1ad0218d7ecbb2fa306af4187f5b41a8ca",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
