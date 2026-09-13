@@ -1,0 +1,26 @@
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelDesSwitchRC.hs
+  s_736fd9992c0417::t_0ec0ded0f26027 192-199,201-207,250-255,257-269
+  s_736fd9992c0417::t_9811250fd56770 57,200
+  s_736fd9992c0417::t_0c3ce27e9b4976 54-56
+  s_736fd9992c0417::t_afce98ebb483a5 256
+sprinkler-solver-hybrid-des-lowering/src/Solver/DES/ScheduledLowering.hs
+  s_736fd9992c0417::t_e5d7151bcc49cb 63,248,250-279
+  s_736fd9992c0417::t_115de4eb0b0248 1
+  s_736fd9992c0417::t_e84c11f4eadda1 56,59,61-62,201-247,249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "edf3954d69cba346917cd24c06244459d28d7751",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
