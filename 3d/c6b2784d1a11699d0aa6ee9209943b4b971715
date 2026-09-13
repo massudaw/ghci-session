@@ -1,0 +1,34 @@
+src/JIT/tw_runtime.c
+  s_736fd9992c0417::t_bb12719a5989de 5879
+src/JIT/tw_engine.h
+  s_736fd9992c0417::t_d6a359d6d71901 2438-2448,2540-2555
+  s_736fd9992c0417::t_bb12719a5989de 1317-1328,1429-1439,3908-3909
+src/Solver/DES.hs
+  s_736fd9992c0417::t_bb12719a5989de 2890-2896,2898,3035
+  s_736fd9992c0417::t_85e61798c149f8 2971-2981,3043-3052,3054,4208-4222
+sprinkler-solver-process-tests/src/Examples/DESModeSwitchTW.hs
+  s_736fd9992c0417::t_7a33ccdd3dc7ac 274-277,287,289,520-521,537-541,562-563
+  s_736fd9992c0417::t_c222156402678c 20
+  s_736fd9992c0417::t_2ec9f9d41ca587 522-524,543-559,564-566,643-644
+  s_736fd9992c0417::t_ab895ec805b998 233-272
+  s_736fd9992c0417::t_fb6d2980e3c0cb 288,290
+  s_736fd9992c0417::t_f43078cce1f2eb 273
+golden/DESModeSwitchTW/final_state.txt
+  s_736fd9992c0417::t_4d04be57b952f8 12,15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3dc6b2784d1a11699d0aa6ee9209943b4b971715",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
