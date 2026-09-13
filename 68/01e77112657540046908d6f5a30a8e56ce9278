@@ -1,0 +1,45 @@
+golden/DESDatacenterTW/final_state.txt
+  s_91d847c5fbb83b::t_d3644993796225 1-12
+golden/DESDatacenterTW/fingerprint.txt
+  s_91d847c5fbb83b::t_d3644993796225 1-10
+sprinkler-solver-process-tests/src/Examples/DESDatacenterTW.hs
+  s_91d847c5fbb83b::t_56949cb1a5f7f1 133,145-146,151,158,178,184-186,195
+  s_91d847c5fbb83b::t_a4aa3eaffab0b3 1-46,52-64,74,82,85-89,91-132,134-144,147-150,152-157,159-165,167-170,172-177,179-183,187-194,196-201,208-262,270-344,346-357,359-392,403-439
+  s_91d847c5fbb83b::t_5b1ffe13b31262 47-51,65-73,75-81,83-84
+  s_91d847c5fbb83b::t_02320027cf3a09 90,393-402
+  s_91d847c5fbb83b::t_da351edaf4f1d0 166,171,205-207,263-269,345
+  s_736fd9992c0417::t_fc28c3912b6f5a 358
+  s_91d847c5fbb83b::t_59bf8fdbc1355d 202-204
+example/Main.hs
+  s_91d847c5fbb83b::t_5b1ffe13b31262 257,585
+golden/DESDatacenterTW/status.txt
+  s_91d847c5fbb83b::t_d3644993796225 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_91d847c5fbb83b::t_a01cfeaac0b164 36
+tools/model_session/targets.json
+  s_91d847c5fbb83b::t_7999a9b6934db8 90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6801e77112657540046908d6f5a30a8e56ce9278",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_91d847c5fbb83b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dea995be-3bc5-4dcd-8a15-9382d414708c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
