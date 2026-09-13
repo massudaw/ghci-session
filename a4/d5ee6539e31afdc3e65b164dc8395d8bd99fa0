@@ -1,0 +1,20 @@
+sprinkler-solver-process-tests/src/Examples/DESGraphMigrateTW.hs
+  s_736fd9992c0417::t_b99cd0f2fd6e97 134-150,171-187,330-332
+  s_736fd9992c0417::t_72d383ad6d2561 333
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a4d5ee6539e31afdc3e65b164dc8395d8bd99fa0",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
