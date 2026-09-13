@@ -1,0 +1,25 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_736fd9992c0417::t_41e79da6dcecda 364-372,1544-1545,2503-2506
+  s_736fd9992c0417::t_105fd9d0d9b211 1054
+  s_736fd9992c0417::t_bead65e024eb88 1033-1052,1056
+  s_736fd9992c0417::t_161cd665edb5c8 1394-1400
+sprinkler-solver-hybrid-des-lowering/src/Solver/DES/ScheduledLowering.hs
+  s_736fd9992c0417::t_efc49ff3159517 63-64,266,269-283
+  s_736fd9992c0417::t_fa1ed302da2ca8 259-265,267-268,285,287-289,291-293,295-299
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dbc3fe40fcb7692f8ff51957f2de5b357590804f",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
