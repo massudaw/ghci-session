@@ -1,0 +1,38 @@
+sprinkler-solver-process-tests/src/Examples/DESGraphMigrateTW.hs
+  s_736fd9992c0417::t_b78ebf8981a8eb 148-156
+golden/DESPlantMigrateTW/status.txt
+  s_736fd9992c0417::t_eea87afd6ac80a 1
+example/Main.hs
+  s_736fd9992c0417::t_eea87afd6ac80a 261,587
+src/Solver/DES/ProcessModes.hs
+  s_736fd9992c0417::t_b78ebf8981a8eb 313-317
+golden/DESPlantMigrateTW/fingerprint.txt
+  s_736fd9992c0417::t_eea87afd6ac80a 1-10
+sprinkler-solver-process-tests/src/Examples/DESPlantMigrateTW.hs
+  s_736fd9992c0417::t_02529076717fd3 91-97,99-100
+  s_736fd9992c0417::t_27027df07c4f7d 1-57,59-90,98,101-130,133,138-143,145-148,153-154
+  s_736fd9992c0417::t_94b95c63bef154 58,131-132,134-137,144,149-152,155-201,203-224
+  s_736fd9992c0417::t_66addfa69777c8 202
+golden/DESPlantMigrateTW/final_state.txt
+  s_736fd9992c0417::t_eea87afd6ac80a 1-7
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_736fd9992c0417::t_94b95c63bef154 29
+tools/model_session/targets.json
+  s_736fd9992c0417::t_eea87afd6ac80a 101-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7bc74a53cad46d8c05db25eff2249ea020330827",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
