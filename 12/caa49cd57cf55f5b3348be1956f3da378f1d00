@@ -1,0 +1,31 @@
+tools/airport_route_geometry.py
+  s_736fd9992c0417::t_9ce80744baaf17 144,146-151,153-158,160-163
+  s_736fd9992c0417::t_f51e5764cdf92e 145,152
+  s_736fd9992c0417::t_63f2e5c44abc96 159
+airside-gate-routes.json
+  s_736fd9992c0417::t_63f2e5c44abc96 1
+golden/AirsideWSSS/final_state.txt
+  s_736fd9992c0417::t_c1f22fc3918c03 3,5,7-8,10-12
+sprinkler-solver-airport/src/Examples/AirsideWSSS.hs
+  s_736fd9992c0417::t_b45abb8019b648 879-886,904-911
+sprinkler-solver-airport/src/Examples/AirportCalib.hs
+  s_736fd9992c0417::t_3ff2ac484ca765 522,528-529,532-537
+airside-routes.json
+  s_736fd9992c0417::t_63f2e5c44abc96 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "12caa49cd57cf55f5b3348be1956f3da378f1d00",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
