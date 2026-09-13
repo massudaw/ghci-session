@@ -1,0 +1,21 @@
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_736fd9992c0417::t_9619443a7020e3 12-40
+golden/DESSymbolicPhaseTest/status.txt
+  s_736fd9992c0417::t_9619443a7020e3 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "636912adb7749cfb22b04897bf1c1677366a6782",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
