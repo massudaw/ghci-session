@@ -1,0 +1,33 @@
+src/Model.hs
+  s_736fd9992c0417::t_53c789b0cc7332 42-43,386-400,402-408,414,419,429-450,456-457,732-733
+  s_736fd9992c0417::t_1c4845489eb7bf 409-413,415-418
+  s_736fd9992c0417::t_657c544bcd26e5 451-455
+  s_736fd9992c0417::t_7143b28672dbb9 401
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelSyncSwitchRC.hs
+  s_736fd9992c0417::t_87441b9d99a17d 41-47
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelDesSwitchRC.hs
+  s_736fd9992c0417::t_7143b28672dbb9 52,176-181
+  s_736fd9992c0417::t_886c3994e8f174 1-2
+  s_736fd9992c0417::t_87441b9d99a17d 53,158-173,175,182-186
+  s_736fd9992c0417::t_1c4845489eb7bf 54,174
+  s_736fd9992c0417::t_831dbf14a0e4f3 187
+src/Model/TimeControlledSwitch.hs
+  s_736fd9992c0417::t_657c544bcd26e5 90
+  s_736fd9992c0417::t_b8a4f80c0d26e2 86-89,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8d54d5090b9d37eb586b3b112565d2302852efc5",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
