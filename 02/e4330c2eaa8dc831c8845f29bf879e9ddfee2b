@@ -1,0 +1,25 @@
+tools/airport_route_geometry.py
+  s_736fd9992c0417::t_8cbe4d79c87f54 382,395-401
+  s_736fd9992c0417::t_7e3f1c5dc01deb 452-458,460-461
+  s_736fd9992c0417::t_e9c454f555fd6a 23,364-379
+  s_736fd9992c0417::t_2d01f683ba1ea6 88-91,114-116
+  s_736fd9992c0417::t_cbadd70e5aab16 92-110,117
+  s_736fd9992c0417::t_369eb0f7b12d2a 381,394
+  s_736fd9992c0417::t_0a43f88aae1ef9 274-363,380,383-393,402,416
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "02e4330c2eaa8dc831c8845f29bf879e9ddfee2b",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
