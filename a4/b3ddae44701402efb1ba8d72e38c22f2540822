@@ -1,0 +1,72 @@
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 3
+golden/DESDatacenterTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2
+golden/DESProcessRefusals/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1
+golden/DESSeedGateRaceTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1
+golden/RatesOnlineEKF/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,4
+golden/DESPlantMigrateTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 3
+golden/AogOps/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 3,5,9,12,15,17,24,26,30,40,45
+golden/DESForkCoupledGap/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2
+golden/DESConstructionSite/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2,9
+golden/AirsideWSSS/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1
+golden/DESModeSwitchTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2
+golden/DESLlmServeTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2
+golden/DESAccountingLedgerStressTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3
+golden/VtShippingRun/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,4,21,23,27,29,31,33,35,38,40,44,46,48,50,52
+src/Solver/DES/TimeWarpUnified.hs
+  s_736fd9992c0417::t_64e4d4ffb54b0a 202-203,2483-2486,2488-2490,2492,2496,2501,2504
+  s_736fd9992c0417::t_07df2d0b28c376 286-293,2487
+golden/DESProcessChainTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3,5
+golden/DESGateSampledStressTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,7,9
+golden/DESProcessAogTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3
+src/Solver/IDA.hs
+  s_736fd9992c0417::t_e09cf38a613120 61-63,1634-1638,1809-1853,1910,3063-3068,3095-3098
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 3,5
+golden/DESUnixSandbox/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 5,7,9
+golden/DESVRTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3
+golden/ShippingOps/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 2,5,9,26,29,32,34,36,38,40,43,45,49,51,53,55,57
+golden/DESProcess2PCTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3
+golden/DESProcessLoopTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1
+src/Solver/DES/TimeWarpPlant.hs
+  s_736fd9992c0417::t_64e4d4ffb54b0a 87-90,138,142-143,1129-1152,1162-1176,1194-1195
+golden/BankFullBookTW/fingerprint.txt
+  s_736fd9992c0417::t_8d6868d612727b 1,3,6,8,20,22,24,26,28,30,32,34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a4b3ddae44701402efb1ba8d72e38c22f2540822",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
