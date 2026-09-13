@@ -1,0 +1,21 @@
+sprinkler-solver-airport/src/Examples/AirportCalib.hs
+  s_736fd9992c0417::t_82c4e831b19a53 513-522
+tools/airport_position_residual.py
+  s_736fd9992c0417::t_d656f3d18f2960 30-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ed345c8928cc2b23e5ba31a6460af59f2c072c1c",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
