@@ -1,0 +1,23 @@
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_736fd9992c0417::t_48c776e28d97c3 172-173,379-384,387-388
+src/Solver/DES/Physical.hs
+  s_736fd9992c0417::t_2020a2ee1b306e 323-329
+  s_736fd9992c0417::t_927465c32299f3 71,312-322,330-368
+  s_736fd9992c0417::t_51979d8a10f155 369
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "02855aeae79c021915438b51ae3a8df378c2f2fc",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
