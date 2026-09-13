@@ -1,0 +1,31 @@
+golden/DESLlmServeTW/final_state.txt
+  s_91d847c5fbb83b::t_6d7d1e7be3c7eb 1-6,8-12
+sprinkler-solver-process-tests/src/Examples/DESLlmServeTW.hs
+  s_91d847c5fbb83b::t_7d64161202db4c 432
+  s_91d847c5fbb83b::t_4bdecc1765b75d 227-236,241-275
+  s_91d847c5fbb83b::t_4a7029791b65c2 215,237-240,354-362,393-395,471,512,518,537,539-540,586-593,598-601,606-607
+  s_91d847c5fbb83b::t_cc6b1385fe88ca 94-117
+  s_91d847c5fbb83b::t_919ddf818ad13f 55-56,59-70,73-74
+  s_91d847c5fbb83b::t_dac6d2321e37f4 309-312,314-317
+  s_91d847c5fbb83b::t_f2d3a059a3e96b 195-205,208-209,295,301-302,375,382,384,398-431,433-435,457-460
+  s_91d847c5fbb83b::t_320ce8ac9a8380 139-148
+  s_91d847c5fbb83b::t_bb1de7289cca01 338-353,363-368,370
+  s_91d847c5fbb83b::t_f11e050c11f96f 469-470,472-473,483-484,486,513-517,519-520,534-536,541-542,552-553,563-570,574,576,583-585,594-597,602-605,608-616,621-623,629-640,642-653,658-660,663,665-666
+  s_91d847c5fbb83b::t_73054484dfd0cd 25-26,29-38,43-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "620d7924d45631739f951e4f9e89fb9663c779e1",
+  "prompts": {},
+  "sessions": {
+    "s_91d847c5fbb83b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dea995be-3bc5-4dcd-8a15-9382d414708c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
