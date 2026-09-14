@@ -1,0 +1,29 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_736fd9992c0417::t_139973cbb17022 2539-2607
+  s_736fd9992c0417::t_eb9c49585970f4 2537
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_736fd9992c0417::t_5291dcbbf6be4d 838-854,978-981
+  s_736fd9992c0417::t_4797799009915e 325-333,835
+  s_736fd9992c0417::t_ded660ae133593 870
+  s_736fd9992c0417::t_dc7349c173f32d 855-869,931-933
+  s_736fd9992c0417::t_3a6b67dd097a3a 1189
+  s_736fd9992c0417::t_7a43ca35611732 47
+docs/shipping/LIVE_MIGRATION_CARRY.md
+  s_736fd9992c0417::t_777e400ab83750 134,137-140,153-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "92a18896f543598916537eb35c281e9f1c3980d2",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
