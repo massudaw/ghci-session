@@ -1,0 +1,36 @@
+sprinkler-solver-process-tests/src/Examples/DESMiniFabTW.hs
+  s_91d847c5fbb83b::t_c6ab2ff36ec79b 337-345
+  s_91d847c5fbb83b::t_21f383e2657602 103-104,358
+  s_91d847c5fbb83b::t_6ca406b020e3e3 74-79,433,435-436
+  s_91d847c5fbb83b::t_a8e924cff79fb4 178,191,230,386,392,422,442-443,445-446,450-458,470-473
+  s_91d847c5fbb83b::t_651af63beb1d28 199,204-210,213-214,268,335-336
+  s_91d847c5fbb83b::t_b073963c3ec16e 1-73,80-102,105-177,179-190,192-198,200-203,211-212,215-229,231-267,269-334,346-357,359-385,387-391,393-421,423-432,434,437-441,444,447-449,459-469,474-488
+golden/DESMiniFabTW/final_state.txt
+  s_91d847c5fbb83b::t_b1411d1e7f0155 1-12
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_91d847c5fbb83b::t_9f783e2e75a928 39
+golden/DESMiniFabTW/fingerprint.txt
+  s_91d847c5fbb83b::t_b1411d1e7f0155 1-14
+golden/DESMiniFabTW/status.txt
+  s_91d847c5fbb83b::t_b1411d1e7f0155 1
+example/Main.hs
+  s_91d847c5fbb83b::t_9abd3d7e27e520 259,589
+tools/model_session/targets.json
+  s_91d847c5fbb83b::t_9f783e2e75a928 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b42ba52c4cee0cf97de4bf57360d9844f4c5a4a5",
+  "prompts": {},
+  "sessions": {
+    "s_91d847c5fbb83b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dea995be-3bc5-4dcd-8a15-9382d414708c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
