@@ -1,0 +1,37 @@
+sprinkler-solver-shipping/src/Examples/ShippingOpsRuntime.hs
+  s_736fd9992c0417::t_df527ca56fadce 877-884
+  s_736fd9992c0417::t_a77831cbc8c2c1 83,1166-1222,1224
+  s_736fd9992c0417::t_644aba14feb2cb 371,821-822
+  s_736fd9992c0417::t_e2bc0bdf9cc5df 293-296,300-304,306-309,332,335
+src/Solver/DES/TimeWarpUnified.hs
+  s_736fd9992c0417::t_644aba14feb2cb 2409-2416
+src/Solver/DES/TimeWarpJit.hs
+  s_736fd9992c0417::t_ccc44724bb28e0 231
+  s_736fd9992c0417::t_47bd05f0d8f569 124-126,5822-5858,5862-5865,5895,5897
+  s_736fd9992c0417::t_eef0100f25f3ca 232
+  s_736fd9992c0417::t_283b42c0ed3ebb 2070,3066,3091,4462,4464
+  s_736fd9992c0417::t_144f389c4d2e49 2071-2079,2840-2852,3027-3063,3092-3093
+  s_736fd9992c0417::t_94457a99474f54 2200-2208,2210,2212,2219,2231-2233,2237-2238,2246-2249,2262,5375-5377
+  s_736fd9992c0417::t_f64b7a6572cdf1 2209,2211,2213-2218,2220-2230,2234-2236,2239-2245,2250-2261
+src/Solver/DES/TimeWarpRuntimeHTTP.hs
+  s_736fd9992c0417::t_54b72f5333344b 126,181,918-941,945
+  s_736fd9992c0417::t_e66385b00480c4 127-128
+docs/shipping/LIVE_MIGRATION_CARRY.md
+  s_736fd9992c0417::t_19d69e580a1493 137-141,198-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2b0a018fb2aa07802214164e13a333963a9dbed9",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
