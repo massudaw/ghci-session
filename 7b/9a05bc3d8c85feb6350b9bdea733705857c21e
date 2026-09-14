@@ -1,0 +1,40 @@
+sprinkler-solver-process-tests/src/Examples/DESBatchTW.hs
+  s_91d847c5fbb83b::t_b185a2b19a5c39 42-65,85-92,94-99
+  s_91d847c5fbb83b::t_32b6a3b1199efa 1,3-41,66-84,93,100-104,106-119,121-129,131,133-146,148-162,164,169-170,172-174,176-195,209-210,212-219,233-235,243-244,246-280,282-283,287-315,317-318,329-336,338-341,349-353,356-364,373-380,382-383
+  s_91d847c5fbb83b::t_31f731c827a7c3 2
+  s_91d847c5fbb83b::t_c5cce9b4b7cffb 120,220-232
+  s_91d847c5fbb83b::t_6c773c07796782 342-348,354-355,365-372,381
+  s_91d847c5fbb83b::t_77810803880862 130,132
+  s_91d847c5fbb83b::t_78341c2cafa3c7 147,163,165-168,196,211,281,316,327
+  s_91d847c5fbb83b::t_470df2094e474c 105,284-286,319-326,328,337
+  s_91d847c5fbb83b::t_189e954f6aad4c 197-208
+  s_91d847c5fbb83b::t_8b8c8d84b921b6 171,175,236-242,245
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_91d847c5fbb83b::t_b0c68d52665365 38
+golden/DESBatchTW/fingerprint.txt
+  s_91d847c5fbb83b::t_d9e39d51088fbf 1-10
+example/Main.hs
+  s_91d847c5fbb83b::t_b185a2b19a5c39 258,587
+golden/DESBatchTW/final_state.txt
+  s_91d847c5fbb83b::t_d9e39d51088fbf 1-7
+golden/DESBatchTW/status.txt
+  s_91d847c5fbb83b::t_d9e39d51088fbf 1
+tools/model_session/targets.json
+  s_91d847c5fbb83b::t_b0c68d52665365 92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7b9a05bc3d8c85feb6350b9bdea733705857c21e",
+  "prompts": {},
+  "sessions": {
+    "s_91d847c5fbb83b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dea995be-3bc5-4dcd-8a15-9382d414708c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
