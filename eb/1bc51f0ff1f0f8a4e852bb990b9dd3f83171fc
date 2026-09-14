@@ -1,0 +1,24 @@
+sprinkler-solver-process-tests/src/Examples/DESMiniFabTW.hs
+  s_91d847c5fbb83b::t_c0b36cde36bbac 161
+  s_91d847c5fbb83b::t_c5493bd57765cc 162,193-200,202-206,214-224,683-691
+src/Solver/DES/Types.hs
+  s_91d847c5fbb83b::t_d92566f96e0dc8 30
+  s_91d847c5fbb83b::t_62c5a1d5815ef4 17,88-122
+  s_91d847c5fbb83b::t_a8ab90b1933bd4 123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eb1bc51f0ff1f0f8a4e852bb990b9dd3f83171fc",
+  "prompts": {},
+  "sessions": {
+    "s_91d847c5fbb83b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dea995be-3bc5-4dcd-8a15-9382d414708c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
