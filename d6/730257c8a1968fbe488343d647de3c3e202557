@@ -1,0 +1,20 @@
+src/Solver/DES/TimeWarpUnified.hs
+  s_736fd9992c0417::t_b01aea0023254f 2381-2387,2390-2391,2398-2400,2406,2545-2555
+  s_736fd9992c0417::t_2c7565116151cc 2388-2389,2392-2397,2401-2405,2407-2408,2538-2544
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d6730257c8a1968fbe488343d647de3c3e202557",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
