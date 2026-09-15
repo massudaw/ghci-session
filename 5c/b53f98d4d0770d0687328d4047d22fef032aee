@@ -1,0 +1,31 @@
+src/Solver/DES/ProcessGraph.hs
+  s_736fd9992c0417::t_f3c98f035b09ce 39-45
+  s_736fd9992c0417::t_4caee6acb8ac45 46,271-299
+  s_736fd9992c0417::t_61c757ccb2f767 300
+sprinkler-solver-shipping/src/Examples/ShippingOps.hs
+  s_736fd9992c0417::t_59ba21c0221a37 6479-6486,6519-6532
+  s_736fd9992c0417::t_bbb50d4c9d1629 2215-2222
+  s_736fd9992c0417::t_d3b285d5c74672 3595,3993,4364,4391,4406,4617,4623,4630,4639,4653,4671,4675,4686
+  s_736fd9992c0417::t_6b8d5dde87e1ae 139,6533-6540
+  s_736fd9992c0417::t_831958ccb5788b 4604-4607,4627
+  s_736fd9992c0417::t_ffd948a4efae56 4793-4801
+  s_736fd9992c0417::t_7e7489630ffca8 2277,2311-2316
+  s_736fd9992c0417::t_870d84be35eb10 1875,1879,2118-2119,2142-2143,2322,3443,4250
+  s_736fd9992c0417::t_9a0307c4842d2b 3435-3436
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5cb53f98d4d0770d0687328d4047d22fef032aee",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
