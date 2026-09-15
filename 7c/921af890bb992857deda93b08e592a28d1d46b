@@ -1,0 +1,29 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_03cd30a9579e0f::t_e32fc024e1a8b3 241-242,324-332,6889-6901,6903-6907,6910-6918,6943-6963
+  s_03cd30a9579e0f::t_586d47f1d48d51 84,2085-2095,3117,6908-6909,6919-6942
+  s_03cd30a9579e0f::t_754010e2874073 81-83
+  s_03cd30a9579e0f::t_6dfd17b73f9981 80,3785
+  s_03cd30a9579e0f::t_5a3504b6becb2e 6902
+src/Solver/DES/SlotClass.hs
+  s_03cd30a9579e0f::t_5a3504b6becb2e 137-143
+  s_03cd30a9579e0f::t_6dfd17b73f9981 56-72
+  s_03cd30a9579e0f::t_22d56a0b9cbd98 149-154
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_5051f48d6c3e9b 1788-1798,1810-1844
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7c921af890bb992857deda93b08e592a28d1d46b",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
