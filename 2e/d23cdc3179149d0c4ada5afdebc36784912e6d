@@ -1,0 +1,38 @@
+sprinkler-solver-unix/src/Examples/MacOSMachine.hs
+  s_03cd30a9579e0f::t_2be77e61cab6a1 429-437,441-445
+  s_03cd30a9579e0f::t_ff1647b9e62703 198-199,216,231,239,265,279-280,346-347,418-428,438-440,446,501-503,655
+sprinkler-solver-unix/src/Examples/MacOSRuntime.hs
+  s_03cd30a9579e0f::t_d0ab328d43c812 349-355
+  s_03cd30a9579e0f::t_4bd5f5a4b23e42 101-104,110-112,120-121,222-226,371,403-404,418-419,436-438,495-502,676-678
+  s_03cd30a9579e0f::t_ea22e83bd8a1d2 227-234
+sprinkler-solver-unix/src/Examples/HostSampler.hs
+  s_03cd30a9579e0f::t_f7e79934eaebeb 377-380
+  s_03cd30a9579e0f::t_b88bd120bed773 139-146,158,166-167,218-290
+  s_03cd30a9579e0f::t_e05c2a7719518a 316-318,355-365,369-370,587-594
+  s_03cd30a9579e0f::t_22242aa232836c 291
+macos.html
+  s_03cd30a9579e0f::t_d5727bd3a00da0 176-205,325-350
+  s_03cd30a9579e0f::t_e0ce74a1e30740 351
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_b64c2e0909587c 1463-1464,1466-1468,1560-1628
+golden/MacOSMachine/final_state.txt
+  s_03cd30a9579e0f::t_ea54c26aa3d3f5 8
+golden/MacOSMachine/fingerprint.txt
+  s_03cd30a9579e0f::t_10d9f68b02edcb 3,8,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2ed23cdc3179149d0c4ada5afdebc36784912e6d",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
