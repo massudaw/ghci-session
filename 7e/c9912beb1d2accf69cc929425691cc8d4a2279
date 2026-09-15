@@ -1,0 +1,21 @@
+sprinkler-solver-unix/src/Examples/MacOSRuntime.hs
+  s_03cd30a9579e0f::t_3e6ec3c3904978 67-68,76,78,339-358,365
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_c17dceb64c1e21 1629-1683
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7ec9912beb1d2accf69cc929425691cc8d4a2279",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
