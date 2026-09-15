@@ -1,0 +1,19 @@
+doc/des/PROCESS_MIGRATION_WORKFLOW.md
+  s_736fd9992c0417::t_481bcbb4172df9 88-99,108-110,114-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "22cef448336acbb88c100b8aa49fc9e955e6764e",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
