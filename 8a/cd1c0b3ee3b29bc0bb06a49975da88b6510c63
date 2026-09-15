@@ -1,0 +1,46 @@
+tools/model_session/targets.json
+  s_03cd30a9579e0f::t_e84f1cb8463743 757
+example/Main.hs
+  s_03cd30a9579e0f::t_eeaf797deea42f 320,669
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_a7ae27b50042fe 1353-1425
+golden/MacOSMachine/final_state.txt
+  s_03cd30a9579e0f::t_b3448bd6b4bdb0 1-7
+sprinkler-solver-unix/src/Examples/MacOSMachine.hs
+  s_03cd30a9579e0f::t_124cc89eb49e03 108,160-164,384-391,393-398
+  s_03cd30a9579e0f::t_55d052866d9697 127-128,143,195-196,212,238,306-307,359,361-368,370-377,383,430-432
+  s_03cd30a9579e0f::t_3724eea885e861 400-410
+  s_03cd30a9579e0f::t_c0b41c0839cb79 499-520,522-530
+  s_03cd30a9579e0f::t_8ed52a55d78a15 281-285,291-293,321-322,325-329,331-333,335-336,338-339,421
+  s_03cd30a9579e0f::t_93bf534f89c09d 438-447,463,465,468-475,478-479,481-498,521,531-550,578-588
+  s_03cd30a9579e0f::t_a47cdd328495d7 378-382,392,399,411-412,414
+  s_03cd30a9579e0f::t_d6bb1db8516ef6 452-462
+  s_03cd30a9579e0f::t_61589a271aced1 551-577
+  s_03cd30a9579e0f::t_44d797fc827bf8 107,142,358,360,369
+  s_03cd30a9579e0f::t_8becc26232cf04 1-88,90-91,93-106,109-126,129-141,144-159,165-194,197-211,213-237,239-257,260-280,295-296,308-320,323-324,330,334,337,340-357,416-420,422-429,433-437,476-477,480
+  s_03cd30a9579e0f::t_8203e943fb4e26 89,258-259,286-290,294,297-305
+  s_03cd30a9579e0f::t_9e72386fadfcee 92,448-451,464,466-467
+  s_03cd30a9579e0f::t_92d175472f8069 413,415
+sprinkler-solver-unix/sprinkler-solver-unix.cabal
+  s_03cd30a9579e0f::t_e84f1cb8463743 20
+golden/MacOSMachine/status.txt
+  s_03cd30a9579e0f::t_b3448bd6b4bdb0 1
+golden/MacOSMachine/fingerprint.txt
+  s_03cd30a9579e0f::t_b3448bd6b4bdb0 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8acd1c0b3ee3b29bc0bb06a49975da88b6510c63",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
