@@ -1,0 +1,24 @@
+sprinkler-solver-shipping/src/Examples/ShippingMigrateProbe.hs
+  s_03cd30a9579e0f::t_b88470810230c5 654-673,677-681
+  s_03cd30a9579e0f::t_7661058b65edaf 110-130
+src/Solver/DES/SlotClass.hs
+  s_03cd30a9579e0f::t_d7a93ba2fb82e8 122-130,225-241,244-245,258-267,273-275
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_00aec40a4c9791 1986-2034
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b7dc539440ed5b2bd695a03ab7753296e9f74d5d",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
