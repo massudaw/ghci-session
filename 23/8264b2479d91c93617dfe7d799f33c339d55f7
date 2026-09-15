@@ -1,0 +1,23 @@
+golden/ShippingMigrateApi/final_state.txt
+  s_03cd30a9579e0f::t_ddb203c74e6444 3-4
+src/Solver/DES/TimeWarpJit.hs
+  s_03cd30a9579e0f::t_c5be7aaddf1056 7012,7016-7031,7053,7056-7059
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_8a120f43dc3283 2078-2097
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "238264b2479d91c93617dfe7d799f33c339d55f7",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
