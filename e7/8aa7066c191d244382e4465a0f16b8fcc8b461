@@ -1,0 +1,25 @@
+graph-view.js
+  s_736fd9992c0417::t_f149f5595824ee 418-422,429-438,440,450-456,465-474,614
+  s_736fd9992c0417::t_fa48b1099dedbb 423-428,439
+  s_736fd9992c0417::t_e966bcc508b4b4 441-449,457-464
+  s_736fd9992c0417::t_9f3202596d35d5 1096-1101,1103-1114
+  s_736fd9992c0417::t_8704b7edadad3b 164-178,1342
+  s_736fd9992c0417::t_60ba75806e9e6c 293-296,364-417,738
+  s_736fd9992c0417::t_92ece58909da19 18,40-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e78aa7066c191d244382e4465a0f16b8fcc8b461",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
