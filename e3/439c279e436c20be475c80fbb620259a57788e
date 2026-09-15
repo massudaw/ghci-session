@@ -1,0 +1,23 @@
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_5e11a3f4191592 1963-1968
+golden/ShippingMigrateApi/final_state.txt
+  s_03cd30a9579e0f::t_665085b0166a08 2
+golden/ShippingMigrateApi/fingerprint.txt
+  s_03cd30a9579e0f::t_8d5cce5246d303 1-3,5-10,12-14,16-67,69-72,74-78,80-83,85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e3439c279e436c20be475c80fbb620259a57788e",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
