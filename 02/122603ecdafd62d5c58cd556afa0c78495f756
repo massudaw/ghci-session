@@ -1,0 +1,36 @@
+example/Main.hs
+  s_03cd30a9579e0f::t_2f1db032027670 321,671
+golden/ShippingMigrateApi/status.txt
+  s_03cd30a9579e0f::t_20eae52144b339 1
+sprinkler-solver-shipping/src/Examples/ShippingMigrateProbe.hs
+  s_03cd30a9579e0f::t_b9806b0b4b64dc 262,941-950
+  s_03cd30a9579e0f::t_b47c62561fc351 260-261,263-265,267
+  s_03cd30a9579e0f::t_5e0ba1a7de051e 257,870-894,896-897,899-930,937-940,951-953
+  s_03cd30a9579e0f::t_1529dbd00312b0 283
+  s_03cd30a9579e0f::t_47d1a47b1353a5 931-936
+golden/ShippingMigrateApi/fingerprint.txt
+  s_03cd30a9579e0f::t_20eae52144b339 1-85
+src/Solver/DES/Migrate.hs
+  s_03cd30a9579e0f::t_03566a06fd42b5 37,54-55,220-261
+  s_03cd30a9579e0f::t_a52781b93fe0c9 40,166-190,197-198
+golden/ShippingMigrateApi/final_state.txt
+  s_03cd30a9579e0f::t_b9806b0b4b64dc 1-5
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_bc7dec83d79862 1944-1985
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "02122603ecdafd62d5c58cd556afa0c78495f756",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

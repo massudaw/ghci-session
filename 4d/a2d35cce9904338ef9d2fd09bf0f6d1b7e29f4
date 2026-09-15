@@ -1,0 +1,29 @@
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_03cd30a9579e0f::t_e95a3b8f3ca9ec 92,5635-5665,5675,5677-5679,5681-5685,5687-5689,5695-5704,5719-5721
+  s_03cd30a9579e0f::t_0ba78f6f1b38e7 483-490
+  s_03cd30a9579e0f::t_f4e087dbc9fe9e 5686,5690-5694
+  s_03cd30a9579e0f::t_de77e92d25822f 5666-5674,5676
+  s_03cd30a9579e0f::t_65deef63ede68c 4942-4958,4962-4965
+  s_03cd30a9579e0f::t_0702b2c76eea83 5705-5718,5722-5723
+  s_03cd30a9579e0f::t_0bb75dc99d4d9d 1291,2502-2503,2728,2978-2984,3128-3129,3358-3362,4816-4817,5491,5525
+  s_03cd30a9579e0f::t_9789c829df3534 4005,4007,5350,5352
+  s_03cd30a9579e0f::t_62f2ec27f82af7 5680
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_abc33e9362dc95 1891-1947
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4da2d35cce9904338ef9d2fd09bf0f6d1b7e29f4",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
