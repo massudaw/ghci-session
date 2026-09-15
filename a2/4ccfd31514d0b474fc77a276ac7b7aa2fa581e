@@ -1,0 +1,21 @@
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_1e064817d8fe25 2078-2099
+src/Solver/DES/SlotClass.hs
+  s_03cd30a9579e0f::t_9ef56c69be91ca 37-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a24ccfd31514d0b474fc77a276ac7b7aa2fa581e",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
