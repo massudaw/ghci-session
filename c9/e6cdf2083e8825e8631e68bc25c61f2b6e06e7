@@ -1,0 +1,36 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_03cd30a9579e0f::t_d10cf1084783d5 242,326-340,3816,7003-7022
+  s_03cd30a9579e0f::t_0f8eb13dbb0234 341-348,3818-3823
+  s_03cd30a9579e0f::t_f0a8f2b688dce8 349-354,3817,7023-7050
+  s_03cd30a9579e0f::t_f5aaaf77d098f0 266
+src/Solver/DES/Migrate.hs
+  s_03cd30a9579e0f::t_2cf2abd5caff75 38,273,275-296,299-300,320
+  s_03cd30a9579e0f::t_7bd7710873a861 78-86
+  s_03cd30a9579e0f::t_f0a8f2b688dce8 274,297-298
+  s_03cd30a9579e0f::t_0f8eb13dbb0234 39,301-319
+sprinkler-solver-shipping/src/Examples/ShippingMigrateProbe.hs
+  s_03cd30a9579e0f::t_2cf2abd5caff75 944,949
+  s_03cd30a9579e0f::t_342b1ccd5bee6a 976-982,989
+  s_03cd30a9579e0f::t_0f8eb13dbb0234 945-946,950,1001
+  s_03cd30a9579e0f::t_98e3345e7d6ae2 983-988
+golden/ShippingMigrateApi/final_state.txt
+  s_03cd30a9579e0f::t_98e3345e7d6ae2 1,3-4
+doc/des/RUNTIME_CONTROL_LIBRARY.md
+  s_03cd30a9579e0f::t_9915e947659e17 2040-2087
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c9e6cdf2083e8825e8631e68bc25c61f2b6e06e7",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
