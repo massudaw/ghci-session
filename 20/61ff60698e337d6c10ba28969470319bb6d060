@@ -1,0 +1,22 @@
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_03cd30a9579e0f::t_4ccafbb1db4527 731-765
+sprinkler-solver-desmonitor/sprinkler-solver-desmonitor.cabal
+  s_03cd30a9579e0f::t_edff84f7980182 73,75-79,81-103
+  s_03cd30a9579e0f::t_cdfbdc21360cbf 104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2061ff60698e337d6c10ba28969470319bb6d060",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
