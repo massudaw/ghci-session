@@ -1,0 +1,19 @@
+sprinkler-solver-process-tests/src/Examples/DESBuildTW.hs
+  s_03cd30a9579e0f::t_f473ddb590c378 315-383,418-435,460-462
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f6e58e27462b8daaada6862aaf9755f9eb4ee73e",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
