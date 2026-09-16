@@ -1,0 +1,19 @@
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_03cd30a9579e0f::t_51a7e0898144e1 367-368,370,372-386,388-409
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2931455d658f641df601d61a37bb04ffb0bbd1fb",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
