@@ -1,0 +1,29 @@
+sprinkler-solver-process-tests/src/Examples/DESSessionDriveTW.hs
+  s_03cd30a9579e0f::t_36b549624dd273 1-14,16-160,169-180,191-192,197-244
+  s_03cd30a9579e0f::t_dd8b41e5b7ebed 15
+  s_03cd30a9579e0f::t_e8907521e7a609 161-168,181-190,193-196
+golden/DESSessionDriveTW/final_state.txt
+  s_03cd30a9579e0f::t_245cd0443a692d 1-3
+golden/DESSessionDriveTW/status.txt
+  s_03cd30a9579e0f::t_245cd0443a692d 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_03cd30a9579e0f::t_36b549624dd273 58,65
+example/Main.hs
+  s_03cd30a9579e0f::t_36b549624dd273 278,629
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1d5a6aca15e0f64f536e1dc75a6d2bcf4ef248a4",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
