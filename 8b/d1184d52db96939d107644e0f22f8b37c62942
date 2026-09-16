@@ -1,0 +1,29 @@
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_03cd30a9579e0f::t_848a27e172f99f 907-909,1785,2846,2855,3919,4230
+  s_03cd30a9579e0f::t_25ffcb07b7e9c0 5766,5880,5886
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_03cd30a9579e0f::t_25ffcb07b7e9c0 470,739,820,846,848,859,898,900,1101,1123,1128,1204,1206,1483,1490
+  s_03cd30a9579e0f::t_848a27e172f99f 902,1154
+  s_03cd30a9579e0f::t_47f4fed2781945 367
+  s_03cd30a9579e0f::t_1c6e0dcf14a3a3 368-369,371-373,375-376,378-387,389-390,392-398
+sprinkler-solver-tx/src/Solver/DES/TxSTM.hs
+  s_03cd30a9579e0f::t_349003b65ff23d 242,528
+  s_03cd30a9579e0f::t_47f4fed2781945 76,100,125,408,503
+  s_03cd30a9579e0f::t_9f14d5fe9bd3b5 81,86,123,126,150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8bd1184d52db96939d107644e0f22f8b37c62942",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
