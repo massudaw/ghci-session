@@ -1,0 +1,40 @@
+sprinkler-solver-examples/src/Examples/VtShippingProbe.hs
+  s_03cd30a9579e0f::t_97ac2f03dc4d99 19,111,151,166-167
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_03cd30a9579e0f::t_7ec8870a9d80e8 473,1354,1406
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_03cd30a9579e0f::t_1a94f4b4195d37 1288
+sprinkler-solver-tx/src/Solver/DES/TxSTM.hs
+  s_03cd30a9579e0f::t_c5d7a191b898e2 236,314,316,337-338
+  s_03cd30a9579e0f::t_becbd0bcfbbbb4 57
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_03cd30a9579e0f::t_c5d7a191b898e2 1387,1930,1937,1944,1950,1998,2001,2295,2297-2299,2444-2447,2520-2523,2841
+  s_03cd30a9579e0f::t_becbd0bcfbbbb4 1902,2273,2609,2614
+sprinkler-solver-tx/src/Solver/DES/TxCoupled.hs
+  s_03cd30a9579e0f::t_b786fae99b5de5 23,68,90
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_03cd30a9579e0f::t_66077bc2de42d6 91,303,341-342,437,439,607,652,796,1147,1157,1217-1218,1281,1349,1409,1411,1466,1520,1756
+  s_03cd30a9579e0f::t_c5d7a191b898e2 368,927
+sprinkler-solver-tx/src/Solver/DES/RunProcess.hs
+  s_03cd30a9579e0f::t_1a94f4b4195d37 271,331,452,470
+sprinkler-solver-tx/src/Solver/DES/VtLower.hs
+  s_03cd30a9579e0f::t_b786fae99b5de5 187-188
+sprinkler-solver-examples/src/Examples/VtShippingRun.hs
+  s_03cd30a9579e0f::t_43ffb2efd2a5d0 20,411,657,660
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "34fd005720bb75d1e131ecdb64cb11ec1c689025",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
