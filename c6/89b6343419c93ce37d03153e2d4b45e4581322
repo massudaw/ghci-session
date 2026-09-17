@@ -1,0 +1,23 @@
+src/Solver/DES/Zygote.hs
+  s_03cd30a9579e0f::t_833b38121e1f00 51-55,58,60-62,76-131,224-227
+tools/model_session/session.py
+  s_03cd30a9579e0f::t_79284f6168edcf 864-871,1204-1213,1238-1245,1247-1254,1256,1321,1341-1344,1417-1419,1421
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_03cd30a9579e0f::t_3536077d85afa5 135-136,5576-5598,6287-6326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c689b6343419c93ce37d03153e2d4b45e4581322",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
