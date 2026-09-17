@@ -1,0 +1,25 @@
+sprinkler-solver-process-tests/src/Examples/SessionCI.hs
+  s_03cd30a9579e0f::t_0600d3ef3811cd 220-239,241
+  s_03cd30a9579e0f::t_291ca8ee48603e 48
+  s_03cd30a9579e0f::t_b9a4e8e9103085 186-189,191-192
+  s_03cd30a9579e0f::t_efb9a508c75f48 36-37,99-121,150-154,174,178-185,190,193,209,215-219,276-281
+tools/model_session/session.py
+  s_03cd30a9579e0f::t_53deaed2be380a 1414-1421
+  s_03cd30a9579e0f::t_67b14cde04c1e4 1285,1305-1309,1495-1496,2212-2216,2302-2304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "03df551bedd10a219723fc549dc5a795882054db",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
