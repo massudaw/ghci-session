@@ -1,0 +1,33 @@
+CLAUDE.md
+  s_03cd30a9579e0f::t_71c014112211b3 68-93,111,127-128,339
+tools/model_session/targets.json
+  s_03cd30a9579e0f::t_18719a116e3147 180-181
+  s_03cd30a9579e0f::t_a59214b9eaadf2 11-12,19-24,125-126,135-140,168-169,173-175,196-197,245,248-249,257-261,303-304,309-311,318-323,353-354,359-361,368-373,513-517,522-533,535-543,600,610-618,620-625
+  s_03cd30a9579e0f::t_cb402457862897 534,619
+tools/start_lng_au_shipping.sh
+  s_03cd30a9579e0f::t_cb402457862897 52-53
+tools/airport_route_times.py
+  s_03cd30a9579e0f::t_cb402457862897 28
+tools/model_session/session.py
+  s_03cd30a9579e0f::t_18719a116e3147 1515-1516,1538-1552,1661,1663
+  s_03cd30a9579e0f::t_1ab2e32a2eae7b 1656-1660
+  s_03cd30a9579e0f::t_1b7059292e3c5f 259-272
+tools/model_session/README.md
+  s_03cd30a9579e0f::t_39125d6d7151da 139,175,179,190-191,194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c4402a54e45424b881c3233ca8e89b6c420cb552",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
