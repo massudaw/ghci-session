@@ -1,0 +1,33 @@
+src/Building/Plumbing.hs
+  s_03cd30a9579e0f::t_244eba1dc4b53e 160,162-166,168-173,177-179,181,183-187,195-196
+  s_03cd30a9579e0f::t_df9a2390eae348 216-217,228-230,233-251,254-288,293,295-300,315-319
+  s_03cd30a9579e0f::t_46a6ee4bc1822a 90-94
+  s_03cd30a9579e0f::t_889c93267c07c9 1-28,30-80,82-89,95-96,98-159,161,167,174-176,180,182,197-215,218-227,231-232,252-253,289-292,294,301-314,320-327
+  s_03cd30a9579e0f::t_fd335ecc38f773 29,328-365
+  s_03cd30a9579e0f::t_12b0891298e677 81,97,188-194
+project.html
+  s_03cd30a9579e0f::t_577c9a09587bb6 94-96,142-143,149,291-306,352-353,435-436
+  s_03cd30a9579e0f::t_05729dc834a081 93
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_889c93267c07c9 225
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_03cd30a9579e0f::t_577c9a09587bb6 86,755-756,954-981
+tools/model_session/targets.json
+  s_03cd30a9579e0f::t_889c93267c07c9 135-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "337c34c6348f6dcac6a0799072dbfcce5c3d6804",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
