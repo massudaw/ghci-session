@@ -1,0 +1,19 @@
+src/Building/Gas.hs
+  s_03cd30a9579e0f::t_f4277c6777e873 30-35,154-233,260-261,263-264,466-471,473-474,477-480
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5ce79e3ce2e0d4ece9d002e5a2ad2f8ccb41783b",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
