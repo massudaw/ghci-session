@@ -1,0 +1,24 @@
+src/Drawing/Hydraulic.hs
+  s_03cd30a9579e0f::t_fc54d0c7077638 30,69-81,83,92-95
+src/Drawing/Network.hs
+  s_03cd30a9579e0f::t_658bed5ff6bc6d 1-26,28-57,86-195
+  s_03cd30a9579e0f::t_2da5f48490bf53 27,58-85
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_658bed5ff6bc6d 227
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "26b10c5b0d8cf76f496f6ac754152e948c0d8e23",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
