@@ -1,0 +1,31 @@
+src/Building/Gas.hs
+  s_03cd30a9579e0f::t_1e972b863f82b1 309-316,337
+  s_03cd30a9579e0f::t_9e8f2aa46dbd47 60-71,88,399-407,433-437
+  s_03cd30a9579e0f::t_ed4976ea2f5036 320-336
+  s_03cd30a9579e0f::t_9a282db9dc29dc 438-444,453-472
+golden/CondoDrawings/final_state.txt
+  s_03cd30a9579e0f::t_9ee44654d05170 14,77
+src/Hydraulic/Element.hs
+  s_03cd30a9579e0f::t_10f4077cc10f5c 320-334
+  s_03cd30a9579e0f::t_1e972b863f82b1 335
+src/Hydraulic.hs
+  s_03cd30a9579e0f::t_c48a221e587b2d 445-459
+  s_03cd30a9579e0f::t_4a58ca0da94c1f 308-314
+  s_03cd30a9579e0f::t_1e972b863f82b1 64-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "af2f1a1a35fa3f02bd6787d9999dac2e8e6b8da9",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
