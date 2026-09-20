@@ -1,0 +1,28 @@
+golden/CondoDesign/equations.txt
+  s_03cd30a9579e0f::t_3ce01afb5062dd 1,3-2079
+src/Building/Electric.hs
+  s_03cd30a9579e0f::t_ade44b6670e527 311-326,328,350-351,353-355,362-379,386-396,398,400-403,438-441,443-447
+  s_03cd30a9579e0f::t_97966cf124ba0a 472-485
+golden/CondoDesign/residuals.txt
+  s_03cd30a9579e0f::t_3ce01afb5062dd 833-1249,1669-2085
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_03cd30a9579e0f::t_726f18356c8a83 616-617,619-624,626-628,630-634
+golden/CondoDesign/solutions.txt
+  s_03cd30a9579e0f::t_3ce01afb5062dd 3-2078
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "475d27371f330ec9596b13c838fd985966a83004",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
