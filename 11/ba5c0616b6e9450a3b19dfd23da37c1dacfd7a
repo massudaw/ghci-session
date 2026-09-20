@@ -1,0 +1,24 @@
+tools/session_console.py
+  s_03cd30a9579e0f::t_f4fc369e832dfc 291-292,358-359,361-363,373-376,387-393
+  s_03cd30a9579e0f::t_e9427e7944dd1a 19-41,53-55,78-82,87-90,97-105,201,204-206,256-257,410-415,418-431
+tools/chat.py
+  s_03cd30a9579e0f::t_f4fc369e832dfc 21-27,34-35
+tools/chat_watch.py
+  s_03cd30a9579e0f::t_aa79d96ab63db7 1-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "11ba5c0616b6e9450a3b19dfd23da37c1dacfd7a",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
