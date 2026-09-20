@@ -1,0 +1,23 @@
+src/Hydraulic.hs
+  s_03cd30a9579e0f::t_ecad155d98197d 478-490
+golden/ModelHydraulicAirDuct/equations.txt
+  s_03cd30a9579e0f::t_e410eb1d615454 2-3
+src/Hydraulic/Element.hs
+  s_03cd30a9579e0f::t_abf1d2dc1481d5 371-383,385
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "303a00d0097b70e9dbd5d92ba9b82750c0588238",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
