@@ -1,0 +1,44 @@
+example/Main.hs
+  s_03cd30a9579e0f::t_91d42a7c8c2cd8 324,684
+  s_03cd30a9579e0f::t_777338597c5f04 370
+golden/CondoDrawings/status.txt
+  s_03cd30a9579e0f::t_e667087ac27b16 1
+src/Building/Sprinkler.hs
+  s_03cd30a9579e0f::t_c97a3dbec0ad1b 43,419-428
+  s_03cd30a9579e0f::t_db49efa236e85c 429
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_03cd30a9579e0f::t_94909c9f741d56 85-86,764-768,803-810,1036-1070,1072,1077-1079,1085-1091
+  s_03cd30a9579e0f::t_67f3ec380a1bc2 51
+  s_03cd30a9579e0f::t_7ccf9c3a037c27 1071,1073-1076,1080-1084
+  s_03cd30a9579e0f::t_be0443489087a0 1092
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_03cd30a9579e0f::t_eb7ddab4fb35cf 29
+schematics.html
+  s_03cd30a9579e0f::t_72a3f1631731d0 391-425
+  s_03cd30a9579e0f::t_b10411504b868a 38-51,60-61
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_03cd30a9579e0f::t_eb7ddab4fb35cf 1-41,44-53,55-56,58-60,67-89,94-96,199,203-236,239-250,253-258,260-265,283-292,294-297,299-303,305-330,332-335,337-339,341-360,365-393
+  s_03cd30a9579e0f::t_ff75fea799e288 42-43,266-282
+  s_03cd30a9579e0f::t_528fcf795c6b03 61-65,146-178,180-198,200-202,237-238,251-252,293,298,304,331,336,340
+  s_03cd30a9579e0f::t_41a5b2a60afbd7 66,90-93,98-120,129-138,140-145,179,259,361-364
+  s_03cd30a9579e0f::t_aec647ae5fecf5 54,57,97,121-128,139
+golden/CondoDrawings/final_state.txt
+  s_03cd30a9579e0f::t_e667087ac27b16 1-3,5-7,9
+  s_03cd30a9579e0f::t_c0670d6768d20f 4,8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "921ad5f836531b8ee4ecc00590d3318115c71945",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
