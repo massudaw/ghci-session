@@ -1,0 +1,21 @@
+tools/chat.py
+  s_03cd30a9579e0f::t_3057c026e11f43 1-48
+tools/session_console.py
+  s_03cd30a9579e0f::t_c02d5081e33bc0 1-370
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fbaf7d97011a82c3a1b61ed65e19ac5d62a192fd",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
