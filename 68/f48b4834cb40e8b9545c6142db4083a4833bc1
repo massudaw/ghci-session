@@ -1,0 +1,74 @@
+src/Drawing/Types.hs
+  s_736fd9992c0417::t_7872fe3512cb72 1-32,35,38-131,160-168,170-174,176-198
+  s_736fd9992c0417::t_0ef8958300c91f 33-34,36-37,132-159,169,175
+sprinkler-solver-examples/src/Examples/SaoJorgeDrawing.hs
+  s_736fd9992c0417::t_e49499a793025e 62,87
+  s_736fd9992c0417::t_b00b7e35175f62 1-61,63-86,88-117
+CLAUDE.md
+  s_736fd9992c0417::t_730f18b68789b1 563-580
+golden/SaoJorgeDrawing/final_state.txt
+  s_736fd9992c0417::t_847479670ab8a9 1-4
+golden/SaoJorgeDrawing/status.txt
+  s_736fd9992c0417::t_847479670ab8a9 1
+src/Drawing/Emit/DXF.hs
+  s_736fd9992c0417::t_0ef8958300c91f 47
+  s_736fd9992c0417::t_352ed11cf745b1 1-46,48-211
+src/Drawing/Project.hs
+  s_736fd9992c0417::t_e5072ef9b4b9ba 17,50-54
+  s_736fd9992c0417::t_beabb452c14050 1-16,18-49,55-124
+src/Drawing/Legend.hs
+  s_736fd9992c0417::t_061d25853b6491 1-68
+src/Drawing/Hydraulic.hs
+  s_736fd9992c0417::t_071a04cef95651 89,109-119
+  s_736fd9992c0417::t_e5072ef9b4b9ba 70-71,82
+  s_736fd9992c0417::t_809439e4a6fd90 1-69,72-81,83-88,90-100,102,108,120-149,154-156,158-194
+  s_736fd9992c0417::t_7ffdf33b8b78f5 101,103-107,150-153,157
+src/Drawing/Plan.hs
+  s_736fd9992c0417::t_23ed19adc5f9cc 22
+  s_736fd9992c0417::t_4d63a3a1ad4c83 1-21,23-32,38-49,52-58,61,63,81-104,106-130
+  s_736fd9992c0417::t_4a9218d9273693 33-37,50-51,59-60,62,64-80
+  s_736fd9992c0417::t_70f2d590f4bfc9 105
+DRAWINGS.md
+  s_736fd9992c0417::t_698c2ba51796af 1-175
+sprinkler-solver.cabal
+  s_736fd9992c0417::t_809439e4a6fd90 224-227
+  s_736fd9992c0417::t_47ee2bcb5cc70f 230-231
+  s_736fd9992c0417::t_6af3c5648fcabb 222-223,229
+  s_736fd9992c0417::t_4d63a3a1ad4c83 228
+src/Drawing/Emit/SVG.hs
+  s_736fd9992c0417::t_786e95adae64d7 39-44,46-47,49-53,56,74-75,84,86,96,102,115
+  s_736fd9992c0417::t_0ef8958300c91f 38
+  s_736fd9992c0417::t_f672ad1a8a8469 1-37,45,48,54-55,57-73,76-83,85,87-95,97-101,103-114,116-133
+src/Drawing/Emit/PDF.hs
+  s_736fd9992c0417::t_47ee2bcb5cc70f 1-31,33-119,127-166,171,173-250
+  s_736fd9992c0417::t_eba13451c248ea 167-170,172
+  s_736fd9992c0417::t_1024024f7e71ba 120-126
+  s_736fd9992c0417::t_0ef8958300c91f 32
+.gitignore
+  s_736fd9992c0417::t_a3701569a41d78 18-20
+src/Drawing/Symbols.hs
+  s_736fd9992c0417::t_3b826088ed810d 1-143
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_736fd9992c0417::t_627196f0cd7350 93
+example/Main.hs
+  s_736fd9992c0417::t_7cbb7308383761 35,360,489
+src/Drawing/Sheet.hs
+  s_736fd9992c0417::t_0089d9b3e8aa60 1-99,101-105,107-119,121-219
+  s_736fd9992c0417::t_0ef8958300c91f 100,106,120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "68f48b4834cb40e8b9545c6142db4083a4833bc1",
+  "prompts": {},
+  "sessions": {
+    "s_736fd9992c0417": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "928902fe-86a4-52d7-8e95-d946a10e5fd8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
