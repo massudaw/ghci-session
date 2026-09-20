@@ -1,0 +1,24 @@
+src/Hydraulic/Element.hs
+  s_03cd30a9579e0f::t_2c5d5d548f0451 335-346
+src/Building/Gas.hs
+  s_03cd30a9579e0f::t_2c5d5d548f0451 423-426
+src/Hydraulic.hs
+  s_03cd30a9579e0f::t_cd71be77a6bdfa 84-85
+  s_03cd30a9579e0f::t_2c5d5d548f0451 73,77-78,86-90,333,483
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a6ab21497d1c7a17a0da3a4593bf1766aabe0e79",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
