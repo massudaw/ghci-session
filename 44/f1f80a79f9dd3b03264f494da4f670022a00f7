@@ -1,0 +1,21 @@
+project.html
+  s_03cd30a9579e0f::t_45bf2e342b721d 212-223,235-240,243-303,305
+  s_03cd30a9579e0f::t_e67949eb71bb12 224-234
+  s_03cd30a9579e0f::t_b5c339f4d61cda 699-703,814-816,847-849,857-862
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "44f1f80a79f9dd3b03264f494da4f670022a00f7",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

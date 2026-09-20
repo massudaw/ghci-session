@@ -1,0 +1,25 @@
+src/Building.hs
+  s_03cd30a9579e0f::t_f4f1d7fe14b9ff 89-93
+  s_03cd30a9579e0f::t_7c1cc80e9fbf11 187-192,197
+project.html
+  s_03cd30a9579e0f::t_42554c4b78511e 112-113
+sprinkler-solver-construction/src/Examples/CondoBuilding.hs
+  s_03cd30a9579e0f::t_18d9f5b5060885 37,46,341,350-379
+  s_03cd30a9579e0f::t_f4f1d7fe14b9ff 55,59-86,115-116,118,210,232-254,257-267,285,298-300,303,325-340,342-349
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "beb1ed0ce5ff1e7cfd4fe1b704c5f68d8690ab98",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
