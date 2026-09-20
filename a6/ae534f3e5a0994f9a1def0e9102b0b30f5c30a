@@ -1,0 +1,19 @@
+golden/ShippingMigrateApi/fingerprint.txt
+  s_03cd30a9579e0f::t_10f1df20d53431 1,12-14,18-20,22,24-25,32-34,37,40-41,50-51,56-59,70,76,79,86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a6ae534f3e5a0994f9a1def0e9102b0b30f5c30a",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
