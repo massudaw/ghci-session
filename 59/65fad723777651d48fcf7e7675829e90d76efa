@@ -1,0 +1,31 @@
+golden/CondoDesign/final_state.txt
+  s_03cd30a9579e0f::t_8454e056549591 1-2,20,46-47
+tools/model_session/targets.json
+  s_03cd30a9579e0f::t_bbbe3ff4e41069 130
+src/Building/Geometry.hs
+  s_03cd30a9579e0f::t_86a7062dba75a4 1-98
+src/Building/Plumbing.hs
+  s_03cd30a9579e0f::t_74efd0ceac9b4a 615-618
+  s_03cd30a9579e0f::t_23a6196347fd74 654-666
+  s_03cd30a9579e0f::t_dd2609302f6e7c 647-650,652,669
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_86a7062dba75a4 237
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_03cd30a9579e0f::t_f6c20e998c1d6d 42,165-186,329-336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5965fad723777651d48fcf7e7675829e90d76efa",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
