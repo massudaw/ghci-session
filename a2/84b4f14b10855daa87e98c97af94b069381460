@@ -1,0 +1,35 @@
+sprinkler-solver-tx/src/Solver/DES/TxSTM.hs
+  s_03cd30a9579e0f::t_868384502c35a6 78
+sprinkler-solver-tx/src/Solver/DES/VtTimeWarp.hs
+  s_03cd30a9579e0f::t_868384502c35a6 596
+  s_03cd30a9579e0f::t_02b00f345b1340 1-2
+sprinkler-solver-tx/src/Solver/DES/Tx.hs
+  s_03cd30a9579e0f::t_868384502c35a6 1-3,148-188,208,219,224,228
+  s_03cd30a9579e0f::t_f4db2043180aa6 84
+  s_03cd30a9579e0f::t_07d2b2c2ed852b 214
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_03cd30a9579e0f::t_0412c051196c71 169,179,273,402,439,552
+  s_03cd30a9579e0f::t_6fc04d637d3152 556
+  s_03cd30a9579e0f::t_c24c862a8db462 147,152,168,178,260,271,389,437,468
+  s_03cd30a9579e0f::t_dc462b180b2344 406,553
+  s_03cd30a9579e0f::t_8b8b253d38526f 112
+  s_03cd30a9579e0f::t_868384502c35a6 144,151,155,162,182,191,242,246,250,268,384,435,462,479,503,511,519,526,620,624,642
+  s_03cd30a9579e0f::t_8ff8200bf5a068 565,572,576,584,590,597-599,603,672,681,715,718-719,721-722,729,731
+  s_03cd30a9579e0f::t_66bac1307bf031 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a284b4f14b10855daa87e98c97af94b069381460",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

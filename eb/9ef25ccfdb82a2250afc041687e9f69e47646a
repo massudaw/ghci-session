@@ -1,0 +1,28 @@
+sprinkler-solver-tx/src/Solver/DES/TxSTMOnline.hs
+  s_03cd30a9579e0f::t_d51e3d7f682302 86
+  s_03cd30a9579e0f::t_71643b02bcbc35 63,1113,1115-1147
+  s_03cd30a9579e0f::t_4eeb7d5be6861b 1195-1196,1237-1244,1252,1270-1271,1287-1295
+  s_03cd30a9579e0f::t_35bf23e752aade 1155-1173,1177-1179,1182-1185
+sprinkler-solver-desmonitor/src/Examples/DESLiveMonitor.hs
+  s_03cd30a9579e0f::t_7ffe10ebe27e29 2143
+  s_03cd30a9579e0f::t_42da86f413e948 1681-1695,1924,1926-1942
+  s_03cd30a9579e0f::t_3b3ba8d942ae98 603-611,1547,1565-1566,1846-1854,1908-1923,1925
+  s_03cd30a9579e0f::t_43abbd5d09bd1d 173,1869-1907
+  s_03cd30a9579e0f::t_e855a78d94c540 1943
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eb9ef25ccfdb82a2250afc041687e9f69e47646a",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

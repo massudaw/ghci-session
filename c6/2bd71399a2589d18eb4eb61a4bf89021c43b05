@@ -1,0 +1,33 @@
+golden/DESBuildTW/status.txt
+  s_03cd30a9579e0f::t_217adfc3be388d 1
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_03cd30a9579e0f::t_580a8f95f2e604 55
+example/Main.hs
+  s_03cd30a9579e0f::t_580a8f95f2e604 276,626
+sprinkler-solver-process-tests/src/Examples/DESBuildTW.hs
+  s_03cd30a9579e0f::t_da97f460226b1d 105-111
+  s_03cd30a9579e0f::t_4f209eac17e789 131,134,137-138
+  s_03cd30a9579e0f::t_d6fb4ceb7a77f8 1,3-8,10,12-16,18-22,24-25,27-29,31-40,49-50,54,60-64,69-71,73-74,77-88,92-99,117-120,126-128,130,143-144,147-149,151,154-158,169-175,179-180,182-189,192-197
+  s_03cd30a9579e0f::t_20722a59f6a351 68,72,75,89,100-104,116,121-125,129,139-142,145,150,152-153,159-168
+  s_03cd30a9579e0f::t_e625c11540a021 51,65-67,132-133,135-136,146
+  s_03cd30a9579e0f::t_580a8f95f2e604 2,9,11,17,23,26,30,41-47,52-53,55-59,76,90-91,176-178,181,190-191
+  s_03cd30a9579e0f::t_2c75c2504ee4f2 48,112-115
+golden/DESBuildTW/final_state.txt
+  s_03cd30a9579e0f::t_217adfc3be388d 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c62bd71399a2589d18eb4eb61a4bf89021c43b05",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
