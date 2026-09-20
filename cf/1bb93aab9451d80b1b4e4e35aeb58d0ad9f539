@@ -1,0 +1,20 @@
+sprinkler-solver-examples/src/Examples/CondoRender.hs
+  s_03cd30a9579e0f::t_a2ea0b62d59393 34-37,200,202-216,219-234
+  s_03cd30a9579e0f::t_18028f16b2fc48 53,304,327-336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cf1bb93aab9451d80b1b4e4e35aeb58d0ad9f539",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
