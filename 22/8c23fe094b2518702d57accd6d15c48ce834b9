@@ -1,0 +1,21 @@
+sim-controls.js
+  s_03cd30a9579e0f::t_e0fdbb50706ab4 195-201
+construction.html
+  s_03cd30a9579e0f::t_e0fdbb50706ab4 1512-1524
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "228c23fe094b2518702d57accd6d15c48ce834b9",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
