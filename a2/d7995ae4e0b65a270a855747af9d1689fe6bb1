@@ -1,0 +1,33 @@
+src/Building/Frame.hs
+  s_03cd30a9579e0f::t_e47de4bafc2214 218-220,222-236,245-251,254,256,258-259,261-267,273-286,309,317-321,326-327
+  s_03cd30a9579e0f::t_ea60fd7cb41019 1-54,56,60-71,74-217,221,237-244,252-253,255,257,260,268-272,287-308,310-316,322-325,328-367,384-385,387,390-391,427-434,436-447,495-521
+  s_03cd30a9579e0f::t_1bbcdf037530cc 73
+  s_03cd30a9579e0f::t_2f34d104e9132b 386,435
+  s_03cd30a9579e0f::t_35309a13404d25 72
+  s_03cd30a9579e0f::t_63185c1ddbe13c 55,57,406-426
+  s_03cd30a9579e0f::t_699372db7cc3e9 58-59,448-494
+  s_03cd30a9579e0f::t_aeb31b81534a52 368-383,388-389,392-405
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_03cd30a9579e0f::t_c5a8c1c8deff0f 54,186-187,275-297
+  s_03cd30a9579e0f::t_fb5d3ef9019aa0 357,391-402
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_db031ed503b23f 246
+golden/CondoDesign/final_state.txt
+  s_03cd30a9579e0f::t_29d8aade9654b7 1-3,11-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a2d7995ae4e0b65a270a855747af9d1689fe6bb1",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
