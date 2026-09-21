@@ -1,0 +1,31 @@
+golden/ModelHydraulicTransient/equations.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 2-4,15-17
+golden/ModelSimple/equations.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 2-15
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 2-6
+golden/ModelSaoJorge/equations.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 2-6,18-21,33-36,48-51,63-66,78-81,93-96,108-111,123-126,138-141,153-156,168-171,183-186,198-201,213-216,228-231,243-246,258-261,273-276,288-291,303-306,318-321,333-336,348-351,363-366,378-381,393-406
+golden/ModelSimple2/equations.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 2-4
+src/Hydraulic/Tee.hs
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 194-218
+golden/ModelFireSprinkler/fingerprint.txt
+  s_03cd30a9579e0f::t_0c54cfbea50b0e 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b8ab536493bbced11050d3188a855685b8da33a2",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
