@@ -1,0 +1,51 @@
+golden/ModelFireSprinkler/final_state.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 4,6
+golden/ModelSaoJorge/solutions.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2-692,694-696,699-1087,1089,1091,1093,1095,1097,1099
+golden/ModelHydraulicTransient/solutions.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2-5,7-8,10-11
+golden/ModelSimple2/equations.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2,4
+golden/ModelHydraulicTransient/transient.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 6,11,16,20,22,24,27-29
+golden/ModelFireSprinkler/fingerprint.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 3-4
+golden/ModelHydraulicTransient/equations.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2,4,15,17,28,30
+src/Project.hs
+  s_03cd30a9579e0f::t_214096e55acc58 428-439
+src/Hydraulic.hs
+  s_03cd30a9579e0f::t_214096e55acc58 520-531,565-576
+golden/ModelSimple/equations.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2-3,5-6,8-9,11-15
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2,4,6
+golden/ModelSaoJorge/equations.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2-5,19-20,34-35,49-50,64-65,79-80,94-95,109-110,124-125,139-140,154-155,169-170,184-185,199-200,214-215,229-230,244-245,259-260,274-275,289-290,304-305,319-320,334-335,349-350,364-365,379-380,394-396,398,400,402,404,406
+golden/ModelSimple/solutions.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 17-25,27
+golden/CondoDesign/final_state.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 12-13,17,20
+golden/ModelHydraulicPipeNetwork/solutions.txt
+  s_03cd30a9579e0f::t_3b918372f1142d 2-9,11-16
+golden/resetmiss_allowlist.txt
+  s_03cd30a9579e0f::t_aa01087048da88 171-178,189-195,219-222
+src/Building/Sprinkler.hs
+  s_03cd30a9579e0f::t_cbce781458426e 282
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cab344f4c97672f52897a86f89ed2c5ef8a099a1",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
