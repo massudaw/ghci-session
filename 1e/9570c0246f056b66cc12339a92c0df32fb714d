@@ -1,0 +1,45 @@
+golden/ModelHydraulicTransient/transient.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 6,9
+src/Hydraulic.hs
+  s_03cd30a9579e0f::t_55d50c367e7e9a 468,490
+golden/ModelSimple/solutions.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 17-25,27
+golden/ModelSimple/equations.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-15
+golden/ModelHydraulicPipeNetwork/solutions.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-9,11-16
+golden/ModelSimple2/equations.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-4
+golden/ModelHydraulicPipeNetwork/equations.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-6
+golden/resetmiss_allowlist.txt
+  s_03cd30a9579e0f::t_79ecd6a76baf77 170-202
+golden/ModelHydraulicTransient/equations.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-4,15-17
+golden/ModelSaoJorge/solutions.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-37,39-63,65-89,91-115,117-141,143-167,169-692,694-696,699-1087,1089,1091,1093,1095,1097,1099
+golden/CondoDesign/final_state.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 12-13,17,20
+golden/ModelSaoJorge/equations.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2-6,18-21,33-36,48-51,63-66,78-81,93-96,108-111,123-126,138-141,153-156,168-171,183-186,198-201,213-216,228-231,243-246,258-261,273-276,288-291,303-306,318-321,333-336,348-351,363-366,378-381,393-406
+golden/ModelFireSprinkler/final_state.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 2,4-7
+golden/ModelFireSprinkler/fingerprint.txt
+  s_03cd30a9579e0f::t_050927d3caa3af 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1e9570c0246f056b66cc12339a92c0df32fb714d",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
