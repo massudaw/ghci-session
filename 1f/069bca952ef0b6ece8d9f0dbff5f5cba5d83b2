@@ -1,0 +1,23 @@
+src/Drainage.hs
+  s_03cd30a9579e0f::t_4ae05b59176dfe 51-52,81-87,146-155,224-228
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_d3d34bacbb86a7 244
+src/Building/FloorFalls.hs
+  s_03cd30a9579e0f::t_d3d34bacbb86a7 1-134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1f069bca952ef0b6ece8d9f0dbff5f5cba5d83b2",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
