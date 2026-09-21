@@ -1,0 +1,25 @@
+src/Building/HotWater.hs
+  s_03cd30a9579e0f::t_8b272bab82cbba 43-45,51-56,75-85,98
+  s_03cd30a9579e0f::t_e3c6f8d5926363 314-438
+golden/CondoDrawings/final_state.txt
+  s_03cd30a9579e0f::t_ac711335b41e66 15-16,74,76
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_03cd30a9579e0f::t_4e89d4c4cb86da 567-576,602-623
+  s_03cd30a9579e0f::t_5aadf67bcce49a 798
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ca9ae76c32d8f8a88644a52937160180c863210c",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
