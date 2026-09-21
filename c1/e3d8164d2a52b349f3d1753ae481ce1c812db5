@@ -1,0 +1,23 @@
+src/Drainage.hs
+  s_03cd30a9579e0f::t_142517d15d5cc8 126-128
+  s_03cd30a9579e0f::t_784057aae5275c 102-125
+  s_03cd30a9579e0f::t_73bc8d56934790 1-101,129-219
+sprinkler-solver.cabal
+  s_03cd30a9579e0f::t_73bc8d56934790 218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c1e3d8164d2a52b349f3d1753ae481ce1c812db5",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
