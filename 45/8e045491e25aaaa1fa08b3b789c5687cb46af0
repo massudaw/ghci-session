@@ -1,0 +1,23 @@
+tools/check_page_ui.mjs
+  s_03cd30a9579e0f::t_c841dd637768b9 1-101
+validate_golden_tests.sh
+  s_03cd30a9579e0f::t_d00a9d0cdb6154 81-102
+schematics.html
+  s_03cd30a9579e0f::t_07252e00e3b19e 93-101,104-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "458e045491e25aaaa1fa08b3b789c5687cb46af0",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
