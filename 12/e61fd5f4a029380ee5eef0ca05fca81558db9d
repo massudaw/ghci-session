@@ -1,0 +1,38 @@
+schematics.html
+  s_03cd30a9579e0f::t_9ceb887a308ad5 76-79,100-104
+  s_03cd30a9579e0f::t_e64e6ee0e6ffc8 110-113,119-120,123,125,135-139,145-146,184,192,197
+  s_03cd30a9579e0f::t_ab53004808f212 115-118
+  s_03cd30a9579e0f::t_a7be159671a1a7 38-39
+golden/CondoDrawings/final_state.txt
+  s_03cd30a9579e0f::t_52c1413a0da096 53-54,58-59,63-64,68-69,73-74,78-79,83-84,88-89,93-94,98-99,103-104,108-109,113-114,118-119
+DRAWINGS.md
+  s_03cd30a9579e0f::t_907d9f65a2978b 108-139
+src/Drawing/Plan.hs
+  s_03cd30a9579e0f::t_998afc620099db 46-57,69-70,178-183
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_03cd30a9579e0f::t_175b7266080f54 62
+  s_03cd30a9579e0f::t_edd45811c7127d 1097,1102-1107
+  s_03cd30a9579e0f::t_9694ae6d3f6de6 906-954
+  s_03cd30a9579e0f::t_d5703ee0990458 46-47,840,842-857,889,892,896,903-904
+  s_03cd30a9579e0f::t_a9f1e09d4b722b 905
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_03cd30a9579e0f::t_7992e484ef0ffd 90-91,824-825,829-836,838-847,849-858
+  s_03cd30a9579e0f::t_68226e79378878 837,848
+  s_03cd30a9579e0f::t_3648348a02e5bc 859
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "12e61fd5f4a029380ee5eef0ca05fca81558db9d",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
