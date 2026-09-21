@@ -1,0 +1,324 @@
+golden/DESSymbolicPhaseTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-11
+golden/ModelOttoCycle/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RouteField/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/VasicekSwapExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelMotorInertia/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelTES/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ShipFleetOpt/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/PortfolioDelinquency/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRotationalMotorMagnetic/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RatesOnlineEKF/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1,7-8
+golden/ModelGovernorPI/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelQuadcopter/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/LqgClosedLoopExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESFalsifyDistillery/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRelaxationOsc/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/OptionGreeksExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelThermalPlateStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BankRiskMaster/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/RatesFastPath/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelGovernor/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelBouncingBall/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESUnifiedLine/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelClosedLoopEnergyCycle/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelMotorBackEMF/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/FXAccumulatorExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESSharedRoom/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/SwaptionExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelFrameStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelDCPump/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESExploreDistilleryNative/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/CEventRearmBlockTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BlackScholesPutExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/CompositionalPdeExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-4
+golden/DelinquencyLadder/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/DESElectricLoad/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/IDATransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESPortTerminal/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelLiftRegenDES/transient.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 9-18
+golden/ModelLNGTrain/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelRotationalMotor/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRLCTransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/FXOptionHedgingExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BermudanSwaptionExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/HeatEquationExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESExploreShopNative/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/MertonJumpExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/ModelThermoEngine/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RiskPortfolioDES/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelDesSwitchRC/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ForceQuarterCar/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelSyncSwitchRC/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESDistillery/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/ModelLNGTrainAU/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelLiftRegen/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/LNGOpsAU/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelHybridVehicle/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelBattery/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BiharmonicExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BankTicketSlotsTW/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 3
+golden/DigitalOptionExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/HestonPricingExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/ModelLiftRegenDES/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RatesCurveInModel/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESFanOut/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelCoolingLoopDC/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/StateMachineTW/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelIdealSwitchRC/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/StochasticVolEkfExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelDiodeClamp/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DerivSlotSettleTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelNeuronSpike/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESMoldingShop/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/GasChamberHeating/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelSliderCrank/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/HelmholtzResonator/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelCarDrive/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/DESDispatch/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelACStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelThermostatHysteresis/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelThermostat/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelCarForceStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelFertilizerTransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelCombustionEngine/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/OptionVegaExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/ModelExcavatorArm/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ChemicalCapacitanceRepro/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESProcessFuzzTW/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-5,7-13,17-21,24-25,28,30-45
+golden/ModelBouncingBallDamped/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelFrictionSlide/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRelayBank/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelThermostatDES/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelChemicalTransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelDCMotorCTMS/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/FokkerPlanckExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESReactorTank/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESControlPolicyFalsify/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESBackPressure/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/StateMachineTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESFactoryLine/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/SurfaceSlotSettleTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/DESAccountingLedger/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelPneumaticAccumulator/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelGasPiston/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ForceOscillator/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+src/Solver/HybridDAE.hs
+  s_03cd30a9579e0f::t_4d517242996f9e 807-840,843-844
+golden/DESAgentHarness/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-4
+golden/GasCompression/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelACConditioner/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelBeamStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelSupervisedCooling/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelParamFD/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelMagneticTransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESParallelLines/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESQueue/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESAccountingLedgerStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESRandRouteHybrid/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelFireSprinkler/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/NonlinearPdeExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/DESPureParity/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/ForceCar/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/LqgOffsetFreeExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RealMarketExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/FXDynamicHedgingExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/NonlinearBayesExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/VasicekKalmanExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelPneumaticGasSpring/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelPneumaticSuspension/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRotationalTranslational/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelTorqueVector/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/KalmanObserverExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelLadderStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESCoupledFuzz/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-31
+golden/ModelThermostatTW/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 2
+golden/ModelMassSpringStress/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/EkfNonlinearControlExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/ModelCarForce/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/BlackScholesExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRotationalInertia/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ResCtxRepointTest/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESControlPolicyFalsifyV3/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/HFTLatencyRace/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/MargrabeExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-2
+golden/AmericanOptionExample/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelMultiStageThermalTransient/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ForceHalfCar/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/RatesParity/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESConstructionSite/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 5
+golden/ModelFreewheel/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/DESForkCoupledGap/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/LNGOps/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1-3
+golden/DESControlPolicyFalsifyV5/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+golden/ModelRelayReactor/fingerprint.txt
+  s_03cd30a9579e0f::t_9c2492b857c3ff 1
+src/Model/FireSprinklerCoupling.hs
+  s_03cd30a9579e0f::t_4d517242996f9e 52,171-201
+  s_03cd30a9579e0f::t_f49c3b9bdd5e59 202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a1b87118268132c2bc1c84f030919340c1c5f4da",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
