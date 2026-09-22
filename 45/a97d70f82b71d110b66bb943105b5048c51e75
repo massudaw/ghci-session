@@ -1,0 +1,24 @@
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGShadersRT.hs
+  s_be463383785c97::t_5e2b0a1e282ffb 113-117,1113-1219,1221-1249,1251-1256,1307-1331
+  s_be463383785c97::t_cbe2b219a86fdf 1220,1250,1257-1259
+sprinkler-solver-examples/src/Examples/CondoRender.hs
+  s_be463383785c97::t_92d26a50bb136f 436-441,443-444
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGViewer.hs
+  s_be463383785c97::t_0fee43e208eed0 96-103,118-119,1547-1548,1567,1572-1594
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "45a97d70f82b71d110b66bb943105b5048c51e75",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
