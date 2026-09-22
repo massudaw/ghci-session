@@ -1,0 +1,31 @@
+src/Building/Frame.hs
+  s_03cd30a9579e0f::t_6d526dc9f5947f 56-57,570-596
+  s_03cd30a9579e0f::t_addbf0402ffd70 597
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_03cd30a9579e0f::t_36347640563a3b 842-843
+  s_03cd30a9579e0f::t_b672d797360fbb 96,830-841,844-853
+  s_03cd30a9579e0f::t_4ce1f12afb9f39 854
+construction.html
+  s_03cd30a9579e0f::t_42a7d1e1293b07 134-138
+  s_03cd30a9579e0f::t_2e8ed29f7662e3 256-262
+  s_03cd30a9579e0f::t_dfb549cc8565ca 870,872-889,896-928,937-938,945
+  s_03cd30a9579e0f::t_bac2ce52a37d23 252-253,853-869,894-895,929-936,939-944,946-957,1037-1046,1048,2341-2343
+  s_03cd30a9579e0f::t_013bf55b9c7ff3 871,890-893
+  s_03cd30a9579e0f::t_e312f1de64d1f4 2344-2345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9ab66eceea49dfd8a007bccb372b18a828c097b8",
+  "prompts": {},
+  "sessions": {
+    "s_03cd30a9579e0f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbe71f4a-8d2e-56c0-b552-333821c2869e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
