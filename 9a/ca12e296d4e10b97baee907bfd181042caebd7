@@ -1,0 +1,29 @@
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGShadersRT.hs
+  s_be463383785c97::t_e49b3905fec397 124-126,1661-1673
+sprinkler-solver-rendering/src/Rendering/Denoise.hs
+  s_be463383785c97::t_ff27424c3d3082 1-106
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGViewer.hs
+  s_be463383785c97::t_14d72f5de46da0 47-48,125-128,153,1584,1663-1664,1666,1675-1683,1685-1688,1690-1712
+sprinkler-solver-rendering/sprinkler-solver-rendering.cabal
+  s_be463383785c97::t_1ae3c898c40f30 55
+sprinkler-solver-examples/src/Examples/CondoInteriorRender.hs
+  s_be463383785c97::t_1ae3c898c40f30 216
+sprinkler-solver-examples/src/Examples/CondoRender.hs
+  s_be463383785c97::t_1ae3c898c40f30 535
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9aca12e296d4e10b97baee907bfd181042caebd7",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
