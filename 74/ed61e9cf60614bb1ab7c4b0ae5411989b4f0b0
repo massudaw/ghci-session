@@ -1,0 +1,34 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_be463383785c97::t_96f363e3a8a44f 29
+sprinkler-solver-construction/src/Examples/CondoProgramme.hs
+  s_be463383785c97::t_cd247ea9c42b57 1-91,93-94,96-105
+  s_be463383785c97::t_e8043f6a3a4a56 92,95
+sprinkler-solver.cabal
+  s_be463383785c97::t_227d6f9ae97228 256
+example/Main.hs
+  s_be463383785c97::t_96f363e3a8a44f 325,372,687
+src/Building/Programme.hs
+  s_be463383785c97::t_29c6a6e9b6b09d 511-512
+  s_be463383785c97::t_4dd35ec157cab0 1-338,342-432,434-510,513-534,536-713
+  s_be463383785c97::t_227d6f9ae97228 339-341,433,535
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_df2d1b857a3562 1-53
+golden/CondoProgramme/status.txt
+  s_be463383785c97::t_8928ceda07f40a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "74ed61e9cf60614bb1ab7c4b0ae5411989b4f0b0",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
