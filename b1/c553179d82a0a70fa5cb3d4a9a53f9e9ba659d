@@ -1,0 +1,31 @@
+sprinkler-solver-construction/src/Examples/DESConstructionSite.hs
+  s_be463383785c97::t_f4af1a5774b2c5 947
+  s_be463383785c97::t_493083bc74f40b 952-958
+  s_be463383785c97::t_ed7255f5c7786b 746,940-946,948-949,959,963,1285-1295,1339,1344
+  s_be463383785c97::t_fdba104e80358e 109,111-117,119
+  s_be463383785c97::t_24b89271b579a6 776-778
+golden/DESConstructionSite/fingerprint.txt
+  s_be463383785c97::t_79f2eb3de3b069 1-6,8,10,12-13,15-100,102-103,106-110,112,115-116
+golden/DESConstructionSite/final_state.txt
+  s_be463383785c97::t_79f2eb3de3b069 1-2,10-16,19,29-32
+tools/model_session/targets.json
+  s_be463383785c97::t_9098b61106648b 159
+golden/DESConstructionSite/tapestats.txt
+  s_be463383785c97::t_79f2eb3de3b069 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b1c553179d82a0a70fa5cb3d4a9a53f9e9ba659d",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
