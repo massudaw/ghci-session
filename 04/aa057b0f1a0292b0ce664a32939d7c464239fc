@@ -1,0 +1,41 @@
+src/Drawing/Symbols.hs
+  s_be463383785c97::t_f4bdfe00b5e23d 33,82-87,181-186
+  s_be463383785c97::t_4a70beb66048d5 187
+project.html
+  s_be463383785c97::t_b7d76060dbe619 89,183-187,226,229,562-570,572-582,652-653,679,689-691,835-871
+  s_be463383785c97::t_48de0877f073ee 571
+  s_be463383785c97::t_887b9901402d3c 872
+golden/CondoDrawings/final_state.txt
+  s_be463383785c97::t_d7a89623180dac 57,133-137
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_be463383785c97::t_aebff8ff398ac7 72-74,86,953-954,1005,1028-1049,1051-1052,1054-1070,1080-1090,1092-1093
+  s_be463383785c97::t_41923aad428a39 62
+  s_be463383785c97::t_bfba5ea5f21876 1050,1053,1071-1079,1091
+  s_be463383785c97::t_b960e86e0327e6 1094
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_48de0877f073ee 222,400-403
+src/Building/Egress.hs
+  s_be463383785c97::t_752e62095e7da0 46-49,55,368-439
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_d7a89623180dac 1-2
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_01e5d8620fd313 87-88,842-848,1495-1526,1528-1548
+  s_be463383785c97::t_47d0e014f88b1c 1527
+  s_be463383785c97::t_25f3ce99b4f955 1549
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "04aa057b0f1a0292b0ce664a32939d7c464239fc",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
