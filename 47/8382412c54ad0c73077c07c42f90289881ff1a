@@ -1,0 +1,30 @@
+construction.html
+  s_be463383785c97::t_d28bc57d40dc75 702-704,730-735,999,1311-1467
+  s_be463383785c97::t_dfefe1a4d481ac 445,919,1042-1055,1057-1060,1064,1068-1069,1077-1078,1099-1100,1109-1110
+  s_be463383785c97::t_4613563f3876b2 1253
+  s_be463383785c97::t_f22467642c4742 295,1174-1179,1183-1185,1203,1210-1252,1479
+  s_be463383785c97::t_de0105801034a3 1283-1284
+src/Building/Construction.hs
+  s_be463383785c97::t_1fecd452d1e6f0 185-192,327-338,453-455,518-526,680
+  s_be463383785c97::t_3dc51cd04b9cc4 271,685
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_2c0ae86d43ed9f 33-36,45-46,48-50
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_2c0ae86d43ed9f 12,15-16,18-22,25-38,40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "478382412c54ad0c73077c07c42f90289881ff1a",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
