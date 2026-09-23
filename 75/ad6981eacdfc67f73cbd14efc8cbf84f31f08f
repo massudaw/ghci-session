@@ -1,0 +1,52 @@
+sprinkler-solver-process-tests/src/Examples/DESPoolUnitsTW.hs
+  s_be463383785c97::t_f57ee400e3cf71 78,80-83,85,168-173,179-194
+  s_be463383785c97::t_47913081a0be3f 32
+  s_be463383785c97::t_d0157b037d3518 174-178
+  s_be463383785c97::t_5bf52894544c78 24-26,44,79,91,195-197
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_be463383785c97::t_3a4db6f7ebc0fc 71,97,101-102,162-167,235
+  s_be463383785c97::t_cf7fd36dafa7af 509-526
+construction.html
+  s_be463383785c97::t_3bfe5d54bf8211 391-408
+  s_be463383785c97::t_a3742a0edd1222 240-241,246
+  s_be463383785c97::t_cd0c5e7bd2b82b 1704
+  s_be463383785c97::t_8dd30029c05a79 337-338,519-532,1529-1535,1558-1571,1624
+  s_be463383785c97::t_9219cfc070ed19 409-410
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_533e02f1877cd9 3,7,10-11,14-15,18-19,22-23,26-27,30-31,34-35,38-39,42-43,47,49-50
+golden/DESPoolUnitsTW/final_state.txt
+  s_be463383785c97::t_533e02f1877cd9 6-7
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_533e02f1877cd9 4,12,15-16,18-20,22,24-26,29-50,53-55
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_45e3f891bfa8c2 171-174,773-774,816-817,860-866
+src/Solver/DES/Unified.hs
+  s_be463383785c97::t_aeca6e40bf94dd 1165-1167
+  s_be463383785c97::t_975218e409d2da 94
+src/Building/Programme.hs
+  s_be463383785c97::t_db1477796272cf 155-158,192-197
+src/Solver/DES.hs
+  s_be463383785c97::t_aeca6e40bf94dd 107,1648-1664
+  s_be463383785c97::t_737e515e433c2e 1665-1666
+src/Building/Construction.hs
+  s_be463383785c97::t_68ebaaba68a0a8 613-616
+  s_be463383785c97::t_66383c113b9a1a 48-49,317-362
+  s_be463383785c97::t_db1477796272cf 50-52,263-264,267-298,667,687-696
+  s_be463383785c97::t_ba3bcdd5c5d16e 363
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "75ad6981eacdfc67f73cbd14efc8cbf84f31f08f",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
