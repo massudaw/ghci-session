@@ -1,0 +1,21 @@
+sprinkler-solver-examples/src/Examples/CondoInteriorRender.hs
+  s_be463383785c97::t_1dc0be04a2d78e 75,77-79
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGShadersRT.hs
+  s_be463383785c97::t_1dc0be04a2d78e 1187-1204,1219,1228,1436
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "32784bc00b2d01543e095311a755cf34eb26cf99",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
