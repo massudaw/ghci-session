@@ -1,0 +1,57 @@
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_31a0606cdcba52 440,446-447
+  s_be463383785c97::t_c3cd6cf91c1b43 50,433-439,441-445,448-450,634-642
+  s_be463383785c97::t_82d2c2585af46f 36-37,200-221,248-251,632-633
+golden/CondoDesign/solver_audit.txt
+  s_be463383785c97::t_d62b6e135ba0a4 1-20
+golden/CondoDesign/equations.txt
+  s_be463383785c97::t_d62b6e135ba0a4 3140-4047
+sprinkler-solver.cabal
+  s_be463383785c97::t_72409da21d55f4 251-252
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_d62b6e135ba0a4 1,3,73-79
+golden/CondoDesign/residuals.txt
+  s_be463383785c97::t_d62b6e135ba0a4 3152-4143
+golden/CondoDesign/solutions.txt
+  s_be463383785c97::t_d62b6e135ba0a4 3138-4031
+src/Building/Climate.hs
+  s_be463383785c97::t_52ce5c7a7f044a 1-62,64,66-167
+  s_be463383785c97::t_72409da21d55f4 63
+  s_be463383785c97::t_c622b289433987 65
+src/Thermal.hs
+  s_be463383785c97::t_1b61f05a4750cb 115-125,300-301
+  s_be463383785c97::t_6171632c64399c 289
+src/Building/Comfort.hs
+  s_be463383785c97::t_7d4e0056b85078 63,594-597
+  s_be463383785c97::t_aa4e04e84a3e57 65,313,436-456,462,466,475-476
+  s_be463383785c97::t_67be92d0333565 83-84,369-377,427-431
+  s_be463383785c97::t_2fe731834b5218 276,285-290,293-298,302-311,315,317
+  s_be463383785c97::t_82d2c2585af46f 568-572,580-582
+  s_be463383785c97::t_9bb07c63c94897 587,598-601
+  s_be463383785c97::t_cdb195587467de 66,432-435
+  s_be463383785c97::t_054abd1e62d6cc 186-191
+  s_be463383785c97::t_34477c490d9c14 4-62,68-74,76-77,80-82,85-108,118-140,142-185,192-275,299-301,312,316,318-328,330-342,457-461,463-465,467-474,477-567,573-579,583,586,588-589,602-604
+  s_be463383785c97::t_965574871d9c67 397-426
+  s_be463383785c97::t_3280c585d0a1ca 64,590-592
+  s_be463383785c97::t_d85eb22a9d3702 75,277-284,314,329,347-348,350,354-364
+  s_be463383785c97::t_8db6b6e0d80aa9 1-3,78-79
+  s_be463383785c97::t_31a0606cdcba52 584-585
+  s_be463383785c97::t_72db26b228e94d 67,343-346,349,351-353,365-368,378-396
+  s_be463383785c97::t_b5bf14fc264cff 109-117,141,291-292,593
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "60e2d206f4492f74a51e22c8a03daff53c0a5725",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
