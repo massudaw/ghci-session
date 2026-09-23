@@ -1,0 +1,39 @@
+src/Building/Earthworks.hs
+  s_be463383785c97::t_6100fa3483de6c 52-53,150-151,158,174,277
+  s_be463383785c97::t_0fcae64fc16370 1-51,54-149,152-157,159-173,175-276,278-399
+sprinkler-solver.cabal
+  s_be463383785c97::t_6100fa3483de6c 253-254
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_5886500ef1ab34 1-3,94-110,112-117
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_fb1472eca95b48 51-52,204-215,419-432,514-532
+golden/CondoDrawings/final_state.txt
+  s_be463383785c97::t_5886500ef1ab34 1-4
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_be463383785c97::t_24df25b1b5898b 1361,1419,1487-1488,1494-1495,1508,1510-1514
+  s_be463383785c97::t_b8ac07504ecccb 111-112,316-317,360,387-388,1338-1360,1362-1410,1412,1414,1416-1418,1420-1444,1448-1455,1462-1470,1472-1486,1489-1493,1496-1507,1509,1515-1528
+  s_be463383785c97::t_052e2a5d35d5b4 1411,1413,1415,1445-1447
+  s_be463383785c97::t_5d56ca35868c46 1456-1461,1471
+  s_be463383785c97::t_c1e69c59201490 1529
+sprinkler-solver-construction/src/Examples/CondoCalcs.hs
+  s_be463383785c97::t_89a6ef84bf6d15 47-48,90,93,149-237
+  s_be463383785c97::t_c1dfe1c86d0246 238
+src/Building/Site.hs
+  s_be463383785c97::t_194a5a8a3a340d 1-186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5d60f4982bdcd5e8aebf19b7807b3317300449ef",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
