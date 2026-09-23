@@ -1,0 +1,41 @@
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_40fbee3713b36e 3,5,7-8,10-11,13-15,17-19,22-23,25-27,30-31,34-35,38-39,42-43,45-54,56-59,63
+src/Building/Construction.hs
+  s_be463383785c97::t_3eba561500ffac 175,185
+  s_be463383785c97::t_d2e4867b89fb75 150,156,271,388-396,437-446,486-490,492,501,523,588,600,611-614,620,636-645,653-655,659-668,693,910
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_40fbee3713b36e 4-7,9,12,15-23,25-26,29-35,38-55,57-60,70
+src/Building/Constraints.hs
+  s_be463383785c97::t_476af57dca874c 1-253
+sprinkler-solver-construction/src/Examples/CondoProgramme.hs
+  s_be463383785c97::t_1d79151cabf466 26-27,54-87,148
+  s_be463383785c97::t_a16bda7a1f22ed 43-53,123-124
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_be463383785c97::t_c9b29750c81146 151,411
+  s_be463383785c97::t_50d71d228650e3 59,533-543
+  s_be463383785c97::t_a16bda7a1f22ed 484-489
+src/Building/Programme.hs
+  s_be463383785c97::t_3eba561500ffac 180,183
+sprinkler-solver.cabal
+  s_be463383785c97::t_821d2bfe0a0dc2 258
+construction.html
+  s_be463383785c97::t_c9b29750c81146 942-943
+  s_be463383785c97::t_a16bda7a1f22ed 1324-1328,1609
+  s_be463383785c97::t_b3ad429751b313 1226-1237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4a2f1bb8d7c10ed4a1421dab92f764cb6efcb0a5",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
