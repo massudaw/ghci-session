@@ -1,0 +1,26 @@
+sprinkler-solver-construction/src/Examples/CondoIFC.hs
+  s_be463383785c97::t_f893ce553d64de 55-56,269-331
+  s_be463383785c97::t_e0d3348e5c51b8 332
+src/Building/IFC.hs
+  s_be463383785c97::t_f893ce553d64de 96,308-316,351,722-728
+ifc.html
+  s_be463383785c97::t_8c798ae733e1b2 286,318-323,525
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_d1872c06c24987 16-17,86,133-134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d6b8995e2ed5e5239ee1c6bae807fa80a5d0b106",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
