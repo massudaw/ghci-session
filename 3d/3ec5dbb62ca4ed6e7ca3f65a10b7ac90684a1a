@@ -1,0 +1,34 @@
+tools/export_skp.py
+  s_be463383785c97::t_8448e542e7ef93 393-396,400-402,404
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_9294e5ce5c2537 409
+src/Building/HVAC.hs
+  s_be463383785c97::t_15ed472ab6c8ea 20,80-92,97,102,105-126,133-154,165-178
+  s_be463383785c97::t_6d16269f41abde 127-132,179
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_f0619e3045f62f 19,25,29
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_f0619e3045f62f 1-2,135
+golden/CondoDrawings/final_state.txt
+  s_be463383785c97::t_f0619e3045f62f 48,124
+sprinkler-solver-construction/src/Examples/CondoCalcs.hs
+  s_be463383785c97::t_9294e5ce5c2537 405
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_f0619e3045f62f 32,63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3d3ec5dbb62ca4ed6e7ca3f65a10b7ac90684a1a",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
