@@ -1,0 +1,24 @@
+sprinkler-solver-construction/src/Examples/CondoBuilding.hs
+  s_be463383785c97::t_739dc975367538 80,1230-1233,1235
+src/Building/Sprinkler.hs
+  s_be463383785c97::t_7ed4fb20d0e8db 519,523-558
+  s_be463383785c97::t_0e5b05e889d7ed 559
+src/Building/Ventilation.hs
+  s_be463383785c97::t_33f610278e255a 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4ec949ed1bd594bd388c7a23feb7e4640ddcdc46",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
