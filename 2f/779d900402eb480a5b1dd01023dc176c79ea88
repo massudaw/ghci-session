@@ -1,0 +1,51 @@
+src/Building/Topology.hs
+  s_be463383785c97::t_73f9a7400689d8 113,115-117,180
+sprinkler-solver-construction/src/Examples/CondoCalcs.hs
+  s_be463383785c97::t_95462445a1bbb9 406
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_6c8e5a3e55b93a 76-79,272,452-458,471-475
+  s_be463383785c97::t_73f9a7400689d8 476-477
+src/Building/HVAC.hs
+  s_be463383785c97::t_df489a9188a0e5 239-243
+  s_be463383785c97::t_44f42e7a41e253 30-32,50-52,64-65,72-79,221-238,244-246,415-427,438-440,442-444,446-447,478-483,487-504
+  s_be463383785c97::t_37b8138d75cb4a 428-437,441,445,448-477,484-486
+src/Building/Comfort.hs
+  s_be463383785c97::t_44f42e7a41e253 100-103,144,634,636
+  s_be463383785c97::t_76bf26a98f9675 136
+  s_be463383785c97::t_6c8e5a3e55b93a 63,610-633,635
+  s_be463383785c97::t_95462445a1bbb9 146-149
+  s_be463383785c97::t_ff4827939963a8 281-283
+  s_be463383785c97::t_e844b9c0025177 637
+src/Building/Construction.hs
+  s_be463383785c97::t_73f9a7400689d8 183,745-746,818,822
+  s_be463383785c97::t_6c8e5a3e55b93a 52,432-468
+  s_be463383785c97::t_2cde265a410919 469
+CONSTRAINTS.md
+  s_be463383785c97::t_5bc3b5fe1bca24 401-430
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_e921254b2963bd 1-2,6-7,11-12,26-27,31-32
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_b66aaa12e759f0 1-3,36-37,79,135
+golden/CondoDrawings/final_state.txt
+  s_be463383785c97::t_e3989845498e7a 48,120,124
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_01f126496d89d7 12,29,31-32,38,43,47,51,53,60-63
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_9cb1d59abd5841 5,7,17-23,26-29,31-32,36-39,46,52-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2f779d900402eb480a5b1dd01023dc176c79ea88",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
