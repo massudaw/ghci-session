@@ -1,0 +1,37 @@
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGViewer.hs
+  s_be463383785c97::t_3bc99d7543ef8d 134-149,170-174,1653-1661,1664-1671,1724-1726,1749
+sprinkler-solver-examples/src/Examples/CondoInteriorRender.hs
+  s_be463383785c97::t_40c32cbb40cf60 240-248
+  s_be463383785c97::t_a64f09813cf001 274-276
+  s_be463383785c97::t_0838b36b533c79 19,114-131,133,268-273,279
+  s_be463383785c97::t_82cbb0829d58e2 203,207-213,215,217-218
+  s_be463383785c97::t_3e0249de57eb35 223-228
+  s_be463383785c97::t_9fbba94eae783c 205-206,214,216,219-222
+  s_be463383785c97::t_d3162ca89d0c4e 89,132,277
+sprinkler-solver-examples/src/Examples/InteriorShapes.hs
+  s_be463383785c97::t_d3162ca89d0c4e 320
+golden/CondoInteriorRender/final_state.txt
+  s_be463383785c97::t_b4ffeb85a26770 1-5
+sprinkler-solver-rendering/src/Rendering/OpenGL/CSGShadersRT.hs
+  s_be463383785c97::t_dd056ac918ebc8 134-144,1218,1479-1480,1489,1496,1510-1511,1513,1544,1546-1547,1576-1579,1585-1587,1599,1633
+  s_be463383785c97::t_87ddc77841f7dc 1581-1584
+  s_be463383785c97::t_9e0025ae1ddda3 1466-1471,1474-1478,1492
+src/Building/Interior.hs
+  s_be463383785c97::t_d3162ca89d0c4e 71,73,87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f8655f8e5deb5d3687e135d29f898e11121fd5f7",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
