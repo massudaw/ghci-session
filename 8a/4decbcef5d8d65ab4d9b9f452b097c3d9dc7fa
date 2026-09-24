@@ -1,0 +1,24 @@
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_be463383785c97::t_3bc62fccbfe137 1156-1159
+src/Egress.hs
+  s_be463383785c97::t_4abf079f3befdd 52-53,58,123-169
+  s_be463383785c97::t_111417ca561d23 170
+src/Building/Egress.hs
+  s_be463383785c97::t_c606cece8c303d 41,61,292-296,303-310,313-326,411-412,415-416,432-437,439-440,442-455
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8a4decbcef5d8d65ab4d9b9f452b097c3d9dc7fa",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
