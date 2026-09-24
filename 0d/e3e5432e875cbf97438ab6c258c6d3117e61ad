@@ -1,0 +1,57 @@
+sprinkler-solver-examples/src/Examples/ModelPneumaticCompressor.hs
+  s_be463383785c97::t_88a776a251f617 61-67
+sprinkler-solver-examples/src/Examples/ModelCombustionEngine.hs
+  s_be463383785c97::t_7f6b3d0d17e8f0 34,152-154
+sprinkler-solver-examples/src/Examples/ModelSliderCrank.hs
+  s_be463383785c97::t_7f6b3d0d17e8f0 28,138-140
+sprinkler-solver-examples/src/Examples/EkfNonlinearControlExample.hs
+  s_be463383785c97::t_dfa5c9061104fe 72,468-483,485
+sprinkler-solver-examples/src/Examples/ModelRocket.hs
+  s_be463383785c97::t_9322e74afeaf7a 62-65,83-88,108
+src/Solver/KINSOL.hs
+  s_be463383785c97::t_df87e4e517a9dd 241-252,257-258
+sprinkler-solver-examples/src/Examples/ModelThermoEngine.hs
+  s_be463383785c97::t_7f6b3d0d17e8f0 53,144-146
+sprinkler-solver-examples/src/Examples/ModelRocketPressureFed.hs
+  s_be463383785c97::t_563512b11106f0 79-82,96-98,128
+sprinkler-solver-examples/src/Examples/GenericSparseTransient.hs
+  s_be463383785c97::t_a87318db175ef9 33,61-63
+sprinkler-solver-examples/src/Examples/ModelACConditioner.hs
+  s_be463383785c97::t_a11c8a494929d1 87,530-540,561-564
+golden/ModelACConditioner/transient.txt
+  s_be463383785c97::t_ecfcc12c929d96 3,11
+src/Project.hs
+  s_be463383785c97::t_5cea5d6f4c085d 993-997,999-1002,1021
+  s_be463383785c97::t_1b6bee181f9c0b 947-981,988-990
+  s_be463383785c97::t_4899d6e2958978 694-696,698-708
+  s_be463383785c97::t_36640e70b47b45 687-693
+  s_be463383785c97::t_719da7d5329f0e 563-590,601-603,614,686
+  s_be463383785c97::t_a11c8a494929d1 591-600
+  s_be463383785c97::t_f747879f82b6b8 607
+  s_be463383785c97::t_29e76ce4234286 998
+  s_be463383785c97::t_84504351efd3e8 697,710,712-715,717-725,727-740
+  s_be463383785c97::t_7d67392241eeb6 57
+  s_be463383785c97::t_f218d49fdcfd67 1003-1020
+  s_be463383785c97::t_0d15859d65153a 709
+sprinkler-solver-examples/src/Examples/ForceSimple.hs
+  s_be463383785c97::t_a87318db175ef9 32,38-39,56-68
+  s_be463383785c97::t_76b12b3cbcdcc5 69
+CLAUDE.md
+  s_be463383785c97::t_739bc704dc404e 173-174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0de3e5432e875cbf97438ab6c258c6d3117e61ad",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
