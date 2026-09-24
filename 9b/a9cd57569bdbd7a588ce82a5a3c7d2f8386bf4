@@ -1,0 +1,33 @@
+ifc.html
+  s_be463383785c97::t_8d646223205517 99
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_31fc39e982e37c 119,729-741,1703-1704,1721-1762
+  s_be463383785c97::t_20496c85fec86b 53,56-59
+  s_be463383785c97::t_78871d11c3d2d2 1763
+.gitignore
+  s_be463383785c97::t_8d646223205517 26-28
+sprinkler-solver-construction/src/Examples/CondoIFC.hs
+  s_be463383785c97::t_e779c205541734 16,22,24,32,34,328-374,577-592,608-609
+tools/validate_bcf.py
+  s_be463383785c97::t_66fc62e0e3e456 1-85
+src/Building/BCF.hs
+  s_be463383785c97::t_5195ae7aaeb005 1-105
+sprinkler-solver.cabal
+  s_be463383785c97::t_e779c205541734 261
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9ba9cd57569bdbd7a588ce82a5a3c7d2f8386bf4",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
