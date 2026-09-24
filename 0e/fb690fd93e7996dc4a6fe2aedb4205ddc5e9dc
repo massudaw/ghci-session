@@ -1,0 +1,25 @@
+ifc.html
+  s_be463383785c97::t_c6c13edc4039e4 634-637,687
+  s_be463383785c97::t_c205f83d911117 230,440-442,708-710,720
+  s_be463383785c97::t_69403f9aa1d845 234-235
+  s_be463383785c97::t_ddbcf7f404aeee 39-49,80,101,116,130,137-150,216,226-229,360,439,443,471,503-517,529,533,542-546,584-633,638-686,688-707,711-719,721-828
+  s_be463383785c97::t_63b41e76641376 829
+CLAUDE.md
+  s_be463383785c97::t_27e387f0d1816a 774-776
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0efb690fd93e7996dc4a6fe2aedb4205ddc5e9dc",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
