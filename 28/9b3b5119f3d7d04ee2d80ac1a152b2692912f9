@@ -1,0 +1,23 @@
+tools/skp_preview.py
+  s_be463383785c97::t_7bc5085432f39b 1-220
+tools/export_skp.py
+  s_be463383785c97::t_f73dd7507cb279 439-445
+tools/skp_viewer.sh
+  s_be463383785c97::t_9490299dbddf39 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "289b3b5119f3d7d04ee2d80ac1a152b2692912f9",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
