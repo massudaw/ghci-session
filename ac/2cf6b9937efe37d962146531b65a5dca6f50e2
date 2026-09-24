@@ -1,0 +1,67 @@
+golden/CondoDesign/final_state.txt
+  s_be463383785c97::t_cb173029104ced 5
+src/Building/Programme.hs
+  s_be463383785c97::t_596da992a67a62 177
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_cb173029104ced 4-5,7,13,18-24,27-30,33,37-42,45-47,53-69
+golden/CondoDrawings/equations.txt
+  s_be463383785c97::t_cb173029104ced 39,107,161,229,295,363,429,489-492,497-498,508,553-556,561-562,575,620-623,628-629,641,686-689,694-695,705-769,823
+src/Building/Electric.hs
+  s_be463383785c97::t_93d5447c5c80cc 28
+  s_be463383785c97::t_1e51c8af5b21c1 444-445
+  s_be463383785c97::t_8a589732b3575b 27,363-365,367,421-432,434,436,440-441,446-447,473-475,480,482-484
+  s_be463383785c97::t_1f17f8d861e891 453-465
+  s_be463383785c97::t_5791dde8dc42ca 476-479
+  s_be463383785c97::t_955abf35cf1928 29-31,58-71,75,113-114,155-156,160-175,198,207-217,366,433,435,437-439,442-443,448-452,466-472,481,485-539
+  s_be463383785c97::t_4cf50c39a35a5b 540
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_cb173029104ced 6-7,11-12,21-22,26-27
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_cb173029104ced 3,5,7,11-12,15,19,23,25-28,31,35,38-39,42-43,46-47,51,60-66
+golden/CondoDrawings/final_state.txt
+  s_be463383785c97::t_cb173029104ced 132
+golden/CondoDrawings/residuals.txt
+  s_be463383785c97::t_cb173029104ced 702-720,722-771
+src/Building/Construction.hs
+  s_be463383785c97::t_596da992a67a62 171-176
+  s_be463383785c97::t_e27db805195b40 167-170,277,343,615-616,734-745,751-756,850-856,892-898,970-972,1270
+  s_be463383785c97::t_fb2c2fff9f21a8 986-988
+golden/CondoDrawings/solutions.txt
+  s_be463383785c97::t_cb173029104ced 14-15,47-53,114-120,134-135,167-173,232-238,299-305,318,364-370,385,431-437,448,492-500,514,558-566,579,623-631,642,686-758,772,818-824
+CONSTRAINTS.md
+  s_be463383785c97::t_5fe994dd87fa82 431-476
+src/Building/Topology.hs
+  s_be463383785c97::t_affc98baa565fb 193-200
+  s_be463383785c97::t_c7acd59212579d 42-43
+  s_be463383785c97::t_24038a3cae16c4 117-143
+  s_be463383785c97::t_30867321d9aa56 6,26-31
+sprinkler-solver-construction/src/Examples/CondoCalcs.hs
+  s_be463383785c97::t_053dd6d74a11e4 50
+  s_be463383785c97::t_20808749471ff3 373
+sprinkler-solver-construction/src/Examples/CondoProgramme.hs
+  s_be463383785c97::t_e0c747ad41594e 16,31
+  s_be463383785c97::t_c7acd59212579d 92-93,95-104
+sprinkler-solver-construction/src/Examples/CondoDrawings.hs
+  s_be463383785c97::t_053dd6d74a11e4 111
+  s_be463383785c97::t_9eca9b149ace5a 703,929-930
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_4795c902944ff3 311,506,683,746
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_49a275fcb463f8 1375,1945,1977
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ac2cf6b9937efe37d962146531b65a5dca6f50e2",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
