@@ -1,0 +1,38 @@
+ifc.html
+  s_be463383785c97::t_5cd0df04e7fafa 46-58,113-121,126,188,197-199,202,225,324-327,332,405-406,425-427,432,447-480,482-512,518,521,524
+  s_be463383785c97::t_21649f22d52362 481,513-517,519-520,522-523
+  s_be463383785c97::t_f9c04828fb87a5 525
+tools/validate_ifc.py
+  s_be463383785c97::t_2fb51b5c10513c 14-16,75-96
+  s_be463383785c97::t_41f24a952459ff 6
+  s_be463383785c97::t_af9072565b17c5 97
+src/Building/IFC.hs
+  s_be463383785c97::t_0ecec8cceee75b 409,458
+  s_be463383785c97::t_631088d6a7a108 41-43,389-394,479-480
+  s_be463383785c97::t_8378c71b08d16b 37-40,44-47,49-50,55-57,65-66,70,73,218-222,224-227,246,375-388,395-408,410-457,459-478,481-498
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_a63979b3d54857 35,37-38,40,43-44,57-59,67-71
+sprinkler-solver-construction/src/Examples/CondoIFC.hs
+  s_be463383785c97::t_211d410e19699a 36-39,69
+  s_be463383785c97::t_631088d6a7a108 28,54-57,80
+  s_be463383785c97::t_cccfcc101ad8f7 5-7,9-10,24-25,29,32,44-53,74-79,81,88-89
+  s_be463383785c97::t_50379adbcae2e9 58
+CLAUDE.md
+  s_be463383785c97::t_b00a6b5d4740f3 764-776
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d486aa264051f8fd6ac31a9d02bc31740760ea0e",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
