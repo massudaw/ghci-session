@@ -1,0 +1,61 @@
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_5e727efce1d02c 1-35
+src/Geometry/Reconcile.hs
+  s_be463383785c97::t_776141a74db32a 53,354-364
+  s_be463383785c97::t_3a2b97452998bb 365
+example/Main.hs
+  s_be463383785c97::t_97d42632ff38fa 327,378,696
+src/Building/Constraints.hs
+  s_be463383785c97::t_776141a74db32a 32-35,301-308,323-336
+  s_be463383785c97::t_d90afefe541e47 337
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_55756b5437248d 108-110,1617-1622,1630-1631,1634,1636-1650
+CONSTRAINTS.md
+  s_be463383785c97::t_7e95617a21637d 1-149
+  s_be463383785c97::t_c7ecda2c6f6fb8 150-179
+sprinkler-solver-construction/src/Examples/CondoBuilding.hs
+  s_be463383785c97::t_776141a74db32a 65,1394-1400
+sprinkler-solver.cabal
+  s_be463383785c97::t_a26fa20a5da9dd 260
+  s_be463383785c97::t_9c8baee9f99ee5 259
+src/Building/ConstraintSet.hs
+  s_be463383785c97::t_8877a0b2d4c4b2 215-217,219-223,225-226,273-278,280
+  s_be463383785c97::t_8f09fc89921f98 1-41,43-104,106-157,159-214,218,227-266,268-269,271-272,279,281-301,303,305-311,313-314,316,318-331,334-337,339-378,380-388
+  s_be463383785c97::t_d77ac115540b7e 105,158,267,270,302,304,312,315,317,332-333,338,379
+  s_be463383785c97::t_a26fa20a5da9dd 42
+  s_be463383785c97::t_30bd8d66d95276 224
+src/Building/Topology.hs
+  s_be463383785c97::t_dac9da2c99868b 1-314
+sprinkler-solver-construction/src/Examples/CondoConstraints.hs
+  s_be463383785c97::t_97d42632ff38fa 40,81-82,84,86-88
+  s_be463383785c97::t_d77ac115540b7e 83
+  s_be463383785c97::t_f9b90ecb81729a 1-39,41-80,85,89-115
+constraints.html
+  s_be463383785c97::t_ee916004cffcd7 6,10,15,17,19-26,32-35,37-48,53,55,57-66,68-74,76-77,79-80,84,87-90,92-97,99-101,103-119,121-123,125-135,137,139-149,151-159,161-171,173-209,211,213-223,225-229,231-233,235-253,256-270,277-321,324-351,354-367,369-385,387
+  s_be463383785c97::t_8d0fc5fb4cbfcb 172
+  s_be463383785c97::t_4458aa11358cd9 271-276
+sprinkler-solver-construction/src/Examples/CondoDesign.hs
+  s_be463383785c97::t_bae0a7199eb3f4 33
+golden/CondoConstraints/status.txt
+  s_be463383785c97::t_5e727efce1d02c 1
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_be463383785c97::t_97d42632ff38fa 30
+CLAUDE.md
+  s_be463383785c97::t_2f577792d7c9cc 720-732
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "533647279379de22d13448e7667acb4b3ec3cc63",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
