@@ -1,0 +1,33 @@
+src/Building/ConstraintSet.hs
+  s_be463383785c97::t_48f9d32a3f4cc1 270,289-294
+src/Building/Construction.hs
+  s_be463383785c97::t_982d4f889843fe 85,175-181,485,487-497,779-780,879-883,885
+src/Building/Programme.hs
+  s_be463383785c97::t_982d4f889843fe 176
+src/Building/Constraints.hs
+  s_be463383785c97::t_982d4f889843fe 126-130
+CONSTRAINTS.md
+  s_be463383785c97::t_eb7e8196d1dc1a 380-400
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_877e4109626398 7,9,11-12,26-27,31-32
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_68b3aff94b9d84 9,12,38,51,60-61,63,66
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_15bad91a1c7989 5,7,12,17-23,26-29,31-32,36-39,46,52-65,67-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fd9e0b4e97388ec0d88acf45068477c71637d81b",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
