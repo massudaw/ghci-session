@@ -1,0 +1,24 @@
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_d77262229c38a0 503-510
+tools/export_skp.py
+  s_be463383785c97::t_65413789aaac99 6-7,14-17
+project.html
+  s_be463383785c97::t_e4d24779fe0f57 63-65
+  s_be463383785c97::t_d77262229c38a0 149,1611-1617
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "aa53d5bdb9b49abd13d5af58ec3e2271ed01a9f9",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
