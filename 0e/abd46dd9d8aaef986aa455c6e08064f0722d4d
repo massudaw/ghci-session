@@ -1,0 +1,31 @@
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_228d96af05c2e5 111,131-132,150-151
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_228d96af05c2e5 4,7,16,18,20,22-25,27,29-33,36,40-43,48,50,56-67,69,71-72
+COMMERCIAL.md
+  s_be463383785c97::t_228d96af05c2e5 381-391
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_228d96af05c2e5 1,9,17-18,29,37-38,60
+src/Building/Construction.hs
+  s_be463383785c97::t_db2753b0b39b23 377-388,423-426
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_be463383785c97::t_6975138ea6d6c9 422-431
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_228d96af05c2e5 26-27,31-33,35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0eabd46dd9d8aaef986aa455c6e08064f0722d4d",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
