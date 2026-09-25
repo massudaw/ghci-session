@@ -1,0 +1,43 @@
+sprinkler-solver-construction/src/Examples/CondoCommercial.hs
+  s_be463383785c97::t_ddfd6876380c93 1-33,35-51,53-67,69,71-85,88-89,91-100,102-119
+  s_be463383785c97::t_1c3a183904dfc0 34
+  s_be463383785c97::t_ce34beb2ab33d1 52,68,70,86-87,90
+  s_be463383785c97::t_b3499f03a3a8d0 101
+example/Main.hs
+  s_be463383785c97::t_9c7bc6d72cecf3 327,380,700
+COMMERCIAL.md
+  s_be463383785c97::t_36cfd43282fb9a 3-4,78-86,98-99,110-111,115-120,123-125,209-233
+  s_be463383785c97::t_8d18977c778e0b 234
+CLAUDE.md
+  s_be463383785c97::t_36cfd43282fb9a 905-916
+sprinkler-solver.cabal
+  s_be463383785c97::t_9c06b8fd22e7f9 259
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_be463383785c97::t_b3499f03a3a8d0 37
+src/Building/Commercial.hs
+  s_be463383785c97::t_9c06b8fd22e7f9 44,341-342,345-346
+  s_be463383785c97::t_b3499f03a3a8d0 38,340,356-371
+  s_be463383785c97::t_c03f2a0c9c3e4c 395-398,400
+  s_be463383785c97::t_74cac90174d99e 1-37,39-43,45-315,320,322-339,343-344,347-355,372-394,399,401-403
+  s_be463383785c97::t_ce34beb2ab33d1 316-319,321
+golden/CondoCommercial/final_state.txt
+  s_be463383785c97::t_c03f2a0c9c3e4c 1-75
+golden/CondoCommercial/status.txt
+  s_be463383785c97::t_c03f2a0c9c3e4c 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b9793738912bf76598a8165a7c1baf4b9454ef4d",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
