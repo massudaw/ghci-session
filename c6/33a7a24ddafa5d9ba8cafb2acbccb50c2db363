@@ -1,0 +1,43 @@
+gantt.js
+  s_be463383785c97::t_cfb68bf68749ae 289-389
+src/Building/Commercial.hs
+  s_be463383785c97::t_b782716baa5df0 461-468,479,489-490
+  s_be463383785c97::t_815959ec7a9f17 42-48,245-247,258-259,299,308-311,419-460,469-478,480-488,491-494
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_5bca62f4683335 123-124,782-785,2104-2189,2197-2203,2205-2219,2386-2387
+  s_be463383785c97::t_da6e38d416ae13 48-49
+  s_be463383785c97::t_f38a3adfbaf747 2190-2196,2204
+  s_be463383785c97::t_ec481f1fee0b8a 62
+sprinkler-solver-construction/src/Examples/CondoCommercial.hs
+  s_be463383785c97::t_187ec81fae58b8 104-132
+process.html
+  s_be463383785c97::t_7d513eea7792d8 56
+construction.html
+  s_be463383785c97::t_7d513eea7792d8 249
+COMMERCIAL.md
+  s_be463383785c97::t_6c1b6c5ee3a5c2 3-5,236-270
+  s_be463383785c97::t_8d46e35dad50b8 271
+finance.html
+  s_be463383785c97::t_510e6af32ca773 99-100
+  s_be463383785c97::t_07ab69a17711f2 1-98,101-192
+golden/CondoCommercial/final_state.txt
+  s_be463383785c97::t_5f9fee33e77a1d 47-50
+CLAUDE.md
+  s_be463383785c97::t_6c1b6c5ee3a5c2 878-879,914-918
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c633a7a24ddafa5d9ba8cafb2acbccb50c2db363",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
