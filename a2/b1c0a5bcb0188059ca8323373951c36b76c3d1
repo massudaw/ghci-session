@@ -1,0 +1,54 @@
+sprinkler-solver-construction/src/Examples/CondoCommercial.hs
+  s_be463383785c97::t_ea629700bbe2ca 94-100,105-107
+  s_be463383785c97::t_6deb80cdf3b8a4 18,101-104
+src/Building/Commercial.hs
+  s_be463383785c97::t_9ba35f721c69ff 49-51,58-59,160-166,171,192-194,370,372,533-582
+golden/CondoCommercial/final_state.txt
+  s_be463383785c97::t_53f364f37a5249 1-2,47-52
+tools/validate_ifc.py
+  s_be463383785c97::t_97e63cbf6a9c14 17-21,111-158
+  s_be463383785c97::t_cfd4a6503c8b6d 159
+CONSTRAINTS.md
+  s_be463383785c97::t_b120679b8a5387 103
+CLAUDE.md
+  s_be463383785c97::t_b120679b8a5387 849-854
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_1957dc54fa197a 1-2,26-28,69,71,97-98,106,110,150-151
+src/Building/ConstraintSet.hs
+  s_be463383785c97::t_03045673ce1a72 38,53,60,73,245-295
+  s_be463383785c97::t_0cb90569e71e96 296
+COMMERCIAL.md
+  s_be463383785c97::t_b120679b8a5387 3-8,313-347
+  s_be463383785c97::t_3508221cb1215b 348
+sprinkler-solver-construction/src/Examples/CondoConstraints.hs
+  s_be463383785c97::t_03045673ce1a72 50
+constraints.html
+  s_be463383785c97::t_03045673ce1a72 94
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_91c4796ece61c8 2144-2150
+sprinkler-solver-construction/src/Examples/CondoIFC.hs
+  s_be463383785c97::t_e6f0d9b34f2dd2 36,149-174,180
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_53f364f37a5249 31-35
+src/Building/IFC.hs
+  s_be463383785c97::t_b4bac321f1d491 86-87,422-426,1036-1038,1072-1149,1222-1223
+  s_be463383785c97::t_c9e93e95417b45 1224
+finance.html
+  s_be463383785c97::t_91c4796ece61c8 94,118-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a2b1c0a5bcb0188059ca8323373951c36b76c3d1",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
