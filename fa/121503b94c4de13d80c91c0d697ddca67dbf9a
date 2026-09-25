@@ -1,0 +1,52 @@
+src/Solver/DES/TimeWarpJit.hs
+  s_be463383785c97::t_1b45cc9624319e 5014-5018,5365-5367
+sprinkler-solver-examples/src/Examples/DESEngineParitySpace.hs
+  s_be463383785c97::t_95e16c7a22a30c 223-250,533-536
+  s_be463383785c97::t_1ae7c91c62c7fe 251-273,537-538,568
+doc/des/DES_SEMANTICS.md
+  s_be463383785c97::t_e85d640d0b53d0 69-86
+src/JIT/des_kernel.c
+  s_be463383785c97::t_0efd0a7bb59c4d 190-195,576-581,876-877,906
+src/Solver/DES/Unified.hs
+  s_be463383785c97::t_e8d14e79eba181 72,959-962
+  s_be463383785c97::t_37f3371756e14d 963
+sprinkler-solver-hybrid-des-lowering/src/Solver/DES/ScheduledLowering.hs
+  s_be463383785c97::t_dd6fe3e345bbed 24-29
+src/JIT/tw_model.h
+  s_be463383785c97::t_56790a6ba37e83 286
+sprinkler-solver-tx/src/Solver/DES/TxEngine.hs
+  s_be463383785c97::t_0d48e925f2e844 610-619
+  s_be463383785c97::t_5b8239e7b9fb2a 609,620
+  s_be463383785c97::t_65aa304b40ac11 100
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_be463383785c97::t_e85d640d0b53d0 241-247
+  s_be463383785c97::t_a50a3bff6c4c03 251-254
+  s_be463383785c97::t_26b62ee752597b 428-435
+golden/DESEngineParitySpace/final_state.txt
+  s_be463383785c97::t_e85d640d0b53d0 73-93
+src/Solver/DES.hs
+  s_be463383785c97::t_eef4a6ef69a771 110
+  s_be463383785c97::t_ec23184eb57b7b 1878
+  s_be463383785c97::t_ad0833b33d5058 107,720-729,1017,1607-1625,2430,2902-2908,4673,4854,4961,5442,5451
+src/JIT/tw_engine.h
+  s_be463383785c97::t_56790a6ba37e83 743-749,3858-3864
+src/JIT/tw_runtime.c
+  s_be463383785c97::t_56790a6ba37e83 400,825-835
+  s_be463383785c97::t_979252da7e36a4 836-838
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fa121503b94c4de13d80c91c0d697ddca67dbf9a",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
