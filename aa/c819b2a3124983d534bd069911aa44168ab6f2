@@ -1,0 +1,20 @@
+src/Solver/SymbolicPreSys.hs
+  s_be463383785c97::t_0fe97b945f5e98 167-170
+  s_be463383785c97::t_5a29ef1879b15f 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "aac819b2a3124983d534bd069911aa44168ab6f2",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
