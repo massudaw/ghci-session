@@ -1,0 +1,34 @@
+sprinkler-solver-construction/src/Examples/CondoConstraints.hs
+  s_be463383785c97::t_9e07517fe3beab 16,29
+  s_be463383785c97::t_6fd0e9a6845153 44-49,58
+src/Building/Construction.hs
+  s_be463383785c97::t_a7c0e17af95e3b 60-63,81,381-450,1454-1458
+finance.html
+  s_be463383785c97::t_2840ac191728c8 177,185
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_2840ac191728c8 2233-2237,2426-2427
+src/Building/ConstraintSet.hs
+  s_be463383785c97::t_6fd0e9a6845153 248-259,263-265,267-287,295-297
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_2840ac191728c8 31-33,35
+COMMERCIAL.md
+  s_be463383785c97::t_547099bb9ca392 349-380
+CONSTRAINTS.md
+  s_be463383785c97::t_541d8a7c002a8f 103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6f70ca3a35664f269c74cb4f8a47d2507bfe190e",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
