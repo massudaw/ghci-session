@@ -1,0 +1,39 @@
+src/Building/Construction.hs
+  s_be463383785c97::t_367d9fefd43e37 235-237,250
+  s_be463383785c97::t_11a534c88de3b6 667,725-740,889,895-897,989-992,1028
+golden/CondoConstraints/final_state.txt
+  s_be463383785c97::t_2d13dec036a111 26-27
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_142aa79bd9175e 1484-1487
+golden/DESProgramme/final_state.txt
+  s_be463383785c97::t_2d13dec036a111 5,7,17-25,29-31,34,38-41,47-48,54-70
+golden/CondoProgramme/final_state.txt
+  s_be463383785c97::t_2d13dec036a111 11,15,17,19-20,23,27,31,38-39,42-43,46-47,60-63
+src/Building/Programme.hs
+  s_be463383785c97::t_367d9fefd43e37 185-191
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_2d13dec036a111 4,13,15,26,29,39-40,58,67,73,81-82,92-93,99,103,109,117,123-124,142-143
+project.html
+  s_be463383785c97::t_89d1a20e06fa67 705-711,713-716
+  s_be463383785c97::t_142aa79bd9175e 740-747
+src/Building/Plumbing.hs
+  s_be463383785c97::t_342f9045e30957 78,945
+  s_be463383785c97::t_bfd3975ee6ab37 933,935-942
+  s_be463383785c97::t_7fa0505e2d817e 911-917,921-932,943-944,946-957
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "682a7820930bb7e2aa97bdec867d625d45ccddfe",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
