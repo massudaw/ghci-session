@@ -1,0 +1,21 @@
+constraints.html
+  s_be463383785c97::t_552f98ab2e01da 771
+  s_be463383785c97::t_6a7bffa436a8aa 634-635,709,714,721,749-757,759-768,770,772-774,777-786
+  s_be463383785c97::t_8c528f2dade617 787
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6bdeb0b25f9d3a3b77c8d1e4ab5903b58879eca8",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
