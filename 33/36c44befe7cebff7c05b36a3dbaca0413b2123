@@ -1,0 +1,35 @@
+src/Pneumatic.hs
+  s_be463383785c97::t_c752f25a21dbcd 209-211
+  s_be463383785c97::t_08c6b914a042b9 212-213
+src/Mixture.hs
+  s_be463383785c97::t_c752f25a21dbcd 499-501
+  s_be463383785c97::t_08c6b914a042b9 502-503
+src/Chemical.hs
+  s_be463383785c97::t_08c6b914a042b9 232-233
+  s_be463383785c97::t_c752f25a21dbcd 229-231
+src/Acoustic.hs
+  s_be463383785c97::t_08c6b914a042b9 230-231
+  s_be463383785c97::t_c752f25a21dbcd 226-229,232
+src/Rotational.hs
+  s_be463383785c97::t_c752f25a21dbcd 183-186,192,286-289,295
+  s_be463383785c97::t_08c6b914a042b9 187-188,290-291
+src/Thermal.hs
+  s_be463383785c97::t_c752f25a21dbcd 293-295
+  s_be463383785c97::t_08c6b914a042b9 296-297
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3336c44befe7cebff7c05b36a3dbaca0413b2123",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
