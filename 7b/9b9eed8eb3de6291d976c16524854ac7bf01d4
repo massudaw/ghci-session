@@ -1,0 +1,25 @@
+src/Building/Electric.hs
+  s_be463383785c97::t_520f2f9eec19d3 821-822,837-840
+  s_be463383785c97::t_62425ee7282df5 38,581-592,603,703-705,714,728,817-819
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_520f2f9eec19d3 1857-1863
+  s_be463383785c97::t_0ab81dfeb54010 138
+src/Building/Sprinkler.hs
+  s_be463383785c97::t_61300e3bbce52a 64-65,687-692,697-703,709,854-856,869
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7b9b9eed8eb3de6291d976c16524854ac7bf01d4",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
