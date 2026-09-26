@@ -1,0 +1,35 @@
+sprinkler-solver-construction/src/Examples/ConstructionSiteRuntime.hs
+  s_be463383785c97::t_99934b75fdc4ea 869-872,2276-2289
+  s_be463383785c97::t_88f05f323de92d 2290
+project.html
+  s_be463383785c97::t_e80ab4f4ca4c28 170,485-493,921-923
+golden/CondoIFC/final_state.txt
+  s_be463383785c97::t_9bfb6147d09ce1 5-6,15,20,34,45,94,125,127-128,150
+viewer.js
+  s_be463383785c97::t_99934b75fdc4ea 93-102
+construction.html
+  s_be463383785c97::t_e80ab4f4ca4c28 700-707,1110-1113,1566-1568,1573-1576
+  s_be463383785c97::t_db08aef7037cda 1569-1572
+src/Building/IFC.hs
+  s_be463383785c97::t_ce0fed53cc646d 89,488-493,495-514,517-520,554-556,560,562-563,832-837,850-853
+  s_be463383785c97::t_9bfb6147d09ce1 494
+src/Building/ExternalWorks.hs
+  s_be463383785c97::t_54440d94f81e11 30-31,411-457,459-460,463-480,482,484-490,493,495-499
+  s_be463383785c97::t_bbac509558eaa7 458,461-462,481,483,491-492,494
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "df5e54ce8b47b304655c2487b7da11fa3cc9a254",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
