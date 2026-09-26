@@ -1,0 +1,49 @@
+sprinkler-solver-construction/src/Examples/SchependomlaanDesign.hs
+  s_9415d874e44fdb::t_09a117a5d1c869 381-383
+  s_9415d874e44fdb::t_2f0ec79898555c 367-368,372
+src/Building/HVAC.hs
+  s_9415d874e44fdb::t_32f7db908ca3f3 41-42,56-58,98,386,391-402,404-415,425-428,430,456,475-480
+  s_9415d874e44fdb::t_fa0351b77e9a98 368-371,373-375
+  s_9415d874e44fdb::t_366ac1b68392d4 417-418,420
+  s_9415d874e44fdb::t_d9c1cda4bc71d5 24
+  s_9415d874e44fdb::t_f9c7b6573d1392 416,419,421-424
+  s_9415d874e44fdb::t_945f13aaec4916 429
+  s_9415d874e44fdb::t_ead55552b16860 432-434,452
+  s_9415d874e44fdb::t_b5002525d05613 385,387-390,403,435-437,439-451,453-455,457,468-474
+  s_9415d874e44fdb::t_aaf27c0aa068af 431,438
+  s_9415d874e44fdb::t_3d5ac0b1ad128e 25
+sprinkler-solver-construction/src/Examples/DesignViews.hs
+  s_9415d874e44fdb::t_fa0351b77e9a98 534,542
+src/Building/Topology.hs
+  s_9415d874e44fdb::t_469e2354d3e44e 45
+  s_9415d874e44fdb::t_aaf27c0aa068af 158,160-166,176-181
+  s_9415d874e44fdb::t_945f13aaec4916 167-172
+  s_9415d874e44fdb::t_fa0351b77e9a98 221,227
+src/Building/Electric.hs
+  s_9415d874e44fdb::t_32f7db908ca3f3 31-33
+  s_9415d874e44fdb::t_945f13aaec4916 618-620
+  s_9415d874e44fdb::t_b0a35aa7180ac1 630,649-650,652-660,662-663
+  s_9415d874e44fdb::t_180ec408e1e443 629,644-648,651,661
+src/Building/Plumbing.hs
+  s_9415d874e44fdb::t_09a117a5d1c869 159-164,217,310-312
+src/Building/Sprinkler.hs
+  s_9415d874e44fdb::t_77e7e0189f02b8 596-608
+golden/SchependomlaanDesign/final_state.txt
+  s_9415d874e44fdb::t_08a55933a49af0 13-14,45,47-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "148f3b0380b8599e94712d40e37a414d6f72d48d",
+  "prompts": {},
+  "sessions": {
+    "s_9415d874e44fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a28b31b3-d9fc-5b7e-a1de-88377d9f4f34",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
