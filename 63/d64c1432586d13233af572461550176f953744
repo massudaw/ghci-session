@@ -1,0 +1,39 @@
+project.html
+  s_9415d874e44fdb::t_506b51d81fd189 150,366,404,406,483-487,925-927,1499
+golden/SchependomlaanDesign/final_state.txt
+  s_9415d874e44fdb::t_8dd806a1cb2547 1-7
+sprinkler-solver-construction/src/Examples/DesignViews.hs
+  s_9415d874e44fdb::t_4cef6e88ee3161 922,933,942,944-949
+  s_9415d874e44fdb::t_4bdbf0f29cb5a7 923-927,936-937,943
+  s_9415d874e44fdb::t_d46d8afd34c93d 48-54,129-132,300-306,849-921,928-932,934-935,938-941,950-952
+sprinkler-solver-construction/src/Examples/SchependomlaanDesign.hs
+  s_9415d874e44fdb::t_d46d8afd34c93d 48,80,94-99,365-366
+tools/schependomlaan/extract.py
+  s_9415d874e44fdb::t_72f4b32da0f269 300,321,347-360,521,530,550-557,559
+sprinkler-solver-construction/src/Examples/SchependomlaanDesignData.hs
+  s_9415d874e44fdb::t_72f4b32da0f269 7,3721-7235
+  s_9415d874e44fdb::t_d51ba60c89fde8 7236
+sprinkler-solver-construction/src/Examples/CondoProject.hs
+  s_9415d874e44fdb::t_d46d8afd34c93d 50-51
+sprinkler-solver-examples/src/Examples/ProjectRender.hs
+  s_9415d874e44fdb::t_a0c64bfff5bcd0 34,117-118,120-122,124-126
+sprinkler-solver-construction/src/Examples/SchependomlaanDerived.hs
+  s_9415d874e44fdb::t_0bbc1d84288d28 40-41,128-138,140-148
+  s_9415d874e44fdb::t_b764dc703dab13 17,139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "63d64c1432586d13233af572461550176f953744",
+  "prompts": {},
+  "sessions": {
+    "s_9415d874e44fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a28b31b3-d9fc-5b7e-a1de-88377d9f4f34",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
