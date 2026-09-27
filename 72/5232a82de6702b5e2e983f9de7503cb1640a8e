@@ -1,0 +1,31 @@
+src/Building/Topology.hs
+  s_9415d874e44fdb::t_a93fbf6b158477 482-483
+golden/SchependomlaanDesign/final_state.txt
+  s_9415d874e44fdb::t_98010da23305e3 13-14,45,47-50
+src/Building/HVAC.hs
+  s_9415d874e44fdb::t_3ffa4342c67441 323-326,538-539
+  s_9415d874e44fdb::t_7e500479d0e4b0 241,275-288,300,302-311,314-315,321,327-328,331-343,346,455-458,531-537
+  s_9415d874e44fdb::t_a93fbf6b158477 322
+  s_9415d874e44fdb::t_7c79ec5eb61df6 289-290,296-299
+  s_9415d874e44fdb::t_0e51d563dfe694 312-313,316-320,329-330
+  s_9415d874e44fdb::t_2890a597d9db94 301
+  s_9415d874e44fdb::t_98010da23305e3 291-295
+sprinkler-solver-construction/src/Examples/Schependomlaan.hs
+  s_9415d874e44fdb::t_792834be162f46 901,1047-1052,1057
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "725232a82de6702b5e2e983f9de7503cb1640a8e",
+  "prompts": {},
+  "sessions": {
+    "s_9415d874e44fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a28b31b3-d9fc-5b7e-a1de-88377d9f4f34",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

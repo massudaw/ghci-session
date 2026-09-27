@@ -1,0 +1,46 @@
+src/Building/Structure.hs
+  s_9415d874e44fdb::t_7c62370e0bcc34 177
+src/Building.hs
+  s_9415d874e44fdb::t_71e919967981a9 1,198,213-223
+  s_9415d874e44fdb::t_8fed34084428ec 44-53,59,71-78,209-212,224-232,338-432
+  s_9415d874e44fdb::t_eae4ca16da5902 58
+  s_9415d874e44fdb::t_e276ab6b3ef845 433
+sprinkler-solver-construction/src/Examples/SchependomlaanDesign.hs
+  s_9415d874e44fdb::t_ad116a4b8d2af0 57,103,105,217-220,222-229
+sprinkler-solver-examples/src/Examples/ProjectRender.hs
+  s_9415d874e44fdb::t_ad116a4b8d2af0 112-113,118,120,123,126
+src/Building/Frame.hs
+  s_9415d874e44fdb::t_7c62370e0bcc34 277,326
+src/Building/Topology.hs
+  s_9415d874e44fdb::t_7c62370e0bcc34 332-338,375-380
+sprinkler-solver-construction/src/Examples/DesignViews.hs
+  s_9415d874e44fdb::t_ad116a4b8d2af0 303-305,312,858-859,934-938
+  s_9415d874e44fdb::t_0cab0f8f70407f 308,311
+sprinkler-solver-construction/src/Examples/SchependomlaanBuilding.hs
+  s_9415d874e44fdb::t_ad116a4b8d2af0 148-151
+src/Building/Construction.hs
+  s_9415d874e44fdb::t_d7e09984071a9c 1421
+  s_9415d874e44fdb::t_7c62370e0bcc34 845-849,857
+project.html
+  s_9415d874e44fdb::t_ad116a4b8d2af0 525-526,1044
+golden/SchependomlaanDesign/final_state.txt
+  s_9415d874e44fdb::t_a81af2bdaf50b2 8-11,43-45
+sprinkler-solver-construction/src/Examples/SchependomlaanDerived.hs
+  s_9415d874e44fdb::t_d20be8a4022cd9 149-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "88915e1c5123c974726f7175a264b7fb2de901f6",
+  "prompts": {},
+  "sessions": {
+    "s_9415d874e44fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a28b31b3-d9fc-5b7e-a1de-88377d9f4f34",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

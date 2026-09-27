@@ -1,0 +1,89 @@
+golden/House16FAClassify/status.txt
+  s_9415d874e44fdb::t_e9e0e29d59f4fc 1
+golden/House16FAClassify/final_state.txt
+  s_9415d874e44fdb::t_e9e0e29d59f4fc 1-14
+sprinkler-solver-construction/src/Examples/House16FAData.hs
+  s_ac91566f4798ba::t_2fcd42b7116213 1-8,13-19,22-1346,1348-1809
+  s_ac91566f4798ba::t_10e79445f68a2d 9-12
+  s_ac91566f4798ba::t_243e496f34abd5 20-21,1347
+tools/skp/extract.py
+  s_ac91566f4798ba::t_07ed5aaf8f14e5 207-251
+  s_ac91566f4798ba::t_5330fa780c800f 262,335-337
+  s_ac91566f4798ba::t_db80dbeff819a7 280
+  s_9415d874e44fdb::t_c504f69ae1255d 338-342,368-369,376,380,385
+  s_ac91566f4798ba::t_1cebb0f8261fa4 389-400
+  s_ac91566f4798ba::t_0653d389c5e055 42
+  s_ac91566f4798ba::t_feac4e371b1dd4 384
+  s_ac91566f4798ba::t_10e79445f68a2d 355-360
+  s_ac91566f4798ba::t_1d454f298a19d7 285
+  s_ac91566f4798ba::t_100b2bf00eec86 81,83
+  s_ac91566f4798ba::t_39c3948ccf078f 128-133,154-157,269,272-273,275,286-296,301-303,361
+  s_ac91566f4798ba::t_6d6cdffc04a256 84,153,274
+  s_ac91566f4798ba::t_67bc9a63ef6aec 1-24,30-31,33-37,39-41,43-80,82,85-127,134-152,158-206,252-261,263-268,270-271,276-279,281-284,297-300,304-324,329-334,343-354,362-367,370-372,377-379,381-383,386-388,401-410
+  s_ac91566f4798ba::t_7f9263708308ee 25-29,32
+  s_ac91566f4798ba::t_07dcc624630f7e 38
+  s_ac91566f4798ba::t_dfcf8cd70fbab1 373-375
+  s_ac91566f4798ba::t_e152418166ff73 325-328
+example/Main.hs
+  s_ac91566f4798ba::t_2e7dbb0d1075bc 335,392,720
+  s_ac91566f4798ba::t_80379856cb44cf 336,393,721
+house16fa.html
+  s_ac91566f4798ba::t_97c4c9d634f609 1-56,58-67,69,71-86,97,101-113,119-133,135-136,141-151,159-205,224-242,251-263,265,267-275
+  s_ac91566f4798ba::t_db9ed998b909b3 57,87-96,114-118,134,137-140,243-250,264
+  s_ac91566f4798ba::t_84f8cba81ae930 68,70,98-100,152-158,206-223,266
+sprinkler-solver-construction/src/Examples/House16FAServer.hs
+  s_ac91566f4798ba::t_6cb04a75411ad6 23-27,33,44,53,97-102,105
+  s_ac91566f4798ba::t_a8ef72028ea7ad 16,20-22,34,36
+  s_ac91566f4798ba::t_34f8d4229264ea 42-43,45,67-72,77-78
+  s_ac91566f4798ba::t_05a80ed5b909bb 1-15,17-19,28-32,35,37-41,46-52,54-66,73-76,79-96,103-104
+example/House16FAServer.hs
+  s_ac91566f4798ba::t_535754b673d3b9 1-16
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_535754b673d3b9 48,94-100
+  s_ac91566f4798ba::t_2e7dbb0d1075bc 46-47
+  s_ac91566f4798ba::t_80379856cb44cf 49
+  s_ac91566f4798ba::t_ffa870496f258b 101-104
+sprinkler-solver-construction/src/Examples/House16FAClassify.hs
+  s_ac91566f4798ba::t_d6aa286238ef88 78-82,89-91,93-96,100,102-106,108-110,112-118,120-123,125-129,151-159,181,183-186
+  s_ac91566f4798ba::t_80379856cb44cf 14-16,85-88
+  s_ac91566f4798ba::t_6d0be931c32771 21-25,54,60-61,206-209,222-224,230
+  s_ac91566f4798ba::t_043d089544c936 1-13,17-20,26-53,55-59,62-77,83-84,92,97-99,101,107,111,119,124,130-150,160-180,182,187-205,210-221,225-229,231-254
+tools/model_session/targets.json
+  s_ac91566f4798ba::t_b10707d17c9015 200-207,209-210,212-215
+  s_ac91566f4798ba::t_80379856cb44cf 208,211
+sprinkler-solver-construction/src/Examples/House16FA.hs
+  s_ac91566f4798ba::t_8e5753e14011a6 148-150,157-158,163,170,242,246-251
+  s_ac91566f4798ba::t_2e7dbb0d1075bc 133
+  s_ac91566f4798ba::t_d63febfc5f1ec3 1-32,34,36-59,61-69,74-78,80-83,85,99-106,111-132,134-147,151-156,159-162,164-169,171-241,243-245,252-256
+  s_ac91566f4798ba::t_d2927e4c62f3ba 35,107-110
+  s_ac91566f4798ba::t_6cb04a75411ad6 33,70-73
+  s_ac91566f4798ba::t_be5d554d33df20 60,79,84,86-98
+golden/House16FA/final_state.txt
+  s_9415d874e44fdb::t_161b992bd0bb4f 1-9
+golden/House16FA/status.txt
+  s_9415d874e44fdb::t_d600b2012b827f 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eebc95a27b1f51f123cbebe9fc9a1655c27e2e8a",
+  "prompts": {},
+  "sessions": {
+    "s_9415d874e44fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a28b31b3-d9fc-5b7e-a1de-88377d9f4f34",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
