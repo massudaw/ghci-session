@@ -6,6 +6,8 @@ sprinkler-solver-examples/src/Examples/ProjectRender.hs
 project.html
   s_9415d874e44fdb::t_48e4398a062832 530
   s_9415d874e44fdb::t_7a47618d923f57 525-529,531-532,1050
+  s_9415d874e44fdb::t_bb8139082bc47a 375
+  s_9415d874e44fdb::t_443325b4c3d28d 171
 golden/SchependomlaanDesign/final_state.txt
   s_9415d874e44fdb::t_932b11118c6dd1 2,5-7
 sprinkler-solver-construction/src/Examples/DesignViews.hs
