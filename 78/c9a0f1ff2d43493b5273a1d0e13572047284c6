@@ -1,0 +1,30 @@
+tools/skp/frame_fe.py
+  s_ac91566f4798ba::t_bb1be1466d6a1f 12-17
+  s_ac91566f4798ba::t_fd88302d5c80be 197,205,309,346-347
+  s_ac91566f4798ba::t_7303c15dbd70c5 343-344
+  s_ac91566f4798ba::t_96bf9af6f95091 41,90,93,100,115
+  s_ac91566f4798ba::t_5fbae99de7b701 106,117-149,152,154-155
+sprinkler-solver-construction/src/Examples/House16FAFullFrame.hs
+  s_ac91566f4798ba::t_692898c8f4bafd 19-34
+  s_ac91566f4798ba::t_c66fc5f523d522 9-11,67-68
+sprinkler-solver-construction/src/Examples/House16FAFullFrameData.hs
+  s_ac91566f4798ba::t_5fbae99de7b701 9,13,17,21
+  s_ac91566f4798ba::t_bb1be1466d6a1f 19-20
+  s_ac91566f4798ba::t_5866f8981dc7ea 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "78c9a0f1ff2d43493b5273a1d0e13572047284c6",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
