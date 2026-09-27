@@ -1,0 +1,35 @@
+sprinkler-solver-construction/src/Examples/House16FAClassify.hs
+  s_ac91566f4798ba::t_50ad011c542754 20-21,41-45,55-58,62-63,114-115,117,282-284,300-304,306,351-358,491-503,512,526
+  s_ac91566f4798ba::t_f1a9295d0903e3 46-54,90,359-423,490,550-552
+  s_ac91566f4798ba::t_6e19d2e022d8ed 65-72,107,116,305,424-489
+  s_ac91566f4798ba::t_aad52f997e0092 35-39,60-61,215-217,325-326,329-331,342-346,510-511,523
+  s_ac91566f4798ba::t_44efe97e6d58ff 28-34,40,59,64,73-76,101-102,106,293-299,307-324,327-328,332-341,347-350,504-509,513-522,524-525,527
+sprinkler-solver-construction/src/Examples/House16FAData.hs
+  s_ac91566f4798ba::t_fd436bcb79c992 21-22,26-1345
+sprinkler-solver-construction/src/Examples/House16FA.hs
+  s_ac91566f4798ba::t_fd436bcb79c992 62,80,85,88-100
+  s_ac91566f4798ba::t_d6da3b48df17b8 101
+tools/skp/review_sheets.py
+  s_ac91566f4798ba::t_4ca171efda1a04 1-149
+golden/House16FAClassify/final_state.txt
+  s_ac91566f4798ba::t_4ca171efda1a04 1,3,5,7,10,14
+  s_ac91566f4798ba::t_7010d83596cc42 2
+tools/skp/extract.py
+  s_ac91566f4798ba::t_fd436bcb79c992 215,403-404,411-412
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "84fa3f4b09a78ee9d1add401a7fdbd696a9cdcd5",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
