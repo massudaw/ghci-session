@@ -1,0 +1,74 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_90675bd717d894 50
+  s_ac91566f4798ba::t_6f997f12cd6cfb 51-52
+example/Main.hs
+  s_ac91566f4798ba::t_295290fcfe03f3 337,396,726
+  s_ac91566f4798ba::t_344d62f000a888 338,397,727
+sprinkler-solver-construction/src/Examples/House16FAServer.hs
+  s_ac91566f4798ba::t_11ac87e1866ec0 48,61-62,70-73
+  s_ac91566f4798ba::t_0a3a0283b8be6c 24-25,47,97,100,102-104
+tools/skp/extract.py
+  s_ac91566f4798ba::t_e9b7c91aa114cf 404,433-450
+sprinkler-solver-construction/src/Examples/House16FAStructure.hs
+  s_ac91566f4798ba::t_ba49e293244bc5 35-38,75,279,393
+  s_ac91566f4798ba::t_7d395f8e34b7e6 57,309-314,318-319,321-332,337-345,347-358,409
+  s_ac91566f4798ba::t_382488e631d109 184,187-188,190,192-196,205-208,235
+  s_ac91566f4798ba::t_966da62a054f80 25-27,243-246,250-252,256
+  s_ac91566f4798ba::t_2b599041f98e3f 59,294,300,317,333-336,359-368,387,422-425
+  s_ac91566f4798ba::t_a1c0ecdcc28425 58,60-61
+  s_ac91566f4798ba::t_79afe8b2babe8b 102-105,109-140,149-152,160,169-170,268-275
+  s_ac91566f4798ba::t_8c28fe7f75153e 185-186,197-198,410-412
+  s_ac91566f4798ba::t_ebb44e027d8f59 216-228,231-234,236-242,277-278,280-293,295-299,301,303-308,315-316,320,346,372-381,385-386,415-421,426
+  s_ac91566f4798ba::t_5103c8f5bc26da 64
+  s_ac91566f4798ba::t_30e83527d78b1b 247,249,257-260
+  s_ac91566f4798ba::t_0e2b1d067fb2ff 39-47,56,148,174,262,264-267,369-371,382,413-414
+  s_ac91566f4798ba::t_3acbb80133c79a 199-204,210-212,248,253-255,261
+  s_ac91566f4798ba::t_097eb47e916ef2 1-24,28-34,48-55,62-63,65-74,76-101,106-108,141-147,153-159,161-168,171-173,175-183,189,191,209,213-215,229-230,263,276,302,383-384,388-392,394-408,427-429
+golden/House16FAStructure/final_state.txt
+  s_ac91566f4798ba::t_4896c622aee5fc 1-5
+tools/skp/rooms.py
+  s_ac91566f4798ba::t_12382d50eea102 20-23,59,149-153
+  s_ac91566f4798ba::t_2d790e6ed591cb 1-19,24-58,60-62,64-148,154-161,182-254
+  s_ac91566f4798ba::t_9f420300b4d4f4 63,162-181
+golden/House16FAStructure/status.txt
+  s_ac91566f4798ba::t_295290fcfe03f3 1
+golden/House16FARooms/status.txt
+  s_ac91566f4798ba::t_344d62f000a888 1
+sprinkler-solver-construction/src/Examples/House16FARooms.hs
+  s_ac91566f4798ba::t_940812900091c7 1-14,21,25-95,97-104,106,114-120,122,128-133,138-169
+  s_ac91566f4798ba::t_911bc20b5c99bf 15-20,22-24,96,105,107-113,121,123-127,134-137
+tools/model_session/targets.json
+  s_ac91566f4798ba::t_90675bd717d894 209
+  s_ac91566f4798ba::t_6f997f12cd6cfb 210
+house16fa.html
+  s_ac91566f4798ba::t_15e634f65574c2 99,101-103,136,148,157-158,179,214-218,244-246,248,342-345
+  s_ac91566f4798ba::t_9aefec09126083 153-154,182,211,365
+  s_ac91566f4798ba::t_d15ac5f474ef04 63,65-66,119-127,180-181,184,188-189,240,242,266-267,307-309,312,401,403,406-409,411-415,419-423,426-429,431
+  s_ac91566f4798ba::t_4d2fbefd3c0dc9 155-156,183,210,212-213,241,268-270,310-311,424-425
+  s_ac91566f4798ba::t_f3459e914e8bc5 172-173
+  s_ac91566f4798ba::t_4896c622aee5fc 185-187,410,416-418
+  s_ac91566f4798ba::t_9174366b2aaccc 247
+sprinkler-solver-construction/src/Examples/House16FAData.hs
+  s_ac91566f4798ba::t_e9b7c91aa114cf 14,1812-1877
+  s_ac91566f4798ba::t_7e861f3c57e186 1878
+golden/House16FARooms/final_state.txt
+  s_ac91566f4798ba::t_344d62f000a888 1-9
+sprinkler-solver-construction/src/Examples/House16FARoomsData.hs
+  s_ac91566f4798ba::t_6d580c056401ed 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fff9b85e16ebdb0ede6609de7fab954e1fd7761e",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
