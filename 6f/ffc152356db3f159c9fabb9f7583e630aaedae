@@ -1,0 +1,21 @@
+sprinkler-solver-construction/src/Examples/CondoWhole.hs
+  s_ac91566f4798ba::t_d9afafa8f68092 137,157-170
+golden/StructuralFE/final_state.txt
+  s_ac91566f4798ba::t_b5e4a9501671dc 63-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6fffc152356db3f159c9fabb9f7583e630aaedae",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
