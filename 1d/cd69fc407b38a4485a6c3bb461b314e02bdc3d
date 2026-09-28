@@ -1,0 +1,22 @@
+tools/skp/README.md
+  s_ac91566f4798ba::t_ca30b4a87da654 1-209
+  s_ac91566f4798ba::t_c898eab44bf8cb 210
+tools/skp/frame_fe.py
+  s_ac91566f4798ba::t_cb4fa8fdc5f029 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1dcd69fc407b38a4485a6c3bb461b314e02bdc3d",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
