@@ -1,0 +1,30 @@
+src/Plane.hs
+  s_ac91566f4798ba::t_f37da5e78e1609 28,498,503
+  s_ac91566f4798ba::t_795ca17e9034a5 499-502,504-506,513
+src/Solver/ForceLinear.hs
+  s_ac91566f4798ba::t_9c900289379470 109-119,127,147-148,150,168,170,230,232-234,246,248,250,258-259,265,268,280-281,287,290,292,294-295
+src/Force.hs
+  s_ac91566f4798ba::t_795ca17e9034a5 1
+  s_ac91566f4798ba::t_ebb9e5f8f1120c 34,160-166,199,545-554,572
+sprinkler-solver-construction/src/Examples/SolidFE.hs
+  s_ac91566f4798ba::t_f37da5e78e1609 64,76,141-142,374
+  s_ac91566f4798ba::t_2815458b1dc703 348-352,380
+sprinkler-solver-construction/src/Examples/House16FAFloorFE.hs
+  s_ac91566f4798ba::t_f37da5e78e1609 67,80,359,364-365,404
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "291119293433a78ca8913172cbc37859924b12fa",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
