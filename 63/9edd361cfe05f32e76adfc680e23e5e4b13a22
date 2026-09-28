@@ -1,0 +1,48 @@
+sprinkler-solver-construction/src/Examples/SolidFE.hs
+  s_ac91566f4798ba::t_d3d2dec5396894 52,77,200-201,223-228,403-404,407-408
+  s_ac91566f4798ba::t_9652a4d1185b8e 54-55,204-217
+  s_ac91566f4798ba::t_27862e9e18d437 218
+sprinkler-solver-construction/src/Examples/SchependomlaanWhole.hs
+  s_ac91566f4798ba::t_9652a4d1185b8e 56-57,285-287,289,351
+  s_ac91566f4798ba::t_6297730ac0a46e 63
+  s_ac91566f4798ba::t_65e0a2638b601f 301,384
+src/JIT/sparse_cholesky.c
+  s_ac91566f4798ba::t_1f02c83722e755 30,33
+  s_ac91566f4798ba::t_ed33adccd6278a 27-29,31
+  s_ac91566f4798ba::t_84110629279069 32
+src/Solver/ForceLinear.hs
+  s_ac91566f4798ba::t_d3d2dec5396894 39,71-79
+  s_ac91566f4798ba::t_616a179f00dfd6 57-58,190-197
+  s_ac91566f4798ba::t_3077a601f73aac 80
+sprinkler-solver-construction/src/Examples/FloorFEBuilding.hs
+  s_ac91566f4798ba::t_65e0a2638b601f 23,85-86,110
+sprinkler-solver-construction/src/Examples/CondoFloors.hs
+  s_ac91566f4798ba::t_65e0a2638b601f 89
+  s_ac91566f4798ba::t_6297730ac0a46e 38
+sprinkler-solver-construction/src/Examples/StructuralFE.hs
+  s_ac91566f4798ba::t_63301df8cd84d5 21-24,35-49
+sprinkler-solver-construction/src/Examples/SchependomlaanDeflection.hs
+  s_ac91566f4798ba::t_6297730ac0a46e 36-37
+  s_ac91566f4798ba::t_9652a4d1185b8e 31-32,83-85,89,123,132
+  s_ac91566f4798ba::t_65e0a2638b601f 86-88,94
+sprinkler-solver-construction/src/Examples/House16FAFloorFE.hs
+  s_ac91566f4798ba::t_d3d2dec5396894 57,427,438-443,462-463,472,476,664-666,754
+  s_ac91566f4798ba::t_65e0a2638b601f 58,86,689-690,709-712
+  s_ac91566f4798ba::t_23b592ce7787c6 713
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "639edd361cfe05f32e76adfc680e23e5e4b13a22",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
