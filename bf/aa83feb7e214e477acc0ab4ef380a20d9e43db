@@ -1,0 +1,44 @@
+tools/skp/README.md
+  s_ac91566f4798ba::t_c745f5cb0e1425 153-187
+example/Main.hs
+  s_ac91566f4798ba::t_83c2c3a3e76bfa 337,735
+sprinkler-solver-construction/src/Examples/MMHouse.hs
+  s_ac91566f4798ba::t_e4af8aff7b2f9c 12-18,45
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_83c2c3a3e76bfa 50-51
+tools/dwg_to_hs.py
+  s_ac91566f4798ba::t_92719da98473ad 1-21,37-123
+  s_ac91566f4798ba::t_e53ef8895d7aca 22-36
+house16fa.html
+  s_ac91566f4798ba::t_678795f77274d3 66-67,114-117,119,139-141,210-212,225-230,265,396,402-417,471,476,486,493,504,531-552,620
+  s_ac91566f4798ba::t_4e617b230be15b 573-576
+  s_ac91566f4798ba::t_1b50affe8da92e 55,472-473,490,501
+  s_ac91566f4798ba::t_553dfb802e3074 58,474
+sprinkler-solver-construction/src/Examples/MMDwgData.hs
+  s_ac91566f4798ba::t_e53ef8895d7aca 23-24,38,40-42,48-51,56-59,183,186,192-197,202-205,208-209,211-212,216-217
+  s_ac91566f4798ba::t_1903d14077d90f 1-22,25-37,39,43-47,52-55,60-182,184-185,187-191,198-201,206-207,210,213-215,218-226
+sprinkler-solver-construction/src/Examples/MMDwg.hs
+  s_ac91566f4798ba::t_64c7c739c1d8f8 1-255
+golden/MMDwg/final_state.txt
+  s_ac91566f4798ba::t_c745f5cb0e1425 1-5
+golden/MMDwg/status.txt
+  s_ac91566f4798ba::t_c745f5cb0e1425 1
+sprinkler-solver-construction/src/Examples/House16FAServer.hs
+  s_ac91566f4798ba::t_9d4193b994668d 68-70,79-99,102-104,174-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bfaa83feb7e214e477acc0ab4ef380a20d9e43db",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
