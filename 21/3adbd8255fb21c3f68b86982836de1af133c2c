@@ -1,0 +1,32 @@
+project.html
+  s_ac91566f4798ba::t_3623d8e23676a8 399-400,585-590
+  s_ac91566f4798ba::t_ea3bb0a7cead1a 860,863,868
+viewer.js
+  s_ac91566f4798ba::t_288bec64de9cc6 320-331,386
+sprinkler-solver-construction/src/Examples/MMHouse.hs
+  s_ac91566f4798ba::t_da425505ae4ae1 52
+sprinkler-solver-construction/src/Examples/SkpBuilding.hs
+  s_ac91566f4798ba::t_c46982b3eac5d9 323-326
+  s_ac91566f4798ba::t_da425505ae4ae1 54-59,242,244,269-302
+  s_ac91566f4798ba::t_4a5f5910158723 303
+sprinkler-solver-construction/src/Examples/House16FA.hs
+  s_ac91566f4798ba::t_da425505ae4ae1 56
+golden/MMHouse/final_state.txt
+  s_ac91566f4798ba::t_104167542e9fc4 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "213adbd8255fb21c3f68b86982836de1af133c2c",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
