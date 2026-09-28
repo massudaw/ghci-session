@@ -1,0 +1,37 @@
+example/Main.hs
+  s_ac91566f4798ba::t_28f285e25966ba 341,745
+project.html
+  s_ac91566f4798ba::t_89e0ea866b9ec3 1427-1429
+  s_ac91566f4798ba::t_09a45f54de0d43 367-370,433,510,947-948,953-954,1213-1215
+  s_ac91566f4798ba::t_ecff3092ca3d9f 602-604
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_11b433df318a23 48
+  s_ac91566f4798ba::t_ecff3092ca3d9f 33,43,55
+sprinkler-solver-construction/src/Examples/MMIdentify.hs
+  s_ac91566f4798ba::t_131184eefce76f 107,112-119
+  s_ac91566f4798ba::t_467ecf786328be 1-9,11-13,17-20,29-36,38-40,42-70,72-90,106,108-111,120-139,141-142,144-163,165-168
+  s_ac91566f4798ba::t_09a45f54de0d43 10,14-16,41,71,103-105
+  s_ac91566f4798ba::t_ecff3092ca3d9f 21-28,37,91-102,140,143,164,169-170
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_28f285e25966ba 54
+golden/MMIdentify/final_state.txt
+  s_ac91566f4798ba::t_00342dcba8fdb9 1-5
+golden/MMIdentify/status.txt
+  s_ac91566f4798ba::t_4fcf2cb31608b4 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d4461f74ede6cb49d1872018836703a1c4976cf2",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
