@@ -1,0 +1,27 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_0546eabda88d4d 55
+sprinkler-solver-construction/src/Examples/MMGeoData.hs
+  s_ac91566f4798ba::t_0546eabda88d4d 1-15
+tools/site_fit.py
+  s_ac91566f4798ba::t_5ab9ad957226f2 12-13,23,118-124,126,128,130,132-133,147-163,166,177-178
+  s_ac91566f4798ba::t_7d05beaab69cd4 135,145-146,165
+  s_ac91566f4798ba::t_567ba8db5e0caa 1-11,14-22,24-117,125,127,129,131,134,136-144,164,167-176,179-200
+sprinkler-solver-construction/src/Examples/MMSite.hs
+  s_ac91566f4798ba::t_0546eabda88d4d 48,200-210,212,214,216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "baf70b026d723303d1b7133056abc8f3309d8bc3",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
