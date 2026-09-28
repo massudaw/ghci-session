@@ -1,0 +1,30 @@
+src/Plane.hs
+  s_ac91566f4798ba::t_9ddfe5c557405b 1
+  s_ac91566f4798ba::t_8cac8c6583bdb6 509-514,536
+  s_ac91566f4798ba::t_b280d5186681b9 534-535
+sprinkler-solver-construction/src/Examples/StructuralFE.hs
+  s_ac91566f4798ba::t_f685b1ef9c0a72 22,41,44-46
+src/Solver/ForceLinear.hs
+  s_ac91566f4798ba::t_d80cb7343f10bf 207-215,217-219
+  s_ac91566f4798ba::t_d62330c0268639 50-51,84-92,174,176,179,181,183,205,216,220,231-232
+  s_ac91566f4798ba::t_46168604a6b7b5 312-330
+  s_ac91566f4798ba::t_f2ff05dd7e518b 1
+sprinkler-solver-construction/src/Examples/SolidFE.hs
+  s_ac91566f4798ba::t_f685b1ef9c0a72 68-69,388,391-394
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c4dac3faf46a30d9c044012f249f28ee1eb7b518",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
