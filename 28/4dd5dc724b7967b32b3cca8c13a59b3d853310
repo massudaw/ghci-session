@@ -1,0 +1,47 @@
+src/Building/Structure.hs
+  s_ac91566f4798ba::t_9ddb2b833ab683 25
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_9a236fa2d9220d 73
+tools/model_session/targets.json
+  s_ac91566f4798ba::t_9a236fa2d9220d 227
+sprinkler-solver-construction/src/Examples/SolidFE.hs
+  s_ac91566f4798ba::t_dfd6405273ca95 218-223,352-353,357,463-471
+  s_ac91566f4798ba::t_03351bc7590f94 80,95,100-103,368-373
+  s_ac91566f4798ba::t_ae05d10833e301 12-13,117-124,143-145,250-252
+  s_ac91566f4798ba::t_d35db82bdf3133 52-53
+sprinkler-solver-construction/src/Examples/CondoWhole.hs
+  s_ac91566f4798ba::t_ae05d10833e301 68-74,103
+  s_ac91566f4798ba::t_188feb1c6e2c5f 79-81,85,180
+  s_ac91566f4798ba::t_dfd6405273ca95 200
+  s_ac91566f4798ba::t_abb8b2805211a8 201-203
+  s_ac91566f4798ba::t_be025ff426bdbe 119-120,141-155
+  s_ac91566f4798ba::t_1775868cf9b0fd 84,117-118,121-122,128-133,139
+  s_ac91566f4798ba::t_c17bc343364e0b 210-217,219-230,251,253-266
+  s_ac91566f4798ba::t_6df05a6727365a 123-127,134-138
+  s_ac91566f4798ba::t_7d47e167349a09 1-63,75-78,82-83,86-102,104-116,156-179,181-199,204-206,208-209,218,231-250,252,267-273
+  s_ac91566f4798ba::t_e72c7b0ba098e4 64-67,140
+  s_ac91566f4798ba::t_c72a2cf155f224 207
+sprinkler-solver-construction/src/Examples/SchependomlaanWhole.hs
+  s_ac91566f4798ba::t_ae05d10833e301 161
+  s_ac91566f4798ba::t_03351bc7590f94 173,184,200-203,205-206
+src/Plane.hs
+  s_ac91566f4798ba::t_0669cefdbc4828 506-529,531-534
+example/Main.hs
+  s_ac91566f4798ba::t_c72a2cf155f224 345,740
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "284dd5dc724b7967b32b3cca8c13a59b3d853310",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
