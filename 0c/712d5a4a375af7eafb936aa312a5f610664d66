@@ -1,0 +1,36 @@
+doc/profiling/INFO_TABLE_PROFILING.md
+  h_fd5809635b36a3 1-287
+example/Main.hs
+  h_fd5809635b36a3 396,399
+sprinkler-solver-construction/src/Examples/MMCutRecon.hs
+  h_fd5809635b36a3 115-118,120,125
+sprinkler-solver-construction/src/Examples/MMHouse.hs
+  h_fd5809635b36a3 46,64-67,74-75,96-99,107,215,434
+sprinkler-solver-construction/src/Examples/SkpBuilding.hs
+  h_fd5809635b36a3 304-305,307-309,314
+sprinkler-solver.cabal
+  h_fd5809635b36a3 364,516
+src/Solver/StackSampler.hs
+  h_fd5809635b36a3 1-150
+tools/README.md
+  h_fd5809635b36a3 18-31,36,42,47,52,55,59
+tools/model_session/session.py
+  h_fd5809635b36a3 89-93,99,146-150,157
+tools/profile_model.sh
+  h_fd5809635b36a3 4,8,17-19,25,34-35,37-40,91-93,96,104-106,219-221,280-305,391-396,415
+tools/profile_report.py
+  h_fd5809635b36a3 35-40,103-105,107,109-110,114,118,141-164,170-173,177,188,192-193,206,209,217,230-253,292-305,323,325,329-330,434-484,512,533,542-547,650,652-662,672-677,681-704,885-956
+tools/sample_target.py
+  h_fd5809635b36a3 1-548
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0c712d5a4a375af7eafb936aa312a5f610664d66",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
