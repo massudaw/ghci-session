@@ -1,0 +1,59 @@
+sprinkler-solver-construction/src/Examples/MMSections.hs
+  s_ac91566f4798ba::t_753884214fe9b8 41
+project.html
+  s_ac91566f4798ba::t_071bb38fd1be9c 218-220
+sprinkler-solver-construction/src/Examples/MMSectionSlabs.hs
+  s_ac91566f4798ba::t_52a5943ac6f833 1-11,14,20-27,30-37,39-85,96-97,100,107-108,114,116,125-148,167-176,178,180-182
+  s_ac91566f4798ba::t_071bb38fd1be9c 29,38,161-166,177
+  s_ac91566f4798ba::t_9f94a590cbe73a 86-95,98-99,101-106,109,117,123-124
+  s_ac91566f4798ba::t_8aeaf7ef136655 12-13,115,118-122
+  s_ac91566f4798ba::t_ce52097137012c 15-19,28,110-113,149-160,179
+sprinkler-solver-construction/src/Examples/MMDrawnCuts.hs
+  s_ac91566f4798ba::t_753884214fe9b8 34-35
+  s_ac91566f4798ba::t_c79f0562a169ed 83-90
+sprinkler-solver-construction/src/Examples/MMCutLedger.hs
+  s_ac91566f4798ba::t_5caebc0631946d 14-15,89-91
+  s_ac91566f4798ba::t_75cd881bc819d5 31,33-35,50-51,53,71-79,97-100,175
+  s_ac91566f4798ba::t_753884214fe9b8 1-13,18-25,28-30,32,36-49,52,54-70,80-88,93-96,101-109,111,115-136,139-144,153-174,176-194
+  s_ac91566f4798ba::t_8a6fb511054a53 26-27,110,112-114,137-138,145-152
+  s_ac91566f4798ba::t_ce52097137012c 16-17,92
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_8c875908f52c30 68
+  s_ac91566f4798ba::t_753884214fe9b8 67
+example/Main.hs
+  s_ac91566f4798ba::t_8c875908f52c30 354,772
+  s_ac91566f4798ba::t_753884214fe9b8 353,771
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_071bb38fd1be9c 55-62,135-136,178,183-199
+  s_ac91566f4798ba::t_3b9fd73a8a9279 200
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_071bb38fd1be9c 45,64
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_037e873015fad8 325-356
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_fcaeeb39f3c3af 38,41-44
+golden/MMCutLedger/final_state.txt
+  s_ac91566f4798ba::t_2a590cff6ff261 1-11
+golden/MMCutLedger/status.txt
+  s_ac91566f4798ba::t_062c50b296a3e6 1
+golden/MMSectionSlabs/final_state.txt
+  s_ac91566f4798ba::t_47ffda6eb3f5db 1-3
+golden/MMSectionSlabs/status.txt
+  s_ac91566f4798ba::t_4cc2de77975f7f 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "aed94e67c7474270d7aea62e05502a3fd094fd45",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
