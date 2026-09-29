@@ -1,0 +1,35 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_e15c8a379d1082 59
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_ac48d524b095da 32-33
+golden/MMDrawnLowWalls/status.txt
+  s_ac91566f4798ba::t_ac48d524b095da 1
+golden/MMPlanDims/final_state.txt
+  s_ac91566f4798ba::t_ac48d524b095da 2
+example/Main.hs
+  s_ac91566f4798ba::t_e15c8a379d1082 362,790
+sprinkler-solver-construction/src/Examples/MMViewLedger.hs
+  s_ac91566f4798ba::t_e15c8a379d1082 29,49
+golden/MMPlanLedger/final_state.txt
+  s_ac91566f4798ba::t_ac48d524b095da 6,8
+golden/MMDrawnLowWalls/final_state.txt
+  s_ac91566f4798ba::t_ac48d524b095da 1-2
+sprinkler-solver-construction/src/Examples/MMDrawnLowWalls.hs
+  s_ac91566f4798ba::t_e15c8a379d1082 1-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c8f79e61cc847dde30319e55d784c68b4ffd3cf3",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
