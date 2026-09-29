@@ -1,0 +1,31 @@
+golden/MMDrawnCoverage/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 1-2
+golden/MMDrawnCuts/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 3
+golden/MMDwg/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 1-4
+golden/MMPlanLedger/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 6,8
+sprinkler-solver-construction/src/Examples/MMDwg.hs
+  s_ac91566f4798ba::t_e6c5e251ed6ba6 48,77,79,98,102
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 6-7,29-30,58-59
+golden/MMDrawnStructure/final_state.txt
+  s_ac91566f4798ba::t_f0e9d2833a334f 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "340fa88960422cf8a89b2d69deaa66b5328e668e",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
