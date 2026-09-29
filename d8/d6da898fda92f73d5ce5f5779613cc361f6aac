@@ -1,0 +1,51 @@
+sprinkler-solver-construction/src/Examples/MMDrawnSlabs.hs
+  s_ac91566f4798ba::t_736ac719f5da26 38,179
+  s_ac91566f4798ba::t_1355d135147c1d 1-21,27-37,39-44,46-128,131-132,134-169,171-178
+  s_ac91566f4798ba::t_cd147c6cd9ec3d 22-26,45,129-130,133,170
+project.html
+  s_ac91566f4798ba::t_cd147c6cd9ec3d 217-218
+golden/MMDrawnSlabs/status.txt
+  s_ac91566f4798ba::t_92ddd170efa765 1
+sprinkler-solver-construction/src/Examples/MMDrawnRooms.hs
+  s_ac91566f4798ba::t_45c63921cbd26f 26-29,136,141-145
+  s_ac91566f4798ba::t_2934b63bf51c20 44,91-92,94,107,123-128
+  s_ac91566f4798ba::t_705cfee1e93516 82-86
+  s_ac91566f4798ba::t_9814f43d8e8282 106,110-116
+  s_ac91566f4798ba::t_f0c5fcf025ff37 79,87-90,97-105,108,117-122
+  s_ac91566f4798ba::t_4e5b59825143a4 93,109
+  s_ac91566f4798ba::t_d46bf2007dbec7 95-96
+  s_ac91566f4798ba::t_46d0b57d7c2235 67-70,133-135,138
+example/Main.hs
+  s_ac91566f4798ba::t_736ac719f5da26 344,752
+golden/MMDrawnRooms/final_state.txt
+  s_ac91566f4798ba::t_92ddd170efa765 9
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_92ddd170efa765 1-2
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_cd147c6cd9ec3d 31-33,66,103,136-143
+  s_ac91566f4798ba::t_74ee741d772dc8 144
+golden/MMDrawnSlabs/final_state.txt
+  s_ac91566f4798ba::t_92ddd170efa765 1-10
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_cd147c6cd9ec3d 38,57
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_736ac719f5da26 57
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_6ad79ed24c43e9 106-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d8d6da898fda92f73d5ce5f5779613cc361f6aac",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
