@@ -1,0 +1,41 @@
+golden/MMDrawnCornice/final_state.txt
+  s_ac91566f4798ba::t_edffa2aafb832d 1-5
+golden/MMDrawnCornice/status.txt
+  s_ac91566f4798ba::t_edffa2aafb832d 1
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_edffa2aafb832d 267-283
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_edffa2aafb832d 7-9
+project.html
+  s_ac91566f4798ba::t_edffa2aafb832d 224-226
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_edffa2aafb832d 40-44,115-116,157,162-170
+  s_ac91566f4798ba::t_2d3a61f2d9dc05 171
+example/Main.hs
+  s_ac91566f4798ba::t_926b713ea6d7ca 351,766
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_926b713ea6d7ca 65
+sprinkler-solver-construction/src/Examples/MMElevations.hs
+  s_ac91566f4798ba::t_926b713ea6d7ca 28-29,97-107
+sprinkler-solver-construction/src/Examples/MMDrawnCornice.hs
+  s_ac91566f4798ba::t_926b713ea6d7ca 1-10,13-27,30-39,41-52,54-63,65-71,73-74,78-94,97,99-152,167-174,177-180
+  s_ac91566f4798ba::t_a00e19a550a953 11-12,28-29,40,53,64,72,75-77,95-96,98,153-166,175-176
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_edffa2aafb832d 44,63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0bf10800315f1b67b411d40440de5a339f926b53",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
