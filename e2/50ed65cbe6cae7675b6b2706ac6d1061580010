@@ -1,0 +1,20 @@
+golden/MMSectionWalls/final_state.txt
+  h_fd5809635b36a3 1
+sprinkler-solver-construction/src/Examples/MMSectionWalls.hs
+  h_fd5809635b36a3 34,163
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  h_fd5809635b36a3 44,63
+tools/model_session/README.md
+  h_fd5809635b36a3 173-188,191-198,202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e250ed65cbe6cae7675b6b2706ac6d1061580010",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
