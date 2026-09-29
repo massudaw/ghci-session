@@ -1,0 +1,41 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_b695c6cd22087d 61-62
+sprinkler-solver-construction/src/Examples/MMElevationsData.hs
+  s_ac91566f4798ba::t_b254342503a6e7 1-2365
+tools/dwg_elevations.py
+  s_ac91566f4798ba::t_9e1e885c7dc261 1-12,16-50,52-89,99-130
+  s_ac91566f4798ba::t_62ccf4235b770a 13-15,90-98
+  s_ac91566f4798ba::t_b254342503a6e7 51
+example/Main.hs
+  s_ac91566f4798ba::t_b695c6cd22087d 348,760
+sprinkler-solver-construction/src/Examples/MMElevations.hs
+  s_ac91566f4798ba::t_b695c6cd22087d 34,79
+  s_ac91566f4798ba::t_3994ada7b33566 1-4,13-33,35-78,80-85,94-118
+  s_ac91566f4798ba::t_0216564248bc34 5-12,86-93
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_b9e898c5b8f304 219-234
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_37c7082a4eeed5 5-6
+golden/MMElevations/final_state.txt
+  s_ac91566f4798ba::t_3d8366003f6fe3 1-12
+golden/MMElevations/status.txt
+  s_ac91566f4798ba::t_640ec50e30f127 1
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_94b966a0c502e3 47-49,83,123,165-172
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "99345ef79bc56685d7657fcca98ddf7be52aaa28",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

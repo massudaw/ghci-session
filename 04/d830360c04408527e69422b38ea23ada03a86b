@@ -1,0 +1,25 @@
+sprinkler-solver-construction/src/Examples/MMIdentify.hs
+  s_ac91566f4798ba::t_d61a68ccbb1351 29-33,135-146,165-166,168-179
+golden/MMHouse/final_state.txt
+  s_ac91566f4798ba::t_f5ca2c3a79ea18 11,22
+golden/MMIdentify/final_state.txt
+  s_ac91566f4798ba::t_f5ca2c3a79ea18 1-2
+sprinkler-solver-construction/src/Examples/MMHouse.hs
+  s_ac91566f4798ba::t_d61a68ccbb1351 102-103,105-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "04d830360c04408527e69422b38ea23ada03a86b",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

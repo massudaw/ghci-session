@@ -1,0 +1,40 @@
+sprinkler-solver-construction/src/Examples/MMViewBase.hs
+  s_ac91566f4798ba::t_9e97f78e430493 1-26
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_af4da9444f4930 60-61
+golden/MMDrawnPairWalls/final_state.txt
+  s_ac91566f4798ba::t_2ad9944dd09161 1
+sprinkler-solver-construction/src/Examples/MMDrawnPairWalls.hs
+  s_ac91566f4798ba::t_af4da9444f4930 1-10,12-61,63-68
+  s_ac91566f4798ba::t_2f5895e167268b 11,62
+sprinkler-solver-construction/src/Examples/MMViewLedger.hs
+  s_ac91566f4798ba::t_9e97f78e430493 29-30,49
+example/Main.hs
+  s_ac91566f4798ba::t_af4da9444f4930 363,792
+golden/MMPlanLedger/final_state.txt
+  s_ac91566f4798ba::t_2ad9944dd09161 6,8
+sprinkler-solver-construction/src/Examples/MMDrawnLowWalls.hs
+  s_ac91566f4798ba::t_af4da9444f4930 21
+golden/MMPlanDims/final_state.txt
+  s_ac91566f4798ba::t_2ad9944dd09161 2
+golden/MMDrawnPairWalls/status.txt
+  s_ac91566f4798ba::t_2ad9944dd09161 1
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_2ad9944dd09161 32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6af07e1744f5611571c4e06b8819c7f1ad21f390",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

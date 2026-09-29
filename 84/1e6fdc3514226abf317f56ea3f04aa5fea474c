@@ -1,0 +1,38 @@
+example/Main.hs
+  s_ac91566f4798ba::t_3948b3f52d82f2 355,774
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_3948b3f52d82f2 69
+sprinkler-solver-construction/src/Examples/MMSectionBeams.hs
+  s_ac91566f4798ba::t_bc56b8e52c30ca 11-14,23-24,33-34,65,72-87,104,111-114
+  s_ac91566f4798ba::t_c7fb86bead4550 1-10,15-22,25-32,35-64,66-71,88-103,105-110,115-117
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_a22ec084983382 353-363
+project.html
+  s_ac91566f4798ba::t_d03cfce50d5160 219-220
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_03d1281782351b 63-66,140,189-206
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_1f723da349d922 46,65
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_810462c76468f2 34-35,38-39
+golden/MMSectionBeams/final_state.txt
+  s_ac91566f4798ba::t_43e301fac45f61 1-4
+golden/MMSectionBeams/status.txt
+  s_ac91566f4798ba::t_324d81ff173bc6 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "841e6fdc3514226abf317f56ea3f04aa5fea474c",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

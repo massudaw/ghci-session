@@ -1,0 +1,53 @@
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_99447d120d05f4 1-2,34-42,48-49
+golden/MMDrawnCuts/final_state.txt
+  s_ac91566f4798ba::t_99447d120d05f4 1-7
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_22d54c0c10446c 45-54,127,168,173-196
+  s_ac91566f4798ba::t_1336d3d46ebb63 197
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_ac91566f4798ba::t_c2ed0a766350cf 208,224
+  s_ac91566f4798ba::t_057bbf19be4b13 81-100,104-110,181-188,214-215
+  s_ac91566f4798ba::t_4b3fb91fbca799 209-210,221-223,226-227,230-231
+  s_ac91566f4798ba::t_c146404c704caa 63,77-79,101,117-123,125-126,128-129,136,138-139,141-151,157,198-207,211-213,216-220,228,235-273,377,405,407
+  s_ac91566f4798ba::t_6de88460101218 225,229,232-234
+  s_ac91566f4798ba::t_456ac2b8b20cfc 102-103,152-154,189-197
+  s_ac91566f4798ba::t_9f1ea2f88f5af3 156,158-180
+sprinkler-solver-construction/src/Examples/MMSections.hs
+  s_ac91566f4798ba::t_1902eb4fe039c5 36,38-40,181-215,227
+  s_ac91566f4798ba::t_1638c9d31e0f6a 37
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_3a3555fa1dcf6b 66
+golden/MMDrawnStairs/final_state.txt
+  s_ac91566f4798ba::t_99447d120d05f4 1,3-16
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_99447d120d05f4 284-324
+example/Main.hs
+  s_ac91566f4798ba::t_3a3555fa1dcf6b 352,768
+golden/MMDrawnCuts/status.txt
+  s_ac91566f4798ba::t_99447d120d05f4 1
+sprinkler-solver-construction/src/Examples/MMDrawnCuts.hs
+  s_ac91566f4798ba::t_37505628eddc0f 1-5,12-14,17-19,24-31,34-42,50-54,56,105-115,117,119-127,129-142,175-178,188-192,196-201,204,208-213
+  s_ac91566f4798ba::t_e01b756cb086c7 202-203
+  s_ac91566f4798ba::t_b888cbd65652ff 6-11,32,43-44,49,55,68-84,86-104,193-195
+  s_ac91566f4798ba::t_2ab1b54a4c61d2 20-23,33,46-47,143-145,147-170,174,205-207
+  s_ac91566f4798ba::t_1638c9d31e0f6a 15-16,118,179-185
+  s_ac91566f4798ba::t_1bf1477288f1eb 45,48,57-67,85,116,128,186-187
+  s_ac91566f4798ba::t_22d54c0c10446c 146,171-173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6c604333bfc1c18785ee98cf72d3f33a8da361b3",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

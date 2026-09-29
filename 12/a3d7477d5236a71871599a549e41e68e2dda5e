@@ -1,0 +1,62 @@
+sprinkler-solver-construction/src/Examples/MMSectionsData.hs
+  s_ac91566f4798ba::t_fcfbf8711673a1 1-2539,2726-2729,2746-2749,2843-2845,2876-2878,2906-2913,2959-2978,3057-3060,3132-3162,3169-3175,3180-3245,3304-3305,3320-3324,3341,3353-3761,3792-3799,3818-3823,3826,3861-3864,3867,3869-3876,3897-3898,3900-3902,3909-3911,3916-3924,3928-3932,3934,3947,3955
+  s_ac91566f4798ba::t_a99ebfb8bcb19e 2540-2725,2730-2745,2750-2842,2846-2875,2879-2905,2914-2958,2979-3056,3061-3131,3163-3168,3176-3179,3246-3303,3306-3319,3325-3340,3342-3352,3762-3791,3800-3817,3824-3825,3827-3860,3865-3866,3868,3877-3896,3899,3903-3908,3912-3915,3925-3927,3933,3935-3946,3948-3954
+project.html
+  s_ac91566f4798ba::t_c6bf87eb18d770 240-242,432-448,942-947,1195,1382-1383
+example/Main.hs
+  s_ac91566f4798ba::t_550aa9db1a6fb9 339,741
+golden/MMRooms/final_state.txt
+  s_ac91566f4798ba::t_e25b94bc93f995 1-2,6,9-12
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_c6bf87eb18d770 33,50
+tools/dwg_sections.py
+  s_ac91566f4798ba::t_a99ebfb8bcb19e 80,82-83,85
+  s_ac91566f4798ba::t_f520abf51ab83f 1-79,81,84,86-136
+sprinkler-solver-construction/src/Examples/MMPlans.hs
+  s_ac91566f4798ba::t_4c0522198b26fe 35-36,92-94,96
+  s_ac91566f4798ba::t_feef81b6b4f0fd 42,52,57-58,95,107,139,141-143,148-151,155,162-185,269-271
+  s_ac91566f4798ba::t_8c29dd49faaf00 38,186-190
+  s_ac91566f4798ba::t_9055fddc933234 37,97-106,108-115
+  s_ac91566f4798ba::t_fdde2c7d85b6e3 116,191
+golden/MMSections/final_state.txt
+  s_ac91566f4798ba::t_e25b94bc93f995 3-4,6,12
+  s_ac91566f4798ba::t_bcb8c64552fa92 1-2,5,7-11,13
+golden/MMSections/status.txt
+  s_ac91566f4798ba::t_bcb8c64552fa92 1
+golden/MMPlans/final_state.txt
+  s_ac91566f4798ba::t_e25b94bc93f995 1,5,7,9,11
+sprinkler-solver-construction/src/Examples/MMSections.hs
+  s_ac91566f4798ba::t_d78d31b208e693 1-5,12-17,25-34,36-45,49-100,103,105-106,114,116,121-122,133-136,141-142,150-154,156-158,161-162,207-219,230-239,241-253,255-261,272-275
+  s_ac91566f4798ba::t_f5acfecc36cbd1 165-171,180-198,220-229
+  s_ac91566f4798ba::t_dc7565c045cf63 107-113,115,117-120,147-149,159-160,173-176,179
+  s_ac91566f4798ba::t_33d7383a77b646 18-24,46-47,143-146,202-206
+  s_ac91566f4798ba::t_793d50e65641ed 35,163-164,172,177-178,199-201,262-271
+  s_ac91566f4798ba::t_8c29dd49faaf00 48,137-140,155,240
+  s_ac91566f4798ba::t_9055fddc933234 101-102,104
+  s_ac91566f4798ba::t_346f9d285d5a90 6-11,123-132,254
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_550aa9db1a6fb9 52-53
+sprinkler-solver-construction/src/Examples/PlanRegister.hs
+  s_ac91566f4798ba::t_feef81b6b4f0fd 20-22,25,41-76
+  s_ac91566f4798ba::t_ac6b5bed9a4b88 77
+sprinkler-solver-construction/src/Examples/MMRoomsData.hs
+  s_ac91566f4798ba::t_ee0682029b3546 14-44
+tools/skp/README.md
+  s_ac91566f4798ba::t_e61f25700de2f2 239-251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "12a3d7477d5236a71871599a549e41e68e2dda5e",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

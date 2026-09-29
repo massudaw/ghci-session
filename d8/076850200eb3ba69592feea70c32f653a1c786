@@ -1,0 +1,38 @@
+project.html
+  s_ac91566f4798ba::t_ceec8634c4ff3b 1472-1481,1535,1537-1541,1543
+  s_ac91566f4798ba::t_983251549c5346 1542
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_ff995f4fd9c616 305-312,408-410
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_9cf91f25bdccd8 317,319-320
+  s_ac91566f4798ba::t_69a56c6f110a47 156
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_9cf91f25bdccd8 66
+  s_ac91566f4798ba::t_69a56c6f110a47 39
+  s_ac91566f4798ba::t_f634e9fb57eed6 81,88
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_ff995f4fd9c616 1
+inspect.html
+  s_ac91566f4798ba::t_983251549c5346 24,33-38,42-44
+golden/MMDrawnStairs/final_state.txt
+  s_ac91566f4798ba::t_ff995f4fd9c616 2
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_ac91566f4798ba::t_f28edb718ca62c 34-36,367-427
+  s_ac91566f4798ba::t_9cf91f25bdccd8 474-475
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d8076850200eb3ba69592feea70c32f653a1c786",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+sprinkler-solver-construction/src/Examples/MMDwg.hs
+  s_ac91566f4798ba::t_7f4c5f5dbd5a97 44,178-190,192-209,212,245,280-281
+golden/MMDwg/final_state.txt
+  s_ac91566f4798ba::t_497f71560e1e74 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d1f832f4e57bf3e3d47f74d5c03624f832c52067",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

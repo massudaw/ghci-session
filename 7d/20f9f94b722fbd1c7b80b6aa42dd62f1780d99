@@ -1,0 +1,65 @@
+golden/MMSectionTerrain/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 1-4
+sprinkler-solver-construction/src/Examples/MMDrawnRoof.hs
+  s_ac91566f4798ba::t_55e28c430a4466 74-75,78
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 5-6,17-18,38-39,52,63-64
+sprinkler-solver-construction/src/Examples/MMDrawnSlabs.hs
+  s_ac91566f4798ba::t_1b8786d1b37675 42,125
+sprinkler-solver-construction/src/Examples/MMSectionsData.hs
+  s_ac91566f4798ba::t_55e28c430a4466 229-300,391-392,987,1017-1088,1675-1678,1737-1738,1780-1795,2081-2086,2595,3496,3709,3773,3830,3918
+golden/MMCutLedger/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 1,7,11
+project.html
+  s_ac91566f4798ba::t_71fc12da6e5382 221-224
+golden/MMSectionNotes/status.txt
+  s_ac91566f4798ba::t_1a063824892214 1
+golden/MMSectionSlabs/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 3
+sprinkler-solver-construction/src/Examples/MMSectionNotes.hs
+  s_ac91566f4798ba::t_f56ff242daeafb 1-147
+sprinkler-solver-construction/src/Examples/MMSectionTerrain.hs
+  s_ac91566f4798ba::t_33f0f57a56e605 1-72
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  s_ac91566f4798ba::t_1b8786d1b37675 33-34,64,88,106-130
+golden/MMSectionBeams/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 3-4
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_1a063824892214 71-72,210-211
+  s_ac91566f4798ba::t_71fc12da6e5382 67-70,73-74,148-149,199-209,212-218
+golden/MMSectionNotes/final_state.txt
+  s_ac91566f4798ba::t_1a063824892214 1-4
+golden/MMSectionTerrain/status.txt
+  s_ac91566f4798ba::t_1a063824892214 1
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_71fc12da6e5382 362-381
+tools/dwg_sections.py
+  s_ac91566f4798ba::t_55e28c430a4466 16-17,38
+example/Main.hs
+  s_ac91566f4798ba::t_33f0f57a56e605 356,777
+  s_ac91566f4798ba::t_038a674db05b5f 357,778
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_33f0f57a56e605 70
+  s_ac91566f4798ba::t_038a674db05b5f 71
+sprinkler-solver-construction/src/Examples/MMSite.hs
+  s_ac91566f4798ba::t_33f0f57a56e605 38-39,126-132
+  s_ac91566f4798ba::t_0638de855f4b0d 133
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_ac91566f4798ba::t_71fc12da6e5382 47,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7d20f9f94b722fbd1c7b80b6aa42dd62f1780d99",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
