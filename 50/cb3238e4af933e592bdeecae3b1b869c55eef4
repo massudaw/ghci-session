@@ -1,0 +1,56 @@
+golden/MMSectionSlabs/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1-3
+golden/MMDrawnSlabs/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1,3,5-10
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 6-7,19-20,23-24,29-32,50-51,55,62-63,70-71
+golden/MMDrawnStructure/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1-3
+golden/MMPlanDims/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 2
+golden/MMPlans/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1,5,7,9,11
+golden/MMSite/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1
+golden/MMDrawnCornice/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 3
+sprinkler-solver-construction/src/Examples/MMPlans.hs
+  s_ac91566f4798ba::t_5dcd087bcab447 183-185
+  s_ac91566f4798ba::t_1cc617bcddd39a 39,187-191
+golden/MMTank/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 3
+sprinkler-solver-construction/src/Examples/MMPlanLedger.hs
+  s_ac91566f4798ba::t_5dcd087bcab447 25-26,70-73
+golden/MMDrawnCoverage/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1-2
+golden/MMSectionTerrain/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 4
+golden/MMViewLedger/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 2-5
+golden/MMCutLedger/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1,7,9,11
+golden/MMIdentify/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1-2,6
+golden/MMPlanLedger/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 1,3,6-8
+golden/MMSections/final_state.txt
+  s_ac91566f4798ba::t_4a59429c0f6fd8 2,6,9,12
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_0777e4ff94bdf0 522-531
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "50cb3238e4af933e592bdeecae3b1b869c55eef4",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
