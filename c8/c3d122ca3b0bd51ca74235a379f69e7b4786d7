@@ -1,0 +1,24 @@
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_a1b9a99406b650 31-32
+golden/MMPlanDims/final_state.txt
+  s_ac91566f4798ba::t_a1b9a99406b650 2
+sprinkler-solver-construction/src/Examples/MMPlanDims.hs
+  s_ac91566f4798ba::t_64ab4b0f81ba85 29
+  s_ac91566f4798ba::t_4db43686955b46 67,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c8c3d122ca3b0bd51ca74235a379f69e7b4786d7",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
