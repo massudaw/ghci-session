@@ -1,0 +1,24 @@
+sprinkler-solver-construction/src/Examples/MMCutLedger.hs
+  h_fd5809635b36a3 92,96,186-188,197,199-200
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  h_fd5809635b36a3 158-166,168,357-365,368-379,383
+sprinkler-solver-construction/src/Examples/MMDrawnCuts.hs
+  h_fd5809635b36a3 73,75-90
+sprinkler-solver-construction/src/Examples/MMSectionWalls.hs
+  h_fd5809635b36a3 69-71,77
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  h_fd5809635b36a3 14-18,25-26,29,83-95
+tools/model_session/targets.json
+  h_fd5809635b36a3 820,833-836,842-853
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cd7f84c7b2e431e2e5ab538afe031d6474169d04",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
