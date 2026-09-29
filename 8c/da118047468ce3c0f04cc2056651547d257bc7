@@ -1,0 +1,54 @@
+golden/MMConstraints/final_state.txt
+  s_ac91566f4798ba::t_9ee8f654df1848 32-34
+sprinkler-solver-construction/src/Examples/MMPlanLedger.hs
+  s_ac91566f4798ba::t_f31653c112d188 35,67-78,87,90-91,104
+  s_ac91566f4798ba::t_52c3d82d4249ec 14
+  s_ac91566f4798ba::t_4294dd23cd082c 24,61-64,66,92
+  s_ac91566f4798ba::t_e51a82e3766344 60,65
+  s_ac91566f4798ba::t_5b334d68289ddd 15
+  s_ac91566f4798ba::t_ef1f474ffc52cf 1-13,16-18,20-23,25-34,36-50,53-55,59,79-85,88-89,93-103,105
+  s_ac91566f4798ba::t_ce4f84d40633bd 19,51-52,56-58,86
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_ac91566f4798ba::t_206f7ab14fc930 172-174,255-270
+golden/MMPlanDims/status.txt
+  s_ac91566f4798ba::t_9ee8f654df1848 1
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  s_ac91566f4798ba::t_47b3eb6951afb4 49
+golden/MMPlanLedger/status.txt
+  s_ac91566f4798ba::t_9ee8f654df1848 1
+golden/MMPlanLedger/final_state.txt
+  s_ac91566f4798ba::t_9ee8f654df1848 1-8
+example/Main.hs
+  s_ac91566f4798ba::t_2e64f2e728ef79 359,784
+  s_ac91566f4798ba::t_47b3eb6951afb4 360,785
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_ac91566f4798ba::t_2e64f2e728ef79 73
+  s_ac91566f4798ba::t_47b3eb6951afb4 74
+sprinkler-solver-construction/src/Examples/MMSite.hs
+  s_ac91566f4798ba::t_4294dd23cd082c 38,151-153
+  s_ac91566f4798ba::t_a4f19d42913623 154
+sprinkler-solver-construction/src/Examples/MMPlanDims.hs
+  s_ac91566f4798ba::t_5b334d68289ddd 23,72-75
+  s_ac91566f4798ba::t_47b3eb6951afb4 22,52
+  s_ac91566f4798ba::t_2088f69552670d 1-21,24-51,53-71,76-77
+golden/MMPlanDims/final_state.txt
+  s_ac91566f4798ba::t_9ee8f654df1848 1-2
+DRAWINGS_TO_3D.md
+  s_ac91566f4798ba::t_45e54c63b4d0ae 483-500
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8cda118047468ce3c0f04cc2056651547d257bc7",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
