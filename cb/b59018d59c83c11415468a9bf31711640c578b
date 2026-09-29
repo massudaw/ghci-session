@@ -1,0 +1,24 @@
+sprinkler-solver-construction/src/Examples/MMCutRecon.hs
+  s_ac91566f4798ba::t_e3a41171b061e9 94,97,99-102,105-106,110
+  s_ac91566f4798ba::t_873576a93ea560 114
+  s_ac91566f4798ba::t_734a27321c3177 95-96,98,103-104,107-109,111-113,152,155
+  s_ac91566f4798ba::t_ac86629a466054 151
+golden/MMCutRecon/final_state.txt
+  s_ac91566f4798ba::t_3c99d9108f10cd 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cbb59018d59c83c11415468a9bf31711640c578b",
+  "prompts": {},
+  "sessions": {
+    "s_ac91566f4798ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c4d261b-0d06-5df6-9e54-e5fefce93684",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
