@@ -1,0 +1,24 @@
+sprinkler-solver-hybrid-des-lowering/src/Examples/ModelLiftRegenDES.hs
+  s_4dbf7228fb767f::t_e3ff1b6f535699 24,26-27,34-55,57-64,115,120,130-131,176-191,217-219,223-226,286-302
+  s_4dbf7228fb767f::t_3fbaf6445678f8 56
+sprinkler-solver-hybrid-des-lowering/src/Model/DesRectifierDiode.hs
+  s_4dbf7228fb767f::t_65ac5bded5c65f 1-62
+sprinkler-solver-hybrid-des-lowering/sprinkler-solver-hybrid-des-lowering.cabal
+  s_4dbf7228fb767f::t_e3ff1b6f535699 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8ad7db454fc4cb15691d6423839723c3d8c948e7",
+  "prompts": {},
+  "sessions": {
+    "s_4dbf7228fb767f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96cfad76-9c12-4fdb-9611-b8bc411923b0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
