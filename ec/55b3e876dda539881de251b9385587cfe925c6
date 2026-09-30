@@ -1,0 +1,49 @@
+sprinkler-solver-construction/src/Examples/MMViewBase.hs
+  s_6e55a4691f1b7b::t_c4774a9ae3c124 7-8
+  s_6e55a4691f1b7b::t_865ba4bddf4141 27,31,35-38
+sprinkler-solver-construction/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_0d4a1750505a4b 726,730
+  s_6e55a4691f1b7b::t_3eb012f4810d26 643
+  s_6e55a4691f1b7b::t_51acf98377a762 88-89,95,172,203-207,220-221,313,396,653,704,724,731-735,740-741
+  s_6e55a4691f1b7b::t_31f367227c0c23 718,723
+  s_6e55a4691f1b7b::t_2bddfefb9412f9 719-722,725,727-729
+example/Main.hs
+  s_6e55a4691f1b7b::t_fffc28be2259cb 367,802
+tools/model_session/targets.json
+  s_6e55a4691f1b7b::t_a6d7aa50e3f892 829
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_a6d7aa50e3f892 84
+sprinkler-solver-construction/src/Examples/MMNumberedStairs.hs
+  s_6e55a4691f1b7b::t_f596a57e3ade27 35-36
+  s_6e55a4691f1b7b::t_bd4d20e3a9c21d 106,108,114,116,121
+  s_6e55a4691f1b7b::t_a9ddc86bdde54b 135-139,141-148
+  s_6e55a4691f1b7b::t_2f7b083863c28e 8,81
+  s_6e55a4691f1b7b::t_96fea58002723a 1-7,9-15,23,29-33,37-46,51-60,63-80,82-88,94-98,101,103-105,107,109-113,122-124,149-154,156-157,159-160,163-169,172-174,176-177
+  s_6e55a4691f1b7b::t_9ec75ecf3160a7 16-22,48-50,61-62,115,117-119,155,158,161-162,170-171
+  s_6e55a4691f1b7b::t_865ba4bddf4141 24-28,34,47,120,125-134,140,175,178
+  s_6e55a4691f1b7b::t_a9ccb70383faed 89-93,99-100,102
+golden/MMNumberedStairs/final_state.txt
+  s_6e55a4691f1b7b::t_8a015197f47204 1-3
+golden/MMNumberedStairs/status.txt
+  s_6e55a4691f1b7b::t_dbe80667278d5c 1
+golden/MMPlanDims/final_state.txt
+  s_6e55a4691f1b7b::t_9a49297af2a53d 2
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_e7d9e335138ad5 1-18,20-21,24,31,33-34,36,43-55,57-60,63,65-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ec55b3e876dda539881de251b9385587cfe925c6",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
