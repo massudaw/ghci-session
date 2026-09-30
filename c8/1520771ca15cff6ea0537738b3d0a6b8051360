@@ -1,0 +1,27 @@
+tools/skp/extract.py
+  s_be463383785c97::t_e007da68fccc1b 86,94,181-182,547,579,656-657
+  s_be463383785c97::t_e8b35105b24f36 49
+sprinkler-solver-construction/src/Examples/Colchester.hs
+  s_be463383785c97::t_fcc7feb325fa73 1-45
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_be463383785c97::t_fcc7feb325fa73 50-51
+sprinkler-solver-construction/src/Examples/ColchesterData.hs
+  s_be463383785c97::t_17ef895f253074 13-14,19,30-1156,1163-1277,1291-1315
+  s_be463383785c97::t_b90953b3955b3c 1-12,15-18,20-29,1157-1162,1278-1290,1316-1323
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c81520771ca15cff6ea0537738b3d0a6b8051360",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
