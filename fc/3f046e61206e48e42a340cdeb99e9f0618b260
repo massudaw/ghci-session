@@ -1,0 +1,44 @@
+sprinkler-solver-construction/src/Examples/MMDrawnSlabs.hs
+  s_6e55a4691f1b7b::t_3912a32a65290f 160-165,167-190
+  s_6e55a4691f1b7b::t_1c139c8add75b7 53,141,159,166
+golden/MMDrawnCornice/final_state.txt
+  s_be463383785c97::t_e8e7c580ff53da 2-3
+golden/MMDrawnSlabs/final_state.txt
+  s_be463383785c97::t_5792b711c0f59b 10
+golden/MMConstraints/final_state.txt
+  s_6e55a4691f1b7b::t_e5fd24293689b5 41-42
+golden/MMCutLedger/final_state.txt
+  s_6e55a4691f1b7b::t_5927471c78e814 1,6-7
+golden/MMDrawnPairWalls/final_state.txt
+  s_6e55a4691f1b7b::t_120348036b3fc3 1-2
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_fa711bb65a160c 8-12,25-30,32-34,36,61,64-67
+golden/MMSectionBeams/final_state.txt
+  s_6e55a4691f1b7b::t_7470641d485f5a 4-5
+golden/MMSectionSlabs/final_state.txt
+  s_6e55a4691f1b7b::t_203105bb5413e6 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fc3f046e61206e48e42a340cdeb99e9f0618b260",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
