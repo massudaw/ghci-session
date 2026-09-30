@@ -1,0 +1,27 @@
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_6e55a4691f1b7b::t_45908e6f05de57 94-111
+golden/MMDrawnStairs/final_state.txt
+  s_6e55a4691f1b7b::t_94b7931fb14ecc 1-2,15
+golden/MMPlanDims/final_state.txt
+  s_6e55a4691f1b7b::t_9712994f605504 2
+golden/MMPlanLedger/final_state.txt
+  s_6e55a4691f1b7b::t_c2875bbee8e281 6,8
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_319adaeebeeab9 1-7,9-12,19,21-24,31-36,49-57,59-60,62-63,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "764b5ea7d96fcedf9b0cdf7e47d626138f42f03d",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
