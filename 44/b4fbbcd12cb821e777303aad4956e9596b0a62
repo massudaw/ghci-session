@@ -1,0 +1,37 @@
+sprinkler-solver-construction/src/Examples/MMRearStair.hs
+  s_6e55a4691f1b7b::t_64304b754b8c3a 121
+  s_6e55a4691f1b7b::t_bd48079188b4bc 19-33,93-94,96-98,101,103-104,106-107,136,143-144
+sprinkler-solver-construction/src/Examples/MMTank.hs
+  s_6e55a4691f1b7b::t_d70b1b72439a6c 22-23,29-30,154-162,165-184,186-189,194-195,200-204,211-215
+  s_6e55a4691f1b7b::t_120517c6583c25 190-193,198-199
+  s_6e55a4691f1b7b::t_3fe2e953697b60 217-219,222
+  s_6e55a4691f1b7b::t_94ec9f2da44579 205-210,216,220-221
+golden/MMCutRecon/final_state.txt
+  s_6e55a4691f1b7b::t_3f83d12f00bc7e 2
+golden/MMDrawnPairWalls/final_state.txt
+  s_6e55a4691f1b7b::t_76bbb0e9c75c8e 1
+golden/MMFusion/final_state.txt
+  s_6e55a4691f1b7b::t_8f6b11aaac2f44 1,4
+golden/MMPlanDims/final_state.txt
+  s_6e55a4691f1b7b::t_f1c0d31331bf0e 2
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_70c82395e8a43d 3,6-24,27,30-36,43-55,57-58,60,62-66
+golden/MMViewLedger/final_state.txt
+  s_6e55a4691f1b7b::t_033b32be000dd4 3,5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "44b4fbbcd12cb821e777303aad4956e9596b0a62",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
