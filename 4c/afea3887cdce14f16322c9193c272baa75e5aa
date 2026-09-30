@@ -1,0 +1,27 @@
+tools/model_session/targets.json
+  s_be463383785c97::t_623107fc95310e 891-892
+  s_be463383785c97::t_ddb18d8179d420 882,889-890,893
+sprinkler-solver-construction/src/Examples/ColchesterServer.hs
+  s_be463383785c97::t_623107fc95310e 1
+  s_be463383785c97::t_03bdb53aa79cc1 2-47
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_be463383785c97::t_0201ad68996694 52
+sprinkler-solver-construction/src/Examples/Colchester.hs
+  s_be463383785c97::t_d0fb6c7795fc4b 21-22,27-28,47-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4cafea3887cdce14f16322c9193c272baa75e5aa",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

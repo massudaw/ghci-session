@@ -1,0 +1,22 @@
+tools/skp_extract.py
+  s_be463383785c97::t_db6563973feb0b 1-13,19-28,30,32,48,50-97,257-286,300-303
+  s_be463383785c97::t_e8c23cf7c3a114 125-139,142,165,294
+  s_be463383785c97::t_6f4463253d9220 14-18,29,31,33-47,49,98-124,140-141,143-164,166-167,170-256,287-293,295-299
+  s_be463383785c97::t_22f6e6912cd1ff 168-169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "20ade356b545b8321bfa7c1b718a3af0f9450f14",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
