@@ -1,0 +1,21 @@
+tools/mm_gaps_notes.tsv
+  s_6e55a4691f1b7b::t_4521de1d1bbd6e 31-85
+tools/mm_gaps.py
+  s_6e55a4691f1b7b::t_0c9e3c0e07d3c2 17-19,89-91,144-155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5ea2b47f5b4ca87c99d6bf75a7b7e7cb8cf1d7b0",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
