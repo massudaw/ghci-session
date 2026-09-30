@@ -1,0 +1,19 @@
+src/Solver/StackSampler.hs
+  s_6e55a4691f1b7b::t_627190b74797b7 16-23,28-29,42,60-86,91,126-130,150-151,171-173,176-179,182-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "747682a2b6f5c8f3998738b13c261ea7b9b41d4f",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
