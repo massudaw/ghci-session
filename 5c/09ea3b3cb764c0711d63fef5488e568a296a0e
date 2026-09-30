@@ -1,0 +1,25 @@
+src/JIT/jit_klu_noreanalyze.c
+  s_0d7413bb621c3f::t_2c0d1a7e205350 1-66
+  s_0d7413bb621c3f::t_9d7997ac14aec4 67-68
+sprinkler-solver.cabal
+  s_0d7413bb621c3f::t_327384d370f5c2 590
+src/Solver/IDA.hs
+  s_0d7413bb621c3f::t_1a777576ae3af1 1530-1534,1540
+  s_0d7413bb621c3f::t_4dfe41dba6add2 293-302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5c09ea3b3cb764c0711d63fef5488e568a296a0e",
+  "prompts": {},
+  "sessions": {
+    "s_0d7413bb621c3f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "284fd4b0-ec98-447e-b63e-8dfeb9bb7733",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
