@@ -1,0 +1,46 @@
+src/JIT/CallParallelismReport.hs
+  s_3864fd9006fa92::t_d4730ea4baeca1 1-189
+src/Rendering/DiffCSG/NativeGlue.hs
+  s_3864fd9006fa92::t_0b5af8fc89a625 2083,2087-2097
+  s_3864fd9006fa92::t_fee8efe46377d2 121
+  s_3864fd9006fa92::t_ae65079f746106 110-112
+  s_3864fd9006fa92::t_875b2b134f65dc 2082,2098-2113
+  s_3864fd9006fa92::t_07c2d8918bf1d8 120
+  s_3864fd9006fa92::t_467de094b29a7f 2114
+example/GlueCompactProbe.hs
+  s_3864fd9006fa92::t_7e9190a7c2ce21 37
+  s_3864fd9006fa92::t_74313bfdc55c79 293-314
+sprinkler-solver.cabal
+  s_3864fd9006fa92::t_fc548fa2b0b288 212
+  s_3864fd9006fa92::t_72b840f69cd584 1141-1146,1148-1151
+  s_3864fd9006fa92::t_1607f06fc391ef 1147
+example/DebugCallWindowParallelismBench.hs
+  s_3864fd9006fa92::t_619e50f9eefa14 33
+  s_3864fd9006fa92::t_1a28c9211be098 79
+  s_3864fd9006fa92::t_acac6779d1b7e9 1
+  s_3864fd9006fa92::t_e5c87712afc983 32,34
+  s_3864fd9006fa92::t_a260c0c00c8cc9 2-23,25-31,35-78,80-95,97-103,125-126
+  s_3864fd9006fa92::t_f70000563ad3c3 104-124
+  s_3864fd9006fa92::t_5dd7a31c201a85 24
+  s_3864fd9006fa92::t_26a1adc87022ac 96
+src/JIT/GlueCompact.hs
+  s_3864fd9006fa92::t_a69ccfb3b3bfa3 54
+  s_3864fd9006fa92::t_efdf12988bb1b8 74-76,78-104
+  s_3864fd9006fa92::t_5ff8888e5fc2c1 246-249,257-258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ae628bf7b494138ab59de09ad2e52eed837f4232",
+  "prompts": {},
+  "sessions": {
+    "s_3864fd9006fa92": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15a238b9-18b6-4e93-9bfb-d664fd325064",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
