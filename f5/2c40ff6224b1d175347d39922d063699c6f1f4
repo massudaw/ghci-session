@@ -1,0 +1,208 @@
+tools/model_session/targets.json
+  s_6e55a4691f1b7b::t_bd35e7630fe9ea 826
+  s_6e55a4691f1b7b::t_33d37cc3b16275 827
+  s_6e55a4691f1b7b::t_d7f4f281c4cb0a 825
+  s_6e55a4691f1b7b::t_097f5628ea3e31 824
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_f803d97feb47be 25-26,28-29,46,52,58
+  s_6e55a4691f1b7b::t_9f8ccfc8326c73 27,30,37-38,40-41,50
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1-24,31-36,39,42-45,47-49,51,53-57,59-66
+golden/MMSidewalk/status.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1
+sprinkler-solver-construction/src/Examples/MMDrawnPairWalls.hs
+  s_6e55a4691f1b7b::t_353948537e1507 16-18,102-111
+  s_6e55a4691f1b7b::t_2e0b815d8fab28 12,14-15,25,38-39,48,50,54,84-101,112-136,138-148,158-171,211-213
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 67
+  s_6e55a4691f1b7b::t_afe32972b19a1e 19-24,137
+  s_6e55a4691f1b7b::t_6493eb18a91837 13,26-32,40,51-53,173-204,214-215
+  s_6e55a4691f1b7b::t_202028ab269fc5 172
+golden/MMSectionWalls/final_state.txt
+  s_6e55a4691f1b7b::t_3c092497bb1c27 4
+sprinkler-solver-construction/src/Examples/MMSite.hs
+  s_6e55a4691f1b7b::t_a4977f23b664ae 40
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_6e55a4691f1b7b::t_d18beae7d792ca 356-363,372-376,378-382,386,388
+  s_6e55a4691f1b7b::t_dbb0d9b7551769 21-28,492-515,517-518,535
+  s_6e55a4691f1b7b::t_70bc682ac0c6dc 364-371
+  s_6e55a4691f1b7b::t_08b926250e50ce 471-472,480-491,516,519-525,534
+divergences.html
+  s_6e55a4691f1b7b::t_487072a22f81ce 1-16,18-27,34-47,49,51-58,60-69,71-73,91-125,127-143,145-157,160,162-199
+  s_6e55a4691f1b7b::t_8ab9007c3372d8 28-33,48,50,59,70,74-90,126,144,158-159,161
+  s_6e55a4691f1b7b::t_a4406bf2005411 17
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_bd35e7630fe9ea 81
+  s_6e55a4691f1b7b::t_d7f4f281c4cb0a 80
+  s_6e55a4691f1b7b::t_33d37cc3b16275 82
+  s_6e55a4691f1b7b::t_ac98330658f5d6 79
+golden/MMCutRecon/final_state.txt
+  s_6e55a4691f1b7b::t_f803d97feb47be 2-3
+sprinkler-solver-construction/src/Examples/MMSidewalk.hs
+  s_6e55a4691f1b7b::t_a8f5d2782dc834 1-50,52-63,65-75,77-89,91-92
+  s_6e55a4691f1b7b::t_a3a62215a61797 51,64,76,90
+golden/MMViewLedger/final_state.txt
+  s_6e55a4691f1b7b::t_535145670944be 3-5
+golden/MMDrawnSlabs/final_state.txt
+  s_6e55a4691f1b7b::t_3c092497bb1c27 9,11-15
+inspect.html
+  s_6e55a4691f1b7b::t_8ab9007c3372d8 12-14,18-19,29,31,34-37,49,51,53-74,82-85,87
+  s_6e55a4691f1b7b::t_d6bb00c6b47851 15-17
+golden/MMFloorFinish/status.txt
+  s_6e55a4691f1b7b::t_a326e894df6a9b 1
+sprinkler-solver-construction/src/Examples/MMDrawnRoof.hs
+  s_6e55a4691f1b7b::t_940e2ba49afc20 8-13,110,112,115-120
+  s_6e55a4691f1b7b::t_d18beae7d792ca 196,198-199,214-237
+  s_6e55a4691f1b7b::t_2258cc5e5af847 109,113-114,191,265
+  s_6e55a4691f1b7b::t_b43d7c2ce3464e 238
+example/Main.hs
+  s_6e55a4691f1b7b::t_11e21adc1c2a62 362,796
+  s_6e55a4691f1b7b::t_a3a62215a61797 364-365,798-799
+  s_6e55a4691f1b7b::t_a326e894df6a9b 363,797
+golden/MMCutLedger/final_state.txt
+  s_6e55a4691f1b7b::t_9f8ccfc8326c73 11
+  s_6e55a4691f1b7b::t_535145670944be 7
+  s_6e55a4691f1b7b::t_f803d97feb47be 1,8-9
+sprinkler-solver-construction/src/Examples/MMDrawnStructure.hs
+  s_6e55a4691f1b7b::t_1b1afd753bd08e 82,84-85,88,96-101
+  s_6e55a4691f1b7b::t_313ad2d6f936cf 28
+  s_6e55a4691f1b7b::t_eb9b27d3ea1d49 102
+golden/MMDrawnRoof/final_state.txt
+  s_6e55a4691f1b7b::t_535145670944be 3
+sprinkler-solver-construction/src/Examples/MMSectionStair.hs
+  s_6e55a4691f1b7b::t_d789c776348fe5 87-93
+  s_6e55a4691f1b7b::t_6e80b228e1cde1 76,121-122
+  s_6e55a4691f1b7b::t_3590c30a33e783 1-75,77-86,94-95,98-99,102,105-107,113-120,123-124
+  s_6e55a4691f1b7b::t_bd35e7630fe9ea 96-97,100-101,103-104,108-112
+golden/MMDrawnStairs/final_state.txt
+  s_6e55a4691f1b7b::t_3c092497bb1c27 2
+sprinkler-solver-construction/src/Examples/MMPlanLedger.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 41
+golden/MMSectionSlabs/final_state.txt
+  s_6e55a4691f1b7b::t_535145670944be 1-2
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_f2f36482c5c291 70-76,158-162
+  s_6e55a4691f1b7b::t_62c7f7e6b7b545 14-18,51,96,114-118,135-157
+  s_6e55a4691f1b7b::t_caee0bda159782 163
+golden/MMSectionStair/status.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1
+sprinkler-solver-construction/src/Examples/MMPlanDims.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 44
+golden/MMProjection/status.txt
+  s_6e55a4691f1b7b::t_335a02f2c25d08 1
+golden/MMFloorFinish/final_state.txt
+  s_6e55a4691f1b7b::t_a326e894df6a9b 1-3
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  s_6e55a4691f1b7b::t_193cd4bd030531 127-129,132
+sprinkler-solver-construction/src/Examples/MMDrawnSlabs.hs
+  s_6e55a4691f1b7b::t_ed2f3965abb2ae 16-21,53,142-144
+  s_6e55a4691f1b7b::t_1be610aa6fda36 130,132-133
+  s_6e55a4691f1b7b::t_313ad2d6f936cf 131
+  s_6e55a4691f1b7b::t_aaab7e46d72c60 44,127,136-141
+sprinkler-solver-construction/src/Examples/MMSectionWalls.hs
+  s_6e55a4691f1b7b::t_c8c0e1a8d60bd4 149-150,152,171-192
+  s_6e55a4691f1b7b::t_0cbbb164c100e4 196-197
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 134
+  s_6e55a4691f1b7b::t_0cbb42f8d4fe78 165,167
+  s_6e55a4691f1b7b::t_9b882e389463ba 10-19,147-148,153,155-156,158-164,166,168,170,193-195,198-199,201-225
+sprinkler-solver-construction/src/Examples/MMViewLedger.hs
+  s_6e55a4691f1b7b::t_6493eb18a91837 31,51
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 54
+golden/MMPlanDims/final_state.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 2
+sprinkler-solver-construction/src/Examples/MMSectionNotes.hs
+  s_6e55a4691f1b7b::t_193cd4bd030531 4-10,64-65
+golden/MMPlanLedger/final_state.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1,3,6-8
+sprinkler-solver-construction/src/Examples/MMCutRecon.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 44
+  s_6e55a4691f1b7b::t_cdd5d4d156698f 58-108,127-128,135-136
+  s_6e55a4691f1b7b::t_7524ae99135da7 168-169,171
+golden/MMConstraints/final_state.txt
+  s_6e55a4691f1b7b::t_9f8ccfc8326c73 31
+  s_6e55a4691f1b7b::t_535145670944be 4-5,53
+  s_6e55a4691f1b7b::t_eafcb8807e430f 32-33
+golden/MMDrawnPairWalls/final_state.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 3
+  s_6e55a4691f1b7b::t_9f8ccfc8326c73 2
+sprinkler-solver-construction/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_9056a5d8fd3b1d 840-842,954,956,961-962
+  s_6e55a4691f1b7b::t_8902ceb955c15d 843-845,953,957-960
+  s_6e55a4691f1b7b::t_1af20eea65f61b 191
+  s_6e55a4691f1b7b::t_4da3513d99e9e9 938,940-947,977-980
+  s_6e55a4691f1b7b::t_52e52792362968 243-246,249-257,512,514,524,527,646,691,698,746,748,763,766,814,816,1033-1035,1053-1055,1060,1084
+  s_6e55a4691f1b7b::t_cc2c836934f895 782
+  s_6e55a4691f1b7b::t_b5b58312b0d96f 1,339,342-343
+  s_6e55a4691f1b7b::t_bd92de57d8a121 289-290
+  s_6e55a4691f1b7b::t_910547d7053e79 176-178
+  s_6e55a4691f1b7b::t_87c4e599ef99b0 42-53,1081-1082,1110-1119
+  s_6e55a4691f1b7b::t_48722dab5da25a 74,270-274
+  s_6e55a4691f1b7b::t_91a64ef443c992 147-148,150-151,154-157,236-239,435,463,656,663,1036,1044
+  s_6e55a4691f1b7b::t_a7777979a67aef 75,1129-1132
+  s_6e55a4691f1b7b::t_3996b44a8f39fa 408-410
+  s_6e55a4691f1b7b::t_d1d5180808bfbb 356,358-407,411-418,424-430,436
+  s_6e55a4691f1b7b::t_8fc6d15044e9fe 92,468-471,473-475,477,492,498
+  s_6e55a4691f1b7b::t_94e267dd5c1b45 203-205
+  s_6e55a4691f1b7b::t_ac98330658f5d6 83
+  s_6e55a4691f1b7b::t_e56b8a03c34b28 1021-1028
+  s_6e55a4691f1b7b::t_1286666e5071dc 495-497,499-511,513,515-519,1101-1102
+  s_6e55a4691f1b7b::t_9bda316eb89622 98
+  s_6e55a4691f1b7b::t_c145456268b8c1 291-296
+  s_6e55a4691f1b7b::t_3f7a56425e339c 822-826
+  s_6e55a4691f1b7b::t_057101df9028a1 1128
+  s_6e55a4691f1b7b::t_6469c05df199e6 97,99,1050-1052,1056-1059,1061-1064,1067-1073,1080,1085
+  s_6e55a4691f1b7b::t_cd46a0dead781d 112,183,186-190,194-196
+  s_6e55a4691f1b7b::t_62c7f7e6b7b545 70-71
+  s_6e55a4691f1b7b::t_c006cb6c052843 847,981-982
+  s_6e55a4691f1b7b::t_499d2903c8d931 78
+  s_6e55a4691f1b7b::t_f1436668ba027c 2-6,10-35,37-41,54-62,79-80,82,84-88,94-96,100-101,103-109,111,113-126,131-134,136,143-146,149,152-153,158-175,199,201,207-211,217-220,233-235,240-242,247-248,277-288,300-302,423,431-434,437-462,464-467,472,476,478-491,493-494,532-592,595-622,630-643,647-655,657-662,664-690,692-697,699-706,708-724,726-739,741-745,747,749-750,765,772-773,810-813,815,817-821,1006-1010,1013,1016-1020,1029-1032,1037-1039,1041-1043,1045-1049,1077-1078,1086,1088-1089,1091-1093,1096-1098,1107-1109,1121-1123
+  s_6e55a4691f1b7b::t_991e8495614b5c 36,725,740,1074-1076,1090,1095
+  s_6e55a4691f1b7b::t_a4977f23b664ae 110,229,231-232,261,421,776-779,781,783-793,807-809
+  s_6e55a4691f1b7b::t_0c1294d0cca608 303,336-338,340-341,344-352
+  s_6e55a4691f1b7b::t_a2c931f0f864b4 93,768,794-806
+  s_6e55a4691f1b7b::t_f6aff432613e05 972
+  s_6e55a4691f1b7b::t_3d2bc1b49bda7a 68-69
+  s_6e55a4691f1b7b::t_000056fd718165 230
+  s_6e55a4691f1b7b::t_2eac8077065762 72-73,76-77,258-260,262-269,275,353-355,357,419-420,422,623-629
+  s_6e55a4691f1b7b::t_ef39b6744b5da9 81,1014-1015,1040,1065-1066,1083,1120,1125-1127
+  s_6e55a4691f1b7b::t_9d269ad2d1aa7b 63
+  s_6e55a4691f1b7b::t_1cf84bd1ba9176 751-762,764,767,769-771,774-775,780,1011-1012,1087,1094,1099-1100,1106,1124
+  s_6e55a4691f1b7b::t_2537d457f48028 7-9,221-228,1079
+  s_6e55a4691f1b7b::t_2fdc5ee7a76667 179-182,184,192-193,198,200,644-645,707
+  s_6e55a4691f1b7b::t_eb9d02ee04a7b7 64-67,89-91,827-839,846,848-937,939,948-952,955,963-971,973-976,983-1005
+  s_6e55a4691f1b7b::t_44a4f0cc114b17 520-523,525-526,528-531,1103-1105
+  s_6e55a4691f1b7b::t_252ff3a9e18b38 102,127-130,135,137-142,185,197,202,206,212-216,276,297-299,304-335,593-594
+golden/MMSectionStair/final_state.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1-2
+sprinkler-solver-construction/src/Examples/MMConstraints.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 352
+sprinkler-solver-construction/src/Examples/MMViewBase.hs
+  s_6e55a4691f1b7b::t_a3a62215a61797 23,30-31
+  s_6e55a4691f1b7b::t_6e80b228e1cde1 22
+  s_6e55a4691f1b7b::t_ea162a80e66cc4 21
+  s_6e55a4691f1b7b::t_7c93a9247ca6cb 17
+golden/MMSidewalk/final_state.txt
+  s_6e55a4691f1b7b::t_eafcb8807e430f 1
+sprinkler-solver-construction/src/Examples/MMFloorFinish.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 52
+  s_6e55a4691f1b7b::t_8c0e73f2d53f9f 1-15,20-24,26-51,53-66,68-96,98-101
+  s_6e55a4691f1b7b::t_d7f4f281c4cb0a 67
+  s_6e55a4691f1b7b::t_3f842da987b77c 16-19,97
+  s_6e55a4691f1b7b::t_ed2f3965abb2ae 25
+sprinkler-solver-construction/src/Examples/MMCutLedger.hs
+  s_6e55a4691f1b7b::t_5a9b0fc48b7614 70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f52c40ff6224b1d175347d39922d063699c6f1f4",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
