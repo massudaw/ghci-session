@@ -6,6 +6,7 @@ sprinkler-solver-construction/src/Examples/MMCutRecon.hs
   h_fd5809635b36a3 117-120,122,127
 sprinkler-solver-construction/src/Examples/MMHouse.hs
   h_fd5809635b36a3 48,66-69,76-77,98-99,101,109,436
+  s_6e55a4691f1b7b::t_12021e2c82d46e 100,217
 sprinkler-solver-construction/src/Examples/SkpBuilding.hs
   h_fd5809635b36a3 306-307,309-311,316
 sprinkler-solver.cabal
@@ -31,6 +32,16 @@ tools/sample_target.py
   "humans": {
     "h_fd5809635b36a3": {
       "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
     }
   }
 }
