@@ -1,0 +1,34 @@
+golden/MMProgramme/final_state.txt
+  s_6e55a4691f1b7b::t_8ebe49d18decc3 2
+  s_6e55a4691f1b7b::t_9bb13f6fb82b40 3
+golden/MMDesign/final_state.txt
+  s_6e55a4691f1b7b::t_3d56a9a42461bc 1
+src/Building/Gas.hs
+  s_6e55a4691f1b7b::t_f7d9c9baf28e04 300,369
+  s_6e55a4691f1b7b::t_c16151e1200370 99-102,120,151
+src/Building/Construction.hs
+  s_6e55a4691f1b7b::t_ea0e3289bc7d4c 191-194,761,854-855,1412
+  s_6e55a4691f1b7b::t_28146cefefcedb 491
+sprinkler-solver-construction/src/Examples/MMDesign.hs
+  s_6e55a4691f1b7b::t_44732dceae0317 34,171-172,255-273,277-278,354
+  s_6e55a4691f1b7b::t_c16151e1200370 340-342,344-347
+src/Building/ExternalWorks.hs
+  s_6e55a4691f1b7b::t_ea0e3289bc7d4c 67-72,85-86,136-140,142-143
+  s_6e55a4691f1b7b::t_ad50b45ec1ff71 141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8f009293974939f32f850ec7b776f69f0ad79755",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
