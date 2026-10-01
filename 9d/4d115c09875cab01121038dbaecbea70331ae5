@@ -1,0 +1,28 @@
+sprinkler-solver-construction/src/Examples/MMWindowMullions.hs
+  s_6e55a4691f1b7b::t_075cc9ba372d6d 25,107-109,112-116,119-124,128
+  s_6e55a4691f1b7b::t_35086b8006e3e1 101-106
+  s_6e55a4691f1b7b::t_fcba6e08cb60f5 110-111,117-118,125-127
+  s_6e55a4691f1b7b::t_973670af7016a0 24,87-100
+  s_6e55a4691f1b7b::t_431cace7ffd824 129
+sprinkler-solver-construction/src/Examples/MMViewBase.hs
+  s_6e55a4691f1b7b::t_e8057bf8516ffa 28,43,63-68,73-77
+  s_6e55a4691f1b7b::t_7e75dc490ebf7b 6-7,69-72
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_4abc163e3ea3c2 7-8,10-11,13-14,16-17,25,29,37,40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9d4d115c09875cab01121038dbaecbea70331ae5",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
