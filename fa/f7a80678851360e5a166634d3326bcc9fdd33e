@@ -79,6 +79,10 @@ src/Building/Electric.hs
   s_be463383785c97::t_806f32cbe6622d 284,465,467
   s_be463383785c97::t_f17bd8cef7e1a8 273-275,287-296,307,311
   s_be463383785c97::t_2340a8b230405e 267-269,308,312,316-330,468
+PROJECTS.md
+  s_be463383785c97::t_14bc661574f55d 1-256
+CLAUDE.md
+  s_be463383785c97::t_72b7739be26bd8 807-817
 ---
 {
   "schema_version": "authorship/3.0.0",
