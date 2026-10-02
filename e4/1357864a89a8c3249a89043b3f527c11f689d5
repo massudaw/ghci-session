@@ -1,0 +1,25 @@
+tools/mm_measure.py
+  s_6e55a4691f1b7b::t_64ab62fa0e6a27 1-96
+sprinkler-solver-construction/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_598846a48979c9 412-417,420-426
+tools/mm_goldens.py
+  s_6e55a4691f1b7b::t_2b3bc1b972f550 1-114
+sprinkler-solver-construction/src/Examples/MMDrawnCuts.hs
+  s_6e55a4691f1b7b::t_0778bf6ab6f9c0 116-120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e41357864a89a8c3249a89043b3f527c11f689d5",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

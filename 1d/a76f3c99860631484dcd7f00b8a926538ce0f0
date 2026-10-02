@@ -1,0 +1,30 @@
+sprinkler-solver-construction/src/Examples/MMWindowMullions.hs
+  s_6e55a4691f1b7b::t_478bc6797c0d57 259
+  s_6e55a4691f1b7b::t_7bc1c1225b9d3f 276-279,284-285
+golden/MMProjection/final_state.txt
+  s_be463383785c97::t_bfd86be97fd745 3,7-17,22,24,27-28,30,50,54,60,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1da76f3c99860631484dcd7f00b8a926538ce0f0",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
