@@ -1,0 +1,43 @@
+sprinkler-solver-construction/src/Examples/MMSections.hs
+  s_6e55a4691f1b7b::t_2849e92d27a375 48,97,103
+sprinkler-solver-construction/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 88,224-225,349
+sprinkler-solver-construction/src/Examples/MMPlans.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 43,86,89
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_210e47542d1a4e 85
+sprinkler-solver-construction/src/Examples/MMDrawnRoof.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 40,126
+sprinkler-solver-construction/src/Examples/MMServiceLayout.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 35,97
+sprinkler-solver-construction/src/Examples/MMDrawingRows.hs
+  s_6e55a4691f1b7b::t_b584fdae24a611 1-106,110-111,113,115-117
+  s_6e55a4691f1b7b::t_76bcbe5391e134 107-109,112,114
+sprinkler-solver-construction/src/Examples/MMElevations.hs
+  s_6e55a4691f1b7b::t_2849e92d27a375 34,64
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 47,87-88,124-125,133-134,174,357,457-458
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 394-395
+  s_6e55a4691f1b7b::t_32430f5c75388c 58,127,186-187,383-384
+sprinkler-solver-construction/src/Examples/MMDrawnSite.hs
+  s_6e55a4691f1b7b::t_17cc182c3d49cc 30,71
+sprinkler-solver-construction/src/Examples/MMElevationMarks.hs
+  s_6e55a4691f1b7b::t_2849e92d27a375 15,36,42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "951e58fe78876afd15fd71f631ddb73c34ba62ee",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
