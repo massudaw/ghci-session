@@ -15,6 +15,7 @@ sprinkler-solver-construction/src/Examples/MMDesign.hs
 src/Building/ExternalWorks.hs
   s_6e55a4691f1b7b::t_ea0e3289bc7d4c 70-75,88,90,140-144,146-147
   s_6e55a4691f1b7b::t_ad50b45ec1ff71 145
+  s_6e55a4691f1b7b::t_5dcbca79a91716 89
 ---
 {
   "schema_version": "authorship/3.0.0",
