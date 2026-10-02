@@ -1,0 +1,22 @@
+mm.html
+  s_6e55a4691f1b7b::t_1495d7aeb81239 504,519
+viewer.js
+  s_6e55a4691f1b7b::t_6a0278f0c6a7e2 38-39,52
+  s_6e55a4691f1b7b::t_1495d7aeb81239 30-37,40-51,53-54,91,102-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "00d597f0e46be543fe665241b768e4cc6e876871",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
