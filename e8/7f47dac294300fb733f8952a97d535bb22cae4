@@ -1,0 +1,51 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_93eaeb7634d6a5 120-121
+src/Drawing/Building.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 258
+src/Building/ConstraintSet.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 165
+sprinkler-solver-construction/src/Examples/MMHydraulic.hs
+  s_6e55a4691f1b7b::t_0067f931ca0ede 37,43,113-114,116,147-148,156-157,166
+  s_6e55a4691f1b7b::t_4051dbb17f45b5 1-36,38-42,45-112,117-126,128-146,149-155,158-165,167-171
+  s_6e55a4691f1b7b::t_7ad56172ea5608 44,115,127
+sprinkler-solver-construction/src/Examples/MMHydraulicData.hs
+  s_6e55a4691f1b7b::t_7427174c686369 1-466
+viewer.js
+  s_6e55a4691f1b7b::t_e70f37997172f8 62
+src/Building/Construction.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 921-923
+tools/dwg_hydraulic.py
+  s_6e55a4691f1b7b::t_84741f813018fa 1-270
+src/Building/IFC.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 196,955,1006
+src/Building.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 196-201
+example/Main.hs
+  s_6e55a4691f1b7b::t_56eebce62ab0d5 373,814
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_56eebce62ab0d5 52,62-67,81,89,167
+project.html
+  s_6e55a4691f1b7b::t_47ae98dcb138f1 304-309
+golden/MMHydraulic/final_state.txt
+  s_6e55a4691f1b7b::t_2f545da62cf142 1-2
+golden/MMHydraulic/status.txt
+  s_6e55a4691f1b7b::t_2f545da62cf142 1
+sprinkler-solver-construction/src/Examples/CondoIFC.hs
+  s_6e55a4691f1b7b::t_e70f37997172f8 463
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e87f47dac294300fb733f8952a97d535bb22cae4",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

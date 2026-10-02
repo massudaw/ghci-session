@@ -1,0 +1,29 @@
+golden/MMConstraints/final_state.txt
+  s_6e55a4691f1b7b::t_119751f1691f3f 7
+tools/mm_gaps_notes.tsv
+  s_6e55a4691f1b7b::t_119751f1691f3f 113
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_119751f1691f3f 1-2,4,8,31-32,34-36,49,52,54-55,58,60
+golden/MMDrawnStructure/final_state.txt
+  s_6e55a4691f1b7b::t_119751f1691f3f 2
+golden/MMCutRecon/final_state.txt
+  s_6e55a4691f1b7b::t_119751f1691f3f 2-4
+sprinkler-solver-construction/src/Examples/MMDrawnStructure.hs
+  s_6e55a4691f1b7b::t_b6c2562cdae411 9,69-74,96-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5e98c23612eb92d9032edd855f6719f7474740f2",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}

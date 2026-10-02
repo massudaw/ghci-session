@@ -1,0 +1,23 @@
+sprinkler-solver-construction/src/Examples/MMTank.hs
+  s_6e55a4691f1b7b::t_21bd4f4898cbec 73-79
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_e2d6b0e7fddb20 7-9,12,19,21-23,28-30
+golden/MMTank/final_state.txt
+  s_6e55a4691f1b7b::t_fd86df2042d4c0 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eb8ed976413c4390e41ff659639e471cb5e3f173",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
