@@ -6,6 +6,7 @@ golden/MMSectionSlabs/final_state.txt
   s_6e55a4691f1b7b::t_b31deb64017f4f 1-2
 sprinkler-solver-construction/src/Examples/MMProjection.hs
   s_6e55a4691f1b7b::t_a91880f7ab0216 109,350
+  s_6e55a4691f1b7b::t_94659199197e13 124-135
 sprinkler-solver-construction/src/Examples/MMDrawnSite.hs
   s_6e55a4691f1b7b::t_a91880f7ab0216 27
   s_6e55a4691f1b7b::t_ce0f56a44e6c6a 191,203-212
@@ -21,6 +22,8 @@ golden/MMPlanDims/final_state.txt
   s_6e55a4691f1b7b::t_b31deb64017f4f 2
 golden/MMCutLedger/final_state.txt
   s_6e55a4691f1b7b::t_b31deb64017f4f 1,7
+sprinkler-solver-construction/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_94659199197e13 137-141,160
 ---
 {
   "schema_version": "authorship/3.0.0",
