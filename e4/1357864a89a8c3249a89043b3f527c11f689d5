@@ -2,6 +2,7 @@ tools/mm_measure.py
   s_6e55a4691f1b7b::t_64ab62fa0e6a27 1-96
 sprinkler-solver-construction/src/Examples/MMProjection.hs
   s_6e55a4691f1b7b::t_598846a48979c9 412-417,420-426
+  s_6e55a4691f1b7b::t_f9f4d5a5c2fa80 419
 tools/mm_goldens.py
   s_6e55a4691f1b7b::t_2b3bc1b972f550 1-114
 sprinkler-solver-construction/src/Examples/MMDrawnCuts.hs
