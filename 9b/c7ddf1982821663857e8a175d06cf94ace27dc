@@ -1,0 +1,48 @@
+sprinkler-solver-construction/src/Examples/ColchesterRegulation.hs
+  s_be463383785c97::t_a0bf5d8ef8e985 38,712-714,726,732
+  s_be463383785c97::t_5c2314820d24ea 476-478
+  s_be463383785c97::t_af54df3a5f3ee5 45,715
+  s_be463383785c97::t_bb2d3a4a44ec58 28,395,689-711,717-725,727-731
+  s_be463383785c97::t_39e64f1f398f65 27,49,55-58,467-469,473,479-480,494-507,596-607,609-614,616-622,624-627,657,663,716
+  s_be463383785c97::t_7a353a9c442fec 470-472,474-475,608,623
+  s_be463383785c97::t_28b7da8d0d724a 232,481-493,615,675-676
+src/Building/Regulation.hs
+  s_be463383785c97::t_28b7da8d0d724a 34,102,108-117,119
+  s_be463383785c97::t_682d341b622b16 118
+compliance.html
+  s_be463383785c97::t_f0622da2c54075 113
+  s_be463383785c97::t_fe7cc709fd52ee 57-70,83-97,121,150-159,162,164-198,201-226
+  s_be463383785c97::t_566afcd83a3f5c 145-148
+  s_be463383785c97::t_79fdefc91f28ae 160-161,163
+  s_be463383785c97::t_2615ac9f686dae 199-200
+  s_be463383785c97::t_e9613ea8771598 79,114,135
+tools/colchester/export_static.py
+  s_be463383785c97::t_c0a290db36a975 52,61-62
+src/Building/Regulation/SingaporeBuildingControl.hs
+  s_be463383785c97::t_bb2d3a4a44ec58 64
+src/Building/Regulation/SingaporeFire.hs
+  s_be463383785c97::t_39e64f1f398f65 60,64,179-187
+sprinkler-solver-construction/src/Examples/ColchesterServer.hs
+  s_be463383785c97::t_af54df3a5f3ee5 65,190
+src/Building/Regulation/SingaporeSite.hs
+  s_be463383785c97::t_7a353a9c442fec 89-90
+  s_be463383785c97::t_a366998ad79cd7 1-88,91-145
+sprinkler-solver.cabal
+  s_be463383785c97::t_39e64f1f398f65 294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9bc7ddf1982821663857e8a175d06cf94ace27dc",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
