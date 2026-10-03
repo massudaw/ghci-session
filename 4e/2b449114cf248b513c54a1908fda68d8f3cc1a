@@ -1,0 +1,88 @@
+sprinkler-solver-construction/src/Examples/MMDrawnRoof.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 46,493-498
+sprinkler-solver-construction/src/Examples/MMSectionNotes.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 36,127-132
+  s_6e55a4691f1b7b::t_25692623c3e5a6 85-90
+sprinkler-solver-construction/src/Examples/MMVersions.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 43
+  s_6e55a4691f1b7b::t_5d3818478bfdea 25,145-147
+sprinkler-solver-construction/src/Examples/MMSectionBeams.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 35,104-109
+sprinkler-solver-construction/src/Examples/CodeReach.hs
+  s_6e55a4691f1b7b::t_ede88694fd10a4 32
+  s_6e55a4691f1b7b::t_1a56d37965b36e 126-128,131-138,172-175
+  s_6e55a4691f1b7b::t_4e23c99799cbb9 143-171,182
+  s_6e55a4691f1b7b::t_b8f86f2727ad1a 176-181
+  s_6e55a4691f1b7b::t_1c78b6500db684 38,109,114-115,118-119,125,191-192,194,197-198,200-201,204,207-208,211
+  s_6e55a4691f1b7b::t_3393b51c7deeeb 1-31,33-35,37,39-108,110-113,116-117,120-124,129-130,139-142,183-190,193,195-196,202-203,205-206,209-210,212-231
+  s_6e55a4691f1b7b::t_ef919c692bdd2c 36,199
+sprinkler-solver-construction/src/Examples/MMDrawn.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 59,262-267,538-543
+sprinkler-solver-construction/src/Examples/MMSidewalk.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 43,193-198
+sprinkler-solver-construction/src/Examples/MMDrawnStairs.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 48,565-570
+  s_6e55a4691f1b7b::t_25692623c3e5a6 388-393,529-534
+sprinkler-solver-construction/src/Examples/MMFloorFinish.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 37,82-87
+sprinkler-solver-construction/src/Examples/MMDrawnStructure.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 36,120-125
+sprinkler-solver-construction/src/Examples/MMRearStair.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 47,112-117
+sprinkler-solver-construction/src/Examples/MMSectionStair.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 47,163-168
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_f2f70cb6126459 112-113
+sprinkler-solver-construction/src/Examples/MMDrawnLowWalls.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 31,110-115
+sprinkler-solver-construction/src/Examples/MMDrawnCornice.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 44,272-277
+sprinkler-solver-construction/src/Examples/MMPool.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 40,109-114
+sprinkler-solver-construction/src/Examples/MMDrawnSite.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 31,231-236
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_e873227073331f 29
+  s_6e55a4691f1b7b::t_2d48156f6d0b66 115,128-139
+  s_6e55a4691f1b7b::t_33d94b7b2093d7 140
+sprinkler-solver-construction/src/Examples/MMWindowMullions.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 41,227-232
+  s_6e55a4691f1b7b::t_25692623c3e5a6 199-204,299-304
+sprinkler-solver-construction/src/Examples/MMTank.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 31,46-51,161-166,196-201,225-230,246-251,361-366,398-403,421-426
+sprinkler-solver-construction/src/Examples/MMElementCache.hs
+  s_6e55a4691f1b7b::t_e7f216b485c114 42-43,65,67,78-81,89-93
+  s_6e55a4691f1b7b::t_c31288bfbe715d 1-41,44-64,66,68-77,82-88,94-134
+sprinkler-solver-construction/src/Examples/MMSectionWalls.hs
+  s_6e55a4691f1b7b::t_c34175a9342e65 37,193-198
+sprinkler-solver-construction/src/Examples/MMDrawnRooms.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 47,265-270
+sprinkler-solver-construction/src/Examples/MMDrawnSlabs.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 55,242-247
+sprinkler-solver-construction/src/Examples/MMDrawnCoverage.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 39,162-167
+sprinkler-solver-construction/src/Examples/MMSectionSlabs.hs
+  s_6e55a4691f1b7b::t_f2f70cb6126459 42,152-157
+sprinkler-solver-construction/src/Examples/MMNumberedStairs.hs
+  s_6e55a4691f1b7b::t_72c128f50a3b2a 50,158-163
+sprinkler-solver-construction/src/Examples/MMDrawnPairWalls.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 57,198-203,314-319
+sprinkler-solver-construction/src/Examples/MMEntranceFrame.hs
+  s_6e55a4691f1b7b::t_25692623c3e5a6 52,121-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4e2b449114cf248b513c54a1908fda68d8f3cc1a",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
