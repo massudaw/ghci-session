@@ -1,0 +1,38 @@
+compliance.html
+  s_be463383785c97::t_e201700ead49db 58-60,65,67,85,89-90,97,101,106-107,111
+src/Building/Regulation/SingaporeLanded.hs
+  s_be463383785c97::t_79f68af3c3d6a2 92
+src/Building/Regulation.hs
+  s_be463383785c97::t_79f68af3c3d6a2 64-66,75,128-130,138
+  s_be463383785c97::t_4f7bbd607b77a2 31,120-124
+sprinkler-solver.cabal
+  s_be463383785c97::t_4ac87d9ee638d6 292
+sprinkler-solver-construction/src/Examples/ColchesterRegulation.hs
+  s_be463383785c97::t_13a896ca9bf311 287-290,292,323-325,331,356
+  s_be463383785c97::t_58d9dec7e7f579 48,317-320,355,383-385,398-403,421-428
+  s_be463383785c97::t_4f7bbd607b77a2 42,464,476-478
+  s_be463383785c97::t_64ebb639058b3a 49,125-127,130,133,278-286,296-300,311-312,321-322,326-330,332-339,410
+  s_be463383785c97::t_4ac87d9ee638d6 25,40,44,253-277,291,293-295,301-304,308-309,313-314,316,340-354,357-372,381-382,387-389,396,404-405,407-409,412-413,415-417,419,430,458
+  s_be463383785c97::t_562f52497c1edb 37,305-307,310,315,373-380,386,390-395,397,406,411,414,418,420,429
+sprinkler-solver-construction/src/Examples/ColchesterSolidFE.hs
+  s_be463383785c97::t_64ebb639058b3a 47-48
+src/Building/Regulation/SingaporeBuildingControl.hs
+  s_be463383785c97::t_0c06cf8f56fcf8 1-57,60-174,176-178
+  s_be463383785c97::t_58d9dec7e7f579 58-59,175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "498cf7e630c73371f76110e97dff50a03db48250",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
