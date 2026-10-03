@@ -1,0 +1,31 @@
+golden/DESProgramme/process.txt
+  s_6e55a4691f1b7b::t_25825a7aa69935 1-8397
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_6e55a4691f1b7b::t_3b59bffaae3e7c 41,151-154,156,166-169,213,290,292-388
+  s_6e55a4691f1b7b::t_017d02095d5904 82,582-584
+  s_6e55a4691f1b7b::t_25e7b9c2891534 120-125,243-276,291
+  s_6e55a4691f1b7b::t_ea2f8916d5a25c 150,538,549
+  s_6e55a4691f1b7b::t_6fe7d1714e7b47 389
+sprinkler-solver-construction/src/Examples/MMProgramme.hs
+  s_6e55a4691f1b7b::t_017d02095d5904 27-29,140-142
+doc/des/PROCESS_MIGRATION_WORKFLOW.md
+  s_6e55a4691f1b7b::t_f7bb4e1e34f204 584-597
+golden/MMProgramme/process.txt
+  s_6e55a4691f1b7b::t_25825a7aa69935 1-1756
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "38bea37bc475c694689d3ae70b86e743d34e13ec",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
