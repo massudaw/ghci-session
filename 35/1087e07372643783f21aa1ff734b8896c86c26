@@ -1,0 +1,22 @@
+sprinkler-solver-construction/src/Examples/ProgrammeDES.hs
+  s_6e55a4691f1b7b::t_2471db0fe7ae9b 220,229,231-232,238,247,251-253,396-468,544-549,560
+  s_6e55a4691f1b7b::t_d557d70a0c640d 41-42,44-45,83-84,138-154,162,279-304,306,308-337,339,341-381
+  s_6e55a4691f1b7b::t_edcff4c4be933d 43,561-574
+  s_6e55a4691f1b7b::t_75e11f6afd8deb 382
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "351087e07372643783f21aa1ff734b8896c86c26",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
