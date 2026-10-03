@@ -1,0 +1,19 @@
+tools/mm_gaps_measured.tsv
+  s_6fc53ab7a50776::t_7e8a2afde9b99d 303,674-675,1265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d57ea041402cdaea4ff913f236e12e6cbb955cad",
+  "prompts": {},
+  "sessions": {
+    "s_6fc53ab7a50776": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3c0782ad-e007-4735-8976-33701a6dc60a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
