@@ -1,0 +1,26 @@
+sprinkler-solver-construction/src/Examples/MMDrawnRoof.hs
+  s_6fc53ab7a50776::t_03f461ae640c28 485,491-496,498-506
+  s_6fc53ab7a50776::t_3f59545ccd372a 497
+golden/MMFusion/final_state.txt
+  s_6fc53ab7a50776::t_93c160dc6c8608 1-2,7-8,10-11,13,15-16,18-21,24
+golden/MMProgramme/process.txt
+  s_6fc53ab7a50776::t_6150bdf67b1760 780,786,887,896,899,907,915,1074,1080,1239
+golden/MMProjection/final_state.txt
+  s_6fc53ab7a50776::t_7a4b276901c8e2 6,8-9,12,15,18,21,24,27,30-32,34-36,61,63-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8340153ad2a4988570293515c5cc552c766dbd71",
+  "prompts": {},
+  "sessions": {
+    "s_6fc53ab7a50776": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3c0782ad-e007-4735-8976-33701a6dc60a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
