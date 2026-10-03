@@ -1,0 +1,29 @@
+sprinkler-solver.cabal
+  s_be463383785c97::t_c581a9a0d6b98f 293
+sprinkler-solver-construction/src/Examples/ColchesterRegulation.hs
+  s_be463383785c97::t_b98e279452e6d5 445-447,532-538
+  s_be463383785c97::t_c581a9a0d6b98f 480,488
+  s_be463383785c97::t_865560c5595183 26,46,50,433-444,448-479,481-487,489-531,539-548,577,583
+src/Building/Regulation/SingaporeFire.hs
+  s_be463383785c97::t_b98e279452e6d5 150-158,173-177
+  s_be463383785c97::t_69104f3ff5e1d7 1-114,119-123,125,131-149,159-172,178-199
+  s_be463383785c97::t_d6de89f83c9201 115-118,124,126-130
+compliance.html
+  s_be463383785c97::t_8e88c237906943 65,85,106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f4c26f7a9d5a78bb8f97e199797445188d47375a",
+  "prompts": {},
+  "sessions": {
+    "s_be463383785c97": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2c5b9572-085b-419d-8e92-f65083e64c49",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
