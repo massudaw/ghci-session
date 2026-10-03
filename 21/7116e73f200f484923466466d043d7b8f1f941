@@ -1,0 +1,51 @@
+sprinkler-solver-process-tests/src/Examples/DESProcessAcquireRelease.hs
+  s_6e55a4691f1b7b::t_e39b069d430a2b 1,3,29-31,49-54,98-126,231-242
+  s_6e55a4691f1b7b::t_9b7ee45a97469c 37,154
+  s_6e55a4691f1b7b::t_1eb49044561683 134
+  s_6e55a4691f1b7b::t_151e31bbed69db 2,4-28,32-35,38-45,47-48,55,57-63,66,69-70,73-74,76-90,95-97,127-133,137-145,152,155-162,170-201,203-212,220-223,226-228,243
+  s_6e55a4691f1b7b::t_bb5969e8a5b77e 36,46,64-65,67-68,71-72,75,91-94,135-136,146-151,153,163-169,202,224-225,244
+  s_6e55a4691f1b7b::t_a21c173bff8125 56,213-219
+  s_6e55a4691f1b7b::t_b0400f58b0a1a5 229-230
+src/Solver/DES/ProcessClass.hs
+  s_6e55a4691f1b7b::t_ce8737c31c41d5 238-241,244-245,248-250
+  s_6e55a4691f1b7b::t_09fa53ffdaf104 242-243,246-247,623-631
+src/Solver/DES/ProcessPure.hs
+  s_6e55a4691f1b7b::t_bcfe134d4ad42f 75,122-124,390,392-408,575-576,582,620-655,983-990,1014
+  s_6e55a4691f1b7b::t_9b7ee45a97469c 577-581
+golden/DESProcessAcquireRelease/status.txt
+  s_6e55a4691f1b7b::t_edcff4c4be933d 1
+src/Solver/DES/ProcessSig.hs
+  s_6e55a4691f1b7b::t_ce8737c31c41d5 715-732
+tools/model_session/targets.json
+  s_6e55a4691f1b7b::t_19835bc8db9bc0 93-94
+src/Solver/DES/Process.hs
+  s_6e55a4691f1b7b::t_7a13dc142c75f2 206,305,307-311,605-622,1159,1166-1255,2945-2946
+  s_6e55a4691f1b7b::t_aa94e46fa1b66d 2947
+doc/des/PROCESS_MIGRATION_WORKFLOW.md
+  s_6e55a4691f1b7b::t_87b09b577db488 542-589
+src/Solver/DES.hs
+  s_6e55a4691f1b7b::t_71498c9b29b4aa 1023-1024,1308,2020
+  s_6e55a4691f1b7b::t_904b8dc3c80234 106-109,999-1001,1676-1750,1823,5835
+example/Main.hs
+  s_6e55a4691f1b7b::t_1eb49044561683 275,719
+sprinkler-solver-process-tests/sprinkler-solver-process-tests.cabal
+  s_6e55a4691f1b7b::t_1eb49044561683 43
+golden/DESProcessAcquireRelease/final_state.txt
+  s_6e55a4691f1b7b::t_38ad66eef15421 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "217116e73f200f484923466466d043d7b8f1f941",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
