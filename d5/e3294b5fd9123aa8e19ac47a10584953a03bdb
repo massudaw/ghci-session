@@ -1,0 +1,50 @@
+golden/MMViewLedger/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 4-5
+golden/MMDesign/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 1
+sprinkler-solver-construction/src/Examples/MMViewBase.hs
+  s_6e55a4691f1b7b::t_73c377e2a70941 32,50
+golden/MMPlanLedger/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 6,8
+golden/MMDrawnPairWalls/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 1-2
+sprinkler-solver-construction/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_aaa92d1374d642 162,183-185
+  s_6e55a4691f1b7b::t_5ac22b3d4566b6 412-419,421-432
+golden/MMProgramme/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 2-3
+sprinkler-solver-construction/src/Examples/MMPool.hs
+  s_6e55a4691f1b7b::t_b262c16d456cc8 223-224,226
+  s_6e55a4691f1b7b::t_b22ef6acb1ec8b 23-24,121,235-247
+  s_6e55a4691f1b7b::t_0f93bfa36aaa10 135,158-161,222,228
+  s_6e55a4691f1b7b::t_d50595acdb489c 220-221
+  s_6e55a4691f1b7b::t_90a12d3a966f29 25-27
+  s_6e55a4691f1b7b::t_760957cc877484 175-176
+  s_6e55a4691f1b7b::t_0b2f12078398fd 166-174,177-181
+  s_6e55a4691f1b7b::t_4a42420dbb85d1 42,213-219,225,230,232-234
+  s_6e55a4691f1b7b::t_3240079c2913fa 108-110,112,145-147,151-152
+  s_6e55a4691f1b7b::t_8809d863b103fd 37-38,128-134,136-144,148-150,153-157,162-165,182-212,227,229,231
+  s_6e55a4691f1b7b::t_c6ed7c9ccbb3f7 248
+golden/MMConstraints/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 56
+golden/MMFusion/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 1-3,5,7-8,14-15
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_a2b9c3ff42da92 3,6,8-12,14-24,27-30,35-42,45,48-49,51-54,57-58,60,62-63,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d5e3294b5fd9123aa8e19ac47a10584953a03bdb",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
