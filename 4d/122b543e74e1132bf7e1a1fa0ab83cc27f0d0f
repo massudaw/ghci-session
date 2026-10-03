@@ -1,0 +1,29 @@
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_069ec6ce9db7d6 47,161-165
+sprinkler-solver-construction/src/Examples/ProcessVersions.hs
+  s_6e55a4691f1b7b::t_069ec6ce9db7d6 25
+  s_6e55a4691f1b7b::t_96d518bf111a07 1-24,26-101
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_069ec6ce9db7d6 110
+process-diff.html
+  s_6e55a4691f1b7b::t_544ba16b0be25b 1-108,112-132,138-144,148-169,171-172,176-187,189-200,203-232,235-253,257-284
+  s_6e55a4691f1b7b::t_ba865aefbda1ea 109-111,170,174-175
+  s_6e55a4691f1b7b::t_214001f1d030b2 188
+  s_6e55a4691f1b7b::t_e13ac804678378 133-137,145-147,173,201-202,233-234,254-256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4d122b543e74e1132bf7e1a1fa0ab83cc27f0d0f",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
