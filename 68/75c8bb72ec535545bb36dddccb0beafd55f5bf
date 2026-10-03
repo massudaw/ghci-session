@@ -1,0 +1,37 @@
+golden/MMModelDiff/final_state.txt
+  s_6e55a4691f1b7b::t_28de07ed368f60 5-6
+sprinkler-solver-construction/src/Examples/MMModelDiff.hs
+  s_6e55a4691f1b7b::t_0ba6d8eb0491fe 38-39,71-72,88-117,469,475-476
+sprinkler-solver-construction/src/Examples/ProcessVersions.hs
+  s_6e55a4691f1b7b::t_4baf78b8062295 21-25,69-93,99-108
+constraints-diff.html
+  s_6e55a4691f1b7b::t_1e4e12b2149df5 1-234
+mm.html
+  s_6e55a4691f1b7b::t_80aa1a9e2afbd9 551
+  s_6e55a4691f1b7b::t_f838a927bae12a 144-147,315-316,588-593,595,599-602,662,664-688,690-706,708-712
+sprinkler-solver-construction/src/Examples/MMVersions.hs
+  s_6e55a4691f1b7b::t_cd1e160d9444e5 17-18,35,38,73-104,106-123
+  s_6e55a4691f1b7b::t_1829c6b3595454 105
+  s_6e55a4691f1b7b::t_4d7f21b9f4b33e 124
+golden/MMModelDiff/constraints.tsv
+  s_6e55a4691f1b7b::t_86dad2817e33c5 1-1962
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_7f5c278b6200f4 47-49,162-170
+  s_6e55a4691f1b7b::t_1829c6b3595454 62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6875c8bb72ec535545bb36dddccb0beafd55f5bf",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
