@@ -1,0 +1,35 @@
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_4c0f6dba2af023 9,13
+sprinkler-solver-estela/sprinkler-solver-estela.cabal
+  s_007485e9a70e7e::t_f67e27b8a8983c 28,30-31
+sprinkler-solver-estela/vault/code/Estela.GameProcess.md
+  s_007485e9a70e7e::t_4c0f6dba2af023 1-7
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_e57906547d2bd7 102,109,111
+"sprinkler-solver-estela/vault/code/Game Process.md"
+  s_007485e9a70e7e::t_4c0f6dba2af023 1-9
+tools/model_session/targets.json
+  s_007485e9a70e7e::t_2de2ace53f4984 910,912-927
+  s_007485e9a70e7e::t_4910d2efa6ee92 897,899,907-908
+sprinkler-solver-estela/src/Estela/GameProcess.hs
+  s_007485e9a70e7e::t_f67e27b8a8983c 1-28,30-62,64-84,87-88,90-93,95-104
+  s_007485e9a70e7e::t_e57906547d2bd7 29,63,85-86,89,94
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_bcbe0863d0b1ea 282-295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3f714fc2477a37294206e43a022086e67f903a42",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
