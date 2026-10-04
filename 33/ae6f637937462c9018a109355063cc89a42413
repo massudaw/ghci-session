@@ -1,0 +1,22 @@
+sprinkler-solver-mm/src/Examples/MMDesign.hs
+  s_6e55a4691f1b7b::t_f0676aed4b5430 320-322
+  s_6e55a4691f1b7b::t_9c06c47b1265ca 53,404-406
+golden/MMDesign/final_state.txt
+  s_6e55a4691f1b7b::t_8f814c2c51f3c3 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "33ae6f637937462c9018a109355063cc89a42413",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
