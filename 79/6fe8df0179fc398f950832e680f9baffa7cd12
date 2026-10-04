@@ -1,0 +1,254 @@
+"sprinkler-solver-estela/vault/code/Game pour.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_caa28ff9e0164c 1-10
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_f11fdd93a58dc2 1-10
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 16-19
+  s_007485e9a70e7e::t_14d1e8616344c9 1-15
+"sprinkler-solver-estela/vault/code/Game numbers.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_dfb5746c41c8d3 1-10
+sprinkler-solver-estela/vault/sync_graph.py
+  s_007485e9a70e7e::t_4b0fedcf527f06 40-80
+  s_007485e9a70e7e::t_1fec1fdb6aab29 28-30,89-93
+  s_007485e9a70e7e::t_077a59ccab6fc9 1-27,31-39,81-88,94-104
+sprinkler-solver-estela/app/EstelaVault.hs
+  s_007485e9a70e7e::t_1fec1fdb6aab29 8-9,11,29-41,43-44
+sprinkler-solver-estela/serve.sh
+  s_007485e9a70e7e::t_1fec1fdb6aab29 20
+"sprinkler-solver-estela/vault/assets/Sheet tops.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-10
+sprinkler-solver-estela/vault/assets/Assets.md
+  s_007485e9a70e7e::t_1fec1fdb6aab29 25-28
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-24
+"sprinkler-solver-estela/vault/code/Game timing.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_5b8553a4d44a1d 1-10
+"sprinkler-solver-estela/vault/code/Game order.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_03f60a090b66f2 1-10
+"sprinkler-solver-estela/vault/assets/Sheet hats.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-10
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_1fec1fdb6aab29 182-183,204
+sprinkler-solver-estela/vault/code/Estela.Vault.md
+  s_007485e9a70e7e::t_6a8216197e7041 7
+  s_007485e9a70e7e::t_c38168fdcfb1e1 1-6,8-9
+sprinkler-solver-estela/sprinkler-solver-estela.cabal
+  s_007485e9a70e7e::t_1fec1fdb6aab29 39-40
+"sprinkler-solver-estela/vault/code/Game memory.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_601911b8f51a9d 1-10
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_6a8216197e7041 102
+  s_007485e9a70e7e::t_3f2211a90cdfb1 2,25-101,103-127
+"sprinkler-solver-estela/vault/assets/Sheet wings.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-10
+"sprinkler-solver-estela/vault/code/Game Loop.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 6-9
+  s_007485e9a70e7e::t_6b7a46c4464487 1-5
+"sprinkler-solver-estela/vault/assets/Sheet park.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-10
+"sprinkler-solver-estela/vault/code/Game brush.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_0f25e100f4fc56 1-10
+"sprinkler-solver-estela/vault/code/Game ducks.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 11-14
+  s_007485e9a70e7e::t_43f385ccf5b6ae 1-10
+"sprinkler-solver-estela/vault/assets/Sheet lower.md"
+  s_007485e9a70e7e::t_4b0fedcf527f06 1-10
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_1d41762aab4d83 249-266
+"sprinkler-solver-estela/vault/Estela World.md"
+  s_007485e9a70e7e::t_9e18065cb1a580 13-14
+"sprinkler-solver-estela/vault/assets/Sheet body.md"
+  s_007485e9a70e7e::t_f0af62b7e64e9d 1-10
+"sprinkler-solver-estela/vault/assets/Sheet faces.md"
+  s_007485e9a70e7e::t_4f8d578686870c 1-10
+"sprinkler-solver-estela/vault/assets/Sheet furniture.md"
+  s_007485e9a70e7e::t_f062f7970af677 1-10
+"sprinkler-solver-estela/vault/assets/Sheet hair.md"
+  s_007485e9a70e7e::t_83178f2ef2d3bd 1-10
+"sprinkler-solver-estela/vault/assets/Sprite acc-backpack.md"
+  s_007485e9a70e7e::t_10e0371ea0c024 1-19
+"sprinkler-solver-estela/vault/assets/Sprite acc-glasses.md"
+  s_007485e9a70e7e::t_1664c8732f2a06 1-19
+"sprinkler-solver-estela/vault/assets/Sprite acc-scarf.md"
+  s_007485e9a70e7e::t_dd2363cbdfbd5c 1-19
+"sprinkler-solver-estela/vault/assets/Sprite armchair.md"
+  s_007485e9a70e7e::t_453a81e7141d98 1-16
+"sprinkler-solver-estela/vault/assets/Sprite bathtub.md"
+  s_007485e9a70e7e::t_1c31d80f09d005 1-16
+"sprinkler-solver-estela/vault/assets/Sprite bed.md"
+  s_007485e9a70e7e::t_23c3b5d2b1bcd7 1-16
+"sprinkler-solver-estela/vault/assets/Sprite bench.md"
+  s_007485e9a70e7e::t_c2917cc77ed527 1-16
+"sprinkler-solver-estela/vault/assets/Sprite body.md"
+  s_007485e9a70e7e::t_a3aa9beeb60718 1-16
+"sprinkler-solver-estela/vault/assets/Sprite bookshelf.md"
+  s_007485e9a70e7e::t_18d1a6c1044280 1-16
+"sprinkler-solver-estela/vault/assets/Sprite bottom-pants.md"
+  s_007485e9a70e7e::t_eaaff5dea4979c 1-19
+"sprinkler-solver-estela/vault/assets/Sprite bottom-shorts.md"
+  s_007485e9a70e7e::t_1315c7ea02c385 1-19
+"sprinkler-solver-estela/vault/assets/Sprite bottom-skirt.md"
+  s_007485e9a70e7e::t_07d5b76b705959 1-19
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_912c02bf6f058c 1-16
+"sprinkler-solver-estela/vault/assets/Sprite easel.md"
+  s_007485e9a70e7e::t_34955ad7672394 1-16
+"sprinkler-solver-estela/vault/assets/Sprite face-excited.md"
+  s_007485e9a70e7e::t_47afd53ef0537d 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-grin.md"
+  s_007485e9a70e7e::t_8761b421be8761 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-happy.md"
+  s_007485e9a70e7e::t_f90f0ff63f66ec 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-joy.md"
+  s_007485e9a70e7e::t_17f2c2f108c23a 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-laugh.md"
+  s_007485e9a70e7e::t_fa9380b8be997c 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-neutral.md"
+  s_007485e9a70e7e::t_c8dc780fa62163 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-sad.md"
+  s_007485e9a70e7e::t_dd88325db0dc01 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-shy.md"
+  s_007485e9a70e7e::t_d01c04a1d58d64 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-sleepy.md"
+  s_007485e9a70e7e::t_c62c9ad0608d7e 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-smile.md"
+  s_007485e9a70e7e::t_27dba8124baf3a 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-surprised.md"
+  s_007485e9a70e7e::t_d983f42d3af135 1-18
+"sprinkler-solver-estela/vault/assets/Sprite face-wink.md"
+  s_007485e9a70e7e::t_f96767731de6e1 1-18
+"sprinkler-solver-estela/vault/assets/Sprite hair-afro.md"
+  s_007485e9a70e7e::t_0416e347077114 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-bob.md"
+  s_007485e9a70e7e::t_0bb4b0ae563d0c 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-braid.md"
+  s_007485e9a70e7e::t_7c504dc5cdd694 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-bun.md"
+  s_007485e9a70e7e::t_2c231d36b2c9f4 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-curly.md"
+  s_007485e9a70e7e::t_ed5c24eb36bdd9 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-long.md"
+  s_007485e9a70e7e::t_c54d8245aa119f 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-pigtails.md"
+  s_007485e9a70e7e::t_81ca469363d027 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-ponytail.md"
+  s_007485e9a70e7e::t_89e2233f24bc4b 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-short.md"
+  s_007485e9a70e7e::t_ceac40cdea3ee8 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-sideponytail.md"
+  s_007485e9a70e7e::t_0a33cd1b12f442 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-spacebuns.md"
+  s_007485e9a70e7e::t_fc7fd87569ddf6 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hair-wavy.md"
+  s_007485e9a70e7e::t_2365a758830728 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hat-beanie.md"
+  s_007485e9a70e7e::t_3391b3f62fbefe 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hat-cap.md"
+  s_007485e9a70e7e::t_c742e88f3ac636 1-19
+"sprinkler-solver-estela/vault/assets/Sprite hat-crown.md"
+  s_007485e9a70e7e::t_6954967fb3e822 1-19
+"sprinkler-solver-estela/vault/assets/Sprite kite.md"
+  s_007485e9a70e7e::t_c28a255b81960d 1-16
+"sprinkler-solver-estela/vault/assets/Sprite oven.md"
+  s_007485e9a70e7e::t_832b55742c5552 1-16
+"sprinkler-solver-estela/vault/assets/Sprite piano.md"
+  s_007485e9a70e7e::t_75d64a2223aacf 1-16
+"sprinkler-solver-estela/vault/assets/Sprite plants.md"
+  s_007485e9a70e7e::t_460df61cc77c6a 1-16
+"sprinkler-solver-estela/vault/assets/Sprite pond.md"
+  s_007485e9a70e7e::t_dd38a524b4fa80 1-16
+"sprinkler-solver-estela/vault/assets/Sprite shoes-boots.md"
+  s_007485e9a70e7e::t_740f3530cdb2fc 1-19
+"sprinkler-solver-estela/vault/assets/Sprite shoes-maryjanes.md"
+  s_007485e9a70e7e::t_b40a4d71107cf4 1-19
+"sprinkler-solver-estela/vault/assets/Sprite shoes-sneakers.md"
+  s_007485e9a70e7e::t_91d507faee243b 1-19
+"sprinkler-solver-estela/vault/assets/Sprite sink.md"
+  s_007485e9a70e7e::t_3162d65003296a 1-16
+"sprinkler-solver-estela/vault/assets/Sprite slide.md"
+  s_007485e9a70e7e::t_b3c73a147bc66e 1-16
+"sprinkler-solver-estela/vault/assets/Sprite swing.md"
+  s_007485e9a70e7e::t_f654e944549ef5 1-16
+"sprinkler-solver-estela/vault/assets/Sprite table.md"
+  s_007485e9a70e7e::t_f37214a4f31ce6 1-16
+"sprinkler-solver-estela/vault/assets/Sprite top-cardigan.md"
+  s_007485e9a70e7e::t_ffa83db78d2ccf 1-19
+"sprinkler-solver-estela/vault/assets/Sprite top-dress.md"
+  s_007485e9a70e7e::t_fcac83dd8b0fb1 1-19
+"sprinkler-solver-estela/vault/assets/Sprite top-hoodie.md"
+  s_007485e9a70e7e::t_f1200e622d75ac 1-19
+"sprinkler-solver-estela/vault/assets/Sprite top-overalls.md"
+  s_007485e9a70e7e::t_f9267a416019dd 1-19
+"sprinkler-solver-estela/vault/assets/Sprite top-raincoat.md"
+  s_007485e9a70e7e::t_04fd62ce7a9474 1-19
+"sprinkler-solver-estela/vault/assets/Sprite top-tee.md"
+  s_007485e9a70e7e::t_470ce03f406253 1-19
+"sprinkler-solver-estela/vault/assets/Sprite tree.md"
+  s_007485e9a70e7e::t_786f1850ecdbad 1-16
+"sprinkler-solver-estela/vault/assets/Sprite wardrobe.md"
+  s_007485e9a70e7e::t_7ac021d76d2fb4 1-16
+"sprinkler-solver-estela/vault/assets/Sprite wings-angel.md"
+  s_007485e9a70e7e::t_376bfb4e2fb064 1-19
+"sprinkler-solver-estela/vault/assets/Sprite wings-butterfly.md"
+  s_007485e9a70e7e::t_a9799df7acf776 1-19
+"sprinkler-solver-estela/vault/assets/Sprite wings-dragon.md"
+  s_007485e9a70e7e::t_eb6a4247b4b087 1-19
+"sprinkler-solver-estela/vault/assets/Sprite wings-fairy.md"
+  s_007485e9a70e7e::t_cb82d5d60446cb 1-19
+"sprinkler-solver-estela/vault/code/Asset Pipeline.md"
+  s_007485e9a70e7e::t_6ce60fde1d3604 1-5
+"sprinkler-solver-estela/vault/code/Character Layers.md"
+  s_007485e9a70e7e::t_d01d9f9057000c 1-5
+sprinkler-solver-estela/vault/code/Estela.World.md
+  s_007485e9a70e7e::t_da7631ef1c10e7 1-9
+sprinkler-solver-estela/vault/code/EstelaServer.md
+  s_007485e9a70e7e::t_437be40df50903 1-9
+sprinkler-solver-estela/vault/code/EstelaVault.md
+  s_007485e9a70e7e::t_6dfb13533ecd0c 1-9
+"sprinkler-solver-estela/vault/code/Gemini Prompts.md"
+  s_007485e9a70e7e::t_7f13a0f1f87ad2 1-6
+"sprinkler-solver-estela/vault/code/Knowledge Levels.md"
+  s_007485e9a70e7e::t_5c8db5de75366b 1-5
+sprinkler-solver-estela/vault/code/Persistence.md
+  s_007485e9a70e7e::t_69281f9640c68d 1-5
+"sprinkler-solver-estela/vault/code/Wish Flow.md"
+  s_007485e9a70e7e::t_13bfc731797b54 1-5
+sprinkler-solver-estela/vault/code/art.js.md
+  s_007485e9a70e7e::t_2e27e3fd4be6e2 1-9
+sprinkler-solver-estela/vault/code/estela.js.md
+  s_007485e9a70e7e::t_6c5bc0e1e236b7 1-9
+sprinkler-solver-estela/vault/code/gen_bundle.py.md
+  s_007485e9a70e7e::t_29ea723467f55b 1-9
+sprinkler-solver-estela/vault/code/minigames.js.md
+  s_007485e9a70e7e::t_aeafe72046131d 1-9
+sprinkler-solver-estela/vault/code/process.py.md
+  s_007485e9a70e7e::t_bd48f5eef55d66 1-9
+sprinkler-solver-estela/vault/code/sync_graph.py.md
+  s_007485e9a70e7e::t_b4f417be1c482c 1-9
+sprinkler-solver-estela/vault/code/validate.py.md
+  s_007485e9a70e7e::t_77b214213145f0 1-9
+sprinkler-solver-estela/vault/code/watch_wishes.py.md
+  s_007485e9a70e7e::t_46f0cf727ac185 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "796fe8df0179fc398f950832e680f9baffa7cd12",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
