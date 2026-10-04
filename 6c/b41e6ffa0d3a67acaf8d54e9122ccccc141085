@@ -1,0 +1,46 @@
+sprinkler-solver-estela/vault/people/Grandma.md
+  s_007485e9a70e7e::t_0fe7ec43c9318e 1-16,20-22
+  s_007485e9a70e7e::t_1713f86c5000b5 17-19
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_d3b96790d86458 627
+  s_007485e9a70e7e::t_b30e2a7265e098 42,53-57,89,128-129,176,182,267-270,327,354,499,505-554,563-565,568,591,626
+  s_007485e9a70e7e::t_fb5d6288680f7c 326
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_0fe7ec43c9318e 13-14
+sprinkler-solver-estela/vault/people/Teacher.md
+  s_007485e9a70e7e::t_1713f86c5000b5 17-19
+  s_007485e9a70e7e::t_0fe7ec43c9318e 1-16,20-22
+sprinkler-solver-estela/vault/people/Mum.md
+  s_007485e9a70e7e::t_0fe7ec43c9318e 1-20
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_1713f86c5000b5 32-39
+sprinkler-solver-estela/vault/houses/Park.md
+  s_007485e9a70e7e::t_0fe7ec43c9318e 13-14
+"sprinkler-solver-estela/vault/houses/Grandma's House.md"
+  s_007485e9a70e7e::t_0fe7ec43c9318e 13-14
+"sprinkler-solver-estela/vault/people/Ranger Ray.md"
+  s_007485e9a70e7e::t_1713f86c5000b5 17-19
+  s_007485e9a70e7e::t_0fe7ec43c9318e 1-16,20-22
+sprinkler-solver-estela/vault/houses/Home.md
+  s_007485e9a70e7e::t_0fe7ec43c9318e 13-14
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_0fe7ec43c9318e 176,185-195
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_1213bde997a488 79-95,155,177-180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6cb41e6ffa0d3a67acaf8d54e9122ccccc141085",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
