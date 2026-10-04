@@ -1,0 +1,107 @@
+"sprinkler-solver-estela/vault/activities/Strong Body Circuit.md"
+  s_007485e9a70e7e::t_086dccec401541 1-8,10-13
+  s_007485e9a70e7e::t_7dde3106a2c965 9
+sprinkler-solver-estela/vault/concepts/Handstand.md
+  s_007485e9a70e7e::t_086dccec401541 1-17
+"sprinkler-solver-estela/vault/concepts/Warm Up.md"
+  s_007485e9a70e7e::t_086dccec401541 1-17
+"sprinkler-solver-estela/vault/assets/Sheet gym.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-10
+"sprinkler-solver-estela/vault/assets/Sprite wedge.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+"sprinkler-solver-estela/vault/activities/Gymnast Smarts.md"
+  s_007485e9a70e7e::t_086dccec401541 1-13
+sprinkler-solver-estela/vault/assets/Assets.md
+  s_007485e9a70e7e::t_7dde3106a2c965 19,22,28
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_7dde3106a2c965 3-4,14-15,24,29,33,45,47,53-54,58,93,103-104,106,120,123,128,130,147-148,153-154,165-166,171,175,183,187
+  s_007485e9a70e7e::t_ec3ac49f736f21 27
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_7dde3106a2c965 110
+  s_007485e9a70e7e::t_6fac23f238af0c 77,114
+"sprinkler-solver-estela/vault/people/Coach Mia.md"
+  s_007485e9a70e7e::t_086dccec401541 1-21
+"sprinkler-solver-estela/vault/activities/Warm Up Time.md"
+  s_007485e9a70e7e::t_ec3ac49f736f21 5
+  s_007485e9a70e7e::t_7dde3106a2c965 9
+  s_007485e9a70e7e::t_086dccec401541 1-4,6-8,10-15
+sprinkler-solver-estela/vault/sync_graph.py
+  s_007485e9a70e7e::t_7dde3106a2c965 42-45
+"sprinkler-solver-estela/vault/code/Game order.md"
+  s_007485e9a70e7e::t_086dccec401541 13
+"sprinkler-solver-estela/vault/assets/Sprite wallbars.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+sprinkler-solver-estela/web/sprites/index.json
+  s_007485e9a70e7e::t_49a05d8ae96eba 43-46,97-100,455-458,537-544,549-552
+"sprinkler-solver-estela/vault/code/Game balance.md"
+  s_007485e9a70e7e::t_086dccec401541 1-14
+"sprinkler-solver-estela/vault/rooms/Strength Corner.md"
+  s_007485e9a70e7e::t_086dccec401541 1-10
+sprinkler-solver-estela/art/assets.json
+  s_007485e9a70e7e::t_49a05d8ae96eba 154-207
+"sprinkler-solver-estela/vault/activities/Handstand Practice.md"
+  s_007485e9a70e7e::t_086dccec401541 1-14
+"sprinkler-solver-estela/vault/concepts/Gym Safety.md"
+  s_007485e9a70e7e::t_086dccec401541 1-25
+"sprinkler-solver-estela/vault/assets/Sprite crashmat.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+"sprinkler-solver-estela/vault/concepts/Strong Body.md"
+  s_007485e9a70e7e::t_086dccec401541 1-25
+"sprinkler-solver-estela/vault/rooms/Gym Floor.md"
+  s_007485e9a70e7e::t_086dccec401541 1-10
+"sprinkler-solver-estela/vault/assets/Sprite face-happy.md"
+  s_007485e9a70e7e::t_086dccec401541 18
+"sprinkler-solver-estela/vault/assets/Sprite bench.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 16
+"sprinkler-solver-estela/vault/activities/Backbend Stretch.md"
+  s_007485e9a70e7e::t_086dccec401541 5,8-10,12-13,15
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_086dccec401541 11
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_7dde3106a2c965 308-310,320-321
+  s_007485e9a70e7e::t_6fac23f238af0c 254-257,378-385
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_086dccec401541 13
+sprinkler-solver-estela/vault/concepts/Backbend.md
+  s_007485e9a70e7e::t_086dccec401541 1-17
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_07ea6eac09b600 128-132,141,296,376
+  s_007485e9a70e7e::t_7dde3106a2c965 234
+"sprinkler-solver-estela/vault/assets/Sprite beam.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_6fac23f238af0c 17,214,226-227,237,241,244-251
+  s_007485e9a70e7e::t_b530b0a38f344e 238-239,242-243
+  s_007485e9a70e7e::t_49f115cf3dc9b7 20-36,205-213,215-225,228-236,240,252-259
+  s_007485e9a70e7e::t_42b8326cedb71d 260-261
+"sprinkler-solver-estela/vault/activities/Back Walkover Practice.md"
+  s_007485e9a70e7e::t_086dccec401541 5,9-12,14-15,17
+sprinkler-solver-estela/vault/houses/Gym.md
+  s_007485e9a70e7e::t_086dccec401541 6,10,12-16
+"sprinkler-solver-estela/vault/concepts/Back Walkover.md"
+  s_007485e9a70e7e::t_086dccec401541 1-17
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_086dccec401541 16
+"sprinkler-solver-estela/vault/assets/Sprite springboard.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+"sprinkler-solver-estela/vault/assets/Sprite vaultbox.md"
+  s_007485e9a70e7e::t_7dde3106a2c965 1-16
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_ac2b53f5f9e72e 306-317
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6f8f91c55d30c13a86cfbbac1a35915267f478d7",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
