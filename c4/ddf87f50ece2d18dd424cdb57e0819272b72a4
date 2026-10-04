@@ -1,0 +1,43 @@
+sprinkler-solver-estela/web/estela.html
+  s_007485e9a70e7e::t_50f48e2b89294a 74-75,101,109-115
+sprinkler-solver-estela/src/Estela/Server.hs
+  s_007485e9a70e7e::t_680de2def37e65 149,156,174,177,181
+  s_007485e9a70e7e::t_1d456a95dd7d5c 33,160,171
+  s_007485e9a70e7e::t_412ac2663f67d1 45,61,71,130-131,144-148,150-155,157-158,172-173,175-176,178-180,182-187
+sprinkler-solver-estela/sprinkler-solver-estela.cabal
+  s_007485e9a70e7e::t_dfab157c6be5b3 28
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_50f48e2b89294a 115,488,502,508,510,757-811,813-818,822-850
+  s_007485e9a70e7e::t_5217f58adea071 604
+  s_007485e9a70e7e::t_f9d30aa3f20a87 269-270,272,313-314,812,819-821
+  s_007485e9a70e7e::t_b51d5e77d3a3e0 851
+sprinkler-solver-estela/src/Estela/Play.hs
+  s_007485e9a70e7e::t_680de2def37e65 12,29-30,32-34,46,60-70,74-75,85,88-89,96-101,107,110,117-118
+  s_007485e9a70e7e::t_dfab157c6be5b3 1-11,13-28,31,35-45,47-59,71-73,76-84,86-87,90-95,102-106,108-109,111-116,119-121
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_d1689a45e73cc9 351-360
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_c5f74aaa97343f 121,127,141
+sprinkler-solver-estela/vault/code/Estela.Play.md
+  s_007485e9a70e7e::t_a2aa5f7c8b6c44 1-7
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_fd1c97d3e6c45e 9,13
+sprinkler-solver-estela/vault/code/Multiplayer.md
+  s_007485e9a70e7e::t_15614bc5b0f37d 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c4ddf87f50ece2d18dd424cdb57e0819272b72a4",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
