@@ -1,0 +1,149 @@
+"sprinkler-solver-estela/vault/concepts/Toilet Habits.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+"sprinkler-solver-estela/vault/activities/Feed the Goldfish.md"
+  s_007485e9a70e7e::t_36de0190957a75 14
+"sprinkler-solver-estela/vault/skills/Using the Toilet.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 21-24
+  s_007485e9a70e7e::t_1bb653914dd52e 1-20
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_36de0190957a75 1
+"sprinkler-solver-estela/vault/resources/Sydney Children's Hospitals Network: Hygiene 5 to 12.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+"sprinkler-solver-estela/vault/resources/University Hospitals: School-Age Nutrition.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-8,10-13
+  s_007485e9a70e7e::t_36de0190957a75 9
+"sprinkler-solver-estela/vault/rooms/Home Living Room.md"
+  s_007485e9a70e7e::t_36de0190957a75 1-9
+"sprinkler-solver-estela/vault/assets/Sprite table.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 16
+"sprinkler-solver-estela/vault/activities/Use the Toilet.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-15
+"sprinkler-solver-estela/vault/skills/Eating Meals.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-19
+  s_007485e9a70e7e::t_8094ab40b8e580 20-23
+"sprinkler-solver-estela/vault/skills/Drinking Water.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-5,10,12-13,17,19-20
+  s_007485e9a70e7e::t_8094ab40b8e580 21-24
+  s_007485e9a70e7e::t_36de0190957a75 6-9,11,14-16,18
+"sprinkler-solver-estela/vault/activities/Eat Dinner.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_687222fc9d16b4 3-12,30,145-148,163,166,170
+  s_007485e9a70e7e::t_36de0190957a75 13-17,26-28,86-144,149,159-161,165,167-169,171-180
+"sprinkler-solver-estela/vault/skills/Flossing Teeth.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 20-23
+  s_007485e9a70e7e::t_1bb653914dd52e 1-19
+sprinkler-solver-estela-sim/src/Estela/GameProcess.hs
+  s_007485e9a70e7e::t_36de0190957a75 88,135-136,138
+  s_007485e9a70e7e::t_687222fc9d16b4 24
+  s_007485e9a70e7e::t_1fbc65b91d0740 54-57,60,69,74,76,82,85-87,89-94,128,134,137,139-140,151-153,163-164
+"sprinkler-solver-estela/vault/code/Game order.md"
+  s_007485e9a70e7e::t_36de0190957a75 13
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_3e68a7782705af 9-10,14,31,33,35,101,136,157,159,161,166,176,191,194-195,206,214,216,225-226,232-233,237,247-248,251
+  s_007485e9a70e7e::t_87a8d26a4924f0 12-13,97,134,163,183,207,215,218-220,229,231,245
+"sprinkler-solver-estela/vault/skills/Carrying Her Water Bottle.md"
+  s_007485e9a70e7e::t_36de0190957a75 1-23
+sprinkler-solver-estela/src/Estela/Server.hs
+  s_007485e9a70e7e::t_d30795335c3b28 30-31,42-43,73-87,150-154,159
+  s_007485e9a70e7e::t_34d8792886621b 47,58-60,69,103-104,128-129,133-146
+"sprinkler-solver-estela/vault/routines/Evening Routine.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-4,6
+  s_007485e9a70e7e::t_36de0190957a75 5,7
+"sprinkler-solver-estela/vault/resources/CDC Handwashing for Families.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+sprinkler-solver-estela/vault/houses/Home.md
+  s_007485e9a70e7e::t_36de0190957a75 12,14
+  s_007485e9a70e7e::t_1bb653914dd52e 15-16
+"sprinkler-solver-estela/vault/routines/Afternoon Routine.md"
+  s_007485e9a70e7e::t_36de0190957a75 5,7
+  s_007485e9a70e7e::t_1bb653914dd52e 1-4,6
+"sprinkler-solver-estela/vault/skills/Tooth Brushing.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 19-22
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+sprinkler-solver-estela/vault/concepts/Meals.md
+  s_007485e9a70e7e::t_1bb653914dd52e 1-26
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_1fbc65b91d0740 18-20,78,80-91,93-102,106,144,227,251-254,270-273
+  s_007485e9a70e7e::t_36de0190957a75 79,92
+  s_007485e9a70e7e::t_2e43e24e340fa5 274
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_1fbc65b91d0740 308,320,378-381
+  s_007485e9a70e7e::t_835b7d1abf8270 382
+sprinkler-solver-estela/vault/assets/Assets.md
+  s_007485e9a70e7e::t_8094ab40b8e580 28
+"sprinkler-solver-estela/vault/rooms/Home Toilet.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-10
+"sprinkler-solver-estela/vault/resources/2min2x Kids' Healthy Mouths.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+"sprinkler-solver-estela/vault/skills/Getting Dressed.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+  s_007485e9a70e7e::t_8094ab40b8e580 19-22
+"sprinkler-solver-estela/vault/activities/Fill Water Bottle.md"
+  s_007485e9a70e7e::t_36de0190957a75 1-15
+sprinkler-solver-estela/vault/concepts/Hydration.md
+  s_007485e9a70e7e::t_36de0190957a75 1-18
+sprinkler-solver-estela/serve.sh
+  s_007485e9a70e7e::t_87a8d26a4924f0 5-7,18-20,22,38-42
+"sprinkler-solver-estela/vault/resources/Cleveland Clinic: How Often Should Kids Bathe.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+"sprinkler-solver-estela/vault/concepts/Hand Washing.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-26
+"sprinkler-solver-estela/vault/activities/Wash Hands.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-13
+sprinkler-solver-estela/vault/concepts/Flossing.md
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+sprinkler-solver-estela/vault/skills/Bathing.md
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+  s_007485e9a70e7e::t_8094ab40b8e580 19-22
+"sprinkler-solver-estela/vault/assets/Sprite sink.md"
+  s_007485e9a70e7e::t_36de0190957a75 16
+sprinkler-solver-estela/.gitignore
+  s_007485e9a70e7e::t_d30795335c3b28 6
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 13
+"sprinkler-solver-estela/vault/concepts/Dental Hygiene.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 6-17
+"sprinkler-solver-estela/vault/rooms/Home Kitchen.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 6
+sprinkler-solver-estela/vault/sync_graph.py
+  s_007485e9a70e7e::t_1fbc65b91d0740 116
+"sprinkler-solver-estela/vault/activities/Eat Lunch.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-15
+"sprinkler-solver-estela/vault/skills/Washing Hands.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 19-22
+  s_007485e9a70e7e::t_1bb653914dd52e 1-18
+sprinkler-solver-estela/web/parent.html
+  s_007485e9a70e7e::t_3e68a7782705af 147-149,155-160,165-168
+  s_007485e9a70e7e::t_1fbc65b91d0740 108
+  s_007485e9a70e7e::t_b0eab137e8e99b 162
+"sprinkler-solver-estela/vault/skills/Skill Matrix.md"
+  s_007485e9a70e7e::t_36de0190957a75 17-18
+  s_007485e9a70e7e::t_8094ab40b8e580 11-16,19-20,44,47-48,59-60
+"sprinkler-solver-estela/vault/activities/Floss Teeth.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-15
+"sprinkler-solver-estela/vault/skills/Bedtime Routine.md"
+  s_007485e9a70e7e::t_8094ab40b8e580 20-23
+  s_007485e9a70e7e::t_1bb653914dd52e 1-19
+"sprinkler-solver-estela/vault/routines/Morning Routine.md"
+  s_007485e9a70e7e::t_1bb653914dd52e 1-4,6
+  s_007485e9a70e7e::t_36de0190957a75 5,7
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_0dafda67f75dbb 335-350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b430ec30797c76608fee1fd4f10a1085e353e05",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
