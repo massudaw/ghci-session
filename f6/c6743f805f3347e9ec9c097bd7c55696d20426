@@ -1,0 +1,23 @@
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_b68d170b6dfda6 517-527,529-543,1004
+  s_007485e9a70e7e::t_bdec88f5e347d7 528
+  s_007485e9a70e7e::t_d3708dd9b2efa8 121,123,1003
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_372180aa7d3078 406-412
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f6c6743f805f3347e9ec9c097bd7c55696d20426",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
