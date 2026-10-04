@@ -1,0 +1,52 @@
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_ed17a3ca9451e9 16-17,27,33,42,48,55,60,62,89
+sprinkler-solver-estela/art/assets.json
+  s_007485e9a70e7e::t_d3528eac90e821 134-147,418-433
+sprinkler-solver-estela/vault/concepts/Letters.md
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-5
+sprinkler-solver-estela/web/sprites/index.json
+  s_007485e9a70e7e::t_d3528eac90e821 528-571
+sprinkler-solver-estela/art/validate.py
+  s_007485e9a70e7e::t_d3528eac90e821 55-58,72
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_d3528eac90e821 60-61,79,89,404
+  s_007485e9a70e7e::t_bcef5de372a002 524,526-530
+"sprinkler-solver-estela/vault/wardrobe/Butterfly Wings.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-9
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_d3528eac90e821 80,178
+"sprinkler-solver-estela/vault/wardrobe/Dragon Wings.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-9
+sprinkler-solver-estela/vault/wardrobe/Wardrobe.md
+  s_007485e9a70e7e::t_ed17a3ca9451e9 7,10,17,22,24
+"sprinkler-solver-estela/vault/activities/Spell a Word.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-13
+"sprinkler-solver-estela/vault/wardrobe/Fairy Wings.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-9
+"sprinkler-solver-estela/vault/wardrobe/Angel Wings.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-9
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_ed17a3ca9451e9 12
+sprinkler-solver-estela/vault/concepts/Reading.md
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-5
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_d3528eac90e821 520,552-553
+"sprinkler-solver-estela/vault/activities/Read a Picture Book.md"
+  s_007485e9a70e7e::t_ed17a3ca9451e9 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "69ba11af0d6c579109fce60660ab39600e282459",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
