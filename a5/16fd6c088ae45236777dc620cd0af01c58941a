@@ -1,0 +1,19 @@
+sprinkler-solver-estela/web/estela.html
+  s_007485e9a70e7e::t_1da1bdf9d06e7c 68-73,86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a516fd6c088ae45236777dc620cd0af01c58941a",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
