@@ -1,0 +1,74 @@
+tools/ghci_cafs/loader_stats.c
+  s_6e55a4691f1b7b::t_5f48f36b482ce4 12-13,59-87
+  s_6e55a4691f1b7b::t_d54276b0d73ee1 52-54
+tools/ghci_cafs/repro/README.md
+  s_6e55a4691f1b7b::t_7b7b247e7c99bd 1-20
+tools/ghci_cafs/repro/cabal.project
+  s_6e55a4691f1b7b::t_88734b1c7a76d3 1
+tools/ghci_cafs/repro/pa/pa.cabal
+  s_6e55a4691f1b7b::t_80d7cef6aebf2c 1-8
+tools/ghci_cafs/repro/pa/src/M1.hs
+  s_6e55a4691f1b7b::t_d594ddec708b07 1-18
+tools/ghci_cafs/repro/pa/src/M10.hs
+  s_6e55a4691f1b7b::t_613b2df5683835 1-19
+tools/ghci_cafs/repro/pa/src/M11.hs
+  s_6e55a4691f1b7b::t_8d12c02d038b3b 1-19
+tools/ghci_cafs/repro/pa/src/M12.hs
+  s_6e55a4691f1b7b::t_f0ef811c4dd819 1-19
+tools/ghci_cafs/repro/pa/src/M13.hs
+  s_6e55a4691f1b7b::t_b70562c3928a60 1-19
+tools/ghci_cafs/repro/pa/src/M14.hs
+  s_6e55a4691f1b7b::t_8e022f88fb0645 1-19
+tools/ghci_cafs/repro/pa/src/M15.hs
+  s_6e55a4691f1b7b::t_01be7465ef77ca 1-19
+tools/ghci_cafs/repro/pa/src/M16.hs
+  s_6e55a4691f1b7b::t_fe48291c578b3f 1-19
+tools/ghci_cafs/repro/pa/src/M17.hs
+  s_6e55a4691f1b7b::t_d5e989f5410a3a 1-19
+tools/ghci_cafs/repro/pa/src/M18.hs
+  s_6e55a4691f1b7b::t_b22c7d6d46e401 1-19
+tools/ghci_cafs/repro/pa/src/M19.hs
+  s_6e55a4691f1b7b::t_7e27be8ff8cc89 1-19
+tools/ghci_cafs/repro/pa/src/M2.hs
+  s_6e55a4691f1b7b::t_0f6aeffcb22028 1-19
+tools/ghci_cafs/repro/pa/src/M20.hs
+  s_6e55a4691f1b7b::t_587de128c0490f 1-19
+tools/ghci_cafs/repro/pa/src/M3.hs
+  s_6e55a4691f1b7b::t_bd5f0ce847bd0f 1-19
+tools/ghci_cafs/repro/pa/src/M4.hs
+  s_6e55a4691f1b7b::t_11521876586e11 1-19
+tools/ghci_cafs/repro/pa/src/M5.hs
+  s_6e55a4691f1b7b::t_b777eeaf7bd912 1-19
+tools/ghci_cafs/repro/pa/src/M6.hs
+  s_6e55a4691f1b7b::t_2793ed10a71c1e 1-19
+tools/ghci_cafs/repro/pa/src/M7.hs
+  s_6e55a4691f1b7b::t_cbe5ce3e2c27d9 1-19
+tools/ghci_cafs/repro/pa/src/M8.hs
+  s_6e55a4691f1b7b::t_d03393ea5f3458 1-19
+tools/ghci_cafs/repro/pa/src/M9.hs
+  s_6e55a4691f1b7b::t_dc9b4030556476 1-19
+tools/ghci_cafs/repro/pb/pb.cabal
+  s_6e55a4691f1b7b::t_2ddbfdcfb7249e 1-8
+tools/ghci_cafs/repro/pb/src/Stats.hs
+  s_6e55a4691f1b7b::t_2f1ee49cfd39bf 1-11
+tools/ghci_cafs/repro/pb/src/Top.hs
+  s_6e55a4691f1b7b::t_145f2a4fdda690 1-4
+tools/ghci_cafs/repro/run.sh
+  s_6e55a4691f1b7b::t_05343624c9abfe 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "88361c9c09923cf5c17e187ca6bc02f414405a27",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
