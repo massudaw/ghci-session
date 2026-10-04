@@ -1,0 +1,40 @@
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_42491ccaf78d29 153
+  s_6e55a4691f1b7b::t_7ba4f34074aefb 253-254
+tools/model_session/targets.json
+  s_6e55a4691f1b7b::t_a465349df72938 815-863,865-922,924-933
+registration.html
+  s_6e55a4691f1b7b::t_42491ccaf78d29 80,201,206,238,265-266,297
+sprinkler-solver-construction/src/Examples/MMRegistration.hs
+  s_6e55a4691f1b7b::t_a636402a8cb05b 77
+  s_6e55a4691f1b7b::t_f8c65963cb48ac 1-52,54-64,66-76,78-120
+  s_6e55a4691f1b7b::t_d1e8cbe6316a45 53
+  s_6e55a4691f1b7b::t_f91a06b28b792f 65
+sprinkler-solver-construction/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_5fd2cbd4f6579d 1017,1021-1023,1025-1026
+  s_6e55a4691f1b7b::t_9b50973fb24202 1024
+divergences.html
+  s_6e55a4691f1b7b::t_9b50973fb24202 225
+  s_6e55a4691f1b7b::t_5fd2cbd4f6579d 215,222-224,226-228
+  s_6e55a4691f1b7b::t_88d81bbf750cf6 58,96,229
+  s_6e55a4691f1b7b::t_4859172239a054 230
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_42491ccaf78d29 67,183
+  s_6e55a4691f1b7b::t_bed2a5b5a07d7a 184
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a69934890f2bd05d16e42f01239679e0802321e3",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
