@@ -1,0 +1,32 @@
+sprinkler-solver-construction/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_74ca534d70d51a 66-67,307
+tools/dwg_plans.py
+  s_6e55a4691f1b7b::t_bb16f625072b7b 97-98,124,138-141,185-196
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_74ca534d70d51a 154-155
+sprinkler-solver-construction/src/Examples/MMPlansExtraData.hs
+  s_6e55a4691f1b7b::t_63c1ed5836de3d 1-14469
+sprinkler-solver-construction/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_74ca534d70d51a 88-89,1016-1021,1032-1034,1061-1063,1257-1260
+sprinkler-solver-construction/src/Examples/MMOriginal.hs
+  s_6e55a4691f1b7b::t_8c56183f890f15 17,35,37-39
+  s_6e55a4691f1b7b::t_74ca534d70d51a 1-16,18-34,36
+divergences.html
+  s_6e55a4691f1b7b::t_f8806fa628f83f 59-62,100,226,230,233-246,248
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "575694fe1a29acd8f5e4b15311799f3131624fa8",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
