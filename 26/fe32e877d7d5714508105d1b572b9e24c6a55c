@@ -1,0 +1,86 @@
+"sprinkler-solver-estela/vault/activities/Feed the Goldfish.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 14
+"sprinkler-solver-estela/vault/houses/Grandma's House.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 12-13
+"sprinkler-solver-estela/vault/rooms/Grandma's Garden.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-10
+"sprinkler-solver-estela/vault/rooms/Home Bedroom.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-10
+sprinkler-solver-estela/vault/code/Estela.GameProcess.md
+  s_007485e9a70e7e::t_2a65bd58681e3c 4
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_aaf9d5df885cc9 244-256,275
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_1ffc5dca97dbe0 565
+  s_007485e9a70e7e::t_aaf9d5df885cc9 42,50-52,59,178-181,183-186,189-191,200-202,209,219,264-265,278,281,291-298,344
+  s_007485e9a70e7e::t_bcf00c94295645 734
+sprinkler-solver-estela/vault/people/Mum.md
+  s_007485e9a70e7e::t_b1bd042ce02f70 19
+"sprinkler-solver-estela/vault/activities/Bake Bread.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 11
+sprinkler-solver-estela-sim/sprinkler-solver-estela-sim.cabal
+  s_007485e9a70e7e::t_2a65bd58681e3c 1-21
+cabal.project
+  s_007485e9a70e7e::t_2a65bd58681e3c 17
+"sprinkler-solver-estela/vault/activities/Brush Teeth.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 11
+"sprinkler-solver-estela/vault/activities/Get Dressed.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 11
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_aaf9d5df885cc9 5-8,10,12,15,21,23-24,109,123,152,154,157-158,161-166
+  s_007485e9a70e7e::t_2e27af0f9245eb 102
+"sprinkler-solver-estela/vault/rooms/Grandma's Kitchen.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-10
+sprinkler-solver-estela/vault/houses/Home.md
+  s_007485e9a70e7e::t_b1bd042ce02f70 12-13
+"sprinkler-solver-estela/vault/activities/Bedtime Story.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 13
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_ef1509d1da3295 36
+  s_007485e9a70e7e::t_b1bd042ce02f70 17-19,59,65-83,159,207-212,222-225,233
+"sprinkler-solver-estela/vault/rooms/Home Kitchen.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-10
+"sprinkler-solver-estela/vault/activities/Eat Breakfast.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 11
+sprinkler-solver-estela/vault/people/Grandma.md
+  s_007485e9a70e7e::t_b1bd042ce02f70 21
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_ef1509d1da3295 13
+"sprinkler-solver-estela/vault/activities/Story Time with Grandma.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 11
+"sprinkler-solver-estela/vault/activities/Make a Clay Pot.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 15
+"sprinkler-solver-estela/vault/code/Room Scene.md"
+  s_007485e9a70e7e::t_ef1509d1da3295 1-5
+"sprinkler-solver-estela/vault/rooms/Grandma's Living Room.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-9
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_2a65bd58681e3c 294-296
+  s_007485e9a70e7e::t_1ed32e599ffcc0 297-305
+"sprinkler-solver-estela/vault/activities/Take a Bath.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 13
+tools/model_session/targets.json
+  s_007485e9a70e7e::t_2a65bd58681e3c 897,901
+"sprinkler-solver-estela/vault/activities/Water the Plants.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 13
+"sprinkler-solver-estela/vault/rooms/Home Bathroom.md"
+  s_007485e9a70e7e::t_b1bd042ce02f70 1-10
+sprinkler-solver-estela-sim/src/Estela/GameProcess.hs
+  s_007485e9a70e7e::t_e59b939bfae500 21,47-50,52-56,59-68,82-89,105-106,108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "26fe32e877d7d5714508105d1b572b9e24c6a55c",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
