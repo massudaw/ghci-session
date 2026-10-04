@@ -1,0 +1,33 @@
+golden/MMFusion/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 1,7,18
+sprinkler-solver-mm/src/Examples/MMPool.hs
+  s_6e55a4691f1b7b::t_8889f8830a6d1a 320-321
+golden/MMProgramme/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 3
+golden/MMProgramme/process.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 440,452,464,724,726,762,772-779,786,788,790,800,802,887,889,899,901,907,909,915,917,923,931,933,1002,1008,1034,1050,1052,1058,1060,1066,1068,1082,1106,1108,1114,1122,1130,1138,1193,1199,1231,1239,1247,1255,1263,1271,1273,1279,1281,1287,1289,1295,1297,1303,1305,1311,1313,1319,1321,1327,1329,1335,1341,1349,1357,1365,1373,1381,1389,1397,1399,1405,1413,1514,1522,1530,1538,1546,1554,1562,1570,1578,1853,1915,1917,1923,1932,1940,1942,1948,1956,1958,1964,1973,1975,1979,1985,1991,1997
+golden/MMModelDiff/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 4
+golden/MMPlanLedger/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 6,8
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 3,6,15,18-20,22,24-25,27-30,49,51-54,57,60,63,66
+golden/MMDesign/final_state.txt
+  s_6e55a4691f1b7b::t_cc13c1e6dfb61a 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "df9f2e2a990747cdbb31c61348354021a11c3841",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
