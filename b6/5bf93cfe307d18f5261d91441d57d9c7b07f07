@@ -1,0 +1,93 @@
+sprinkler-solver-estela/vault/rooms/Library.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-10
+sprinkler-solver-estela/vault/concepts/Shapes.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+"sprinkler-solver-estela/vault/assets/Sprite face-happy.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 18
+"sprinkler-solver-estela/vault/activities/Look After the Class Dog.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+"sprinkler-solver-estela/vault/rooms/Math Room.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-10
+"sprinkler-solver-estela/vault/activities/Add and Subtract.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-13
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 13
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 12,14-16
+"sprinkler-solver-estela/vault/people/Miss Lin.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-23
+"sprinkler-solver-estela/vault/activities/Read a Picture Book.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+sprinkler-solver-estela/vault/concepts/Addition.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+sprinkler-solver-estela/vault/concepts/Portuguese.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+sprinkler-solver-estela/vault/people/Teacher.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_70d46e1a83cd1f 1
+"sprinkler-solver-estela/vault/rooms/Language Room.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-10
+"sprinkler-solver-estela/vault/code/Game order.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 13
+"sprinkler-solver-estela/vault/activities/Shapes and Patterns.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-15
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_80efe4f801ea70 3,9,13,23,25-28,30-33,38,74,78,151,153,173,177,181,194,198,200,203,216,219,222,240,250-252
+  s_007485e9a70e7e::t_70d46e1a83cd1f 256
+"sprinkler-solver-estela/vault/activities/Spell a Word.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+sprinkler-solver-estela/vault/concepts/Speaking.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+"sprinkler-solver-estela/vault/activities/English Class.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-13
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_70d46e1a83cd1f 18-28
+  s_007485e9a70e7e::t_80efe4f801ea70 48-74,117-145,224-252
+"sprinkler-solver-estela/vault/activities/Play the Piano.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+sprinkler-solver-estela/vault/concepts/Multiplication.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+"sprinkler-solver-estela/vault/activities/Times Tables.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-15
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_70d46e1a83cd1f 1
+"sprinkler-solver-estela/vault/activities/Portuguese Class.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-13
+"sprinkler-solver-estela/vault/activities/Paint a Picture.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+"sprinkler-solver-estela/vault/activities/Chinese Class.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-13
+"sprinkler-solver-estela/vault/activities/Show and Tell.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-13
+"sprinkler-solver-estela/vault/rooms/Art Room.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-10
+"sprinkler-solver-estela/vault/activities/Number Puzzle.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 5
+"sprinkler-solver-estela/vault/routines/Morning Routine.md"
+  s_007485e9a70e7e::t_70d46e1a83cd1f 5-6,8
+sprinkler-solver-estela/vault/concepts/Chinese.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+sprinkler-solver-estela/vault/concepts/English.md
+  s_007485e9a70e7e::t_bbea2b6e1b6652 1-25
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_bbea2b6e1b6652 16
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_74b213d2630321 391-397
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b65bf93cfe307d18f5261d91441d57d9c7b07f07",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
