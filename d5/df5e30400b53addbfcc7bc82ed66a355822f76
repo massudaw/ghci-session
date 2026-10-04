@@ -1,0 +1,38 @@
+"sprinkler-solver-estela/vault/activities/Bake Bread.md"
+  s_007485e9a70e7e::t_18c646a9ff145b 9
+sprinkler-solver-estela/web/estela.html
+  s_007485e9a70e7e::t_18c646a9ff145b 133
+"sprinkler-solver-estela/vault/activities/Brush Teeth.md"
+  s_007485e9a70e7e::t_18c646a9ff145b 9
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_71d55d55cd223d 1-73,75-104
+  s_007485e9a70e7e::t_18c646a9ff145b 74
+sprinkler-solver-estela/web/build_artifact.py
+  s_007485e9a70e7e::t_18c646a9ff145b 18,27
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_9a1b17b8d0f194 3,5,7,11
+"sprinkler-solver-estela/vault/activities/Number Puzzle.md"
+  s_007485e9a70e7e::t_18c646a9ff145b 9
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_18c646a9ff145b 51,84,153,292-294,304-305,307,329,331,334,337-345,347,354,563
+"sprinkler-solver-estela/vault/activities/Feed the Ducks.md"
+  s_007485e9a70e7e::t_18c646a9ff145b 9
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_1172400e9aaead 21,87-90,174-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d5df5e30400b53addbfcc7bc82ed66a355822f76",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
