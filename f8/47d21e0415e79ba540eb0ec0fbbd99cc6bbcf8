@@ -1,0 +1,20 @@
+tools/model_session/targets.json
+  s_007485e9a70e7e::t_192f0df7d38984 928-932
+  s_007485e9a70e7e::t_0206af40bded79 933-934
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f847d21e0415e79ba540eb0ec0fbbd99cc6bbcf8",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
