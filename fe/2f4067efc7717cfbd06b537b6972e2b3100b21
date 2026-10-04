@@ -1,0 +1,91 @@
+sprinkler-solver-estela/vault/concepts/Water.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+"sprinkler-solver-estela/vault/activities/Back Walkover Practice.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-12
+sprinkler-solver-estela/vault/concepts/Plants.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+sprinkler-solver-estela/vault/concepts/Sleep.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+"sprinkler-solver-estela/vault/activities/Story Time with Grandma.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+sprinkler-solver-estela/vault/concepts/Sound.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+sprinkler-solver-estela/vault/concepts/Motion.md
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+"sprinkler-solver-estela/vault/activities/Go Down the Slide.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+"sprinkler-solver-estela/vault/activities/Swing High.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-11
+"sprinkler-solver-estela/vault/activities/Water the Plants.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-12
+"sprinkler-solver-estela/vault/activities/Read a Picture Book.md"
+  s_007485e9a70e7e::t_9402c53611c431 12
+"sprinkler-solver-estela/vault/activities/Feed the Goldfish.md"
+  s_007485e9a70e7e::t_9402c53611c431 11-13
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_c43291f1f6b0f8 3-4,6,8,10-14,16-23,25,28-29,31-40
+"sprinkler-solver-estela/vault/activities/Take a Bath.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-12
+sprinkler-solver-estela/vault/concepts/Letters.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+sprinkler-solver-estela/vault/concepts/Nutrition.md
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_55e89baed3d5ad 51
+  s_007485e9a70e7e::t_9b30839a2ae9d7 92,340-358,373,384-390,483
+"sprinkler-solver-estela/vault/activities/Eat Breakfast.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_9b30839a2ae9d7 129
+  s_007485e9a70e7e::t_55e89baed3d5ad 109-128,130-204
+"sprinkler-solver-estela/vault/activities/Play the Piano.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+"sprinkler-solver-estela/vault/concepts/Weather and Clothes.md"
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+"sprinkler-solver-estela/vault/activities/Get Dressed.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+"sprinkler-solver-estela/vault/activities/Paint a Picture.md"
+  s_007485e9a70e7e::t_9402c53611c431 10
+"sprinkler-solver-estela/vault/activities/Spell a Word.md"
+  s_007485e9a70e7e::t_9402c53611c431 12-14
+sprinkler-solver-estela/vault/concepts/Pets.md
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+"sprinkler-solver-estela/vault/activities/Fly a Kite.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-11
+"sprinkler-solver-estela/vault/activities/Look After the Class Dog.md"
+  s_007485e9a70e7e::t_9402c53611c431 11
+sprinkler-solver-estela/vault/concepts/Colors.md
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+"sprinkler-solver-estela/vault/concepts/Family History.md"
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+sprinkler-solver-estela/vault/concepts/Reading.md
+  s_007485e9a70e7e::t_9402c53611c431 6-25
+sprinkler-solver-estela/vault/concepts/Wind.md
+  s_007485e9a70e7e::t_9402c53611c431 6-17
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_c43291f1f6b0f8 33
+  s_007485e9a70e7e::t_55e89baed3d5ad 91
+  s_007485e9a70e7e::t_9b30839a2ae9d7 178-179
+"sprinkler-solver-estela/vault/activities/Backbend Stretch.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-12
+"sprinkler-solver-estela/vault/activities/Bedtime Story.md"
+  s_007485e9a70e7e::t_9402c53611c431 10-12
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_f4323002303c87 230-248
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fe2f4067efc7717cfbd06b537b6972e2b3100b21",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
