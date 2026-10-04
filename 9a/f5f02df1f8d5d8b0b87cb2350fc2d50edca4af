@@ -1,0 +1,55 @@
+sprinkler-solver-mm/src/Examples/MMPlansData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 4,7,9,16-11092,11096-12659
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 8
+sprinkler-solver-mm/src/Examples/MMFoundationsData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 4,7,9,12-582
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 8
+sprinkler-solver-mm/src/Examples/MMRoomsData.hs
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 12
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 8,11,13,17-48
+sprinkler-solver-mm/src/Examples/MMHydraulicData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 7,10,12,15-329,333-368,372-463
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 11
+tools/ghci_cafs/ghci_cafs.c
+  s_6e55a4691f1b7b::t_d8bc7f41c944ce 306-328
+sprinkler-solver-mm/src/Examples/MMServiceLayoutData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 22,25,27,35-3232,3236-19709,19713-20018,20022-20840
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 26
+sprinkler-solver-mm/src/Examples/MMElevationsData.hs
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 8
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 4,7,9,16-4253,4257-4309
+sprinkler-solver-mm/src/Examples/MMSectionsData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 4,7,9,16-3533,3537-4138
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 8
+sprinkler-solver-mm/src/Examples/MMHouseData.hs
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 18
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 14,17,19,32-1396,1401-1497,1503-1582
+sprinkler-solver-mm/src/Examples/MMHeap.hs
+  s_6e55a4691f1b7b::t_3b7d82b6e284b0 1,21,24-32,136-175
+sprinkler-solver-mm/src/Examples/MMSanitaryData.hs
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 7,10,12,15-186,190-208,212-332
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 11
+sprinkler-solver-mm/sprinkler-solver-mm.cabal
+  s_6e55a4691f1b7b::t_b36cd4829e44a0 111
+sprinkler-solver-mm/src/Examples/MMPlansExtraData.hs
+  s_6e55a4691f1b7b::t_d2c23fbde9339b 8
+  s_6e55a4691f1b7b::t_dd26a6d1a1d17d 4,7,9,12-14472
+tools/pack_tsv.py
+  s_6e55a4691f1b7b::t_d4a2f28a18b092 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9af5f02df1f8d5d8b0b87cb2350fc2d50edca4af",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
