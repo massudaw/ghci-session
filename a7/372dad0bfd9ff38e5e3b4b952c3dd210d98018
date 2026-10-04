@@ -1,0 +1,31 @@
+sprinkler-solver-mm/src/Examples/MMDesign.hs
+  s_6e55a4691f1b7b::t_0bf850cbb9c02b 181-183
+golden/MMDesign/final_state.txt
+  s_007485e9a70e7e::t_4d3e7ab2b8ecde 1
+golden/MMProgramme/process.txt
+  s_6e55a4691f1b7b::t_d5135425ae6fde 422,428,450,452,462-468,529,537,545,553,561,744,752,760,780,786,915,1074,1082,1090,1098,1191,1207,1215,1223,1231,1239,1859,1867,1875,1883,1891,1899,1907,1940,1973
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7372dad0bfd9ff38e5e3b4b952c3dd210d98018",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
