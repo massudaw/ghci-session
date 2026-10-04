@@ -1,0 +1,40 @@
+sprinkler-solver-estela/art/assets.json
+  s_007485e9a70e7e::t_9d097859cc657b 113-133,356-357,360-361,364-365,368-369,372-373,376-377,380-381,384-385,388-389,392-393,396-397,400-401
+  s_007485e9a70e7e::t_2ba000a02cff20 201-202,205-206,209-210,213-214,217-218,221-222,225-226,229-230,233-234,237-238
+  s_007485e9a70e7e::t_fb0beb96c17a1a 358-359,362-363,366-367,370-371,374-375,378-379,382-383,386-387,390-391,394-395,398-399,402-403
+  s_007485e9a70e7e::t_b8df48627fa209 193-194,197-198
+sprinkler-solver-estela/web/sprites/index.json
+  s_007485e9a70e7e::t_fb0beb96c17a1a 105-108,115-118,125-128,135-138,145-148,155-158,165-168,175-178,185-188,195-198,205-208,215-218
+  s_007485e9a70e7e::t_9d097859cc657b 101-104,109-114,119-124,129-134,139-144,149-154,159-164,169-174,179-184,189-194,199-204,209-214,219-220
+  s_007485e9a70e7e::t_2ba000a02cff20 227,259-262,303-306,325-328,336-339
+  s_007485e9a70e7e::t_de617451690f5e 226,228-229,237-240,248-251,270-273,281-284,292-295,314-317,347-350
+sprinkler-solver-estela/art/validate.py
+  s_007485e9a70e7e::t_2ba000a02cff20 32
+  s_007485e9a70e7e::t_fb0beb96c17a1a 57
+  s_007485e9a70e7e::t_ba0ba5139de20c 1-31,33-56,58-109
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_fb0beb96c17a1a 554-558
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_fb0beb96c17a1a 75,77,80,346,362-364
+sprinkler-solver-estela/art/process.py
+  s_007485e9a70e7e::t_9d097859cc657b 184-186
+  s_007485e9a70e7e::t_3d9a6be05bf3ec 187-189
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_8d26733c83e051 96-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b06a6399de774ca43b0d761b053eebaf53b1d205",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
