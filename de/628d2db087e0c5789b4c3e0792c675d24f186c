@@ -1,0 +1,37 @@
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_ad5b27b97ef741 3-4,31,42
+  s_007485e9a70e7e::t_ca0a62f0507c72 18
+"sprinkler-solver-estela/vault/activities/Read a Picture Book.md"
+  s_007485e9a70e7e::t_ca0a62f0507c72 8
+"sprinkler-solver-estela/vault/activities/Backbend Stretch.md"
+  s_007485e9a70e7e::t_b443020d63b276 1-8,10-11
+  s_007485e9a70e7e::t_ad5b27b97ef741 9
+sprinkler-solver-estela/vault/concepts/Motion.md
+  s_007485e9a70e7e::t_ad5b27b97ef741 5
+"sprinkler-solver-estela/vault/activities/Back Walkover Practice.md"
+  s_007485e9a70e7e::t_ad5b27b97ef741 9
+  s_007485e9a70e7e::t_b443020d63b276 1-8,10-11
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_ca0a62f0507c72 86
+sprinkler-solver-estela/web/art.js
+  s_007485e9a70e7e::t_ca0a62f0507c72 290,300,357-362
+  s_007485e9a70e7e::t_32d21aa012b3fc 363
+sprinkler-solver-estela/vault/houses/Gym.md
+  s_007485e9a70e7e::t_b443020d63b276 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "de628d2db087e0c5789b4c3e0792c675d24f186c",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
