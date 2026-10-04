@@ -1,0 +1,40 @@
+CLAUDE.md
+  s_6e55a4691f1b7b::t_68a9b02f6e3222 350
+  s_6e55a4691f1b7b::t_5b95faf2ca8714 332-349,351-362
+tools/ghci_cafs/ghci_cafs.c
+  s_6e55a4691f1b7b::t_acad64ebe1c60d 23-32,44-46,74-76,90-133,140,142,152-155,159,161-163,275-276
+  s_6e55a4691f1b7b::t_3f200cde56696f 143-151,169-213,217-218,225,231-255,257,262-263,267-269,271-274,277,280-281,283
+  s_6e55a4691f1b7b::t_a1559614a27b3e 226
+  s_6e55a4691f1b7b::t_0321556d4541cc 77-89
+  s_6e55a4691f1b7b::t_20c6a66e8645d9 1-22,33-43,47-73,164-168,214-216,219-224,227-229,258-261,264-266,270,278-279,282,284-305
+  s_6e55a4691f1b7b::t_25ecb39932cf5e 134-139,141,156-158,160,256
+  s_6e55a4691f1b7b::t_5a181e0488d99a 230
+tools/model_session/build_clib.sh
+  s_6e55a4691f1b7b::t_3916cad2160506 177-179
+tools/model_session/session.py
+  s_6e55a4691f1b7b::t_3916cad2160506 388-390,1882-1889,1891-1894,1896-1898,1948
+  s_6e55a4691f1b7b::t_54b4cc9d81efb3 1890,1895
+tools/ghci_cafs/build.sh
+  s_6e55a4691f1b7b::t_105c31d2183491 7
+  s_6e55a4691f1b7b::t_20c6a66e8645d9 1-6,8-26
+sprinkler-solver.cabal
+  s_6e55a4691f1b7b::t_20c6a66e8645d9 398
+src/Solver/GhciHygiene.hs
+  s_6e55a4691f1b7b::t_20c6a66e8645d9 1-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dffb843e7bcb32d732179dad1d9a97d774c677e3",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
