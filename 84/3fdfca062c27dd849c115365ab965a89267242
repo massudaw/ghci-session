@@ -1,0 +1,21 @@
+sprinkler-solver-construction/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_499be168ceea1d 1026-1028,1039-1042
+divergences.html
+  s_6e55a4691f1b7b::t_499be168ceea1d 234-235,265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "843fdfca062c27dd849c115365ab965a89267242",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
