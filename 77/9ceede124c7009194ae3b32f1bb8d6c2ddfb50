@@ -1,0 +1,53 @@
+"sprinkler-solver-estela/vault/wardrobe/Flip-top Bottle.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-7
+sprinkler-solver-estela/vault/assets/Assets.md
+  s_007485e9a70e7e::t_30b9c70d97baf2 16,22
+"sprinkler-solver-estela/vault/assets/Sheet bottles.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-10
+"sprinkler-solver-estela/vault/assets/Sprite acc-flipbottle.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-19
+sprinkler-solver-estela/art/validate.py
+  s_007485e9a70e7e::t_30b9c70d97baf2 53
+  s_007485e9a70e7e::t_8b5a9e0a410f61 52,54
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_30b9c70d97baf2 136
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_30b9c70d97baf2 447-449
+"sprinkler-solver-estela/vault/wardrobe/Water Flask.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-7
+sprinkler-solver-estela/web/sprites/index.json
+  s_007485e9a70e7e::t_8b5a9e0a410f61 20,31,42
+  s_007485e9a70e7e::t_30b9c70d97baf2 18-19,29-30,40-41
+  s_007485e9a70e7e::t_15eb36c266dc12 13-17,21-28,32-39,43-45
+"sprinkler-solver-estela/vault/assets/Sprite acc-bottle.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-19
+"sprinkler-solver-estela/vault/wardrobe/Water Bottle.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-7
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_30b9c70d97baf2 35,37,48-50,274,301-303
+"sprinkler-solver-estela/vault/assets/Sprite acc-flask.md"
+  s_007485e9a70e7e::t_30b9c70d97baf2 1-19
+sprinkler-solver-estela/vault/wardrobe/Wardrobe.md
+  s_007485e9a70e7e::t_30b9c70d97baf2 25,52-53
+sprinkler-solver-estela/art/assets.json
+  s_007485e9a70e7e::t_30b9c70d97baf2 504-507,512-515,520-523
+  s_007485e9a70e7e::t_15eb36c266dc12 148-160,501-503,508-511,516-519,524
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_4db8830ca123ca 361-366
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "779ceede124c7009194ae3b32f1bb8d6c2ddfb50",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
