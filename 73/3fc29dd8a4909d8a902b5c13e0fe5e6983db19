@@ -1,0 +1,58 @@
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 235
+  s_007485e9a70e7e::t_d58e2a8a380e74 128,135,137,152
+sprinkler-solver-estela-sim/src/Estela/GameProcess.hs
+  s_007485e9a70e7e::t_88cf3cb5b76535 17,31,80-84,92-102,141-158,166-167
+  s_007485e9a70e7e::t_898793492b5767 103-110
+sprinkler-solver-estela-sim/sprinkler-solver-estela-sim.cabal
+  s_007485e9a70e7e::t_88cf3cb5b76535 16
+"sprinkler-solver-estela/vault/routines/Afternoon Routine.md"
+  s_007485e9a70e7e::t_898793492b5767 5
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 6,8
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_93ae4ab165e5de 21-22,66,97,109-112,121-128,219,282-283
+  s_007485e9a70e7e::t_898793492b5767 20,83,98,113-120,280-281
+sprinkler-solver-estela-sim/src/Estela/Mastery.hs
+  s_007485e9a70e7e::t_898793492b5767 34-35,98
+  s_007485e9a70e7e::t_0efa362815b2a6 76-77
+  s_007485e9a70e7e::t_b1f3f13595d410 83,117-118
+  s_007485e9a70e7e::t_88cf3cb5b76535 1-33,36-75,78-82,84-97,99-116,119-125
+tools/model_session/targets.json
+  s_007485e9a70e7e::t_88cf3cb5b76535 672-678,916-917
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 1
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_898793492b5767 106-112,114-115,117,119-121,124-126,128,131-133,186
+  s_007485e9a70e7e::t_0efa362815b2a6 116,118,122-123,127,129-130
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 113
+sprinkler-solver-estela/web/parent.html
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 29-30,133-155,159,162,191
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_2cefcb6dd7bb40 1
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_5be028808d0d24 377-390
+sprinkler-solver-estela/vault/code/Estela.Mastery.md
+  s_007485e9a70e7e::t_cb49542b94948f 1-7
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_bf664b5a912942 9,13
+"sprinkler-solver-estela/vault/code/Game Process.md"
+  s_007485e9a70e7e::t_75b15b3d5d1e8d 5
+"sprinkler-solver-estela/vault/code/Learning Model.md"
+  s_007485e9a70e7e::t_d6b32cebef0d36 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "733fc29dd8a4909d8a902b5c13e0fe5e6983db19",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
