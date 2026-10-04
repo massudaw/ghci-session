@@ -1,0 +1,41 @@
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_0a52625d333f85 37-40,44-46,48
+  s_007485e9a70e7e::t_30f1e9683f8863 47
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_c4ee4c6834a7b9 12,28,38
+  s_007485e9a70e7e::t_6940dd9b578f09 8,36
+"sprinkler-solver-estela/vault/activities/Look After the Class Dog.md"
+  s_007485e9a70e7e::t_c4ee4c6834a7b9 1-12
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_0a52625d333f85 317,354
+  s_007485e9a70e7e::t_00c27a40be0210 42,51-53,356-361,364-365,524,528,530,536,539-540,564,577
+  s_007485e9a70e7e::t_4ee6e349b7f272 355
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_c4ee4c6834a7b9 12
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_00c27a40be0210 176-177
+sprinkler-solver-estela/vault/houses/Home.md
+  s_007485e9a70e7e::t_6940dd9b578f09 12
+"sprinkler-solver-estela/vault/activities/Feed the Goldfish.md"
+  s_007485e9a70e7e::t_6940dd9b578f09 1-12
+sprinkler-solver-estela/vault/concepts/Pets.md
+  s_007485e9a70e7e::t_c4ee4c6834a7b9 1-5
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_192191318f505f 105-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e9f747d9ad34d0a27228b933671afdb46675d4e3",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
