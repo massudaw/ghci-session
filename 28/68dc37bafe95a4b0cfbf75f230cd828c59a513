@@ -1,0 +1,25 @@
+"sprinkler-solver-estela/vault/houses/Grandma's House.md"
+  s_007485e9a70e7e::t_4ff5292f890c53 12
+"sprinkler-solver-estela/vault/activities/Make a Clay Pot.md"
+  s_007485e9a70e7e::t_4ff5292f890c53 1-16
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_4ff5292f890c53 15,31,43
+sprinkler-solver-estela/vault/concepts/Materials.md
+  s_007485e9a70e7e::t_4ff5292f890c53 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2868dc37bafe95a4b0cfbf75f230cd828c59a513",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
