@@ -1,0 +1,43 @@
+cabal.project
+  s_6e55a4691f1b7b::t_d7d8af061d95d2 5
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_48f368726551c3 1-356
+tools/sample_target.py
+  s_6e55a4691f1b7b::t_e768a84466df0f 144
+sprinkler-solver-mm/src/Examples/MMVersions.hs
+  s_6e55a4691f1b7b::t_48f368726551c3 1-591
+sprinkler-solver-mm/src/Examples/MMQuickEdit.hs
+  s_6e55a4691f1b7b::t_48f368726551c3 1-165
+sprinkler-solver-mm/sprinkler-solver-mm.cabal
+  s_6e55a4691f1b7b::t_a265ec3e1e9e9b 1-167
+sprinkler-solver-construction/sprinkler-solver-construction.cabal
+  s_6e55a4691f1b7b::t_a265ec3e1e9e9b 107
+tools/model_session/targets.json
+  s_6e55a4691f1b7b::t_13c8d9bbcfef34 118,120,170,172,188,190,205,207,243,245,259,261,277,279,822,824,879,881,947,949
+sprinkler-solver-mm/src/Examples/CodeReach.hs
+  s_6e55a4691f1b7b::t_48f368726551c3 1-428
+CLAUDE.md
+  s_6e55a4691f1b7b::t_e566da48b215b9 154-157
+PROJECTS.md
+  s_6e55a4691f1b7b::t_30216a0a6607b0 28
+sprinkler-solver-mm/src/Examples/MMQuickWorkflow.hs
+  s_6e55a4691f1b7b::t_2af562c8d23fac 11
+sprinkler-solver-examples/sprinkler-solver-examples.cabal
+  s_6e55a4691f1b7b::t_b1e71aa65da2c3 349,413
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "69aa9cedf652dc2918f00b6367e41f2faf0fe6ff",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
