@@ -40,11 +40,11 @@ the tool's own costs with almost no compile time in them):
 |---|---|
 | boot, cold (cabal configures and compiles) / warm (objects on disk) | 10.8 / 1.8 |
 | `eval` | 0.09 (the Python client's start-up is most of it) |
-| `reload`, nothing changed / `--no-check` | 0.6 / 0.3 |
-| save to verdict (the watcher: file event, reload, prune, check): a comment / a real change / a compile error | 0.9 / 0.9 / 0.35 |
+| `reload`, nothing changed / `--no-check` | 0.6 / 0.1 |
+| save to verdict (the watcher: file event, reload, check): a comment / a real change / a compile error | 0.9 / 0.6 / 0.17 |
 | composed session of two packages, boot | 7.5 |
 | `server start` with a 2 s prefork | 2.3 |
-| save to verdict with a server: kept (comment) / re-forked with its state (2 s prefork) | 1.4 / 3.6 |
+| save to verdict with a server: kept (comment) / re-forked with its state (2 s prefork) | 1.1 / 3.8 |
 | the same re-fork in the background (`async_refork`): the verdict / the server up | 0.85 / 3.2 |
 | `compose --remove`: the repl restarts, the server is adopted | 2.2 |
 | census: every CAF / one value | 0.7 / 0.4 |
@@ -61,12 +61,15 @@ and server command:
 [time] reload 3.50s: prefork 2.01, check 0.88, prune 0.20, fork_verify 0.18, server_stop 0.11, ghci_reload 0.09, ...
 ```
 
-`load` is cabal and GHC; `check` and `prefork` are yours; `prune` is the pruner's major GC, which grows with the live
-heap (0.2 s at 100 MB, ~1.5 s at 700 MB). Everything else the tool adds to a reload is under 50 ms. It was not always:
-the first version of this breakdown showed 0.4-0.8 s of every reload going to asking the OS for the repl's memory
-footprint, three times, inline -- now sampled once, after the reload returns, and reused by the next reload's budget
-check -- and 0.65 s of every save waiting on the watcher's poll and debounce (now a kernel file event and a 50 ms
-quiet period), and the pruner ran its major GC even when it had unlinked nothing (now only when it has).
+`load` is cabal and GHC; `check` and `prefork` are yours. Everything the tool adds to a reload is under 50 ms. It
+was not always, and the breakdown is how each of these was found:
+
+- 0.4-0.8 s of every reload went to asking the OS for the repl's memory footprint, three times, inline. It is now
+  sampled once, after the reload returns, and reused by the next reload's budget check.
+- 0.65 s of every save was the watcher's poll and debounce. Now a kernel file event and a 50 ms quiet period.
+- The pruner's cost was never the pruning. Finding and unlinking the superseded CAFs is microseconds (5,549 of them
+  in 0.02 s on a 98-module session); the major GC that followed was all of it (0.9 s at 500 MB live). So a reload
+  now only UNLINKS, and the GC runs once the session has been idle for a second (`prune_gc_idle_s`), off the path.
 
 And the reason for the pruner, measured by the same tour -- live heap (MB) after each of five edit-reload-check
 rounds of a module holding one 200,000-entry `Map`:
@@ -74,10 +77,12 @@ rounds of a module holding one 200,000-entry `Map`:
 | | start | 1 | 2 | 3 | 4 | 5 | grew |
 |---|---|---|---|---|---|---|---|
 | object code, no pruning | 80 | 129 | 177 | 226 | 275 | 323 | +243 MB |
-| `hygiene: true` | 98 | 147 | 147 | 147 | 147 | 147 | +49 MB |
+| `hygiene: true` | 98 | 98 | 98 | 98 | 98 | 98 | +0 MB |
 
-One copy of the table per reload without it; with it, the first reload's copy stays (the initial library also holds
-the modules that never change, so it is never wholly superseded) and every later one is freed.
+One copy of the table per reload without it. (An earlier version of the pruner settled one copy higher, at 147 MB:
+it unlinked right after `:reload`, but GHCi links a reloaded module into its new library only on the first
+evaluation that needs it, so the generation just replaced did not yet look superseded and survived until the next
+reload. The unlink now waits for the check, or the first `eval`.)
 
 ## Install
 
@@ -132,7 +137,8 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
 | `rts_flags` | `-c` | GHCi's own RTS flags, via `--with-repl=bin/ghci-rts.sh` (`-c`: compacting old generation; ~3x less heap than the copying GC for a long session); `none` turns it off |
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
-| `hygiene` | `false` | build the C libraries, prune CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
+| `hygiene` | `false` | build the C libraries, unlink superseded CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
+| `prune_gc_idle_s` | `1.0` | the major GC that frees what was unlinked runs once the session has been idle this long (`0`: at once, on the reload path; negative: never, leave it to the RTS) |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
@@ -240,7 +246,8 @@ by name, so a sibling checkout's healthy session is not touched.
 A Haskell package plus three small C libraries built against *your* GHC's RTS (`hygiene/build.sh`, run by the daemon).
 
 ```haskell
-GHC.Hygiene.pruneCafs :: IO Int          -- CAFs unlinked, then a major GC; -1 unknown RTS layout, -2 no library
+GHC.Hygiene.unlinkCafs :: IO Int         -- unlink the superseded CAFs (microseconds); -1 unknown RTS layout, -2 no library
+GHC.Hygiene.pruneCafs :: IO Int          -- ... and a major GC if anything was unlinked: the memory back now
 GHC.Hygiene.loaderStats :: IO Int        -- what the RTS linker holds, to stderr
 
 GHC.Hygiene.Census.cafReport 10 100000000    -- what every CAF retains, by CAF and by constructor

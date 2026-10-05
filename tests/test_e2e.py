@@ -140,7 +140,7 @@ class EndToEnd(unittest.TestCase):
 
         # hygiene ran, and the census answers
         with open(os.path.join(self.proj, ".ghci-session", "dev", "daemon.log")) as fh:
-            self.assertIn("prune_cafs:", fh.read())
+            self.assertIn("unlink_cafs:", fh.read())
         self.assertIn("closures", self.cli_("eval", "GHC.Hygiene.Census.cafReport 2 100000000").stdout)
 
         # stopping the session stops its server

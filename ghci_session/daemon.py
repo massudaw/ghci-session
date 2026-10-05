@@ -174,6 +174,10 @@ class Session:
         self.hygiene_on = bool(self.cfg["hygiene"])
         self.zygote_on = bool(self.cfg["servers"])
         self.hm, self.zm = self.cfg["hygiene_module"], self.cfg["zygote_module"]
+        self.has_unlink = False         # the hygiene module offers unlinkCafs (asked after each load)
+        self.unlink_due = False         # a reload has superseded code that has not been unlinked yet
+        self.evaluated = False          # ... and something has been evaluated since (so its replacement is linked)
+        self.gc_due = False             # something was unlinked and the GC that frees it has not run
         self.generation = 0
         self.cwd = self.root            # the repl's own working directory, asked at boot
         self.last_used = time.time()    # the last client command or source change: what "idle" is measured from
@@ -346,6 +350,8 @@ class Session:
         if self.cfg["hygiene"]:
             out = repl.command(f":module + {self.hm} GHC.Stats", timeout=60)
             self.hygiene_on = not RE_NOMODULE.search(out)
+            if self.hygiene_on:
+                self.has_unlink = "error" not in repl.command(f":type {self.hm}.unlinkCafs", timeout=60)
             if not self.hygiene_on:
                 self.log(f"hygiene OFF: {self.hm} is not in scope in this repl (add ghci-hygiene to build-depends)")
         if self.cfg["servers"]:
@@ -441,6 +447,7 @@ class Session:
         self.push(f"{getattr(self, 'ok_prefix', 'OK')} -- running check")
         with self.phase("check"):
             results = [self._check_one(e) for e in entries]
+        self.evaluated = True
         self.checked_at = time.time()
         write_atomic(os.path.join(self.dir, "run.log"), "\n".join(f"===== {r['member']} =====\n{r['body']}" for r in results) + "\n")
         took = round(time.time() - t, 2)
@@ -483,21 +490,61 @@ class Session:
             total += tree_rss_mb(pid)
         return total
 
-    def prune_cafs(self) -> None:
-        """Unlink the CAFs this reload superseded. Best effort: never fails a reload."""
-        if not self.hygiene_on:
+    # The reload leak is handled in two steps with very different costs. UNLINKING the superseded CAFs from
+    # the RTS's root list makes their values reclaimable and takes microseconds; the major GC that actually
+    # returns the memory is a collection of the whole heap (0.9 s at 500 MB live). So the unlink happens on
+    # the reload path and the GC when the session is next idle.
+    #
+    # And the unlink waits for an evaluation: GHCi links a reloaded module into its new library on the first
+    # evaluation that needs it, so right after `:reload` the generation just replaced does not yet look
+    # superseded. Unlinking there freed the generation BEFORE it, one reload late.
+
+    def unlink_cafs(self) -> None:
+        """Unlink what the last reload superseded, once something has been evaluated since. Best effort."""
+        if not (self.hygiene_on and self.unlink_due and self.evaluated):
             return
+        self.unlink_due = False
+        try:
+            t0 = time.time()
+            fn = "unlinkCafs" if self.has_unlink else "pruneCafs"   # an older hygiene module: unlink and GC in one
+            out = self.repl.command(f'{self.hm}.{fn} >>= \\k -> putStrLn ("unlinked=" ++ show k)', timeout=300)
+            k = next((l.split("=", 1)[1].strip() for l in out.splitlines() if l.startswith("unlinked=")), "?")
+            self.log(f"unlink_cafs: {k} unlinked in {time.time() - t0:.2f}s" + ("" if self.has_unlink else " (with its GC)"))
+            if self.has_unlink and k.lstrip("-").isdigit() and int(k) > 0:
+                if float(self.cfg["prune_gc_idle_s"]) == 0:
+                    self.collect()
+                elif float(self.cfg["prune_gc_idle_s"]) > 0:
+                    self.gc_due = True
+        except Exception as e:  # noqa: BLE001
+            self.log(f"unlink_cafs failed: {e}")
+
+    def collect(self) -> None:
+        """The major GC that returns what was unlinked, and the live heap after it."""
+        self.gc_due = False
         try:
             t0 = time.time()
             out = self.repl.command(
-                self.hm + '.pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
+                'System.Mem.performMajorGC >> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
                 '(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return "?") >>= \\l -> '
-                'putStrLn ("prune_cafs=" ++ show k ++ " live_mb=" ++ l)', timeout=300)
-            k = next((l.split("=", 1)[1].split()[0] for l in out.splitlines() if l.startswith("prune_cafs=")), "?")
+                'putStrLn ("live_mb=" ++ l)', timeout=300)
             self.live_mb = next((l.split("live_mb=", 1)[1].strip() for l in out.splitlines() if "live_mb=" in l), "?")
-            self.log(f"prune_cafs: {k} unlinked in {time.time() - t0:.2f}s, live heap {self.live_mb} MB")
+            self.log(f"[gc] major GC after an unlink: {time.time() - t0:.2f}s, live heap {self.live_mb} MB")
+            self.mem_sample_async()
         except Exception as e:  # noqa: BLE001
-            self.log(f"prune_cafs failed: {e}")
+            self.log(f"gc failed: {e}")
+
+    def collect_if_idle(self) -> None:
+        """Called by the watcher's loop: run the pending GC once nothing has used the session for a moment.
+        Never waits for the repl -- if a command holds it, the session is not idle."""
+        if not self.gc_due or self.busy or time.time() - self.last_used < float(self.cfg["prune_gc_idle_s"]):
+            return
+        if not self._work.acquire(blocking=False):
+            return
+        try:
+            if self.gc_due and not self.stopping.is_set():
+                self.collect()
+        finally:
+            self._work.release()
 
     def mem_sample_async(self) -> None:
         """Measure the session's memory OFF the reload path, for the log and for the next reload's budget
@@ -1001,6 +1048,7 @@ class Session:
         self._hold = hold
         t0 = time.time()
         self._spawned = t0
+        self.unlink_due = self.evaluated = self.gc_due = False
         self.pending_sig = scan(self.root, self.cfg["watch"], self.exts)
         try:
             out = self.repl.start(self.post_load_timed)
@@ -1078,9 +1126,10 @@ class Session:
                 self.post_load(self.repl)
         except Exception as e:  # noqa: BLE001
             self.log(f"post_load after reload failed: {e}")
-        with self.phase("prune"):
-            self.prune_cafs()
+        self.unlink_due, self.evaluated = True, False
         self.after_load(out, do_check=do_check, t0=t0)
+        with self.phase("unlink"):
+            self.unlink_cafs()   # if the check ran; else after the next evaluation
         with self.phase("servers_running"):
             running = {l for l in self.server_labels() if self.server_running(l)}
         if running or self.owed:
@@ -1137,6 +1186,7 @@ class Session:
         try:
             while not self.stopping.is_set():
                 fired = waiter.wait(0.5)
+                self.collect_if_idle()
                 due = time.time() - slow >= 2.0
                 if not fired and not due:
                     continue
@@ -1268,11 +1318,14 @@ class Session:
         with self._work:   # eval is inside the lock too: its answer must not straddle a reload
             if op == "eval":
                 out = self.repl.command(req["expr"], timeout=req.get("timeout") or None)
+                self.evaluated = True
+                self.unlink_cafs()
             elif op == "reload":
                 out = self.reload(do_check=req.get("check", True), refork=req.get("refork", True),
                                   async_refork=req.get("async_refork"))
             elif op == "check":
                 out = self.run_check(member=req.get("member"))
+                self.unlink_cafs()
             elif op == "restart":
                 out = self.restart()
             elif op in ("server", "zygote"):   # "zygote" with fork/refork: the names an older client of this protocol used

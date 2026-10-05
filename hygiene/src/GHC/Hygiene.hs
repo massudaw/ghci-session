@@ -12,7 +12,7 @@
 --
 -- The C half is optional ('hygiene/build.sh' builds it, and only against an RTS whose layout it knows): with
 -- no library, or a different RTS, this does nothing and says so.
-module GHC.Hygiene (pruneCafs, loaderStats) where
+module GHC.Hygiene (pruneCafs, unlinkCafs, loaderStats) where
 
 import Foreign.C.Types (CInt (..))
 import Foreign.Ptr (FunPtr)
@@ -24,22 +24,29 @@ import System.Posix.DynamicLinker (RTLDFlags (RTLD_LOCAL, RTLD_NOW), dlopen, dls
 
 foreign import ccall "dynamic" callInt :: FunPtr (IO CInt) -> IO CInt
 
--- | CAFs unlinked (then a major GC), or -1 when the library does not know this
--- RTS, or -2 when there is no library to call. For a dynamic GHCi: the CAFs of wholly
--- superseded temporary libraries ('ghci_cafs.c').
-pruneCafs :: IO Int
-pruneCafs = do
+-- | Unlink the superseded CAFs from the RTS's root list, and nothing else: the number unlinked, or -1 when
+-- the library does not know this RTS, or -2 when there is no library to call. This is what makes their
+-- values RECLAIMABLE, and it costs microseconds; the memory comes back at the next major GC, whenever
+-- that is. Call it once the code that replaced them has been linked -- GHCi links a reloaded module on the
+-- first evaluation that needs it, so right after a @:reload@ the generation just replaced does not yet
+-- look superseded.
+unlinkCafs :: IO Int
+unlinkCafs = do
   dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
   let path = dir ++ "/libghscafs.dylib"
   there <- doesFileExist path
   if not there then pure (-2) else do
     h <- dlopen path [RTLD_NOW, RTLD_LOCAL]
     f <- dlsym h "ghs_prune_cafs"
-    r <- callInt f
-    -- the GC is what frees what was unlinked: with nothing unlinked it is a major collection of the whole
-    -- heap for nothing (0.2 s at 100 MB live, 1.5 s at 700 MB), on every reload that changed no code
-    when (r > 0) performMajorGC
-    pure (fromIntegral r)
+    fromIntegral <$> callInt f
+
+-- | 'unlinkCafs', then a major GC if it unlinked anything: the memory back NOW, for the price of a
+-- collection of the whole heap (0.2 s at 100 MB live, ~0.9 s at 500 MB).
+pruneCafs :: IO Int
+pruneCafs = do
+  r <- unlinkCafs
+  when (r > 0) performMajorGC
+  pure r
 
 -- | What the RTS linker is holding, printed to stderr: objects by status and
 -- kind, bytes of object code, CAFs rooted on each list (hygiene/c/loader_stats.c).

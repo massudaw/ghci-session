@@ -32,6 +32,8 @@ DEFAULTS = {
     "zygote_module": "GHC.Hygiene.Zygote",  # likewise zygoteSpec / zygoteFork / zygoteStop / ZygoteChild / zcPid
     "hygiene_build": True,                  # build the C libraries (hygiene/build.sh) before boot
     "handover_env": ["GHS_HANDOVER_OUT", "GHS_HANDOVER_IN"],   # what a server's handover paths are called
+    "prune_gc_idle_s": 1.0,  # the major GC that frees what a reload unlinked runs once the session has been idle
+                             # this long (0: at once, on the reload path; negative: never, leave it to the RTS)
     "hygiene": False,        # prune CAFs after each reload (needs the ghci-hygiene package in the repl's scope)
     "auto_reload": True,     # reload when a watched file changes
     "watch_check": True,     # ... and run the checks (off: a save only compiles; `reload`/`check` still run them)
@@ -166,6 +168,7 @@ def resolve(conf: dict, session: str) -> dict:
     cfg["env"] = {}
     for t in ts:
         cfg["env"].update(t["env"])   # a member's env reaches the repl (its check reads it) AND its own server
+    cfg["prune_gc_idle_s"] = ts[0]["prune_gc_idle_s"] if ts else DEFAULTS["prune_gc_idle_s"]
     for key in ("load_timeout", "eval_timeout", "repl_budget_mb", "capabilities"):
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)
