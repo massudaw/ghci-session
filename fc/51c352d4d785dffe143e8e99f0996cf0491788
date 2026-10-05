@@ -1,0 +1,60 @@
+ghci-session/cbits/ghs_main.c
+  s_6e55a4691f1b7b::t_fc42de3d7ba530 15,18-19
+ghci-session/cbits/ghs_fast.c
+  s_6e55a4691f1b7b::t_fc42de3d7ba530 1-235
+ghci-session/ghci-session.cabal
+  s_6e55a4691f1b7b::t_fc42de3d7ba530 28
+ghci-session/app/GhciSession/SelfTest.hs
+  s_6e55a4691f1b7b::t_0cb1b1baff4485 161,181
+ghci-session/app/GhciSession/Gc.hs
+  s_6e55a4691f1b7b::t_a6af1e11967da4 38-41
+ghci-session/app/GhciSession/Daemon.hs
+  s_6e55a4691f1b7b::t_e032418e547a10 236-239,1212,1217
+  s_6e55a4691f1b7b::t_cb23a0fb9a3863 862-863,1137
+  s_6e55a4691f1b7b::t_2a5c3369504bae 45,853-861,899-904,911,913,1237-1238,1247,1262
+  s_6e55a4691f1b7b::t_3d3c4f1c5eb1e6 299-301
+  s_6e55a4691f1b7b::t_20e7f957c8175e 992,994-995
+  s_6e55a4691f1b7b::t_e76ebbeeea8155 518
+  s_6e55a4691f1b7b::t_a5b4c7bcb78292 501,505-506
+  s_6e55a4691f1b7b::t_6934545b727658 996
+ghci-session/tests/test_e2e.py
+  s_6e55a4691f1b7b::t_3211fd0f13c829 235-279
+CLAUDE.md
+  s_6e55a4691f1b7b::t_c817a858dd4aff 90-103
+ghci-session/cbits/ghs_sys.c
+  s_6e55a4691f1b7b::t_a6af1e11967da4 365-384
+ghci-session/engine/GhsEngine.hs
+  s_6e55a4691f1b7b::t_1fc311ef371d73 45-46,62,67,69,259-266,269,282-291,305,308,310-316,328-330
+  s_6e55a4691f1b7b::t_681f55dd629837 52,368-372
+  s_6e55a4691f1b7b::t_6934545b727658 225,228,295,299,306,327
+  s_6e55a4691f1b7b::t_4370e96e682a0e 61,63-66,68,80-81,227,240,246,249-258,267-268,270-281,292-294,296-298,300-304,307,309,317-326
+  s_6e55a4691f1b7b::t_c7af6106c8cddd 331
+ghci-session/README.md
+  s_6e55a4691f1b7b::t_cb23a0fb9a3863 99-101
+  s_6e55a4691f1b7b::t_cce49cb3c53194 114-154,307
+ghci-session/app/GhciSession/Config.hs
+  s_6e55a4691f1b7b::t_2a5c3369504bae 59,76,246
+ghci-session/app/GhciSession/Sys.hs
+  s_6e55a4691f1b7b::t_a6af1e11967da4 11,55,199-202
+  s_6e55a4691f1b7b::t_848b92e6a26853 203-204
+ghci-session/app/GhciSession/Cli.hs
+  s_6e55a4691f1b7b::t_2a5c3369504bae 114-115,127,257,344,373,375
+ghci-session/app/GhciSession/Repl.hs
+  s_6e55a4691f1b7b::t_a5b4c7bcb78292 15,217-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc51c352d4d785dffe143e8e99f0996cf0491788",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
