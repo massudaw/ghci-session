@@ -1,0 +1,53 @@
+sprinkler-solver-mm/sprinkler-solver-mm.cabal
+  s_6e55a4691f1b7b::t_980bba04d105bd 67
+sprinkler-solver-mm/src/Examples/MMQuickWorkflow.hs
+  s_6e55a4691f1b7b::t_753c89f5b42cb0 60,160,163,272
+  s_6e55a4691f1b7b::t_980bba04d105bd 138,282
+golden/MMSanitary/status.txt
+  s_6e55a4691f1b7b::t_6d5a636a2f34cf 1
+tools/quick_profile.py
+  s_6e55a4691f1b7b::t_980bba04d105bd 129,139-140
+sprinkler-solver-mm/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_aa2f18a7ed9a39 163
+golden/MMModelDiff/final_state.txt
+  s_6e55a4691f1b7b::t_ed4addd9199bf8 4
+sprinkler-solver-mm/src/Examples/MMQuickProfile.hs
+  s_6e55a4691f1b7b::t_753c89f5b42cb0 77
+  s_6e55a4691f1b7b::t_980bba04d105bd 42,76
+sprinkler-solver-mm/src/Examples/MMSanitary.hs
+  s_6e55a4691f1b7b::t_980bba04d105bd 31,173
+  s_6e55a4691f1b7b::t_9f06643b64e55c 1-30,32-172
+sprinkler-solver-mm/src/Examples/MMStormwater.hs
+  s_6e55a4691f1b7b::t_c51a5447d9f2cf 13-15,20,32,62-95,147-153,155-156
+  s_6e55a4691f1b7b::t_ac38649eb4a5e0 135,154,158,161-162,164-166,168,170-174,192-194
+golden/MMUndergroundWorks/final_state.txt
+  s_6e55a4691f1b7b::t_6d5a636a2f34cf 1-2
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_980bba04d105bd 68,86
+example/Main.hs
+  s_6e55a4691f1b7b::t_980bba04d105bd 380,830
+golden/MMStormwater/final_state.txt
+  s_6e55a4691f1b7b::t_6d5a636a2f34cf 3,7
+sprinkler-solver-mm/src/Examples/MMUndergroundWorks.hs
+  s_6e55a4691f1b7b::t_9f06643b64e55c 26,61
+  s_6e55a4691f1b7b::t_751383404cff91 1,16-19,21,27,46-53,82-86,92,97-98,102
+  s_6e55a4691f1b7b::t_db114ccc7b049a 62-64,69-70
+golden/MMSanitary/final_state.txt
+  s_6e55a4691f1b7b::t_6d5a636a2f34cf 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8256708a3fb8ff5db2122ce5868afca44197f2ea",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
