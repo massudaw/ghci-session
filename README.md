@@ -26,6 +26,43 @@ ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in w
 | One repl per package means the shared library compiled and held N times | a composed session loads several targets into ONE repl, each with its own check |
 | A forked thread's output interleaves with the prompt and shreds the framing | stdout is line-buffered after every load |
 
+## The tour: every feature, timed
+
+`python3 examples/tour.py` runs the whole tool against a copy of `examples/hello` -- 115 steps in 13 groups (`--list`),
+each one the command a person would type and what it must answer -- and prints what each took. It is the example to
+read, the acceptance test to run after a change (exit 1 if any outcome is not the expected one), and the benchmark:
+`--json out.json` saves a run and `--compare out.json` lists what got slower.
+
+What a step costs on this machine (GHC 9.14.1, macOS arm64, an M4; the example is two small packages, so these are
+the tool's own costs with almost no compile time in them):
+
+| | seconds |
+|---|---|
+| boot, cold (cabal configures and compiles) / warm (objects on disk) | 11.2 / 2.1 |
+| `eval` | 0.09 (the Python client's start-up is most of it) |
+| `reload`, nothing changed / `--no-check` | 1.4 / 0.7 |
+| save to verdict (the watcher: poll, debounce, reload, prune, check): a comment / a real change / a compile error | 1.6 / 2.1 / 1.5 |
+| composed session of two packages, boot | 7.2 |
+| `server start` with a 2 s prefork | 2.4 |
+| save to verdict with a server: kept (comment) / re-forked with its state (2 s prefork) | 2.9 / 5.4 |
+| `reload --async-refork` returns | 2.3 |
+| `compose --remove`: the repl restarts, the server is adopted | 2.3 |
+| census: every CAF / one value | 0.7 / 0.4 |
+| a reload that is over the memory budget (a restart) | 2.2 |
+| a commit to a full reload (`reload_on_commit`) | 1.6 |
+| `gc` | 0.1-0.3 |
+
+And the reason for the pruner, measured by the same tour -- live heap (MB) after each of five edit-reload-check
+rounds of a module holding one 200,000-entry `Map`:
+
+| | start | 1 | 2 | 3 | 4 | 5 | grew |
+|---|---|---|---|---|---|---|---|
+| object code, no pruning | 80 | 129 | 177 | 226 | 275 | 323 | +243 MB |
+| `hygiene: true` | 98 | 147 | 147 | 147 | 147 | 147 | +49 MB |
+
+One copy of the table per reload without it; with it, the first reload's copy stays (the initial library also holds
+the modules that never change, so it is never wholly superseded) and every later one is freed.
+
 ## Install
 
 Nothing to install: `bin/ghci-session` runs from this directory (Python 3.10+, no packages). Put `bin/` on `PATH`,
@@ -220,6 +257,7 @@ bin/ghci-rts.sh         cabal repl --with-repl wrapper giving GHCi its own RTS f
 ghci_session/           config, repl (pty + sentinel framing), daemon (watch, reload, budget, socket), cli
 hygiene/                ghci-hygiene.cabal, src/GHC/Hygiene*.hs, c/*.c, build.sh
 examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over
+examples/tour.py        every feature on a copy of it, each step checked and timed (the benchmark)
 tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1, ~1 min: a composed session, per-member checks,
                         a server kept / re-forked with its state / protected from a broken action, adoption, prune, census)
 ```

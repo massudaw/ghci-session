@@ -1200,6 +1200,7 @@ class Session:
                 self.repl.stop()
             self._unlink(os.path.join(self.dir, "pid"))
             raise
+        self.last_used = time.time()   # idle is counted from the end of the boot, not from the daemon's start
         threading.Thread(target=self.watch_loop, daemon=True).start()
         try:
             self.serve()
