@@ -1,0 +1,37 @@
+ghci-session/ghci_session/daemon.py
+  s_6e55a4691f1b7b::t_312c24a671cbda 14,1127-1131,1134-1158,1160-1163,1167-1194
+  s_6e55a4691f1b7b::t_5e4fbb0e99d661 1132-1133,1165
+ghci-session/ghci_session/watch.py
+  s_6e55a4691f1b7b::t_312c24a671cbda 1-76,78-125,127-165
+  s_6e55a4691f1b7b::t_75f6abacb9a6a5 77,126
+ghci-session/tests/test_e2e.py
+  s_6e55a4691f1b7b::t_132c29bf30da05 154-158,161-162,165-172
+ghci-session/ghci_session/config.py
+  s_6e55a4691f1b7b::t_312c24a671cbda 41,162
+ghci-session/examples/tour.py
+  s_6e55a4691f1b7b::t_132c29bf30da05 336-356
+ghci-session/README.md
+  s_6e55a4691f1b7b::t_be615294c2ae96 43-44,47-48,68-69,144-145
+ghci-session/hygiene/src/GHC/Hygiene.hs
+  s_6e55a4691f1b7b::t_5aef0abb9c7159 11,21,39-41
+ghci-session/tests/test_unit.py
+  s_6e55a4691f1b7b::t_c8f4432372fe93 217-259
+src/Solver/GhciHygiene.hs
+  s_6e55a4691f1b7b::t_ce2d5193752eae 11,22,41-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd246b3a5f828c051f59f5088f99a078a751dd38",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
