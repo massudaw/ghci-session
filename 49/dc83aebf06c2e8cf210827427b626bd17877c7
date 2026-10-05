@@ -1,0 +1,42 @@
+sprinkler-solver-mm/src/Examples/MMQuickWorkflow.hs
+  s_6e55a4691f1b7b::t_9eac7f20b126d0 60,137,159,162,271,281
+sprinkler-solver-mm/src/Examples/MMQuickProfile.hs
+  s_6e55a4691f1b7b::t_9eac7f20b126d0 41,74-75
+golden/MMStormwater/status.txt
+  s_6e55a4691f1b7b::t_92384442a1827b 1
+sprinkler-solver-mm/src/Examples/MMUndergroundWorks.hs
+  s_6e55a4691f1b7b::t_be160fd0772676 24,52-55
+tools/quick_profile.py
+  s_6e55a4691f1b7b::t_9eac7f20b126d0 129,139-140
+sprinkler-solver-mm/src/Examples/MMHydraulic.hs
+  s_6e55a4691f1b7b::t_be160fd0772676 34
+golden/MMStormwater/final_state.txt
+  s_6e55a4691f1b7b::t_92384442a1827b 1-7
+sprinkler-solver-mm/src/Examples/MMStormwater.hs
+  s_6e55a4691f1b7b::t_82c743a986aba4 50-53,134-135,142
+  s_6e55a4691f1b7b::t_be160fd0772676 1-49,54-133,136-141
+example/Main.hs
+  s_6e55a4691f1b7b::t_9eac7f20b126d0 379,828
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_be160fd0772676 67,85
+sprinkler-solver-mm/sprinkler-solver-mm.cabal
+  s_6e55a4691f1b7b::t_be160fd0772676 66
+CLAUDE.md
+  s_6e55a4691f1b7b::t_1f624b7de31899 409
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "49dc83aebf06c2e8cf210827427b626bd17877c7",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
