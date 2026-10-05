@@ -1,0 +1,41 @@
+sprinkler-solver-estela/vault/code/learner.js.md
+  s_007485e9a70e7e::t_ca6ac2ad9ca0c8 1-9
+sprinkler-solver-estela/sim/learner_sim.js
+  s_007485e9a70e7e::t_ddc1283891ebaf 20-68
+  s_007485e9a70e7e::t_7e3abc2e59796f 1-19,69
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_e8b285a516fad3 252,255-281,284,289-292,300,315,333,679,693-694,699,1199,1241
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_ca6ac2ad9ca0c8 20-21
+sprinkler-solver-estela/web/parent.html
+  s_007485e9a70e7e::t_0bd4f533d58725 36
+  s_007485e9a70e7e::t_ca6ac2ad9ca0c8 206,231-246
+  s_007485e9a70e7e::t_8b84d01f140f0a 247
+sprinkler-solver-estela/web/estela.html
+  s_007485e9a70e7e::t_0bd4f533d58725 186
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_ca6ac2ad9ca0c8 645-657
+"sprinkler-solver-estela/vault/code/Learning Model.md"
+  s_007485e9a70e7e::t_ca6ac2ad9ca0c8 6-7
+sprinkler-solver-estela/web/learner.js
+  s_007485e9a70e7e::t_6ff0304e505e71 28-31,37-38,58,62,72-74,76,81-82
+  s_007485e9a70e7e::t_cc16a3ea63dd3a 1-27,32-36,39-57,59-61,63-71,75,77-80,83-88
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_e8b285a516fad3 244,282,290
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f61268e511875f821b498809a60d28af8d82ad8b",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
