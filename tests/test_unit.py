@@ -28,6 +28,7 @@ class ConfigTests(unittest.TestCase):
     def test_top_level_keys_are_shared_but_overridable(self):
         with tempfile.TemporaryDirectory() as t:
             conf = make(t, {"a": {}, "b": {"rts_flags": "none"}}, rts_flags="-c -A64m", default="b")
+            self.assertEqual(config.resolve(conf, "a")["rts_flags"], "-c -A64m")
             self.assertEqual(conf["targets"]["a"]["rts_flags"], "-c -A64m")
             self.assertEqual(conf["targets"]["b"]["rts_flags"], "none")
             self.assertEqual(conf["default"], "b")
@@ -43,6 +44,64 @@ class ConfigTests(unittest.TestCase):
             sub = os.path.join(t, "a", "b")
             os.makedirs(sub)
             self.assertEqual(config.find_root(sub), os.path.abspath(t))
+
+
+class ComposeTests(unittest.TestCase):
+    TARGETS = {
+        "a": {"units": "lib:a", "watch": ["a/src"], "modules": ["A"], "env": {"A_PORT": 1},
+              "check": {"expr": "A.t"}, "server": {"action": "A.serve", "port": 1, "env": {"X": "child"}}},
+        "b": {"units": ["lib:b"], "watch": ["b/src"], "modules": ["B", "A"], "hygiene": True, "load_timeout": 2000,
+              "checks": [{"expr": "B.t"}, {"expr": "B.u", "name": "slow", "fail": "BAD"}]},
+    }
+
+    def test_plain_session_is_its_target(self):
+        with tempfile.TemporaryDirectory() as t:
+            cfg = config.resolve(make(t, self.TARGETS), "a")
+            self.assertEqual(cfg["units"], ["lib:a"])
+            self.assertEqual([c["member"] for c in cfg["checks"]], ["a"])
+            self.assertFalse(cfg["composed"])
+            self.assertEqual(cfg["servers"][0]["env"], {"A_PORT": 1, "X": "child"})
+
+    def test_composed_unions_and_keeps_checks_per_member(self):
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, self.TARGETS, sessions={"dev": ["a", "b"]})
+            cfg = config.resolve(conf, "dev")
+            self.assertEqual(cfg["units"], ["lib:a", "lib:b"])
+            self.assertEqual(cfg["modules"], ["A", "B"])
+            self.assertEqual(cfg["watch"], ["a/src", "b/src"])
+            self.assertEqual([c["member"] for c in cfg["checks"]], ["a", "b", "b:slow"])
+            self.assertEqual(cfg["checks"][2]["fail"], "BAD")
+            self.assertTrue(cfg["hygiene"])
+            self.assertEqual(cfg["load_timeout"], 2000)
+            self.assertEqual([s["member"] for s in cfg["servers"]], ["a"])
+            self.assertEqual(cfg["servers"][0]["units"], ["lib:a"])
+
+    def test_members_are_remembered_and_override_the_config(self):
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, self.TARGETS, sessions={"dev": ["a", "b"]})
+            self.assertEqual(config.read_members(conf, "dev"), ["a", "b"])
+            config.write_members(conf, "dev", ["b"])
+            self.assertEqual(config.resolve(conf, "dev")["members"], ["b"])
+            self.assertEqual(config.resolve(conf, "dev")["servers"], [])
+
+    def test_bad_sessions_are_refused(self):
+        with tempfile.TemporaryDirectory() as t:
+            with self.assertRaises(config.ConfigError):
+                make(t, self.TARGETS, sessions={"dev": ["nope"]})
+            with self.assertRaises(config.ConfigError):
+                make(t, self.TARGETS, sessions={"a": ["b"]})
+            with self.assertRaises(config.ConfigError):
+                config.resolve(make(t, self.TARGETS), "dev")
+
+    def test_repl_command(self):
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, {**self.TARGETS, "plain": {"units": "lib:p", "rts_flags": "none"}}, sessions={"dev": ["a", "b"]})
+            cmd = Session(conf, "dev").repl_command()
+            self.assertIn("--enable-multi-repl", cmd)
+            self.assertTrue(cmd.endswith("lib:a lib:b"), cmd)
+            self.assertIn("-odir=.ghci-session/dev/obj", cmd)
+            plain = Session(conf, "plain").repl_command()
+            self.assertEqual(plain, "cabal repl --repl-options=-fdiagnostics-color=never lib:p")
 
 
 class VerdictTests(unittest.TestCase):
@@ -87,6 +146,20 @@ class VerdictTests(unittest.TestCase):
             s = self.session(t)
             self.assertIn("x.cabal", s.cfg["watch"])
             self.assertIn("cabal.project", s.cfg["watch"])
+
+    def test_port_listener_finds_this_process(self):
+        import socket
+        from ghci_session.daemon import pid_alive, port_listener
+        srv = socket.socket()
+        srv.bind(("127.0.0.1", 0))
+        srv.listen(1)
+        try:
+            got = port_listener(srv.getsockname()[1])
+            self.assertIn(got, (os.getpid(), None))   # None only where lsof is not installed
+        finally:
+            srv.close()
+        self.assertTrue(pid_alive(os.getpid()))
+        self.assertFalse(pid_alive(2 ** 22 + 12345))
 
     def test_socket_path_is_short_and_stable(self):
         p = sock_path("/a/very/" + "long/" * 40 + "state")

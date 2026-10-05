@@ -14,7 +14,7 @@ extra-source-files: c/*.c build.sh
 
 library
   hs-source-dirs:   src
-  exposed-modules:  GHC.Hygiene, GHC.Hygiene.Census
-  build-depends:    base >=4.18 && <5, containers, directory, text, unix
+  exposed-modules:  GHC.Hygiene, GHC.Hygiene.Census, GHC.Hygiene.Zygote
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, text, unix
   default-language: Haskell2010
   ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-type-defaults

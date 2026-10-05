@@ -22,6 +22,8 @@ ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in w
 | GHCi never gives memory back: every reload keeps the old code and the RTS keeps every CAF of every superseded module as a GC root | `ghci-hygiene` unlinks the superseded CAFs after each reload; past `repl_budget_mb` a reload becomes a restart |
 | Memory is hard to attribute in a session | a C heap census: what each CAF retains, by constructor, with the Strings among it |
 | Killing the repl leaves the `ghc` it exec'd (and anything it forked) holding ports | the whole process *group* is signalled and verified empty |
+| Serving from a thread of the repl means a restart to serve new code | a server is a forked CHILD of the repl: a reload re-forks it onto the new code, carrying its state, and keeps it if its object code did not change |
+| One repl per package means the shared library compiled and held N times | a composed session loads several targets into ONE repl, each with its own check |
 | A forked thread's output interleaves with the prompt and shreds the framing | stdout is line-buffered after every load |
 
 ## Install
@@ -31,50 +33,112 @@ or call it by path from any directory below a `ghci-session.json`.
 
 ## Configure
 
-`ghci-session init` writes a starting `ghci-session.json`:
+`ghci-session init` writes a starting `ghci-session.json`. A fuller one (this is `examples/hello`):
 
 ```json
 {
-  "default": "lib",
+  "default": "hello",
+  "hygiene": true,
   "targets": {
-    "lib": {
-      "cabal_args": "lib:mypackage",
+    "hello": {
+      "units": ["lib:hello"],
       "watch": ["src"],
-      "modules": ["MyModule"],
-      "check": { "expr": "MyModule.selfTest", "pass": "\\[PASS\\]", "fail": "\\[FAIL\\]" },
-      "hygiene": true
+      "modules": ["Hello"],
+      "check": { "expr": "Hello.selfTest", "pass": "\\[PASS\\] table" },
+      "server": { "action": "Hello.serve", "env": { "HELLO_OUT": ".ghci-session/hello.out" } }
+    },
+    "extra": {
+      "units": ["lib:extra"],
+      "watch": ["extra/src"],
+      "modules": ["Extra"],
+      "check": { "expr": "Extra.selfTest", "pass": "\\[PASS\\] shout" }
     }
-  }
+  },
+  "sessions": { "dev": ["hello", "extra"] }
 }
 ```
 
-Keys at the top level (other than `targets`, `default`, `state_dir`) are shared by every target and overridable per target.
+A **target** is a definition: what to load, what to check, what to serve. A **session** is one repl. `ghci-session start hello`
+is a session holding that one target; `dev` is a *composed* session holding whichever targets you choose.
+Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`) are shared by every target and overridable per target.
 
 | key | default | |
 |---|---|---|
-| `repl` | `cabal repl <cabal_args>` | the full command, if you need `--enable-multi-repl`, flags, a different tool |
-| `cabal_args` | `""` | appended to the default command |
+| `units` | `[]` | the cabal components the target loads (`lib:x`, `exe:y`). More than one, or a server, means `--enable-multi-repl` |
+| `repl` | built from `units` | the full command instead, if you need something else (not composable) |
+| `cabal_args` | `""` | extra arguments for the default command |
 | `watch` | `["src"]` | dirs polled for `.hs/.hs-boot/.c/.h/.cabal`; root-level `*.cabal` and `cabal.project*` are always watched |
 | `modules` | `[]` | `:module +` after every load |
 | `preload` | `[]` | GHCi expressions run *before* the imports (e.g. `dlopen` a C bundle: importing an `-fobject-code` module links its objects there and then) |
-| `check` | none | `expr` to run after a good load; `fail` regex marks failing lines, `pass` regex must appear |
-| `env` | `{}` | environment of the repl |
+| `check` / `checks` | none | `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
+| `server` | none | see *Servers* |
+| `env` | `{}` | environment of the repl, and of the target's server |
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
 | `rts_flags` | `-c` | GHCi's own RTS flags, via `--with-repl=bin/ghci-rts.sh` (`-c`: compacting old generation; ~3x less heap than the copying GC for a long session); `none` turns it off |
+| `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
 | `hygiene` | `false` | build the C libraries, prune CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
-| `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object cannot be replaced) |
+| `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
+| `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `load_timeout`, `eval_timeout` | 900, 600 | seconds |
 
-State lives in `.ghci-session/<target>/`: `status` (the verdict, then the failing lines), `status.json`, `load.log`/`reload.log`,
-`run.log` (the check), `daemon.log`, `async.log` (output a background thread printed between commands).
+State lives in `.ghci-session/<session>/`: `status` (the verdict, then the failing lines), `status.json`, `load.log`/`reload.log`,
+`run.log` (the checks), `daemon.log`, `async.log` (output a background thread printed between commands), `server-<member>.log`.
+A reload publishes its status ONCE, when the verdict and what happened to the servers are both known.
 
 ## Commands
 
-`start`, `stop`, `restart`, `status [-d]`, `reload [--no-check]`, `check`, `eval EXPR [-t TARGET]`, `mem`, `log [FILE]`, `list`, `init`.
-Every command takes an optional target; the default is the config's `default`.
+```
+start|stop|restart|status [-d] [SESSION]
+reload [--no-check] [--no-refork] [SESSION]
+check [-m MEMBER] [SESSION]
+eval EXPR [-s SESSION]
+compose SESSION [MEMBERS...] [--add M] [--remove M]
+server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
+mem | log [FILE] [-s SESSION] | list | init
+```
 
+With no session named, a command goes to the one that is running (else the config's `default`).
 `reload --no-check` stops at the compile verdict, and says so (`CHECK SKIPPED`), so a compile-only verdict is never
 mistaken for a check that passed.
+
+## Composed sessions
+
+```
+ghci-session start dev                 # hello + extra in one repl
+ghci-session compose dev --remove extra   # restarts the repl with the new set; running servers are adopted
+```
+
+```
+OK -- CHECK-PASS (2.0s) [2 members: hello 0.5s, extra 0.4s]
+CHECK-FAIL: 1 failing in extra [2 members: hello 0.5s, extra 0.4s]
+```
+
+Checks are reported per member, never merged, and `status.json` has one entry per member. The one constraint a shared
+repl adds is a single namespace: **qualify the names in a check** (`Hello.selfTest`, not `selfTest`).
+
+## Servers
+
+A target's `server` is run as a forked child of the repl (`GHC.Hygiene.Zygote`), with the session's loaded code:
+
+```json
+"server": { "action": "My.Server.main", "port": 8080, "env": {"PORT": "8080"},
+            "prefork": "My.Server.warmCaches", "serve_on_load": false, "verify_timeout": 60 }
+```
+
+- **Loading is not serving.** `ghci-session server start` starts it (or `serve_on_load`).
+- **A reload re-forks what was running**: prefork (old server still serving), stop, fork. With a `port`, the fork is
+  verified to be the process listening on it before it is recorded.
+- **It is kept when its code did not change**: the object files of its units and of the in-session units they depend
+  on are hashed at fork (GHC >= 9.12 for `-fobject-determinism`; older GHCs re-fork every time). An edit to another
+  member, or a comment, keeps the server: `[servers: kept 1 (hello:67878): their code did not change]`.
+- **It is not stopped for a fork that cannot happen**: the action is type-checked first, and a compile error leaves
+  the old server running the old code (and says so).
+- **State carries over** if the server registers an exporter: `setHandoverExporter` at startup, `handoverInPath` to
+  resume. The dying child writes its state on SIGTERM; the parent decides cold-or-resume, so a stale file is never
+  silently resumed (`server start` is cold unless `--resume`).
+- **The child is a fork without an exec.** On macOS, libraries that are not fork-safe (Accelerate/LAPACK, GSL) crash
+  in it silently: do that work in `prefork`, in the parent, and let the child serve the result.
+- A composed session's servers outlive a member change (the new repl adopts them); every session stops its servers when it stops.
 
 ## ghci-hygiene (`hygiene/`)
 
@@ -90,6 +154,9 @@ GHC.Hygiene.Census.censusOf "x" Mod.value    -- ONE value, alone
 GHC.Hygiene.Census.keep "name" v >> keptReport 100000000   -- values you hold on to across reloads
 GHC.Hygiene.Census.benchOf "label" action    -- wall, GC, allocation, live heap
 GHC.Hygiene.Census.memNow
+
+GHC.Hygiene.Zygote.zygoteFork / zygoteStop   -- what `server` drives
+GHC.Hygiene.Zygote.setHandoverExporter, handoverInPath
 ```
 
 **Why the leak exists** (a GHC behaviour, not yours): with a dynamically linked GHC every `:reload` links the recompiled
@@ -112,14 +179,16 @@ bin/ghci-session        the client (python -m ghci_session)
 bin/ghci-rts.sh         cabal repl --with-repl wrapper giving GHCi its own RTS flags
 ghci_session/           config, repl (pty + sentinel framing), daemon (watch, reload, budget, socket), cli
 hygiene/                ghci-hygiene.cabal, src/GHC/Hygiene*.hs, c/*.c, build.sh
-examples/hello/         a package with a CAF that leaks without pruning
-tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1: boot, edit, error, recover, prune, census)
+examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over
+tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1, ~1 min: a composed session, per-member checks,
+                        a server kept / re-forked with its state / protected from a broken action, adoption, prune, census)
 ```
 
 ## Status
 
-Working: single-target sessions, auto-reload, verdicts and staleness, memory budget, pruner, census, e2e test.
-Not yet carried over from `tools/msq`: composed sessions (several packages' checks in one repl), forked-server
-serving (`zygote`: serve a model from a forked child, re-fork on reload, keep a server whose object code did not
-change), orphan collection (`gc`), the static-interpreter experiment. Linux: the C builds are skipped (the offsets
-come from a Mach-O dylib); the session itself runs. Then: move `tools/msq` onto this and delete the copy.
+Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
+census, forked servers (keep / re-fork / handover / adoption), unit and end-to-end tests.
+Not carried over from `tools/msq`: the background re-fork (`--async-refork`), orphan collection across sessions
+(`gc`), the idle auto-stop, the static-interpreter experiment, and its project-specific commands. Linux: the C builds
+are skipped (the offsets come from a Mach-O dylib); the session itself should run but is untested there. Port
+verification needs `lsof`. Next: move `tools/msq` onto this and delete the copy.

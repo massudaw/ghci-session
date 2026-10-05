@@ -1,4 +1,4 @@
-"""The client: `ghci-session start|stop|restart|status|reload|eval|check|mem|log|list|init`."""
+"""The client: `ghci-session start|stop|restart|status|reload|eval|check|server|compose|mem|log|list|init`."""
 import argparse
 import json
 import os
@@ -15,7 +15,7 @@ INIT_TEMPLATE = {
     "default": "lib",
     "targets": {
         "lib": {
-            "cabal_args": "lib:yourpackage",
+            "units": ["lib:yourpackage"],
             "watch": ["src"],
             "modules": [],
             "check": None,
@@ -59,9 +59,12 @@ def request(conf: dict, name: str, req: dict, timeout: float = 3600) -> dict:
 
 
 def pick(conf: dict, name: str | None) -> str:
-    name = name or conf["default"]
-    if name not in conf["targets"]:
-        raise SystemExit(f"unknown target {name!r}; have {', '.join(conf['targets'])}")
+    """The session a command is for: the one named, else the only one running, else the config's default."""
+    if not name:
+        up = [s for s in config.session_names(conf) if pid_of(conf, s)]
+        name = up[0] if len(up) == 1 else conf["default"]
+    if name not in config.session_names(conf):
+        raise SystemExit(f"unknown session {name!r}; have {', '.join(config.session_names(conf))}")
     return name
 
 
@@ -91,7 +94,7 @@ def cmd_start(conf, args) -> int:
                      stdin=subprocess.DEVNULL, start_new_session=True)
     print(f"{name}: booting (log: {os.path.relpath(os.path.join(d, 'daemon.log'))})", file=sys.stderr)
     t0 = time.time()
-    limit = conf["targets"][name]["load_timeout"] + 120
+    limit = config.resolve(conf, name)["load_timeout"] + 120
     while time.time() - t0 < limit:
         time.sleep(0.5)
         try:
@@ -116,7 +119,7 @@ def cmd_stop(conf, args) -> int:
         print(f"{name}: not running")
         return 0
     try:
-        request(conf, name, {"op": "stop"}, timeout=30)
+        request(conf, name, {"op": "stop", "keep_servers": bool(getattr(args, "keep_servers", False))}, timeout=30)
     except (SystemExit, OSError):
         pass
     for _ in range(100):
@@ -130,7 +133,9 @@ def cmd_stop(conf, args) -> int:
 
 
 def cmd_status(conf, args) -> int:
-    names = [pick(conf, args.target)] if args.target else list(conf["targets"])
+    names = [pick(conf, args.target)] if args.target else [s for s in config.session_names(conf) if pid_of(conf, s)]
+    if not names:
+        print("no session running")
     for name in names:
         if not pid_of(conf, name):
             print(f"{name}: not running")
@@ -148,7 +153,7 @@ def cmd_status(conf, args) -> int:
 def cmd_reload(conf, args) -> int:
     name = pick(conf, args.target)
     t0 = time.time()
-    rc = say(request(conf, name, {"op": "reload", "check": not args.no_check}))
+    rc = say(request(conf, name, {"op": "reload", "check": not args.no_check, "refork": not args.no_refork}))
     # the verdict is in the status file: print it, not GHC's whole load log
     try:
         with open(os.path.join(state(conf, name), "status")) as fh:
@@ -177,6 +182,47 @@ def cmd_simple(op):
     return run
 
 
+def cmd_check(conf, args) -> int:
+    name = pick(conf, args.target)
+    rc = say(request(conf, name, {"op": "check", "member": args.member}))
+    return rc if rc else (0 if _ok(conf, name) else 1)
+
+
+def cmd_server(conf, args) -> int:
+    name = pick(conf, args.session)
+    r = request(conf, name, {"op": "server", "action": args.action, "member": args.member, "resume": args.resume})
+    print(r["out"])
+    return 0 if r["ok"] and "FAILED" not in r["out"] else 1
+
+
+def cmd_compose(conf, args) -> int:
+    """Set a composed session's members. A repl's package set is fixed when it boots, so a change restarts
+    that repl -- but the servers already running are kept and adopted by the new one."""
+    name = args.session
+    if name not in conf["sessions"]:
+        raise SystemExit(f"{name!r} is not a composed session; declare it under \"sessions\" "
+                         f"(have: {', '.join(conf['sessions']) or 'none'})")
+    cur = config.read_members(conf, name)
+    if args.add or args.remove:
+        new = [m for m in cur if m not in (args.remove or [])] + [m for m in (args.add or []) if m not in cur]
+    elif args.members:
+        new = list(dict.fromkeys(args.members))
+    else:
+        print(f"{name} members: {', '.join(cur) or '(none)'}")
+        return cmd_status(conf, argparse.Namespace(target=name, detail=False))
+    unknown = [m for m in new if m not in conf["targets"]]
+    if unknown:
+        raise SystemExit(f"unknown target(s): {', '.join(unknown)}; have {', '.join(conf['targets'])}")
+    if new == cur and pid_of(conf, name):
+        print(f"{name}: unchanged ({', '.join(new) or 'none'})")
+        return 0
+    config.write_members(conf, name, new)
+    if pid_of(conf, name):
+        cmd_stop(conf, argparse.Namespace(target=name, keep_servers=True))
+    print(f"{name} members: {', '.join(new) or '(none)'}")
+    return cmd_start(conf, argparse.Namespace(target=name))
+
+
 def cmd_log(conf, args) -> int:
     name = pick(conf, args.target)
     path = os.path.join(state(conf, name), args.which)
@@ -191,8 +237,12 @@ def cmd_log(conf, args) -> int:
 def cmd_list(conf, args) -> int:
     for name, t in conf["targets"].items():
         pid = pid_of(conf, name)
+        extra = (f"  checks={len(t['checks']) or (1 if t['check'] else 0)}" + ("  server" if t["server"] else ""))
         print(f"{name}{' (default)' if name == conf['default'] else ''}: {'running pid ' + str(pid) if pid else 'stopped'}"
-              f"  watch={','.join(t['watch'])}  hygiene={'on' if t['hygiene'] else 'off'}")
+              f"  units={' '.join(t['units']) or '-'}  watch={','.join(t['watch'])}  hygiene={'on' if t['hygiene'] else 'off'}{extra}")
+    for name in conf["sessions"]:
+        pid = pid_of(conf, name)
+        print(f"{name} [composed]: {'running pid ' + str(pid) if pid else 'stopped'}  members={', '.join(config.read_members(conf, name)) or '(none)'}")
     return 0
 
 
@@ -204,7 +254,7 @@ def cmd_init(args) -> int:
     with open(path, "w") as fh:
         json.dump(INIT_TEMPLATE, fh, indent=2)
         fh.write("\n")
-    print(f"wrote {path}; edit cabal_args, then `ghci-session start`")
+    print(f"wrote {path}; edit \"units\", then `ghci-session start`")
     return 0
 
 
@@ -216,7 +266,7 @@ def main(argv: list[str] | None = None) -> int:
     def add(name, fn, help_, target=True):
         p = sub.add_parser(name, help=help_)
         if target:
-            p.add_argument("target", nargs="?", help="target name (default: the config's default)")
+            p.add_argument("target", nargs="?", help="session name (default: the one running, else the config's default)")
         p.set_defaults(fn=fn)
         return p
 
@@ -227,17 +277,32 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-d", "--detail", action="store_true")
     p = add("reload", cmd_reload, ":reload, prune, and the check")
     p.add_argument("--no-check", action="store_true", help="stop at the compile verdict")
-    add("check", cmd_simple("check"), "run the target's check expression")
+    p.add_argument("--no-refork", action="store_true", help="leave running servers on the old code")
+    p = add("check", cmd_check, "run the session's checks")
+    p.add_argument("-m", "--member", help="only this member's")
+    p = sub.add_parser("server", help="a session's forked servers: status | start | stop | restart")
+    p.add_argument("action", nargs="?", default="status", choices=["status", "start", "stop", "restart"])
+    p.add_argument("-m", "--member", help="only this member's server")
+    p.add_argument("-s", "--session")
+    p.add_argument("--resume", action="store_true", help="start from the state the last child left")
+    p.set_defaults(fn=cmd_server)
+    p = sub.add_parser("compose", help="show or set a composed session's members")
+    p.add_argument("session")
+    p.add_argument("members", nargs="*")
+    p.add_argument("--add", action="append")
+    p.add_argument("--remove", action="append")
+    p.set_defaults(fn=cmd_compose)
     add("mem", cmd_simple("mem"), "the repl process tree's memory")
     p = sub.add_parser("eval", help="evaluate an expression in the warm repl")
     p.add_argument("expr")
-    p.add_argument("-t", "--target")
+    p.add_argument("-s", "-t", "--session", dest="target")
     p.add_argument("--timeout", type=float, default=0)
     p.set_defaults(fn=cmd_eval)
-    p = add("log", cmd_log, "tail a state file (daemon.log, reload.log, run.log, async.log)")
+    p = sub.add_parser("log", help="tail a state file (daemon.log, reload.log, run.log, async.log, server-NAME.log)")
     p.add_argument("which", nargs="?", default="daemon.log")
+    p.add_argument("-s", "--session", dest="target")
     p.add_argument("-n", type=int, default=40)
-    # `ghci-session log [TARGET] [FILE]` is ambiguous with one optional positional pair; keep FILE second
+    p.set_defaults(fn=cmd_log)
     add("list", cmd_list, "the configured targets", target=False)
     sub.add_parser("init", help="write a ghci-session.json here").set_defaults(fn=None, cmd="init")
     p = sub.add_parser("_daemon")

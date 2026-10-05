@@ -1,5 +1,6 @@
-"""End to end against examples/hello: boot, eval, edit-triggered reload, compile error and recovery, prune,
-census. Needs cabal and GHC (and macOS for the pruner); run with GHS_E2E=1. ~1.5 min."""
+"""End to end against examples/hello: a composed session of two packages, per-member checks, a forked server
+kept / re-forked with its state / protected from a broken action, a compile error and recovery, adoption across
+a member change, prune and census. Needs cabal and GHC (and macOS for the pruner); run with GHS_E2E=1. ~2 min."""
 import json
 import os
 import shutil
@@ -30,11 +31,11 @@ class EndToEnd(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        run(cls.cli, "stop", cwd=cls.proj)
+        run(cls.cli, "stop", "dev", cwd=cls.proj)
         shutil.rmtree(cls.dir, ignore_errors=True)
 
-    def status(self):
-        with open(os.path.join(self.proj, ".ghci-session", "lib", "status.json")) as fh:
+    def status(self, session="dev"):
+        with open(os.path.join(self.proj, ".ghci-session", session, "status.json")) as fh:
             return json.load(fh)
 
     def wait_for(self, pred, secs=90):
@@ -42,37 +43,112 @@ class EndToEnd(unittest.TestCase):
         while time.time() - t0 < secs:
             try:
                 if pred(self.status()):
-                    return
+                    return self.status()
             except (OSError, ValueError):
                 pass
             time.sleep(0.5)
         self.fail(f"timed out; status={self.status()}")
 
+    def edit(self, path, text):
+        """Write a source and wait for the verdict the watcher's reload produces."""
+        t = self.status()["at"]
+        with open(path, "w") as fh:
+            fh.write(text)
+        return lambda pred: self.wait_for(lambda j: j["at"] > t and pred(j))
+
+    def cli_(self, *argv):
+        return run(self.cli, *argv, cwd=self.proj)
+
+    def served(self):
+        with open(os.path.join(self.proj, ".ghci-session", "hello.out")) as fh:
+            word, n = fh.read().split()
+        return word, int(n)
+
+    def server_pid(self):
+        out = self.cli_("server").stdout
+        return int(out.split("pid ")[1].split()[0]) if "running pid" in out else None
+
     def test_lifecycle(self):
-        r = run(self.cli, "start", cwd=self.proj)
+        hs = os.path.join(self.proj, "src", "Hello.hs")
+        with open(hs) as fh:
+            orig = fh.read()
+        good = lambda j: j["ok"] and "CHECK-PASS" in j["verdict"]  # noqa: E731
+
+        # a composed session: two packages in one repl, a check per member
+        r = self.cli_("start", "dev")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertIn("CHECK-PASS", r.stdout)
-        self.assertEqual(run(self.cli, "eval", "Hello.greeting", cwd=self.proj).stdout.strip(), '"hello"')
-        hs = os.path.join(self.proj, "src", "Hello.hs")
-        orig = open(hs).read()
-        # an edit is picked up by the watcher
-        t = self.status()["at"]
-        open(hs, "w").write(orig.replace('"hello"', '"bonjour"'))
-        self.wait_for(lambda j: j["at"] > t and j["ok"] and "CHECK-PASS" in j["verdict"])
-        self.assertEqual(run(self.cli, "eval", "Hello.greeting", cwd=self.proj).stdout.strip(), '"bonjour"')
-        # a compile error is a verdict, not a hang
-        t = self.status()["at"]
-        open(hs, "w").write(orig + "\ngreeting = oops\n")
-        self.wait_for(lambda j: j["verdict"].startswith("COMPILE-ERROR"))
-        # and the next good edit recovers
-        t = self.status()["at"]
-        open(hs, "w").write(orig)
-        self.wait_for(lambda j: j["at"] > t and j["ok"] and "CHECK-PASS" in j["verdict"])
-        # the pruner ran after reloads
-        log = open(os.path.join(self.proj, ".ghci-session", "lib", "daemon.log")).read()
-        self.assertIn("prune_cafs:", log)
-        out = run(self.cli, "eval", "GHC.Hygiene.Census.cafReport 2 100000000", cwd=self.proj).stdout
-        self.assertIn("closures", out)
+        self.assertEqual([m["member"] for m in self.status()["members"]], ["hello", "extra"])
+        self.assertEqual(self.cli_("eval", "Hello.greeting").stdout.strip(), '"hello"')
+        self.assertEqual(self.cli_("eval", "Extra.shout").stdout.strip(), '"HELLO!"')
+
+        # loading is not serving; starting is an action
+        self.assertIsNone(self.server_pid())
+        self.assertEqual(self.cli_("server", "start").returncode, 0)
+        pid = self.server_pid()
+        self.assertIsNotNone(pid)
+        time.sleep(1.0)
+        self.assertEqual(self.served()[0], "hello")
+
+        # an edit that does not change the object code keeps the server
+        j = self.edit(hs, orig + "-- a comment\n")(good)
+        self.assertEqual([(s["member"], s["action"]) for s in j["servers"]], [("hello", "kept")])
+        self.assertEqual(self.server_pid(), pid)
+
+        # a real edit reloads both members, re-forks the server onto the new code, and carries its state
+        ticks = self.served()[1]
+        j = self.edit(hs, orig.replace('"hello"', '"bonjour"'))(good)
+        self.assertEqual(j["servers"][0]["action"], "re-forked")
+        self.assertNotEqual(self.server_pid(), pid)
+        pid = self.server_pid()
+        time.sleep(1.0)
+        word, n = self.served()
+        self.assertEqual(word, "bonjour")
+        self.assertGreater(n, ticks)                      # the tick count was handed over, not reset
+        self.assertEqual(self.cli_("eval", "Extra.shout").stdout.strip(), '"BONJOUR!"')   # the dependent member too
+
+        # a compile error is a verdict, and the server keeps running the old code
+        self.edit(hs, orig + "\ngreeting = oops\n")(lambda j: j["verdict"].startswith("COMPILE-ERROR"))
+        self.assertEqual(self.server_pid(), pid)
+
+        # an action that no longer typechecks does not cost the running server
+        j = self.edit(hs, orig.replace("serve :: IO ()", "serve :: Int -> IO ()").replace("serve = do", "serve _ = do"))(good)
+        self.assertEqual(j["servers"][0]["action"], "broken")
+        self.assertEqual(self.server_pid(), pid)
+
+        # back to the original: the server follows
+        self.edit(hs, orig)(good)
+        time.sleep(1.0)
+        self.assertEqual(self.served()[0], "hello")
+        pid = self.server_pid()
+
+        # one member's check failing names that member, and the other still passes
+        ex = os.path.join(self.proj, "extra", "src", "Extra.hs")
+        with open(ex) as fh:
+            eorig = fh.read()
+        j = self.edit(ex, eorig.replace("last shout == '!'", "last shout == '?'"))(lambda j: j["kind"] == "CHECK-FAIL")
+        self.assertIn("extra", j["verdict"])
+        self.assertEqual({m["member"]: m["kind"] for m in j["members"]}, {"hello": "PASS", "extra": "FAIL"})
+        self.assertEqual(self.server_pid(), pid)          # extra's edit is not the server's code
+        self.edit(ex, eorig)(good)
+
+        # dropping a member restarts the repl but ADOPTS the running server
+        self.assertEqual(self.cli_("compose", "dev", "--remove", "extra").returncode, 0)
+        self.assertEqual(self.server_pid(), pid)
+        self.assertEqual([m["member"] for m in self.status()["members"]], ["hello"])
+        self.assertIn("Extra", self.cli_("eval", "Extra.shout").stdout)        # ... and Extra is gone from scope
+
+        # hygiene ran, and the census answers
+        with open(os.path.join(self.proj, ".ghci-session", "dev", "daemon.log")) as fh:
+            self.assertIn("prune_cafs:", fh.read())
+        self.assertIn("closures", self.cli_("eval", "GHC.Hygiene.Census.cafReport 2 100000000").stdout)
+
+        # stopping the session stops its server
+        self.cli_("stop", "dev")
+        time.sleep(1.0)
+        a = self.served()
+        time.sleep(1.0)
+        self.assertEqual(self.served(), a)
 
 
 def run(*argv, cwd):
