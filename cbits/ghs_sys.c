@@ -362,5 +362,25 @@ int ghs_proc_args(int pid, char *buf, int cap) {
 int ghs_proc_args(int pid, char *buf, int cap) { (void)pid; (void)buf; (void)cap; return -1; }
 #endif
 
+/* A process's executable name (cheap: no argument vector). The length, or -1. */
+#if defined(__APPLE__)
+int ghs_proc_name(int pid, char *buf, int cap) { int n = proc_name(pid, buf, (uint32_t)cap); return n > 0 ? n : -1; }
+#elif defined(__linux__)
+int ghs_proc_name(int pid, char *buf, int cap) {
+  char path[64];
+  snprintf(path, sizeof path, "/proc/%d/comm", pid);
+  int fd = open(path, O_RDONLY);
+  if (fd < 0) return -1;
+  ssize_t n = read(fd, buf, (size_t)cap - 1);
+  close(fd);
+  if (n <= 0) return -1;
+  if (buf[n - 1] == '\n') n--;
+  buf[n] = 0;
+  return (int)n;
+}
+#else
+int ghs_proc_name(int pid, char *buf, int cap) { (void)pid; (void)buf; (void)cap; return -1; }
+#endif
+
 /* ---- hang up a socket another thread is blocked reading: it sees end of file, and so does the peer ---- */
 int ghs_shutdown(int fd) { return shutdown(fd, SHUT_RDWR); }

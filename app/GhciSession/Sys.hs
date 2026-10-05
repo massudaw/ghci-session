@@ -8,7 +8,7 @@ module GhciSession.Sys
   , hashFile, hashString, showHash
   , watchKind, watchNew, watchBudget, watchAdd, watchRm, watchWait
   , httpPost
-  , processTable, processArgs
+  , processTable, processArgs, processName
   , now, writeAtomic, readFileMaybe, readFileUtf8, writeFileUtf8, appendFileUtf8, modTime, pidAlive, rawSystemOut, sockPath
   ) where
 
@@ -52,6 +52,7 @@ foreign import ccall safe "ghs_watch_wait" c_watch_wait :: CInt -> CInt -> IO CI
 foreign import ccall unsafe "ghs_pid_state" c_pid_state :: CInt -> IO CInt
 foreign import ccall unsafe "ghs_proc_table" c_proc_table :: Ptr CInt -> Ptr CInt -> Ptr Int64 -> Ptr Int64 -> CInt -> IO CInt
 foreign import ccall unsafe "ghs_proc_args" c_proc_args :: CInt -> CString -> CInt -> IO CInt
+foreign import ccall unsafe "ghs_proc_name" c_proc_name :: CInt -> CString -> CInt -> IO CInt
 foreign import ccall safe "ghs_http_post" c_http_post :: CString -> CString -> CString -> CString -> CInt -> IO CInt
 
 fdOrNothing :: CInt -> Maybe Fd
@@ -193,6 +194,12 @@ pidAlive pid = (== 1) <$> c_pid_state (fromIntegral pid)
 processArgs :: Int -> IO String
 processArgs pid = allocaBytes 16384 $ \buf -> do
   n <- c_proc_args (fromIntegral pid) buf 16384
+  if n <= 0 then pure "" else T.unpack . TE.decodeUtf8With TE.lenientDecode <$> B.packCStringLen (buf, fromIntegral n)
+
+-- | A process's executable name, "" if it cannot be had. A few microseconds, where its arguments are tens.
+processName :: Int -> IO String
+processName pid = allocaBytes 256 $ \buf -> do
+  n <- c_proc_name (fromIntegral pid) buf 256
   if n <= 0 then pure "" else T.unpack . TE.decodeUtf8With TE.lenientDecode <$> B.packCStringLen (buf, fromIntegral n)
 
 -- | Every process: (pid, parent, memory in KB). The memory is the physical footprint where the OS gives one

@@ -42,7 +42,7 @@ import GhciSession.Watch
 
 data S = S
   { sConf :: Conf, sName :: String, sCfg :: Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
-  , sBootCheck :: Bool
+  , sBootCheck :: Bool, sFastStart :: Bool
   , vRepl :: IORef (Maybe Repl)
   , vStatus :: IORef String, vJson :: IORef Json, vStatusText :: IORef String
   , vLoadedSig :: IORef Sig, vPendingSig :: IORef Sig
@@ -233,6 +233,10 @@ replCommandLine s exe v = case gRepl cfg of
          -- without it GHCi's recompile of IDENTICAL source gives a different .o, and every reload would
          -- look like a change to a running server
       ++ [ "--repl-options=-fobject-determinism" | objects, v >= (9, 12) ]
+         -- Linking what a reload recompiled into its temporary library is then ONE tool run, not four: with
+         -- rpaths GHC follows the link with two `otool`s and an `install_name_tool` (0.08 s of every first
+         -- evaluation after an edit). The library needs no rpath: everything it names is already loaded.
+      ++ [ "--repl-options=-fno-use-rpaths" | objects, os == "darwin" ]
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
         objects = gHygiene cfg || not (null (gServers cfg))
@@ -292,6 +296,9 @@ postLoad s r = do
   let cfg = sCfg s
       c t e = T.unpack <$> replCommand r (Just t) e
   when (gCapabilities cfg > 0) (void (replQuery r (Just 60) "capabilities" [("n", JNum (fromIntegral (gCapabilities cfg)))]))
+  -- an expression typed at a session is not the program: `1 + 1` should not answer with a paragraph about
+  -- defaulting because the package is built -Wall
+  void (c 60 ":seti -Wno-type-defaults")
   forM_ (gPreload cfg) (c 120)
   -- one command for all the imports (forty round trips were 0.3 s of a boot); one at a time only if that
   -- fails, so a single missing module does not cost the rest
@@ -491,11 +498,12 @@ unlinkCafs s = do
   when ok $ do
     vUnlinkDue s =: False
     t0 <- now
-    r <- try (ask s (Just 300) "prune" [])
+    r <- try (theRepl s >>= \rp -> replQueryOut rp (Just 300) "prune" [])
     t1 <- now
     case r of
       Left (e :: SomeException) -> logS s ("unlink_cafs failed: " ++ displayException e)
-      Right j -> do
+      Right (Reply j said) -> do
+        unless (T.null (T.strip said)) (logS s ("unlink_cafs said:\n" ++ T.unpack said))      -- (GHS_CAF_DEBUG in the target's env)
         let k = maybe 0 round (lookupNum "unlinked" j) :: Int
         mapM_ ((vLiveMb s =:) . show . (round :: Double -> Int)) (lookupNum "live_mb" j)
         live <- rd (vLiveMb s)
@@ -507,7 +515,7 @@ unlinkCafs s = do
 -- | After the verdict is out: link the reloaded code if nothing has yet (the @warm@ expressions), then the
 -- unlink and its GC. In the background, under the work lock: a command that arrives first simply runs first.
 warmAsync :: S -> IO ()
-warmAsync s = void $ forkIO $ withMVar (vWork s) $ \_ -> do
+warmAsync s = rd (vUnlinkDue s) >>= \dueNow -> when dueNow $ void $ forkIO $ withMVar (vWork s) $ \_ -> do
   stopping <- rd (vStopping s)
   due <- rd (vUnlinkDue s)
   alive <- rd (vRepl s) >>= maybe (pure False) replAlive
@@ -842,8 +850,17 @@ serverOp s action member resume = do
 
 -- lifecycle --------------------------------------------------------------------------------
 
--- | Start the engine. @fast@: nothing the build tool decides has changed since it last told us how (a restart
--- for memory, or for a C file), so its answer is used again and it is not run.
+-- | What the build tool's answer depends on, as far as this session can see: the command, the engine, and
+-- every build file and non-Haskell source it watches (the build tool is what compiles a package's C).
+-- Not seen: the sources of a local package the session depends on but does not load.
+buildInputs :: S -> FilePath -> String -> IO String
+buildInputs s exe line = do
+  sig <- scan (sRoot s) (gWatch (sCfg s)) [".cabal", ".project", ".freeze", ".local", ".c", ".h", ".cmm", ".hsc", ".chs", ".x", ".y"]
+  te <- modTime exe
+  pure (unlines (line : (exe ++ " " ++ show te) : [ fromRaw p ++ " " ++ show m | (p, m) <- M.toList sig ]))
+
+-- | Start the engine. @fast@: nothing the build tool decides or builds has changed since it last told us how
+-- (a restart for memory), so its answer is used again and it is not run.
 boot :: S -> Bool -> IO ()
 boot s fast = do
   let cfg = sCfg s
@@ -879,16 +896,21 @@ boot s fast = do
   let dead why detail e = do
         setStatus s False ("DEAD: " ++ why) detail []
         throwIO (e :: ReplError)
-  known <- if fast then readLaunch launchDir else pure Nothing
+  let line = replCommandLine s exe ver
+  inputs <- buildInputs s exe line
+  was <- readFileMaybe (launchDir </> "inputs")
+  let wanted = fast || gFastStart cfg
+  known <- if wanted && was == Just inputs then readLaunch launchDir else pure Nothing
+  when (wanted && isNothing known) (logS s "fast start: a build file, the command or the engine changed since the build tool was last asked (or it never was) -- asking it")
   launch <- case known of
     Just l -> do
       logS s "the build's answer is reused: the build tool is not run"
       writeAtomic outF ""
       pure l
     Nothing -> do
-      r <- phase s "build" (captureLaunch (replCommandLine s exe ver) (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
+      r <- phase s "build" (captureLaunch line (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
       case r of
-        Right l -> pure l
+        Right l -> writeAtomic (launchDir </> "inputs") inputs >> pure l
         Left said -> do
           writeAtomic (sDir s </> "load.log") said
           dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
@@ -967,8 +989,11 @@ reload' s doCheck doRefork async = do
       r <- try (phase s "ghci_reload" (theRepl s >>= \rp -> replRun rp (Just (gLoadTimeout cfg)) ":reload"))
       case r of
         Left (e :: ReplError) -> setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) [] [] >> pure (T.pack (show e))
-        Right rep@(Reply _ out) -> do
+        Right rep@(Reply facts out) -> do
           writeAtomicT (sDir s </> "reload.log") out
+          let nf k = maybe 0 round (lookupNum k facts) :: Int
+          when (nf "kept_linked" + nf "relink" > 0) $
+            logS s ("reload: " ++ show (nf "kept_linked") ++ " module(s) stay linked, " ++ show (nf "relink") ++ " to link again" ++ (let ms = strs (facts .: "relink_modules") in if null ms then "" else " (" ++ unwords ms ++ (if length ms < nf "relink" then " ..." else "") ++ ")"))
           vUnlinkDue s =: True
           vEvaluated s =: (gUnlinkAfter cfg == "reload")
           phase s "unlink" (unlinkCafs s)   -- "reload": now, which reaches the generation BEFORE the one just replaced
@@ -1109,7 +1134,7 @@ watchLoop s = do
                   if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
                     then do
                       logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
-                      drive s (void (restart s (not (any buildFile changed))))
+                      drive s (void (restart s False))      -- (through the build tool: it is what compiles a package's C)
                     else do
                       logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
                       drive s (void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing))
@@ -1184,12 +1209,12 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
   "eval" -> do
     out <- cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req))
     vEvaluated s =: True
-    unlinkCafs s
+    warmAsync s          -- the unlink and its GC, once this answer is out: they are not the caller's to wait for
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
-    unlinkCafs s
+    warmAsync s
     pure (Just out)
   "restart" -> Just . T.pack <$> restart s (fromMaybe False (lookupBool "fast" req))
   _ | op `elem` ["server", "zygote"] -> do     -- "zygote" with fork/refork: the names an older client of this protocol used
@@ -1209,8 +1234,8 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
   _ -> pure Nothing
 
 -- | Run the daemon for one session until it is told to stop (or idles out).
-runDaemon :: Conf -> String -> Bool -> IO ()
-runDaemon conf name bootCheck = do
+runDaemon :: Conf -> String -> Bool -> Bool -> IO ()
+runDaemon conf name bootCheck fastStart = do
   cfg0 <- resolve conf name >>= either (throwIO . userError) pure
   let root = cRoot conf
       dir = cStateDir conf </> name
@@ -1219,7 +1244,7 @@ runDaemon conf name bootCheck = do
   rootFiles <- sort . filter (\f -> ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f) <$> getDirectoryContents root
   let cfg = cfg0 { gWatch = gWatch cfg0 ++ [ f | f <- rootFiles, f `notElem` gWatch cfg0 ] }
   t <- now
-  s <- S conf name cfg root dir (cStateRel conf </> name </> "obj") bootCheck
+  s <- S conf name cfg root dir (cStateRel conf </> name </> "obj") bootCheck fastStart
          <$> newIORef Nothing <*> newIORef "starting" <*> newIORef (JObj []) <*> newIORef ""
          <*> newIORef M.empty <*> newIORef M.empty <*> newIORef 0 <*> newIORef 0
          <*> newIORef False <*> newIORef False <*> newIORef "stopped" <*> newIORef []
@@ -1234,7 +1259,7 @@ runDaemon conf name bootCheck = do
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
   r <- try $ oneVerdict s $ do
-    boot s False
+    boot s (sFastStart s)
     started <- phase s "servers_boot" (serversBoot s)
     unless (null started) (note s ("[servers: " ++ intercalate "; " started ++ "]") [])
     phasesDone s "boot" t0

@@ -96,9 +96,9 @@ arguments, its socket as the engine's standard input. Three things follow:
 - the process under the daemon IS GHCi. There is no `cabal repl` between them for the life of the session, no
   wrapper script; if GHCi dies, its exit status or signal is in the verdict;
 - stopping it is closing its socket;
-- **a restart that changes nothing cabal decides does not run cabal**: a restart for memory (`repl_budget_mb`) or
-  for a changed `.c`/`.h` reuses the recorded start (`restart --fast` by hand). A changed `.cabal` or
-  `cabal.project`, and a plain `restart`, ask cabal again.
+- **a restart that changes nothing cabal decides does not run cabal**: a restart for memory (`repl_budget_mb`)
+  reuses the recorded start (`restart --fast` by hand). A changed `.c`, `.h`, `.cabal` or `cabal.project`, and a
+  plain `restart`, ask cabal again: it is cabal that compiles a package's C before the repl starts.
 
 The hygiene C (the pruner, the census) is compiled into the engine by cabal like any other source. It finds the
 RTS's private lists by name in the symbol table of the RTS image the process has mapped (`hygiene/c/rts_syms.h`),
@@ -110,6 +110,47 @@ A target with its own `"repl"` command says where the engine goes with `{engine}
 Two things found on the way: started with its standard descriptors closed, a process's first pipe IS descriptor 0,
 and "duplicate onto 0, then close the original" closes what it just installed; and GHCi leaves standard output
 unbuffered, which is a system call per character -- 4.8 s for a megabyte -- so the engine line-buffers it.
+
+## What each operation costs, end to end
+
+Measured on this package's own session (11 modules; macOS arm64, GHC 9.14.1), from the shell prompt to the answer.
+
+| operation | before | now | what changed |
+|---|---|---|---|
+| `eval -s NAME EXPR` | 13 ms | 8 ms | answered in C before the Haskell runtime starts (`cbits/ghs_fast.c`); 6 of the 8 are the executable being mapped |
+| `status` | 23 ms | 13 ms | the leftover scan asked for the ARGUMENTS of every child of launchd (324 of 402 processes); now only of those named like ours |
+| `gc -n` | 30 ms | 14 ms | the same |
+| save of a leaf module, with its check | 1.2 s | 0.4 s | the reload no longer costs a re-link of everything (below) |
+| reload with nothing changed, then the check | 1.0 s | 0.25 s | the same, and the check's own waits |
+| first `eval` after an edit | answer + 0.15 s | answer | the unlink and its GC run after the reply is out |
+| `start` with nothing for cabal to do | 5.7 s | 1.8 s | `start --fast` / `"fast_start": true`: cabal is not run (it is 3.4 s of re-planning and re-configuring to arrive at the same arguments) |
+| the self-test (the check) | 0.55 s | 0.22 s | it waited for things that had already happened |
+
+**A reload relinks what changed, not everything.** GHC's `load` forgets every object it had linked -- the driver
+no longer works out which modules are stable -- so after ANY reload, even one that recompiled nothing, the next
+evaluation links every loaded module again into a new temporary library. That is time proportional to the session
+instead of the edit, a fresh copy of every CAF of every module (the leak the pruner exists for), and every value a
+module had computed and kept, computed again. The engine remembers what was linked before a command and, after it,
+puts back in the loader's table every module whose object file did not change and that depends, transitively, only
+on such modules (`keepLinked` in `engine/GhsEngine.hs`). So after editing `A`: `A` and what imports it are linked
+again; a module that does not depend on `A` keeps its code, **and a CAF in it keeps its value** -- a table that took
+3 s to build is still there after an unrelated edit. `daemon.log` says `reload: 9 module(s) stay linked, 2 to link
+again (A B)`. `GHS_KEEP_LINKED=0` in a target's `env` turns it off. (`tests/test_e2e.py`, `KeepLinked`.)
+
+**Loading a new library costs a quarter of a second on macOS, whatever its size, and it is not GHC.** After an
+edit, the first evaluation that needs the recompiled code links it into a temporary dylib and `dlopen`s it. The link
+is 60 ms. The `dlopen` is 250 ms -- for a 17 KB library as for a 1.5 MB one, and 0.3 ms the second time: every new
+executable file is scanned by XProtect when it is first loaded (twelve fresh dylibs: 3.2 s of wall, 2.2 s of
+`XprotectService` CPU). It is most of what a save costs once the compile is short, in any GHCi, and nothing in this
+tool can avoid it. macOS can: **System Settings -> Privacy & Security -> Developer Tools**, add your terminal
+(`sudo spctl developer-mode enable-terminal` makes the list appear) -- processes started from it are then not
+scanned. Not measured here: it needs an administrator.
+
+Smaller things: GHC follows each such link with two `otool`s and an `install_name_tool` to add rpaths the library
+does not need (everything it names is already loaded): `-fno-use-rpaths` in the repl's options, 0.08 s. The pruner
+left a superseded CAF whose value was still young for the next reload's pass -- and the CAF the check has just
+evaluated is always that one; two minor collections before the pass age it, and the heap of a session that reloads
+is flat instead of one generation behind.
 
 ## Why not just `cabal repl`?
 
@@ -263,6 +304,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `reload_on_commit` | `false` | a new git HEAD is a full reload -- checks and re-fork -- whatever the two above say |
 | `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
 | `handover_env` | `GHS_HANDOVER_OUT`, `GHS_HANDOVER_IN` | the two variables a forked server finds its state paths in (a project with its own copy of `GHC.Hygiene.Zygote` may name others) |
+| `fast_start` | `false` | start without running the build tool when its last answer still stands: the command, the engine and every `.cabal`, `cabal.project*` and C file the session watches are unchanged (`start --fast` once). Not seen: the sources of a local package the session depends on but does not load -- build that yourself, as you would for a reload |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `watcher` | `auto` | kernel file events where the platform has them (kqueue on macOS/BSD, inotify on Linux), else `poll`. The mtime scan still decides what changed and still runs every 2 s: an event only says "look now" |
 | `poll_interval`, `debounce` | 0.2, 0.2 | when polling: how often the watcher looks, and how long it lets a burst of writes settle (with events a burst is over when they stop for 50 ms) |

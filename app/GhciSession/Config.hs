@@ -56,7 +56,7 @@ data Cfg = Cfg
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
-  , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String]
+  , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String], gFastStart :: Bool
   }
 
 -- | Every key a target may have, with its default. An unknown key is refused: a misspelt @chek@ would
@@ -73,7 +73,7 @@ defaults =
   , ("auto_reload", JBool True), ("watch_check", JBool True), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
-  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr [])
+  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False)
   ]
 
 reserved :: [String]
@@ -243,6 +243,7 @@ resolve conf session = do
         , gIdleStopMins = if not (null mins) && all (> 0) mins then maximum mins else 0
         , gAsyncRefork = any (jBool "async_refork") ts
         , gFingerprintFiles = map ex (union (jStrs "fingerprint_files"))
+        , gFastStart = not (null ts) && all (jBool "fast_start") ts
         }
     maxOf k ts = maximum (fromMaybe 0 (lookupNum k (JObj defaults)) : map (jNum k) ts)
       `seq` (if null ts then fromMaybe 0 (lookupNum k (JObj defaults)) else maximum (map (jNum k) ts))

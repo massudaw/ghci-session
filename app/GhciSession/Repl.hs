@@ -12,7 +12,7 @@
 -- that changes nothing the build tool decides can skip the build tool.
 module GhciSession.Repl
   ( Repl, ReplError (..), Launch (..), Reply (..)
-  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replAlive, replPid
+  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replQueryOut, replAlive, replPid
   , decode
   ) where
 
@@ -214,7 +214,11 @@ replCommand r mt expr = rOut <$> replRun r mt expr
 
 -- | Ask the engine something (@q@ and its arguments): the answer, which has @error@ when it could not.
 replQuery :: Repl -> Maybe Double -> String -> [(String, Json)] -> IO Json
-replQuery r mt q args = rFacts <$> roundTrip r mt (BC.cons 'Q' (encodeBS (JObj (("q", JStr q) : args))))
+replQuery r mt q args = rFacts <$> replQueryOut r mt q args
+
+-- | ... with whatever it wrote while answering (a diagnostic the C half prints, say).
+replQueryOut :: Repl -> Maybe Double -> String -> [(String, Json)] -> IO Reply
+replQueryOut r mt q args = roundTrip r mt (BC.cons 'Q' (encodeBS (JObj (("q", JStr q) : args))))
 
 -- | Stop the engine AND everything it started.
 --

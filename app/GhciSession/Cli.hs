@@ -111,8 +111,8 @@ statusOk conf name = do
 
 -- commands ------------------------------------------------------------------------
 
-cmdStart :: Conf -> Maybe String -> Bool -> IO Int
-cmdStart conf target noCheck = do
+cmdStart :: Conf -> Maybe String -> Bool -> Bool -> IO Int
+cmdStart conf target noCheck fast = do
   name <- pick conf target
   up <- daemonPid conf name
   case up of
@@ -124,7 +124,7 @@ cmdStart conf target noCheck = do
       cfg <- resolve conf name >>= either die' pure
       exe <- getExecutablePath
       out <- openFile (d </> "daemon.out") AppendMode
-      void (createProcess (proc exe (["--root", cRoot conf, "_daemon", name] ++ [ "--no-check" | noCheck ]))
+      void (createProcess (proc exe (["--root", cRoot conf, "_daemon", name] ++ [ "--no-check" | noCheck ] ++ [ "--fast" | fast ]))
               { std_in = NoStream, std_out = UseHandle out, std_err = UseHandle out, close_fds = True, new_session = True })
       cwd' <- getCurrentDirectory
       hPutStrLn stderr (name ++ ": booting (log: " ++ makeRelative cwd' (d </> "daemon.log") ++ ")")
@@ -254,7 +254,7 @@ cmdCompose conf a = case aPos a of
           writeMembers conf name new
           when (isJust up) (void (cmdStop conf (Just name) True Nothing))
           putStrLn (name ++ " members: " ++ (if null new then "(none)" else intercalate ", " new))
-          cmdStart conf (Just name) (flag a ["--no-check"])
+          cmdStart conf (Just name) (flag a ["--no-check"]) (flag a ["--fast"])
 
 cmdLog :: Conf -> Args -> IO Int
 cmdLog conf a = do
@@ -341,7 +341,7 @@ usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
   , ""
-  , "  start [--no-check] | stop | restart [--fast] | status [-d]   [SESSION]"
+  , "  start [--no-check] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
   , "  reload [--no-check] [--no-refork] [--async-refork]  [SESSION]"
   , "  check [-m MEMBER] [SESSION]        eval EXPR [-s SESSION] [--timeout SECS]"
   , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-check]"
@@ -370,9 +370,9 @@ cliMain = do
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
         "_daemon" -> case aPos a of
-          (name : _) -> runDaemon conf name (not (flag a ["--no-check"])) >> pure 0
+          (name : _) -> runDaemon conf name (not (flag a ["--no-check"])) (flag a ["--fast"]) >> pure 0
           [] -> die' "_daemon: a session name is needed"
-        "start" -> cmdStart conf (pos a 0) (flag a ["--no-check"])
+        "start" -> cmdStart conf (pos a 0) (flag a ["--no-check"]) (flag a ["--fast"])
         "stop" -> cmdStop conf (pos a 0) (flag a ["--keep-servers"]) Nothing
         "restart" -> pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr "restart"), ("fast", JBool (flag a ["--fast"]))]) >>= say
         "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])

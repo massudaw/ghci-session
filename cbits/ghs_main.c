@@ -12,8 +12,11 @@
 #include "Rts.h"
 
 extern int ghsMain(void);
+extern int ghs_fast_client(int argc, char **argv);   /* ghs_fast.c: `eval` without the runtime */
 
 int main(int argc, char **argv) {
+  int fast = ghs_fast_client(argc, argv);
+  if (fast >= 0) return fast;
   int daemon = 0, stats = 0;
   for (int i = 1; i < argc; i++) {
     if (!strcmp(argv[i], "_daemon")) daemon = 1;

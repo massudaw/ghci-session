@@ -158,7 +158,7 @@ run = do
   w <- makeWaiter "auto" 0.2 0.2 (M.keys sig ++ [toRaw (tmp </> "src")]) (\_ -> pure ())
   kind <- waiterKind w
   when (kind /= "poll") $ do
-    waiterWait w 0.1 >>= check "watch: quiet when nothing happens" . not
+    waiterWait w 0.03 >>= check "watch: quiet when nothing happens" . not
     appendFile (tmp </> "src" </> "M.hs") "-- more\n"
     waiterWait w 1.0 >>= check "watch: an in-place write"
     waiterSettle w
@@ -178,7 +178,7 @@ run = do
   check "socket path is short" (length sp < 100)
   pidAlive (fromIntegral pid) >>= check "pidAlive: this process"
   pidAlive 4190000 >>= check "pidAlive: nobody" . not
-  rawSystemOut 0.3 "sleep" ["5"] >>= \r -> eq "a helper that hangs is cut off" r Nothing
+  rawSystemOut 0.05 "sleep" ["5"] >>= \r -> eq "a helper that hangs is cut off" r Nothing
 
   void (try (removeDirectoryRecursive tmp) :: IO (Either IOException ()))
   f <- readIORef failed

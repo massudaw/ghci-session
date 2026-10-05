@@ -35,7 +35,10 @@ data Leftovers = Leftovers { lDaemons :: [(String, Int)], lServers :: [(String, 
 listProcesses :: IO [(Int, Int, String)]
 listProcesses = do
   rows <- processTable
-  forM rows (\(pid, pp, _) -> (,,) pid pp <$> (if pp == 1 then processArgs pid else pure ""))
+  forM rows $ \(pid, pp, _) -> (,,) pid pp <$> (if pp /= 1 then pure "" else do
+    -- on macOS nearly every process is launchd's child: ask for the arguments only of what could be ours
+    nm <- processName pid
+    if null nm || any (`isInfixOf` nm) ["ghc", "cabal", "ghci"] then processArgs pid else pure "")
 
 descendants :: [(Int, Int, String)] -> Int -> [Int]
 descendants procs pid = go [] [ c | (c, pp, _) <- procs, pp == pid ]

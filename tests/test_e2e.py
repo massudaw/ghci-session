@@ -232,6 +232,51 @@ class YoungCafRepro(unittest.TestCase):
         self.assertNotIn("old f, after the major GC", bad, "the unguarded pruner no longer crashes: is the repro still a repro?")
 
 
+@unittest.skipUnless(os.environ.get("GHS_E2E") == "1" and shutil.which("cabal"), "set GHS_E2E=1 (needs cabal)")
+class KeepLinked(unittest.TestCase):
+    """A reload relinks what changed and what depends on it, and nothing else: an untouched module keeps its
+    code -- and so the values its CAFs hold -- while a module whose dependency changed runs the new code."""
+
+    FILES = {
+        "kl.cabal": "cabal-version: 2.4\nname: kl\nversion: 0.1\nlibrary\n  hs-source-dirs: src\n"
+                    "  exposed-modules: A, B, C\n  build-depends: base\n  default-language: Haskell2010\n",
+        "cabal.project": "packages: .\n",
+        "src/A.hs": "module A (f) where\nf :: Int\nf = 1\n",
+        # B is NOT recompiled when A's body changes (its interface is the same), but its code calls A's
+        "src/B.hs": "module B (g) where\nimport A\ng :: Int\ng = f + 1\n",
+        # C depends on neither: a CAF that says when it was computed
+        "src/C.hs": "module C (stamp) where\nimport Data.IORef\nimport System.IO.Unsafe\n"
+                    "{-# NOINLINE counter #-}\ncounter :: IORef Int\ncounter = unsafePerformIO (newIORef 0)\n"
+                    "stamp :: IO Int\nstamp = atomicModifyIORef' counter (\\n -> (n + 1, n + 1))\n",
+        "ghci-session.json": json.dumps({"targets": {"kl": {"units": ["lib:kl"], "watch": ["src"], "modules": ["A", "B", "C"],
+                                                            "hygiene": True}}}),
+    }
+
+    def test_untouched_module_keeps_its_state(self):
+        d = tempfile.mkdtemp(prefix="ghs-kl-")
+        cli = os.environ.get("GHCI_SESSION_BIN") or CLI
+        try:
+            for name, text in self.FILES.items():
+                os.makedirs(os.path.dirname(os.path.join(d, name)), exist_ok=True)
+                with open(os.path.join(d, name), "w") as fh:
+                    fh.write(text)
+            self.assertIn("OK", run(cli, "start", "kl", cwd=d).stdout)
+            ev = lambda e: run(cli, "eval", "-s", "kl", e, cwd=d).stdout.strip()  # noqa: E731
+            self.assertEqual(ev("B.g"), "2")
+            self.assertEqual(ev("C.stamp"), "1")
+            self.assertEqual(ev("C.stamp"), "2")
+            with open(os.path.join(d, "src", "A.hs"), "w") as fh:
+                fh.write("module A (f) where\nf :: Int\nf = 10\n")
+            self.assertIn("OK", run(cli, "reload", "kl", cwd=d).stdout)
+            self.assertEqual(ev("B.g"), "11", "B was not recompiled, but must run A's new code")
+            self.assertEqual(ev("C.stamp"), "3", "C did not change: its counter must not have been reset by the reload")
+            with open(os.path.join(d, ".ghci-session", "kl", "daemon.log")) as fh:
+                self.assertIn("1 module(s) stay linked, 2 to link again (A B)", fh.read())
+        finally:
+            run(cli, "stop", "kl", cwd=d)
+            shutil.rmtree(d, ignore_errors=True)
+
+
 def run(*argv, cwd):
     return subprocess.run(list(argv), cwd=cwd, capture_output=True, text=True, timeout=900)
 
