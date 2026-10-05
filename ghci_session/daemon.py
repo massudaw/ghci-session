@@ -173,6 +173,8 @@ class Session:
         self._work = threading.Lock()   # the watcher and a client both drive the repl; never at once
         self.hygiene_on = bool(self.cfg["hygiene"])
         self.zygote_on = bool(self.cfg["servers"])
+        self.last_used = time.time()    # the last client command or source change: what "idle" is measured from
+        self.busy = 0                   # >0 while a command, a reload or a check holds the repl
         self._refork_thread: threading.Thread | None = None
         self._refork_pending: threading.Thread | None = None
         self._hold = 0                  # >0: an operation is in progress; its status is published once, at its end
@@ -937,6 +939,25 @@ class Session:
                 self.refork(running)
         return out
 
+    # -- idleness --
+
+    def info(self) -> dict:
+        """What an eviction decision needs, answered without the repl: so it works while a reload holds it."""
+        running = [l for l in self.server_labels() if self.server_running(l)]
+        t = self._refork_thread
+        return {"session": self.name, "idle_s": round(time.time() - self.last_used, 1),
+                "busy": bool(self.busy) or bool(t is not None and t.is_alive()),
+                "repl_mb": round(self.repl_mb()), "servers_mb": round(self.servers_mb()), "serving": running,
+                "verdict": self.last_status}
+
+    def idle_stop_due(self) -> bool:
+        """This session's own rule (`idle_stop_mins`): unused that long, not busy, and serving nothing --
+        a server is in use by whoever is connected to it, which this daemon cannot see."""
+        mins = float(self.cfg["idle_stop_mins"])
+        if mins <= 0 or self.busy or time.time() - self.last_used < mins * 60:
+            return False
+        return not any(self.server_running(l) for l in self.server_labels())
+
     # -- the watcher --
 
     def watch_loop(self) -> None:
@@ -944,7 +965,12 @@ class Session:
         while not self.stopping.wait(0.5):
             now = scan(self.root, self.cfg["watch"], self.exts)
             if now == last:
+                if self.idle_stop_due():
+                    self.log(f"idle for {self.cfg['idle_stop_mins']} min -- stopping (idle_stop_mins)")
+                    self.stop_reason = f"stopped: idle for {self.cfg['idle_stop_mins']:g} min (idle_stop_mins); `ghci-session start {self.name}`"
+                    self.stopping.set()
                 continue
+            self.last_used = time.time()   # someone is editing
             time.sleep(self.cfg["debounce"])   # an editor's save is several writes
             now = scan(self.root, self.cfg["watch"], self.exts)
             last = now
@@ -953,6 +979,7 @@ class Session:
             with self._work:
                 if self.stopping.is_set():
                     return
+                self.busy += 1
                 changed = [p for p in set(now) | set(self.loaded_sig) if now.get(p) != self.loaded_sig.get(p)]
                 if not changed:
                     continue
@@ -965,6 +992,9 @@ class Session:
                         self.reload()
                 except Exception as e:  # noqa: BLE001
                     self.log(f"watch: {type(e).__name__}: {e}")
+                finally:
+                    self.busy -= 1
+                    self.last_used = time.time()
 
     # -- the socket --
 
@@ -1011,36 +1041,52 @@ class Session:
                 if op == "status":      # reads only the last verdict: must answer while a reload holds the repl
                     stale = self.stale_files()
                     reply(True, (f"STALE({len(stale)}) " if stale else "") + self.last_status)
+                elif op == "info":
+                    reply(True, json.dumps(self.info()))
                 elif op == "stop":
+                    if req.get("reason"):
+                        self.stop_reason = str(req["reason"])
                     self.keep_servers = bool(req.get("keep_servers"))
                     self.stopping.set()
                     reply(True, "stopping")
                 else:
-                    with self._work:   # eval is inside the lock too: its answer must not straddle a reload
-                        if op == "eval":
-                            out = self.repl.command(req["expr"], timeout=req.get("timeout") or None)
-                        elif op == "reload":
-                            out = self.reload(do_check=req.get("check", True), refork=req.get("refork", True),
-                                              async_refork=req.get("async_refork"))
-                        elif op == "check":
-                            out = self.run_check(member=req.get("member"))
-                        elif op == "restart":
-                            out = self.restart()
-                        elif op == "server":
-                            self.refork_join()
-                            out = self.server_op(req.get("action", "status"), req.get("member"), bool(req.get("resume")))
-                        elif op == "mem":
-                            out = (f"repl {self.repl_mb():.0f} MB (budget {self.cfg['repl_budget_mb']}), "
-                                   f"servers {self.servers_mb():.0f} MB")
-                        else:
-                            reply(False, f"unknown op {op!r}")
-                            return
-                    reply(True, out)
+                    self.last_used = time.time()
+                    self.busy += 1
+                    try:
+                        out = self.dispatch(op, req)
+                    finally:
+                        self.busy -= 1
+                        self.last_used = time.time()
+                    if out is None:
+                        reply(False, f"unknown op {op!r}")
+                    else:
+                        reply(True, out)
             except Exception as e:  # a broken eval must not kill the daemon
                 try:
                     reply(False, f"{type(e).__name__}: {e}")
                 except OSError:
                     pass
+
+    def dispatch(self, op: str, req: dict) -> str | None:
+        with self._work:   # eval is inside the lock too: its answer must not straddle a reload
+            if op == "eval":
+                out = self.repl.command(req["expr"], timeout=req.get("timeout") or None)
+            elif op == "reload":
+                out = self.reload(do_check=req.get("check", True), refork=req.get("refork", True),
+                                  async_refork=req.get("async_refork"))
+            elif op == "check":
+                out = self.run_check(member=req.get("member"))
+            elif op == "restart":
+                out = self.restart()
+            elif op == "server":
+                self.refork_join()
+                out = self.server_op(req.get("action", "status"), req.get("member"), bool(req.get("resume")))
+            elif op == "mem":
+                out = (f"repl {self.repl_mb():.0f} MB (budget {self.cfg['repl_budget_mb']}), "
+                       f"servers {self.servers_mb():.0f} MB")
+            else:
+                return None
+        return out
 
     def run(self) -> None:
         write_atomic(os.path.join(self.dir, "pid"), str(os.getpid()))
@@ -1064,5 +1110,5 @@ class Session:
             if not self.keep_servers:
                 self.servers_stop_all()
             self.repl.stop()
-            self.set_status("stopped")
+            self.set_status(getattr(self, "stop_reason", "stopped"))
             self._unlink(os.path.join(self.dir, "pid"))

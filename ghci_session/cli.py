@@ -136,6 +136,16 @@ def cmd_status(conf, args) -> int:
     names = [pick(conf, args.target)] if args.target else [s for s in config.session_names(conf) if pid_of(conf, s)]
     if not names:
         print("no session running")
+    if not args.target:   # say why a session that was running is not: it was stopped for being idle
+        for name in config.session_names(conf):
+            if not pid_of(conf, name):
+                try:
+                    with open(os.path.join(state(conf, name), "status")) as fh:
+                        first = fh.readline().strip()
+                except OSError:
+                    continue
+                if first.startswith("stopped") and first != "stopped":
+                    print(f"{name}: {first}")
     left = gc.find(conf)
     k = len(left["daemons"]) + len(left["servers"]) + len(left["builds"])
     if k:
@@ -229,6 +239,57 @@ def cmd_compose(conf, args) -> int:
     return cmd_start(conf, argparse.Namespace(target=name))
 
 
+def autostop_plan(infos: list[dict], max_mem_mb: float, idle_mins: float, include_serving: bool) -> tuple[float, list[dict], list[tuple[dict, str]]]:
+    """Which sessions to stop: (total MB, to stop, [(session, why not)]). The longest-idle go first, until the
+    total is back under the limit; with no limit (0), every eligible one goes."""
+    total = sum(i["repl_mb"] + i["servers_mb"] for i in infos)
+    stop, spared = [], []
+    left = total
+    for i in sorted(infos, key=lambda i: -i["idle_s"]):
+        why = ("busy" if i["busy"] else f"used {i['idle_s'] / 60:.0f} min ago" if i["idle_s"] < idle_mins * 60
+               else f"serving {', '.join(i['serving'])}" if i["serving"] and not include_serving else None)
+        if why:
+            spared.append((i, why))
+        elif max_mem_mb > 0 and left <= max_mem_mb:
+            spared.append((i, "memory is back within the limit"))
+        else:
+            stop.append(i)
+            left -= i["repl_mb"] + i["servers_mb"]
+    return total, stop, spared
+
+
+def cmd_autostop(conf, args) -> int:
+    """Stop sessions nobody is using. A session is idle from its last client command or source change; one that
+    is busy, or serving, is left alone (a server is in use by whoever is connected to it)."""
+    infos = []
+    for name in config.session_names(conf):
+        if pid_of(conf, name):
+            try:
+                infos.append(json.loads(request(conf, name, {"op": "info"}, timeout=60)["out"]))
+            except (SystemExit, OSError, ValueError, KeyError):
+                pass
+    total, stop, spared = autostop_plan(infos, args.max_mem_mb, args.idle_mins, args.include_serving)
+    limit = f"limit {args.max_mem_mb:.0f} MB" if args.max_mem_mb > 0 else "no memory limit: every idle session goes"
+    print(f"autostop: {len(infos)} session(s) using {total:.0f} MB ({limit}; idle after {args.idle_mins:g} min)")
+    if args.max_mem_mb > 0 and total <= args.max_mem_mb:
+        print("autostop: within the limit -- nothing to stop")
+        return 0
+    for i, why in spared:
+        print(f"autostop: keeping {i['session']} ({i['repl_mb'] + i['servers_mb']:.0f} MB): {why}")
+    for i in stop:
+        mb = i["repl_mb"] + i["servers_mb"]
+        print(f"autostop: {'would stop' if args.dry_run else 'stopping'} {i['session']} (idle {i['idle_s'] / 60:.0f} min, {mb:.0f} MB)")
+        if not args.dry_run:
+            try:
+                request(conf, i["session"], {"op": "stop", "reason": f"stopped by autostop after {i['idle_s'] / 60:.0f} min idle; `ghci-session start {i['session']}`"}, timeout=30)
+            except (SystemExit, OSError):
+                pass
+    after = total - sum(i["repl_mb"] + i["servers_mb"] for i in stop)
+    if args.max_mem_mb > 0 and after > args.max_mem_mb:
+        print(f"autostop: still {after:.0f} MB, over the limit -- nothing else is eligible")
+    return 0
+
+
 def cmd_log(conf, args) -> int:
     name = pick(conf, args.target)
     path = os.path.join(state(conf, name), args.which)
@@ -311,6 +372,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-n", type=int, default=40)
     p.set_defaults(fn=cmd_log)
     add("list", cmd_list, "the configured targets", target=False)
+    p = sub.add_parser("autostop", help="stop idle sessions (all of them, or until memory is under --max-mem-mb)")
+    p.add_argument("--max-mem-mb", type=float, default=0, help="only stop while the sessions' total is over this (0: no limit)")
+    p.add_argument("--idle-mins", type=float, default=30, help="unused this long counts as idle (default 30)")
+    p.add_argument("--include-serving", action="store_true", help="also stop sessions with a running server")
+    p.add_argument("-n", "--dry-run", action="store_true")
+    p.set_defaults(fn=cmd_autostop)
     p = sub.add_parser("gc", help="reap orphaned daemons, servers and build processes of THIS project; prune old state")
     p.add_argument("-n", "--dry-run", action="store_true")
     p.add_argument("--days", type=float, default=0, help="also prune state dirs of sessions idle longer than this")

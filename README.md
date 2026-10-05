@@ -79,6 +79,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
 | `hygiene` | `false` | build the C libraries, prune CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
+| `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `load_timeout`, `eval_timeout` | 900, 600 | seconds |
@@ -97,6 +98,7 @@ eval EXPR [-s SESSION]
 compose SESSION [MEMBERS...] [--add M] [--remove M]
 server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
 gc [-n] [--days N]
+autostop [--max-mem-mb N] [--idle-mins M] [--include-serving] [-n]
 mem | log [FILE] [-s SESSION] | list | init
 ```
 
@@ -146,6 +148,19 @@ A target's `server` is run as a forked child of the repl (`GHC.Hygiene.Zygote`),
 - **The child is a fork without an exec.** On macOS, libraries that are not fork-safe (Accelerate/LAPACK, GSL) crash
   in it silently: do that work in `prefork`, in the parent, and let the child serve the result.
 - A composed session's servers outlive a member change (the new repl adopts them); every session stops its servers when it stops.
+
+## Idle sessions
+
+A warm repl is hundreds of MB to several GB held for as long as you leave it. Two ways to give it back:
+
+- `"idle_stop_mins": 60` -- the session stops itself, and `status` then says why
+  (`stopped: idle for 60 min (idle_stop_mins); ghci-session start lib`).
+- `ghci-session autostop [--max-mem-mb N] [--idle-mins 30]` -- stop the idle sessions of this project, longest idle
+  first: all of them, or only until their total is under `N`. Meant for a cron job or a pre-build hook; `-n` shows the plan.
+
+Idle is measured from the last client command or source change, not from the last verdict. A session that is busy
+(a reload, a check, a background re-fork) is never stopped, and one with a running server is kept unless
+`--include-serving`: a server is in use by whoever is connected to it, which the session cannot see.
 
 ## Leftovers: `gc`
 
@@ -203,7 +218,7 @@ tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1, ~1 min: a
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, unit and end-to-end tests.
-Not carried over from `tools/msq`: the idle auto-stop, the static-interpreter experiment, and its project-specific commands. Linux: the C builds
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop, unit and
+end-to-end tests. Not carried over from `tools/msq`: the static-interpreter experiment, and its project-specific commands. Linux: the C builds
 are skipped (the offsets come from a Mach-O dylib); the session itself should run but is untested there. Port
 verification needs `lsof`. Next: move `tools/msq` onto this and delete the copy.

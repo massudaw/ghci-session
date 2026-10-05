@@ -151,6 +151,51 @@ class GcTests(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(t, ".ghci-session", "b")))
 
 
+class IdleTests(unittest.TestCase):
+    def info(self, name, idle_min, mb, busy=False, serving=()):
+        return {"session": name, "idle_s": idle_min * 60, "busy": busy, "repl_mb": mb, "servers_mb": 0, "serving": list(serving)}
+
+    def test_plan_stops_longest_idle_until_under_the_limit(self):
+        from ghci_session.cli import autostop_plan
+        infos = [self.info("a", 40, 1000), self.info("b", 90, 2000), self.info("c", 5, 500),
+                 self.info("d", 300, 800, busy=True), self.info("e", 200, 700, serving=["e"])]
+        total, stop, spared = autostop_plan(infos, 3500, 30, False)
+        self.assertEqual(total, 5000)
+        self.assertEqual([i["session"] for i in stop], ["b"])            # 5000 -> 3000: enough
+        why = {i["session"]: w for i, w in spared}
+        self.assertEqual(why["d"], "busy")
+        self.assertIn("serving", why["e"])
+        self.assertIn("min ago", why["c"])
+        self.assertIn("within the limit", why["a"])
+        # no limit: every eligible one
+        self.assertEqual([i["session"] for i in autostop_plan(infos, 0, 30, False)[1]], ["b", "a"])
+        self.assertEqual([i["session"] for i in autostop_plan(infos, 0, 30, True)[1]], ["e", "b", "a"])
+
+    def test_a_session_idles_out_only_when_unused_and_not_serving(self):
+        import time
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, {"a": {"idle_stop_mins": 1, "server": {"action": "A.s"}}, "b": {}})
+            s = Session(conf, "a")
+            self.assertFalse(s.idle_stop_due())
+            s.last_used = time.time() - 120
+            self.assertTrue(s.idle_stop_due())
+            s.busy = 1
+            self.assertFalse(s.idle_stop_due())
+            s.busy = 0
+            open(os.path.join(s.dir, "server-a.pid"), "w").write(str(os.getpid()))   # "serving"
+            self.assertFalse(s.idle_stop_due())
+            off = Session(conf, "b")
+            off.last_used = 0
+            self.assertFalse(off.idle_stop_due())
+
+    def test_composed_idle_rule_needs_every_member(self):
+        with tempfile.TemporaryDirectory() as t:
+            ts = {"a": {"idle_stop_mins": 10}, "b": {"idle_stop_mins": 30}, "c": {}}
+            conf = make(t, ts, sessions={"ab": ["a", "b"], "ac": ["a", "c"]})
+            self.assertEqual(config.resolve(conf, "ab")["idle_stop_mins"], 30)
+            self.assertEqual(config.resolve(conf, "ac")["idle_stop_mins"], 0)
+
+
 class VerdictTests(unittest.TestCase):
     def session(self, t):
         return Session(make(t), "lib")

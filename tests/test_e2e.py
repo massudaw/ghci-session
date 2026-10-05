@@ -182,6 +182,29 @@ class EndToEnd(unittest.TestCase):
         time.sleep(1.0)
         self.assertEqual(self.served(), a)
 
+        # idle: `autostop` stops what nobody is using, and a session with `idle_stop_mins` stops itself
+        self.assertEqual(self.cli_("start", "dev").returncode, 0)
+        out = self.cli_("autostop", "--idle-mins", "60").stdout
+        self.assertIn("keeping dev", out)                       # just started: not idle
+        self.assertIsNotNone(self.status())
+        out = self.cli_("autostop", "--idle-mins", "0", "-n").stdout
+        self.assertIn("would stop dev", out)
+        self.assertIn("stopping dev", self.cli_("autostop", "--idle-mins", "0").stdout)
+        time.sleep(2.0)
+        self.assertIn("stopped by autostop", self.cli_("status").stdout)
+        cfgp = os.path.join(self.proj, "ghci-session.json")
+        with open(cfgp) as fh:
+            c = json.load(fh)
+        c["targets"]["extra"]["idle_stop_mins"] = 0.05           # 3 s
+        with open(cfgp, "w") as fh:
+            json.dump(c, fh)
+        self.assertEqual(self.cli_("start", "extra").returncode, 0)
+        self.assertEqual(self.cli_("eval", "Extra.shout", "-s", "extra").stdout.strip(), '"HELLO!"')
+        deadline = time.time() + 30
+        while time.time() < deadline and "idle for" not in self.cli_("status").stdout:
+            time.sleep(0.5)
+        self.assertIn("extra: stopped: idle for", self.cli_("status").stdout)
+
 
 def run(*argv, cwd):
     return subprocess.run(list(argv), cwd=cwd, capture_output=True, text=True, timeout=900)

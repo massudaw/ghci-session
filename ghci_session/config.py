@@ -31,6 +31,7 @@ DEFAULTS = {
     "auto_reload": True,     # reload when a watched file changes
     "watch_ext": [".hs", ".hs-boot", ".c", ".h", ".cabal"],
     "debounce": 0.4,
+    "idle_stop_mins": 0,     # the session stops itself after this long unused (0: never); not while it serves
     "async_refork": False,   # a reload returns at its verdict and re-forks the servers in the background
     "fingerprint_files": [], # extra files whose content is part of a server's code (a C bundle, say)
 }
@@ -156,6 +157,9 @@ def resolve(conf: dict, session: str) -> dict:
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)
     cfg["auto_reload"] = any(t["auto_reload"] for t in ts) if ts else True
+    # a composed session idles out only if every member agrees to, at the longest of their waits
+    mins = [t["idle_stop_mins"] for t in ts]
+    cfg["idle_stop_mins"] = max(mins) if mins and all(m > 0 for m in mins) else 0
     cfg["async_refork"] = any(t["async_refork"] for t in ts)
     cfg["checks"] = [c for m, t in zip(members, ts) for c in _checks_of(m, t)]
     servers = []
