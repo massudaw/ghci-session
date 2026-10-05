@@ -67,6 +67,10 @@ was not always, and the breakdown is how each of these was found:
 - 0.4-0.8 s of every reload went to asking the OS for the repl's memory footprint, three times, inline. It is now
   sampled once, after the reload returns, and reused by the next reload's budget check.
 - 0.65 s of every save was the watcher's poll and debounce. Now a kernel file event and a 50 ms quiet period.
+- Every reload re-issued the session's `:module +` imports (40 of them, 0.1 s): now only after a reload that failed,
+  which is the only kind that drops them.
+- The script that prepares the pruner ran `nm` on the RTS library once per symbol, sixteen times, before looking at
+  whether anything was stale: 12 s of every boot of a project that used it. One listing per run: 0.45 s.
 - The pruner's cost is not the pruning. Finding and unlinking the superseded CAFs is microseconds (5,549 of them
   in 0.02 s on a 98-module session); the major GC that follows is all of it (0.5 s at 250 MB live). It runs only
   when something was unlinked, and it shows in the log, not in `[time]`, when it follows an `eval`.
@@ -140,6 +144,8 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `modules` | `[]` | `:module +` after every load |
 | `prebuild` | none | a shell command run before every boot of the repl (build a C bundle, generate code); a failure is `PREBUILD-ERROR` |
 | `preload` | `[]` | GHCi expressions run *before* the imports (e.g. `dlopen` a C bundle: importing an `-fobject-code` module links its objects there and then) |
+| `warm` | `[]` | expressions evaluated in the background after a reload that ran no check (`--no-check`, `watch_check` off), e.g. `"My.thing `seq` ()"`: GHCi links the reloaded code, and the unlink and its GC run, while you read the verdict rather than on your next command |
+| `ghc_jobs` | `0` | `-jN` for GHCi's compiles. It helps only a reload that recompiles many modules; on a 98-module session an interface change recompiled two (GHC's recompilation avoidance) and `-j8` changed nothing |
 | `check` / `checks` | none | `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
@@ -171,7 +177,7 @@ target as much as the edit.
 ## Commands
 
 ```
-start|stop|restart|status [-d] [SESSION]
+start [--no-check] | stop | restart | status [-d] [SESSION]
 reload [--no-check] [--no-refork] [--async-refork] [SESSION]
 check [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]

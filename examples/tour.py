@@ -44,7 +44,7 @@ def config(push_port: int) -> dict:
         "status_url": f"http://127.0.0.1:{push_port}/push",
         "targets": {
             # the main one: a check, a server with something slow to do before it forks, a prebuild, a placeholder
-            "hello": {**hello, "env": {"HELLO_SESSION": "{session}"},
+            "hello": {**hello, "env": {"HELLO_SESSION": "{session}"}, "warm": "Hello.greeting `seq` ()",
                       "prebuild": "date > {state}/prebuilt.txt",
                       "server": {"action": "Hello.serve", "env": {"HELLO_OUT": "{state}/hello.out"},
                                  "prefork": "Control.Concurrent.threadDelay 2000000"}},
@@ -213,6 +213,9 @@ class Tour:
         self.cmd("status -d", "status", "-d", "hello", expect="loaded=")
         self.cmd("start again (already running)", "start", "hello", expect="already running")
         self.cmd("stop", "stop", "hello", expect="stopped")
+        self.cmd("start --no-check (up at the compile verdict)", "start", "--no-check", "hello", expect="CHECK SKIPPED")
+        self.cmd("  check, when wanted", "check", "hello", expect="[PASS] table")
+        self.cmd("  stop", "stop", "hello", expect="stopped", note="")
         self.cmd("start hello (WARM: objects on disk)", "start", "hello", expect="CHECK-PASS")
         del out
 
@@ -235,6 +238,9 @@ class Tour:
         j = self.status("hello")
         self.step("  status.json: kind OK, members and counts as data", 0,
                   j["kind"] == "OK" and j["ok"] and j["stale"] == 0 and isinstance(j["members"], list), f"gen={j['generation']}")
+        time.sleep(0.8)
+        self.step("  ... and the reloaded code was linked in the background (warm)", 0,
+                  "[warm]" in self.read(os.path.join(self.state, "hello", "daemon.log")))
         self.cmd("reload (the check runs again)", "reload", expect="CHECK-PASS")
         self.step("  status.json: kind CHECK-PASS, one entry per member", 0,
                   self.status("hello")["kind"] == "CHECK-PASS" and [m["member"] for m in self.status("hello")["members"]] == ["hello"])

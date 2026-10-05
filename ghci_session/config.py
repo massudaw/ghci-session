@@ -18,6 +18,8 @@ DEFAULTS = {
     "modules": [],           # `:module +` after every load
     "prebuild": None,        # a shell command run before every boot of the repl (build a C bundle, generate code)
     "preload": [],           # GHCi expressions run BEFORE the module imports (dlopen a C bundle, set capabilities)
+    "warm": [],              # expressions evaluated in the background after a reload that ran no check: they make
+                             # GHCi link the reloaded code (name something from your modules: "My.thing `seq` ()")
     "check": None,           # {"expr": ..., "pass": regex, "fail": regex, "log": file the check writes, "name": label}
     "checks": [],            # several of them
     "server": None,          # {"action": IO (), "port": n, "env": {}, "prefork": IO (), "serve_on_load": bool,
@@ -27,6 +29,7 @@ DEFAULTS = {
     "eval_timeout": 600,
     "repl_budget_mb": 6144,  # past this a reload is a restart (0 disables); GHCi never gives memory back
     "rts_flags": "-c",       # GHCi's own RTS flags ("" or "none" turns the wrapper off)
+    "ghc_jobs": 0,           # -jN for GHCi's own compiles (a reload that recompiles many modules); 0: GHC's default, one
     "capabilities": 0,       # setNumCapabilities in the repl (0: leave GHCi's single one)
     "hygiene_module": "GHC.Hygiene",        # where pruneCafs is, if your project re-exports or carries its own
     "zygote_module": "GHC.Hygiene.Zygote",  # likewise zygoteSpec / zygoteFork / zygoteStop / ZygoteChild / zcPid
@@ -85,6 +88,8 @@ def load(root: str) -> dict:
             raise ConfigError(f"target {name!r}: unknown key(s) {sorted(unknown)}")
         if isinstance(cfg["units"], str):
             cfg["units"] = cfg["units"].split()
+        if isinstance(cfg["warm"], str):
+            cfg["warm"] = [cfg["warm"]]
         targets[name] = cfg
     sessions = raw.get("sessions") or {}
     for s, members in sessions.items():
@@ -165,14 +170,14 @@ def resolve(conf: dict, session: str) -> dict:
     if ts:
         cfg.update({k: ts[0][k] for k in ("repl", "cabal_args", "rts_flags", "debounce", "poll_interval", "watcher", "prebuild", "status_url", "hygiene_module",
                                           "zygote_module", "hygiene_build", "handover_env")})
-    for key in ("units", "watch", "modules", "preload", "watch_ext", "fingerprint_files"):
+    for key in ("units", "watch", "modules", "preload", "watch_ext", "fingerprint_files", "warm"):
         cfg[key] = union(key) if ts else list(DEFAULTS[key])
     cfg["env"] = {}
     for t in ts:
         cfg["env"].update(t["env"])   # a member's env reaches the repl (its check reads it) AND its own server
     cfg["prune_gc_idle_s"] = ts[0]["prune_gc_idle_s"] if ts else DEFAULTS["prune_gc_idle_s"]
     cfg["unlink_after"] = ts[0]["unlink_after"] if ts else DEFAULTS["unlink_after"]
-    for key in ("load_timeout", "eval_timeout", "repl_budget_mb", "capabilities"):
+    for key in ("load_timeout", "eval_timeout", "repl_budget_mb", "capabilities", "ghc_jobs"):
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)
     cfg["auto_reload"] = any(t["auto_reload"] for t in ts) if ts else True

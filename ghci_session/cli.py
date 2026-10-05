@@ -89,7 +89,8 @@ def cmd_start(conf, args) -> int:
         except OSError:
             pass
     log = open(os.path.join(d, "daemon.out"), "ab")
-    subprocess.Popen([sys.executable, "-m", "ghci_session", "--root", conf["root"], "_daemon", name],
+    subprocess.Popen([sys.executable, "-m", "ghci_session", "--root", conf["root"], "_daemon", name,
+                      *(["--no-check"] if getattr(args, "no_check", False) else [])],
                      cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))), stdout=log, stderr=log,
                      stdin=subprocess.DEVNULL, start_new_session=True)
     print(f"{name}: booting (log: {os.path.relpath(os.path.join(d, 'daemon.log'))})", file=sys.stderr)
@@ -236,7 +237,7 @@ def cmd_compose(conf, args) -> int:
     if pid_of(conf, name):
         cmd_stop(conf, argparse.Namespace(target=name, keep_servers=True))
     print(f"{name} members: {', '.join(new) or '(none)'}")
-    return cmd_start(conf, argparse.Namespace(target=name))
+    return cmd_start(conf, argparse.Namespace(target=name, no_check=getattr(args, "no_check", False)))
 
 
 def autostop_plan(infos: list[dict], max_mem_mb: float, idle_mins: float, include_serving: bool) -> tuple[float, list[dict], list[tuple[dict, str]]]:
@@ -337,7 +338,8 @@ def main(argv: list[str] | None = None) -> int:
         p.set_defaults(fn=fn)
         return p
 
-    add("start", cmd_start, "boot the target's repl in a background daemon")
+    p = add("start", cmd_start, "boot the target's repl in a background daemon")
+    p.add_argument("--no-check", action="store_true", help="up at the compile verdict; run the checks later with `check`")
     add("stop", cmd_stop, "stop the daemon and its repl")
     add("restart", cmd_simple("restart"), "boot a fresh repl")
     p = add("status", cmd_status, "the last verdict")
@@ -359,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("members", nargs="*")
     p.add_argument("--add", action="append")
     p.add_argument("--remove", action="append")
+    p.add_argument("--no-check", action="store_true", help="restart at the compile verdict")
     p.set_defaults(fn=cmd_compose)
     add("mem", cmd_simple("mem"), "the repl process tree's memory")
     p = sub.add_parser("eval", help="evaluate an expression in the warm repl")
@@ -385,6 +388,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("init", help="write a ghci-session.json here").set_defaults(fn=None, cmd="init")
     p = sub.add_parser("_daemon")
     p.add_argument("target")
+    p.add_argument("--no-check", action="store_true")
 
     args = ap.parse_args(argv)
     if args.cmd == "init":
@@ -396,6 +400,6 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ghci-session: {e}", file=sys.stderr)
         return 2
     if args.cmd == "_daemon":
-        Session(conf, args.target).run()
+        Session(conf, args.target, boot_check=not args.no_check).run()
         return 0
     return args.fn(conf, args)

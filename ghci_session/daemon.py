@@ -156,7 +156,8 @@ def ghc_version() -> tuple:
 
 
 class Session:
-    def __init__(self, conf: dict, name: str):
+    def __init__(self, conf: dict, name: str, boot_check: bool = True):
+        self.boot_check = boot_check    # `start --no-check`: up at the compile verdict
         self.conf = conf
         self.name = name
         self.cfg = config.resolve(conf, name)
@@ -326,6 +327,8 @@ class Session:
         if cfg["rts_flags"] not in ("", "none"):
             cmd += f" --with-repl={os.path.join(PKG_DIR, 'bin', 'ghci-rts.sh')}"
         cmd += " --repl-options=-fdiagnostics-color=never"
+        if int(cfg["ghc_jobs"]) > 0:
+            cmd += f" --repl-options=-j{int(cfg['ghc_jobs'])}"
         if cfg["hygiene"] or cfg["servers"]:
             # object code: CAFs of interpreted code are not prunable by address, and a server's code is its objects.
             # Its own -odir (relative: under each unit's package dir) so `cabal build` is not disturbed.
@@ -535,6 +538,27 @@ class Session:
                 self.gc_due = True
         except Exception as e:  # noqa: BLE001
             self.log(f"unlink_cafs failed: {e}")
+
+    def warm_async(self) -> None:
+        """After a reload that evaluated nothing (no check): evaluate the session's `warm` expressions in the
+        background, so GHCi links the reloaded code -- and the unlink and its GC happen -- while the verdict
+        is being read, not on the first command that follows. A command that arrives first simply runs
+        first; this never makes anything wait longer than it would have."""
+        def go():
+            with self._work:
+                if self.stopping.is_set() or self.evaluated or not (self.repl and self.repl.alive):
+                    return
+                try:
+                    t0 = time.time()
+                    for expr in self.cfg["warm"]:
+                        self.repl.command(expr, timeout=120)
+                    self.evaluated = True
+                    self.unlink_cafs()
+                    self.log(f"[warm] {time.time() - t0:.2f}s after a compile-only reload")
+                except Exception as e:  # noqa: BLE001
+                    self.log(f"warm failed: {e}")
+
+        threading.Thread(target=go, daemon=True).start()
 
     def collect(self) -> None:
         """The major GC that returns what was unlinked, and the live heap after it."""
@@ -1085,7 +1109,8 @@ class Session:
             self.cwd = self.repl.command(":!pwd", timeout=60).strip().splitlines()[-1] or self.root
         except Exception:  # noqa: BLE001
             self.cwd = self.root
-        self.after_load(out, t0=t0)
+        self.context_ok = True
+        self.after_load(out, do_check=self.boot_check, t0=t0)
 
     def restart(self, refork: bool = True) -> str:
         """A fresh repl. The servers that were running come back on the new code (a plain session's children
@@ -1122,6 +1147,8 @@ class Session:
             out = self._reload(do_check, refork, async_refork)
             self.phases_done("reload", t0)
         self.mem_sample_async()
+        if self.cfg["warm"] and not self.evaluated and self.compiled():
+            self.warm_async()
         if self._refork_pending is not None:   # only now: the verdict it amends is on disk
             self._refork_thread, self._refork_pending = self._refork_pending, None
             self._refork_thread.start()
@@ -1147,11 +1174,17 @@ class Session:
             self.set_status(f"DEAD: {e}")
             return str(e)
         write_atomic(os.path.join(self.dir, "reload.log"), out)
-        try:
-            with self.phase("post_load"):
-                self.post_load(self.repl)
-        except Exception as e:  # noqa: BLE001
-            self.log(f"post_load after reload failed: {e}")
+        # A reload that succeeds keeps GHCi's context (imports, prompt, buffering); one that fails drops the
+        # imports ("Failed, unloaded all modules"). So the ~40 `:module +` of a big session are re-issued only
+        # after a failure -- they were 0.1 s of every reload.
+        failed_now = self.verdict_of(out)[0] != "OK"
+        if not failed_now and not self.context_ok:
+            try:
+                with self.phase("post_load"):
+                    self.post_load(self.repl)
+            except Exception as e:  # noqa: BLE001
+                self.log(f"post_load after reload failed: {e}")
+        self.context_ok = not failed_now
         self.unlink_due, self.evaluated = True, self.cfg["unlink_after"] == "reload"
         with self.phase("unlink"):
             self.unlink_cafs()   # "reload": now, which reaches the generation BEFORE the one just replaced
