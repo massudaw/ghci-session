@@ -1,0 +1,226 @@
+"sprinkler-solver-estela/vault/rooms/Social Studies Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/activities/Graph Reader.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/concepts/Place Value.md"
+  s_007485e9a70e7e::t_f9c2b1b4b645cd 1-37
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_9e401ffc0efb85 12,14
+"sprinkler-solver-estela/vault/concepts/Verbs and Tenses.md"
+  s_007485e9a70e7e::t_2f0939b16fd1c4 1-53
+"sprinkler-solver-estela/vault/activities/Clock Tower.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Shape Hunt.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/rooms/Grammar Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/concepts/National Symbols.md"
+  s_007485e9a70e7e::t_9c58f2bf9883e3 1-48
+"sprinkler-solver-estela/vault/concepts/Chinese Words.md"
+  s_007485e9a70e7e::t_0b3af5a23e0657 1-51
+"sprinkler-solver-estela/vault/concepts/Chinese Measure Words.md"
+  s_007485e9a70e7e::t_6e161c93601573 52
+  s_007485e9a70e7e::t_33f0d079f542fc 1-51,53
+"sprinkler-solver-estela/vault/code/Game listen.md"
+  s_007485e9a70e7e::t_c3de3f9b41986b 1-8
+  s_007485e9a70e7e::t_7566c76237021a 9-12
+"sprinkler-solver-estela/vault/code/Game order.md"
+  s_007485e9a70e7e::t_c3de3f9b41986b 10
+  s_007485e9a70e7e::t_7566c76237021a 13
+sprinkler-solver-estela/vault/check_levels.py
+  s_007485e9a70e7e::t_7800ce84c6be34 13-21,35,68-105
+"sprinkler-solver-estela/vault/activities/Chinese Reading.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+sprinkler-solver-estela/vault/activities/Festivals.md
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-13
+"sprinkler-solver-estela/vault/activities/Joining Words.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+sprinkler-solver-estela/vault/rooms/Library.md
+  s_007485e9a70e7e::t_9e401ffc0efb85 6
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_18190b4dfd3f3d 269,271,287,291,330,335,344,348
+  s_007485e9a70e7e::t_901c7fb2eeca23 3-4,10,17-20,24,28-29,42,46,49,53-54,58-59,62-65,67,73,80,82,87,89,93,104,108-109,140,220-221,226-227,232-233,235,258,263,266,268,270,273,288,290,296,300,304,307,311-312,314,319-320,327,329,337,351,353,365,394-395,398-399,409,411-413,417,419-420,422,425
+"sprinkler-solver-estela/vault/activities/Chinese Sentences.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Money Shop.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Punctuation Patrol.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/rooms/Reading Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/concepts/Festivals and Customs.md"
+  s_007485e9a70e7e::t_93c21a32c9651e 27
+  s_007485e9a70e7e::t_bcfa7c31ab2188 1-26,28-49
+"sprinkler-solver-estela/vault/concepts/Chinese Comprehension.md"
+  s_007485e9a70e7e::t_b91933f151e846 1-141
+"sprinkler-solver-estela/vault/concepts/Chinese Oral.md"
+  s_007485e9a70e7e::t_8dfe0867f7ad97 1-50
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_c3de3f9b41986b 182,277-283,327-330
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_7566c76237021a 13
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_901c7fb2eeca23 138,222-252,281-287,290,293,295-297,299,989-1208
+  s_007485e9a70e7e::t_dc0dd0f69957dc 1209
+sprinkler-solver-estela/vault/activities/Comprehension.md
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/rooms/Oral Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+sprinkler-solver-estela/vault/concepts/Punctuation.md
+  s_007485e9a70e7e::t_5e7f6a6e1ce360 1-50
+"sprinkler-solver-estela/vault/concepts/Singapore Our Home.md"
+  s_007485e9a70e7e::t_88e06b2d807567 1-49
+sprinkler-solver-estela/web/parent.html
+  s_007485e9a70e7e::t_9a24df522ed5d0 222
+  s_007485e9a70e7e::t_b0197629481fdc 35,59,74,115,159,188,210-221,223-228,253,297,302
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_901c7fb2eeca23 375,485-486,493-498,543,548,570-571,581-582,1138
+"sprinkler-solver-estela/vault/activities/Read Aloud.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/concepts/Hanyu Pinyin.md"
+  s_007485e9a70e7e::t_7695426b2552d7 1-50
+"sprinkler-solver-estela/vault/routines/Morning Routine.md"
+  s_007485e9a70e7e::t_c3de3f9b41986b 6,8-20
+"sprinkler-solver-estela/vault/concepts/Story Structure.md"
+  s_007485e9a70e7e::t_bb5d400ee34e56 50
+  s_007485e9a70e7e::t_cb14f6cd478e07 1-49,51
+"sprinkler-solver-estela/vault/rooms/Measure Lab.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/activities/Fraction Fun.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Measure It.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Values in Action.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-13
+"sprinkler-solver-estela/vault/rooms/Portuguese Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 6
+"sprinkler-solver-estela/vault/activities/Measure Words.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/concepts/Bar Models.md"
+  s_007485e9a70e7e::t_b9c56066006fc2 1-37
+sprinkler-solver-estela/vault/concepts/Measurement.md
+  s_007485e9a70e7e::t_c5f695cbb2c4eb 1-19,21-27,29-34,36-37
+  s_007485e9a70e7e::t_54d6eff03577d7 20,28,35
+"sprinkler-solver-estela/vault/code/Game speak.md"
+  s_007485e9a70e7e::t_7566c76237021a 9-12
+  s_007485e9a70e7e::t_c3de3f9b41986b 1-8
+"sprinkler-solver-estela/vault/activities/Action Words.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/National Symbols.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-13
+"sprinkler-solver-estela/vault/concepts/Good Character.md"
+  s_007485e9a70e7e::t_a08c6d9caf14fb 46
+  s_007485e9a70e7e::t_a54dedf313ffe9 1-45,47
+"sprinkler-solver-estela/vault/activities/Our Singapore.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-13
+"sprinkler-solver-estela/vault/concepts/Chinese Listening Skills.md"
+  s_007485e9a70e7e::t_e17105af7428ed 1-141
+"sprinkler-solver-estela/vault/concepts/Reading Comprehension.md"
+  s_007485e9a70e7e::t_54f09a43957bc6 173
+  s_007485e9a70e7e::t_bb5d400ee34e56 130
+  s_007485e9a70e7e::t_2f344da4ab2a78 1-129,131-172,174-189
+"sprinkler-solver-estela/vault/code/Game p2.md"
+  s_007485e9a70e7e::t_c3de3f9b41986b 1-8
+  s_007485e9a70e7e::t_7566c76237021a 9-12
+sprinkler-solver-estela/.gitignore
+  s_007485e9a70e7e::t_be51b49ae3339f 15
+  s_007485e9a70e7e::t_427969dfd67abe 14
+  s_007485e9a70e7e::t_63ff58dcda38be 16
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_9a24df522ed5d0 570-586
+"sprinkler-solver-estela/vault/rooms/Number Lab.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/activities/Word Power.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Describing Words.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/concepts/Flat and Solid Shapes.md"
+  s_007485e9a70e7e::t_9446e43d5a8350 1-37
+"sprinkler-solver-estela/vault/concepts/Adjectives and Adverbs.md"
+  s_007485e9a70e7e::t_f7505c880a6804 1-52
+"sprinkler-solver-estela/vault/rooms/Chinese Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 6
+"sprinkler-solver-estela/vault/concepts/Prepositions and Conjunctions.md"
+  s_007485e9a70e7e::t_385f904c441926 1-52
+sprinkler-solver-estela/vault/concepts/Fractions.md
+  s_007485e9a70e7e::t_f8156d28ccb6e3 1-37
+"sprinkler-solver-estela/vault/activities/Chinese Read Aloud.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Chinese Listening.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/rooms/Writing Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/concepts/Picture Graphs.md"
+  s_007485e9a70e7e::t_0dc09b4753d61e 1-37
+sprinkler-solver-estela/vault/concepts/Money.md
+  s_007485e9a70e7e::t_aa887570bf9ddd 1-37
+"sprinkler-solver-estela/vault/activities/Naming Words.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Number Detective.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Story Order.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/activities/Word Match.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/rooms/Chinese Studio.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-10
+"sprinkler-solver-estela/vault/rooms/English Room.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 6
+"sprinkler-solver-estela/vault/concepts/Nouns and Pronouns.md"
+  s_007485e9a70e7e::t_0d86bc93f2a3cf 1-52
+"sprinkler-solver-estela/vault/activities/Bar Model Workshop.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+sprinkler-solver-estela/vault/concepts/Time.md
+  s_007485e9a70e7e::t_d0430443e795c6 1-17,19-32,34-37
+  s_007485e9a70e7e::t_9c69e3d9e9f6dc 18,33
+"sprinkler-solver-estela/vault/code/Game match.md"
+  s_007485e9a70e7e::t_7566c76237021a 9-12
+  s_007485e9a70e7e::t_c3de3f9b41986b 1-8
+"sprinkler-solver-estela/vault/activities/Pinyin Tones.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_7566c76237021a 16
+"sprinkler-solver-estela/vault/Primary 2 Curriculum.md"
+  s_007485e9a70e7e::t_7566c76237021a 1-50
+"sprinkler-solver-estela/vault/activities/Sentence Builder.md"
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+sprinkler-solver-estela/vault/activities/Listening.md
+  s_007485e9a70e7e::t_9e401ffc0efb85 1-14
+"sprinkler-solver-estela/vault/code/Game read.md"
+  s_007485e9a70e7e::t_c3de3f9b41986b 1-8
+  s_007485e9a70e7e::t_7566c76237021a 9-12
+"sprinkler-solver-estela/vault/concepts/Sentence Building.md"
+  s_007485e9a70e7e::t_c6e7c74ba25ca4 26-37
+  s_007485e9a70e7e::t_a6eb5584013173 1-25,38-50
+"sprinkler-solver-estela/vault/concepts/Chinese Sentence Building.md"
+  s_007485e9a70e7e::t_342980c8bf1e80 1-25,27-37,39-50
+  s_007485e9a70e7e::t_6e161c93601573 26,38
+"sprinkler-solver-estela/vault/concepts/Listening Comprehension.md"
+  s_007485e9a70e7e::t_e74691733c5127 1-179
+"sprinkler-solver-estela/vault/concepts/Oral Reading.md"
+  s_007485e9a70e7e::t_349b9f9d88c65b 1-51
+sprinkler-solver-estela/vault/concepts/Vocabulary.md
+  s_007485e9a70e7e::t_9b6540fa9b7b7a 1-50
+sprinkler-solver-estela/vault/plan.json
+  s_007485e9a70e7e::t_7129008f3cdbb1 1
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_c89c451e623f9b 1
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_1a58c72b1f35e0 24-26,32-41,47-50,52-57,62-76,82-88,126-139,148-188,197-203,211,316-329,338-378,387-393,401,580-593,602-642,651-657,665
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b4f144e1d071cd222742fb70677918795eaa4c7a",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
