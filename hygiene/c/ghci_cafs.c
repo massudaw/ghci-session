@@ -33,11 +33,10 @@
  * Not touched: CAFs of package libraries (libHS*), of the current generation,
  * and any whose symbol cannot be resolved (kept).
  *
- * The RTS keeps `dyn_caf_list` and `loaded_objects` private, so they are
- * located by their offset from exported symbols in THIS RTS build (GHS_OFF_*,
- * from `nm` of the RTS dylib: build.sh), checked against four exported symbols
- * before anything is read. The ObjectCode / StgIndStatic layouts are GHC 9.14.1
- * arm64's, measured against its headers.
+ * The RTS keeps `dyn_caf_list` and `loaded_objects` private, so they are found
+ * in the symbol table of the RTS image this process runs (rts_syms.h). The
+ * ObjectCode / StgIndStatic layouts are GHC 9.14.1 arm64's, measured against
+ * its headers.
  */
 #define _DARWIN_C_SOURCE
 #include "Rts.h"
@@ -51,9 +50,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef GHS_OFF_KEEPCAFS
-#error "build with the offsets of the RTS dylib: see build.sh"
-#endif
+#include "rts_syms.h"
 
 #define OC_TYPE 32
 #define OC_NEXT_LOADED 144
@@ -80,18 +77,16 @@ static int value_is_old(uintptr_t c) {
   return Bdescr((StgPtr)p)->gen_no == RtsFlags.GcFlags.generations - 1;
 }
 
-static uintptr_t rts_base(void) {
-  void *k = dlsym(RTLD_DEFAULT, "keepCAFs");
-  void *h = dlsym(RTLD_DEFAULT, "highMemDynamic");
-  void *u = dlsym(RTLD_DEFAULT, "unloadObj");
-  void *l = dlsym(RTLD_DEFAULT, "lookupSymbol");
-  if (!k || !h || !u || !l) return 0;
-  uintptr_t b = (uintptr_t)k - GHS_OFF_KEEPCAFS;
-  if ((uintptr_t)h != b + GHS_OFF_HIGHMEMDYNAMIC || (uintptr_t)u != b + GHS_OFF_UNLOADOBJ
-      || (uintptr_t)l != b + GHS_OFF_LOOKUPSYMBOL) return 0;
-  return b;
+/* The three private things this reads, or 0 when this RTS does not have them by these names. */
+static pthread_mutex_t *rts_sm; static uintptr_t *rts_dyn; static char **rts_loaded;
+static int rts_found(void) {
+  if (!rts_dyn) {
+    rts_sm = (pthread_mutex_t *)ghs_rts_sym("sm_mutex");
+    rts_loaded = (char **)ghs_rts_sym("loaded_objects");
+    rts_dyn = (uintptr_t *)ghs_rts_sym("dyn_caf_list");
+  }
+  return rts_sm && rts_loaded && rts_dyn;
 }
-
 
 /* Images already judged wholly superseded, kept between calls: once true it stays
  * true (a newer definition never goes away), and the judgement is the expensive part. */
@@ -116,36 +111,9 @@ static const struct mach_header_64 *image_by_base(const void *base) {
   return NULL;
 }
 
-/* [lo,hi) of the image's segments, and its symbol table */
 static int image_info(const struct mach_header_64 *h, uintptr_t *lo, uintptr_t *hi,
                       const struct nlist_64 **syms, uint32_t *nsyms, const char **strs) {
-  const struct load_command *lc = (const struct load_command *)(h + 1);
-  const struct segment_command_64 *text = NULL, *linkedit = NULL;
-  const struct symtab_command *st = NULL;
-  uintptr_t mn = (uintptr_t)-1, mx = 0;
-  for (uint32_t i = 0; i < h->ncmds; i++, lc = (const struct load_command *)((const char *)lc + lc->cmdsize)) {
-    if (lc->cmd == LC_SEGMENT_64) {
-      const struct segment_command_64 *sg = (const struct segment_command_64 *)lc;
-      if (!strcmp(sg->segname, "__TEXT")) text = sg;
-      else if (!strcmp(sg->segname, "__LINKEDIT")) linkedit = sg;
-    } else if (lc->cmd == LC_SYMTAB) st = (const struct symtab_command *)lc;
-  }
-  if (!text || !linkedit || !st) return 0;
-  uintptr_t slide = (uintptr_t)h - text->vmaddr;
-  lc = (const struct load_command *)(h + 1);
-  for (uint32_t i = 0; i < h->ncmds; i++, lc = (const struct load_command *)((const char *)lc + lc->cmdsize)) {
-    if (lc->cmd != LC_SEGMENT_64) continue;
-    const struct segment_command_64 *sg = (const struct segment_command_64 *)lc;
-    if (!sg->vmsize || !strcmp(sg->segname, "__PAGEZERO")) continue;
-    if (slide + sg->vmaddr < mn) mn = slide + sg->vmaddr;
-    if (slide + sg->vmaddr + sg->vmsize > mx) mx = slide + sg->vmaddr + sg->vmsize;
-  }
-  uintptr_t le = slide + linkedit->vmaddr - linkedit->fileoff;
-  *lo = mn; *hi = mx;
-  *syms = (const struct nlist_64 *)(le + st->symoff);
-  *nsyms = st->nsyms;
-  *strs = (const char *)(le + st->stroff);
-  return 1;
+  return ghs_image_info(h, lo, hi, syms, nsyms, strs, NULL);
 }
 
 /* Is every exported symbol of this image resolved, newest first, to ANOTHER
@@ -232,14 +200,13 @@ static const char *export_at(Image *im, uintptr_t a) {
   return (lo < im->nexp && im->exps[lo].addr == a) ? im->exps[lo].name : NULL;
 }
 
-/* Returns the number of CAFs unlinked, or -1 when this is not the RTS build the
- * offsets were taken from (nothing is touched then). */
+/* Returns the number of CAFs unlinked, or -1 when this RTS does not have the lists
+ * by the names we know (nothing is touched then). */
 int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
-  uintptr_t b = rts_base();
-  if (!b) return -1;
-  pthread_mutex_t *sm = (pthread_mutex_t *)(b + GHS_OFF_SM_MUTEX);
-  uintptr_t *dyn = (uintptr_t *)(b + GHS_OFF_DYN_CAF_LIST);
-  char **loaded = (char **)(b + GHS_OFF_LOADED_OBJECTS);
+  if (!rts_found()) return -1;
+  pthread_mutex_t *sm = rts_sm;
+  uintptr_t *dyn = rts_dyn;
+  char **loaded = rts_loaded;
 
   /* the temp libraries' handles, newest first (the RTS's own lookup order) */
   void **tmps = NULL; size_t nt = 0, tcap = 0;
@@ -327,12 +294,11 @@ int ghs_prune_cafs(void) { return ghs_prune_cafs_stats(NULL, NULL); }
 
 /* Every CAF the RTS roots, with the nearest symbol dladdr knows (for a heap census by owner:
  * Examples.MMHeap.cafReport). Fills up to `cap` entries; returns how many CAFs there are
- * (-1: not the RTS build the offsets were taken from). The addresses are static closures. */
+ * (-1: an RTS we cannot read). The addresses are static closures. */
 int ghs_caf_list(uintptr_t *addrs, const char **names, int cap) {
-  uintptr_t b = rts_base();
-  if (!b) return -1;
-  uintptr_t *dyn = (uintptr_t *)(b + GHS_OFF_DYN_CAF_LIST);
-  pthread_mutex_t *sm = (pthread_mutex_t *)(b + GHS_OFF_SM_MUTEX);
+  if (!rts_found()) return -1;
+  uintptr_t *dyn = rts_dyn;
+  pthread_mutex_t *sm = rts_sm;
   int n = 0;
   pthread_mutex_lock(sm);
   for (uintptr_t cur = *dyn; cur != LIST_END; cur = *(uintptr_t *)((cur & ~(uintptr_t)3) + CAF_STATIC_LINK)) {

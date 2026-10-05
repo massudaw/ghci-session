@@ -1,10 +1,8 @@
 /* ghs_loader_stats -- what the RTS linker is holding, read from inside the process.
  * A diagnostic for the reload leak: how many objects are loaded (by status and
  * kind), how many bytes of object code they hold, and how many CAFs are rooted on
- * each list. Offsets are from `nm` of the RTS the process runs (the threaded RTS
- * dylib in a dynamic GHCi, the ghc-iserv executable in a static one), so the
- * build script takes the binary as an argument. Prints to stderr, returns the
- * object count (-1: offsets do not match this process). */
+ * each list. The RTS's private lists are found in its mapped image's symbol
+ * table (rts_syms.h). Prints to stderr, returns the object count (-1: not visible). */
 #define _DARWIN_C_SOURCE
 #include <dlfcn.h>
 #include <stdint.h>
@@ -12,9 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef GHS_OFF_KEEPCAFS
-#error "build with offsets: see build.sh"
-#endif
+#include "rts_syms.h"
 #define OC_STATUS 0
 #define OC_TYPE 32
 #define OC_N_SECTIONS 96
@@ -27,13 +23,11 @@
 #define LIST_END 3u
 
 int ghs_loader_stats(void) {
-  void *k = dlsym(RTLD_DEFAULT, "keepCAFs"), *h = dlsym(RTLD_DEFAULT, "highMemDynamic"), *u = dlsym(RTLD_DEFAULT, "unloadObj");
-  if (!k || !h || !u) { fprintf(stderr, "loader_stats: RTS symbols not visible\n"); return -1; }
-  uintptr_t b = (uintptr_t)k - GHS_OFF_KEEPCAFS;
-  if ((uintptr_t)h != b + GHS_OFF_HIGHMEMDYNAMIC || (uintptr_t)u != b + GHS_OFF_UNLOADOBJ) { fprintf(stderr, "loader_stats: offsets do not match\n"); return -1; }
-  char **objects = (char **)(b + GHS_OFF_OBJECTS), **loaded = (char **)(b + GHS_OFF_LOADED_OBJECTS);
-  long n_unl = *(long *)(b + GHS_OFF_N_UNLOADED);
-  uintptr_t *dyn = (uintptr_t *)(b + GHS_OFF_DYN_CAF_LIST), *rev = (uintptr_t *)(b + GHS_OFF_REVERTIBLE);
+  char **objects = (char **)ghs_rts_sym("objects"), **loaded = (char **)ghs_rts_sym("loaded_objects");
+  long *n_unl_p = (long *)ghs_rts_sym("n_unloaded_objects");
+  uintptr_t *dyn = (uintptr_t *)ghs_rts_sym("dyn_caf_list"), *rev = (uintptr_t *)ghs_rts_sym("revertible_caf_list");
+  if (!objects || !loaded || !n_unl_p || !dyn || !rev) { fprintf(stderr, "loader_stats: the RTS's lists are not visible in this process\n"); return -1; }
+  long n_unl = *n_unl_p;
   int n = 0, st[8] = {0}, ty[2] = {0}, nloaded = 0;
   double mb_static = 0, mb_static_unl = 0;
   for (char *oc = *objects; oc; oc = *(char **)(oc + OC_NEXT)) {

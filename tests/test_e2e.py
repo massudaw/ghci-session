@@ -26,7 +26,6 @@ class EndToEnd(unittest.TestCase):
             shutil.copytree(os.path.join(HERE, d), os.path.join(cls.dir, d), ignore=shutil.ignore_patterns("dist-newstyle", ".obj", "clib"))
         for f in ("ghci-session.cabal", "README.md"):
             shutil.copy(os.path.join(HERE, f), os.path.join(cls.dir, f))
-        os.environ["GHCI_SESSION_DATA"] = cls.dir
         cls.cli = os.environ.get("GHCI_SESSION_BIN") or os.path.join(HERE, "bin", "ghci-session")
 
     @classmethod

@@ -21,7 +21,6 @@ import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Daemon (countSub, replace, verdictOf, warningsIn)
 import GhciSession.Json
-import GhciSession.Repl (decode, frameChunks)
 import GhciSession.Sys
 import GhciSession.Watch
 
@@ -53,22 +52,18 @@ run = do
   eq "json: integers print as integers" (encode (JNum 42)) "42"
 
   -- verdicts
-  eq "verdict: loaded" (fst (verdictOf (T.pack "[1 of 1] Compiling M\nOk, one module loaded."))) "OK"
-  eq "verdict: reloaded" (fst (verdictOf (T.pack "Ok, 12 modules reloaded."))) "OK"
-  eq "verdict: an error" (verdictOf (T.pack "src/M.hs:3:1: error: [GHC-1]\n  oops\nFailed, no modules loaded.")) ("COMPILE-ERROR: 1 error(s)", ["src/M.hs:3:1: error: [GHC-1]"])
-  check "verdict: a link failure has no location but is an error" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (T.pack "<no location info>: error:\n  symbol not found")))
-  check "verdict: no verdict at all is not success" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (T.pack "???")))
+  let st m l = JObj [("modules", JNum m), ("loaded", JNum l)]
+      diag sev = JObj [("severity", JStr sev), ("file", JStr "src/M.hs"), ("line", JNum 3), ("col", JNum 1), ("code", JStr "GHC-1"), ("message", JStr "oops\n  more")]
+      facts es ws = JObj [("errors", JNum (fromIntegral (length [ () | e <- es, lookupStr "severity" e == Just "error" ]))), ("warnings", JNum ws), ("diagnostics", JArr es)]
+  eq "verdict: loaded" (fst (verdictOf (facts [] 0) (st 3 3) (T.pack "Ok, three modules loaded."))) "OK"
+  eq "verdict: warnings are not errors" (fst (verdictOf (facts [diag "warning"] 1) (st 3 3) T.empty)) "OK"
+  eq "verdict: an error, from the compiler's record of it" (verdictOf (facts [diag "error"] 0) (st 3 2) T.empty) ("COMPILE-ERROR: 1 error(s)", ["src/M.hs:3:1: error: [GHC-1] oops"])
+  check "verdict: an error GHCi only printed (a link failure) is an error" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (facts [] 0) (st 3 3) (T.pack "<no location info>: error:\n  symbol not found")))
+  check "verdict: a module not loaded is not success, whatever was printed" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (facts [] 0) (st 3 2) (T.pack "???")))
   eq "warnings counted from the verdict" (warningsIn "OK (12 warning(s)) -- CHECK-PASS (1.0s)") 12
   eq "warnings: none" (warningsIn "OK -- CHECK-PASS (1.0s)") 0
   eq "countSub" (countSub ": warning:" "a: warning: x\nb: warning: y") 2
   eq "replace" (replace "  [pending]" "" "OK  [pending]  [more]") "OK  [more]"
-
-  -- framing: a sentinel may straddle two chunks, and whatever follows the last one is still pending
-  let stream = BC.pack "first reply\r\nGHS_READY\r\nsecond\nGHS_READY\nstray"
-      cut n b = if B.null b then [] else let (x, y) = B.splitAt n b in x : cut n y
-  forM_ [1, 3, 7, 1000] $ \n ->
-    eq ("framing: chunks of " ++ show n) ((\(rs, p) -> (rs, BC.dropWhile (== '\n') p)) (frameChunks (cut n stream))) ([BC.pack "first reply\r\n", BC.pack "second\n"], BC.pack "stray")
-  eq "decode: no CR, no colours" (decode (BC.pack "a\r\n\ESC[1;31mred\ESC[0m b")) (T.pack "a\nred b")
 
   -- arguments
   let a = parseArgs ["-s", "-m", "--timeout", "-n", "--add"] ["1+1", "-s", "dev", "--no-check", "--add", "x", "--add", "y", "-5"]

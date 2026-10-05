@@ -52,11 +52,10 @@ data Cfg = Cfg
   , gChecks :: [Check], gServers :: [Server], gEnv :: [(String, String)]
   , gLoadTimeout :: Double, gEvalTimeout :: Double, gBudgetMb :: Double
   , gRtsFlags :: String, gGhcJobs :: Int, gCapabilities :: Int
-  , gHygiene :: Bool, gHygieneBuild :: Bool, gHygieneModule :: String, gZygoteModule :: String
+  , gHygiene :: Bool
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
-  , gEngine :: String
   , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String]
   }
 
@@ -69,13 +68,12 @@ defaults =
   , ("check", JNull), ("checks", JArr []), ("server", JNull), ("env", JObj [])
   , ("load_timeout", JNum 900), ("eval_timeout", JNum 600), ("repl_budget_mb", JNum 6144)
   , ("rts_flags", JStr "-c"), ("ghc_jobs", JNum 0), ("capabilities", JNum 0)
-  , ("hygiene_module", JStr "GHC.Hygiene"), ("zygote_module", JStr "GHC.Hygiene.Zygote")
-  , ("hygiene_build", JBool True), ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
+  , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
   , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False)
   , ("auto_reload", JBool True), ("watch_check", JBool True), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
-  , ("engine", JStr "auto"), ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr [])
+  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr [])
   ]
 
 reserved :: [String]
@@ -110,6 +108,8 @@ loadConf root0 = do
       ts <- forM targets $ \(name, t) -> do
         let merged = foldl (\acc (k, v) -> set k v acc) (JObj defaults) (common ++ fromMaybe [] (obj t))
             unknown = [ k | (k, _) <- fromMaybe [] (obj merged), k `notElem` map fst defaults ]
+        let gone = [ k | k <- unknown, k `elem` ["engine", "hygiene_build", "hygiene_module", "zygote_module"] ]
+        unless (null gone) (Left ("target " ++ show name ++ ": " ++ show gone ++ " no longer exist(s): the session's GHCi is always the engine, and it prunes and forks itself -- remove the key(s)"))
         unless (null unknown) (Left ("target " ++ show name ++ ": unknown key(s) " ++ show unknown))
         Right (name, merged)
       let sessions = [ (s, strs m) | (s, m) <- lookupObj "sessions" raw ]
@@ -232,14 +232,12 @@ resolve conf session = do
         , gEnv = [ (k, ex v) | (k, v) <- foldl mergeEnv [] (map (envOf . (.: "env")) ts) ]
         , gLoadTimeout = maxOf "load_timeout" ts, gEvalTimeout = maxOf "eval_timeout" ts, gBudgetMb = maxOf "repl_budget_mb" ts
         , gRtsFlags = jStr "rts_flags" t0, gGhcJobs = round (maxOf "ghc_jobs" ts), gCapabilities = round (maxOf "capabilities" ts)
-        , gHygiene = any (jBool "hygiene") ts, gHygieneBuild = jBool "hygiene_build" t0
-        , gHygieneModule = jStr "hygiene_module" t0, gZygoteModule = jStr "zygote_module" t0
+        , gHygiene = any (jBool "hygiene") ts
         , gHandoverEnv = hand, gUnlinkAfter = jStr "unlink_after" t0, gPruneGcIdle = jNum "prune_gc_idle_s" t0
         , gAutoReload = null ts || any (jBool "auto_reload") ts
         , gWatchCheck = all (jBool "watch_check") ts, gWatchRefork = all (jBool "watch_refork") ts
         , gReloadOnCommit = any (jBool "reload_on_commit") ts
         , gWatcher = jStr "watcher" t0, gPollInterval = jNum "poll_interval" t0, gDebounce = jNum "debounce" t0
-        , gEngine = jStr "engine" t0
         , gStatusUrl = ex <$> jMaybeStr "status_url" t0
           -- a composed session idles out only if every member agrees to, at the longest of their waits
         , gIdleStopMins = if not (null mins) && all (> 0) mins then maximum mins else 0

@@ -10,35 +10,33 @@
 -- 21 GB). 'pruneCafs' unlinks the superseded ones from the RTS's CAF list and
 -- runs a major GC (when it unlinked anything).
 --
--- The C half is optional ('hygiene/build.sh' builds it, and only against an RTS whose layout it knows): with
--- no library, or a different RTS, this does nothing and says so.
-module GHC.Hygiene (pruneCafs, unlinkCafs, loaderStats) where
+-- The C half is part of the session's engine (@ghci-session-engine@, which is GHCi): these look it up in the
+-- running process. In any other GHCi there is nothing to find, and they do nothing and say so.
+module GHC.Hygiene (pruneCafs, unlinkCafs, loaderStats, engineSymbol) where
 
-import Foreign.C.Types (CInt (..))
-import Foreign.Ptr (FunPtr)
-import System.Directory (doesFileExist)
-import System.Environment (lookupEnv)
+import Control.Exception (SomeException, try)
 import Control.Monad (when)
+import Foreign.C.Types (CInt (..))
+import Foreign.Ptr (FunPtr, nullFunPtr)
 import System.Mem (performMajorGC)
-import System.Posix.DynamicLinker (RTLDFlags (RTLD_LOCAL, RTLD_NOW), dlopen, dlsym)
+import System.Posix.DynamicLinker (DL (Default), dlsym)
 
 foreign import ccall "dynamic" callInt :: FunPtr (IO CInt) -> IO CInt
 
+-- | A function of the engine's C half, if this process is the engine.
+engineSymbol :: String -> IO (Maybe (FunPtr a))
+engineSymbol name = do
+  r <- try (dlsym Default name) :: IO (Either SomeException (FunPtr a))
+  pure (case r of { Right f | f /= nullFunPtr -> Just f; _ -> Nothing })
+
 -- | Unlink the superseded CAFs from the RTS's root list, and nothing else: the number unlinked, or -1 when
--- the library does not know this RTS, or -2 when there is no library to call. This is what makes their
+-- this RTS cannot be read, or -2 when this process is not the engine. This is what makes their
 -- values RECLAIMABLE, and it costs microseconds; the memory comes back at the next major GC, whenever
 -- that is. Call it once the code that replaced them has been linked -- GHCi links a reloaded module on the
 -- first evaluation that needs it, so right after a @:reload@ the generation just replaced does not yet
 -- look superseded.
 unlinkCafs :: IO Int
-unlinkCafs = do
-  dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
-  let path = dir ++ "/libghscafs.dylib"
-  there <- doesFileExist path
-  if not there then pure (-2) else do
-    h <- dlopen path [RTLD_NOW, RTLD_LOCAL]
-    f <- dlsym h "ghs_prune_cafs"
-    fromIntegral <$> callInt f
+unlinkCafs = engineSymbol "ghs_prune_cafs" >>= maybe (pure (-2)) (fmap fromIntegral . callInt)
 
 -- | 'unlinkCafs', then a major GC if it unlinked anything: the memory back NOW, for the price of a
 -- collection of the whole heap (0.2 s at 100 MB live, ~0.9 s at 500 MB).
@@ -50,17 +48,6 @@ pruneCafs = do
 
 -- | What the RTS linker is holding, printed to stderr: objects by status and
 -- kind, bytes of object code, CAFs rooted on each list (hygiene/c/loader_stats.c).
--- -1 when the library is not there or its offsets do not match this process.
+-- -1 when the RTS cannot be read, -2 outside the engine.
 loaderStats :: IO Int
-loaderStats = go ["libghsloader.dylib"]
-  where
-    go [] = pure (-1)
-    go (n : ns) = do
-      dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
-      let path = dir ++ "/" ++ n
-      there <- doesFileExist path
-      if not there then go ns else do
-        h <- dlopen path [RTLD_NOW, RTLD_LOCAL]
-        f <- dlsym h "ghs_loader_stats"
-        r <- fromIntegral <$> callInt f
-        if r >= 0 then pure r else go ns
+loaderStats = engineSymbol "ghs_loader_stats" >>= maybe (pure (-2)) (fmap fromIntegral . callInt)

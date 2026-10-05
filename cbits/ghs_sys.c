@@ -1,6 +1,6 @@
 /* The few things the session tool needs from the OS that GHC's boot libraries do not give it: unix-domain
  * sockets (no `network` dependency), kernel file events, POSIX regular expressions, a fast content hash,
- * a terminal's window size, and a best-effort HTTP POST. Everything returns -1 (or NULL) on failure. */
+ * and a best-effort HTTP POST. Everything returns -1 (or NULL) on failure. */
 #define _GNU_SOURCE
 #include <errno.h>
 #include <fcntl.h>
@@ -11,12 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/un.h>
-#include <termios.h>
 #include <unistd.h>
 
 /* ---- unix sockets ---- */
@@ -58,11 +56,11 @@ int ghs_unix_connect(const char *path) {
   return fd;
 }
 
-/* ---- terminal ---- */
-
-int ghs_set_winsize(int fd, int rows, int cols) {
-  struct winsize w = { (unsigned short)rows, (unsigned short)cols, 0, 0 };
-  return ioctl(fd, TIOCSWINSZ, &w);
+/* A connected pair: the daemon keeps fds[0] (closed on exec) and gives fds[1] to the engine as its standard input. */
+int ghs_socketpair(int *fds) {
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fds) < 0) return -1;
+  fcntl(fds[0], F_SETFD, FD_CLOEXEC);
+  return 0;
 }
 
 /* ---- regular expressions (POSIX extended; on macOS with the enhanced syntax, so \s \d \b work) ---- */

@@ -1,42 +1,46 @@
 {-# OPTIONS_GHC -O2 #-}  -- decoding a reply: -O2 is a third faster here (0.47 -> 0.32 ms for 0.5 MB) and nowhere else
--- | A GHCi behind a pty, framed by a sentinel prompt.
+-- | The session's GHCi: the engine (@engine/GhsEngine.hs@), started by us and met on a socket.
 --
--- Every command written yields exactly one sentinel, so reading until the sentinel is a complete reply. The
--- reader runs on its own thread so a command that prints megabytes cannot deadlock on a full pty buffer.
+-- A request is a length and a payload -- @C@ and a GHCi command, or @Q@ and a query as JSON -- and a reply is
+-- a length, the engine's facts as JSON, and everything written while it ran. Nothing to recognise in the
+-- output, no terminal.
+--
+-- The engine is started in two steps. The build tool is run once with the engine as its repl program and
+-- @GHS_CAPTURE@ set: the engine writes down how it was started and exits, and the build tool with it
+-- ('captureLaunch'). Then we start the engine ourselves with those arguments ('startRepl'). So the process
+-- under the daemon IS GHCi -- its exit status is GHCi's, stopping it is closing its socket -- and a restart
+-- that changes nothing the build tool decides can skip the build tool.
 module GhciSession.Repl
-  ( Repl, ReplError (..)
-  , startRepl, startEngineRepl, EngineSpec (..), stopRepl, replBusy, replCommand, replAlive, replPid, postLoadBasics, stripAnsi
-  , decode, sentinel
-  , frameChunks
+  ( Repl, ReplError (..), Launch (..), Reply (..)
+  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replAlive, replPid
+  , decode
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar (MVar, isEmptyMVar, newMVar, withMVar)
 import Control.Concurrent.STM
-import Control.Exception (Exception, IOException, SomeException, finally, throwIO, try)
+import Control.Exception (Exception, IOException, SomeException, throwIO, try)
 import Control.Monad (unless, void, when)
-import Data.Maybe (isJust)
-import GHC.Clock (getMonotonicTime)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
+import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
+import System.Directory (removeFile)
 import System.Environment (getEnvironment)
-import System.IO (BufferMode (..), IOMode (..), hClose, hFlush, hSetBinaryMode, hSetBuffering, openFile)
-import System.Posix.IO (closeFd, dup, fdToHandle)
-import System.Posix.IO.ByteString (fdRead, fdWrite)
+import System.Exit (ExitCode (..))
+import System.FilePath ((</>))
+import System.IO (BufferMode (..), Handle, IOMode (..), hClose, hFlush, hSetBinaryMode, hSetBuffering, openFile)
+import System.Posix.IO (fdToHandle)
 import System.Posix.Signals (nullSignal, sigKILL, sigTERM, signalProcessGroup)
-import System.Posix.Terminal (TerminalMode (EnableEcho), TerminalState (Immediately), getTerminalAttributes, openPseudoTerminal, setTerminalAttributes, withoutMode)
-import System.Posix.Types (CPid (..), Fd)
-import System.Process (CreateProcess (..), ProcessHandle, StdStream (..), createProcess, getPid, getProcessExitCode, shell, waitForProcess)
+import System.Posix.Types (CPid (..))
+import System.Process (CreateProcess (..), ProcessHandle, StdStream (..), createProcess, getPid, getProcessExitCode, proc, shell, waitForProcess)
 import System.Timeout (timeout)
 
-import GhciSession.Sys (setWinsize, socketShutdown, unixAccept, unixListen)
-
-sentinel :: B.ByteString
-sentinel = BC.pack "GHS_READY"
+import GhciSession.Json
+import GhciSession.Sys (socketPair, socketShutdown)
 
 data ReplError = ReplDied String | ReplTimeout Double
 instance Show ReplError where
@@ -44,170 +48,139 @@ instance Show ReplError where
   show (ReplTimeout t) = "timed out after " ++ show (round t :: Int) ++ "s"
 instance Exception ReplError
 
+-- | How to start the engine: what the build tool would have run.
+data Launch = Launch { lCwd :: FilePath, lArgs :: [String], lEnv :: [(String, String)] }
+
+-- | What a request came back with: the engine's facts, and what was written.
+data Reply = Reply { rFacts :: Json, rOut :: T.Text }
+
 data Repl = Repl
   { rProc :: ProcessHandle
-  , rMaster :: Maybe Fd              -- ^ the pty, when driving a stock GHCi through one
-  , rSend :: B.ByteString -> IO ()   -- ^ deliver one command
-  , rHangUp :: IO ()                 -- ^ tell the repl we are done with it (the engine exits when its socket closes)
-  , rReplies :: TQueue B.ByteString   -- ^ complete replies: everything up to a sentinel
-  , rPending :: TVar [B.ByteString]   -- ^ what has arrived since the last sentinel, newest chunk first
+  , rSend :: B.ByteString -> IO ()
+  , rHangUp :: IO ()                 -- ^ the engine exits when its socket closes
+  , rReplies :: TQueue B.ByteString
   , rDead :: TVar Bool
-  , rIO :: MVar ()              -- ^ serialises whole command round-trips
+  , rIO :: MVar ()                   -- ^ serialises whole round-trips
   , rEvalTimeout :: Double
-  , rOnAsync :: T.Text -> IO ()
   , rPgid :: IORef (Maybe CPid)
   }
 
--- | Drop terminal colour sequences (@ESC [ ... letter@). Nearly every reply has none: that case is one scan.
-stripAnsi :: T.Text -> T.Text
-stripAnsi t
-  | not (T.any (== '\ESC') t) = t
-  | otherwise = case T.breakOn (T.pack "\ESC[") t of
-      (a, b) | T.null b -> a
-             | otherwise -> a <> stripAnsi (T.drop 1 (T.dropWhile (\c -> c == ';' || (c >= '0' && c <= '9')) (T.drop 2 b)))
-
--- | A reply as text: UTF-8 (leniently), without the CRs a pty adds to every line end, without colours.
+-- | A reply's output as text: UTF-8, leniently.
 decode :: B.ByteString -> T.Text
-decode = stripAnsi . T.filter (/= '\r') . TE.decodeUtf8With TE.lenientDecode
+decode = TE.decodeUtf8With TE.lenientDecode
 
--- | Spawn the command, handshake, run the post-load action; returns the repl and the load log.
-startRepl :: String -> FilePath -> [(String, String)] -> Double -> Double -> (String -> IO ()) -> (T.Text -> IO ())
-          -> (Repl -> IO ()) -> IO (Repl, T.Text)
-startRepl cmd cwd' extraEnv loadTimeout evalTimeout logF onAsync postLoad = do
-  (master, slave) <- openPseudoTerminal
-  attrs <- getTerminalAttributes slave
-  setTerminalAttributes slave (withoutMode attrs EnableEcho) Immediately   -- else every command we write comes back
-  setWinsize slave 200 400          -- a wide terminal keeps GHC from hard-wrapping diagnostics at 80 columns
+-- | Run the build tool's repl command with the engine in its capture mode: it builds what the repl needs,
+-- starts "the repl", which writes its own start down in @dir@ and exits. The command's output goes to @out@.
+-- 'Left': it failed, with that output.
+captureLaunch :: String -> FilePath -> [(String, String)] -> FilePath -> FilePath -> Double -> (String -> IO ()) -> IO (Either String Launch)
+captureLaunch cmd cwd' extraEnv dir out secs logF = do
+  void (try (removeFile (dir </> "args")) :: IO (Either IOException ()))
   base <- getEnvironment
-  let env' = [ kv | kv@(k, _) <- base, k `notElem` ("TERM" : map fst extraEnv) ] ++ extraEnv ++ [("TERM", "dumb")]
-  hs <- mapM (\_ -> dup slave >>= fdToHandle) [1 :: Int, 2, 3]
-  logF ("spawn: " ++ cmd)
-  (_, _, _, ph) <- createProcess (shell cmd)
-    { cwd = Just cwd', env = Just env', std_in = UseHandle (hs !! 0), std_out = UseHandle (hs !! 1)
-    , std_err = UseHandle (hs !! 2), close_fds = True, new_session = True }
-  mapM_ (\h -> void (try (hClose h) :: IO (Either IOException ()))) hs
-  closeFd slave
-  replies <- newTQueueIO
-  pending <- newTVarIO []
-  dead <- newTVarIO False
-  io <- newMVar ()
-  pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
-  let r = Repl ph (Just master) (writeAll master) (pure ()) replies pending dead io evalTimeout onAsync pg
-  _ <- forkIO (reader r master)
-  -- Written before GHCi is listening; the pty buffers it. Exactly ONE command, so exactly one sentinel is
-  -- produced by the handshake (two would desynchronise every later reply by one command). Everything up to
-  -- the FIRST sentinel is the load log.
-  void (fdWrite master (BC.pack ":set prompt \"\\nGHS_READY\\n\"\n"))
-  load <- awaitSentinel r loadTimeout
-  postLoad r
-  pure (r, load)
-
--- | What the vendored engine needs: the executable, the compiler's library directory, where to meet it.
-data EngineSpec = EngineSpec { esWrapper :: FilePath, esExe :: FilePath, esLibdir :: FilePath, esSocket :: FilePath, esCapture :: FilePath, esOut :: FilePath }
-
--- | Spawn the command with OUR GHCi as its repl (see engine/GhsEngine.hs) and meet it on a socket: a request is
--- a length and a command, a reply a length and everything the command wrote. No terminal, no prompt to find.
--- The command's own output before GHCi starts (cabal's) goes to a file and is the head of the load log.
-startEngineRepl :: EngineSpec -> String -> FilePath -> [(String, String)] -> Double -> Double -> (String -> IO ())
-                -> (Repl -> IO ()) -> IO (Repl, T.Text)
-startEngineRepl es cmd cwd' extraEnv loadTimeout evalTimeout logF postLoad = do
-  mfd <- unixListen (esSocket es)
-  lfd <- maybe (throwIO (ReplDied ("cannot listen on " ++ esSocket es))) pure mfd
-  base <- getEnvironment
-  let mine = extraEnv ++ [("GHS_CONTROL", esSocket es), ("GHS_CAPTURE", esCapture es), ("GHS_ENGINE", esExe es), ("GHS_LIBDIR", esLibdir es)]
+  let mine = extraEnv ++ [("GHS_CAPTURE", dir)]
       env' = [ kv | kv@(k, _) <- base, k `notElem` map fst mine ] ++ mine
-  out <- openFile (esOut es) WriteMode
+  oh <- openFile out WriteMode
   devnull <- openFile "/dev/null" ReadMode
-  logF ("spawn: " ++ cmd)
+  logF ("build: " ++ cmd)
   (_, _, _, ph) <- createProcess (shell cmd)
-    { cwd = Just cwd', env = Just env', std_in = UseHandle devnull, std_out = UseHandle out, std_err = UseHandle out
+    { cwd = Just cwd', env = Just env', std_in = UseHandle devnull, std_out = UseHandle oh, std_err = UseHandle oh
     , close_fds = True, new_session = True }
-  replies <- newTQueueIO
-  pending <- newTVarIO []
-  dead <- newTVarIO False
-  io <- newMVar ()
-  pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
-  -- the engine connects as soon as GHCi starts -- after cabal has built what the repl needs
-  t0 <- getMonotonicTime
-  let accept = do
-        mc <- unixAccept lfd 250
-        case mc of
-          Just c -> pure c
-          Nothing -> do
-            gone <- getProcessExitCode ph
-            t <- getMonotonicTime
-            cabalOut <- either (\(_ :: IOException) -> "") id <$> try (readFile (esOut es))
-            if gone /= Nothing then throwIO (ReplDied cabalOut)
-              else if t - t0 > loadTimeout then throwIO (ReplTimeout loadTimeout) else accept
-  c <- accept `finally` closeFd lfd
-  h <- fdToHandle c
+  done <- timeout (round (min secs 2.0e9 * 1e6)) (waitForProcess ph)
+  said <- either (\(_ :: IOException) -> "") id <$> try (readFile out >>= \x -> length x `seq` pure x)
+  case done of
+    Nothing -> do
+      pg <- getPid ph
+      mapM_ (\p -> try (signalProcessGroup sigKILL (CPid (fromIntegral p))) :: IO (Either IOException ())) pg
+      pure (Left (said ++ "\n[session] the build timed out after " ++ show (round secs :: Int) ++ "s"))
+    Just code -> do
+      l <- readLaunch dir
+      pure $ case l of
+        Just x | code == ExitSuccess -> Right x
+        _ -> Left (said ++ (if code == ExitSuccess then "\n[session] the repl command did not start the engine: it must run {engine} as its GHCi" else ""))
+
+-- | A start written down earlier, if there is one.
+readLaunch :: FilePath -> IO (Maybe Launch)
+readLaunch dir = do
+  a <- try (B.readFile (dir </> "args")) :: IO (Either IOException B.ByteString)
+  e <- try (B.readFile (dir </> "env")) :: IO (Either IOException B.ByteString)
+  pure $ case (a, e) of
+    (Right ab, Right eb) -> case map (T.unpack . decode) (B.split 0 ab) of
+      (c : as) | not (null c) -> Just (Launch c as [ (k, drop 1 v) | kv <- B.split 0 eb, let (k, v) = break (== '=') (T.unpack (decode kv)), not (null k) ])
+      _ -> Nothing
+    _ -> Nothing
+
+-- | Start the engine and wait for its first reply, which is the load.
+startRepl :: FilePath -> [String] -> Launch -> [(String, String)] -> FilePath -> Double -> Double -> (String -> IO ()) -> IO (Repl, Reply)
+startRepl exe pre l extraEnv out loadTimeout evalTimeout logF = do
+  (ours, theirs) <- socketPair >>= maybe (throwIO (ReplDied "cannot make a socket pair")) pure
+  let mine = extraEnv ++ [("GHS_CONTROL", "stdin")]
+      env' = [ kv | kv@(k, _) <- lEnv l, k `notElem` map fst mine ] ++ mine
+  oh <- openFile out AppendMode       -- anything the engine says before it has taken its standard output over
+  th <- fdToHandle theirs
+  logF ("start: " ++ exe ++ " (" ++ show (length (lArgs l)) ++ " arguments from the build) in " ++ lCwd l)
+  (_, _, _, ph) <- createProcess (proc exe (pre ++ lArgs l))
+    { cwd = Just (lCwd l), env = Just env', std_in = UseHandle th, std_out = UseHandle oh, std_err = UseHandle oh
+    , close_fds = True, new_session = True }
+  void (try (hClose th) :: IO (Either IOException ()))
+  h <- fdToHandle ours
   hSetBinaryMode h True
   hSetBuffering h (BlockBuffering Nothing)
-  let send b = B.hPut h (frameLen (B.length b)) >> B.hPut h b >> hFlush h
-      r = Repl ph Nothing send (socketShutdown c) replies pending dead io evalTimeout (\_ -> pure ()) pg
-      recvLoop = do
-        hd <- try (B.hGet h 4) :: IO (Either SomeException B.ByteString)
-        case hd of
-          Right x | B.length x == 4 -> do
-            b <- B.hGet h (foldl (\a w -> a * 256 + fromIntegral w) 0 (B.unpack x))
-            atomically (writeTQueue replies b)
-            recvLoop
-          _ -> atomically (writeTVar dead True)
-  _ <- forkIO recvLoop
-  -- a server forked from the session inherits the socket, so the engine dying may not close it: watch the process too
+  replies <- newTQueueIO
+  dead <- newTVarIO False
+  io <- newMVar ()
+  pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
+  let r = Repl ph (\b -> B.hPut h (frameLen (B.length b)) >> B.hPut h b >> hFlush h) (socketShutdown ours) replies dead io evalTimeout pg
+  _ <- forkIO (recvLoop h replies dead)
   _ <- forkIO (waitForProcess ph >> atomically (writeTVar dead True))
-  load <- awaitSentinel r loadTimeout
-  cabalOut <- either (\(_ :: IOException) -> T.empty) T.pack <$> try (readFile (esOut es) >>= \x -> length x `seq` pure x)
-  postLoad r
-  pure (r, cabalOut <> load)
-  where frameLen n = B.pack [ fromIntegral (n `div` 16777216), fromIntegral (n `div` 65536 `mod` 256), fromIntegral (n `div` 256 `mod` 256), fromIntegral (n `mod` 256) ]
+  load <- await r out loadTimeout
+  pure (r, load)
 
--- | The reader does the framing. A reply arrives in chunks, and looking for the sentinel in the whole buffer
--- each time one arrives (and re-copying the buffer to append it) is quadratic in the reply: for a 0.5 MB load
--- log that was 6 ms and 2.7 MB of copying, and it grows with the square. So each chunk is searched once,
--- with the last few bytes of the one before it (a sentinel may straddle two), and the chunks are joined only
--- when a reply is complete.
-reader :: Repl -> Fd -> IO ()
-reader r master = loop B.empty
-  where
-    keep = B.length sentinel - 1
-    loop carry = do
-      got <- try (fdRead master 65536) :: IO (Either SomeException B.ByteString)
-      case got of
-        Right chunk | not (B.null chunk) -> frame carry chunk >>= loop
-        _ -> atomically (writeTVar (rDead r) True)
-    -- returns the carry for the next chunk
-    frame carry chunk
-      | B.null (snd (B.breakSubstring sentinel (carry <> chunk))) = do
-          atomically (modifyTVar' (rPending r) (chunk :))
-          pure (B.takeEnd keep (carry <> chunk))
-      | otherwise = do
-          old <- atomically (swapTVar (rPending r) [])
-          let (pre, post) = B.breakSubstring sentinel (B.concat (reverse (chunk : old)))
-              rest = BC.dropWhile (\c -> c == '\r' || c == '\n') (B.drop (B.length sentinel) post)
-          -- the line end after a sentinel may arrive in a later chunk: drop it from the front of the reply it
-          -- would otherwise begin
-          atomically (writeTQueue (rReplies r) (BC.dropWhile (\c -> c == '\r' || c == '\n') pre))
-          if B.null rest then pure B.empty else frame B.empty rest     -- (two sentinels in one chunk: not expected, but handled)
+recvLoop :: Handle -> TQueue B.ByteString -> TVar Bool -> IO ()
+recvLoop h replies dead = do
+  hd <- try (B.hGet h 4) :: IO (Either SomeException B.ByteString)
+  case hd of
+    Right x | B.length x == 4 -> do
+      b <- B.hGet h (be32 x)
+      atomically (writeTQueue replies b)
+      recvLoop h replies dead
+    _ -> atomically (writeTVar dead True)
 
-awaitSentinel :: Repl -> Double -> IO T.Text
-awaitSentinel r secs = do
+be32 :: B.ByteString -> Int
+be32 = B.foldl' (\a w -> a * 256 + fromIntegral w) 0 . B.take 4
+
+frameLen :: Int -> B.ByteString
+frameLen n = B.pack [ fromIntegral (n `div` 16777216), fromIntegral (n `div` 65536 `mod` 256), fromIntegral (n `div` 256 `mod` 256), fromIntegral (n `mod` 256) ]
+
+-- | The next reply. If the engine dies first, the error carries how it ended and the tail of what it said
+-- outside the protocol (@out@: its standard error before it took that over, a crash report).
+await :: Repl -> FilePath -> Double -> IO Reply
+await r out secs = do
   tv <- registerDelay (round (min secs 2.0e9 * 1e6))
   res <- atomically $ do
     m <- tryReadTQueue (rReplies r)
     case m of
-      Just pre -> pure (Right pre)
+      Just b -> pure (Right b)
       Nothing -> do
         d <- readTVar (rDead r)
-        if d then do
-            left <- swapTVar (rPending r) []
-            pure (Left (ReplDied (T.unpack (decode (B.concat (reverse left))))))
-          else do
-            late <- readTVar tv
-            if late then pure (Left (ReplTimeout secs)) else retry
-  either throwIO (pure . decode) res
+        late <- readTVar tv
+        if d then pure (Left Nothing) else if late then pure (Left (Just secs)) else retry
+  case res of
+    Right b -> do
+      let n = be32 b
+          (j, o) = B.splitAt n (B.drop 4 b)
+      pure (Reply (either (const (JObj [])) id (parseJsonBS j)) (decode o))
+    Left (Just t) -> throwIO (ReplTimeout t)
+    Left Nothing -> do
+      code <- timeout 2000000 (waitForProcess (rProc r))
+      said <- if null out then pure "" else either (\(_ :: IOException) -> "") id <$> try (readFile out >>= \x -> length x `seq` pure x)
+      let how = case code of
+            Just (ExitFailure n) | n < 0 -> "the repl was killed by signal " ++ show (negate n)
+            Just (ExitFailure n) -> "the repl exited with status " ++ show n
+            Just ExitSuccess -> "the repl exited"
+            Nothing -> "the repl closed its socket"
+      throwIO (ReplDied (unlines (how : lastN 12 (lines said))))
+  where lastN n xs = drop (length xs - n) xs
 
--- | Is a command running right now? (Whoever asks must not then queue behind it: a stop, say.)
+-- | Is a request running right now? (Whoever asks must not then queue behind it: a stop, say.)
 replBusy :: Repl -> IO Bool
 replBusy r = isEmptyMVar (rIO r)
 
@@ -217,53 +190,43 @@ replAlive r = (== Nothing) <$> getProcessExitCode (rProc r)
 replPid :: Repl -> IO (Maybe Int)
 replPid r = fmap fromIntegral <$> getPid (rProc r)
 
--- | Run one GHCi command and return its output (sentinel stripped). 'Nothing' for the session's default
--- timeout. Throws 'ReplError'.
-replCommand :: Repl -> Maybe Double -> String -> IO T.Text
-replCommand r mt expr = withMVar (rIO r) $ \_ -> do
+roundTrip :: Repl -> Maybe Double -> B.ByteString -> IO Reply
+roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
   alive <- replAlive r
   unless alive (throwIO (ReplDied ""))
-  -- Anything already buffered was written by a BACKGROUND thread (a server forked in the session, say)
-  -- between commands: park it rather than letting it masquerade as this command's answer.
-  stray <- B.concat . reverse <$> atomically (swapTVar (rPending r) [])
-  unless (BC.all (`elem` " \r\n\t") stray) (rOnAsync r (decode stray))
+  rSend r payload
+  await r "" (fromMaybe (rEvalTimeout r) mt)
+
+-- | Run one GHCi command: its output, and the diagnostics the compiler logged while it ran. 'Nothing' for the
+-- session's default timeout. Throws 'ReplError'.
+replRun :: Repl -> Maybe Double -> String -> IO Reply
+replRun r mt expr = do
   let e = trim expr
-      payload = if '\n' `elem` e then ":{\n" ++ e ++ "\n:}\n" else e ++ "\n"
-  rSend r (TE.encodeUtf8 (T.pack payload))
-  out <- awaitSentinel r (maybe (rEvalTimeout r) id mt)
-  pure (T.dropWhileEnd (== '\n') (T.dropWhile (== '\n') out))
+      payload = if '\n' `elem` e then ":{\n" ++ e ++ "\n:}" else e
+  Reply f out <- roundTrip r mt (BC.cons 'C' (TE.encodeUtf8 (T.pack payload)))
+  pure (Reply f (T.dropWhileEnd (== '\n') (T.dropWhile (== '\n') out)))
   where
     trim = dropWhileEnd' (`elem` " \n\r\t") . dropWhile (`elem` " \n\r\t")
     dropWhileEnd' p = reverse . dropWhile p . reverse
 
-writeAll :: Fd -> B.ByteString -> IO ()
-writeAll fd b = unless (B.null b) $ do
-  n <- fdWrite fd b
-  writeAll fd (B.drop (fromIntegral n) b)
+replCommand :: Repl -> Maybe Double -> String -> IO T.Text
+replCommand r mt expr = rOut <$> replRun r mt expr
 
--- | Re-establish what a load resets.
---
--- The buffering line is load-bearing, not hygiene: GHCi puts stdout in NoBuffering, so a forkIO'd thread
--- sharing that handle interleaves with the prompt one CHARACTER at a time and shreds the sentinel -- the reply
--- then never frames and every command times out. LineBuffering keeps the sentinel line intact.
-postLoadBasics :: Repl -> IO ()
-postLoadBasics r = when (isJust (rMaster r)) $ do      -- (the engine has no prompt to protect)
-  void (replCommand r (Just 60) ":set prompt-cont \"\"")
-  void (replCommand r (Just 60) ":module + System.IO")
-  void (replCommand r (Just 60) "hSetBuffering stdout LineBuffering")
+-- | Ask the engine something (@q@ and its arguments): the answer, which has @error@ when it could not.
+replQuery :: Repl -> Maybe Double -> String -> [(String, Json)] -> IO Json
+replQuery r mt q args = rFacts <$> roundTrip r mt (BC.cons 'Q' (encodeBS (JObj (("q", JStr q) : args))))
 
--- | Stop the repl AND everything it forked.
+-- | Stop the engine AND everything it started.
 --
--- The direct child is cabal; the process that matters is the @ghc --interactive@ it execs, and anything that
--- process forked lives inside it. When cabal exits first, waiting on it returns happily and a stale GHCi is
--- reparented to init, still holding its ports. So signal the process GROUP and then verify the group is empty.
+-- It leaves as soon as its socket closes. Anything the loaded code started with it is in its process group,
+-- so the group is signalled and then checked to be empty. (A server forked for a composed session has its
+-- own group: those are stopped by whoever owns them.)
 stopRepl :: Repl -> (String -> IO ()) -> IO ()
 stopRepl r logF = do
   pg <- readIORef (rPgid r)
   rHangUp r
   alive0 <- replAlive r
-  -- the engine leaves as soon as its socket closes: give it a moment to, before signalling anything
-  when (alive0 && not (isJust (rMaster r))) (void (timeout 300000 (waitForProcess (rProc r))))
+  when alive0 (void (timeout 300000 (waitForProcess (rProc r))))
   alive <- replAlive r
   when alive $ do
     mapM_ (\g -> try (signalProcessGroup sigTERM g) :: IO (Either IOException ())) pg
@@ -271,29 +234,14 @@ stopRepl r logF = do
     when (done == Nothing) (mapM_ (\g -> void (try (signalProcessGroup sigKILL g) :: IO (Either IOException ()))) pg)
   mapM_ reap pg
   writeIORef (rPgid r) Nothing
-  mapM_ (\m -> void (try (closeFd m) :: IO (Either IOException ()))) (rMaster r)
   where
-    empty g = either (\e -> const True (e :: IOException)) (const False) <$> try (signalProcessGroup nullSignal g)
-    waitEmpty g n = do
-      e <- empty g
-      if e || n <= (0 :: Int) then pure e else threadDelay 10000 >> waitEmpty g (n - 1)
+    gone g = either (\e -> const True (e :: IOException)) (const False) <$> try (signalProcessGroup nullSignal g)
+    waitGone g n = do
+      e <- gone g
+      if e || n <= (0 :: Int) then pure e else threadDelay 10000 >> waitGone g (n - 1)
     reap g = do
-      gone <- waitEmpty g 300
-      unless gone $ do
+      ok <- waitGone g 300
+      unless ok $ do
         void (try (signalProcessGroup sigKILL g) :: IO (Either IOException ()))
-        gone' <- waitEmpty g 500
-        unless gone' (logF ("WARNING: process group " ++ show g ++ " still alive after SIGKILL"))
-
--- | The framing rule on its own (what 'reader' does, for the benchmark and the tests): feed it chunks, get the
--- complete replies and whatever is still pending.
-frameChunks :: [B.ByteString] -> ([B.ByteString], B.ByteString)
-frameChunks = go [] [] B.empty
-  where
-    keep = B.length sentinel - 1
-    go done pend _ [] = (reverse done, B.concat (reverse pend))
-    go done pend carry (chunk : cs)
-      | B.null (snd (B.breakSubstring sentinel (carry <> chunk))) = go done (chunk : pend) (B.takeEnd keep (carry <> chunk)) cs
-      | otherwise =
-          let (pre, post) = B.breakSubstring sentinel (B.concat (reverse (chunk : pend)))
-              rest = BC.dropWhile (\c -> c == '\r' || c == '\n') (B.drop (B.length sentinel) post)
-          in go (BC.dropWhile (\c -> c == '\r' || c == '\n') pre : done) [] B.empty ([ rest | not (B.null rest) ] ++ cs)
+        ok' <- waitGone g 500
+        unless ok' (logF ("WARNING: process group " ++ show g ++ " still alive after SIGKILL"))

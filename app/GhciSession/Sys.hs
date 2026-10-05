@@ -2,7 +2,7 @@
 
 -- | The C half ('cbits/ghs_sys.c') and the small OS helpers around it.
 module GhciSession.Sys
-  ( unixListen, unixAccept, unixConnect, socketShutdown, setWinsize
+  ( unixListen, unixAccept, unixConnect, socketShutdown, socketPair
   , Regex, compileRegex, regexMatch, anyLineMatches, linesMatching
   , writeAtomicT, readFileText
   , hashFile, hashString, showHash
@@ -38,7 +38,7 @@ foreign import ccall safe "ghs_unix_listen" c_listen :: CString -> CInt -> IO CI
 foreign import ccall safe "ghs_unix_accept" c_accept :: CInt -> CInt -> IO CInt
 foreign import ccall safe "ghs_unix_connect" c_connect :: CString -> IO CInt
 foreign import ccall unsafe "ghs_shutdown" c_shutdown :: CInt -> IO CInt
-foreign import ccall unsafe "ghs_set_winsize" c_winsize :: CInt -> CInt -> CInt -> IO CInt
+foreign import ccall unsafe "ghs_socketpair" c_socketpair :: Ptr CInt -> IO CInt
 foreign import ccall unsafe "ghs_regex_compile" c_recomp :: CString -> IO (Ptr ())
 foreign import ccall unsafe "ghs_regex_match" c_rematch :: Ptr () -> CString -> IO CInt
 foreign import ccall safe "ghs_hash_file" c_hash_file :: CString -> Word64 -> IO Word64
@@ -71,8 +71,11 @@ unixConnect p = fdOrNothing <$> withCString p c_connect
 socketShutdown :: Fd -> IO ()
 socketShutdown (Fd fd) = void (c_shutdown fd)
 
-setWinsize :: Fd -> Int -> Int -> IO ()
-setWinsize (Fd fd) rows cols = void (c_winsize fd (fromIntegral rows) (fromIntegral cols))
+-- | A connected pair of sockets: ours (closed on exec), and the one a child is given.
+socketPair :: IO (Maybe (Fd, Fd))
+socketPair = allocaArray 2 $ \p -> do
+  r <- c_socketpair p
+  if r < 0 then pure Nothing else (\fds -> case fds of { [a, b] -> Just (Fd a, Fd b); _ -> Nothing }) <$> peekArray 2 p
 
 -- regular expressions ----------------------------------------------------------
 

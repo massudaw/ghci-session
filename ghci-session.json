@@ -1,12 +1,35 @@
 {
   "default": "tool",
+  "hygiene": true,
   "targets": {
     "tool": {
-      "units": ["exe:ghci-session"],
-      "watch": ["app", "cbits", "hygiene/src"],
-      "modules": ["GhciSession.SelfTest", "GhciSession.SelfBench"],
-      "check": { "expr": "GhciSession.SelfTest.run", "pass": "^selftest: all ", "fail": "^\\[FAIL\\]|FAILED$" },
-      "hygiene": true
+      "units": [
+        "exe:ghci-session"
+      ],
+      "watch": [
+        "app",
+        "cbits",
+        "hygiene/src"
+      ],
+      "modules": [
+        "GhciSession.SelfTest",
+        "GhciSession.SelfBench"
+      ],
+      "check": {
+        "expr": "GhciSession.SelfTest.run",
+        "pass": "^selftest: all ",
+        "fail": "^\\[FAIL\\]|FAILED$"
+      }
+    },
+    "engine": {
+      "units": [
+        "exe:ghci-session-engine"
+      ],
+      "watch": [
+        "engine",
+        "hygiene/c",
+        "hygiene/src"
+      ]
     }
   }
 }

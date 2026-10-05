@@ -16,7 +16,7 @@ import Text.Printf (printf)
 
 import GhciSession.Daemon (verdictOf)
 import GhciSession.Json
-import GhciSession.Repl (decode, frameChunks, sentinel)
+import GhciSession.Repl (decode)
 import GhciSession.Sys
 import GhciSession.Watch
 
@@ -45,13 +45,12 @@ run args = do
                           ++ [ "src/Some/Module/Name" ++ show i ++ ".hs:12:3: warning: [GHC-40910] [-Wunused-top-binds]\n    Defined but not used: x" | i `mod` 50 == 0 ]
                         | i <- [1 .. 4000 :: Int] ] ++ ["Ok, 4000 modules loaded."]
       logText = unlines logLines
-      raw = BC.pack (concatMap (\c -> if c == '\n' then "\r\n" else [c]) logText) `B.append` BC.pack "\r\n" `B.append` sentinel `B.append` BC.pack "\r\n"
+      raw = BC.pack logText
   printf "a load log of %d lines, %.1f MB\n" (length logLines) (fromIntegral (B.length raw) / 1e6 :: Double)
-  bench "repl: frame the reply as 64 KB chunks arrive" 5 (evaluate (sum (map B.length (fst (frameChunks (chunks 65536 raw))))))
   bench "repl: decode the reply" 5 (evaluate (T.length (decode raw)))
   let logT = decode raw
   _ <- evaluate (T.length logT)
-  bench "verdict of the load log" 5 (evaluate (length (show (verdictOf logT))))
+  bench "verdict of the load log" 5 (evaluate (length (show (verdictOf (JObj []) (JObj []) logT))))
   let reply = JObj [("ok", JBool True), ("out", JText logT), ("stale", JArr []), ("status", JObj [("kind", JStr "OK")])]
   bench "json: encode a reply carrying it" 5 (evaluate (B.length (encodeBS reply)))
   let wire = encodeBS reply
@@ -66,5 +65,3 @@ run args = do
   -- a process table
   bench "the process table (was: ps, 20 ms)" 20 (processTable >>= evaluate . length)
   bench "pidAlive (was: ps, 20 ms)" 20 (pidAlive 1)
-  where
-    chunks n b = if B.null b then [] else let (x, r) = B.splitAt n b in x : chunks n r

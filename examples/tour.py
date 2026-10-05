@@ -83,7 +83,6 @@ class Tour:
             shutil.copy(os.path.join(PKG, f), os.path.join(self.dir, f))
         # the executable under test: GHCI_SESSION_BIN, else this checkout's (built if stale)
         self.cli_path = os.environ.get("GHCI_SESSION_BIN") or os.path.join(PKG, "bin", "ghci-session")
-        os.environ["GHCI_SESSION_DATA"] = self.dir
         self.state = os.path.join(self.proj, ".ghci-session")
         self.hs = os.path.join(self.proj, "src", "Hello.hs")
         self.ex = os.path.join(self.proj, "extra", "src", "Extra.hs")

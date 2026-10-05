@@ -1,9 +1,11 @@
 #!/bin/bash
 # usage: run.sh [unsafe]     -- "unsafe" turns the pruner's young-value guard off (GHS_CAF_UNSAFE_YOUNG=1)
-# Needs the hygiene libraries: ../build.sh ./clib   (done here)
+# Runs in the engine as a plain GHCi (the pruner is part of it): needs ../../.bin/ghci-session-engine (../../build.sh)
 cd "$(dirname "$0")"
-../build.sh "$PWD/clib" >/dev/null 2>&1
-export GHS_DIR="$PWD/clib"
+ENGINE="$PWD/../../.bin/ghci-session-engine"
+[ -x "$ENGINE" ] || { echo "no $ENGINE: run ../../build.sh" >&2; exit 1; }
+WRAP=$(mktemp); trap 'rm -f "$WRAP"' EXIT
+printf '#!/bin/sh\nexec "%s" -B"%s" "$@"\n' "$ENGINE" "$(ghc --print-libdir)" > "$WRAP"; chmod +x "$WRAP"
 [ "${1:-}" = unsafe ] && export GHS_CAF_UNSAFE_YOUNG=1
 sed -i.bak '/^-- edit [0-9]*$/d' src/R.hs && rm -f src/R.hs.bak
 {
@@ -19,7 +21,7 @@ sed -i.bak '/^-- edit [0-9]*$/d' src/R.hs && rm -f src/R.hs.bak
   echo 'R.callStashed 1 >>= \x -> putStrLn ("old f, after minor GCs: " ++ show x)'
   echo 'System.Mem.performMajorGC >> putStrLn "major GC done"'
   echo 'R.callStashed 1 >>= \x -> putStrLn ("old f, after the major GC: " ++ show x)'
-} | cabal repl -v0 lib:caf-repro --repl-options=-fobject-code --repl-options=-odir=.obj --repl-options=-hidir=.obj 2>&1 \
+} | cabal repl -v0 lib:caf-repro --with-repl="$WRAP" --repl-options=-fobject-code --repl-options=-odir=.obj --repl-options=-hidir=.obj 2>&1 \
   | grep -v "^ld: warning\|^$"
 echo "(exit ${PIPESTATUS[1]})"
 sed -i.bak '/^-- edit [0-9]*$/d' src/R.hs && rm -f src/R.hs.bak

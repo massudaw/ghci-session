@@ -6,7 +6,8 @@
 -- with, so serving new code needs a repl restart rather than a @:reload@, and a server that wedges takes
 -- the session with it. 'forkProcess' gives the server its own PID while inheriting the session's
 -- already-loaded module graph copy-on-write. The reload cycle becomes: @:reload@ the parent, stop the old
--- child, fork a fresh one. @ghci-session@ drives this module for a target that declares a @server@.
+-- child, fork a fresh one. For a target that declares a @server@, @ghci-session@'s engine does this itself (with
+-- this module's 'zygoteFork'); what a server's own code needs from here is the state handover below.
 --
 -- == What it costs
 --
@@ -54,7 +55,7 @@ import System.Posix.Process
   ( ProcessStatus, createSession, exitImmediately, forkProcess, getProcessStatus )
 import System.Posix.Signals
   ( Handler (..), installHandler, signalProcess, sigKILL, sigTERM )
-import System.Posix.Types (ProcessID)
+import System.Posix.Types (Fd, ProcessID)
 
 -- | Env var naming where a dying child should WRITE its state.
 handoverEnvOut :: String
@@ -81,10 +82,16 @@ handoverEnvIn = "GHS_HANDOVER_IN"
 handoverExporter :: IORef (Maybe (IO BL.ByteString))
 handoverExporter = unsafePerformIO (newIORef Nothing)
 
--- | Register how to export this process's state. Call it once the state
--- exists; until then a SIGTERM simply exits, as it did before.
+-- | Register how to export this process's state, and make SIGTERM do it. Call it once the state exists;
+-- until then a SIGTERM simply exits.
+--
+-- It installs the signal handler ITSELF, in the process that calls it. Whoever forked this server (the
+-- session's engine, or 'zygoteFork' from another copy of this library) cannot: the exporter lives in this
+-- module's own global, and a different build of the module has a different one.
 setHandoverExporter :: IO BL.ByteString -> IO ()
-setHandoverExporter f = writeIORef handoverExporter (Just f)
+setHandoverExporter f = do
+  writeIORef handoverExporter (Just f)
+  void (installHandler sigTERM (Catch (writeHandover >> exitImmediately (ExitFailure 143))) Nothing)
 
 -- | Where this process should read inbound state from, if anywhere.
 --
@@ -134,6 +141,8 @@ data ZygoteSpec = ZygoteSpec
     -- With this 'False' the child is in the session's foreground process
     -- group and stopping the session takes it down too. 'True' lets the server outlive a repl restart, which also means
     -- nothing reaps it but the caller.
+  , zsCloseFds :: [Fd]
+    -- ^ Descriptors of the parent's the child must not hold open (the session's own channels).
   }
 
 -- | A forked server the caller is now responsible for.
@@ -150,12 +159,13 @@ defaultZygoteSpec name = ZygoteSpec
   , zsLogFile = "/tmp/zygote-" ++ name ++ ".log"
   , zsEnv     = []
   , zsDetach  = False
+  , zsCloseFds = []
   }
 
 -- | Positional spec, for callers that build this expression as TEXT.
 --
--- @ghci-session@ constructs the fork as a string and
--- evaluates it in the repl, where the module is necessarily imported
+-- A caller that builds the fork as a string and
+-- evaluates it in a repl has the module imported
 -- QUALIFIED -- and GHC 9.14 rejects qualified record-update syntax on a
 -- field it can also see as a selector:
 --
@@ -169,7 +179,7 @@ defaultZygoteSpec name = ZygoteSpec
 -- Arguments are name, log file, child environment, detach.
 zygoteSpec :: String -> FilePath -> [(String, String)] -> Bool -> ZygoteSpec
 zygoteSpec n l e d = ZygoteSpec
-  { zsName = n, zsLogFile = l, zsEnv = e, zsDetach = d }
+  { zsName = n, zsLogFile = l, zsEnv = e, zsDetach = d, zsCloseFds = [] }
 
 -- | Fork @act@ into its own process.
 --
@@ -196,12 +206,14 @@ childMain spec act = do
   _ <- dupTo fd stdOutput
   _ <- dupTo fd stdError
   closeFd fd
+  mapM_ (\c -> try (closeFd c) :: IO (Either SomeException ())) (zsCloseFds spec)
   mapM_ (uncurry setEnv) (zsEnv spec)
   -- A forked child was observed IGNORING SIGTERM (it kept serving, and kept
   -- its listening socket, so the replacement could not bind). Without this
   -- handler the only way to stop one is SIGKILL.
   -- Export BEFORE exiting: this is the only moment the old process's state
   -- still exists and the parent has already decided to replace it.
+  -- ('setHandoverExporter' installs the same handler again, for a server forked by other code than this.)
   _ <- installHandler sigTERM
          (Catch (writeHandover >> exitImmediately (ExitFailure 143))) Nothing
   -- The repl's argv is cabal's, and a model @main@ that dispatches on

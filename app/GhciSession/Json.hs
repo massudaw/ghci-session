@@ -17,6 +17,8 @@ module GhciSession.Json
   , set, setDefault
   ) where
 
+import Prelude
+
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as BB
 import qualified Data.ByteString.Char8 as BC

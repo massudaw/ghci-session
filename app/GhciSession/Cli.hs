@@ -341,7 +341,7 @@ usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
   , ""
-  , "  start [--no-check] | stop | restart | status [-d]   [SESSION]"
+  , "  start [--no-check] | stop | restart [--fast] | status [-d]   [SESSION]"
   , "  reload [--no-check] [--no-refork] [--async-refork]  [SESSION]"
   , "  check [-m MEMBER] [SESSION]        eval EXPR [-s SESSION] [--timeout SECS]"
   , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-check]"
@@ -374,7 +374,7 @@ cliMain = do
           [] -> die' "_daemon: a session name is needed"
         "start" -> cmdStart conf (pos a 0) (flag a ["--no-check"])
         "stop" -> cmdStop conf (pos a 0) (flag a ["--keep-servers"]) Nothing
-        "restart" -> cmdSimple "restart" conf a
+        "restart" -> pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr "restart"), ("fast", JBool (flag a ["--fast"]))]) >>= say
         "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])
         "reload" -> cmdReload conf a
         "check" -> cmdCheck conf a

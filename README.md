@@ -15,10 +15,17 @@ ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in w
 
 ## One Haskell package
 
-`ghci-session.cabal` is the whole tool: the `ghci-session` executable (client and daemon in one binary) and the
-library your project links for the hygiene modules (`GHC.Hygiene`, `.Census`, `.Zygote`). It depends only on GHC's
-boot packages; C (`cbits/`) covers what those lack -- unix sockets, kqueue/inotify, POSIX regex, hashing, the process
-table -- and the executable's `main`, which picks the runtime's options per command.
+`ghci-session.cabal` is the whole tool, in three parts:
+
+- **`ghci-session-engine`** is GHCi -- the compiler's own interactive front end, vendored -- with a socket where its
+  terminal was and the session's operations built in (below);
+- **`ghci-session`** is the command and the daemon (one binary): it owns one engine per session, watches the
+  sources, publishes verdicts, keeps the servers;
+- **the library** (`GHC.Hygiene`, `.Census`, `.Zygote`) is for your project's own code: a heap census, and handing a
+  server's state to its replacement. A session needs none of it.
+
+It depends only on GHC's boot packages; C (`cbits/`) covers what those lack -- unix sockets, kqueue/inotify, POSIX
+regex, hashing, the process table -- and the executable's `main`, which picks the runtime's options per command.
 
 It began as a Python daemon (removed; the command line, the state files and the socket protocol are unchanged), and
 what the rewrite changed is the client and the tool's own overhead:
@@ -33,7 +40,7 @@ what the rewrite changed is the client and the tool's own overhead:
 | the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
 
 How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
-itself -- this package has a `ghci-session.json`, and a save here is a compile and 70 self-tests in about a second
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 65 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
 (`ghci-session selftest` runs them from the binary):
 
 - **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
@@ -41,7 +48,6 @@ itself -- this package has a `ghci-session.json`, and a save here is a compile a
   resident size and physical footprint for every process in 0.8 ms.
 - **Replies are `Text` and bytes end to end.** As `String`, a 0.5 MB load log was 20 MB allocated to decode, 14 MB to
   find the verdict in, 16 MB to encode as JSON: 15 ms. Now 0.7 ms and 1 MB.
-- **Framing is linear.** Looking for the prompt in the whole buffer each time a chunk arrived was quadratic in the reply.
 - **Paths are bytes.** The watched-source signature of a 526-file project was 1 MB of cons cells and 5.6 MB a scan.
 - **The runtime is configured per command.** 15 of a client command's 21 ms were the Haskell runtime starting and
   stopping: its interval timer (the exit waited out a tick) and the reservation of a terabyte of address space. The
@@ -53,26 +59,53 @@ itself -- this package has a `ghci-session.json`, and a save here is a compile a
 
 ## The engine: GHCi with a socket where its terminal was
 
-Driving a stock GHCi means a pseudo-terminal, a prompt chosen so it can be recognised in the output, and finding
-that prompt in the bytes that come back. With the compiler this package has an engine for, a session does not do
-that: `ghci-session-engine` IS GHCi -- the `ghc` executable's interactive front end, vendored unchanged
-(`vendor/ghc-9.14.1`, 7,600 lines; `vendor/fetch.sh VERSION` gets another) -- built against the same `ghc` library,
-so every command behaves exactly as it does there. What differs is where commands come from and where their output
-goes (`engine/GhsEngine.hs`, 150 lines): a request is a length and a command, a reply a length and everything the
-command wrote. Nothing to recognise, nothing an evaluated program can print that looks like the end of its own
-reply, no terminal settings to restore after a load.
+`ghci-session-engine` IS GHCi: the `ghc` executable's interactive front end, vendored unchanged
+(`vendor/ghc-9.14.1`, 7,600 lines; `vendor/fetch.sh VERSION` gets another, plus a stanza in the cabal file) and built
+against the same `ghc` library, so every command behaves exactly as it does there. A session's GHCi is always this
+one; there is no second way to drive a stock `ghci` through a terminal (there was: a pseudo-terminal, a prompt
+chosen so it could be found in the output, and every question to GHCi asked as a command whose printed answer was
+read back).
 
 It needs no change to GHCi's loop. GHCi calls a prompt function before it reads each command; the engine's is the
-turn: reply to the command that just finished, wait for the next request, feed it to GHCi's standard input (a pipe
-the process holds the other end of). Standard output and error are a pipe it drains itself. Without the daemon's
-socket in its environment the same binary is an ordinary GHCi.
+turn (`engine/GhsEngine.hs`): reply to what just ran, wait for the next request. A request is one of two things.
 
-`"engine"`: `auto` (the default: the engine when it sits beside the executable and was built for the compiler on
-PATH, else the stock GHCi through a terminal -- so other GHC versions keep working), `ghci`, `vendored`. The tour
-passes on both, 123 of 123. What it measures the same: an `eval` round trip (1.7 ms inside the daemon either way --
-the terminal was never the cost), a boot, a reload. What it changes today: 1 MB of output in one line 41 ms; and it
-is the place the things a terminal cannot do will go -- diagnostics as data, a typecheck verdict before code
-generation, knowing exactly which modules a reload relinked.
+- **A GHCi command** (`:reload`, an expression): fed to GHCi's standard input, which is a pipe the process holds
+  the other end of. The reply is everything it wrote -- standard output and error are a pipe the engine drains
+  itself -- and **the compiler's diagnostics as records** (a hook on GHC's logger): file, line, column, severity,
+  code, message.
+- **A query**, answered by the engine itself, in GHCi's own monad, without going through the command line:
+
+| query | answer | it replaced |
+|---|---|---|
+| `state` | the directory, how many modules of the graph are loaded, and each unit's dependencies and object files | `:show paths`; looking for `Ok, N modules loaded.`; parsing cabal's per-unit argument files to guess which objects a server runs |
+| `typecheck` | does this expression have type `IO ()` | `:type` and looking for "error" in what it printed |
+| `fork` | compile the expression, fork this process running it, wait on the child | a `zygoteFork` call built as a string, which needed this package's library in the project's `build-depends`; a second command to reap the child |
+| `prune` | unlink the CAFs the last reload superseded, collect, report the live heap | the same through a project-side module, against C libraries the daemon compiled at boot from `nm` of the RTS |
+| `capabilities` | `setNumCapabilities` | a command |
+
+So the verdict of a load is data: `COMPILE-ERROR` when the compiler logged an error or a module of the graph is not
+loaded, and `status.json` carries `diagnostics` for a tool to read. (One thing is still read from the output: an
+error GHCi printed without logging it -- a link failure thrown as an exception.)
+
+**The daemon starts the engine itself.** The build tool is run once with the engine as its repl program and
+`GHS_CAPTURE` set: cabal builds what the repl needs and starts "the repl", which writes down its arguments,
+directory and environment (`.ghci-session/<session>/launch/`; a multi-unit repl's per-unit argument files are
+copied, because cabal deletes them) and exits, and cabal with it. Then the daemon runs the engine with those
+arguments, its socket as the engine's standard input. Three things follow:
+
+- the process under the daemon IS GHCi. There is no `cabal repl` between them for the life of the session, no
+  wrapper script; if GHCi dies, its exit status or signal is in the verdict;
+- stopping it is closing its socket;
+- **a restart that changes nothing cabal decides does not run cabal**: a restart for memory (`repl_budget_mb`) or
+  for a changed `.c`/`.h` reuses the recorded start (`restart --fast` by hand). A changed `.cabal` or
+  `cabal.project`, and a plain `restart`, ask cabal again.
+
+The hygiene C (the pruner, the census) is compiled into the engine by cabal like any other source. It finds the
+RTS's private lists by name in the symbol table of the RTS image the process has mapped (`hygiene/c/rts_syms.h`),
+so there is nothing to build per session and nothing tied to one build of the RTS's addresses.
+
+A target with its own `"repl"` command says where the engine goes with `{engine}`:
+`"repl": "cabal repl --with-repl={engine} exe:foo"`.
 
 Two things found on the way: started with its standard descriptors closed, a process's first pipe IS descriptor 0,
 and "duplicate onto 0, then close the original" closes what it just installed; and GHCi leaves standard output
@@ -121,7 +154,7 @@ the tool's own costs with almost no compile time in them):
 and server command:
 
 ```
-[time] boot 1.62s: load 0.65, check 0.57, hygiene_build 0.14, post_load 0.14, other 0.11, prebuild 0.01
+[time] boot 2.31s: load 0.77, check 0.56, build 0.43, other 0.55
 [time] reload 0.75s: check 0.49, prune 0.17, ghci_reload 0.08, other 0.01
 [time] reload 3.50s: prefork 2.01, check 0.88, prune 0.20, fork_verify 0.18, server_stop 0.11, ghci_reload 0.09, ...
 ```
@@ -166,8 +199,9 @@ reload. The unlink now waits for the check, or the first `eval`.)
 
 `cabal install exe:ghci-session` from this directory, or run it from the checkout: `bin/ghci-session` builds the
 executable into `.bin/` when it is missing or older than its sources, then runs it (`./build.sh` does the build).
-A project that uses hygiene or servers adds this package to its `cabal.project` and `ghci-session` to its
-`build-depends` (see `examples/hello`).
+`./build.sh` puts both executables in `.bin/`; the engine must sit beside `ghci-session`, and must have been built
+with the compiler on PATH (it says so if not). A project adds this package to its `build-depends` only to call the
+library from its own code (the census, a server's state handover: see `examples/hello`).
 
 ## Configure
 
@@ -217,9 +251,9 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
-| `rts_flags` | `-c` | GHCi's own RTS flags, via `--with-repl=bin/ghci-rts.sh`; `none` turns it off. `-c` is the compacting old generation: on a 98-module session with 250 MB live, the repl's footprint was 1,251 MB copying, 1,094 MB with `-c`, 920 MB with `-c -F1.5` (and its forked server 569 / 412 / 385 MB), for 9.5 / 17.1 / 25.2 s of GC over a 100 s scenario. The non-moving collector is refused with `hygiene` (the pruner edits lists it reads concurrently: the repl died) |
+| `rts_flags` | `-c` | GHCi's own RTS flags (the daemon starts it: `+RTS ... -RTS`); `none` for none. `-c` is the compacting old generation: on a 98-module session with 250 MB live, the repl's footprint was 1,251 MB copying, 1,094 MB with `-c`, 920 MB with `-c -F1.5` (and its forked server 569 / 412 / 385 MB), for 9.5 / 17.1 / 25.2 s of GC over a 100 s scenario. The non-moving collector is refused with `hygiene` (the pruner edits lists it reads concurrently: the repl died) |
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
-| `hygiene` | `false` | build the C libraries, unlink superseded CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
+| `hygiene` | `false` | unlink superseded CAFs after each reload, report memory |
 | `unlink_after` | `eval` | when a reload's unlink happens: after the first evaluation (the check, or an `eval`), when the code that replaced it is linked; `reload` is at once, which reaches one generation less |
 | `prune_gc_idle_s` | `0` | `0`: the GC that frees what was unlinked runs at once. A positive value defers it to an idle moment and HAS CRASHED the repl (see the tour section); leave it |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
@@ -228,7 +262,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `watch_check`, `watch_refork` | `true` | what a SAVE does beyond compiling: run the checks, cut the servers over. Off, an explicit `reload` (or a commit, below) does them |
 | `reload_on_commit` | `false` | a new git HEAD is a full reload -- checks and re-fork -- whatever the two above say |
 | `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
-| `hygiene_module`, `zygote_module`, `hygiene_build`, `handover_env` | `GHC.Hygiene`, `GHC.Hygiene.Zygote`, `true`, `GHS_HANDOVER_OUT/IN` | for a project that carries its own copies of these modules |
+| `handover_env` | `GHS_HANDOVER_OUT`, `GHS_HANDOVER_IN` | the two variables a forked server finds its state paths in (a project with its own copy of `GHC.Hygiene.Zygote` may name others) |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `watcher` | `auto` | kernel file events where the platform has them (kqueue on macOS/BSD, inotify on Linux), else `poll`. The mtime scan still decides what changed and still runs every 2 s: an event only says "look now" |
 | `poll_interval`, `debounce` | 0.2, 0.2 | when polling: how often the watcher looks, and how long it lets a burst of writes settle (with events a burst is over when they stop for 50 ms) |
@@ -273,6 +307,10 @@ CHECK-FAIL: 1 failing in extra [2 members: hello 0.5s, extra 0.4s]
 
 Checks are reported per member, never merged, and `status.json` has one entry per member. The one constraint a shared
 repl adds is a single namespace: **qualify the names in a check** (`Hello.selfTest`, not `selfTest`).
+
+Two components of the SAME package (a library and its executable, two executables) cannot be members of one
+session: the session gives every unit one object directory relative to its package, and they would overwrite each
+other's `Main.o`. Give them a session each (this package does: `tool` and `engine`).
 
 ## Servers
 
@@ -326,10 +364,11 @@ by name, so a sibling checkout's healthy session is not touched.
 
 ## ghci-hygiene (`hygiene/`)
 
-A Haskell package plus three small C libraries built against *your* GHC's RTS (`hygiene/build.sh`, run by the daemon).
+The C is part of the engine. The library is a Haskell front for it, for a project's own code: it looks the C up in
+the running process, so in the session's GHCi it works and anywhere else it says there is nothing to find.
 
 ```haskell
-GHC.Hygiene.pruneCafs :: IO Int          -- unlink the superseded CAFs, then a major GC if any: -1 unknown RTS layout, -2 no library
+GHC.Hygiene.pruneCafs :: IO Int          -- unlink the superseded CAFs, then a major GC if any: -1 an RTS it cannot read, -2 not the engine
 GHC.Hygiene.unlinkCafs :: IO Int         -- the unlink alone. A GC that comes LATER has crashed GHCi: use pruneCafs
 GHC.Hygiene.loaderStats :: IO Int        -- what the RTS linker holds, to stderr
 
@@ -340,8 +379,8 @@ GHC.Hygiene.Census.keep "name" v >> keptReport 100000000   -- values you hold on
 GHC.Hygiene.Census.benchOf "label" action    -- wall, GC, allocation, live heap
 GHC.Hygiene.Census.memNow
 
-GHC.Hygiene.Zygote.zygoteFork / zygoteStop   -- what `server` drives
-GHC.Hygiene.Zygote.setHandoverExporter, handoverInPath
+GHC.Hygiene.Zygote.setHandoverExporter, handoverInPath   -- a server's state, out on SIGTERM and in at start
+GHC.Hygiene.Zygote.zygoteFork / zygoteStop               -- the fork the engine does, for use by hand
 ```
 
 **Why the leak exists** (a GHC behaviour, not yours): with a dynamically linked GHC every `:reload` links the recompiled
@@ -352,21 +391,22 @@ exported symbol now resolves to a newer one), plus exported CAFs whose name reso
 
 `examples/hello` shows it working: six CAFs unlinked per reload, the repl flat at ~505 MB over repeated edits.
 
-**Safety.** The C reads the RTS's private symbol offsets from the dylib's symbol table and checks four exported symbols;
-on an RTS whose layout it does not recognise it builds nothing / returns `-1` and the session just does not prune.
+**Safety.** The C finds the RTS's private lists by name in the mapped RTS image's symbol table; where they are not
+there it returns `-1` and the session just does not prune (and says so once, in `daemon.log`). The object and
+closure layouts it then reads are GHC 9.14.1's, which is the compiler the engine is built for.
 Tested on GHC 9.14.1, macOS arm64. `keepCAFs = 0` is *not* an option (SIGBUS: interpreted code refers to CAFs by raw
 address, GHC #23182).
 
 ## Layout
 
 ```
-ghci-session.cabal      the package: library (hygiene/src) and executable (app/, cbits/)
-app/GhciSession/        Json, Config, Sys (the FFI), Repl (pty + framing), Watch, Daemon, Gc, Cli, SelfTest, SelfBench
-engine/, vendor/        the engine executable: GhsEngine.hs and Main.hs (ours), GHCi's own sources per compiler version
+ghci-session.cabal      the package: the engine, the command, the library
+app/GhciSession/        Json, Config, Sys (the FFI), Repl (starting the engine, its protocol), Watch, Daemon, Gc, Cli, SelfTest, SelfBench
+engine/, vendor/        the engine: GhsEngine.hs and Main.hs (ours), GHCi's own sources per compiler version
 cbits/                  ghs_sys.c (sockets, file events, regex, hashing, processes), ghs_main.c (the entry point)
-hygiene/                src/GHC/Hygiene*.hs (the library), c/*.c + build.sh (built against YOUR GHC's RTS, at run time),
+hygiene/                c/*.c (the pruner, the census: compiled into the engine), src/GHC/Hygiene*.hs (the library),
                         repro/ (why a superseded CAF with a young value must stay listed)
-bin/ghci-session        run from a checkout (builds if stale); bin/ghci-rts.sh: GHCi's own RTS flags
+bin/ghci-session        run from a checkout (builds if stale)
 ghci-session.json       the session this package runs on itself
 examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over
 examples/tour.py        every feature on a copy of it, each step checked and timed (the benchmark)
@@ -376,11 +416,11 @@ tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reprodu
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 70 self-tests,
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 65 self-tests,
 the tour (123 steps) and the end-to-end tests. This repository's own sessions run on it (`tools/msq` is a thin front
 end: it keeps `ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands).
 
-Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). Linux: the C has
-`/proc` and inotify code paths that have not been run, and the hygiene C libraries are macOS-only (the session
-runs without them). Port verification needs `lsof`. The project still carries its own copies of the hygiene and
-fork modules (`Solver.GhciHygiene`, `Solver.DES.Zygote`), named through `hygiene_module` / `zygote_module`.
+Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler
+other than GHC 9.14.1: the engine is that compiler's front end, so another needs its sources vendored and has not
+been tried. Linux: the C has `/proc` and inotify code paths that have not been run, and the pruner reads a Mach-O
+symbol table (on ELF it finds nothing and the session runs without pruning). Port verification needs `lsof`.

@@ -2,7 +2,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, dataDir, verdictOf, warningsIn, countSub, replace) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
@@ -39,23 +39,10 @@ import GhciSession.Json
 import GhciSession.Repl
 import GhciSession.Sys
 import GhciSession.Watch
-import qualified Paths_ghci_session as Paths
-
--- | Where the package's data is (the hygiene C sources and build script, the RTS wrapper): the installed
--- data directory, or -- running from a build tree -- the nearest directory above the executable that has it.
-dataDir :: IO FilePath
-dataDir = do
-  env <- lookupEnv "GHCI_SESSION_DATA"
-  inst <- Paths.getDataDir
-  exe <- getExecutablePath
-  let ups d = d : (let p = takeDirectory d in if p == d then [] else ups p)
-      has d = doesFileExist (d </> "hygiene" </> "build.sh")
-  found <- filterM has (maybe [] pure env ++ [inst] ++ ups (takeDirectory exe))
-  pure (fromMaybe inst (listToMaybe found))
 
 data S = S
   { sConf :: Conf, sName :: String, sCfg :: Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
-  , sData :: FilePath, sBootCheck :: Bool
+  , sBootCheck :: Bool
   , vRepl :: IORef (Maybe Repl)
   , vStatus :: IORef String, vJson :: IORef Json, vStatusText :: IORef String
   , vLoadedSig :: IORef Sig, vPendingSig :: IORef Sig
@@ -63,7 +50,9 @@ data S = S
   , vStopping :: IORef Bool, vKeepServers :: IORef Bool, vStopReason :: IORef String
   , vOwed :: IORef [String]
   , vWork :: MVar ()                 -- ^ the watcher and a client both drive the repl; never at once
-  , vHygieneOn :: IORef Bool, vZygoteOn :: IORef Bool, vHasUnlink :: IORef Bool
+  , vHygieneOn :: IORef Bool
+  , vLoaded :: IORef Json            -- ^ the engine's account of what is loaded (its @state@), as of the last load
+  , vDiags :: IORef [Json]           -- ^ the compiler's diagnostics from the last load
   , vUnlinkDue :: IORef Bool         -- ^ a reload has superseded code that has not been unlinked yet
   , vEvaluated :: IORef Bool         -- ^ ... and something has been evaluated since (its replacement is linked)
   , vContextOk :: IORef Bool
@@ -148,6 +137,7 @@ setStatus s keep text0 detail facts = do
   ca <- rd (vCheckedAt s) >>= stamp
   dt <- dateTime
   t <- now
+  diags <- rd (vDiags s)
   let headL = if null stale then text else "STALE(" ++ show (length stale) ++ ") " ++ text
       line2 = "session=" ++ sName s ++ " gen=" ++ show gen ++ " at=" ++ dt ++ " loaded=" ++ la ++ " checked=" ++ ca
       ls = [headL, line2] ++ [ "stale: " ++ intercalate ", " (map (rel s) (take 6 stale)) | not (null stale) ] ++ detail
@@ -161,7 +151,8 @@ setStatus s keep text0 detail facts = do
              , ("stale", JNum (fromIntegral (length stale))), ("stale_files", JArr (map (JStr . rel s) stale))
              , ("warnings", JNum (fromIntegral (warningsIn text))), ("verdict", JStr text), ("text", JStr headL)
              , ("failing", JNum (if kind == "CHECK-FAIL" then fromIntegral (length detail) else 0))
-             , ("detail", JArr (map JStr (take 30 detail))), ("generation", JNum (fromIntegral gen)), ("at", JNum t) ]
+             , ("detail", JArr (map JStr (take 30 detail))), ("generation", JNum (fromIntegral gen)), ("at", JNum t)
+             , ("diagnostics", JArr diags) ]
       j2 = setDefault "servers" (JArr []) (setDefault "members" (JArr []) j1)
   vJson s =: foldl (\j (k, v) -> set k v j) j2 facts
   hold <- rd (vHold s)
@@ -215,33 +206,26 @@ theRepl s = rd (vRepl s) >>= maybe (throwIO (ReplDied "")) pure
 cmd :: S -> Maybe Double -> String -> IO T.Text
 cmd s t e = theRepl s >>= \r -> replCommand r t e
 
--- | ... and as a String, for the small answers the daemon itself reads.
-cmdS :: S -> Maybe Double -> String -> IO String
-cmdS s t e = T.unpack <$> cmd s t e
-
-ghcVersion :: IO (Int, Int)
-ghcVersion = do
-  v <- rawSystemOut 20 "ghc" ["--numeric-version"]
-  pure $ case map read (take 2 (splitOn '.' (filter (\c -> isDigit c || c == '.') (fromMaybe "" v)))) of
-    [a, b] -> (a, b)
-    _ -> (0, 0)
+-- | Ask the engine (a query: see engine/GhsEngine.hs). An answer with @error@ is an exception here.
+ask :: S -> Maybe Double -> String -> [(String, Json)] -> IO Json
+ask s t q args = do
+  r <- theRepl s >>= \rp -> replQuery rp t q args
+  maybe (pure r) (throwIO . userError) (lookupStr "error" r)
 
 splitOn :: Char -> String -> [String]
 splitOn c x = case break (== c) x of
   (a, []) -> [a | not (null a)]
   (a, _ : r) -> a : splitOn c r
 
-replCommandLine :: S -> Bool -> IO String
-replCommandLine s engine = case gRepl cfg of
-  Just c -> pure c
-  Nothing -> do
-    v <- if objects then ghcVersion else pure (0, 0)
-    pure $ unwords $ filter (not . null) $
+-- | The build tool's repl command, with the engine as the GHCi it starts. A target's own @repl@ says where
+-- with @{engine}@ (@"stack ghci --with-ghc {engine}"@).
+replCommandLine :: S -> FilePath -> (Int, Int) -> String
+replCommandLine s exe v = case gRepl cfg of
+  Just c -> replace "{engine}" (shq exe) c
+  Nothing -> unwords $ filter (not . null) $
       [ "cabal repl" ]
       ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) ]
-      ++ (if engine then [ "--with-repl=" ++ (sData s </> "bin" </> "ghci-engine.sh") ]
-          else [ "--with-repl=" ++ (sData s </> "bin" </> "ghci-rts.sh") | gRtsFlags cfg `notElem` ["", "none"] ])
-      ++ [ "--repl-options=-fdiagnostics-color=never" ]
+      ++ [ "--with-repl=" ++ shq exe, "--repl-options=-fdiagnostics-color=never" ]
       ++ [ "--repl-options=-j" ++ show (gGhcJobs cfg) | gGhcJobs cfg > 0 ]
          -- object code: CAFs of interpreted code are not prunable by address, and a server's code is its
          -- objects. Its own -odir (relative: under each unit's package dir) so `cabal build` is not disturbed.
@@ -253,27 +237,24 @@ replCommandLine s engine = case gRepl cfg of
   where cfg = sCfg s
         objects = gHygiene cfg || not (null (gServers cfg))
 
--- | The vendored engine for this session, if it can be used: our GHCi executable sits beside this one, was
--- built for exactly the compiler on PATH, and the session uses the default @cabal repl@ command (@"engine"@:
--- @auto@, @ghci@ to force the stock GHCi through a terminal, @vendored@ to insist).
-engineFor :: S -> IO (Maybe EngineSpec)
-engineFor s
-  | gEngine (sCfg s) == "ghci" || isJust (gRepl (sCfg s)) = pure Nothing
-  | otherwise = do
-      exe <- (</> "ghci-session-engine") . takeDirectory <$> getExecutablePath
-      there <- doesFileExist exe
-      if not there then no ("no ghci-session-engine beside " ++ exe) else do
-        (mine, theirs, libdir) <- engineFacts s exe
-        case (mine, theirs, libdir) of
-          (Just a, Just b, Just l) | a == b && not (null l) -> do
-            sock <- (++ ".engine") <$> sockPath (sDir s)
-            logS s ("engine: vendored GHCi " ++ a)
-            pure (Just (EngineSpec (sData s </> "bin" </> "ghci-engine.sh") exe l sock (sDir s </> "engine.out") (sDir s </> "repl.out")))
-          _ -> no ("the engine is GHC " ++ fromMaybe "?" mine ++ ", the compiler " ++ fromMaybe "?" theirs)
+-- | The engine for this session -- our GHCi, beside this executable -- its compiler's version, and that
+-- compiler's library directory. It must have been built for exactly the compiler on PATH: it is that
+-- compiler's own front end, linked against its libraries.
+engineExe :: S -> IO (FilePath, (Int, Int), FilePath)
+engineExe s = do
+  exe <- (</> "ghci-session-engine") . takeDirectory <$> getExecutablePath
+  there <- doesFileExist exe
+  if not there then no ("there is no ghci-session-engine beside " ++ exe ++ " (it is built for GHC 9.14.1: see the README for another)") else do
+    (mine, theirs, libdir) <- engineFacts s exe
+    case (mine, theirs, libdir) of
+      (Just a, Just b, Just l) | a == b && not (null l) -> do
+        logS s ("engine: GHCi " ++ a)
+        let v = case map read (take 2 (splitOn '.' (filter (\c -> isDigit c || c == '.') a))) of { [x, y] -> (x, y); _ -> (0, 0) }
+        pure (exe, v, l)
+      _ -> no ("the engine is GHC " ++ fromMaybe "?" mine ++ ", the compiler on PATH is " ++ fromMaybe "?" theirs)
   where no why = do
-          logS s ("engine: stock GHCi through a terminal (" ++ why ++ ")")
-          when (gEngine (sCfg s) == "vendored") (throwIO (userError ("engine \"vendored\" is not available: " ++ why)))
-          pure Nothing
+          setStatus s False ("CONFIG-ERROR: " ++ why) [] []
+          throwIO (userError why)
 
 -- | The engine's GHC version, the compiler's, and the compiler's library directory. Three process starts
 -- (0.2 s of a boot), so remembered in the state directory for as long as neither executable changes.
@@ -296,23 +277,6 @@ engineFacts s exe = do
         _ -> pure ()
       pure (mine, theirs, libdir)
 
--- | Build the hygiene C libraries against this GHC's RTS -- unless they are newer than their sources, the
--- script and the compiler (asked in a few stats: running the script to find that out is 0.15 s).
-buildHygiene :: S -> IO ()
-buildHygiene s = do
-  let script = sData s </> "hygiene" </> "build.sh"
-      clib = cStateDir (sConf s) </> "clib"
-  ghc <- findExecutable "ghc" >>= maybe (pure "") canonicalizePath
-  cs <- either (\(_ :: IOException) -> []) (map ((sData s </> "hygiene" </> "c") </>) . filter (".c" `isSuffixOf`))
-          <$> try (getDirectoryContents (sData s </> "hygiene" </> "c"))
-  srcT <- mapM modTime ([script, ghc] ++ cs)
-  libT <- mapM (modTime . (clib </>)) ["libghscafs.dylib", "libghscensus.dylib", "libghsloader.dylib"]
-  let fresh = not (null ghc) && all isJust (srcT ++ libT) && minimum (catMaybes libT) > maximum (catMaybes srcT)
-  unless fresh $ do
-    (_, o, e) <- readCreateProcessWithExitCode (shell (shq script ++ " " ++ shq clib)) { cwd = Just (sRoot s) } ""
-    let msg = if null (trim e) then (if null (trim o) then "ok" else trim o) else trim e
-    logS s ("hygiene build: " ++ map (\c -> if c == '\n' then ';' else c) msg)
-
 shq :: String -> String
 shq x = "'" ++ concatMap (\c -> if c == '\'' then "'\\''" else [c]) x ++ "'"
 
@@ -327,22 +291,13 @@ postLoad :: S -> Repl -> IO ()
 postLoad s r = do
   let cfg = sCfg s
       c t e = T.unpack <$> replCommand r (Just t) e
-  postLoadBasics r
-  when (gCapabilities cfg > 0) (void (c 60 ("GHC.Conc.setNumCapabilities " ++ show (gCapabilities cfg))))
+  when (gCapabilities cfg > 0) (void (replQuery r (Just 60) "capabilities" [("n", JNum (fromIntegral (gCapabilities cfg)))]))
   forM_ (gPreload cfg) (c 120)
   -- one command for all the imports (forty round trips were 0.3 s of a boot); one at a time only if that
   -- fails, so a single missing module does not cost the rest
   unless (null (gModules cfg)) $ do
     out <- c 120 (":module + " ++ unwords (gModules cfg))
     when (noModule out) (forM_ (gModules cfg) (\m -> c 60 (":module + " ++ m)))
-  when (gHygiene cfg) $ do
-    out <- c 60 (":module + " ++ gHygieneModule cfg ++ " GHC.Stats")
-    vHygieneOn s =: not (noModule out)
-    when (noModule out) (logS s ("hygiene OFF: " ++ gHygieneModule cfg ++ " is not in scope in this repl (add the ghci-session library to build-depends)"))
-  unless (null (gServers cfg)) $ do
-    out <- c 60 (":module + " ++ gZygoteModule cfg)
-    vZygoteOn s =: not (noModule out)
-    when (noModule out) (logS s ("servers OFF: " ++ gZygoteModule cfg ++ " is not in scope in this repl (add the ghci-session library to build-depends)"))
 
 -- | The signature the loaded code was built from, as a file the loaded code can read:
 -- @<mtime ns>\\t<path relative to the root>@ per watched source.
@@ -352,23 +307,30 @@ writeLoadedSources s = do
   void (try (writeAtomic (sDir s </> "loaded_sources.tsv")
                (concat [ show (round (m * 1e9) :: Integer) ++ "\t" ++ rel s (fromRaw p) ++ "\n" | (p, m) <- M.toList sig ])) :: IO (Either IOException ()))
 
--- | GHC's own verdict lines decide whether a load succeeded.
-verdictOf :: T.Text -> (String, [String])
-verdictOf out
-  | any (T.isPrefixOf (T.pack "Failed, ")) ls || not (null errs) = ("COMPILE-ERROR: " ++ show (length errs) ++ " error(s)", map T.unpack (take 20 errs))
-  | any okLine ls = ("OK", [])
-  | otherwise = ("COMPILE-ERROR: no GHC verdict in the load output", map T.unpack (lastN 5 (T.lines (T.strip out))))
+-- | Did a load succeed? The engine says: the errors the compiler logged while it ran (@facts@), and whether
+-- every module of the graph is now loaded (@st@). The output is read for one thing only -- an error GHCi
+-- printed without logging it (a link failure thrown as an exception has no diagnostic).
+verdictOf :: Json -> Json -> T.Text -> (String, [String])
+verdictOf facts st out
+  | nErr > 0 = ("COMPILE-ERROR: " ++ show nErr ++ " error(s)", take 20 (map line errs))
+  | not (null printed) = ("COMPILE-ERROR: " ++ show (length printed) ++ " error(s)", map T.unpack (take 20 printed))
+  | loaded < total = ("COMPILE-ERROR: " ++ show (total - loaded) ++ " of " ++ show total ++ " module(s) not loaded", map T.unpack (lastN 5 (T.lines (T.strip out))))
+  | otherwise = ("OK", [])
   where
-    ls = T.lines out
-    -- not anchored on a source location: GHC also emits `<no location info>: error:` for link/IO failures
-    errs = filter (T.isInfixOf (T.pack ": error:")) ls
-    okLine l = T.pack "Ok, " `T.isPrefixOf` l && T.pack "loaded." `T.isSuffixOf` l && T.pack "module" `T.isInfixOf` l
+    errs = [ d | d <- lookupArr "diagnostics" facts, lookupStr "severity" d == Just "error" ]
+    nErr = max (length errs) (maybe 0 round (lookupNum "errors" facts)) :: Int
+    printed = filter (T.isInfixOf (T.pack ": error:")) (T.lines out)
+    total = maybe 0 round (lookupNum "modules" st) :: Int
+    loaded = maybe total round (lookupNum "loaded" st) :: Int
+    line d = maybe "<no location>" (\f -> f ++ ":" ++ n "line" ++ ":" ++ n "col") (lookupStr "file" d) ++ ": error: "
+               ++ maybe "" (\c -> "[" ++ c ++ "] ") (lookupStr "code" d) ++ unwords (words (takeWhile (/= '\n') (fromMaybe "" (lookupStr "message" d))))
+      where n k = maybe "?" (show . (round :: Double -> Int)) (lookupNum k d)
 
 lastN :: Int -> [a] -> [a]
 lastN n xs = drop (length xs - n) xs
 
-afterLoad :: S -> T.Text -> Bool -> Double -> IO ()
-afterLoad s out doCheck t0 = do
+afterLoad :: S -> Reply -> Bool -> Double -> IO ()
+afterLoad s (Reply facts out) doCheck t0 = do
   pend <- rd (vPendingSig s)
   sig <- if M.null pend then scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s)) else pure pend
   vLoadedSig s =: sig
@@ -376,8 +338,12 @@ afterLoad s out doCheck t0 = do
   modifyIORef' (vGeneration s) (+ 1)
   writeLoadedSources s
   writeAtomicT (sDir s </> "load.log") out
-  let (v, detail) = verdictOf out
-      warns = T.count (T.pack ": warning:") out
+  st <- either (\(_ :: SomeException) -> JObj []) id <$> try (ask s (Just 60) "state" [])
+  vLoaded s =: st
+  forM_ (lookupStr "cwd" st) (vCwd s =:)
+  vDiags s =: take 100 (lookupArr "diagnostics" facts)
+  let (v, detail) = verdictOf facts st out
+      warns = maybe 0 round (lookupNum "warnings" facts) :: Int
       prefix = "OK" ++ (if warns > 0 then " (" ++ show warns ++ " warning(s))" else "")
   vOkPrefix s =: prefix
   let took = (\t -> ("duration_s", JNum (r2 (t - t0)))) <$> now
@@ -525,18 +491,18 @@ unlinkCafs s = do
   when ok $ do
     vUnlinkDue s =: False
     t0 <- now
-    r <- try (cmdS s (Just 300) (gHygieneModule (sCfg s) ++ ".pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> "
-           ++ "(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return \"?\") >>= \\l -> "
-           ++ "putStrLn (\"unlinked=\" ++ show k ++ \" live_mb=\" ++ l)"))
+    r <- try (ask s (Just 300) "prune" [])
     t1 <- now
     case r of
       Left (e :: SomeException) -> logS s ("unlink_cafs failed: " ++ displayException e)
-      Right out -> do
-        let field k = listToMaybe [ takeWhile (not . isSpace) (drop (length k) w) | l <- lines out, w <- tailsW l, k `isPrefixOf` w ]
-            tailsW l = [ drop i l | i <- [0 .. length l - 1] ]
-        mapM_ (vLiveMb s =:) (field "live_mb=")
+      Right j -> do
+        let k = maybe 0 round (lookupNum "unlinked" j) :: Int
+        mapM_ ((vLiveMb s =:) . show . (round :: Double -> Int)) (lookupNum "live_mb" j)
         live <- rd (vLiveMb s)
-        logS s (printf "unlink_cafs: %s unlinked in %.2fs with its GC, live heap %s MB" (fromMaybe "?" (field "unlinked=")) (t1 - t0) live)
+        if k < 0
+          then do vHygieneOn s =: False
+                  logS s "hygiene OFF: the engine cannot read this RTS's CAF list (see hygiene/c/rts_syms.h)"
+          else logS s (printf "unlink_cafs: %d unlinked in %.2fs with its GC, live heap %s MB" k (t1 - t0) live)
 
 -- | After the verdict is out: link the reloaded code if nothing has yet (the @warm@ expressions), then the
 -- unlink and its GC. In the background, under the work lock: a command that arrives first simply runs first.
@@ -555,7 +521,7 @@ warmAsync s = void $ forkIO $ withMVar (vWork s) $ \_ -> do
       Left (e :: SomeException) -> logS s ("warm failed: " ++ displayException e)
       Right () -> logS s (printf "[warm] %.2fs after the verdict%s" (t1 - t0) (if linked then "" else " (linked the reloaded code first)" :: String))
 
--- servers: forked children of the repl (GHC.Hygiene.Zygote) ---------------------------------
+-- servers: forked children of the engine ---------------------------------------------------
 
 serverLabels :: S -> [String]
 serverLabels s = map svMember (gServers (sCfg s))
@@ -576,9 +542,6 @@ serverRunning s label = do
     Nothing -> pure Nothing
     Just pid -> (\a -> if a then Just pid else Nothing) <$> pidAlive pid
 
-zm :: S -> String
-zm = gZygoteModule . sCfg
-
 -- | Work the child must INHERIT: it is a fork without an exec, so anything not fork-safe (and anything slow)
 -- is done here in the parent. On a re-fork this runs BEFORE the old server is stopped.
 serverPrefork :: S -> Server -> IO ()
@@ -594,46 +557,41 @@ serverPrefork s z = forM_ (svPrefork z) $ \pre -> do
 -- old server is stopped: a fork that cannot happen must not cost the server that is running.
 serverActionOk :: S -> Server -> IO (Maybe String)
 serverActionOk s z = do
-  on <- rd (vZygoteOn s)
-  if not on then pure (Just (zm s ++ " is not in scope in this repl")) else do
-    r <- try (cmdS s (Just 120) (":type (" ++ svAction z ++ ") :: IO ()"))
-    pure $ case r of
-      Left (e :: SomeException) -> Just (displayException e)
-      Right out -> if "error" `isInfixOf` out then Just (take 300 (unwords (words out))) else Nothing
+  r <- try (ask s (Just 120) "typecheck" [("expr", JStr (svAction z))])
+  pure $ case r of
+    Left (e :: SomeException) -> Just (displayException e)
+    Right j | lookupBool "ok" j == Just True -> Nothing
+            | otherwise -> Just (take 300 (unwords (words (fromMaybe "?" (lookupStr "error" j)))))
 
--- | Fork one server out of the code the repl holds RIGHT NOW. @handover@: this continues a server that was
+-- | Fork one server out of the code the engine holds RIGHT NOW. @handover@: this continues a server that was
 -- just stopped (carry its state in); the child never decides that for itself.
 serverFork :: S -> Server -> Bool -> Bool -> IO (Maybe Int)
 serverFork s z handover preforked = do
   let label = svMember z
-  on <- rd (vZygoteOn s)
-  if not on then logS s ("server[" ++ label ++ "]: cannot fork, " ++ zm s ++ " is not in scope") >> pure Nothing else do
-    let hpath = sfile s label "handover"
-        (hOut, hIn) = gHandoverEnv (sCfg s)
-    carried <- (handover &&) <$> doesFileExist hpath
-    let env' = svEnv z ++ [(hOut, hpath)] ++ [ (hIn, hpath) | carried ]
-        -- positional, not record update: GHC rejects a qualified record update on a field it also sees as a selector
-        spec = zm s ++ ".zygoteSpec " ++ show label ++ " " ++ show (sfile s label "log") ++ " " ++ show env' ++ " " ++ show (gComposed (sCfg s))
-    unless preforked (phase s "prefork" (serverPrefork s z))
-    r <- try (phase s "fork" (cmdS s Nothing ("fmap " ++ zm s ++ ".zcPid (" ++ zm s ++ ".zygoteFork (" ++ spec ++ ") (" ++ svAction z ++ "))")))
-    case r of
-      Left (e :: SomeException) -> logS s ("server[" ++ label ++ "]: fork failed: " ++ displayException e) >> pure Nothing
-      Right out ->
-        -- a pid is a whole line of digits, never a number lifted out of prose
-        case [ read l | l <- map trim (lines out), not (null l), all isDigit l ] of
-          [] -> logS s ("server[" ++ label ++ "]: fork produced no pid: " ++ take 300 (unwords (words out))) >> pure Nothing
-          (pid : _) -> do
-            logS s ("server[" ++ label ++ "]: forked pid " ++ show pid ++ " -> " ++ sfile s label "log")
-            -- verified BEFORE the pid file is written: a fork that dies on a busy port must not overwrite
-            -- the record of the healthy child it collided with
-            ok <- phase s "fork_verify" (serverVerify s z pid)
-            if not ok then pure Nothing else do
-              writeAtomic (sfile s label "pid") (show pid ++ "\n")
-              fp <- phase s "fork_fingerprint" (codeFingerprint s z)
-              case fp of
-                Just h -> writeAtomic (sfile s label "code") (h ++ "\n")
-                Nothing -> rm (sfile s label "code")
-              pure (Just pid)
+      hpath = sfile s label "handover"
+      (hOut, hIn) = gHandoverEnv (sCfg s)
+  carried <- (handover &&) <$> doesFileExist hpath
+  let env' = svEnv z ++ [(hOut, hpath)] ++ [ (hIn, hpath) | carried ]
+  unless preforked (phase s "prefork" (serverPrefork s z))
+  r <- try (phase s "fork" (ask s Nothing "fork"
+         [ ("label", JStr label), ("log", JStr (sfile s label "log")), ("action", JStr (svAction z))
+         , ("env", JArr [ JArr [JStr k, JStr v] | (k, v) <- env' ]), ("detach", JBool (gComposed (sCfg s))) ]))
+  case fmap (lookupNum "pid") r of
+    Left (e :: SomeException) -> logS s ("server[" ++ label ++ "]: fork failed: " ++ takeWhile (/= '\n') (displayException e)) >> pure Nothing
+    Right Nothing -> logS s ("server[" ++ label ++ "]: fork produced no pid") >> pure Nothing
+    Right (Just p) -> do
+      let pid = round p :: Int
+      logS s ("server[" ++ label ++ "]: forked pid " ++ show pid ++ " -> " ++ sfile s label "log")
+      -- verified BEFORE the pid file is written: a fork that dies on a busy port must not overwrite
+      -- the record of the healthy child it collided with
+      ok <- phase s "fork_verify" (serverVerify s z pid)
+      if not ok then pure Nothing else do
+        writeAtomic (sfile s label "pid") (show pid ++ "\n")
+        fp <- phase s "fork_fingerprint" (codeFingerprint s z)
+        case fp of
+          Just h -> writeAtomic (sfile s label "code") (h ++ "\n")
+          Nothing -> rm (sfile s label "code")
+        pure (Just pid)
 
 rm :: FilePath -> IO ()
 rm p = void (try (removeFile p) :: IO (Either IOException ()))
@@ -661,7 +619,6 @@ serverVerify s z pid = case svPort z of
     unless alive $ do
       t <- logTail s label
       logS s ("server[" ++ label ++ "]: pid " ++ show pid ++ " died at once -- " ++ t)
-      serverStopPid s label pid
     pure alive
   Just port -> do
     t0 <- now
@@ -671,7 +628,6 @@ serverVerify s z pid = case svPort z of
           if not alive then do
               tl <- logTail s label
               logS s ("server[" ++ label ++ "]: pid " ++ show pid ++ " DIED before taking port " ++ show port ++ " -- " ++ tl)
-              serverStopPid s label pid   -- reap it: GHCi never waits on a child
               pure False
             else do
               holder <- portListener port
@@ -687,27 +643,19 @@ serverVerify s z pid = case svPort z of
     loop
   where label = svMember z
 
--- | Stop one pid THROUGH the repl, which is what reaps it (GHCi installs no SIGCHLD handling, so a child
--- killed from outside stays a zombie for the life of the session). Signals if the repl cannot take a command.
+-- | Stop one pid: SIGTERM (a server writes its state out on it), then SIGKILL. The engine waits on every
+-- child it forks, so a stopped one is gone at once and not a zombie; one adopted from an earlier engine is
+-- init's to reap.
 serverStopPid :: S -> String -> Int -> IO ()
 serverStopPid s label pid = do
-  on <- rd (vZygoteOn s)
-  alive <- rd (vRepl s) >>= maybe (pure False) replAlive
-  -- (a repl in the middle of a 30 s check cannot take the command: do not queue a stop behind it)
-  busy <- rd (vRepl s) >>= maybe (pure False) replBusy
-  viaRepl <- if on && alive && not busy
-    then either (\(_ :: SomeException) -> False) (const True)
-           <$> try (cmd s (Just 30) (zm s ++ ".zygoteStop (" ++ zm s ++ ".ZygoteChild " ++ show pid ++ " " ++ show label ++ " " ++ show (sfile s label "log") ++ ") 30"))
-    else pure False
-  still <- pidAlive pid
-  if viaRepl && not still then logS s ("server[" ++ label ++ "]: stopped pid " ++ show pid) else do
-    logS s ("server[" ++ label ++ "]: stopping pid " ++ show pid ++ " by signal")
-    forM_ [(sigTERM, 30 :: Int), (sigKILL, 20)] $ \(sig, n) -> do
-      a <- pidAlive pid
-      when a $ do
-        void (try (signalProcess sig (CPid (fromIntegral pid))) :: IO (Either IOException ()))
-        let wait k = when (k > 0) (pidAlive pid >>= \x -> when x (threadDelay 100000 >> wait (k - 1)))
-        wait n
+  forM_ [(sigTERM, 300 :: Int), (sigKILL, 200)] $ \(sig, n) -> do
+    a <- pidAlive pid
+    when a $ do
+      when (sig == sigKILL) (logS s ("server[" ++ label ++ "]: pid " ++ show pid ++ " did not exit on SIGTERM -- killing it"))
+      void (try (signalProcess sig (CPid (fromIntegral pid))) :: IO (Either IOException ()))
+      let wait k = when (k > 0) (pidAlive pid >>= \x -> when x (threadDelay 10000 >> wait (k - 1)))
+      wait n
+  logS s ("server[" ++ label ++ "]: stopped pid " ++ show pid)
 
 serverStop :: S -> String -> IO ()
 serverStop s label = do
@@ -750,87 +698,39 @@ serversStopAll s = do
 
 -- Is the running server's CODE still the code? A child needs replacing exactly when the code it would run
 -- differs from the code it was forked from: the object files of its units and of every in-session unit they
--- depend on (cabal's per-unit argument files list both), the declared extra files, and its declaration.
-
-data Unit = Unit { uPkg :: String, uMods :: [String], uDeps :: [String], uWd :: FilePath }
-
-unitFiles :: S -> IO (M.Map String Unit)
-unitFiles s = do
-  let dn = sRoot s </> "dist-newstyle"
-  names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents dn)
-  dirs <- forM [ dn </> n | n <- names, "multi-out-" `isPrefixOf` n ] (\d -> (,) d <$> modTime d)
-  case sortOn snd [ (d, t) | (d, Just t) <- dirs ] of
-    [] -> pure M.empty
-    ds -> do
-      let dir = fst (last ds)
-      fs <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents dir)
-      us <- forM [ dir </> f | f <- fs, f `notElem` [".", ".."] ] $ \f -> do
-        isF <- doesFileExist f
-        if not isF then pure Nothing else maybe Nothing (parseUnit . map trim . lines) <$> readFileMaybe f
-      fmap M.fromList $ forM (catMaybes us) $ \(uid, u, maybeMods) -> do
-        -- a capitalised word right after a flag may be that flag's VALUE (`-framework Accelerate`), not a
-        -- module: the missing object decides
-        extra <- filterM (\m -> doesFileExist (objPath (uWd u </> sObjRel s) m)) maybeMods
-        pure (uid, u { uMods = uMods u ++ extra })
-  where
-    parseUnit args = go args Nothing "" (sRoot s) [] [] [] ""
-    go (a : n : r) uid pkg wd deps mods maybeM prev
-      | a == "-this-unit-id" = go r (Just n) pkg wd deps mods maybeM n
-      | a == "-this-package-name" = go r uid n wd deps mods maybeM n
-      | a == "-working-dir" = go r uid pkg n deps mods maybeM n
-      | a == "-package-id" = go r uid pkg wd (n : deps) mods maybeM n
-    go (a : r) uid pkg wd deps mods maybeM prev
-      | isModule a = if "-" `isPrefixOf` prev then go r uid pkg wd deps mods (a : maybeM) a else go r uid pkg wd deps (a : mods) maybeM a
-      | otherwise = go r uid pkg wd deps mods maybeM a
-    go [] uid pkg wd deps mods maybeM _ = (\u -> (u, Unit pkg (reverse mods) deps wd, reverse maybeM)) <$> uid
-    isModule a = not (null a) && all part (splitOn '.' a) && not ("." `isSuffixOf` a) && not ("." `isPrefixOf` a) && not (".." `isInfixOf` a)
-    part p = case p of { (c : cs) -> isUpper c && all (\x -> x `elem` ("_'" :: String) || x `elem` ['a' .. 'z'] || x `elem` ['A' .. 'Z'] || isDigit x) cs; [] -> False }
-
-objPath :: FilePath -> String -> FilePath
-objPath odir m = foldl (</>) odir (splitOn '.' m) ++ ".o"
+-- depend on (the engine's own account of what is loaded: `state`), the declared extra files, and its declaration.
 
 -- | A hash of everything a child forked now would run, or 'Nothing' when that cannot be said (then the
 -- child is always re-forked).
 codeFingerprint :: S -> Server -> IO (Maybe String)
 codeFingerprint s z = do
-  units <- unitFiles s
-  objs <- if M.null units then allObjects else pure (fromUnits units)
-  case objs of
-    Nothing -> pure Nothing
-    Just files -> do
-      let step named h p = case h of
-            Nothing -> pure Nothing
-            Just x -> do
-              fh <- fileHash s p
-              if fh == 0 then pure Nothing else Just <$> hashString (named p ++ ":" ++ showHash fh) x
-      h1 <- foldM (step (rel s)) (Just 1) (sort files)
-      h2 <- foldM (step id) h1 (map (sRoot s </>) (gFingerprintFiles (sCfg s)))
-      case h2 of
-        Nothing -> pure Nothing   -- something we cannot see: make no claim
-        Just x -> Just . showHash <$> hashString (svSpec z ++ show (svEnv z)) x
-  where
-    fromUnits units =
-      let want = [ (takeWhile (/= ':') u, drop 1 (dropWhile (/= ':') u)) | u <- svUnits z, ':' `elem` u ]
-          rootsOf (kind, comp) = [ uid | (uid, u) <- M.toList units
-                                       , (kind == "lib" && uPkg u == comp && "-inplace" `isSuffixOf` uid) || (kind /= "lib" && ("-inplace-" ++ comp) `isSuffixOf` uid) ]
-          roots = map rootsOf want
-          close seen [] = seen
-          close seen (u : todo) | u `elem` seen = close seen todo
-                                | otherwise = close (u : seen) (todo ++ maybe [] (filter (`M.member` units) . uDeps) (M.lookup u units))
-      in if null want || any null roots then Nothing
-         else Just (nub [ objPath (uWd u </> sObjRel s) m | uid <- close [] (concat roots), Just u <- [M.lookup uid units], m <- uMods u ])
-    -- without cabal's per-unit files (a single-unit repl has none): every object this session compiled.
-    -- Over-inclusive, which is the safe side -- it can only re-fork more often, never less.
-    allObjects = do
-      fs <- findObjs (sRoot s)
-      pure (if null fs then Nothing else Just fs)
-    findObjs dir = do
-      names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents dir)
-      fmap concat $ forM [ n | n <- names, n `notElem` [".", "..", "dist-newstyle", ".git"] ] $ \n -> do
-        let p = dir </> n
-        isD <- doesDirectoryExist p
-        if isD then findObjs p
-          else pure [ p | ".o" `isSuffixOf` n, ("/" ++ sObjRel s ++ "/") `isInfixOf` p ]
+  st <- rd (vLoaded s)
+  let units = [ (u, (fromMaybe "" (lookupStr "package" j), strs (j .: "deps"), strs (j .: "objects")))
+              | j <- lookupArr "units" st, Just u <- [lookupStr "id" j] ]
+      want = [ (takeWhile (/= ':') u, drop 1 (dropWhile (/= ':') u)) | u <- svUnits z, ':' `elem` u ]
+      -- a library's unit is <package>-<version>-inplace, another component's ends -inplace-<component>
+      isRoot (kind, comp) (uid, (pkg, _, _))
+        | kind /= "lib" = ("-inplace-" ++ comp) `isSuffixOf` uid
+        | not (null pkg) = pkg == comp && "-inplace" `isSuffixOf` uid
+        | otherwise = "-inplace" `isSuffixOf` uid && (comp ++ "-") `isPrefixOf` uid && all isDigit (take 1 (drop (length comp + 1) uid))
+      roots = [ [ uid | u@(uid, _) <- units, isRoot w u ] | w <- want ]
+      close seen [] = seen
+      close seen (u : todo) | u `elem` seen = close seen todo
+                            | otherwise = close (u : seen) (todo ++ maybe [] (\(_, ds, _) -> filter (`elem` map fst units) ds) (lookup u units))
+      -- a server that names no unit runs, for all we know, everything loaded: over-inclusive is the safe side
+      chosen = if null want then map fst units else close [] (concat roots)
+      files = nub [ o | u <- chosen, Just (_, _, os) <- [lookup u units], o <- os ]
+  if null units || any null roots || null files then pure Nothing else do
+    let step named h p = case h of
+          Nothing -> pure Nothing
+          Just x -> do
+            fh <- fileHash s p
+            if fh == 0 then pure Nothing else Just <$> hashString (named p ++ ":" ++ showHash fh) x
+    h1 <- foldM (step (rel s)) (Just 1) (sort files)
+    h2 <- foldM (step id) h1 (map (sRoot s </>) (gFingerprintFiles (sCfg s)))
+    case h2 of
+      Nothing -> pure Nothing   -- something we cannot see: make no claim
+      Just x -> Just . showHash <$> hashString (svSpec z ++ show (svEnv z)) x
 
 -- | A file's content hash, 0 if it cannot be read. Remembered while the file's size and modification time
 -- stand: a reload recompiles a module or two, and the other hundred objects need a stat, not a read.
@@ -942,14 +842,15 @@ serverOp s action member resume = do
 
 -- lifecycle --------------------------------------------------------------------------------
 
-boot :: S -> IO ()
-boot s = do
+-- | Start the engine. @fast@: nothing the build tool decides has changed since it last told us how (a restart
+-- for memory, or for a C file), so its answer is used again and it is not run.
+boot :: S -> Bool -> IO ()
+boot s fast = do
   let cfg = sCfg s
   when (gHygiene cfg && any (`isInfixOf` gRtsFlags cfg) ["-xn", "--nonmoving-gc"]) $ do
     -- the pruner edits RTS lists the non-moving collector reads concurrently: the repl died at the first unlink
     setStatus s False "CONFIG-ERROR: hygiene cannot be used with the non-moving collector (rts_flags)" [] []
     throwIO (userError "hygiene with the non-moving GC")
-  when (gHygiene cfg && gHygieneBuild cfg) (phase s "hygiene_build" (buildHygiene s))
   forM_ (gPrebuild cfg) $ \pb -> do
     t0 <- now
     (code, o, e) <- readCreateProcessWithExitCode (shell pb) { cwd = Just (sRoot s) } ""
@@ -960,46 +861,51 @@ boot s = do
     when (code /= ExitSuccess) $ do
       setStatus s False "PREBUILD-ERROR: see prebuild.log" (lastN 8 (lines (trim (o ++ e)))) []
       throwIO (userError "prebuild failed")
-  let env' = gEnv cfg ++ [ ("GHS_RTS_FLAGS", gRtsFlags cfg) | gRtsFlags cfg `notElem` ["", "none"], isNothing (lookup "GHS_RTS_FLAGS" (gEnv cfg)) ]
-               ++ [ ("GHS_DIR", cStateDir (sConf s) </> "clib") | isNothing (lookup "GHS_DIR" (gEnv cfg)) ] ++ [("GHCI_SESSION", sName s)]
+  let env' = gEnv cfg ++ [("GHCI_SESSION", sName s)]
+      launchDir = sDir s </> "launch"
+      outF = sDir s </> "repl.out"
+      rts = if gRtsFlags cfg `elem` ["", "none"] then [] else ["+RTS"] ++ words (gRtsFlags cfg) ++ ["-RTS"]
   hold <- rd (vHold s)
   vHold s =: 0
   setStatus s False "starting" [] []       -- always visible at once: `start` waits on it
   vHold s =: hold
   t0 <- now
   vSpawned s =: t0
-  mapM_ (vEvaluated s =:) [False]
+  vEvaluated s =: False
   vUnlinkDue s =: False
+  vHygieneOn s =: gHygiene cfg
   scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:)
-  eng <- engineFor s
-  line <- replCommandLine s (isJust eng)
-  let afterStart r = do
-        -- called once GHCi has answered: everything before this instant was cabal and the load
-        t <- now
-        modifyIORef' (vPhases s) (M.insert "load" (t - t0))
-        phase s "post_load" (postLoad s r)
-  r <- try $ case eng of
-    Just es -> startEngineRepl es line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s) afterStart
-    Nothing -> startRepl line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)
-                 (\t -> void (try (B.appendFile (sDir s </> "async.log") (TE.encodeUtf8 t)) :: IO (Either IOException ())))
-                 afterStart
+  (exe, ver, libdir) <- engineExe s
+  let dead why detail e = do
+        setStatus s False ("DEAD: " ++ why) detail []
+        throwIO (e :: ReplError)
+  known <- if fast then readLaunch launchDir else pure Nothing
+  launch <- case known of
+    Just l -> do
+      logS s "the build's answer is reused: the build tool is not run"
+      writeAtomic outF ""
+      pure l
+    Nothing -> do
+      r <- phase s "build" (captureLaunch (replCommandLine s exe ver) (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
+      case r of
+        Right l -> pure l
+        Left said -> do
+          writeAtomic (sDir s </> "load.log") said
+          dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
+  built <- fromMaybe "" <$> readFileMaybe outF
+  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts) launch env' outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
   case r of
-    Left (e :: ReplError) -> do
-      setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) (lastN 8 (lines (show e))) []
-      throwIO e
-    Right (repl, out) -> do
+    Left (e :: ReplError) -> dead (takeWhile (/= '\n') (show e)) (lastN 12 (lines (show e))) e
+    Right (repl, Reply facts out) -> do
       vRepl s =: Just repl
-      -- `cabal repl` may chdir into the package: a check that writes a relative path lands there. GHCi's own
-      -- answer, no shell: "current working directory:\n  /path"
-      shown <- either (\(_ :: SomeException) -> []) (lines . T.unpack) <$> try (replCommand repl (Just 60) ":show paths")
-      vCwd s =: fromMaybe (sRoot s) (listToMaybe [ trim b | (a, b) <- zip shown (drop 1 shown), "current working directory" `isInfixOf` a, not (null (trim b)) ])
-      vContextOk s =: True
-      afterLoad s out (sBootCheck s) t0
+      phase s "post_load" (postLoad s repl)
+      afterLoad s (Reply facts (T.pack built <> out)) (sBootCheck s) t0
+      compiled s >>= (vContextOk s =:)      -- a load that failed dropped the imports: the next good reload re-issues them
 
 -- | A fresh repl. The servers that were running come back on the new code (a plain session's children die
 -- with its repl; a composed session's are kept if their code did not change).
-restart :: S -> IO String
-restart s = do
+restart :: S -> Bool -> IO String
+restart s fast = do
   reforkJoin s
   t0 <- now
   oneVerdict s $ do
@@ -1007,7 +913,7 @@ restart s = do
     was <- filterM (fmap isJust . serverRunning s) (serverLabels s)
     phase s "repl_stop" (rd (vRepl s) >>= mapM_ (\r -> stopRepl r (logS s)))
     vRepl s =: Nothing
-    boot s
+    boot s fast
     unless (null (gServers (sCfg s))) $ do
       ok <- compiled s
       if ok then refork s was else modifyIORef' (vOwed s) (nub . (was ++))
@@ -1051,29 +957,29 @@ reload' s doCheck doRefork async = do
   if budget > 0 && rss > budget
     then do
       logS s (printf "reload: repl at %.0f MB > budget %.0f MB -- restarting instead" rss budget)
-      out <- T.pack <$> restart s
+      out <- T.pack <$> restart s True
       note s (printf "[repl RESTARTED instead of reloaded: it had grown to %.0f MB, over the %.0f MB budget; now restarted]" rss budget) []
       pure out
     else do
       t0 <- now
       phase s "scan" (scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:))
       push s "reloading" ""
-      r <- try (phase s "ghci_reload" (cmd s (Just (gLoadTimeout cfg)) ":reload"))
+      r <- try (phase s "ghci_reload" (theRepl s >>= \rp -> replRun rp (Just (gLoadTimeout cfg)) ":reload"))
       case r of
         Left (e :: ReplError) -> setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) [] [] >> pure (T.pack (show e))
-        Right out -> do
+        Right rep@(Reply _ out) -> do
           writeAtomicT (sDir s </> "reload.log") out
-          -- A reload that succeeds keeps GHCi's context (imports, prompt, buffering); one that fails drops
-          -- the imports. So they are re-issued only after a failure.
-          let failedNow = fst (verdictOf out) /= "OK"
-          ctx <- rd (vContextOk s)
-          when (not failedNow && not ctx) $
-            void (try (phase s "post_load" (theRepl s >>= postLoad s)) :: IO (Either SomeException ()))
-          vContextOk s =: not failedNow
           vUnlinkDue s =: True
           vEvaluated s =: (gUnlinkAfter cfg == "reload")
           phase s "unlink" (unlinkCafs s)   -- "reload": now, which reaches the generation BEFORE the one just replaced
-          afterLoad s out doCheck t0
+          afterLoad s rep doCheck t0
+          -- A reload that succeeds keeps GHCi's context (its imports); one that fails drops them. So they
+          -- are re-issued after the first reload that succeeds again.
+          okNow <- compiled s
+          ctx <- rd (vContextOk s)
+          when (okNow && not ctx) $
+            void (try (phase s "post_load" (theRepl s >>= postLoad s)) :: IO (Either SomeException ()))
+          vContextOk s =: okNow
           running <- phase s "servers_running" (filterM (fmap isJust . serverRunning s) (serverLabels s))
           owed <- rd (vOwed s)
           when (not (null running) || not (null owed)) $ do
@@ -1199,10 +1105,11 @@ watchLoop s = do
                 loaded <- rd (vLoadedSig s)
                 when (gAutoReload cfg && cur2 /= loaded) $ do
                   let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
-                  if any (\p -> any (`isSuffixOf` p) [".c", ".h", ".cabal"] || "cabal.project" `isPrefixOf` takeFileName p) changed
+                  let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
+                  if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
                     then do
                       logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
-                      drive s (void (restart s))
+                      drive s (void (restart s (not (any buildFile changed))))
                     else do
                       logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
                       drive s (void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing))
@@ -1284,7 +1191,7 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     out <- runCheck s Nothing (lookupStr "member" req)
     unlinkCafs s
     pure (Just out)
-  "restart" -> Just . T.pack <$> restart s
+  "restart" -> Just . T.pack <$> restart s (fromMaybe False (lookupBool "fast" req))
   _ | op `elem` ["server", "zygote"] -> do     -- "zygote" with fork/refork: the names an older client of this protocol used
     let action = case fromMaybe "status" (lookupStr "action" req) of { "fork" -> "start"; "refork" -> "restart"; a -> a }
     reforkJoin s
@@ -1311,14 +1218,13 @@ runDaemon conf name bootCheck = do
   -- build files at the root are watched too: a changed .cabal means a new package set, which a reload cannot adopt
   rootFiles <- sort . filter (\f -> ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f) <$> getDirectoryContents root
   let cfg = cfg0 { gWatch = gWatch cfg0 ++ [ f | f <- rootFiles, f `notElem` gWatch cfg0 ] }
-  dd <- dataDir
   t <- now
-  s <- S conf name cfg root dir (cStateRel conf </> name </> "obj") dd bootCheck
+  s <- S conf name cfg root dir (cStateRel conf </> name </> "obj") bootCheck
          <$> newIORef Nothing <*> newIORef "starting" <*> newIORef (JObj []) <*> newIORef ""
          <*> newIORef M.empty <*> newIORef M.empty <*> newIORef 0 <*> newIORef 0
          <*> newIORef False <*> newIORef False <*> newIORef "stopped" <*> newIORef []
          <*> newMVar ()
-         <*> newIORef (gHygiene cfg) <*> newIORef (not (null (gServers cfg))) <*> newIORef False
+         <*> newIORef (gHygiene cfg) <*> newIORef (JObj []) <*> newIORef []
          <*> newIORef False <*> newIORef False <*> newIORef True
          <*> newIORef 0 <*> newIORef root <*> newIORef t <*> newIORef 0
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
@@ -1328,7 +1234,7 @@ runDaemon conf name bootCheck = do
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
   r <- try $ oneVerdict s $ do
-    boot s
+    boot s False
     started <- phase s "servers_boot" (serversBoot s)
     unless (null started) (note s ("[servers: " ++ intercalate "; " started ++ "]") [])
     phasesDone s "boot" t0

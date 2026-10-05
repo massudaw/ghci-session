@@ -5,8 +5,7 @@
 -- value you 'keep', retains, by constructor, with the Strings among it. A full CAF census is seconds, not
 -- minutes. 'censusOf' and 'benchOf' answer one question about one value or action without a restart.
 --
--- Needs @libghscensus@ (and @libghscafs@ for the CAF roots) from @hygiene/build.sh@; without them every
--- entry point says so and does nothing.
+-- The C is part of the session's engine; in any other GHCi every entry point says so and does nothing.
 module GHC.Hygiene.Census
   ( cafReport, cafStrings, keptReport, keptStrings, keep
   , censusOf, benchOf, memNow, censusBench
@@ -23,15 +22,14 @@ import Foreign.C.String (CString, peekCAString, withCAString)
 import Foreign.C.Types (CInt (..))
 import Foreign.Marshal.Alloc (allocaBytes)
 import Foreign.Marshal.Array (allocaArray, peekArray)
-import Foreign.Ptr (FunPtr, Ptr, castPtr, intPtrToPtr, nullPtr, ptrToWordPtr, wordPtrToPtr)
+import Foreign.Ptr (FunPtr, Ptr, castFunPtr, castPtr, intPtrToPtr, nullFunPtr, nullPtr, ptrToWordPtr, wordPtrToPtr)
 import Foreign.StablePtr (castStablePtrToPtr, freeStablePtr, newStablePtr)
 import Foreign.Storable (peekElemOff)
 import GHC.Clock (getMonotonicTime)
 import GHC.Stats (GCDetails (..), RTSStats (..), getRTSStats)
-import System.Directory (doesFileExist)
-import System.Environment (getEnvironment, lookupEnv, setEnv)
+import System.Environment (getEnvironment, setEnv)
 import System.Mem (performMajorGC)
-import System.Posix.DynamicLinker (RTLDFlags (RTLD_LOCAL, RTLD_NOW), dlopen, dlsym)
+import GHC.Hygiene (engineSymbol)
 import Text.Printf (printf)
 
 foreign import ccall "dynamic" callCafList :: FunPtr (Ptr () -> Ptr () -> CInt -> IO CInt) -> Ptr () -> Ptr () -> CInt -> IO CInt
@@ -44,19 +42,18 @@ foreign import ccall unsafe "dynamic" cenStrRow :: FunPtr (CInt -> Ptr () -> Ptr
 
 data Census = Census { cReset :: IO (), cRoot :: Ptr () -> String -> Int -> IO (), cStable :: Ptr () -> String -> Int -> IO (), cRows :: IO [(String, [Int64])], cInfos :: IO [(String, [Int64])], cStrs :: IO [(String, String, [Int64])] }
 
--- | Load @libghscensus.dylib@ and hand over its entry points, or say it is missing.
+-- | The engine's census entry points, or say this process is not the engine.
 withCensus :: (Census -> IO ()) -> IO ()
 withCensus k = do
-  dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
-  override <- lookupEnv "GHS_CENSUS_LIB"   -- a freshly built copy, to try a change without restarting the session
-  let path = maybe (dir ++ "/libghscensus.dylib") id override
-  there <- doesFileExist path
-  if not there then putStrLn "no libghscensus.dylib (hygiene/build.sh; restart the session)" else do
-    h <- dlopen path [RTLD_NOW, RTLD_LOCAL]
-    reset <- dlsym h "ghs_cen_reset"; root <- dlsym h "ghs_cen_root"; stable <- dlsym h "ghs_cen_stable"
-    nroots <- dlsym h "ghs_cen_nroots"; rootRow <- dlsym h "ghs_cen_root_row"
-    ninfo <- dlsym h "ghs_cen_ninfo"; infoRow <- dlsym h "ghs_cen_info_row"
-    nstr <- dlsym h "ghs_cen_nstr"; strRow <- dlsym h "ghs_cen_str_row"
+  let names = ["ghs_cen_reset", "ghs_cen_root", "ghs_cen_stable", "ghs_cen_nroots", "ghs_cen_root_row", "ghs_cen_ninfo", "ghs_cen_info_row", "ghs_cen_nstr", "ghs_cen_str_row"]
+  found <- mapM engineSymbol names :: IO [Maybe (FunPtr ())]
+  case sequence found of
+    Nothing -> putStrLn "no heap census in this process: it is part of the session's engine (ghci-session-engine)"
+    Just fs -> withFuns fs
+  where
+   withFuns fs = do
+    let at i = castFunPtr (fs !! i)
+        reset = at 0; root = at 1; stable = at 2; nroots = at 3; rootRow = at 4; ninfo = at 5; infoRow = at 6; nstr = at 7; strRow = at 8
     let rows nI getRow = do
           n <- fromIntegral <$> cenN nI
           fmap concat $ forM [0 .. n - 1] $ \i -> allocaBytes 256 $ \lab -> allocaBytes (8 * 8) $ \out -> do
@@ -110,9 +107,7 @@ censusPrint c namer top strings = do
 -- no earlier one did. @top@ roots shown; @cap@ closures at most a root.
 cafRoots :: Census -> Int -> IO ()
 cafRoots c cap = do
-  dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
-  hh <- dlopen (dir ++ "/libghscafs.dylib") [RTLD_NOW, RTLD_LOCAL]
-  f <- dlsym hh "ghs_caf_list"
+  f <- maybe nullFunPtr id <$> engineSymbol "ghs_caf_list"
   let n = 200000
   performMajorGC
   allocaArray n $ \addrs -> do
@@ -127,9 +122,7 @@ cafRoots c cap = do
 -- | A CAF root's label (its address, from 'cafRoots') as its symbol.
 cafName :: String -> IO String
 cafName lab = do
-  dir <- maybe ".ghci-session/clib" id <$> lookupEnv "GHS_DIR"
-  hh <- dlopen (dir ++ "/libghscafs.dylib") [RTLD_NOW, RTLD_LOCAL]
-  f <- dlsym hh "ghs_caf_name"
+  f <- maybe nullFunPtr id <$> engineSymbol "ghs_caf_name"
   case reads lab :: [(Integer, String)] of
     [(a, "")] -> do p <- callName f (wordPtrToPtr (fromIntegral a)); if p == nullPtr then pure lab else peekCAString p
     _ -> pure lab
