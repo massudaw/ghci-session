@@ -1,0 +1,31 @@
+LICENSE
+  s_6e55a4691f1b7b::t_b2001c5b75ae73 1-27
+README.md
+  s_6e55a4691f1b7b::t_45f1ef34f066c0 6-8,490
+ghci-session.cabal
+  s_6e55a4691f1b7b::t_8cceaba969fd7d 13-17
+hygiene/c/ghci_cafs.c
+  s_6e55a4691f1b7b::t_09cfe9ce5f53b3 296
+hygiene/c/heap_census.c
+  s_6e55a4691f1b7b::t_12f2ae71455cf9 2,224
+hygiene/c/loader_stats.c
+  s_6e55a4691f1b7b::t_8d63e5a6e036fd 75,77
+hygiene/src/GHC/Hygiene/Census.hs
+  s_6e55a4691f1b7b::t_02dc3214bee4a4 212,231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "505c0ce3d4970206bae92356987f45e0af3dcc11",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
