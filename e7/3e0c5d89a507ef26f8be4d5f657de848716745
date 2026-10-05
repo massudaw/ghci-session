@@ -1,0 +1,31 @@
+sprinkler-solver-estela/web/estela.js
+  s_007485e9a70e7e::t_a9cc32ac3e40a2 461-514,516,530-532,587,591-594,661-662,675,677,681,758,1303
+sprinkler-solver-estela/web/estela.html
+  s_007485e9a70e7e::t_4f84d586bb2fcf 106,119
+  s_007485e9a70e7e::t_a9cc32ac3e40a2 27
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_a9cc32ac3e40a2 658-665
+sprinkler-solver-estela/web/stickers/index.json
+  s_007485e9a70e7e::t_6660323bff78b3 2034-2225
+sprinkler-solver-estela/art/doodle_sheets.py
+  s_007485e9a70e7e::t_6660323bff78b3 124-131
+sprinkler-solver-estela/art/stickers.py
+  s_007485e9a70e7e::t_a9cc32ac3e40a2 101-102,117-120
+  s_007485e9a70e7e::t_6660323bff78b3 124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e73e0c5d89a507ef26f8be4d5f657de848716745",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
