@@ -1,0 +1,45 @@
+sprinkler-solver-modeling/src/Examples/Intern.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 1-19,21-22
+  s_6e55a4691f1b7b::t_fd61a175390441 20
+sprinkler-solver-mm/src/Examples/MMShare.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 1,4
+sprinkler-solver-mm/src/Examples/MMDwg.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 247-248,254
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 101-102,107-108
+sprinkler-solver-mm/src/Examples/MMPlans.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 271-272
+sprinkler-solver-modeling/sprinkler-solver-modeling.cabal
+  s_6e55a4691f1b7b::t_9bd590d2021f47 28
+sprinkler-solver-mm/src/Examples/MMDrawnSite.hs
+  s_6e55a4691f1b7b::t_5d7b95ddafa04c 81-85,89-91
+  s_6e55a4691f1b7b::t_1face09c903b80 86-88
+sprinkler-solver-modeling/src/Examples/SkpBuilding.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 45
+  s_6e55a4691f1b7b::t_fd61a175390441 93-94,96-97,99-108
+sprinkler-solver-mm/src/Examples/MMSections.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 412-413
+sprinkler-solver-mm/src/Examples/MMConstraints.hs
+  s_6e55a4691f1b7b::t_daecbcd4b220c4 222
+  s_6e55a4691f1b7b::t_4c5694eb7e89cf 150,214-221
+sprinkler-solver-mm/src/Examples/MMSite.hs
+  s_6e55a4691f1b7b::t_9bd590d2021f47 164-165,169
+CLAUDE.md
+  s_6e55a4691f1b7b::t_4072e2f97f1085 400-404
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb7962231cbaaa4a2105a248eddd0140fa29e94e",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
