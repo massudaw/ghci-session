@@ -8,7 +8,7 @@
 -- evaluated value of each superseded CAF -- the projected views, the element
 -- lists -- stays live for the life of the process (a 100-reload day reached
 -- 21 GB). 'pruneCafs' unlinks the superseded ones from the RTS's CAF list and
--- runs a major GC.
+-- runs a major GC (when it unlinked anything).
 --
 -- The C half is optional ('hygiene/build.sh' builds it, and only against an RTS whose layout it knows): with
 -- no library, or a different RTS, this does nothing and says so.
@@ -18,6 +18,7 @@ import Foreign.C.Types (CInt (..))
 import Foreign.Ptr (FunPtr)
 import System.Directory (doesFileExist)
 import System.Environment (lookupEnv)
+import Control.Monad (when)
 import System.Mem (performMajorGC)
 import System.Posix.DynamicLinker (RTLDFlags (RTLD_LOCAL, RTLD_NOW), dlopen, dlsym)
 
@@ -35,7 +36,9 @@ pruneCafs = do
     h <- dlopen path [RTLD_NOW, RTLD_LOCAL]
     f <- dlsym h "ghs_prune_cafs"
     r <- callInt f
-    performMajorGC
+    -- the GC is what frees what was unlinked: with nothing unlinked it is a major collection of the whole
+    -- heap for nothing (0.2 s at 100 MB live, 1.5 s at 700 MB), on every reload that changed no code
+    when (r > 0) performMajorGC
     pure (fromIntegral r)
 
 -- | What the RTS linker is holding, printed to stderr: objects by status and

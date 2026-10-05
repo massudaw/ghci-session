@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 
-from . import config
+from . import config, watch
 from .repl import Repl, ReplDied, ReplTimeout, strip_ansi
 
 PKG_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1124,61 +1124,74 @@ class Session:
     # -- the watcher --
 
     def watch_loop(self) -> None:
-        last = scan(self.root, self.cfg["watch"], self.exts)
-        on_commit = self.cfg["reload_on_commit"]
-        head, polls = (self.head_commit() if on_commit else ""), 0
-        poll = float(self.cfg["poll_interval"])
-        every = max(1, round(2.0 / poll))
-        while not self.stopping.wait(poll):
-            polls += 1
-            if on_commit and polls % every == 0:
-                now_head = self.head_commit()
-                if now_head and head and now_head != head:
-                    # a commit is when everything catches up, whatever a save does: checks and servers too
-                    self.log(f"commit {now_head[:10]}: full reload (check, re-fork)")
-                    self.last_used = time.time()
-                    with self._work:
-                        self.busy += 1
-                        try:
-                            last = scan(self.root, self.cfg["watch"], self.exts)
-                            self.reload(do_check=True, refork=True)
-                        except Exception as e:  # noqa: BLE001
-                            self.log(f"commit reload: {type(e).__name__}: {e}")
-                        finally:
-                            self.busy -= 1
-                head = now_head or head
-            now = scan(self.root, self.cfg["watch"], self.exts)
-            if now == last:
-                if self.idle_stop_due():
-                    self.log(f"idle for {self.cfg['idle_stop_mins']} min -- stopping (idle_stop_mins)")
-                    self.stop_reason = f"stopped: idle for {self.cfg['idle_stop_mins']:g} min (idle_stop_mins); `ghci-session start {self.name}`"
-                    self.stopping.set()
-                continue
-            self.last_used = time.time()   # someone is editing
-            time.sleep(self.cfg["debounce"])   # an editor's save is several writes
-            now = scan(self.root, self.cfg["watch"], self.exts)
-            last = now
-            if not self.cfg["auto_reload"] or now == self.loaded_sig:
-                continue
-            with self._work:
-                if self.stopping.is_set():
-                    return
-                self.busy += 1
-                changed = [p for p in set(now) | set(self.loaded_sig) if now.get(p) != self.loaded_sig.get(p)]
-                if not changed:
+        """Reload when a watched source changes. A waiter (kernel events where there are any, else a poll) says
+        WHEN to look; the mtime scan says WHAT changed, and runs every couple of seconds regardless, because a
+        waiter may miss an event."""
+        cfg = self.cfg
+        last = scan(self.root, cfg["watch"], self.exts)
+        roots = [os.path.join(self.root, d) for d in cfg["watch"] if os.path.isdir(os.path.join(self.root, d))]
+        waiter = watch.make(cfg["watcher"], float(cfg["poll_interval"]), float(cfg["debounce"]), list(last) + roots, self.log)
+        self.log(f"watch: {len(last)} sources by {waiter.kind}")
+        head = self.head_commit() if cfg["reload_on_commit"] else ""
+        slow = time.time()          # the last time the slow things were looked at: a full scan, HEAD, idleness
+        try:
+            while not self.stopping.is_set():
+                fired = waiter.wait(0.5)
+                due = time.time() - slow >= 2.0
+                if not fired and not due:
                     continue
+                if due:
+                    slow = time.time()
+                    if cfg["reload_on_commit"]:
+                        now_head = self.head_commit()
+                        if now_head and head and now_head != head:
+                            # a commit is when everything catches up, whatever a save does: checks and servers too
+                            self.log(f"commit {now_head[:10]}: full reload (check, re-fork)")
+                            self.drive(lambda: self.reload(do_check=True, refork=True))
+                            last = scan(self.root, cfg["watch"], self.exts)
+                        head = now_head or head
+                now = scan(self.root, cfg["watch"], self.exts)
+                if now == last:
+                    if due and self.idle_stop_due():
+                        self.log(f"idle for {cfg['idle_stop_mins']} min -- stopping (idle_stop_mins)")
+                        self.stop_reason = f"stopped: idle for {cfg['idle_stop_mins']:g} min (idle_stop_mins); `ghci-session start {self.name}`"
+                        self.stopping.set()
+                    continue
+                self.last_used = time.time()   # someone is editing
+                waiter.settle()                # an editor's save is several writes
+                now = scan(self.root, cfg["watch"], self.exts)
+                last = now
                 try:
-                    if any(p.endswith((".c", ".h", ".cabal")) or os.path.basename(p).startswith("cabal.project") for p in changed):
-                        self.log("a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)")
-                        self.restart()
-                    else:
-                        self.log(f"watch: {len(changed)} file(s) changed -- reload")
-                        self.reload(do_check=self.cfg["watch_check"], refork=self.cfg["watch_refork"])
+                    waiter.update(list(now) + roots)   # new files, and files saved by rename (a new inode)
                 except Exception as e:  # noqa: BLE001
-                    self.log(f"watch: {type(e).__name__}: {e}")
-                finally:
-                    self.busy -= 1
-                    self.last_used = time.time()
+                    self.log(f"watch: {type(e).__name__}: {e} -- polling from here")
+                    waiter.close()
+                    waiter = watch.PollWaiter(float(cfg["poll_interval"]), float(cfg["debounce"]))
+                if not cfg["auto_reload"] or now == self.loaded_sig:
+                    continue
+                changed = [p for p in set(now) | set(self.loaded_sig) if now.get(p) != self.loaded_sig.get(p)]
+                if any(p.endswith((".c", ".h", ".cabal")) or os.path.basename(p).startswith("cabal.project") for p in changed):
+                    self.log("a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)")
+                    self.drive(self.restart)
+                else:
+                    self.log(f"watch: {len(changed)} file(s) changed -- reload")
+                    self.drive(lambda: self.reload(do_check=cfg["watch_check"], refork=cfg["watch_refork"]))
+        finally:
+            waiter.close()
+
+    def drive(self, action) -> None:
+        """Run a reload or restart from the watcher: under the same lock a client's command takes."""
+        with self._work:
+            if self.stopping.is_set():
+                return
+            self.busy += 1
+            try:
+                action()
+            except Exception as e:  # noqa: BLE001
+                self.log(f"watch: {type(e).__name__}: {e}")
+            finally:
+                self.busy -= 1
+                self.last_used = time.time()
 
     # -- the socket --
 

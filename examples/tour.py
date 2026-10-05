@@ -311,15 +311,6 @@ class Tour:
                       lambda j: j["verdict"].split("[servers:")[-1][:60])
         self.step("  same pid", 0, self.server_pid("dev") == pid and bool(j) and j["servers"][0]["action"] == "broken")
         self.save("save: back to the original", "dev", self.hs, self.hs0, good, lambda j: j["verdict"].split("[servers:")[-1][:60])
-        # the background re-fork: the reload returns at its verdict with the 2 s prefork still to run
-        pid = self.server_pid("dev")
-        since = self.at("dev")
-        self.write(self.hs, self.hs0.replace('"hello"', '"hola"'))
-        code, out, err, dt = self.run("reload", "--async-refork")
-        self.step("reload --async-refork returns at the verdict", dt, "running in the background" in out, "the prefork is still running")
-        j, more = self.wait("dev", lambda j: any(s["action"] == "re-forked" for s in j.get("servers", [])), since)
-        self.step("  ... and the server is up on the new code", dt + more, j is not None and self.server_pid("dev") != pid)
-        self.save("save: back", "dev", self.hs, self.hs0, good)
         self.cmd("server restart (a cut-over: state carried)", "server", "restart", expect="+state")
         self.cmd("server stop", "server", "stop", expect="hello: stopped")
         ticks = self.served()[1]
@@ -342,6 +333,27 @@ class Tour:
         a = self.served()
         time.sleep(0.5)
         self.step("  nothing is serving", 0, self.served() == a)
+        # the background re-fork: the verdict is published with the 2 s prefork still to run
+        self.cmd("start hello with GHS_ASYNC_REFORK=1", "start", "hello", expect="CHECK-PASS", env={"GHS_ASYNC_REFORK": "1"})
+        self.cmd("  server start", "server", "start", "-s", "hello", expect="hello: pid", note="")
+        pid = self.server_pid("hello")
+        since, t0 = self.at("hello"), time.time()
+        self.write(self.hs, self.hs0.replace('"hello"', '"hola"'))
+        first = None
+        while time.time() - t0 < 60 and first is None:
+            try:
+                j = self.status("hello")
+                if j["at"] > since and j["kind"] == "CHECK-PASS":
+                    first = (time.time() - t0, bool(j.get("servers_pending")))
+            except (OSError, ValueError, KeyError):
+                pass
+            time.sleep(0.02)
+        self.step("save: the verdict, with the re-fork still in the background", first[0] if first else 60,
+                  bool(first and first[1]), "servers_pending: true")
+        j, _ = self.wait("hello", lambda j: any(x["action"] == "re-forked" for x in j.get("servers", [])), since)
+        self.step("  ... and the server is up on the new code", time.time() - t0, j is not None and self.server_pid("hello") != pid)
+        self.save("save: back", "hello", self.hs, self.hs0, good)
+        self.cmd("stop hello", "stop", "hello", expect="stopped")
 
     def status_ok(self, session: str) -> bool:
         return "OK" in self.run("status", session)[1]

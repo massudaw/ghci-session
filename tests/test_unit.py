@@ -214,6 +214,49 @@ class ExpandTests(unittest.TestCase):
             self.assertIn("-odir=.st/dev/obj", s.repl_command())
 
 
+class WatchTests(unittest.TestCase):
+    def test_poll_waiter_always_says_look(self):
+        from ghci_session import watch
+        w = watch.make("poll", 0.01, 0.01, [])
+        self.assertEqual(w.kind, "poll")
+        self.assertTrue(w.wait(0.5))
+        w.settle()
+        w.close()
+
+    def test_event_waiter_sees_writes_renames_and_new_files(self):
+        import time
+        from ghci_session import watch
+        with tempfile.TemporaryDirectory() as t:
+            a = os.path.join(t, "A.hs")
+            open(a, "w").write("module A where\n")
+            w = watch.make("auto", 0.2, 0.2, [a, t])
+            if w.kind == "poll":
+                self.skipTest("no kernel file events on this platform")
+            try:
+                self.assertFalse(w.wait(0.1))                    # quiet
+                open(a, "a").write("-- more\n")                  # an in-place write
+                self.assertTrue(w.wait(1.0))
+                w.settle()
+                self.assertFalse(w.wait(0.1))
+                tmp = os.path.join(t, "A.hs.tmp")                # an editor's save by rename: a new inode
+                open(tmp, "w").write("module A where\n-- replaced\n")
+                os.replace(tmp, a)
+                self.assertTrue(w.wait(1.0))
+                w.settle()
+                w.update([a, t])                                 # re-arm on the new inode
+                self.assertFalse(w.wait(0.1))
+                open(a, "a").write("-- again\n")
+                self.assertTrue(w.wait(1.0), "the file saved by rename is no longer watched")
+                w.settle()
+                open(os.path.join(t, "B.hs"), "w").write("module B where\n")   # a new file: its directory says so
+                self.assertTrue(w.wait(1.0))
+                t0 = time.time()
+                w.settle()
+                self.assertLess(time.time() - t0, 0.5)           # a burst ends when the events do
+            finally:
+                w.close()
+
+
 class VerdictTests(unittest.TestCase):
     def session(self, t):
         return Session(make(t), "lib")

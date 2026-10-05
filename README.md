@@ -40,12 +40,12 @@ the tool's own costs with almost no compile time in them):
 |---|---|
 | boot, cold (cabal configures and compiles) / warm (objects on disk) | 10.8 / 1.8 |
 | `eval` | 0.09 (the Python client's start-up is most of it) |
-| `reload`, nothing changed / `--no-check` | 1.0 / 0.3 |
-| save to verdict (the watcher: poll, debounce, reload, prune, check): a comment / a real change / a compile error | 1.0 / 1.2 / 0.6 |
+| `reload`, nothing changed / `--no-check` | 0.6 / 0.3 |
+| save to verdict (the watcher: file event, reload, prune, check): a comment / a real change / a compile error | 0.9 / 0.9 / 0.35 |
 | composed session of two packages, boot | 7.5 |
 | `server start` with a 2 s prefork | 2.3 |
-| save to verdict with a server: kept (comment) / re-forked with its state (2 s prefork) | 1.6 / 3.8 |
-| `reload --async-refork` returns | 1.3 |
+| save to verdict with a server: kept (comment) / re-forked with its state (2 s prefork) | 1.4 / 3.6 |
+| the same re-fork in the background (`async_refork`): the verdict / the server up | 0.85 / 3.2 |
 | `compose --remove`: the repl restarts, the server is adopted | 2.2 |
 | census: every CAF / one value | 0.7 / 0.4 |
 | a reload that is over the memory budget (a restart) | 1.8 |
@@ -65,8 +65,8 @@ and server command:
 heap (0.2 s at 100 MB, ~1.5 s at 700 MB). Everything else the tool adds to a reload is under 50 ms. It was not always:
 the first version of this breakdown showed 0.4-0.8 s of every reload going to asking the OS for the repl's memory
 footprint, three times, inline -- now sampled once, after the reload returns, and reused by the next reload's budget
-check -- and 0.65 s of every save waiting on the watcher's poll and debounce (now 0.2 s each, `poll_interval`,
-`debounce`).
+check -- and 0.65 s of every save waiting on the watcher's poll and debounce (now a kernel file event and a 50 ms
+quiet period), and the pruner ran its major GC even when it had unlinked nothing (now only when it has).
 
 And the reason for the pruner, measured by the same tour -- live heap (MB) after each of five edit-reload-check
 rounds of a module holding one 200,000-entry `Map`:
@@ -141,7 +141,8 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
 | `hygiene_module`, `zygote_module`, `hygiene_build`, `handover_env` | `GHC.Hygiene`, `GHC.Hygiene.Zygote`, `true`, `GHS_HANDOVER_OUT/IN` | for a project that carries its own copies of these modules |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
-| `poll_interval`, `debounce` | 0.2, 0.2 | how often the watcher looks, and how long it lets a burst of writes settle |
+| `watcher` | `auto` | kernel file events where the platform has them (kqueue on macOS/BSD, inotify on Linux), else `poll`. The mtime scan still decides what changed and still runs every 2 s: an event only says "look now" |
+| `poll_interval`, `debounce` | 0.2, 0.2 | when polling: how often the watcher looks, and how long it lets a burst of writes settle (with events a burst is over when they stop for 50 ms) |
 | `load_timeout`, `eval_timeout` | 900, 600 | seconds |
 
 State lives in `.ghci-session/<session>/`: `status` (the verdict, then the failing lines), `status.json`, `load.log`/`reload.log`,

@@ -151,15 +151,25 @@ class EndToEnd(unittest.TestCase):
         self.assertEqual(self.served(), a)
 
         # a background re-fork: the reload returns at its verdict, with the (3 s) prefork still to run
-        self.assertEqual(self.cli_("start", "dev").returncode, 0)
+        # (GHS_ASYNC_REFORK makes it what the watcher does too: an explicit `reload --async-refork` after a
+        # save would race the watcher, which sees the save within milliseconds)
+        r = subprocess.run([self.cli, "start", "dev"], cwd=self.proj, capture_output=True, text=True,
+                           env={**os.environ, "GHS_ASYNC_REFORK": "1"})
+        self.assertEqual(r.returncode, 0)
         self.assertEqual(self.cli_("server", "start").returncode, 0)
         old = self.server_pid()
+        t0 = time.time()
+        since = self.status()["at"]
         with open(hs, "w") as fh:
             fh.write(orig.replace('"hello"', '"hola"'))
-        t0 = time.time()
-        r = self.cli_("reload", "--async-refork")
-        self.assertIn("re-fork running in the background", r.stdout)
-        self.assertTrue(self.status()["servers_pending"] or self.status().get("servers"))
+        saw_pending = False
+        while time.time() - t0 < 60 and not saw_pending:
+            j = self.status()
+            saw_pending = j["at"] > since and bool(j.get("servers_pending"))
+            if j["at"] > since and j.get("servers") and not j.get("servers_pending"):
+                break
+            time.sleep(0.02)
+        self.assertTrue(saw_pending, "the verdict was not published before the re-fork finished")
         j = self.wait_for(lambda j: j.get("servers_pending") is False and j.get("servers"))
         self.assertEqual(j["servers"][0]["action"], "re-forked")
         self.assertNotEqual(self.server_pid(), old)
