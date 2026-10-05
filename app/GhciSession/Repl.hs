@@ -5,7 +5,7 @@
 -- reader runs on its own thread so a command that prints megabytes cannot deadlock on a full pty buffer.
 module GhciSession.Repl
   ( Repl, ReplError (..)
-  , startRepl, stopRepl, replCommand, replAlive, replPid, postLoadBasics, stripAnsi
+  , startRepl, startEngineRepl, EngineSpec (..), stopRepl, replCommand, replAlive, replPid, postLoadBasics, stripAnsi
   , decode, sentinel
   , frameChunks
   ) where
@@ -13,8 +13,10 @@ module GhciSession.Repl
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar (MVar, newMVar, withMVar)
 import Control.Concurrent.STM
-import Control.Exception (Exception, IOException, SomeException, throwIO, try)
+import Control.Exception (Exception, IOException, SomeException, finally, throwIO, try)
 import Control.Monad (unless, void, when)
+import Data.Maybe (isJust)
+import GHC.Clock (getMonotonicTime)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
@@ -22,7 +24,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import System.Environment (getEnvironment)
-import System.IO (hClose)
+import System.IO (BufferMode (..), IOMode (..), hClose, hFlush, hSetBinaryMode, hSetBuffering, openFile)
 import System.Posix.IO (closeFd, dup, fdToHandle)
 import System.Posix.IO.ByteString (fdRead, fdWrite)
 import System.Posix.Signals (nullSignal, sigKILL, sigTERM, signalProcessGroup)
@@ -31,7 +33,7 @@ import System.Posix.Types (CPid (..), Fd)
 import System.Process (CreateProcess (..), ProcessHandle, StdStream (..), createProcess, getPid, getProcessExitCode, shell, waitForProcess)
 import System.Timeout (timeout)
 
-import GhciSession.Sys (setWinsize)
+import GhciSession.Sys (setWinsize, socketShutdown, unixAccept, unixListen)
 
 sentinel :: B.ByteString
 sentinel = BC.pack "GHS_READY"
@@ -44,7 +46,9 @@ instance Exception ReplError
 
 data Repl = Repl
   { rProc :: ProcessHandle
-  , rMaster :: Fd
+  , rMaster :: Maybe Fd              -- ^ the pty, when driving a stock GHCi through one
+  , rSend :: B.ByteString -> IO ()   -- ^ deliver one command
+  , rHangUp :: IO ()                 -- ^ tell the repl we are done with it (the engine exits when its socket closes)
   , rReplies :: TQueue B.ByteString   -- ^ complete replies: everything up to a sentinel
   , rPending :: TVar [B.ByteString]   -- ^ what has arrived since the last sentinel, newest chunk first
   , rDead :: TVar Bool
@@ -88,8 +92,8 @@ startRepl cmd cwd' extraEnv loadTimeout evalTimeout logF onAsync postLoad = do
   dead <- newTVarIO False
   io <- newMVar ()
   pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
-  let r = Repl ph master replies pending dead io evalTimeout onAsync pg
-  _ <- forkIO (reader r)
+  let r = Repl ph (Just master) (writeAll master) (pure ()) replies pending dead io evalTimeout onAsync pg
+  _ <- forkIO (reader r master)
   -- Written before GHCi is listening; the pty buffers it. Exactly ONE command, so exactly one sentinel is
   -- produced by the handshake (two would desynchronise every later reply by one command). Everything up to
   -- the FIRST sentinel is the load log.
@@ -98,17 +102,77 @@ startRepl cmd cwd' extraEnv loadTimeout evalTimeout logF onAsync postLoad = do
   postLoad r
   pure (r, load)
 
+-- | What the vendored engine needs: the executable, the compiler's library directory, where to meet it.
+data EngineSpec = EngineSpec { esWrapper :: FilePath, esExe :: FilePath, esLibdir :: FilePath, esSocket :: FilePath, esCapture :: FilePath, esOut :: FilePath }
+
+-- | Spawn the command with OUR GHCi as its repl (see engine/GhsEngine.hs) and meet it on a socket: a request is
+-- a length and a command, a reply a length and everything the command wrote. No terminal, no prompt to find.
+-- The command's own output before GHCi starts (cabal's) goes to a file and is the head of the load log.
+startEngineRepl :: EngineSpec -> String -> FilePath -> [(String, String)] -> Double -> Double -> (String -> IO ())
+                -> (Repl -> IO ()) -> IO (Repl, T.Text)
+startEngineRepl es cmd cwd' extraEnv loadTimeout evalTimeout logF postLoad = do
+  mfd <- unixListen (esSocket es)
+  lfd <- maybe (throwIO (ReplDied ("cannot listen on " ++ esSocket es))) pure mfd
+  base <- getEnvironment
+  let mine = extraEnv ++ [("GHS_CONTROL", esSocket es), ("GHS_CAPTURE", esCapture es), ("GHS_ENGINE", esExe es), ("GHS_LIBDIR", esLibdir es)]
+      env' = [ kv | kv@(k, _) <- base, k `notElem` map fst mine ] ++ mine
+  out <- openFile (esOut es) WriteMode
+  devnull <- openFile "/dev/null" ReadMode
+  logF ("spawn: " ++ cmd)
+  (_, _, _, ph) <- createProcess (shell cmd)
+    { cwd = Just cwd', env = Just env', std_in = UseHandle devnull, std_out = UseHandle out, std_err = UseHandle out
+    , close_fds = True, new_session = True }
+  replies <- newTQueueIO
+  pending <- newTVarIO []
+  dead <- newTVarIO False
+  io <- newMVar ()
+  pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
+  -- the engine connects as soon as GHCi starts -- after cabal has built what the repl needs
+  t0 <- getMonotonicTime
+  let accept = do
+        mc <- unixAccept lfd 250
+        case mc of
+          Just c -> pure c
+          Nothing -> do
+            gone <- getProcessExitCode ph
+            t <- getMonotonicTime
+            cabalOut <- either (\(_ :: IOException) -> "") id <$> try (readFile (esOut es))
+            if gone /= Nothing then throwIO (ReplDied cabalOut)
+              else if t - t0 > loadTimeout then throwIO (ReplTimeout loadTimeout) else accept
+  c <- accept `finally` closeFd lfd
+  h <- fdToHandle c
+  hSetBinaryMode h True
+  hSetBuffering h (BlockBuffering Nothing)
+  let send b = B.hPut h (frameLen (B.length b)) >> B.hPut h b >> hFlush h
+      r = Repl ph Nothing send (socketShutdown c) replies pending dead io evalTimeout (\_ -> pure ()) pg
+      recvLoop = do
+        hd <- try (B.hGet h 4) :: IO (Either SomeException B.ByteString)
+        case hd of
+          Right x | B.length x == 4 -> do
+            b <- B.hGet h (foldl (\a w -> a * 256 + fromIntegral w) 0 (B.unpack x))
+            atomically (writeTQueue replies b)
+            recvLoop
+          _ -> atomically (writeTVar dead True)
+  _ <- forkIO recvLoop
+  -- a server forked from the session inherits the socket, so the engine dying may not close it: watch the process too
+  _ <- forkIO (waitForProcess ph >> atomically (writeTVar dead True))
+  load <- awaitSentinel r loadTimeout
+  cabalOut <- either (\(_ :: IOException) -> T.empty) T.pack <$> try (readFile (esOut es) >>= \x -> length x `seq` pure x)
+  postLoad r
+  pure (r, cabalOut <> load)
+  where frameLen n = B.pack [ fromIntegral (n `div` 16777216), fromIntegral (n `div` 65536 `mod` 256), fromIntegral (n `div` 256 `mod` 256), fromIntegral (n `mod` 256) ]
+
 -- | The reader does the framing. A reply arrives in chunks, and looking for the sentinel in the whole buffer
 -- each time one arrives (and re-copying the buffer to append it) is quadratic in the reply: for a 0.5 MB load
 -- log that was 6 ms and 2.7 MB of copying, and it grows with the square. So each chunk is searched once,
 -- with the last few bytes of the one before it (a sentinel may straddle two), and the chunks are joined only
 -- when a reply is complete.
-reader :: Repl -> IO ()
-reader r = loop B.empty
+reader :: Repl -> Fd -> IO ()
+reader r master = loop B.empty
   where
     keep = B.length sentinel - 1
     loop carry = do
-      got <- try (fdRead (rMaster r) 65536) :: IO (Either SomeException B.ByteString)
+      got <- try (fdRead master 65536) :: IO (Either SomeException B.ByteString)
       case got of
         Right chunk | not (B.null chunk) -> frame carry chunk >>= loop
         _ -> atomically (writeTVar (rDead r) True)
@@ -161,7 +225,7 @@ replCommand r mt expr = withMVar (rIO r) $ \_ -> do
   unless (BC.all (`elem` " \r\n\t") stray) (rOnAsync r (decode stray))
   let e = trim expr
       payload = if '\n' `elem` e then ":{\n" ++ e ++ "\n:}\n" else e ++ "\n"
-  writeAll (rMaster r) (TE.encodeUtf8 (T.pack payload))
+  rSend r (TE.encodeUtf8 (T.pack payload))
   out <- awaitSentinel r (maybe (rEvalTimeout r) id mt)
   pure (T.dropWhileEnd (== '\n') (T.dropWhile (== '\n') out))
   where
@@ -179,7 +243,7 @@ writeAll fd b = unless (B.null b) $ do
 -- sharing that handle interleaves with the prompt one CHARACTER at a time and shreds the sentinel -- the reply
 -- then never frames and every command times out. LineBuffering keeps the sentinel line intact.
 postLoadBasics :: Repl -> IO ()
-postLoadBasics r = do
+postLoadBasics r = when (isJust (rMaster r)) $ do      -- (the engine has no prompt to protect)
   void (replCommand r (Just 60) ":set prompt-cont \"\"")
   void (replCommand r (Just 60) ":module + System.IO")
   void (replCommand r (Just 60) "hSetBuffering stdout LineBuffering")
@@ -192,6 +256,10 @@ postLoadBasics r = do
 stopRepl :: Repl -> (String -> IO ()) -> IO ()
 stopRepl r logF = do
   pg <- readIORef (rPgid r)
+  rHangUp r
+  alive0 <- replAlive r
+  -- the engine leaves as soon as its socket closes: give it a moment to, before signalling anything
+  when (alive0 && not (isJust (rMaster r))) (void (timeout 300000 (waitForProcess (rProc r))))
   alive <- replAlive r
   when alive $ do
     mapM_ (\g -> try (signalProcessGroup sigTERM g) :: IO (Either IOException ())) pg
@@ -199,17 +267,17 @@ stopRepl r logF = do
     when (done == Nothing) (mapM_ (\g -> void (try (signalProcessGroup sigKILL g) :: IO (Either IOException ()))) pg)
   mapM_ reap pg
   writeIORef (rPgid r) Nothing
-  void (try (closeFd (rMaster r)) :: IO (Either IOException ()))
+  mapM_ (\m -> void (try (closeFd m) :: IO (Either IOException ()))) (rMaster r)
   where
     empty g = either (\e -> const True (e :: IOException)) (const False) <$> try (signalProcessGroup nullSignal g)
     waitEmpty g n = do
       e <- empty g
-      if e || n <= (0 :: Int) then pure e else threadDelay 100000 >> waitEmpty g (n - 1)
+      if e || n <= (0 :: Int) then pure e else threadDelay 10000 >> waitEmpty g (n - 1)
     reap g = do
-      gone <- waitEmpty g 30
+      gone <- waitEmpty g 300
       unless gone $ do
         void (try (signalProcessGroup sigKILL g) :: IO (Either IOException ()))
-        gone' <- waitEmpty g 50
+        gone' <- waitEmpty g 500
         unless gone' (logF ("WARNING: process group " ++ show g ++ " still alive after SIGKILL"))
 
 -- | The framing rule on its own (what 'reader' does, for the benchmark and the tests): feed it chunks, get the

@@ -231,15 +231,16 @@ splitOn c x = case break (== c) x of
   (a, []) -> [a | not (null a)]
   (a, _ : r) -> a : splitOn c r
 
-replCommandLine :: S -> IO String
-replCommandLine s = case gRepl cfg of
+replCommandLine :: S -> Bool -> IO String
+replCommandLine s engine = case gRepl cfg of
   Just c -> pure c
   Nothing -> do
     v <- if objects then ghcVersion else pure (0, 0)
     pure $ unwords $ filter (not . null) $
       [ "cabal repl" ]
       ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) ]
-      ++ [ "--with-repl=" ++ (sData s </> "bin" </> "ghci-rts.sh") | gRtsFlags cfg `notElem` ["", "none"] ]
+      ++ (if engine then [ "--with-repl=" ++ (sData s </> "bin" </> "ghci-engine.sh") ]
+          else [ "--with-repl=" ++ (sData s </> "bin" </> "ghci-rts.sh") | gRtsFlags cfg `notElem` ["", "none"] ])
       ++ [ "--repl-options=-fdiagnostics-color=never" ]
       ++ [ "--repl-options=-j" ++ show (gGhcJobs cfg) | gGhcJobs cfg > 0 ]
          -- object code: CAFs of interpreted code are not prunable by address, and a server's code is its
@@ -251,6 +252,49 @@ replCommandLine s = case gRepl cfg of
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
         objects = gHygiene cfg || not (null (gServers cfg))
+
+-- | The vendored engine for this session, if it can be used: our GHCi executable sits beside this one, was
+-- built for exactly the compiler on PATH, and the session uses the default @cabal repl@ command (@"engine"@:
+-- @auto@, @ghci@ to force the stock GHCi through a terminal, @vendored@ to insist).
+engineFor :: S -> IO (Maybe EngineSpec)
+engineFor s
+  | gEngine (sCfg s) == "ghci" || isJust (gRepl (sCfg s)) = pure Nothing
+  | otherwise = do
+      exe <- (</> "ghci-session-engine") . takeDirectory <$> getExecutablePath
+      there <- doesFileExist exe
+      if not there then no ("no ghci-session-engine beside " ++ exe) else do
+        (mine, theirs, libdir) <- engineFacts s exe
+        case (mine, theirs, libdir) of
+          (Just a, Just b, Just l) | a == b && not (null l) -> do
+            sock <- (++ ".engine") <$> sockPath (sDir s)
+            logS s ("engine: vendored GHCi " ++ a)
+            pure (Just (EngineSpec (sData s </> "bin" </> "ghci-engine.sh") exe l sock (sDir s </> "engine.out") (sDir s </> "repl.out")))
+          _ -> no ("the engine is GHC " ++ fromMaybe "?" mine ++ ", the compiler " ++ fromMaybe "?" theirs)
+  where no why = do
+          logS s ("engine: stock GHCi through a terminal (" ++ why ++ ")")
+          when (gEngine (sCfg s) == "vendored") (throwIO (userError ("engine \"vendored\" is not available: " ++ why)))
+          pure Nothing
+
+-- | The engine's GHC version, the compiler's, and the compiler's library directory. Three process starts
+-- (0.2 s of a boot), so remembered in the state directory for as long as neither executable changes.
+engineFacts :: S -> FilePath -> IO (Maybe String, Maybe String, Maybe String)
+engineFacts s exe = do
+  ghc <- findExecutable "ghc" >>= maybe (pure "") canonicalizePath
+  te <- modTime exe
+  tg <- modTime ghc
+  let cache = cStateDir (sConf s) </> "engine-facts"
+      key = exe ++ ":" ++ show te ++ ":" ++ ghc ++ ":" ++ show tg
+  old <- fmap lines <$> readFileMaybe cache
+  case old of
+    Just [k, a, b, l] | k == key -> pure (Just a, Just b, Just l)
+    _ -> do
+      mine <- fmap trim <$> rawSystemOut 20 exe ["--numeric-version"]
+      theirs <- fmap trim <$> rawSystemOut 20 "ghc" ["--numeric-version"]
+      libdir <- fmap trim <$> rawSystemOut 20 "ghc" ["--print-libdir"]
+      case (mine, theirs, libdir) of
+        (Just a, Just b, Just l) | not (null ghc) -> void (try (writeAtomic cache (unlines [key, a, b, l])) :: IO (Either IOException ()))
+        _ -> pure ()
+      pure (mine, theirs, libdir)
 
 -- | Build the hygiene C libraries against this GHC's RTS -- unless they are newer than their sources, the
 -- script and the compiler (asked in a few stats: running the script to find that out is 0.15 s).
@@ -925,14 +969,18 @@ boot s = do
   mapM_ (vEvaluated s =:) [False]
   vUnlinkDue s =: False
   scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:)
-  line <- replCommandLine s
-  r <- try (startRepl line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)
-              (\t -> void (try (B.appendFile (sDir s </> "async.log") (TE.encodeUtf8 t)) :: IO (Either IOException ())))
-              (\r -> do
-                 -- called once GHCi has answered: everything before this instant was cabal and the load
-                 t <- now
-                 modifyIORef' (vPhases s) (M.insert "load" (t - t0))
-                 phase s "post_load" (postLoad s r)))
+  eng <- engineFor s
+  line <- replCommandLine s (isJust eng)
+  let afterStart r = do
+        -- called once GHCi has answered: everything before this instant was cabal and the load
+        t <- now
+        modifyIORef' (vPhases s) (M.insert "load" (t - t0))
+        phase s "post_load" (postLoad s r)
+  r <- try $ case eng of
+    Just es -> startEngineRepl es line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s) afterStart
+    Nothing -> startRepl line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)
+                 (\t -> void (try (B.appendFile (sDir s </> "async.log") (TE.encodeUtf8 t)) :: IO (Either IOException ())))
+                 afterStart
   case r of
     Left (e :: ReplError) -> do
       setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) (lastN 8 (lines (show e))) []

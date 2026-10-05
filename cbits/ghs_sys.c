@@ -363,3 +363,6 @@ int ghs_proc_args(int pid, char *buf, int cap) {
 #else
 int ghs_proc_args(int pid, char *buf, int cap) { (void)pid; (void)buf; (void)cap; return -1; }
 #endif
+
+/* ---- hang up a socket another thread is blocked reading: it sees end of file, and so does the peer ---- */
+int ghs_shutdown(int fd) { return shutdown(fd, SHUT_RDWR); }

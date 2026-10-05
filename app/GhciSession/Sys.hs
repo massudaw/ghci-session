@@ -2,7 +2,7 @@
 
 -- | The C half ('cbits/ghs_sys.c') and the small OS helpers around it.
 module GhciSession.Sys
-  ( unixListen, unixAccept, unixConnect, setWinsize
+  ( unixListen, unixAccept, unixConnect, socketShutdown, setWinsize
   , Regex, compileRegex, regexMatch, anyLineMatches, linesMatching
   , writeAtomicT, readFileText
   , hashFile, hashString, showHash
@@ -37,6 +37,7 @@ import System.Timeout (timeout)
 foreign import ccall safe "ghs_unix_listen" c_listen :: CString -> CInt -> IO CInt
 foreign import ccall safe "ghs_unix_accept" c_accept :: CInt -> CInt -> IO CInt
 foreign import ccall safe "ghs_unix_connect" c_connect :: CString -> IO CInt
+foreign import ccall unsafe "ghs_shutdown" c_shutdown :: CInt -> IO CInt
 foreign import ccall unsafe "ghs_set_winsize" c_winsize :: CInt -> CInt -> CInt -> IO CInt
 foreign import ccall unsafe "ghs_regex_compile" c_recomp :: CString -> IO (Ptr ())
 foreign import ccall unsafe "ghs_regex_match" c_rematch :: Ptr () -> CString -> IO CInt
@@ -65,6 +66,10 @@ unixAccept (Fd fd) ms = fdOrNothing <$> c_accept fd (fromIntegral ms)
 
 unixConnect :: FilePath -> IO (Maybe Fd)
 unixConnect p = fdOrNothing <$> withCString p c_connect
+
+-- | Hang up: a thread blocked reading the socket sees end of file, and so does the other end.
+socketShutdown :: Fd -> IO ()
+socketShutdown (Fd fd) = void (c_shutdown fd)
 
 setWinsize :: Fd -> Int -> Int -> IO ()
 setWinsize (Fd fd) rows cols = void (c_winsize fd (fromIntegral rows) (fromIntegral cols))

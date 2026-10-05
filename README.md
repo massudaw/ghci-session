@@ -51,6 +51,33 @@ itself -- this package has a `ghci-session.json`, and a save here is a compile a
   and a file whose size and modification time stand is not read again at all.
 - HEAD is read from `.git` instead of spawning `git` every two seconds.
 
+## The engine: GHCi with a socket where its terminal was
+
+Driving a stock GHCi means a pseudo-terminal, a prompt chosen so it can be recognised in the output, and finding
+that prompt in the bytes that come back. With the compiler this package has an engine for, a session does not do
+that: `ghci-session-engine` IS GHCi -- the `ghc` executable's interactive front end, vendored unchanged
+(`vendor/ghc-9.14.1`, 7,600 lines; `vendor/fetch.sh VERSION` gets another) -- built against the same `ghc` library,
+so every command behaves exactly as it does there. What differs is where commands come from and where their output
+goes (`engine/GhsEngine.hs`, 150 lines): a request is a length and a command, a reply a length and everything the
+command wrote. Nothing to recognise, nothing an evaluated program can print that looks like the end of its own
+reply, no terminal settings to restore after a load.
+
+It needs no change to GHCi's loop. GHCi calls a prompt function before it reads each command; the engine's is the
+turn: reply to the command that just finished, wait for the next request, feed it to GHCi's standard input (a pipe
+the process holds the other end of). Standard output and error are a pipe it drains itself. Without the daemon's
+socket in its environment the same binary is an ordinary GHCi.
+
+`"engine"`: `auto` (the default: the engine when it sits beside the executable and was built for the compiler on
+PATH, else the stock GHCi through a terminal -- so other GHC versions keep working), `ghci`, `vendored`. The tour
+passes on both, 123 of 123. What it measures the same: an `eval` round trip (1.7 ms inside the daemon either way --
+the terminal was never the cost), a boot, a reload. What it changes today: 1 MB of output in one line 41 ms; and it
+is the place the things a terminal cannot do will go -- diagnostics as data, a typecheck verdict before code
+generation, knowing exactly which modules a reload relinked.
+
+Two things found on the way: started with its standard descriptors closed, a process's first pipe IS descriptor 0,
+and "duplicate onto 0, then close the original" closes what it just installed; and GHCi leaves standard output
+unbuffered, which is a system call per character -- 4.8 s for a megabyte -- so the engine line-buffers it.
+
 ## Why not just `cabal repl`?
 
 | Problem | What this does |
@@ -335,6 +362,7 @@ address, GHC #23182).
 ```
 ghci-session.cabal      the package: library (hygiene/src) and executable (app/, cbits/)
 app/GhciSession/        Json, Config, Sys (the FFI), Repl (pty + framing), Watch, Daemon, Gc, Cli, SelfTest, SelfBench
+engine/, vendor/        the engine executable: GhsEngine.hs and Main.hs (ours), GHCi's own sources per compiler version
 cbits/                  ghs_sys.c (sockets, file events, regex, hashing, processes), ghs_main.c (the entry point)
 hygiene/                src/GHC/Hygiene*.hs (the library), c/*.c + build.sh (built against YOUR GHC's RTS, at run time),
                         repro/ (why a superseded CAF with a young value must stay listed)

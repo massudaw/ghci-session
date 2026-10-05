@@ -56,6 +56,7 @@ data Cfg = Cfg
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
+  , gEngine :: String
   , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String]
   }
 
@@ -74,7 +75,7 @@ defaults =
   , ("auto_reload", JBool True), ("watch_check", JBool True), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
-  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr [])
+  , ("engine", JStr "auto"), ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr [])
   ]
 
 reserved :: [String]
@@ -238,6 +239,7 @@ resolve conf session = do
         , gWatchCheck = all (jBool "watch_check") ts, gWatchRefork = all (jBool "watch_refork") ts
         , gReloadOnCommit = any (jBool "reload_on_commit") ts
         , gWatcher = jStr "watcher" t0, gPollInterval = jNum "poll_interval" t0, gDebounce = jNum "debounce" t0
+        , gEngine = jStr "engine" t0
         , gStatusUrl = ex <$> jMaybeStr "status_url" t0
           -- a composed session idles out only if every member agrees to, at the longest of their waits
         , gIdleStopMins = if not (null mins) && all (> 0) mins then maximum mins else 0
