@@ -1,0 +1,48 @@
+sprinkler-solver-estela/art/PROMPTS.md
+  s_007485e9a70e7e::t_dac5598457dd4f 139-142
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_dac5598457dd4f 9
+sprinkler-solver-estela/vault/code/stickers.py.md
+  s_007485e9a70e7e::t_dac5598457dd4f 1-9
+sprinkler-solver-estela/art/doodle_sheets.py
+  s_007485e9a70e7e::t_a73b8e32ce1646 1-106
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_dac5598457dd4f 594,596
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_dac5598457dd4f 204,215,249,263
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_dac5598457dd4f 313-314,1134,1138-1139,1156,1161,1163,1175,1182,1185,1194,1200
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_866834d171d80d 1
+"sprinkler-solver-estela/vault/code/Asset Pipeline.md"
+  s_007485e9a70e7e::t_dac5598457dd4f 5
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_866834d171d80d 265-272,551-558
+sprinkler-solver-estela/web/stickers/index.json
+  s_007485e9a70e7e::t_10661b4c4f538c 41-42,53-54,58-63,67-72,77-78,83-84,95-96,100-141,143-144,149-150,155-156,161-162,167-168,172-189,195-207,211-216,221-226,231,237,239-240,243-249,255,257-258,261-267,273,275-276,279-285
+  s_007485e9a70e7e::t_1dbfd7287d71da 1-40,43-52,55-57,64-66,73-76,79-82,85-94,97-99,142,145-148,151-154,157-160,163-166,169-171,190-194,208-210,217-220,227-230,232-236,238,241-242,250-254,256,259-260,268-272,274,277-278,286-290
+sprinkler-solver-estela/art/stickers.py
+  s_007485e9a70e7e::t_10661b4c4f538c 8-64
+  s_007485e9a70e7e::t_f788f2f0f7b19a 74
+  s_007485e9a70e7e::t_9a08bf8a00c936 1-7,65-73,75-82
+"sprinkler-solver-estela/vault/code/Game zine.md"
+  s_007485e9a70e7e::t_dac5598457dd4f 8
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_87f3f53215e4ef 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1306e01bbe1c93a1246e058c991842740812205f",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
