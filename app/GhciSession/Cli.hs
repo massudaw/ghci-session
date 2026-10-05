@@ -6,7 +6,11 @@ module GhciSession.Cli (cliMain, Args (..), parseArgs, autostopPlan) where
 import Control.Concurrent (threadDelay)
 import Control.Exception (IOException, SomeException, try)
 import Control.Monad (filterM, forM, forM_, unless, void, when)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BC
 import Data.List (intercalate, isPrefixOf, nub, sortOn)
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing)
 import System.Directory
 import System.Environment (getArgs, getExecutablePath)
@@ -78,12 +82,13 @@ request conf name req = do
     Nothing -> die' (name ++ ": no session running (ghci-session start " ++ name ++ ")")
     Just fd -> do
       h <- fdToHandle fd
-      hSetEncoding h utf8
-      hPutStrLn h (encode req)
+      hSetBinaryMode h True
+      B.hPut h (encodeBS req)
+      B.hPut h (BC.pack "\n")
       hFlush h
-      line <- hGetLine h
+      line <- B.hGetLine h
       hClose h
-      either (\e -> die' ("bad reply from the session: " ++ e)) pure (parseJson line)
+      either (\e -> die' ("bad reply from the session: " ++ e)) pure (parseJsonBS line)
 
 -- | Print a reply; warn when it came from code that is no longer on disk.
 say :: Json -> IO Int
@@ -92,7 +97,8 @@ say r = do
     st@(f : _) -> hPutStrLn stderr ("warning: STALE -- " ++ show (length st) ++ " watched file(s) differ from the loaded code (e.g. "
                                     ++ takeFileName f ++ "); `ghci-session reload`")
     [] -> pure ()
-  putStrLn (fromMaybe "" (lookupStr "out" r))
+  B.putStr (TE.encodeUtf8 (fromMaybe T.empty (lookupText "out" r)))   -- as bytes: it can be megabytes
+  B.putStr (BC.pack "\n")
   pure (if lookupBool "ok" r == Just True then 0 else 1)
 
 firstLine :: FilePath -> IO String

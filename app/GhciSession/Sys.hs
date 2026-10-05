@@ -4,9 +4,11 @@
 module GhciSession.Sys
   ( unixListen, unixAccept, unixConnect, setWinsize
   , Regex, compileRegex, regexMatch, anyLineMatches, linesMatching
+  , writeAtomicT, readFileText
   , hashFile, hashString, showHash
   , watchKind, watchNew, watchBudget, watchAdd, watchRm, watchWait
   , httpPost
+  , processTable
   , now, writeAtomic, readFileMaybe, readFileUtf8, writeFileUtf8, appendFileUtf8, modTime, pidAlive, rawSystemOut, sockPath
   ) where
 
@@ -17,15 +19,16 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import Data.Time.Clock.POSIX (getPOSIXTime, utcTimeToPOSIXSeconds)
+import Data.Int (Int64)
 import Data.Word (Word64)
+import Foreign.Marshal.Array (allocaArray, peekArray)
 import Foreign.C.String (CString, withCString)
 import Foreign.C.Types (CInt (..), CSize (..))
 import Foreign.Ptr (Ptr, nullPtr)
 import Numeric (showHex)
 import System.Directory (createDirectoryIfMissing, getModificationTime, makeAbsolute, renameFile)
 import System.IO (hGetContents, hSetEncoding, utf8)
-import System.Posix.Signals (nullSignal, signalProcess)
-import System.Posix.Types (CPid (..), Fd (..))
+import System.Posix.Types (Fd (..))
 import System.Posix.User (getRealUserID)
 import System.Process (CreateProcess (..), StdStream (..), proc, terminateProcess, waitForProcess, withCreateProcess)
 import System.Timeout (timeout)
@@ -44,6 +47,8 @@ foreign import ccall unsafe "ghs_watch_budget" c_watch_budget :: IO CInt
 foreign import ccall unsafe "ghs_watch_add" c_watch_add :: CInt -> CString -> IO CInt
 foreign import ccall unsafe "ghs_watch_rm" c_watch_rm :: CInt -> CInt -> IO CInt
 foreign import ccall safe "ghs_watch_wait" c_watch_wait :: CInt -> CInt -> IO CInt
+foreign import ccall unsafe "ghs_pid_state" c_pid_state :: CInt -> IO CInt
+foreign import ccall unsafe "ghs_proc_table" c_proc_table :: Ptr CInt -> Ptr CInt -> Ptr Int64 -> Ptr Int64 -> CInt -> IO CInt
 foreign import ccall safe "ghs_http_post" c_http_post :: CString -> CString -> CString -> CString -> CInt -> IO CInt
 
 fdOrNothing :: CInt -> Maybe Fd
@@ -73,15 +78,16 @@ compileRegex pat = do
   p <- withCString pat c_recomp
   pure (if p == nullPtr then Nothing else Just (Regex p))
 
-regexMatch :: Regex -> String -> IO Bool
-regexMatch (Regex p) s = (/= 0) <$> withCString s (c_rematch p)
+-- | Text goes to C as its UTF-8 bytes, once: no per-character marshalling.
+regexMatch :: Regex -> T.Text -> IO Bool
+regexMatch (Regex p) s = (/= 0) <$> B.useAsCString (TE.encodeUtf8 s) (c_rematch p)
 
 -- | Does the pattern match anywhere in the text (@^@ and @$@ at line boundaries)? A pattern that does not
 -- compile matches nothing.
-anyLineMatches :: String -> String -> IO Bool
+anyLineMatches :: String -> T.Text -> IO Bool
 anyLineMatches pat text = compileRegex pat >>= maybe (pure False) (`regexMatch` text)
 
-linesMatching :: String -> [String] -> IO [String]
+linesMatching :: String -> [T.Text] -> IO [T.Text]
 linesMatching pat ls = compileRegex pat >>= maybe (pure []) (\re -> filterIO (regexMatch re) ls)
   where filterIO f = foldr (\x r -> do { b <- f x; xs <- r; pure (if b then x : xs else xs) }) (pure [])
 
@@ -109,8 +115,8 @@ watchNew = (\n -> if n < 0 then Nothing else Just n) <$> c_watch_new
 watchBudget :: IO Int
 watchBudget = fromIntegral <$> c_watch_budget
 
-watchAdd :: CInt -> FilePath -> IO (Maybe CInt)
-watchAdd k p = (\n -> if n < 0 then Nothing else Just n) <$> withCString p (c_watch_add k)
+watchAdd :: CInt -> B.ByteString -> IO (Maybe CInt)
+watchAdd k p = (\n -> if n < 0 then Nothing else Just n) <$> B.useAsCString p (c_watch_add k)
 
 watchRm :: CInt -> CInt -> IO ()
 watchRm k w = void (c_watch_rm k w)
@@ -153,21 +159,40 @@ writeAtomic path text = do
   writeFileUtf8 (path ++ ".tmp") text
   renameFile (path ++ ".tmp") path
 
+writeAtomicT :: FilePath -> T.Text -> IO ()
+writeAtomicT path text = do
+  B.writeFile (path ++ ".tmp") (TE.encodeUtf8 text)
+  renameFile (path ++ ".tmp") path
+
+readFileText :: FilePath -> IO (Maybe T.Text)
+readFileText p = either (\e -> const Nothing (e :: IOException)) (Just . TE.decodeUtf8With TE.lenientDecode) <$> try (B.readFile p)
+
 readFileMaybe :: FilePath -> IO (Maybe String)
 readFileMaybe p = either (\e -> const Nothing (e :: IOException)) Just <$> try (readFileUtf8 p >>= \s -> length s `seq` pure s)
 
 modTime :: FilePath -> IO (Maybe Double)
 modTime p = either (\e -> const Nothing (e :: IOException)) (Just . realToFrac . utcTimeToPOSIXSeconds) <$> try (getModificationTime p)
 
--- | Running, and not a zombie (a forked child that died is a zombie until its parent waits on it).
+-- | Running, and not a zombie (a forked child that died is a zombie until its parent waits on it). Asked of
+-- the kernel directly: spawning @ps@ for it was 20 ms, several times a reload and once per session in every
+-- client command.
 pidAlive :: Int -> IO Bool
-pidAlive pid = do
-  r <- try (signalProcess nullSignal (CPid (fromIntegral pid))) :: IO (Either IOException ())
-  case r of
-    Left _ -> pure False
-    Right () -> do
-      st <- rawSystemOut 10 "ps" ["-o", "stat=", "-p", show pid]
-      pure (case st of { Just s -> not (null (words s)) && take 1 (concat (words s)) /= "Z"; Nothing -> True })
+pidAlive pid = (== 1) <$> c_pid_state (fromIntegral pid)
+
+-- | Every process: (pid, parent, memory in KB). The memory is the physical footprint where the OS gives one
+-- (macOS: what memory pressure is about -- RSS collapses when pages are compressed or swapped), else RSS.
+processTable :: IO [(Int, Int, Int)]
+processTable = do
+  let cap = 8192
+  allocaArray cap $ \pids -> allocaArray cap $ \ppids -> allocaArray cap $ \rss -> allocaArray cap $ \foot -> do
+    n <- fromIntegral <$> c_proc_table pids ppids rss foot (fromIntegral cap)
+    ps <- peekArray n pids
+    pps <- peekArray n ppids
+    rs <- peekArray n rss
+    fs <- peekArray n foot
+    pure [ (fromIntegral p, fromIntegral pp, fromIntegral (if f > 0 then f else r)) | (p, pp, r, f) <- zip4' ps pps rs fs ]
+  where zip4' (a : as) (b : bs) (c : cs) (d : ds) = (a, b, c, d) : zip4' as bs cs ds
+        zip4' _ _ _ _ = []
 
 -- | A command's stdout, or 'Nothing' if it could not be run or did not finish within the seconds given
 -- (it is then killed: a helper that hangs must not hang the session).

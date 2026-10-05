@@ -9,7 +9,10 @@ import Control.Exception (IOException, try)
 import Control.Monad (forM_, unless, void, when)
 import Data.IORef
 import Data.List (isInfixOf, isPrefixOf)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
+import qualified Data.Text as T
 import System.Directory
 import System.FilePath ((</>))
 import System.Posix.Process (getProcessID)
@@ -18,6 +21,7 @@ import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Daemon (countSub, replace, verdictOf, warningsIn)
 import GhciSession.Json
+import GhciSession.Repl (decode, frameChunks)
 import GhciSession.Sys
 import GhciSession.Watch
 
@@ -49,15 +53,22 @@ run = do
   eq "json: integers print as integers" (encode (JNum 42)) "42"
 
   -- verdicts
-  eq "verdict: loaded" (fst (verdictOf "[1 of 1] Compiling M\nOk, one module loaded.")) "OK"
-  eq "verdict: reloaded" (fst (verdictOf "Ok, 12 modules reloaded.")) "OK"
-  eq "verdict: an error" (verdictOf "src/M.hs:3:1: error: [GHC-1]\n  oops\nFailed, no modules loaded.") ("COMPILE-ERROR: 1 error(s)", ["src/M.hs:3:1: error: [GHC-1]"])
-  check "verdict: a link failure has no location but is an error" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf "<no location info>: error:\n  symbol not found"))
-  check "verdict: no verdict at all is not success" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf "???"))
+  eq "verdict: loaded" (fst (verdictOf (T.pack "[1 of 1] Compiling M\nOk, one module loaded."))) "OK"
+  eq "verdict: reloaded" (fst (verdictOf (T.pack "Ok, 12 modules reloaded."))) "OK"
+  eq "verdict: an error" (verdictOf (T.pack "src/M.hs:3:1: error: [GHC-1]\n  oops\nFailed, no modules loaded.")) ("COMPILE-ERROR: 1 error(s)", ["src/M.hs:3:1: error: [GHC-1]"])
+  check "verdict: a link failure has no location but is an error" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (T.pack "<no location info>: error:\n  symbol not found")))
+  check "verdict: no verdict at all is not success" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (T.pack "???")))
   eq "warnings counted from the verdict" (warningsIn "OK (12 warning(s)) -- CHECK-PASS (1.0s)") 12
   eq "warnings: none" (warningsIn "OK -- CHECK-PASS (1.0s)") 0
   eq "countSub" (countSub ": warning:" "a: warning: x\nb: warning: y") 2
   eq "replace" (replace "  [pending]" "" "OK  [pending]  [more]") "OK  [more]"
+
+  -- framing: a sentinel may straddle two chunks, and whatever follows the last one is still pending
+  let stream = BC.pack "first reply\r\nGHS_READY\r\nsecond\nGHS_READY\nstray"
+      cut n b = if B.null b then [] else let (x, y) = B.splitAt n b in x : cut n y
+  forM_ [1, 3, 7, 1000] $ \n ->
+    eq ("framing: chunks of " ++ show n) ((\(rs, p) -> (rs, BC.dropWhile (== '\n') p)) (frameChunks (cut n stream))) ([BC.pack "first reply\r\n", BC.pack "second\n"], BC.pack "stray")
+  eq "decode: no CR, no colours" (decode (BC.pack "a\r\n\ESC[1;31mred\ESC[0m b")) (T.pack "a\nred b")
 
   -- arguments
   let a = parseArgs ["-s", "-m", "--timeout", "-n", "--add"] ["1+1", "-s", "dev", "--no-check", "--add", "x", "--add", "y", "-5"]
@@ -79,10 +90,10 @@ run = do
   eq "autostop: --include-serving" (names ((\(_, s, _) -> s) (autostopPlan infos 0 30 True))) ["e", "b", "a"]
 
   -- regular expressions, hashing
-  ms <- linesMatching "^\\[FAIL\\]" ["[FAIL] x", "ok", " [FAIL] indented", "[FAIL] y"]
-  eq "regex: anchored line match" ms ["[FAIL] x", "[FAIL] y"]
-  anyLineMatches "^\\s*\\[PASS\\] table" "noise\n  [PASS] table\n" >>= check "regex: \\s and ^ at a line start inside the text"
-  anyLineMatches "(" "x" >>= check "regex: a pattern that does not compile matches nothing" . not
+  ms <- linesMatching "^\\[FAIL\\]" (map T.pack ["[FAIL] x", "ok", " [FAIL] indented", "[FAIL] y"])
+  eq "regex: anchored line match" (map T.unpack ms) ["[FAIL] x", "[FAIL] y"]
+  anyLineMatches "^\\s*\\[PASS\\] table" (T.pack "noise\n  [PASS] table\n") >>= check "regex: \\s and ^ at a line start inside the text"
+  anyLineMatches "(" (T.pack "x") >>= check "regex: a pattern that does not compile matches nothing" . not
   h1 <- hashString "abc" 0
   h2 <- hashString "abd" 0
   check "hash: differs on content" (h1 /= h2 && h1 /= 0)
@@ -138,8 +149,8 @@ run = do
   writeFile (tmp </> "src" </> "M.hs") "module M where\n"
   writeFile (tmp </> "src" </> "notes.txt") "not a source\n"
   sig <- scan tmp ["src"] [".hs"]
-  eq "scan: sources by extension" (map (drop (length tmp + 1)) (M.keys sig)) ["src/M.hs"]
-  w <- makeWaiter "auto" 0.2 0.2 (M.keys sig ++ [tmp </> "src"]) (\_ -> pure ())
+  eq "scan: sources by extension" (map (drop (length tmp + 1) . fromRaw) (M.keys sig)) ["src/M.hs"]
+  w <- makeWaiter "auto" 0.2 0.2 (M.keys sig ++ [toRaw (tmp </> "src")]) (\_ -> pure ())
   kind <- waiterKind w
   when (kind /= "poll") $ do
     waiterWait w 0.1 >>= check "watch: quiet when nothing happens" . not
@@ -150,7 +161,7 @@ run = do
     renameFile (tmp </> "src" </> "M.hs.tmp") (tmp </> "src" </> "M.hs")
     waiterWait w 1.0 >>= check "watch: a save by rename"
     waiterSettle w
-    void (waiterUpdate w (M.keys sig ++ [tmp </> "src"]))
+    void (waiterUpdate w (M.keys sig ++ [toRaw (tmp </> "src")]))
     appendFile (tmp </> "src" </> "M.hs") "-- again\n"
     waiterWait w 1.0 >>= check "watch: still watched after a rename (the new inode)"
   waiterClose w

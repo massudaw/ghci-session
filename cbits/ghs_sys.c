@@ -195,3 +195,84 @@ int ghs_http_post(const char *host, const char *port, const char *path, const ch
   freeaddrinfo(res);
   return rc;
 }
+
+/* ---- processes: liveness and memory without spawning `ps` (20 ms a time) or `footprint` (which can hang) ---- */
+
+/* 0: no such process; 1: running; 2: a zombie (exited, not yet waited on) */
+#if defined(__APPLE__)
+#include <libproc.h>
+#include <signal.h>
+#include <sys/proc.h>
+int ghs_pid_state(int pid) {
+  struct proc_bsdinfo bi;
+  if (proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &bi, sizeof bi) == (int)sizeof bi) return bi.pbi_status == SZOMB ? 2 : 1;
+  /* not ours to inspect (another user's), or gone: kill(0) tells which */
+  return (kill(pid, 0) == 0 || errno == EPERM) ? 1 : 0;
+}
+/* every process: pid, parent, resident KB, physical-footprint KB (0 where it cannot be read). Returns how many
+ * (at most cap). The footprint is what macOS's memory pressure is about: RSS collapses when pages are compressed. */
+int ghs_proc_table(int *pids, int *ppids, int64_t *rss_kb, int64_t *foot_kb, int cap) {
+  int n = proc_listallpids(NULL, 0);
+  if (n <= 0) return 0;
+  pid_t *all = malloc((size_t)(n + 64) * sizeof *all);
+  if (!all) return 0;
+  n = proc_listallpids(all, (n + 64) * (int)sizeof *all);
+  int k = 0;
+  for (int i = 0; i < n && k < cap; i++) {
+    struct proc_bsdinfo bi;
+    if (all[i] <= 0 || proc_pidinfo(all[i], PROC_PIDTBSDINFO, 0, &bi, sizeof bi) != (int)sizeof bi) continue;
+    struct rusage_info_v2 ri;
+    int ok = proc_pid_rusage(all[i], RUSAGE_INFO_V2, (rusage_info_t *)&ri) == 0;
+    pids[k] = all[i]; ppids[k] = (int)bi.pbi_ppid;
+    rss_kb[k] = ok ? (int64_t)(ri.ri_resident_size / 1024) : 0;
+    foot_kb[k] = ok ? (int64_t)(ri.ri_phys_footprint / 1024) : 0;
+    k++;
+  }
+  free(all);
+  return k;
+}
+#elif defined(__linux__)
+#include <dirent.h>
+#include <signal.h>
+static int read_stat(int pid, int *ppid, char *state, long *rss_pages) {
+  char path[64], buf[1024];
+  snprintf(path, sizeof path, "/proc/%d/stat", pid);
+  int fd = open(path, O_RDONLY);
+  if (fd < 0) return -1;
+  ssize_t n = read(fd, buf, sizeof buf - 1);
+  close(fd);
+  if (n <= 0) return -1;
+  buf[n] = 0;
+  char *p = strrchr(buf, ')');          /* the command may contain spaces and parentheses */
+  if (!p) return -1;
+  long rss = 0;
+  /* after ") ": state ppid pgrp session tty tpgid flags minflt cminflt majflt cmajflt utime stime cutime cstime
+   * priority nice threads itrealvalue starttime vsize rss */
+  if (sscanf(p + 2, "%c %d %*d %*d %*d %*d %*u %*u %*u %*u %*u %*u %*u %*d %*d %*d %*d %*d %*d %*u %*u %ld", state, ppid, &rss) < 2) return -1;
+  *rss_pages = rss;
+  return 0;
+}
+int ghs_pid_state(int pid) {
+  int pp; char st; long r;
+  if (read_stat(pid, &pp, &st, &r) < 0) return (kill(pid, 0) == 0 || errno == EPERM) ? 1 : 0;
+  return st == 'Z' ? 2 : 1;
+}
+int ghs_proc_table(int *pids, int *ppids, int64_t *rss_kb, int64_t *foot_kb, int cap) {
+  DIR *d = opendir("/proc");
+  if (!d) return 0;
+  long page = sysconf(_SC_PAGESIZE) / 1024;
+  struct dirent *e; int k = 0;
+  while ((e = readdir(d)) && k < cap) {
+    if (e->d_name[0] < '0' || e->d_name[0] > '9') continue;
+    int pid = atoi(e->d_name), pp; char st; long r;
+    if (read_stat(pid, &pp, &st, &r) < 0) continue;
+    pids[k] = pid; ppids[k] = pp; rss_kb[k] = (int64_t)r * page; foot_kb[k] = 0; k++;
+  }
+  closedir(d);
+  return k;
+}
+#else
+#include <signal.h>
+int ghs_pid_state(int pid) { return (kill(pid, 0) == 0 || errno == EPERM) ? 1 : 0; }
+int ghs_proc_table(int *a, int *b, int64_t *c, int64_t *d, int cap) { (void)a; (void)b; (void)c; (void)d; (void)cap; return 0; }
+#endif

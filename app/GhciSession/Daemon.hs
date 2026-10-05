@@ -11,7 +11,11 @@ import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isDigit, isSpace, isUpper, toLower)
 import Data.IORef
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, sort, sortOn)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Time (defaultTimeLocale, formatTime, getZonedTime, utcToLocalZonedTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
@@ -70,7 +74,7 @@ data S = S
   , vHold :: IORef Int               -- ^ >0: an operation is in progress; its status is published once, at its end
   , vOkPrefix :: IORef String, vLiveMb :: IORef String
   , vMem :: IORef (Maybe (Double, Double)), vMemDone :: IORef (Maybe (MVar ()))
-  , vFootprintOff :: IORef Bool, vSpawned :: IORef Double
+  , vSpawned :: IORef Double
   }
 
 rd :: IORef a -> IO a
@@ -117,7 +121,7 @@ staleFiles :: S -> IO [FilePath]
 staleFiles s = do
   cur <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
   loaded <- rd (vLoadedSig s)
-  pure (sort [ p | p <- M.keys (M.union cur loaded), M.lookup p cur /= M.lookup p loaded ])
+  pure (sort [ fromRaw p | p <- M.keys (M.union cur loaded), M.lookup p cur /= M.lookup p loaded ])
 
 stamp :: Double -> IO String
 stamp 0 = pure "-"
@@ -204,8 +208,13 @@ compiled s = (\st -> not (any (`isPrefixOf` st) ["COMPILE-ERROR", "DEAD", "PREBU
 theRepl :: S -> IO Repl
 theRepl s = rd (vRepl s) >>= maybe (throwIO (ReplDied "")) pure
 
-cmd :: S -> Maybe Double -> String -> IO String
+-- | A command's output as text: a load log or an evaluation can be megabytes.
+cmd :: S -> Maybe Double -> String -> IO T.Text
 cmd s t e = theRepl s >>= \r -> replCommand r t e
+
+-- | ... and as a String, for the small answers the daemon itself reads.
+cmdS :: S -> Maybe Double -> String -> IO String
+cmdS s t e = T.unpack <$> cmd s t e
 
 ghcVersion :: IO (Int, Int)
 ghcVersion = do
@@ -270,7 +279,7 @@ noModule out = any (`isInfixOf` map toLower out)
 postLoad :: S -> Repl -> IO ()
 postLoad s r = do
   let cfg = sCfg s
-      c t e = replCommand r (Just t) e
+      c t e = T.unpack <$> replCommand r (Just t) e
   postLoadBasics r
   when (gCapabilities cfg > 0) (void (c 60 ("GHC.Conc.setNumCapabilities " ++ show (gCapabilities cfg))))
   forM_ (gPreload cfg) (c 120)
@@ -296,24 +305,24 @@ writeLoadedSources :: S -> IO ()
 writeLoadedSources s = do
   sig <- rd (vLoadedSig s)
   void (try (writeAtomic (sDir s </> "loaded_sources.tsv")
-               (concat [ show (round (m * 1e9) :: Integer) ++ "\t" ++ rel s p ++ "\n" | (p, m) <- M.toList sig ])) :: IO (Either IOException ()))
+               (concat [ show (round (m * 1e9) :: Integer) ++ "\t" ++ rel s (fromRaw p) ++ "\n" | (p, m) <- M.toList sig ])) :: IO (Either IOException ()))
 
 -- | GHC's own verdict lines decide whether a load succeeded.
-verdictOf :: String -> (String, [String])
+verdictOf :: T.Text -> (String, [String])
 verdictOf out
-  | any ("Failed, " `isPrefixOf`) ls || not (null errs) = ("COMPILE-ERROR: " ++ show (length errs) ++ " error(s)", take 20 errs)
+  | any (T.isPrefixOf (T.pack "Failed, ")) ls || not (null errs) = ("COMPILE-ERROR: " ++ show (length errs) ++ " error(s)", map T.unpack (take 20 errs))
   | any okLine ls = ("OK", [])
-  | otherwise = ("COMPILE-ERROR: no GHC verdict in the load output", lastN 5 (lines (trim out)))
+  | otherwise = ("COMPILE-ERROR: no GHC verdict in the load output", map T.unpack (lastN 5 (T.lines (T.strip out))))
   where
-    ls = lines out
+    ls = T.lines out
     -- not anchored on a source location: GHC also emits `<no location info>: error:` for link/IO failures
-    errs = filter (": error:" `isInfixOf`) ls
-    okLine l = "Ok, " `isPrefixOf` l && ("loaded." `isSuffixOf` l) && "module" `isInfixOf` l
+    errs = filter (T.isInfixOf (T.pack ": error:")) ls
+    okLine l = T.pack "Ok, " `T.isPrefixOf` l && T.pack "loaded." `T.isSuffixOf` l && T.pack "module" `T.isInfixOf` l
 
 lastN :: Int -> [a] -> [a]
 lastN n xs = drop (length xs - n) xs
 
-afterLoad :: S -> String -> Bool -> Double -> IO ()
+afterLoad :: S -> T.Text -> Bool -> Double -> IO ()
 afterLoad s out doCheck t0 = do
   pend <- rd (vPendingSig s)
   sig <- if M.null pend then scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s)) else pure pend
@@ -321,9 +330,9 @@ afterLoad s out doCheck t0 = do
   now >>= (vLoadedAt s =:)
   modifyIORef' (vGeneration s) (+ 1)
   writeLoadedSources s
-  writeAtomic (sDir s </> "load.log") out
+  writeAtomicT (sDir s </> "load.log") out
   let (v, detail) = verdictOf out
-      warns = countSub ": warning:" out
+      warns = T.count (T.pack ": warning:") out
       prefix = "OK" ++ (if warns > 0 then " (" ++ show warns ++ " warning(s))" else "")
   vOkPrefix s =: prefix
   let took = (\t -> ("duration_s", JNum (r2 (t - t0)))) <$> now
@@ -339,7 +348,7 @@ countSub needle = go 0
 
 -- checks: per member, never merged ---------------------------------------------------
 
-data CheckResult = CheckResult { crMember :: String, crKind :: String, crFailing :: [String], crBody :: String, crSecs :: Double }
+data CheckResult = CheckResult { crMember :: String, crKind :: String, crFailing :: [String], crBody :: T.Text, crSecs :: Double }
 
 checkOne :: S -> Check -> IO CheckResult
 checkOne s e = do
@@ -352,33 +361,33 @@ checkOne s e = do
   r <- try (cmd s (ckTimeout e) (ckExpr e))
   t1 <- now
   case r of
-    Left ex@(ReplTimeout _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (show ex) (t1 - t0))
-    Left ex -> pure (CheckResult (ckMember e) "DEAD" [show ex] (show ex) (t1 - t0))
+    Left ex@(ReplTimeout _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
+    Left ex -> pure (CheckResult (ckMember e) "DEAD" [show ex] (T.pack (show ex)) (t1 - t0))
     Right out -> do
       body <- case logp of
         Nothing -> pure out
         Just p -> do
           after <- modTime p
           if isNothing after || after <= before
-            then pure (out ++ "\n[session] " ++ fromMaybe "" (ckLog e) ++ " was NOT rewritten by this run: the check did not get as far as producing output")
-            else fromMaybe (out ++ "\n[session] " ++ p ++ " unreadable") <$> readFileMaybe p
-      fails <- maybe (pure []) (\pat -> map trim <$> linesMatching pat (lines body)) (ckFail e)
+            then pure (out <> T.pack ("\n[session] " ++ fromMaybe "" (ckLog e) ++ " was NOT rewritten by this run: the check did not get as far as producing output"))
+            else fromMaybe (out <> T.pack ("\n[session] " ++ p ++ " unreadable")) <$> readFileText p
+      fails <- maybe (pure []) (\pat -> map (T.unpack . T.strip) <$> linesMatching pat (T.lines body)) (ckFail e)
       passOk <- maybe (pure True) (`anyLineMatches` body) (ckPass e)
       pure $ if not (null fails) then CheckResult (ckMember e) "FAIL" fails body (t1 - t0)
-        else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : lastN 3 (lines (trim body))) body (t1 - t0)
+        else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : map T.unpack (lastN 3 (T.lines (T.strip body)))) body (t1 - t0)
         else CheckResult (ckMember e) "PASS" [] body (t1 - t0)
 
-runCheck :: S -> Maybe Double -> Maybe String -> IO String
+runCheck :: S -> Maybe Double -> Maybe String -> IO T.Text
 runCheck s mt0 member = do
   let entries = [ e | e <- gChecks (sCfg s), maybe True (\m -> m == ckMember e || m == takeWhile (/= ':') (ckMember e)) member ]
-  if null entries then pure ("no check configured" ++ maybe "" (\m -> " for " ++ show m) member) else do
+  if null entries then pure (T.pack ("no check configured" ++ maybe "" (\m -> " for " ++ show m) member)) else do
     t <- maybe now pure mt0
     prefix <- rd (vOkPrefix s)
     push s (prefix ++ " -- running check") ""
     results <- phase s "check" (mapM (checkOne s) entries)
     vEvaluated s =: True
     now >>= (vCheckedAt s =:)
-    writeAtomic (sDir s </> "run.log") (concat [ "===== " ++ crMember r ++ " =====\n" ++ crBody r ++ "\n" | r <- results ])
+    writeAtomicT (sDir s </> "run.log") (T.concat [ T.pack ("===== " ++ crMember r ++ " =====\n") <> crBody r <> T.pack "\n" | r <- results ])
     t1 <- now
     let took = r2 (t1 - t)
         bad = filter ((/= "PASS") . crKind) results
@@ -389,46 +398,23 @@ runCheck s mt0 member = do
                                           , ("detail", JArr (map JStr (take 12 (crFailing r)))) ] | r <- results ])
                 , ("duration_s", JNum took) ]
     if any ((== "DEAD") . crKind) results
-      then setStatus s False "DEAD: the repl died during a check" (take 20 [ crMember r ++ ": " ++ crBody r | r <- bad ]) facts
+      then setStatus s False "DEAD: the repl died during a check" (take 20 [ crMember r ++ ": " ++ T.unpack (T.take 2000 (crBody r)) | r <- bad ]) facts
       else if not (null bad)
         then setStatus s False ("CHECK-FAIL: " ++ show (sum [ max 1 (length (crFailing r)) | r <- bad ]) ++ " failing in " ++ intercalate ", " (map crMember bad) ++ tag)
                (take 30 [ crMember r ++ ": " ++ l | r <- bad, l <- (if null (crFailing r) then [crKind r] else crFailing r) ]) facts
         else setStatus s False (prefix ++ " -- CHECK-PASS (" ++ printf "%.1f" took ++ "s)" ++ tag) [] facts
-    pure (intercalate "\n" (map crBody results))
+    pure (T.intercalate (T.pack "\n") (map crBody results))
 
 -- memory ---------------------------------------------------------------------------
-
-processTable :: IO [(Int, Int, Int)]
-processTable = do
-  out <- rawSystemOut 10 "ps" ["-axo", "pid=,ppid=,rss="]
-  pure [ (read a, read b, read c) | l <- lines (fromMaybe "" out), [a, b, c] <- [words l], all (all isDigit) [a, b, c] ]
 
 descendantsOf :: [(Int, Int, Int)] -> Int -> [Int]
 descendantsOf rows pid = go [pid] [pid]
   where go seen [] = seen
         go seen (p : todo) = let kids = [ c | (c, pp, _) <- rows, pp == p, c `notElem` seen ] in go (seen ++ kids) (todo ++ kids)
 
--- | Physical footprint (MB) on macOS, where @ps@ RSS collapses under memory pressure. The tool needs the
--- processes' task ports and can HANG (with a debugger-authorisation dialog pending it blocked on every
--- process): a short timeout, and after one failure RSS for the rest of this daemon's life.
-footprintMb :: S -> [Int] -> IO (Maybe Double)
-footprintMb s pids = do
-  off <- rd (vFootprintOff s)
-  if os /= "darwin" || null pids || off then pure Nothing else do
-    out <- rawSystemOut 3 "footprint" (map show pids)
-    case out of
-      Nothing -> vFootprintOff s =: True >> pure Nothing
-      Just o ->
-        let vals = [ v * unit u | l <- lines o, ("phys_footprint:" : v' : u : _) <- [words l], [(v, "")] <- [reads v' :: [(Double, String)]] ]
-            unit u = case u of { "KB" -> 1 / 1024; "MB" -> 1; "GB" -> 1024; "TB" -> 1024 * 1024; _ -> 0 }
-        in pure (if null vals then Nothing else Just (sum vals))
-
-treeMb :: S -> Int -> IO Double
-treeMb s pid = do
-  rows <- processTable
-  let pids = descendantsOf rows pid
-  fp <- footprintMb s pids
-  pure (fromMaybe (fromIntegral (sum [ r | (p, _, r) <- rows, p `elem` pids ]) / 1024) fp)
+-- | A process and everything under it, in MB (the kernel's own numbers: 'processTable').
+treeMb :: [(Int, Int, Int)] -> Int -> Double
+treeMb rows pid = let pids = descendantsOf rows pid in fromIntegral (sum [ m | (p, _, m) <- rows, p `elem` pids ]) / 1024
 
 -- | The repl's own memory: its process tree less the servers forked from it.
 replMb :: S -> IO Double
@@ -437,17 +423,16 @@ replMb s = do
   case mp of
     Nothing -> pure 0
     Just pid -> do
-      total <- treeMb s pid
       rows <- processTable
       let under = descendantsOf rows pid
       kids <- filter (`elem` under) . catMaybes <$> mapM (serverRunning s) (serverLabels s)
-      inside <- sum <$> mapM (treeMb s) kids
-      pure (max 0 (total - inside))
+      pure (max 0 (treeMb rows pid - sum (map (treeMb rows) kids)))
 
 serversMb :: S -> IO Double
 serversMb s = do
+  rows <- processTable
   pids <- catMaybes <$> mapM (serverRunning s) (serverLabels s)
-  sum <$> mapM (treeMb s) pids
+  pure (sum (map (treeMb rows) pids))
 
 -- | Measure the session's memory OFF the reload path, for the log and for the next reload's budget check:
 -- asking the OS for a process tree's footprint is 0.15-0.3 s a time.
@@ -495,7 +480,7 @@ unlinkCafs s = do
   when ok $ do
     vUnlinkDue s =: False
     t0 <- now
-    r <- try (cmd s (Just 300) (gHygieneModule (sCfg s) ++ ".pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> "
+    r <- try (cmdS s (Just 300) (gHygieneModule (sCfg s) ++ ".pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> "
            ++ "(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return \"?\") >>= \\l -> "
            ++ "putStrLn (\"unlinked=\" ++ show k ++ \" live_mb=\" ++ l)"))
     t1 <- now
@@ -566,7 +551,7 @@ serverActionOk :: S -> Server -> IO (Maybe String)
 serverActionOk s z = do
   on <- rd (vZygoteOn s)
   if not on then pure (Just (zm s ++ " is not in scope in this repl")) else do
-    r <- try (cmd s (Just 120) (":type (" ++ svAction z ++ ") :: IO ()"))
+    r <- try (cmdS s (Just 120) (":type (" ++ svAction z ++ ") :: IO ()"))
     pure $ case r of
       Left (e :: SomeException) -> Just (displayException e)
       Right out -> if "error" `isInfixOf` out then Just (take 300 (unwords (words out))) else Nothing
@@ -585,7 +570,7 @@ serverFork s z handover preforked = do
         -- positional, not record update: GHC rejects a qualified record update on a field it also sees as a selector
         spec = zm s ++ ".zygoteSpec " ++ show label ++ " " ++ show (sfile s label "log") ++ " " ++ show env' ++ " " ++ show (gComposed (sCfg s))
     unless preforked (phase s "prefork" (serverPrefork s z))
-    r <- try (phase s "fork" (cmd s Nothing ("fmap " ++ zm s ++ ".zcPid (" ++ zm s ++ ".zygoteFork (" ++ spec ++ ") (" ++ svAction z ++ "))")))
+    r <- try (phase s "fork" (cmdS s Nothing ("fmap " ++ zm s ++ ".zcPid (" ++ zm s ++ ".zygoteFork (" ++ spec ++ ") (" ++ svAction z ++ "))")))
     case r of
       Left (e :: SomeException) -> logS s ("server[" ++ label ++ "]: fork failed: " ++ displayException e) >> pure Nothing
       Right out ->
@@ -918,7 +903,7 @@ boot s = do
   scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:)
   line <- replCommandLine s
   r <- try (startRepl line (sRoot s) env' (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)
-              (\t -> void (try (appendFileUtf8 (sDir s </> "async.log") t) :: IO (Either IOException ())))
+              (\t -> void (try (B.appendFile (sDir s </> "async.log") (TE.encodeUtf8 t)) :: IO (Either IOException ())))
               (\r -> do
                  -- called once GHCi has answered: everything before this instant was cabal and the load
                  t <- now
@@ -932,7 +917,7 @@ boot s = do
       vRepl s =: Just repl
       -- `cabal repl` may chdir into the package: a check that writes a relative path lands there. GHCi's own
       -- answer, no shell: "current working directory:\n  /path"
-      shown <- either (\(_ :: SomeException) -> []) lines <$> try (replCommand repl (Just 60) ":show paths")
+      shown <- either (\(_ :: SomeException) -> []) (lines . T.unpack) <$> try (replCommand repl (Just 60) ":show paths")
       vCwd s =: fromMaybe (sRoot s) (listToMaybe [ trim b | (a, b) <- zip shown (drop 1 shown), "current working directory" `isInfixOf` a, not (null (trim b)) ])
       vContextOk s =: True
       afterLoad s out (sBootCheck s) t0
@@ -957,7 +942,7 @@ restart s = do
   memSampleAsync s
   rd (vStatus s)
 
-reload :: S -> Bool -> Bool -> Maybe Bool -> IO String
+reload :: S -> Bool -> Bool -> Maybe Bool -> IO T.Text
 reload s doCheck doRefork asyncReq = do
   reforkJoin s
   envAsync <- (== Just "1") <$> lookupEnv "GHS_ASYNC_REFORK"
@@ -983,7 +968,7 @@ reload s doCheck doRefork asyncReq = do
   memSampleAsync s
   pure out
 
-reload' :: S -> Bool -> Bool -> Bool -> IO String
+reload' :: S -> Bool -> Bool -> Bool -> IO T.Text
 reload' s doCheck doRefork async = do
   let cfg = sCfg s
   envBudget <- (>>= \v -> case reads v of { [(b, "")] -> Just b; _ -> Nothing }) <$> lookupEnv "GHS_REPL_BUDGET_MB"
@@ -992,7 +977,7 @@ reload' s doCheck doRefork async = do
   if budget > 0 && rss > budget
     then do
       logS s (printf "reload: repl at %.0f MB > budget %.0f MB -- restarting instead" rss budget)
-      out <- restart s
+      out <- T.pack <$> restart s
       note s (printf "[repl RESTARTED instead of reloaded: it had grown to %.0f MB, over the %.0f MB budget; now restarted]" rss budget) []
       pure out
     else do
@@ -1001,9 +986,9 @@ reload' s doCheck doRefork async = do
       push s "reloading" ""
       r <- try (phase s "ghci_reload" (cmd s (Just (gLoadTimeout cfg)) ":reload"))
       case r of
-        Left (e :: ReplError) -> setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) [] [] >> pure (show e)
+        Left (e :: ReplError) -> setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) [] [] >> pure (T.pack (show e))
         Right out -> do
-          writeAtomic (sDir s </> "reload.log") out
+          writeAtomicT (sDir s </> "reload.log") out
           -- A reload that succeeds keeps GHCi's context (imports, prompt, buffering); one that fails drops
           -- the imports. So they are re-issued only after a failure.
           let failedNow = fst (verdictOf out) /= "OK"
@@ -1030,10 +1015,27 @@ reload' s doCheck doRefork async = do
               else refork s running
           pure out
 
+-- | The checkout's HEAD commit, "" when it cannot be said. Read from the files (@.git@ may itself be a file
+-- naming the real directory, in a worktree): it is asked every two seconds, and spawning @git@ for it was 10 ms.
 headCommit :: S -> IO String
 headCommit s = do
-  r <- try (readCreateProcessWithExitCode (shell "git rev-parse HEAD 2>/dev/null") { cwd = Just (sRoot s) } "") :: IO (Either SomeException (ExitCode, String, String))
-  pure (case r of { Right (ExitSuccess, o, _) -> trim o; _ -> "" })
+  dotGit <- readFileMaybe (sRoot s </> ".git")
+  let gitDir = case dotGit of
+        Just t | "gitdir: " `isPrefixOf` t -> let d = trim (drop 8 t) in if "/" `isPrefixOf` d then d else sRoot s </> d
+        _ -> sRoot s </> ".git"
+  h <- fmap trim <$> readFileMaybe (gitDir </> "HEAD")
+  case h of
+    Just r | "ref: " `isPrefixOf` r -> do
+      let ref = drop 5 r
+      common <- maybe gitDir (\c -> let d = trim c in if "/" `isPrefixOf` d then d else gitDir </> d) <$> readFileMaybe (gitDir </> "commondir")
+      direct <- firstJust [readFileMaybe (gitDir </> ref), readFileMaybe (common </> ref)]
+      case direct of
+        Just c -> pure (trim c)
+        Nothing -> maybe "" (\t -> fromMaybe "" (listToMaybe [ w | l <- lines t, [w, n] <- [words l], n == ref ])) <$> readFileMaybe (common </> "packed-refs")
+    Just c -> pure c
+    Nothing -> pure ""
+  where firstJust [] = pure Nothing
+        firstJust (a : as) = a >>= maybe (firstJust as) (pure . Just)
 
 -- | What an eviction decision needs, answered without the repl: so it works while a reload holds it.
 info :: S -> IO Json
@@ -1080,7 +1082,7 @@ watchLoop s = do
       doScan = scan (sRoot s) (gWatch cfg) (gWatchExt cfg)
   first <- doScan
   roots <- filterM doesDirectoryExist [ sRoot s </> d | d <- gWatch cfg ]
-  w <- makeWaiter (gWatcher cfg) (gPollInterval cfg) (gDebounce cfg) (M.keys first ++ roots) (logS s)
+  w <- makeWaiter (gWatcher cfg) (gPollInterval cfg) (gDebounce cfg) (M.keys first ++ map toRaw roots) (logS s)
   kind <- waiterKind w
   logS s ("watch: " ++ show (M.size first) ++ " sources by " ++ kind)
   head0 <- if gReloadOnCommit cfg then headCommit s else pure ""
@@ -1118,11 +1120,11 @@ watchLoop s = do
                 now >>= (vLastUsed s =:)      -- someone is editing
                 waiterSettle w                -- an editor's save is several writes
                 cur2 <- doScan
-                ok <- waiterUpdate w (M.keys cur2 ++ roots)   -- new files, and files saved by rename (a new inode)
+                ok <- waiterUpdate w (M.keys cur2 ++ map toRaw roots)   -- new files, and files saved by rename (a new inode)
                 unless ok (logS s "watch: cannot watch these paths with kernel events -- polling from here" >> toPolling w)
                 loaded <- rd (vLoadedSig s)
                 when (gAutoReload cfg && cur2 /= loaded) $ do
-                  let changed = [ p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
+                  let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
                   if any (\p -> any (`isSuffixOf` p) [".c", ".h", ".cabal"] || "cabal.project" `isPrefixOf` takeFileName p) changed
                     then do
                       logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
@@ -1154,7 +1156,7 @@ serve s = do
               mc <- unixAccept fd 500
               forM_ mc $ \c -> forkIO $ do
                 h <- fdToHandle c
-                hSetEncoding h utf8
+                hSetBinaryMode h True
                 void (try (handle s h) :: IO (Either SomeException ()))
                 void (try (hClose h) :: IO (Either IOException ()))
               loop
@@ -1164,36 +1166,39 @@ serve s = do
 
 handle :: S -> Handle -> IO ()
 handle s h = do
-  line <- hGetLine h
+  line <- B.hGetLine h
   let reply ok out = do
         stale <- staleFiles s
         j <- rd (vJson s)
-        hPutStrLn h (encode (JObj [ ("ok", JBool ok), ("out", JStr out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ]))
+        -- bytes straight to the socket: an evaluation's output can be megabytes
+        B.hPut h (encodeBS (JObj [ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ]))
+        B.hPut h (BC.pack "\n")
         hFlush h
-  case parseJson line of
-    Left e -> reply False e
+      replyS ok = reply ok . T.pack
+  case parseJsonBS line of
+    Left e -> replyS False e
     Right req -> do
       let op = fromMaybe "" (lookupStr "op" req)
       r <- try $ case op of
         "status" -> do       -- reads only the last verdict: must answer while a reload holds the repl
           stale <- staleFiles s
           st <- rd (vStatus s)
-          reply True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
-        "info" -> info s >>= reply True . encode
+          replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
+        "info" -> info s >>= replyS True . encode
         "stop" -> do
           forM_ (lookupStr "reason" req) (vStopReason s =:)
           vKeepServers s =: fromMaybe False (lookupBool "keep_servers" req)
           vStopping s =: True
-          reply True "stopping"
+          replyS True "stopping"
         _ -> do
           now >>= (vLastUsed s =:)
           out <- bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req)
-          maybe (reply False ("unknown op " ++ show op)) (reply True) out
+          maybe (replyS False ("unknown op " ++ show op)) (reply True) out
       case r of
-        Left (e :: SomeException) -> void (try (reply False (displayException e)) :: IO (Either SomeException ()))   -- a broken eval must not kill the daemon
+        Left (e :: SomeException) -> void (try (replyS False (displayException e)) :: IO (Either SomeException ()))   -- a broken eval must not kill the daemon
         Right () -> pure ()
 
-dispatch :: S -> String -> Json -> IO (Maybe String)
+dispatch :: S -> String -> Json -> IO (Maybe T.Text)
 dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside the lock too: its answer must not straddle a reload
   "eval" -> do
     out <- cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req))
@@ -1205,7 +1210,7 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     out <- runCheck s Nothing (lookupStr "member" req)
     unlinkCafs s
     pure (Just out)
-  "restart" -> Just <$> restart s
+  "restart" -> Just . T.pack <$> restart s
   _ | op `elem` ["server", "zygote"] -> do     -- "zygote" with fork/refork: the names an older client of this protocol used
     let action = case fromMaybe "status" (lookupStr "action" req) of { "fork" -> "start"; "refork" -> "restart"; a -> a }
     reforkJoin s
@@ -1214,12 +1219,12 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     out <- serverOp s action (lookupStr "member" req) (fromMaybe False (lookupBool "resume" req))
     phasesDone s ("server " ++ action) t0
     publish s
-    pure (Just out)
+    pure (Just (T.pack out))
   "mem" -> do
     r <- replMb s
     sv <- serversMb s
     vMem s =: Just (r, sv)      -- a fresh reading: the next reload's budget check uses it
-    pure (Just (printf "repl %.0f MB (budget %.0f), servers %.0f MB" r (gBudgetMb (sCfg s)) sv))
+    pure (Just (T.pack (printf "repl %.0f MB (budget %.0f), servers %.0f MB" r (gBudgetMb (sCfg s)) sv)))
   _ -> pure Nothing
 
 -- | Run the daemon for one session until it is told to stop (or idles out).
@@ -1244,7 +1249,7 @@ runDaemon conf name bootCheck = do
          <*> newIORef 0 <*> newIORef root <*> newIORef t <*> newIORef 0
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
-         <*> newIORef False <*> newIORef t
+         <*> newIORef t
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
