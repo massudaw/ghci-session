@@ -1,0 +1,41 @@
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_7838f9faddbee4 16
+"sprinkler-solver-estela/vault/activities/Flag and Anthem.md"
+  s_007485e9a70e7e::t_7838f9faddbee4 1-13
+"sprinkler-solver-estela/vault/routines/Morning Routine.md"
+  s_007485e9a70e7e::t_7838f9faddbee4 6,18
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_01d730e6384053 1
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_01d730e6384053 86,199,389,653
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_7838f9faddbee4 11
+sprinkler-solver-estela/vault/houses/School.md
+  s_007485e9a70e7e::t_7838f9faddbee4 14
+sprinkler-solver-estela/src/Estela/Lint.hs
+  s_007485e9a70e7e::t_7838f9faddbee4 35
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_7838f9faddbee4 13
+sprinkler-solver-estela/vault/plan.json
+  s_007485e9a70e7e::t_01d730e6384053 1
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_fdadcbc081b597 44,140,208,232,365,425
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_306f074ab09d55 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c353eaa097be038b95cdd8aa7c4b0d9b0af5a08a",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
