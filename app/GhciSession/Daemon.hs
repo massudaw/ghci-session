@@ -693,7 +693,9 @@ serverStopPid :: S -> String -> Int -> IO ()
 serverStopPid s label pid = do
   on <- rd (vZygoteOn s)
   alive <- rd (vRepl s) >>= maybe (pure False) replAlive
-  viaRepl <- if on && alive
+  -- (a repl in the middle of a 30 s check cannot take the command: do not queue a stop behind it)
+  busy <- rd (vRepl s) >>= maybe (pure False) replBusy
+  viaRepl <- if on && alive && not busy
     then either (\(_ :: SomeException) -> False) (const True)
            <$> try (cmd s (Just 30) (zm s ++ ".zygoteStop (" ++ zm s ++ ".ZygoteChild " ++ show pid ++ " " ++ show label ++ " " ++ show (sfile s label "log") ++ ") 30"))
     else pure False

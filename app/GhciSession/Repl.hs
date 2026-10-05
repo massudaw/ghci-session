@@ -5,13 +5,13 @@
 -- reader runs on its own thread so a command that prints megabytes cannot deadlock on a full pty buffer.
 module GhciSession.Repl
   ( Repl, ReplError (..)
-  , startRepl, startEngineRepl, EngineSpec (..), stopRepl, replCommand, replAlive, replPid, postLoadBasics, stripAnsi
+  , startRepl, startEngineRepl, EngineSpec (..), stopRepl, replBusy, replCommand, replAlive, replPid, postLoadBasics, stripAnsi
   , decode, sentinel
   , frameChunks
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
-import Control.Concurrent.MVar (MVar, newMVar, withMVar)
+import Control.Concurrent.MVar (MVar, isEmptyMVar, newMVar, withMVar)
 import Control.Concurrent.STM
 import Control.Exception (Exception, IOException, SomeException, finally, throwIO, try)
 import Control.Monad (unless, void, when)
@@ -206,6 +206,10 @@ awaitSentinel r secs = do
             late <- readTVar tv
             if late then pure (Left (ReplTimeout secs)) else retry
   either throwIO (pure . decode) res
+
+-- | Is a command running right now? (Whoever asks must not then queue behind it: a stop, say.)
+replBusy :: Repl -> IO Bool
+replBusy r = isEmptyMVar (rIO r)
 
 replAlive :: Repl -> IO Bool
 replAlive r = (== Nothing) <$> getProcessExitCode (rProc r)
