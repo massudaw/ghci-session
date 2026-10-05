@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- | The client: @ghci-session start|stop|restart|status|reload|eval|check|server|compose|mem|log|list|gc|autostop|init@.
+-- | The client: @ghci-session start|stop|restart|status|reload|typecheck|test|eval|server|compose|mem|log|list|gc|autostop|init@.
 module GhciSession.Cli (cliMain, Args (..), parseArgs, autostopPlan) where
 
 import Control.Concurrent (threadDelay)
@@ -190,7 +190,7 @@ cmdReload :: Conf -> Args -> IO Int
 cmdReload conf a = do
   name <- pick conf (pos a 0)
   t0 <- now
-  rc <- request conf name (JObj ([ ("op", JStr "reload"), ("check", JBool (not (flag a ["--no-check"]))), ("refork", JBool (not (flag a ["--no-refork"]))) ]
+  rc <- request conf name (JObj ([ ("op", JStr "reload"), ("check", JBool (not (flag a ["--no-test", "--no-check"]))), ("refork", JBool (not (flag a ["--no-refork"]))) ]
                                  ++ [ ("async_refork", JBool True) | flag a ["--async-refork"] ])) >>= say
   -- the verdict is in the status file: print it, not only GHC's load log
   readFileMaybe (stateOf conf name </> "status") >>= mapM_ putStr
@@ -254,7 +254,7 @@ cmdCompose conf a = case aPos a of
           writeMembers conf name new
           when (isJust up) (void (cmdStop conf (Just name) True Nothing))
           putStrLn (name ++ " members: " ++ (if null new then "(none)" else intercalate ", " new))
-          cmdStart conf (Just name) (flag a ["--no-check"]) (flag a ["--fast"])
+          cmdStart conf (Just name) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
 
 cmdLog :: Conf -> Args -> IO Int
 cmdLog conf a = do
@@ -289,7 +289,7 @@ cmdInit = do
     writeFile configName (encodePretty (JObj
       [ ("default", JStr "lib")
       , ("targets", JObj [ ("lib", JObj [ ("units", JArr [JStr "lib:yourpackage"]), ("watch", JArr [JStr "src"]), ("modules", JArr [])
-                                       , ("check", JNull), ("hygiene", JBool False) ]) ]) ]) ++ "\n")
+                                       , ("test", JNull), ("hygiene", JBool False) ]) ]) ]) ++ "\n")
     putStrLn ("wrote " ++ configName ++ "; edit \"units\", then `ghci-session start`")
     pure 0
 
@@ -341,10 +341,13 @@ usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
   , ""
-  , "  start [--no-check] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
-  , "  reload [--no-check] [--no-refork] [--async-refork]  [SESSION]"
-  , "  check [-m MEMBER] [SESSION]        eval EXPR [-s SESSION] [--timeout SECS]"
-  , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-check]"
+  , "  start [--no-test] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
+  , "  reload [--no-test] [--no-refork] [--async-refork]  [SESSION]"
+  , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
+  , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
+  , "  eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  doc WORDS... [-n N] [--json] [-s SESSION]   find a declaration of the session: its signature, its comment, where it is"
+  , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-test]"
   , "  server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]"
   , "  gc [-n] [--days N]                 autostop [--max-mem-mb N] [--idle-mins M] [--include-serving] [-n]"
   , "  mem [SESSION] | log [FILE] [-s SESSION] [-n LINES] | list | init"
@@ -370,19 +373,29 @@ cliMain = do
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
         "_daemon" -> case aPos a of
-          (name : _) -> runDaemon conf name (not (flag a ["--no-check"])) (flag a ["--fast"]) >> pure 0
+          (name : _) -> runDaemon conf name (not (flag a ["--no-test", "--no-check"])) (flag a ["--fast"]) >> pure 0
           [] -> die' "_daemon: a session name is needed"
-        "start" -> cmdStart conf (pos a 0) (flag a ["--no-check"]) (flag a ["--fast"])
+        "start" -> cmdStart conf (pos a 0) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
         "stop" -> cmdStop conf (pos a 0) (flag a ["--keep-servers"]) Nothing
         "restart" -> pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr "restart"), ("fast", JBool (flag a ["--fast"]))]) >>= say
         "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])
         "reload" -> cmdReload conf a
-        "check" -> cmdCheck conf a
+        c' | c' `elem` ["test", "check"] -> cmdCheck conf a      -- (`check` is the name it had)
+        "typecheck" -> do
+          name <- pick conf (pos a 0)
+          r <- request conf name (JObj [("op", JStr "typecheck")])
+          rc <- say r
+          pure (if rc /= 0 then rc else if maybe False (T.isPrefixOf (T.pack "OK")) (lookupText "out" r) then 0 else 1)
         "eval" -> cmdEval conf a
         "mem" -> cmdSimple "mem" conf a
         "server" -> cmdServer conf a
         "compose" -> cmdCompose conf a
         "log" -> cmdLog conf a
+        "doc" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          when (null (aPos a)) (die' "doc: what are you looking for? (a name, part of one, its initials, or words of its type or documentation)")
+          request conf name (JObj ([ ("op", JStr "doc"), ("words", JArr (map JStr (aPos a))), ("json", JBool (flag a ["--json"])) ]
+                                   ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]))) >>= say
         "list" -> cmdList conf
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN

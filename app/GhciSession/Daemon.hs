@@ -7,6 +7,7 @@ module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
 import Control.Exception (IOException, SomeException, bracket_, displayException, finally, throwIO, try)
+import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isDigit, isSpace, isUpper, toLower)
 import Data.IORef
@@ -35,6 +36,7 @@ import System.Process (CreateProcess (..), readCreateProcessWithExitCode, shell)
 import Text.Printf (printf)
 
 import GhciSession.Config
+import GhciSession.Doc
 import GhciSession.Json
 import GhciSession.Repl
 import GhciSession.Sys
@@ -67,6 +69,8 @@ data S = S
   , vMem :: IORef (Maybe (Double, Double)), vMemDone :: IORef (Maybe (MVar ()))
   , vSpawned :: IORef Double
   , vHashes :: IORef (M.Map FilePath (Integer, Double, Word64))   -- ^ a file's hash, while its size and mtime stand
+  , vDocs :: IORef (M.Map B.ByteString (Double, [Entry]))   -- ^ each source's declarations, while its time stands
+  , vLoadedOk :: IORef Bool          -- ^ did the last LOAD succeed (a save's type error is reported without one)
   , vBoot :: IORef (Maybe Boot)       -- ^ how the engine now running was started
   }
 
@@ -359,8 +363,10 @@ verdictOf facts st out
   | loaded < total = ("COMPILE-ERROR: " ++ show (total - loaded) ++ " of " ++ show total ++ " module(s) not loaded", map T.unpack (lastN 5 (T.lines (T.strip out))))
   | otherwise = ("OK", [])
   where
-    errs = [ d | d <- lookupArr "diagnostics" facts, lookupStr "severity" d == Just "error" ]
-    nErr = max (length errs) (maybe 0 round (lookupNum "errors" facts)) :: Int
+    -- (not GHCi's own complaints about the prompt's context -- "attempting to use module X which is not
+    -- loaded", once per import it could not restore after a load that failed: they are not errors in a source)
+    errs = [ d | d <- lookupArr "diagnostics" facts, lookupStr "severity" d == Just "error", lookupStr "file" d /= Just "<interactive>" ]
+    nErr = length errs
     printed = filter (T.isInfixOf (T.pack ": error:")) (T.lines out)
     total = maybe 0 round (lookupNum "modules" st) :: Int
     loaded = maybe total round (lookupNum "loaded" st) :: Int
@@ -386,7 +392,8 @@ afterLoad s (Reply facts out) doCheck t0 = do
   vDiags s =: take 100 (lookupArr "diagnostics" facts)
   let (v, detail) = verdictOf facts st out
       warns = maybe 0 round (lookupNum "warnings" facts) :: Int
-      prefix = "OK" ++ (if warns > 0 then " (" ++ show warns ++ " warning(s))" else "")
+  vLoadedOk s =: (v == "OK")
+  let prefix = "OK" ++ (if warns > 0 then " (" ++ show warns ++ " warning(s))" else "")
   vOkPrefix s =: prefix
   let took = (\t -> ("duration_s", JNum (r2 (t - t0)))) <$> now
   if v /= "OK" then took >>= \d -> setStatus s False v detail [d]
@@ -600,7 +607,7 @@ serverPrefork s z = forM_ (svPrefork z) $ \pre -> do
 -- old server is stopped: a fork that cannot happen must not cost the server that is running.
 serverActionOk :: S -> Server -> IO (Maybe String)
 serverActionOk s z = do
-  r <- try (ask s (Just 120) "typecheck" [("expr", JStr (svAction z))])
+  r <- try (ask s (Just 120) "typecheck_expr" [("expr", JStr (svAction z))])
   pure $ case r of
     Left (e :: SomeException) -> Just (displayException e)
     Right j | lookupBool "ok" j == Just True -> Nothing
@@ -1172,6 +1179,46 @@ reload' s doCheck doRefork async = do
               else refork s running
           pure out
 
+-- | Do the sources on disk typecheck? Asked of the engine, which answers without generating code and without
+-- touching what is loaded (so it says nothing about the loaded code, and the session's verdict stands). The
+-- answer is one line -- @OK -- TYPECHECK@ or @TYPE-ERROR: n error(s)@ -- and the errors; the compiler's
+-- output is in @typecheck.log@.
+typecheckSources :: S -> IO T.Text
+typecheckSources s = (\(_, line, secs, detail, _) -> T.pack (unlines ((line ++ printf " (%.1fs)" secs) : detail))) <$> typecheckNow s
+
+-- | ... as its parts: did they, the line, the errors, the compiler's diagnostics.
+typecheckNow :: S -> IO (Bool, String, Double, [String], [Json])
+typecheckNow s = do
+  t0 <- now
+  Reply j out <- theRepl s >>= \rp -> replQueryOut rp (Just (gLoadTimeout (sCfg s))) "typecheck" [("dir", JStr (sDir s </> "typecheck"))]
+  t1 <- now
+  writeAtomicT (sDir s </> "typecheck.log") out
+  let (v, detail) = verdictOf j (JObj []) T.empty
+      warns = maybe 0 round (lookupNum "warnings" j) :: Int
+      failed = lookupBool "ok" j /= Just True
+      line | v /= "OK" = replace "COMPILE-ERROR" "TYPE-ERROR" v
+           | failed = "TYPE-ERROR: " ++ fromMaybe "the load failed (typecheck.log)" (lookupStr "thrown" j <|> lookupStr "error" j)
+           | otherwise = "OK" ++ (if warns > 0 then " (" ++ show warns ++ " warning(s))" else "") ++ " -- TYPECHECK"
+  logS s (printf "[time] typecheck %.2fs: %s" (t1 - t0) line)
+  pure (not failed && v == "OK", line, t1 - t0, detail, lookupArr "diagnostics" j)
+
+-- | A save, from the watcher. The sources are typechecked FIRST: that answer comes in a fraction of the time
+-- a reload takes to compile what the edit reaches, and when it is "no" the reload is not done at all -- it
+-- would fail the same way, later, and a failed load takes the modules it could not compile (and the prompt's
+-- imports) out of the session. So a type error costs nothing: the session goes on running the last code that
+-- compiled, and says so. (`watch_typecheck`: false for a reload on every save, as before.)
+watchReload :: S -> IO ()
+watchReload s = do
+  let cfg = sCfg s
+  ok <- rd (vLoadedOk s)        -- (what is LOADED compiled: the verdict may be a type error of ours, below)
+  tc <- if gWatchTypecheck cfg && ok then either (\(_ :: SomeException) -> Nothing) Just <$> try (typecheckNow s) else pure Nothing
+  case tc of
+    Just (False, line, secs, detail, diags) -> do
+      vDiags s =: take 100 diags
+      setStatus s False (replace "TYPE-ERROR" "COMPILE-ERROR" line ++ "  [typecheck: NOT reloaded -- the session still runs the last code that compiled]")
+        detail [("duration_s", JNum (r2 secs)), ("typecheck_only", JBool True)]
+    _ -> void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing)
+
 -- | The checkout's HEAD commit, "" when it cannot be said. Read from the files (@.git@ may itself be a file
 -- naming the real directory, in a worktree): it is asked every two seconds, and spawning @git@ for it was 10 ms.
 headCommit :: S -> IO String
@@ -1193,6 +1240,32 @@ headCommit s = do
     Nothing -> pure ""
   where firstJust [] = pure Nothing
         firstJust (a : as) = a >>= maybe (firstJust as) (pure . Just)
+
+-- | `doc`: the session's declarations that a query finds (see "GhciSession.Doc"). The index is the watched
+-- Haskell sources, read on the first query and again only where a file has changed.
+docSearch :: S -> Json -> IO T.Text
+docSearch s req = do
+  t0 <- now
+  sig <- scan (sRoot s) (gWatch (sCfg s)) [".hs"]
+  old <- rd (vDocs s)
+  new <- fmap M.fromList $ forM (M.toList sig) $ \(p, mt) -> case M.lookup p old of
+    Just (mt', es) | mt' == mt -> pure (p, (mt, es))
+    _ -> do
+      txt <- fromMaybe T.empty <$> readFileText (fromRaw p)
+      let es = indexFile (rel s (fromRaw p)) txt
+      length es `seq` pure (p, (mt, es))
+  vDocs s =: new
+  let entries = concatMap (snd . snd) (M.toList new)
+      ws = map T.pack (strs (req .: "words"))
+      n = maybe 8 round (lookupNum "n" req) :: Int
+      hits = take n (search entries ws)
+      docLines = if n == 1 || length hits == 1 then 40 else 4
+  t1 <- now
+  logS s (printf "[time] doc %.3fs: %d declarations in %d files, %d read again" (t1 - t0) (length entries) (M.size new)
+            (length [ () | (p, (mt, _)) <- M.toList new, fmap fst (M.lookup p old) /= Just mt ]))
+  pure $ if lookupBool "json" req == Just True then T.pack (encode (JArr [ entryJson sc e | (sc, e) <- hits ]))
+         else if null hits then T.pack ("nothing in this session's " ++ show (length entries) ++ " declarations matches " ++ unwords (map T.unpack ws))
+         else T.intercalate (T.pack "\n") (map (render docLines . snd) hits)
 
 -- | What changes when HEAD does: HEAD itself, and the directory the branch's ref is rewritten in (a commit
 -- replaces the ref file, so it is the directory that sees it). Watched, a commit is noticed when it happens
@@ -1316,7 +1389,7 @@ watchLoop s = do
                       drive s (void (restart s (Just False)))      -- (through the build tool: it is what compiles a package's C)
                     else do
                       logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
-                      drive s (void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing))
+                      drive s (watchReload s)
                 loop cur2 headC1 slow1
   loop first head0 t0 `finally` waiterClose w
 
@@ -1370,6 +1443,7 @@ handle s h = do
           st <- rd (vStatus s)
           replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
         "info" -> info s >>= replyS True . encode
+        "doc" -> docSearch s req >>= reply True          -- (reads the sources, not the repl: answers during a reload)
         "stop" -> do
           forM_ (lookupStr "reason" req) (vStopReason s =:)
           vKeepServers s =: fromMaybe False (lookupBool "keep_servers" req)
@@ -1391,6 +1465,7 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     warmAsync s          -- the unlink and its GC, once this answer is out: they are not the caller's to wait for
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
+  "typecheck" -> Just <$> typecheckSources s
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
@@ -1433,7 +1508,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef 0 <*> newIORef root <*> newIORef t <*> newIORef 0
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
-         <*> newIORef t <*> newIORef M.empty <*> newIORef Nothing
+         <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now

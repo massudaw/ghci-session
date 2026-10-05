@@ -56,7 +56,7 @@ data Cfg = Cfg
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
-  , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String], gFastStart :: Bool
+  , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String], gFastStart :: Bool, gWatchTypecheck :: Bool
   }
 
 -- | Every key a target may have, with its default. An unknown key is refused: a misspelt @chek@ would
@@ -73,7 +73,7 @@ defaults =
   , ("auto_reload", JBool True), ("watch_check", JBool True), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
-  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False)
+  , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True)
   ]
 
 reserved :: [String]
@@ -106,7 +106,9 @@ loadConf root0 = do
           rel = fromMaybe ".ghci-session" (lookupStr "state_dir" raw)
       when (null targets) (Left (configName ++ ": no \"targets\""))
       ts <- forM targets $ \(name, t) -> do
-        let merged = foldl (\acc (k, v) -> set k v acc) (JObj defaults) (common ++ fromMaybe [] (obj t))
+        -- `test` is what a target's check is called now; the old names mean the same
+        let named k = fromMaybe k (lookup k [("test", "check"), ("tests", "checks"), ("watch_test", "watch_check")])
+            merged = foldl (\acc (k, v) -> set (named k) v acc) (JObj defaults) (common ++ fromMaybe [] (obj t))
             unknown = [ k | (k, _) <- fromMaybe [] (obj merged), k `notElem` map fst defaults ]
         let gone = [ k | k <- unknown, k `elem` ["engine", "hygiene_build", "hygiene_module", "zygote_module"] ]
         unless (null gone) (Left ("target " ++ show name ++ ": " ++ show gone ++ " no longer exist(s): the session's GHCi is always the engine, and it prunes and forks itself -- remove the key(s)"))
@@ -244,6 +246,7 @@ resolve conf session = do
         , gAsyncRefork = any (jBool "async_refork") ts
         , gFingerprintFiles = map ex (union (jStrs "fingerprint_files"))
         , gFastStart = not (null ts) && all (jBool "fast_start") ts
+        , gWatchTypecheck = all (jBool "watch_typecheck") ts
         }
     maxOf k ts = maximum (fromMaybe 0 (lookupNum k (JObj defaults)) : map (jNum k) ts)
       `seq` (if null ts then fromMaybe 0 (lookupNum k (JObj defaults)) else maximum (map (jNum k) ts))

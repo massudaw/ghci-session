@@ -29,7 +29,8 @@ executable ghci-session
   hs-source-dirs:   app
   main-is:          Main.hs
   other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
-                    GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench
+                    GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
+                    GhciSession.Doc
   c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-session

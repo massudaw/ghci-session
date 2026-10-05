@@ -41,7 +41,7 @@ what the rewrite changed is the client and the tool's own overhead:
 | the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
 
 How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
-itself -- this package has a `ghci-session.json`, and a save here is a compile and 69 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 81 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
 (`ghci-session selftest` runs them from the binary):
 
 - **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
@@ -112,6 +112,31 @@ Two things found on the way: started with its standard descriptors closed, a pro
 and "duplicate onto 0, then close the original" closes what it just installed; and GHCi leaves standard output
 unbuffered, which is a system call per character -- 4.8 s for a megabyte -- so the engine line-buffers it.
 
+## Finding a definition: `doc`
+
+```
+ghci-session doc quickDivergnces        # a typo is fine
+ghci-session doc qe                     # initials: quickEdit
+ghci-session doc Daemon.boot            # qualified
+ghci-session doc raster depth           # words: of the name, the type or the comment
+ghci-session doc codeFingerprint -n 1   # one answer, its whole comment
+```
+
+Each answer is a declaration of the session: its signature as written, the comment above it, and `file:line`.
+`--json` gives the same as data (`module`, `name`, `kind`, `signature`, `doc`, `file`, `line`, `score`).
+
+The index is the session's own watched Haskell sources and nothing else -- no dependencies. It is read by a
+scanner of top-level declarations (`app/GhciSession/Doc.hs`), not asked of the compiler, so it has what a module
+does not export, record fields, the documentation without compiling anything with `-haddock`, and a module that
+does not compile right now. It lives in the daemon: built on the first query, and after that only a file that
+changed is read again. On a session of 102 source files that is 2,485 declarations, 29 ms to build and 1 ms a
+query; the daemon answers without the repl, so it works while a reload is running.
+
+A name is matched exactly, then as a prefix, then by the initials of a camelCase or snake_case name, then as a
+substring, a subsequence, and a near miss; any other word must appear in the module name, the signature or the
+comment. Every word has to be found. What the scanner does not see: instances, class methods, constructors
+without fields, local definitions, and anything behind CPP it cannot follow.
+
 ## What each operation costs, end to end
 
 Measured on this package's own session (11 modules; macOS arm64, GHC 9.14.1), from the shell prompt to the answer.
@@ -160,6 +185,29 @@ cabal (`restart --fast` to not), and so does a changed `.c`, `.h` or `.cabal`. I
 local dependency's source is, the session cannot see it and cabal is always asked, unless told otherwise
 (`start --fast`, `"fast_start": true`).
 
+**Three questions, three commands.** `typecheck`: do the sources on disk typecheck? `reload`: compile and load
+them. `test`: run the target's tests on what is loaded. (`test` was called `check`, which said neither; the old
+command, `--no-check` and the `check`/`checks`/`watch_check` keys still work, and the verdict words in the status
+files -- `CHECK-PASS`, `CHECK-FAIL`, `CHECK SKIPPED` -- are unchanged, because programs read them.)
+
+`typecheck` generates no code and does not touch what is loaded: the engine runs a `load` of the same targets in a
+copy of the session whose units have no backend and keep their interfaces in a directory of their own, then puts
+the session back (`typecheck` in `engine/GhsEngine.hs`). It costs what changed since the last reload: on a
+session of 87 modules, an error in a leaf module is reported in 0.1 s, and an edit to a module in the middle of
+the graph is answered in 0.35 s where the reload that follows takes 6.8 s to compile it and what imports it. The
+first call after a start typechecks everything (5.8 s there, against 31 s to compile it). It answers
+`OK -- TYPECHECK` or `TYPE-ERROR: n error(s)` and the errors, exits non-zero on an error, and leaves the session's
+verdict alone -- it is about the sources, not the loaded code.
+
+**A save is typechecked before it is reloaded** (`watch_typecheck`, on by default). The watcher asks the same
+question first, and when the answer is a type error it stops there: the verdict is the error, a fraction of a
+second after the save (0.1-0.3 s here), and the reload is not done. A reload would only fail the same way later
+-- and a failed load takes the modules it could not compile, and the prompt's imports, out of the session. So
+with an error on disk the session goes on answering from the last code that compiled; `status` reads
+`STALE(1) COMPILE-ERROR: 1 error(s)  [typecheck: NOT reloaded ...]` and `status.json` has `typecheck_only`. When the
+types are right the reload follows as before; the typecheck it repeats is the small part of it. An explicit
+`reload` always reloads.
+
 **A new module is not a restart.** A new file that a loaded module imports is simply found by the reload. Listing
 it in the `.cabal` used to cost the session -- any change to a build file restarted the repl. Now the build tool
 is asked again (its few seconds are unavoidable: only it can read the file) and its answer compared with the one
@@ -207,7 +255,7 @@ the tool's own costs with almost no compile time in them):
 |---|---|
 | boot, cold (cabal configures and compiles) / warm (objects on disk) | 10.8 / 1.8 |
 | `eval` | 0.09 (the Python client's start-up is most of it) |
-| `reload`, nothing changed / `--no-check` | 0.6 / 0.1 |
+| `reload`, nothing changed / `--no-test` | 0.6 / 0.1 |
 | save to verdict (the watcher: file event, reload, check): a comment / a real change / a compile error | 0.9 / 0.6 / 0.17 |
 | composed session of two packages, boot | 7.5 |
 | `server start` with a 2 s prefork | 2.3 |
@@ -314,9 +362,9 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `modules` | `[]` | `:module +` after every load |
 | `prebuild` | none | a shell command run before every boot of the repl (build a C bundle, generate code); a failure is `PREBUILD-ERROR` |
 | `preload` | `[]` | GHCi expressions run *before* the imports (e.g. `dlopen` a C bundle: importing an `-fobject-code` module links its objects there and then) |
-| `warm` | `[]` | expressions evaluated in the background after a reload that ran no check (`--no-check`, `watch_check` off), e.g. `"My.thing `seq` ()"`: GHCi links the reloaded code, and the unlink and its GC run, while you read the verdict rather than on your next command |
+| `warm` | `[]` | expressions evaluated in the background after a reload that ran no test (`--no-test`, `watch_test` off), e.g. `"My.thing `seq` ()"`: GHCi links the reloaded code, and the unlink and its GC run, while you read the verdict rather than on your next command |
 | `ghc_jobs` | `0` | `-jN` for GHCi's compiles. It helps only a reload that recompiles many modules; on a 98-module session an interface change recompiled two (GHC's recompilation avoidance) and `-j8` changed nothing |
-| `check` / `checks` | none | `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
+| `test` / `tests` | none | (`check` / `checks` is the name they had, still read) `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
@@ -328,7 +376,8 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `auto_reload` | `true` | reload when a watched file changes (a `.c` or `.h` change restarts instead, and so does a `.cabal` change that is more than modules added: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
-| `watch_check`, `watch_refork` | `true` | what a SAVE does beyond compiling: run the checks, cut the servers over. Off, an explicit `reload` (or a commit, below) does them |
+| `watch_typecheck` | `true` | a save is typechecked first, and not reloaded if that fails: the session keeps the last code that compiled |
+| `watch_test`, `watch_refork` | `true` | what a SAVE does beyond compiling: run the tests, cut the servers over. Off, an explicit `reload` (or a commit, below) does them |
 | `reload_on_commit` | `false` | a new git HEAD is a full reload -- checks and re-fork -- whatever the two above say |
 | `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
 | `handover_env` | `GHS_HANDOVER_OUT`, `GHS_HANDOVER_IN` | the two variables a forked server finds its state paths in (a project with its own copy of `GHC.Hygiene.Zygote` may name others) |
@@ -348,9 +397,10 @@ target as much as the edit.
 ## Commands
 
 ```
-start [--no-check] | stop | restart | status [-d] [SESSION]
-reload [--no-check] [--no-refork] [--async-refork] [SESSION]
-check [-m MEMBER] [SESSION]
+start [--no-test] [--fast] | stop | restart [--fast] | status [-d] [SESSION]
+reload [--no-test] [--no-refork] [--async-refork] [SESSION]
+typecheck [SESSION]
+test [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]
 compose SESSION [MEMBERS...] [--add M] [--remove M]
 server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
@@ -360,7 +410,7 @@ mem | log [FILE] [-s SESSION] | list | init
 ```
 
 With no session named, a command goes to the one that is running (else the config's `default`).
-`reload --no-check` stops at the compile verdict, and says so (`CHECK SKIPPED`), so a compile-only verdict is never
+`reload --no-test` stops at the compile verdict, and says so (`CHECK SKIPPED`), so a compile-only verdict is never
 mistaken for a check that passed.
 
 ## Composed sessions
@@ -486,7 +536,7 @@ tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reprodu
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 69 self-tests,
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 81 self-tests,
 the tour (123 steps) and the end-to-end tests. This package's own two sessions (`tool`, `engine`) run on it.
 
 Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler

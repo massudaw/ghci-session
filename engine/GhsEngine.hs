@@ -58,10 +58,13 @@ import Unsafe.Coerce (unsafeCoerce)
 
 import qualified GHC
 import GHC.Data.FastString (unpackFS)
-import GHC.Driver.Env (hscInterp, hsc_HUG, hsc_mod_graph)
+import GHC.Driver.Backend (noBackend)
+import GHC.Driver.DynFlags (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set)
+import GHC.Driver.Env (hscInterp, hscUpdateHUG, hsc_HUG, hsc_mod_graph, setModuleGraph)
+import GHC.Types.Basic (SuccessFlag (..))
 import GHC.Linker.Types (Linkable, Loader (..), LoaderState (..), linkableObjs)
 import GHC.Runtime.Interpreter.Types (interpLoader)
-import GHC.Unit.Home.Graph (lookupHugByModule)
+import GHC.Unit.Home.Graph (lookupHugByModule, updateUnitFlags)
 import GHC.Unit.Home.ModInfo (HomeModInfo (..), homeModInfoObject)
 import GHC.Unit.Module.Deps (dep_direct_mods)
 import GHC.Unit.Module.Env (extendModuleEnv, moduleEnvToList)
@@ -72,7 +75,7 @@ import GHC.Tc.Module (TcRnExprMode (..))
 import GHC.Types.Error (MessageClass (..), Severity (..))
 import GHC.Types.SrcLoc
 import GHC.Unit.Home.Graph (homeUnitEnv_dflags, homeUnitEnv_units, unitEnv_assocs)
-import GHC.Unit.Module.Graph (mgModSummaries)
+import GHC.Unit.Module.Graph (emptyMG, mgModSummaries)
 import GHC.Unit.Module.Location (ml_obj_file)
 import GHC.Unit.Module.ModSummary (ms_location, ms_mod, ms_unitid)
 import GHC.Unit.State (homeUnitDepends)
@@ -346,7 +349,8 @@ reply e facts = do
 query :: Engine -> Json -> GHCi Json
 query e q = case fromMaybe "" (lookupStr "q" q) of
   "state" -> state
-  "typecheck" -> do
+  "typecheck" -> typecheck (arg "dir")
+  "typecheck_expr" -> do
     r <- MC.try (GHC.exprType TM_Inst (ioUnit (arg "expr")))
     pure $ case r of
       Left (x :: SomeException) -> JObj [ ("ok", JBool False), ("error", JStr (show x)) ]
@@ -380,6 +384,33 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
   where
     arg k = fromMaybe "" (lookupStr k q)
     ioUnit x = "(" ++ x ++ ") :: Prelude.IO ()"
+
+-- | Do the sources, AS THEY ARE ON DISK NOW, typecheck? Without generating code, and without touching what is
+-- loaded: the question a reload answers only after it has compiled everything the edit reaches.
+--
+-- It is a `load` of the same targets in a copy of the session whose every unit generates no code and keeps
+-- its interface files in a directory of its own (@dir@, per unit) -- so the next time, only what changed since
+-- the last typecheck is typechecked again. Then the session that was there is put back, and with it what was
+-- linked (a load forgets that: see 'keepLinked').
+typecheck :: FilePath -> GHCi Json
+typecheck dir = do
+  saved <- GHC.getSession
+  rememberLinked
+  liftIO (writeIORef diagnostics ([], 0, 0))
+  let quiet uid df = (df { backend = noBackend, ghcLink = NoLink, hiDir = Just (dir </> unitIdString uid) }) `gopt_set` Opt_WriteInterface
+      -- (with NO module graph: a module whose source has not changed would otherwise keep the summary it has,
+      -- and with it the flags it was summarised under -- and if it then needed compiling, it was compiled for
+      -- real, into the session's own object directory)
+      noCode hsc = setModuleGraph emptyMG (foldl (\h (uid, _) -> hscUpdateHUG (updateUnitFlags uid (quiet uid)) h) hsc (unitEnv_assocs (hsc_HUG hsc)))
+  r <- MC.try (GHC.setSession (noCode saved) >> GHC.load GHC.LoadAllTargets)
+  GHC.setSession saved
+  _ <- keepLinked
+  (ds, errs, warns) <- liftIO (atomicModifyIORef' diagnostics (\d -> (([], 0, 0), d)))
+  let (ok, thrown) = case r of
+        Right Succeeded -> (errs == 0, [])
+        Right Failed -> (False, [])
+        Left (x :: SomeException) -> (False, [ ("thrown", JStr (show x)) ])
+  pure (JObj ([ ("ok", JBool ok), ("errors", JNum (fromIntegral errs)), ("warnings", JNum (fromIntegral warns)), ("diagnostics", JArr (reverse ds)) ] ++ thrown))
 
 -- | What is loaded: the directory, whether every module of the graph is, and each unit's objects -- which is
 -- what a server forked now would run.

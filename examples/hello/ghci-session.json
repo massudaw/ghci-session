@@ -12,7 +12,7 @@
       "modules": [
         "Hello"
       ],
-      "check": {
+      "test": {
         "expr": "Hello.selfTest",
         "pass": "\\[PASS\\] table"
       },
@@ -34,7 +34,7 @@
       "modules": [
         "Extra"
       ],
-      "check": {
+      "test": {
         "expr": "Extra.selfTest",
         "pass": "\\[PASS\\] shout"
       }

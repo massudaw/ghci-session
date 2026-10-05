@@ -20,6 +20,7 @@ import System.Posix.Process (getProcessID)
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Daemon (countSub, moduleDelta, replace, verdictOf, warningsIn)
+import GhciSession.Doc
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
@@ -58,6 +59,8 @@ run = do
   eq "verdict: loaded" (fst (verdictOf (facts [] 0) (st 3 3) (T.pack "Ok, three modules loaded."))) "OK"
   eq "verdict: warnings are not errors" (fst (verdictOf (facts [diag "warning"] 1) (st 3 3) T.empty)) "OK"
   eq "verdict: an error, from the compiler's record of it" (verdictOf (facts [diag "error"] 0) (st 3 2) T.empty) ("COMPILE-ERROR: 1 error(s)", ["src/M.hs:3:1: error: [GHC-1] oops"])
+  eq "verdict: the prompt's own complaints after a failed load are not source errors"
+     (fst (verdictOf (facts [diag "error", JObj [("severity", JStr "error"), ("file", JStr "<interactive>"), ("message", JStr "attempting to use module X")]] 0) (st 3 2) T.empty)) "COMPILE-ERROR: 1 error(s)"
   check "verdict: an error GHCi only printed (a link failure) is an error" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (facts [] 0) (st 3 3) (T.pack "<no location info>: error:\n  symbol not found")))
   check "verdict: a module not loaded is not success, whatever was printed" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (facts [] 0) (st 3 2) (T.pack "???")))
   eq "warnings counted from the verdict" (warningsIn "OK (12 warning(s)) -- CHECK-PASS (1.0s)") 12
@@ -68,6 +71,26 @@ run = do
   eq "build file: a flag's value that looks like a module" (moduleDelta ["A"] ["-framework", "Accelerate", "A"]) Nothing
   eq "countSub" (countSub ": warning:" "a: warning: x\nb: warning: y") 2
   eq "replace" (replace "  [pending]" "" "OK  [pending]  [more]") "OK  [more]"
+
+  -- doc: the index of declarations, and finding one
+  let srcD = T.unlines (map T.pack
+        [ "{-# LANGUAGE X #-}", "-- | A module.", "module My.Mod (quickBase) where", "import Data.List", ""
+        , "-- | Build the base once.", "-- It is slow.", "quickBase :: Int", "          -> IO ()", "quickBase n = pure ()", "quickBase' = 3", ""
+        , "data Boot = Boot { bExe :: FilePath, bEnv :: [(String, String)] }", "helper x = x", "helper y = y", "(<+>) :: Int -> Int -> Int", "a <+> b = a"
+        , "{-| A class.", "Of things. -}", "class (Eq a) => Thing a where", "  thing :: a" ])
+      es = indexFile "src/My/Mod.hs" srcD
+      names q = map (T.unpack . eName . snd) (search es (map T.pack q))
+  eq "doc: what a file declares" (map (\e -> (T.unpack (eName e), T.unpack (eKind e), eLine e)) es)
+     [("quickBase", "sig", 8), ("quickBase'", "def", 11), ("Boot", "data", 13), ("bExe", "field", 13), ("bEnv", "field", 13), ("helper", "def", 14), ("<+>", "sig", 16), ("Thing", "class", 20)]
+  eq "doc: a signature over two lines, and its comment" [ (T.unpack (eSig e), T.unpack (eDoc e), T.unpack (eModule e)) | e <- take 1 es ] [("quickBase :: Int -> IO ()", "Build the base once.\nIt is slow.", "My.Mod")]
+  eq "doc: a field's type, with commas inside it" [ T.unpack (eSig e) | e <- es, eName e == T.pack "bEnv" ] ["bEnv :: [(String, String)]"]
+  eq "doc: a block comment" [ T.unpack (eDoc e) | e <- es, eName e == T.pack "Thing" ] ["A class.\nOf things."]
+  eq "doc: exact first, then the longer name" (names ["quickBase"]) ["quickBase", "quickBase'"]
+  eq "doc: initials" (take 1 (names ["qb"])) ["quickBase"]
+  eq "doc: a typo" (take 1 (names ["quikBase"])) ["quickBase"]
+  eq "doc: a word of the comment" (names ["slow"]) ["quickBase"]
+  eq "doc: qualified" (names ["Mod.helper"]) ["helper"]
+  eq "doc: every word must be found" (names ["quickBase", "nonsense"]) []
 
   -- arguments
   let a = parseArgs ["-s", "-m", "--timeout", "-n", "--add"] ["1+1", "-s", "dev", "--no-check", "--add", "x", "--add", "y", "-5"]
@@ -149,6 +172,10 @@ run = do
       Right dev2 <- resolve conf "dev"
       eq "composed: chosen members are remembered and override the config" (gMembers dev2, length (gServers dev2), gIdleStopMins dev2) (["b"], 0, 30)
       resolve conf "nope" >>= \r -> check "config: an unknown session is refused" (either (const True) (const False) r)
+  writeConf "{\"targets\": {\"a\": {\"test\": {\"expr\": \"T.run\"}, \"watch_test\": false}}}"
+  loadConf tmp >>= \r -> case r of
+    Right c -> resolve c "a" >>= \g -> eq "config: `test` is what `check` was" (either (const []) (map ckExpr . gChecks) g, either (const True) gWatchCheck g) (["T.run"], False)
+    Left e -> check ("config: `test` accepted: " ++ e) False
   writeConf "{\"targets\": {\"a\": {\"chek\": {}}}}"
   loadConf tmp >>= \r -> check "config: an unknown key is refused" (either ("unknown key" `isInfixOf`) (const False) r)
   writeConf "{\"targets\": {\"a\": {}}, \"sessions\": {\"dev\": [\"nope\"]}}"

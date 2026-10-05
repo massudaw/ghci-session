@@ -15,7 +15,7 @@
         "GhciSession.SelfTest",
         "GhciSession.SelfBench"
       ],
-      "check": {
+      "test": {
         "expr": "GhciSession.SelfTest.run",
         "pass": "^selftest: all ",
         "fail": "^\\[FAIL\\]|FAILED$"
