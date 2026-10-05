@@ -1,0 +1,12 @@
+{
+  "default": "lib",
+  "targets": {
+    "lib": {
+      "cabal_args": "lib:hello",
+      "watch": ["src"],
+      "modules": ["Hello"],
+      "check": { "expr": "Hello.selfTest", "pass": "\\[PASS\\] table", "fail": "\\[FAIL\\]" },
+      "hygiene": true
+    }
+  }
+}
