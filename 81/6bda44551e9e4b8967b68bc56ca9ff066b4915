@@ -1,0 +1,71 @@
+sprinkler-solver-mm/src/Examples/MMPlansData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 15-16,11092,11095-11096,12659
+sprinkler-solver-mm/src/Examples/MMServiceLayout.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 36,74
+  s_6e55a4691f1b7b::t_cc1acbc1ef8223 35,63,65
+sprinkler-solver-mm/src/Examples/MMHeap.hs
+  s_6e55a4691f1b7b::t_71a09750c23891 26,32,410-428
+sprinkler-solver-mm/src/Examples/MMSanitaryData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 14-15,186,189-190,208,211-212,332
+sprinkler-solver-mm/src/Examples/MMFoundationsData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 11-12,582
+sprinkler-solver-mm/src/Examples/MMHouse.hs
+  s_6e55a4691f1b7b::t_cc1acbc1ef8223 41,62
+  s_6e55a4691f1b7b::t_475e4598144d13 42,378
+sprinkler-solver-mm/src/Examples/MMRooms.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 36,71
+sprinkler-solver-mm/src/Examples/MMPlans.hs
+  s_6e55a4691f1b7b::t_cc1acbc1ef8223 43,228
+sprinkler-solver-mm/src/Examples/MMSectionsData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 15-16,3533,3536-3537,4138
+sprinkler-solver-mm/src/Examples/MMFoundations.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 27,65
+sprinkler-solver-mm/src/Examples/MMDrawingRows.hs
+  s_6e55a4691f1b7b::t_cc1acbc1ef8223 29-30,81-82,84-85
+sprinkler-solver-mm/src/Examples/MMPlansExtraData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 11-12,14472
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_3437b19cabf0ff 35,133,190,343-344
+sprinkler-solver-mm/src/Examples/MMHouseData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 31-32,1396,1400-1401,1497,1502-1503,1582
+sprinkler-solver-mm/src/Examples/MMServiceLayoutData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 30-31,34-35,3232,3235-3236,19709,19712-19713,20018,20021-20022,20840
+sprinkler-solver-mm/src/Examples/MMOriginal.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 12,26
+sprinkler-solver-mm/src/Examples/MMDrawnRooms.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 32,137
+sprinkler-solver-mm/src/Examples/MMElevationsData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 15-16,4253,4256-4257,4309
+sprinkler-solver-mm/sprinkler-solver-mm.cabal
+  s_6e55a4691f1b7b::t_475e4598144d13 68
+sprinkler-solver-mm/src/Examples/MMRoomsData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 16-17,48
+sprinkler-solver-mm/src/Examples/MMFusion.hs
+  s_6e55a4691f1b7b::t_cc1acbc1ef8223 81,811-813
+  s_6e55a4691f1b7b::t_475e4598144d13 82,814-815
+sprinkler-solver-mm/src/Examples/MMHydraulicData.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 14-15,329,332-333,368,371-372,463
+sprinkler-solver-mm/src/Examples/MMHydraulic.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 37,69,74,79
+sprinkler-solver-mm/src/Examples/MMTsv.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 1-11
+sprinkler-solver-mm/src/Examples/MMDesign.hs
+  s_6e55a4691f1b7b::t_475e4598144d13 40,118
+  s_6e55a4691f1b7b::t_43ead6fc5eb08c 331
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "816bda44551e9e4b8967b68bc56ca9ff066b4915",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
