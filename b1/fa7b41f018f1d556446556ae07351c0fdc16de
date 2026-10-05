@@ -1,0 +1,44 @@
+golden/MMSolarHotWater/status.txt
+  s_6e55a4691f1b7b::t_24f27b5c979b38 1
+golden/MMModelDiff/final_state.txt
+  s_6e55a4691f1b7b::t_6818b1d26e6ad6 4
+example/Main.hs
+  s_6e55a4691f1b7b::t_24f27b5c979b38 378-379,826-827
+golden/MMSolarHotWater/final_state.txt
+  s_6e55a4691f1b7b::t_6818b1d26e6ad6 1-2,4
+  s_6e55a4691f1b7b::t_24f27b5c979b38 3,5-7
+sprinkler-solver-mm/src/Examples/MMQuickWorkflow.hs
+  s_6e55a4691f1b7b::t_24f27b5c979b38 60,136-137,158,265,275
+sprinkler-solver-mm/src/Examples/MMSolarHotWater.hs
+  s_6e55a4691f1b7b::t_1b1f5b72c4d1d8 117-121,129-139,166-167,169-170,173,175-177
+  s_6e55a4691f1b7b::t_07751de6fab0cd 111-114,122-123,142,171-172,174,178,187
+  s_6e55a4691f1b7b::t_cb4c30cd005f3f 37
+golden/MMFusion/final_state.txt
+  s_6e55a4691f1b7b::t_6818b1d26e6ad6 2,7,18
+golden/MMProjection/final_state.txt
+  s_6e55a4691f1b7b::t_6818b1d26e6ad6 3,15,25-29,33,36-37,39-42,63
+golden/MMUndergroundWorks/final_state.txt
+  s_6e55a4691f1b7b::t_24f27b5c979b38 1-2
+sprinkler-solver-mm/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_872cbabfb6fd19 147-156,161
+golden/MMUndergroundWorks/status.txt
+  s_6e55a4691f1b7b::t_24f27b5c979b38 1
+CLAUDE.md
+  s_6e55a4691f1b7b::t_2ab38c93d046d9 404-407
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1fa7b41f018f1d556446556ae07351c0fdc16de",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
