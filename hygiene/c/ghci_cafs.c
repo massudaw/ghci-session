@@ -40,6 +40,7 @@
  * arm64's, measured against its headers.
  */
 #define _DARWIN_C_SOURCE
+#include "Rts.h"
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
@@ -60,6 +61,24 @@
 #define DYNAMIC_OBJECT 1
 #define CAF_STATIC_LINK 16
 #define LIST_END 3u
+
+/* Is this CAF's value out of reach of a MINOR collection?
+ *
+ * A CAF the RTS retains (dyn_caf_list) is NOT put on the mutable list when it is first entered -- newCAF does
+ * one or the other -- so what keeps its freshly computed value alive through minor GCs is markCAFs walking
+ * that list at every collection. Take such a CAF off the list while its value is still in a young generation
+ * and the next minor GC frees the value, though a live closure's SRT may still lead to the CAF: a major GC
+ * (the only kind that follows SRTs) then walks a dangling pointer -- "scavenge_mark_stack: strange closure
+ * type" -- or the next evaluation that enters the CAF dies. It needs old code that is still run (a thunk of
+ * a superseded module, kept alive across reloads, forced after the reload) to enter a superseded CAF shortly
+ * before the unlink; a major GC run at once, before any minor one, hides it by promoting the value.
+ *
+ * So a CAF whose value is not in the oldest generation is left on the list: a later pass takes it. */
+static int value_is_old(uintptr_t c) {
+  StgClosure *p = UNTAG_CLOSURE(((StgIndStatic *)c)->indirectee);
+  if (!p || !HEAP_ALLOCED(p)) return 1;                 /* a static closure: nothing to free */
+  return Bdescr((StgPtr)p)->gen_no == RtsFlags.GcFlags.generations - 1;
+}
 
 static uintptr_t rts_base(void) {
   void *k = dlsym(RTLD_DEFAULT, "keepCAFs");
@@ -260,7 +279,7 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
   size_t cap = 1024, nd = 0;
   uintptr_t *dead = malloc(cap * sizeof *dead);
   if (!dead) { free(tmps); free(ims); return -1; }
-  int total = 0, intmp = 0;
+  int total = 0, intmp = 0, young = 0;
   for (uintptr_t cur = *dyn; cur != LIST_END; cur = *(uintptr_t *)((cur & ~(uintptr_t)3) + CAF_STATIC_LINK)) {
     uintptr_t c = cur & ~(uintptr_t)3;
     total++;
@@ -274,11 +293,13 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
       if (nm) { void *now = lookup_tmp(tmps, nt, nm); if (now && (uintptr_t)now != c) kill = 1; }
     }
     if (!kill) continue;
+    if (!value_is_old(c)) { young++; if (!getenv("GHS_CAF_UNSAFE_YOUNG")) continue; }   /* the variable: for repro/run.sh only */
     if (nd == cap) { cap *= 2; uintptr_t *t = realloc(dead, cap * sizeof *dead); if (!t) { free(tmps); free(ims); free(dead); return -1; } dead = t; }
     dead[nd++] = c;
   }
   for (size_t k = 0; k < ni; k++) free(ims[k].exps);
   free(ims); free(tmps);
+  if (dbg || getenv("GHS_CAF_YOUNG")) fprintf(stderr, "prune_cafs: %d superseded CAFs left on the list (value still young)\n", young);
   if (seen) *seen = total;
   if (tmpcount) *tmpcount = intmp;
 

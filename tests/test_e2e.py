@@ -216,6 +216,23 @@ class EndToEnd(unittest.TestCase):
         self.assertIn("extra: stopped: idle for", self.cli_("status").stdout)
 
 
+@unittest.skipUnless(os.environ.get("GHS_E2E") == "1" and shutil.which("cabal") and sys.platform == "darwin",
+                     "set GHS_E2E=1 (needs cabal, and the pruner: macOS)")
+class YoungCafRepro(unittest.TestCase):
+    """hygiene/repro: unlinking a superseded CAF whose value is young kills GHCi; the pruner's check prevents it."""
+
+    def go(self, *args):
+        script = os.path.join(HERE, "hygiene", "repro", "run.sh")
+        return subprocess.run([script, *args], capture_output=True, text=True, timeout=600).stdout
+
+    def test_guarded_survives_and_unguarded_dies(self):
+        out = self.go()
+        self.assertIn("old f, after the major GC: 500501", out, out)
+        self.assertIn("(exit 0)", out)
+        bad = self.go("unsafe")
+        self.assertNotIn("old f, after the major GC", bad, "the unguarded pruner no longer crashes: is the repro still a repro?")
+
+
 def run(*argv, cwd):
     return subprocess.run(list(argv), cwd=cwd, capture_output=True, text=True, timeout=900)
 

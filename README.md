@@ -75,8 +75,10 @@ was not always, and the breakdown is how each of these was found:
 the repl. On a 98-module session, a sequence of reloads and evaluations that read values kept across reloads
 killed GHCi every time the GC ran later than the unlink (three runs of three: an RTS internal error
 `scavenge_mark_stack: unimplemented/strange closure type 0`, or a death in the next evaluation) and never when it
-ran at once (three of three, with either unlink timing). The small example never showed it. Why is not known, so
-`prune_gc_idle_s` stays at `0`; the deferred mode is still there for whoever wants to find out.
+ran at once (three of three, with either unlink timing). One cause is found and fixed -- a superseded CAF whose value
+is still young must stay on the list (`hygiene/repro`, a 10 s reproduction that kills GHCi without the check) -- but
+with that fixed the big session still dies when the GC is deferred, so there is a second cause, not yet reproduced
+in the small. `prune_gc_idle_s` stays at `0`; the deferred mode is still there for whoever wants to find out.
 
 And the reason for the pruner, measured by the same tour -- live heap (MB) after each of five edit-reload-check
 rounds of a module holding one 200,000-entry `Map`:

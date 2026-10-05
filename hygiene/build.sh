@@ -15,7 +15,9 @@ LIBDIR=$($GHC --print-libdir 2>/dev/null) || exit 0
 RTS=$(find "$LIBDIR/.." -name 'libHSrts-*_thr-ghc*.dylib' 2>/dev/null | head -1)
 [ -n "$RTS" ] || { echo "ghci-hygiene: no threaded RTS dylib under $LIBDIR (a statically linked GHC?)" >&2; exit 0; }
 fresh() { [ -f "$1" ] && [ "$1" -nt "$2" ] && [ "$1" -nt "$RTS" ]; }
-off() { nm "$RTS" 2>/dev/null | awk -v s="_$1" '$3==s {print "0x"$1}' | head -1; }
+# one `nm` of the RTS dylib (0.65 s) for the whole run, not one per symbol
+SYMS=$(mktemp); trap 'rm -f "$SYMS"' EXIT
+off() { [ -s "$SYMS" ] || nm "$RTS" > "$SYMS" 2>/dev/null; awk -v s="_$1" '$3==s {print "0x"$1; exit}' "$SYMS"; }
 
 build_pruner() {
   local D="$OUT/libghscafs.dylib" S="$HERE/c/ghci_cafs.c" s
@@ -23,7 +25,9 @@ build_pruner() {
   for s in keepCAFs highMemDynamic unloadObj lookupSymbol sm_mutex dyn_caf_list loaded_objects; do
     [ -n "$(off $s)" ] || { echo "ghci-hygiene: no symbol $s in $RTS -- pruner not built" >&2; return 0; }
   done
-  clang -O1 -dynamiclib -undefined dynamic_lookup -o "$D" "$S" \
+  local INC; INC=$(dirname "$(find "$LIBDIR/.." -name Rts.h 2>/dev/null | head -1)")
+  [ -f "$INC/Rts.h" ] || { echo "ghci-hygiene: no Rts.h under $LIBDIR -- pruner not built" >&2; return 0; }
+  clang -O1 -dynamiclib -undefined dynamic_lookup -I"$INC" -o "$D" "$S" \
     -DGHS_OFF_KEEPCAFS=$(off keepCAFs) -DGHS_OFF_HIGHMEMDYNAMIC=$(off highMemDynamic) \
     -DGHS_OFF_UNLOADOBJ=$(off unloadObj) -DGHS_OFF_LOOKUPSYMBOL=$(off lookupSymbol) \
     -DGHS_OFF_SM_MUTEX=$(off sm_mutex) -DGHS_OFF_DYN_CAF_LIST=$(off dyn_caf_list) \

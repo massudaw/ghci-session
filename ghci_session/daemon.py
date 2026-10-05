@@ -501,8 +501,9 @@ class Session:
     # (`prune_gc_idle_s` > 0) is faster and is NOT SAFE: on a 98-module session, a sequence of reloads and
     # evaluations that read values kept across reloads killed the repl every time the GC ran later than the
     # unlink (an RTS internal error, or a crash in the next evaluation) -- three runs of three -- and never
-    # when it ran at once -- three runs of three, with either unlink timing. Why is not known. The deferred
-    # mode is kept, off, for whoever finds out.
+    # when it ran at once -- three runs of three, with either unlink timing. One cause is known and guarded
+    # in the pruner (a superseded CAF with a young value: hygiene/repro); the session still died deferred
+    # with that guard in, so there is another. The deferred mode is kept, off, for whoever finds it.
 
     def unlink_cafs(self) -> None:
         """Unlink what the last reload superseded, once something has been evaluated since, and collect. Best effort."""
