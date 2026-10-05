@@ -396,6 +396,7 @@ class Tour:
     def g_budget(self):
         """Past the memory budget a reload is a restart: GHCi never gives memory back."""
         self.cmd("start tidy with a 1 MB budget", "start", "tidy", expect="CHECK-PASS", env={"GHS_REPL_BUDGET_MB": "1"})
+        self.cmd("mem (the budget is checked against the last reading)", "mem", "tidy", expect="budget 6144")
         self.cmd("reload: over budget, so the repl is RESTARTED", "reload", "tidy", expect="RESTARTED instead of reloaded")
         self.cmd("  and it still answers", "eval", "Hello.greeting", "-s", "tidy", expect='"hello"')
         self.cmd("stop", "stop", "tidy", expect="stopped")

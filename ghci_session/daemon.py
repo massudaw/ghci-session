@@ -76,15 +76,23 @@ def process_table() -> list[tuple[int, int, int]]:
     return rows
 
 
+_FOOTPRINT = {"off": False}
+
+
 def footprint_mb(pids: list[int]) -> float | None:
     """Physical footprint (MB) on macOS, or None where `footprint` is not there. `ps rss` is NOT this number:
     under memory pressure macOS compresses and swaps a process's pages and rss drops to almost nothing (a
     21 GB repl read 150 MB), so a budget on rss never fires exactly when it matters."""
-    if sys.platform != "darwin" or not pids:
+    if sys.platform != "darwin" or not pids or _FOOTPRINT["off"]:
         return None
     try:
-        out = subprocess.run(["footprint", *[str(p) for p in pids]], capture_output=True, text=True, timeout=30).stdout
+        out = subprocess.run(["footprint", *[str(p) for p in pids]], capture_output=True, text=True, timeout=3).stdout
     except (OSError, subprocess.SubprocessError):
+        # `footprint` needs the processes' task ports, and can HANG: with a debugger-authorisation dialog
+        # pending on the machine it blocked for as long as it was allowed, on every process -- and at a 30 s
+        # timeout, called twice, that was a 60 s stall inside every reload. So: a short timeout, and after one
+        # failure RSS for the rest of this daemon's life.
+        _FOOTPRINT["off"] = True
         return None
     units = {"KB": 1 / 1024.0, "MB": 1.0, "GB": 1024.0, "TB": 1024.0 * 1024.0}
     total, seen = 0.0, False
@@ -572,12 +580,16 @@ class Session:
             except Exception as e:  # noqa: BLE001
                 self.log(f"mem sample failed: {e}")
 
-        threading.Thread(target=go, daemon=True).start()
+        self._mem_thread = threading.Thread(target=go, daemon=True)
+        self._mem_thread.start()
 
     def repl_mb_recent(self) -> float:
-        """The repl's memory as last sampled (after the previous load); measured now only if never sampled."""
+        """The repl's memory as last sampled (after the previous load); 0 if never sampled."""
+        t = getattr(self, "_mem_thread", None)
+        if not getattr(self, "mem_cache", None) and t is not None and t.is_alive():
+            t.join(1.0)   # the first sample after a boot is on its way: a moment for it, never more
         c = getattr(self, "mem_cache", None)
-        return c[0] if c else self.repl_mb()
+        return c[0] if c else 0.0   # not sampled yet (just booted): no reading is not a reason to stall a reload
 
     # -- servers: forked children of the repl (GHC.Hygiene.Zygote) --
 
@@ -1352,8 +1364,9 @@ class Session:
                 self.phases_done("server " + req["action"], t0)
                 self._publish()
             elif op == "mem":
-                out = (f"repl {self.repl_mb():.0f} MB (budget {self.cfg['repl_budget_mb']}), "
-                       f"servers {self.servers_mb():.0f} MB")
+                repl, servers = self.repl_mb(), self.servers_mb()
+                self.mem_cache = (repl, servers, time.time())   # a fresh reading: the next reload's budget check uses it
+                out = f"repl {repl:.0f} MB (budget {self.cfg['repl_budget_mb']}), servers {servers:.0f} MB"
             else:
                 return None
         return out
