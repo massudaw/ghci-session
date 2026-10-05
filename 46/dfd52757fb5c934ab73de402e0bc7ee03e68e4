@@ -1,0 +1,30 @@
+sprinkler-solver-mm/src/Examples/MMConstraints.hs
+  s_6e55a4691f1b7b::t_26d578154a470b 213
+sprinkler-solver-mm/src/Examples/MMModelDiff.hs
+  s_6e55a4691f1b7b::t_686b15239952ec 77
+sprinkler-solver-construction/src/Examples/House16FAConstraints.hs
+  s_6e55a4691f1b7b::t_26d578154a470b 315
+sprinkler-solver-construction/src/Examples/ColchesterIntegration.hs
+  s_6e55a4691f1b7b::t_26d578154a470b 751-755
+src/Building/ConstraintSet.hs
+  s_6e55a4691f1b7b::t_2fcfcb3b0bb83c 1,18-21,24-26,53,79-95,113-132,135-136,139-150,152-160,163,167,169-192
+  s_6e55a4691f1b7b::t_26d578154a470b 308-309
+CLAUDE.md
+  s_6e55a4691f1b7b::t_a589adb0e7f93b 400-404
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "46dfd52757fb5c934ab73de402e0bc7ee03e68e4",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
