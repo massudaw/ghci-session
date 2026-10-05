@@ -76,6 +76,26 @@ def process_table() -> list[tuple[int, int, int]]:
     return rows
 
 
+def footprint_mb(pids: list[int]) -> float | None:
+    """Physical footprint (MB) on macOS, or None where `footprint` is not there. `ps rss` is NOT this number:
+    under memory pressure macOS compresses and swaps a process's pages and rss drops to almost nothing (a
+    21 GB repl read 150 MB), so a budget on rss never fires exactly when it matters."""
+    if sys.platform != "darwin" or not pids:
+        return None
+    try:
+        out = subprocess.run(["footprint", *[str(p) for p in pids]], capture_output=True, text=True, timeout=30).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None
+    units = {"KB": 1 / 1024.0, "MB": 1.0, "GB": 1024.0, "TB": 1024.0 * 1024.0}
+    total, seen = 0.0, False
+    for l in out.splitlines():
+        m = re.match(r"\s*phys_footprint:\s+([\d.]+)\s*([KMGT]B)\s*$", l)
+        if m:
+            total += float(m.group(1)) * units[m.group(2)]
+            seen = True
+    return total if seen else None
+
+
 def tree_rss_mb(pid: int) -> float:
     """RSS of a process and its descendants. Under memory pressure macOS compresses a process's pages and RSS
     collapses, so on macOS the physical footprint is preferred when `footprint` is available."""
@@ -88,20 +108,9 @@ def tree_rss_mb(pid: int) -> float:
             if pp in kids and p not in kids:
                 kids.add(p)
                 grew = True
-    if sys.platform == "darwin":
-        total = 0.0
-        ok = True
-        for p in sorted(kids):
-            try:
-                out = subprocess.run(["footprint", "-p", str(p), "--noCategories"], capture_output=True, text=True, timeout=10).stdout
-                m = re.search(r"Footprint:\s*([\d.]+)\s*(KB|MB|GB)", out)
-                if m:
-                    total += float(m.group(1)) * {"KB": 1 / 1024, "MB": 1, "GB": 1024}[m.group(2)]
-            except (OSError, subprocess.TimeoutExpired):
-                ok = False
-                break
-        if ok and total > 0:
-            return total
+    fp = footprint_mb(sorted(kids))
+    if fp is not None:
+        return fp
     return sum(r for p, _, r in rows if p in kids) / 1024
 
 
@@ -164,6 +173,8 @@ class Session:
         self._work = threading.Lock()   # the watcher and a client both drive the repl; never at once
         self.hygiene_on = bool(self.cfg["hygiene"])
         self.zygote_on = bool(self.cfg["servers"])
+        self._refork_thread: threading.Thread | None = None
+        self._refork_pending: threading.Thread | None = None
         self._hold = 0                  # >0: an operation is in progress; its status is published once, at its end
 
     # -- logging and status --
@@ -729,6 +740,31 @@ class Session:
             return False
         return bool(spec) and bool(was) and self.code_fingerprint(spec) == was
 
+    PENDING = "  [servers: re-fork running in the background -- the old server serves until the new one is up]"
+
+    def refork_join(self) -> None:
+        """Wait for a background re-fork: anything that touches the servers or reloads must not overlap one."""
+        t = self._refork_thread
+        if t is not None and t.is_alive() and t is not threading.current_thread():
+            self.log("waiting for the background re-fork")
+            t.join()
+
+    def refork_async(self, was_running: set[str]) -> None:
+        """The re-fork in a thread, so a reload returns at its verdict. The repl is one process: a command
+        sent during the prefork queues behind it, but the client is not held. The thread is started by
+        'reload' once the verdict (with its "running in the background" note) has been published."""
+        self.set_status(self.last_status + self.PENDING, self.last_json.get("failing"), _keep=True, servers_pending=True)
+
+        def go():
+            try:
+                self.refork(was_running)
+            except Exception as e:  # noqa: BLE001
+                self.log(f"background re-fork: {type(e).__name__}: {e}")
+                self.set_status(self.last_status.replace(self.PENDING, "") + f"  [servers: background re-fork FAILED: {e}]",
+                                self.last_json.get("failing"), _keep=True, servers_pending=False)
+
+        self._refork_pending = threading.Thread(target=go, daemon=True)
+
     def refork(self, was_running: set[str]) -> None:
         """Bring the servers that were running onto the code now loaded: keep those whose code did not change,
         stop and fork the rest. Prefork first, with the old servers still serving."""
@@ -775,7 +811,8 @@ class Session:
         facts = ([{"member": l, "action": "re-forked" if pid else "failed", "pid": pid} for l, pid, _ in res]
                  + [{"member": l, "action": "kept", "pid": self.server_running(l)} for l in sorted(kept)]
                  + [{"member": l, "action": "broken", "pid": self.server_running(l)} for l in broken])
-        self.note("[servers: " + "; ".join(parts) + "]", servers=facts)
+        self.last_status = self.last_status.replace(self.PENDING, "")
+        self.note("[servers: " + "; ".join(parts) + "]", servers=facts, servers_pending=False)
 
     def server_op(self, action: str, member: str | None = None, resume: bool = False) -> str:
         specs = [z for z in self.cfg["servers"] if member in (None, z["member"])]
@@ -837,6 +874,7 @@ class Session:
     def restart(self, refork: bool = True) -> str:
         """A fresh repl. The servers that were running come back on the new code (a plain session's children
         die with its repl; a composed session's are kept if their code did not change)."""
+        self.refork_join()
         with self.one_verdict():
             return self._restart(refork)
 
@@ -852,11 +890,19 @@ class Session:
                 self.owed |= was_running
         return self.last_status
 
-    def reload(self, do_check: bool = True, refork: bool = True) -> str:
+    def reload(self, do_check: bool = True, refork: bool = True, async_refork: bool | None = None) -> str:
+        self.refork_join()
+        if async_refork is None:
+            async_refork = bool(self.cfg["async_refork"]) or os.environ.get("GHS_ASYNC_REFORK") == "1"
+        self._refork_pending = None
         with self.one_verdict():
-            return self._reload(do_check, refork)
+            out = self._reload(do_check, refork, async_refork)
+        if self._refork_pending is not None:   # only now: the verdict it amends is on disk
+            self._refork_thread, self._refork_pending = self._refork_pending, None
+            self._refork_thread.start()
+        return out
 
-    def _reload(self, do_check: bool, refork: bool) -> str:
+    def _reload(self, do_check: bool, refork: bool, async_refork: bool = False) -> str:
         budget = float(os.environ.get("GHS_REPL_BUDGET_MB", self.cfg["repl_budget_mb"]))
         rss = self.repl_mb()
         if budget > 0 and rss > budget:
@@ -885,6 +931,8 @@ class Session:
                 self.note("[servers: NOT re-forked (compile error) -- they still run the OLD code]")
             elif not refork:
                 self.note("[servers: NOT re-forked (--no-refork) -- they still run the OLD code]")
+            elif async_refork:
+                self.refork_async(running)
             else:
                 self.refork(running)
         return out
@@ -972,12 +1020,14 @@ class Session:
                         if op == "eval":
                             out = self.repl.command(req["expr"], timeout=req.get("timeout") or None)
                         elif op == "reload":
-                            out = self.reload(do_check=req.get("check", True), refork=req.get("refork", True))
+                            out = self.reload(do_check=req.get("check", True), refork=req.get("refork", True),
+                                              async_refork=req.get("async_refork"))
                         elif op == "check":
                             out = self.run_check(member=req.get("member"))
                         elif op == "restart":
                             out = self.restart()
                         elif op == "server":
+                            self.refork_join()
                             out = self.server_op(req.get("action", "status"), req.get("member"), bool(req.get("resume")))
                         elif op == "mem":
                             out = (f"repl {self.repl_mb():.0f} MB (budget {self.cfg['repl_budget_mb']}), "
@@ -1010,6 +1060,7 @@ class Session:
         try:
             self.serve()
         finally:
+            self.refork_join()
             if not self.keep_servers:
                 self.servers_stop_all()
             self.repl.stop()

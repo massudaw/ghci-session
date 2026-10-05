@@ -104,6 +104,53 @@ class ComposeTests(unittest.TestCase):
             self.assertEqual(plain, "cabal repl --repl-options=-fdiagnostics-color=never lib:p")
 
 
+class GcTests(unittest.TestCase):
+    def test_find_attributes_by_absolute_path(self):
+        from ghci_session import gc
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, {"a": {"units": "lib:a"}})
+            root = os.path.realpath(t)
+            sd = os.path.join(t, ".ghci-session", "a")
+            os.makedirs(sd)
+            open(os.path.join(sd, "status"), "w").write("stopped\n")
+            me = os.getpid()
+            open(os.path.join(sd, "server-a.pid"), "w").write(str(me))   # a live "server" whose session is down
+            procs = [
+                (100, 1, f"python -m ghci_session --root {root} _daemon a"),          # ours, untracked: orphan
+                (101, 100, "cabal repl lib:a"),
+                (102, 101, f"ghc --interactive -outputdir {root}/dist-newstyle/x"),   # under the orphan: not listed twice
+                (200, 1, "python -m ghci_session --root /some/other/checkout _daemon a"),   # a sibling checkout's
+                (300, 1, f"/bin/ghc-9.14 --interactive @{root}/dist-newstyle/multi-out-3/a-0.1-inplace"),  # stray build
+                (301, 1, "/bin/ghc-9.14 --interactive @/some/other/checkout/dist-newstyle/multi-out-1/a"),
+                (302, 1, f"vim {root}/dist-newstyle/notes"),                          # names the path, is not a build
+            ]
+            got = gc.find(conf, procs)
+            self.assertEqual(got["daemons"], [("a", 100)])
+            self.assertEqual(got["servers"], [("a", "a", me)])
+            self.assertEqual([p for p, _ in got["builds"]], [300])
+            self.assertEqual(gc.describe_build(procs[4][2]), "a")
+            self.assertEqual(sorted(gc.descendants(procs, 100)), [101, 102])
+            # dry run reports and touches nothing
+            lines = []
+            self.assertEqual(gc.run(conf, dry_run=True, out=lines.append), 1 + len(gc.find(conf)["builds"]))
+            self.assertTrue(os.path.exists(os.path.join(sd, "server-a.pid")))
+
+    def test_prune_only_idle_stopped_sessions(self):
+        from ghci_session import gc
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, {"a": {}, "b": {}})
+            for n, age in (("a", 10), ("b", 1)):
+                d = os.path.join(t, ".ghci-session", n)
+                os.makedirs(d)
+                p = os.path.join(d, "status")
+                open(p, "w").write("stopped\n")
+                when = __import__("time").time() - age * 86400
+                os.utime(p, (when, when))
+            gc.run(conf, days=7, out=lambda _s: None)
+            self.assertFalse(os.path.exists(os.path.join(t, ".ghci-session", "a")))
+            self.assertTrue(os.path.exists(os.path.join(t, ".ghci-session", "b")))
+
+
 class VerdictTests(unittest.TestCase):
     def session(self, t):
         return Session(make(t), "lib")

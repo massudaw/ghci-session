@@ -3,18 +3,47 @@
   "hygiene": true,
   "targets": {
     "hello": {
-      "units": ["lib:hello"],
-      "watch": ["src"],
-      "modules": ["Hello"],
-      "check": { "expr": "Hello.selfTest", "pass": "\\[PASS\\] table" },
-      "server": { "action": "Hello.serve", "env": { "HELLO_OUT": ".ghci-session/hello.out" } }
+      "units": [
+        "lib:hello"
+      ],
+      "watch": [
+        "src"
+      ],
+      "modules": [
+        "Hello"
+      ],
+      "check": {
+        "expr": "Hello.selfTest",
+        "pass": "\\[PASS\\] table"
+      },
+      "server": {
+        "action": "Hello.serve",
+        "env": {
+          "HELLO_OUT": ".ghci-session/hello.out"
+        },
+        "prefork": "Control.Concurrent.threadDelay 3000000"
+      }
     },
     "extra": {
-      "units": ["lib:extra"],
-      "watch": ["extra/src"],
-      "modules": ["Extra"],
-      "check": { "expr": "Extra.selfTest", "pass": "\\[PASS\\] shout" }
+      "units": [
+        "lib:extra"
+      ],
+      "watch": [
+        "extra/src"
+      ],
+      "modules": [
+        "Extra"
+      ],
+      "check": {
+        "expr": "Extra.selfTest",
+        "pass": "\\[PASS\\] shout"
+      }
     }
   },
-  "sessions": { "dev": ["hello", "extra"] }
+  "sessions": {
+    "dev": [
+      "hello",
+      "extra"
+    ]
+  }
 }

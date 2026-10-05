@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 
-from . import config
+from . import config, gc
 from .daemon import Session, sock_path
 
 INIT_TEMPLATE = {
@@ -136,6 +136,11 @@ def cmd_status(conf, args) -> int:
     names = [pick(conf, args.target)] if args.target else [s for s in config.session_names(conf) if pid_of(conf, s)]
     if not names:
         print("no session running")
+    left = gc.find(conf)
+    k = len(left["daemons"]) + len(left["servers"]) + len(left["builds"])
+    if k:
+        print(f"warning: {k} leftover process(es) of this project that no session tracks "
+              f"({len(left['daemons'])} daemon, {len(left['servers'])} server, {len(left['builds'])} build); `ghci-session gc`", file=sys.stderr)
     for name in names:
         if not pid_of(conf, name):
             print(f"{name}: not running")
@@ -153,7 +158,8 @@ def cmd_status(conf, args) -> int:
 def cmd_reload(conf, args) -> int:
     name = pick(conf, args.target)
     t0 = time.time()
-    rc = say(request(conf, name, {"op": "reload", "check": not args.no_check, "refork": not args.no_refork}))
+    rc = say(request(conf, name, {"op": "reload", "check": not args.no_check, "refork": not args.no_refork,
+                                    "async_refork": True if args.async_refork else None}))
     # the verdict is in the status file: print it, not GHC's whole load log
     try:
         with open(os.path.join(state(conf, name), "status")) as fh:
@@ -278,6 +284,7 @@ def main(argv: list[str] | None = None) -> int:
     p = add("reload", cmd_reload, ":reload, prune, and the check")
     p.add_argument("--no-check", action="store_true", help="stop at the compile verdict")
     p.add_argument("--no-refork", action="store_true", help="leave running servers on the old code")
+    p.add_argument("--async-refork", action="store_true", help="return at the verdict; re-fork the servers in the background")
     p = add("check", cmd_check, "run the session's checks")
     p.add_argument("-m", "--member", help="only this member's")
     p = sub.add_parser("server", help="a session's forked servers: status | start | stop | restart")
@@ -304,6 +311,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-n", type=int, default=40)
     p.set_defaults(fn=cmd_log)
     add("list", cmd_list, "the configured targets", target=False)
+    p = sub.add_parser("gc", help="reap orphaned daemons, servers and build processes of THIS project; prune old state")
+    p.add_argument("-n", "--dry-run", action="store_true")
+    p.add_argument("--days", type=float, default=0, help="also prune state dirs of sessions idle longer than this")
+    p.set_defaults(fn=lambda conf, args: 0 if gc.run(conf, args.dry_run, args.days) >= 0 else 1)
     sub.add_parser("init", help="write a ghci-session.json here").set_defaults(fn=None, cmd="init")
     p = sub.add_parser("_daemon")
     p.add_argument("target")

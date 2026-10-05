@@ -150,6 +150,38 @@ class EndToEnd(unittest.TestCase):
         time.sleep(1.0)
         self.assertEqual(self.served(), a)
 
+        # a background re-fork: the reload returns at its verdict, with the (3 s) prefork still to run
+        self.assertEqual(self.cli_("start", "dev").returncode, 0)
+        self.assertEqual(self.cli_("server", "start").returncode, 0)
+        old = self.server_pid()
+        with open(hs, "w") as fh:
+            fh.write(orig.replace('"hello"', '"hola"'))
+        t0 = time.time()
+        r = self.cli_("reload", "--async-refork")
+        self.assertIn("re-fork running in the background", r.stdout)
+        self.assertTrue(self.status()["servers_pending"] or self.status().get("servers"))
+        j = self.wait_for(lambda j: j.get("servers_pending") is False and j.get("servers"))
+        self.assertEqual(j["servers"][0]["action"], "re-forked")
+        self.assertNotEqual(self.server_pid(), old)
+        time.sleep(1.0)
+        self.assertEqual(self.served()[0], "hola")
+        with open(hs, "w") as fh:
+            fh.write(orig)
+        self.wait_for(lambda j: j["at"] > t0 and good(j) and j.get("servers_pending") is not True and not j["stale"])
+
+        # gc: a daemon killed outright leaves its (detached) server running; gc finds and reaps it
+        srv = self.server_pid()
+        with open(os.path.join(self.proj, ".ghci-session", "dev", "pid")) as fh:
+            os.kill(int(fh.read()), 9)
+        time.sleep(1.5)
+        self.assertIn("leftover", self.cli_("status").stderr)
+        self.assertIn(f"would reap server hello pid {srv}", self.cli_("gc", "-n").stdout)
+        self.assertIn(f"reaping server hello pid {srv}", self.cli_("gc").stdout)
+        self.assertIn("no orphaned", self.cli_("gc").stdout)
+        a = self.served()
+        time.sleep(1.0)
+        self.assertEqual(self.served(), a)
+
 
 def run(*argv, cwd):
     return subprocess.run(list(argv), cwd=cwd, capture_output=True, text=True, timeout=900)

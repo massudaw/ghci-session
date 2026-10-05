@@ -45,7 +45,8 @@ or call it by path from any directory below a `ghci-session.json`.
       "watch": ["src"],
       "modules": ["Hello"],
       "check": { "expr": "Hello.selfTest", "pass": "\\[PASS\\] table" },
-      "server": { "action": "Hello.serve", "env": { "HELLO_OUT": ".ghci-session/hello.out" } }
+      "server": { "action": "Hello.serve", "env": { "HELLO_OUT": ".ghci-session/hello.out" },
+                  "prefork": "Control.Concurrent.threadDelay 3000000" }
     },
     "extra": {
       "units": ["lib:extra"],
@@ -78,6 +79,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
 | `hygiene` | `false` | build the C libraries, prune CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
+| `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `load_timeout`, `eval_timeout` | 900, 600 | seconds |
 
@@ -89,11 +91,12 @@ A reload publishes its status ONCE, when the verdict and what happened to the se
 
 ```
 start|stop|restart|status [-d] [SESSION]
-reload [--no-check] [--no-refork] [SESSION]
+reload [--no-check] [--no-refork] [--async-refork] [SESSION]
 check [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]
 compose SESSION [MEMBERS...] [--add M] [--remove M]
 server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
+gc [-n] [--days N]
 mem | log [FILE] [-s SESSION] | list | init
 ```
 
@@ -128,6 +131,10 @@ A target's `server` is run as a forked child of the repl (`GHC.Hygiene.Zygote`),
 - **Loading is not serving.** `ghci-session server start` starts it (or `serve_on_load`).
 - **A reload re-forks what was running**: prefork (old server still serving), stop, fork. With a `port`, the fork is
   verified to be the process listening on it before it is recorded.
+- **The re-fork can run in the background** (`--async-refork`): the reload returns at its verdict, marked
+  `[servers: re-fork running in the background ...]` (`"servers_pending": true` in `status.json`), and the status is
+  amended when the new server is up. The repl is one process, so a command sent during the prefork queues behind it;
+  the next reload, restart or `server` command waits for the re-fork to finish.
 - **It is kept when its code did not change**: the object files of its units and of the in-session units they depend
   on are hashed at fork (GHC >= 9.12 for `-fobject-determinism`; older GHCs re-fork every time). An edit to another
   member, or a comment, keeps the server: `[servers: kept 1 (hello:67878): their code did not change]`.
@@ -139,6 +146,15 @@ A target's `server` is run as a forked child of the repl (`GHC.Hygiene.Zygote`),
 - **The child is a fork without an exec.** On macOS, libraries that are not fork-safe (Accelerate/LAPACK, GSL) crash
   in it silently: do that work in `prefork`, in the parent, and let the child serve the result.
 - A composed session's servers outlive a member change (the new repl adopts them); every session stops its servers when it stops.
+
+## Leftovers: `gc`
+
+Three things can outlive a session with nothing recording them: a daemon its state dir no longer names, a server
+whose session's daemon died, and the `ghc --interactive` a `cabal repl` exec'd, reparented to init and still holding
+the lock on `dist-newstyle` (every later cabal command then queues behind it). `ghci-session status` warns when it
+sees any; `ghci-session gc` reaps them (`-n` to look first), and `--days N` also prunes the state of sessions idle
+longer than that. Attribution is by absolute path -- the daemon's `--root`, this project's `dist-newstyle` -- never
+by name, so a sibling checkout's healthy session is not touched.
 
 ## ghci-hygiene (`hygiene/`)
 
@@ -187,8 +203,7 @@ tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1, ~1 min: a
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork / handover / adoption), unit and end-to-end tests.
-Not carried over from `tools/msq`: the background re-fork (`--async-refork`), orphan collection across sessions
-(`gc`), the idle auto-stop, the static-interpreter experiment, and its project-specific commands. Linux: the C builds
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, unit and end-to-end tests.
+Not carried over from `tools/msq`: the idle auto-stop, the static-interpreter experiment, and its project-specific commands. Linux: the C builds
 are skipped (the offsets come from a Mach-O dylib); the session itself should run but is untested there. Port
 verification needs `lsof`. Next: move `tools/msq` onto this and delete the copy.

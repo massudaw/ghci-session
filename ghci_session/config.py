@@ -31,6 +31,7 @@ DEFAULTS = {
     "auto_reload": True,     # reload when a watched file changes
     "watch_ext": [".hs", ".hs-boot", ".c", ".h", ".cabal"],
     "debounce": 0.4,
+    "async_refork": False,   # a reload returns at its verdict and re-forks the servers in the background
     "fingerprint_files": [], # extra files whose content is part of a server's code (a C bundle, say)
 }
 
@@ -155,6 +156,7 @@ def resolve(conf: dict, session: str) -> dict:
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)
     cfg["auto_reload"] = any(t["auto_reload"] for t in ts) if ts else True
+    cfg["async_refork"] = any(t["async_refork"] for t in ts)
     cfg["checks"] = [c for m, t in zip(members, ts) for c in _checks_of(m, t)]
     servers = []
     for m, t in zip(members, ts):
