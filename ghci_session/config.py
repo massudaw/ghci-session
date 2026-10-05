@@ -32,8 +32,10 @@ DEFAULTS = {
     "zygote_module": "GHC.Hygiene.Zygote",  # likewise zygoteSpec / zygoteFork / zygoteStop / ZygoteChild / zcPid
     "hygiene_build": True,                  # build the C libraries (hygiene/build.sh) before boot
     "handover_env": ["GHS_HANDOVER_OUT", "GHS_HANDOVER_IN"],   # what a server's handover paths are called
-    "prune_gc_idle_s": 1.0,  # the major GC that frees what a reload unlinked runs once the session has been idle
-                             # this long (0: at once, on the reload path; negative: never, leave it to the RTS)
+    "unlink_after": "eval",  # when a reload's unlink happens: after the first evaluation ("eval"), or at once ("reload")
+    "prune_gc_idle_s": 0,    # 0: the GC that frees what was unlinked runs at once, with the unlink. > 0 defers it
+                             # until the session has been idle that long -- faster, and it has CRASHED the repl
+                             # (see daemon.unlink_cafs); negative: unlink only, leave the GC to the RTS (as unsafe)
     "hygiene": False,        # prune CAFs after each reload (needs the ghci-hygiene package in the repl's scope)
     "auto_reload": True,     # reload when a watched file changes
     "watch_check": True,     # ... and run the checks (off: a save only compiles; `reload`/`check` still run them)
@@ -169,6 +171,7 @@ def resolve(conf: dict, session: str) -> dict:
     for t in ts:
         cfg["env"].update(t["env"])   # a member's env reaches the repl (its check reads it) AND its own server
     cfg["prune_gc_idle_s"] = ts[0]["prune_gc_idle_s"] if ts else DEFAULTS["prune_gc_idle_s"]
+    cfg["unlink_after"] = ts[0]["unlink_after"] if ts else DEFAULTS["unlink_after"]
     for key in ("load_timeout", "eval_timeout", "repl_budget_mb", "capabilities"):
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)

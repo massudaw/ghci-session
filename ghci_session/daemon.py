@@ -490,31 +490,40 @@ class Session:
             total += tree_rss_mb(pid)
         return total
 
-    # The reload leak is handled in two steps with very different costs. UNLINKING the superseded CAFs from
-    # the RTS's root list makes their values reclaimable and takes microseconds; the major GC that actually
-    # returns the memory is a collection of the whole heap (0.9 s at 500 MB live). So the unlink happens on
-    # the reload path and the GC when the session is next idle.
+    # The reload leak: UNLINKING the superseded CAFs from the RTS's root list makes their values reclaimable
+    # (microseconds), and a major GC returns the memory (a collection of the whole heap: 0.5 s at 250 MB live).
     #
-    # And the unlink waits for an evaluation: GHCi links a reloaded module into its new library on the first
+    # The unlink waits for an evaluation: GHCi links a reloaded module into its new library on the first
     # evaluation that needs it, so right after `:reload` the generation just replaced does not yet look
     # superseded. Unlinking there freed the generation BEFORE it, one reload late.
+    #
+    # The GC follows the unlink AT ONCE, in the same call (`pruneCafs`). Deferring it to an idle moment
+    # (`prune_gc_idle_s` > 0) is faster and is NOT SAFE: on a 98-module session, a sequence of reloads and
+    # evaluations that read values kept across reloads killed the repl every time the GC ran later than the
+    # unlink (an RTS internal error, or a crash in the next evaluation) -- three runs of three -- and never
+    # when it ran at once -- three runs of three, with either unlink timing. Why is not known. The deferred
+    # mode is kept, off, for whoever finds out.
 
     def unlink_cafs(self) -> None:
-        """Unlink what the last reload superseded, once something has been evaluated since. Best effort."""
+        """Unlink what the last reload superseded, once something has been evaluated since, and collect. Best effort."""
         if not (self.hygiene_on and self.unlink_due and self.evaluated):
             return
         self.unlink_due = False
         try:
             t0 = time.time()
-            fn = "unlinkCafs" if self.has_unlink else "pruneCafs"   # an older hygiene module: unlink and GC in one
-            out = self.repl.command(f'{self.hm}.{fn} >>= \\k -> putStrLn ("unlinked=" ++ show k)', timeout=300)
-            k = next((l.split("=", 1)[1].strip() for l in out.splitlines() if l.startswith("unlinked=")), "?")
-            self.log(f"unlink_cafs: {k} unlinked in {time.time() - t0:.2f}s" + ("" if self.has_unlink else " (with its GC)"))
-            if self.has_unlink and k.lstrip("-").isdigit() and int(k) > 0:
-                if float(self.cfg["prune_gc_idle_s"]) == 0:
-                    self.collect()
-                elif float(self.cfg["prune_gc_idle_s"]) > 0:
-                    self.gc_due = True
+            defer = self.has_unlink and float(self.cfg["prune_gc_idle_s"]) != 0
+            fn = "unlinkCafs" if defer else "pruneCafs"
+            out = self.repl.command(
+                f'{self.hm}.{fn} >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
+                '(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return "?") >>= \\l -> '
+                'putStrLn ("unlinked=" ++ show k ++ " live_mb=" ++ l)', timeout=300)
+            k = next((l.split("=", 1)[1].split()[0] for l in out.splitlines() if l.startswith("unlinked=")), "?")
+            if not defer:
+                self.live_mb = next((l.split("live_mb=", 1)[1].strip() for l in out.splitlines() if "live_mb=" in l), "?")
+            self.log(f"unlink_cafs: {k} unlinked in {time.time() - t0:.2f}s"
+                     + (" (GC deferred)" if defer else f" with its GC, live heap {getattr(self, 'live_mb', '?')} MB"))
+            if defer and k.lstrip("-").isdigit() and int(k) > 0 and float(self.cfg["prune_gc_idle_s"]) > 0:
+                self.gc_due = True
         except Exception as e:  # noqa: BLE001
             self.log(f"unlink_cafs failed: {e}")
 
@@ -1024,6 +1033,10 @@ class Session:
     # -- lifecycle --
 
     def boot(self) -> None:
+        if self.cfg["hygiene"] and re.search(r"-xn\b|--nonmoving-gc", self.cfg["rts_flags"] or ""):
+            # the pruner edits RTS lists the non-moving collector reads concurrently: the repl died at the first unlink
+            self.set_status("CONFIG-ERROR: hygiene cannot be used with the non-moving collector (rts_flags)")
+            raise RuntimeError("hygiene with the non-moving GC")
         if self.cfg["hygiene"] and self.cfg["hygiene_build"]:
             with self.phase("hygiene_build"):
                 self.build_hygiene()
@@ -1126,7 +1139,9 @@ class Session:
                 self.post_load(self.repl)
         except Exception as e:  # noqa: BLE001
             self.log(f"post_load after reload failed: {e}")
-        self.unlink_due, self.evaluated = True, False
+        self.unlink_due, self.evaluated = True, self.cfg["unlink_after"] == "reload"
+        with self.phase("unlink"):
+            self.unlink_cafs()   # "reload": now, which reaches the generation BEFORE the one just replaced
         self.after_load(out, do_check=do_check, t0=t0)
         with self.phase("unlink"):
             self.unlink_cafs()   # if the check ran; else after the next evaluation

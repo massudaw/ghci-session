@@ -67,9 +67,16 @@ was not always, and the breakdown is how each of these was found:
 - 0.4-0.8 s of every reload went to asking the OS for the repl's memory footprint, three times, inline. It is now
   sampled once, after the reload returns, and reused by the next reload's budget check.
 - 0.65 s of every save was the watcher's poll and debounce. Now a kernel file event and a 50 ms quiet period.
-- The pruner's cost was never the pruning. Finding and unlinking the superseded CAFs is microseconds (5,549 of them
-  in 0.02 s on a 98-module session); the major GC that followed was all of it (0.9 s at 500 MB live). So a reload
-  now only UNLINKS, and the GC runs once the session has been idle for a second (`prune_gc_idle_s`), off the path.
+- The pruner's cost is not the pruning. Finding and unlinking the superseded CAFs is microseconds (5,549 of them
+  in 0.02 s on a 98-module session); the major GC that follows is all of it (0.5 s at 250 MB live). It runs only
+  when something was unlinked, and it shows in the log, not in `[time]`, when it follows an `eval`.
+
+**Do not defer that GC.** Running it later, when the session is idle, takes it off the reload path -- and crashed
+the repl. On a 98-module session, a sequence of reloads and evaluations that read values kept across reloads
+killed GHCi every time the GC ran later than the unlink (three runs of three: an RTS internal error
+`scavenge_mark_stack: unimplemented/strange closure type 0`, or a death in the next evaluation) and never when it
+ran at once (three of three, with either unlink timing). The small example never showed it. Why is not known, so
+`prune_gc_idle_s` stays at `0`; the deferred mode is still there for whoever wants to find out.
 
 And the reason for the pruner, measured by the same tour -- live heap (MB) after each of five edit-reload-check
 rounds of a module holding one 200,000-entry `Map`:
@@ -135,10 +142,11 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
-| `rts_flags` | `-c` | GHCi's own RTS flags, via `--with-repl=bin/ghci-rts.sh` (`-c`: compacting old generation; ~3x less heap than the copying GC for a long session); `none` turns it off |
+| `rts_flags` | `-c` | GHCi's own RTS flags, via `--with-repl=bin/ghci-rts.sh`; `none` turns it off. `-c` is the compacting old generation: on a 98-module session with 250 MB live, the repl's footprint was 1,251 MB copying, 1,094 MB with `-c`, 920 MB with `-c -F1.5` (and its forked server 569 / 412 / 385 MB), for 9.5 / 17.1 / 25.2 s of GC over a 100 s scenario. The non-moving collector is refused with `hygiene` (the pruner edits lists it reads concurrently: the repl died) |
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
 | `hygiene` | `false` | build the C libraries, unlink superseded CAFs after each reload, report memory. Needs the `ghci-hygiene` package in the repl's scope |
-| `prune_gc_idle_s` | `1.0` | the major GC that frees what was unlinked runs once the session has been idle this long (`0`: at once, on the reload path; negative: never, leave it to the RTS) |
+| `unlink_after` | `eval` | when a reload's unlink happens: after the first evaluation (the check, or an `eval`), when the code that replaced it is linked; `reload` is at once, which reaches one generation less |
+| `prune_gc_idle_s` | `0` | `0`: the GC that frees what was unlinked runs at once. A positive value defers it to an idle moment and HAS CRASHED the repl (see the tour section); leave it |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
@@ -246,8 +254,8 @@ by name, so a sibling checkout's healthy session is not touched.
 A Haskell package plus three small C libraries built against *your* GHC's RTS (`hygiene/build.sh`, run by the daemon).
 
 ```haskell
-GHC.Hygiene.unlinkCafs :: IO Int         -- unlink the superseded CAFs (microseconds); -1 unknown RTS layout, -2 no library
-GHC.Hygiene.pruneCafs :: IO Int          -- ... and a major GC if anything was unlinked: the memory back now
+GHC.Hygiene.pruneCafs :: IO Int          -- unlink the superseded CAFs, then a major GC if any: -1 unknown RTS layout, -2 no library
+GHC.Hygiene.unlinkCafs :: IO Int         -- the unlink alone. A GC that comes LATER has crashed GHCi: use pruneCafs
 GHC.Hygiene.loaderStats :: IO Int        -- what the RTS linker holds, to stderr
 
 GHC.Hygiene.Census.cafReport 10 100000000    -- what every CAF retains, by CAF and by constructor
