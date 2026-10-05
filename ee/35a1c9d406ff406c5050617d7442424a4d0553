@@ -1,0 +1,154 @@
+"sprinkler-solver-estela/vault/routines/Afternoon Routine.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 6
+sprinkler-solver-estela/.gitignore
+  s_007485e9a70e7e::t_f8bbb3ca535e82 11-12
+  s_007485e9a70e7e::t_70db3be4beed23 13
+  s_007485e9a70e7e::t_6a01bfd13749b0 7-10
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 16
+"sprinkler-solver-estela/vault/activities/Scales and Keys.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/concepts/Colour Theory.md"
+  s_007485e9a70e7e::t_ecb006fc27b6ac 1-31
+"sprinkler-solver-estela/vault/code/Game quiz.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 13
+sprinkler-solver-estela/vault/activities/Chords.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/concepts/Composition Rules.md"
+  s_007485e9a70e7e::t_9f14c06627fb3e 1-31
+"sprinkler-solver-estela/vault/assets/Sprite easel.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 16
+"sprinkler-solver-estela/vault/rooms/Piano Studio.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-10
+sprinkler-solver-estela/vault/gen_bundle.py
+  s_007485e9a70e7e::t_76a4e6cb1577d7 18-20,22
+"sprinkler-solver-estela/vault/houses/Art School.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 12,14
+"sprinkler-solver-estela/vault/concepts/Light and Shade.md"
+  s_007485e9a70e7e::t_6cfe05d76a4696 1-31
+sprinkler-solver-estela/web/parent.html
+  s_007485e9a70e7e::t_8365425135bba8 204-231
+  s_007485e9a70e7e::t_fc8e772417b32c 283
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_222d8b533bce7b 158,200-211,218,511-513,537-540,546-558,563,565-566,568,571-575,577-834,923
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_ab7b8c8878d74d 535-569
+"sprinkler-solver-estela/vault/concepts/Art History.md"
+  s_007485e9a70e7e::t_bbb29f0aef1d2e 1-33,35-50
+  s_007485e9a70e7e::t_6fff6f68515d9d 34
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_222d8b533bce7b 4,8,10,16-17,19,22,37,48,52,60-62,104,109-110,140,177,183-184,187-188,195,198-199,202,223,226,231,233-234,239,241,250-251,262,274,280,286,293,327,329-330,343-345,349
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_e6adeef5497f81 182
+sprinkler-solver-estela/vault/activities/Rudiments.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/concepts/Bass Clef Notes.md"
+  s_007485e9a70e7e::t_9ae17d1c065ffa 24
+  s_007485e9a70e7e::t_42815739fe59cd 1-23,25-34
+"sprinkler-solver-estela/vault/assets/Sprite piano.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 16
+"sprinkler-solver-estela/vault/activities/Both Hands.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/rooms/Art Atelier.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-10
+"sprinkler-solver-estela/vault/rooms/Drum Room.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 6,10
+sprinkler-solver-estela/src/Estela/Server.hs
+  s_007485e9a70e7e::t_76a4e6cb1577d7 362
+"sprinkler-solver-estela/vault/rooms/Painting Studio.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 6,10
+"sprinkler-solver-estela/vault/code/Game trace.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 11,13-14
+"sprinkler-solver-estela/vault/activities/Colour Harmony.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-15
+"sprinkler-solver-estela/vault/rooms/Piano Room.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 10
+"sprinkler-solver-estela/vault/activities/Bass Clef.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/concepts/Scale Theory.md"
+  s_007485e9a70e7e::t_42815739fe59cd 1-32,34
+  s_007485e9a70e7e::t_9ae17d1c065ffa 33
+"sprinkler-solver-estela/vault/code/Game drums.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 11,13-14
+sprinkler-solver-estela/vault/activities/Portrait.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-17
+"sprinkler-solver-estela/vault/concepts/Drum Grooves.md"
+  s_007485e9a70e7e::t_42815739fe59cd 1-32
+sprinkler-solver-estela/vault/activities/Composition.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-15
+"sprinkler-solver-estela/vault/concepts/Listening Skills.md"
+  s_007485e9a70e7e::t_42815739fe59cd 1-28,30-31
+  s_007485e9a70e7e::t_9ae17d1c065ffa 29
+"sprinkler-solver-estela/vault/rooms/Drawing Studio.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 6,10
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 11
+sprinkler-solver-estela/vault/activities/Grooves.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+"sprinkler-solver-estela/vault/code/Game keys.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 1-12
+sprinkler-solver-estela/vault/activities/Shading.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-15
+"sprinkler-solver-estela/vault/code/Game perspective.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 1-12
+"sprinkler-solver-estela/vault/code/Game compose.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 1-12
+"sprinkler-solver-estela/vault/concepts/Faces and Figures.md"
+  s_007485e9a70e7e::t_c90f2f68c0297a 1-14,16-30
+  s_007485e9a70e7e::t_8ce2d674a30f40 15
+"sprinkler-solver-estela/vault/code/Game harmony.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 1-12
+"sprinkler-solver-estela/vault/activities/Art Gallery.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-13
+"sprinkler-solver-estela/vault/code/Game shade.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 1-12
+"sprinkler-solver-estela/vault/activities/Ear Training.md"
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-16
+sprinkler-solver-estela/src/Estela/Lint.hs
+  s_007485e9a70e7e::t_712369aab8f1bf 9,34-36
+"sprinkler-solver-estela/vault/concepts/Perspective Drawing.md"
+  s_007485e9a70e7e::t_0cbe7236d2b6bd 1-30
+"sprinkler-solver-estela/vault/assets/Sprite bookshelf.md"
+  s_007485e9a70e7e::t_e6adeef5497f81 16
+"sprinkler-solver-estela/vault/concepts/Chord Theory.md"
+  s_007485e9a70e7e::t_42815739fe59cd 1-34
+sprinkler-solver-estela/vault/activities/Perspective.md
+  s_007485e9a70e7e::t_844aa53f93c7ef 1-15
+"sprinkler-solver-estela/vault/concepts/Two Hands.md"
+  s_007485e9a70e7e::t_9ae17d1c065ffa 23-24
+  s_007485e9a70e7e::t_42815739fe59cd 1-22,25-34
+"sprinkler-solver-estela/vault/concepts/Stick Control.md"
+  s_007485e9a70e7e::t_42815739fe59cd 1-32
+sprinkler-solver-estela/vault/plan.json
+  s_6e55a4691f1b7b::t_3a48e2c408db6b 1
+sprinkler-solver-estela/vault/process.json
+  s_6e55a4691f1b7b::t_b52c478b33ad4d 1
+sprinkler-solver-estela/vault/process.txt
+  s_6e55a4691f1b7b::t_7147337e0a3c65 124,130-137,140,142,144,146,152,155,159-167,281-286,290-292,297-298,303-310,334,340-347,350,352,354,356,362,365,369-377
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_fd6086db6b8e4b 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ee35a1c9d406ff406c5050617d7442424a4d0553",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    },
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
