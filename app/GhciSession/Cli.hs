@@ -1,0 +1,385 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
+-- | The client: @ghci-session start|stop|restart|status|reload|eval|check|server|compose|mem|log|list|gc|autostop|init@.
+module GhciSession.Cli (cliMain, Args (..), parseArgs, autostopPlan) where
+
+import Control.Concurrent (threadDelay)
+import Control.Exception (IOException, SomeException, try)
+import Control.Monad (filterM, forM, forM_, unless, void, when)
+import Data.List (intercalate, isPrefixOf, nub, sortOn)
+import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing)
+import System.Directory
+import System.Environment (getArgs, getExecutablePath)
+import System.Exit (ExitCode (..), exitWith)
+import System.FilePath (makeRelative, takeFileName, (</>))
+import System.IO
+import System.Posix.IO (fdToHandle)
+import System.Posix.Signals (sigKILL, signalProcess)
+import System.Posix.Types (CPid (..))
+import System.Process (CreateProcess (..), StdStream (..), createProcess, proc)
+import Text.Printf (printf)
+
+import GhciSession.Config
+import GhciSession.Daemon (runDaemon)
+import GhciSession.Gc
+import GhciSession.Json
+import GhciSession.Sys
+
+-- arguments --------------------------------------------------------------------
+
+data Args = Args { aPos :: [String], aFlags :: [String], aOpts :: [(String, String)] }
+
+-- | Split a command's arguments into positionals, flags and options (the ones that take a value).
+parseArgs :: [String] -> [String] -> Args
+parseArgs valued = go (Args [] [] [])
+  where
+    go a [] = a { aPos = reverse (aPos a), aOpts = reverse (aOpts a) }
+    go a (x : v : r) | x `elem` valued = go a { aOpts = (x, v) : aOpts a } r
+    go a (x : r) | "-" `isPrefixOf` x && length x > 1 && not (isNumber x) = go a { aFlags = x : aFlags a } r
+                 | otherwise = go a { aPos = x : aPos a } r
+    isNumber x = case reads x :: [(Double, String)] of { [(_, "")] -> True; _ -> False }
+
+flag :: Args -> [String] -> Bool
+flag a names = any (`elem` aFlags a) names
+
+opt :: Args -> [String] -> Maybe String
+opt a names = case [ v | (k, v) <- aOpts a, k `elem` names ] of { (v : _) -> Just v; [] -> Nothing }
+
+opts :: Args -> [String] -> [String]
+opts a names = [ v | (k, v) <- aOpts a, k `elem` names ]
+
+pos :: Args -> Int -> Maybe String
+pos a i = case drop i (aPos a) of { (x : _) -> Just x; [] -> Nothing }
+
+die' :: String -> IO a
+die' msg = hPutStrLn stderr msg >> exitWith (ExitFailure 2)
+
+-- plumbing -----------------------------------------------------------------------
+
+stateOf :: Conf -> String -> FilePath
+stateOf conf name = cStateDir conf </> name
+
+-- | The session a command is for: the one named, else the only one running, else the config's default.
+pick :: Conf -> Maybe String -> IO String
+pick conf mname = do
+  name <- case mname of
+    Just n -> pure n
+    Nothing -> do
+      up <- filterM (fmap isJust . daemonPid conf) (sessionNames conf)
+      pure (case up of { [one] -> one; _ -> cDefault conf })
+  unless (name `elem` sessionNames conf) (die' ("unknown session " ++ show name ++ "; have " ++ intercalate ", " (sessionNames conf)))
+  pure name
+
+request :: Conf -> String -> Json -> IO Json
+request conf name req = do
+  sp <- sockPath (stateOf conf name)
+  mfd <- unixConnect sp
+  case mfd of
+    Nothing -> die' (name ++ ": no session running (ghci-session start " ++ name ++ ")")
+    Just fd -> do
+      h <- fdToHandle fd
+      hSetEncoding h utf8
+      hPutStrLn h (encode req)
+      hFlush h
+      line <- hGetLine h
+      hClose h
+      either (\e -> die' ("bad reply from the session: " ++ e)) pure (parseJson line)
+
+-- | Print a reply; warn when it came from code that is no longer on disk.
+say :: Json -> IO Int
+say r = do
+  case strs (r .: "stale") of
+    st@(f : _) -> hPutStrLn stderr ("warning: STALE -- " ++ show (length st) ++ " watched file(s) differ from the loaded code (e.g. "
+                                    ++ takeFileName f ++ "); `ghci-session reload`")
+    [] -> pure ()
+  putStrLn (fromMaybe "" (lookupStr "out" r))
+  pure (if lookupBool "ok" r == Just True then 0 else 1)
+
+firstLine :: FilePath -> IO String
+firstLine p = maybe "" (takeWhile (/= '\n')) <$> readFileMaybe p
+
+statusOk :: Conf -> String -> IO Bool
+statusOk conf name = do
+  t <- readFileMaybe (stateOf conf name </> "status.json")
+  pure (case t >>= either (const Nothing) Just . parseJson of { Just j -> lookupBool "ok" j == Just True; Nothing -> False })
+
+-- commands ------------------------------------------------------------------------
+
+cmdStart :: Conf -> Maybe String -> Bool -> IO Int
+cmdStart conf target noCheck = do
+  name <- pick conf target
+  up <- daemonPid conf name
+  case up of
+    Just pid -> putStrLn (name ++ ": already running (pid " ++ show pid ++ ")") >> pure 0
+    Nothing -> do
+      let d = stateOf conf name
+      createDirectoryIfMissing True d
+      forM_ ["status", "status.json"] (\f -> void (try (removeFile (d </> f)) :: IO (Either IOException ())))
+      cfg <- resolve conf name >>= either die' pure
+      exe <- getExecutablePath
+      out <- openFile (d </> "daemon.out") AppendMode
+      void (createProcess (proc exe (["--root", cRoot conf, "_daemon", name] ++ [ "--no-check" | noCheck ]))
+              { std_in = NoStream, std_out = UseHandle out, std_err = UseHandle out, close_fds = True, new_session = True })
+      cwd' <- getCurrentDirectory
+      hPutStrLn stderr (name ++ ": booting (log: " ++ makeRelative cwd' (d </> "daemon.log") ++ ")")
+      t0 <- now
+      let limit = gLoadTimeout cfg + 120
+          wait = do
+            threadDelay 50000
+            t <- now
+            first <- firstLine (d </> "status")
+            alive <- daemonPid conf name
+            let verdict = if "STALE(" `isPrefixOf` first then drop 2 (dropWhile (/= ')') first) else first
+            if not (null first) && verdict /= "starting"
+              then putStrLn first >> pure (if any (`isPrefixOf` first) ["OK", "STALE"] then 0 else 1)
+              else if isNothing alive && t - t0 > 3
+                then hPutStrLn stderr (name ++ ": the daemon died while booting; see " ++ (d </> "daemon.out")) >> pure 1
+                else if t - t0 > limit then hPutStrLn stderr (name ++ ": still booting after " ++ show (round limit :: Int) ++ "s") >> pure 1
+                else wait
+      wait
+
+cmdStop :: Conf -> Maybe String -> Bool -> Maybe String -> IO Int
+cmdStop conf target keepServers reason = do
+  name <- pick conf target
+  up <- daemonPid conf name
+  case up of
+    Nothing -> putStrLn (name ++ ": not running") >> pure 0
+    Just pid -> do
+      void (try (request conf name (JObj ([("op", JStr "stop"), ("keep_servers", JBool keepServers)] ++ maybe [] (\r -> [("reason", JStr r)]) reason)))
+              :: IO (Either SomeException Json))
+      let wait n = do
+            a <- daemonPid conf name
+            if isNothing a then putStrLn (name ++ ": stopped")
+              else if n <= (0 :: Int) then do
+                void (try (signalProcess sigKILL (CPid (fromIntegral pid))) :: IO (Either IOException ()))
+                putStrLn (name ++ ": killed")
+              else threadDelay 50000 >> wait (n - 1)
+      wait 200
+      pure 0
+
+cmdStatus :: Conf -> Maybe String -> Bool -> IO Int
+cmdStatus conf target detail = do
+  names <- case target of
+    Just _ -> pure <$> pick conf target
+    Nothing -> filterM (fmap isJust . daemonPid conf) (sessionNames conf)
+  when (null names) (putStrLn "no session running")
+  when (isNothing target) $ forM_ (sessionNames conf) $ \name -> do     -- say why a session that was running is not
+    up <- daemonPid conf name
+    first <- firstLine (stateOf conf name </> "status")
+    when (isNothing up && "stopped" `isPrefixOf` first && first /= "stopped") (putStrLn (name ++ ": " ++ first))
+  left <- findLeftovers conf
+  let k = length (lDaemons left) + length (lServers left) + length (lBuilds left)
+  when (k > 0) $ hPutStrLn stderr (printf "warning: %d leftover process(es) of this project that no session tracks (%d daemon, %d server, %d build); `ghci-session gc`"
+                                     k (length (lDaemons left)) (length (lServers left)) (length (lBuilds left)))
+  forM_ names $ \name -> do
+    up <- daemonPid conf name
+    if isNothing up then putStrLn (name ++ ": not running") else do
+      r <- request conf name (JObj [("op", JStr "status")])
+      putStrLn (name ++ ": " ++ fromMaybe "" (lookupStr "out" r))
+      when detail (readFileMaybe (stateOf conf name </> "status") >>= mapM_ (putStr . ensureNl))
+  pure 0
+  where ensureNl t = if null t || last t == '\n' then t else t ++ "\n"
+
+cmdReload :: Conf -> Args -> IO Int
+cmdReload conf a = do
+  name <- pick conf (pos a 0)
+  t0 <- now
+  rc <- request conf name (JObj ([ ("op", JStr "reload"), ("check", JBool (not (flag a ["--no-check"]))), ("refork", JBool (not (flag a ["--no-refork"]))) ]
+                                 ++ [ ("async_refork", JBool True) | flag a ["--async-refork"] ])) >>= say
+  -- the verdict is in the status file: print it, not only GHC's load log
+  readFileMaybe (stateOf conf name </> "status") >>= mapM_ putStr
+  t1 <- now
+  hPutStrLn stderr (printf "(%.1fs)" (t1 - t0))
+  ok <- statusOk conf name
+  pure (if rc /= 0 then rc else if ok then 0 else 1)
+
+cmdCheck :: Conf -> Args -> IO Int
+cmdCheck conf a = do
+  name <- pick conf (pos a 0)
+  rc <- request conf name (JObj ([("op", JStr "check")] ++ maybe [] (\m -> [("member", JStr m)]) (opt a ["-m", "--member"]))) >>= say
+  ok <- statusOk conf name
+  pure (if rc /= 0 then rc else if ok then 0 else 1)
+
+cmdEval :: Conf -> Args -> IO Int
+cmdEval conf a = case pos a 0 of
+  Nothing -> die' "eval: an expression is needed"
+  Just e -> do
+    name <- pick conf (opt a ["-s", "-t", "--session"])
+    request conf name (JObj ([("op", JStr "eval"), ("expr", JStr e)] ++ maybe [] (\t -> [("timeout", JNum (read t))]) (opt a ["--timeout"]))) >>= say
+
+cmdSimple :: String -> Conf -> Args -> IO Int
+cmdSimple op conf a = pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr op)]) >>= say
+
+cmdServer :: Conf -> Args -> IO Int
+cmdServer conf a = do
+  let action = fromMaybe "status" (pos a 0)
+  unless (action `elem` ["status", "start", "stop", "restart"]) (die' "server: status | start | stop | restart")
+  name <- pick conf (opt a ["-s", "--session"])
+  r <- request conf name (JObj ([("op", JStr "server"), ("action", JStr action), ("resume", JBool (flag a ["--resume"]))]
+                                ++ maybe [] (\m -> [("member", JStr m)]) (opt a ["-m", "--member"])))
+  let out = fromMaybe "" (lookupStr "out" r)
+  putStrLn out
+  pure (if lookupBool "ok" r == Just True && not (isInfixOf' "FAILED" out) then 0 else 1)
+  where isInfixOf' n h = any (n `isPrefixOf`) (tails' h)
+        tails' [] = [[]]
+        tails' x@(_ : r) = x : tails' r
+
+-- | Set a composed session's members. A repl's package set is fixed when it boots, so a change restarts that
+-- repl -- but the servers already running are kept and adopted by the new one.
+cmdCompose :: Conf -> Args -> IO Int
+cmdCompose conf a = case aPos a of
+  [] -> die' "compose: a session name is needed"
+  (name : members) -> do
+    when (isNothing (lookup name (cSessions conf))) $
+      die' (show name ++ " is not a composed session; declare it under \"sessions\" (have: " ++ (if null (cSessions conf) then "none" else intercalate ", " (map fst (cSessions conf))) ++ ")")
+    cur <- readMembers conf name
+    let adds = opts a ["--add"]
+        removes = opts a ["--remove"]
+    if null adds && null removes && null members
+      then do
+        putStrLn (name ++ " members: " ++ (if null cur then "(none)" else intercalate ", " cur))
+        cmdStatus conf (Just name) False
+      else do
+        let new = if null adds && null removes then nub members else [ m | m <- cur, m `notElem` removes ] ++ [ m | m <- adds, m `notElem` cur ]
+            unknown = [ m | m <- new, isNothing (lookup m (cTargets conf)) ]
+        unless (null unknown) (die' ("unknown target(s): " ++ intercalate ", " unknown ++ "; have " ++ intercalate ", " (map fst (cTargets conf))))
+        up <- daemonPid conf name
+        if new == cur && isJust up then putStrLn (name ++ ": unchanged (" ++ (if null new then "none" else intercalate ", " new) ++ ")") >> pure 0 else do
+          writeMembers conf name new
+          when (isJust up) (void (cmdStop conf (Just name) True Nothing))
+          putStrLn (name ++ " members: " ++ (if null new then "(none)" else intercalate ", " new))
+          cmdStart conf (Just name) (flag a ["--no-check"])
+
+cmdLog :: Conf -> Args -> IO Int
+cmdLog conf a = do
+  name <- pick conf (opt a ["-s", "--session"])
+  let which = fromMaybe "daemon.log" (pos a 0)
+      n = maybe 40 read (opt a ["-n"])
+  t <- readFileMaybe (stateOf conf name </> which)
+  case t of
+    Nothing -> hPutStrLn stderr ("no " ++ which ++ " for " ++ name) >> pure 1
+    Just txt -> putStr (unlines (let ls = lines txt in drop (length ls - n) ls)) >> pure 0
+
+cmdList :: Conf -> IO Int
+cmdList conf = do
+  forM_ (cTargets conf) $ \(name, t) -> do
+    up <- daemonPid conf name
+    let nChecks = case lookupArr "checks" t of { [] -> (case t .: "check" of { JObj _ -> 1; _ -> 0 }); cs -> length cs } :: Int
+        units = case t .: "units" of { JStr u -> u; j -> unwords (strs j) }
+    putStrLn (name ++ (if name == cDefault conf then " (default)" else "") ++ ": " ++ maybe "stopped" (("running pid " ++) . show) up
+              ++ "  units=" ++ (if null units then "-" else units) ++ "  watch=" ++ intercalate "," (strs (t .: "watch"))
+              ++ "  hygiene=" ++ (if lookupBool "hygiene" t == Just True then "on" else "off") ++ "  checks=" ++ show nChecks
+              ++ (case t .: "server" of { JObj _ -> "  server"; _ -> "" }))
+  forM_ (cSessions conf) $ \(name, _) -> do
+    up <- daemonPid conf name
+    ms <- readMembers conf name
+    putStrLn (name ++ " [composed]: " ++ maybe "stopped" (("running pid " ++) . show) up ++ "  members=" ++ (if null ms then "(none)" else intercalate ", " ms))
+  pure 0
+
+cmdInit :: IO Int
+cmdInit = do
+  there <- doesFileExist configName
+  if there then hPutStrLn stderr (configName ++ " exists") >> pure 1 else do
+    writeFile configName (encodePretty (JObj
+      [ ("default", JStr "lib")
+      , ("targets", JObj [ ("lib", JObj [ ("units", JArr [JStr "lib:yourpackage"]), ("watch", JArr [JStr "src"]), ("modules", JArr [])
+                                       , ("check", JNull), ("hygiene", JBool False) ]) ]) ]) ++ "\n")
+    putStrLn ("wrote " ++ configName ++ "; edit \"units\", then `ghci-session start`")
+    pure 0
+
+-- | Which sessions to stop: the longest-idle go first, until the total is back under the limit; with no
+-- limit (0), every eligible one goes.
+autostopPlan :: [Json] -> Double -> Double -> Bool -> (Double, [Json], [(Json, String)])
+autostopPlan infos maxMem idleMins includeServing = go total [] [] (sortOn (negate . num' "idle_s") infos)
+  where
+    num' k j = fromMaybe 0 (lookupNum k j)
+    mb j = num' "repl_mb" j + num' "servers_mb" j
+    total = sum (map mb infos)
+    go _ stop spared [] = (total, reverse stop, reverse spared)
+    go left stop spared (i : r)
+      | lookupBool "busy" i == Just True = go left stop ((i, "busy") : spared) r
+      | num' "idle_s" i < idleMins * 60 = go left stop ((i, printf "used %.0f min ago" (num' "idle_s" i / 60)) : spared) r
+      | not (null (strs (i .: "serving"))) && not includeServing = go left stop ((i, "serving " ++ intercalate ", " (strs (i .: "serving"))) : spared) r
+      | maxMem > 0 && left <= maxMem = go left stop ((i, "memory is back within the limit") : spared) r
+      | otherwise = go (left - mb i) (i : stop) spared r
+
+-- | Stop sessions nobody is using. A session is idle from its last client command or source change; one
+-- that is busy, or serving, is left alone.
+cmdAutostop :: Conf -> Args -> IO Int
+cmdAutostop conf a = do
+  let maxMem = maybe 0 read (opt a ["--max-mem-mb"]) :: Double
+      idleMins = maybe 30 read (opt a ["--idle-mins"]) :: Double
+      dry = flag a ["-n", "--dry-run"]
+  up <- filterM (fmap isJust . daemonPid conf) (sessionNames conf)
+  infos <- fmap catMaybes $ forM up $ \name -> do
+    r <- try (request conf name (JObj [("op", JStr "info")])) :: IO (Either SomeException Json)
+    pure (case r of { Right j -> lookupStr "out" j >>= either (const Nothing) Just . parseJson; Left _ -> Nothing })
+  let (total, stop, spared) = autostopPlan infos maxMem idleMins (flag a ["--include-serving"])
+      mb j = fromMaybe 0 (lookupNum "repl_mb" j) + fromMaybe 0 (lookupNum "servers_mb" j)
+      nm j = fromMaybe "?" (lookupStr "session" j)
+      idle j = fromMaybe 0 (lookupNum "idle_s" j) / 60
+  putStrLn (printf "autostop: %d session(s) using %.0f MB (%s; idle after %s min)" (length infos) total
+              (if maxMem > 0 then printf "limit %.0f MB" maxMem else "no memory limit: every idle session goes" :: String) (showG idleMins))
+  if maxMem > 0 && total <= maxMem then putStrLn "autostop: within the limit -- nothing to stop" >> pure 0 else do
+    forM_ spared (\(i, why) -> putStrLn (printf "autostop: keeping %s (%.0f MB): %s" (nm i) (mb i) why))
+    forM_ stop $ \i -> do
+      putStrLn (printf "autostop: %s %s (idle %.0f min, %.0f MB)" (if dry then "would stop" else "stopping" :: String) (nm i) (idle i) (mb i))
+      unless dry $ void (try (request conf (nm i) (JObj [ ("op", JStr "stop")
+                           , ("reason", JStr (printf "stopped by autostop after %.0f min idle; `ghci-session start %s`" (idle i) (nm i))) ])) :: IO (Either SomeException Json))
+    let after = total - sum (map mb stop)
+    when (maxMem > 0 && after > maxMem) (putStrLn (printf "autostop: still %.0f MB, over the limit -- nothing else is eligible" after))
+    pure 0
+  where showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
+
+usage :: String
+usage = unlines
+  [ "ghci-session: a warm GHCi per project"
+  , ""
+  , "  start [--no-check] | stop | restart | status [-d]   [SESSION]"
+  , "  reload [--no-check] [--no-refork] [--async-refork]  [SESSION]"
+  , "  check [-m MEMBER] [SESSION]        eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-check]"
+  , "  server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]"
+  , "  gc [-n] [--days N]                 autostop [--max-mem-mb N] [--idle-mins M] [--include-serving] [-n]"
+  , "  mem [SESSION] | log [FILE] [-s SESSION] [-n LINES] | list | init"
+  , ""
+  , "  --root DIR   the project (default: the nearest directory with ghci-session.json)"
+  , "With no session named, a command goes to the one that is running (else the config's default)." ]
+
+cliMain :: IO ()
+cliMain = do
+  hSetEncoding stdout utf8
+  hSetEncoding stderr utf8
+  args0 <- getArgs
+  let (rootOpt, args) = case args0 of { ("--root" : r : rest) -> (Just r, rest); _ -> (Nothing, args0) }
+  rc <- case args of
+    [] -> putStr usage >> pure 2
+    (c : _) | c `elem` ["-h", "--help", "help"] -> putStr usage >> pure 0
+    ("init" : _) -> cmdInit
+    (c : rest) -> do
+      root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
+      conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove"] rest
+          -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
+          aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
+      case c of
+        "_daemon" -> case aPos a of
+          (name : _) -> runDaemon conf name (not (flag a ["--no-check"])) >> pure 0
+          [] -> die' "_daemon: a session name is needed"
+        "start" -> cmdStart conf (pos a 0) (flag a ["--no-check"])
+        "stop" -> cmdStop conf (pos a 0) (flag a ["--keep-servers"]) Nothing
+        "restart" -> cmdSimple "restart" conf a
+        "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])
+        "reload" -> cmdReload conf a
+        "check" -> cmdCheck conf a
+        "eval" -> cmdEval conf a
+        "mem" -> cmdSimple "mem" conf a
+        "server" -> cmdServer conf a
+        "compose" -> cmdCompose conf a
+        "log" -> cmdLog conf a
+        "list" -> cmdList conf
+        "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
+        "autostop" -> cmdAutostop conf aNoN
+        _ -> hPutStr stderr usage >> pure 2
+  hFlush stdout
+  exitWith (if rc == 0 then ExitSuccess else ExitFailure rc)

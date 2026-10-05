@@ -1,3 +1,4 @@
 .ghci-session/
 dist-newstyle/
 __pycache__/
+.bin/

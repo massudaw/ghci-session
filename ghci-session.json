@@ -1,0 +1,12 @@
+{
+  "default": "tool",
+  "targets": {
+    "tool": {
+      "units": ["exe:ghci-session"],
+      "watch": ["app", "cbits", "hygiene/src"],
+      "modules": ["GhciSession.SelfTest"],
+      "check": { "expr": "GhciSession.SelfTest.run", "pass": "^selftest: all ", "fail": "^\\[FAIL\\]|FAILED$" },
+      "hygiene": true
+    }
+  }
+}

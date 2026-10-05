@@ -1,0 +1,33 @@
+cabal-version:      2.4
+name:               ghci-session
+version:            0.2.0.0
+synopsis:           A warm GHCi per project: verdicts you can trust, memory that does not grow with every edit
+description:
+  One package, two halves. The EXECUTABLE (@ghci-session@) keeps a @cabal repl@ warm behind a small daemon:
+  reload on save, checks, STALE-aware verdicts, composed sessions, servers forked from the repl, orphan
+  collection. The LIBRARY is what your project links to use the rest: "GHC.Hygiene" unlinks the CAFs a
+  @:reload@ supersedes (GHCi never frees them), "GHC.Hygiene.Census" says what is holding the heap, and
+  "GHC.Hygiene.Zygote" forks a server out of the session. See README.md.
+license:            MIT
+build-type:         Simple
+extra-source-files: README.md
+data-files:         hygiene/build.sh hygiene/c/*.c bin/ghci-rts.sh
+
+library
+  hs-source-dirs:   hygiene/src
+  exposed-modules:  GHC.Hygiene, GHC.Hygiene.Census, GHC.Hygiene.Zygote
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, text, unix
+  default-language: Haskell2010
+  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-type-defaults
+
+executable ghci-session
+  hs-source-dirs:   app
+  main-is:          Main.hs
+  other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
+                    GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, Paths_ghci_session
+  autogen-modules:  Paths_ghci_session
+  c-sources:        cbits/ghs_sys.c
+  -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-session
+  default-language: Haskell2010
+  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-x-partial -Wno-unused-imports -threaded -rtsopts "-with-rtsopts=-N2 -A2m"

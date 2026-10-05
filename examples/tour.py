@@ -78,7 +78,9 @@ class Tour:
         shutil.copytree(os.path.join(PKG, "examples", "hello"), self.proj, ignore=ig)
         for d in ("hygiene", "bin", "ghci_session"):
             shutil.copytree(os.path.join(PKG, d), os.path.join(self.dir, d), ignore=ig)
-        self.cli_path = os.path.join(self.dir, "bin", "ghci-session")
+        # GHCI_SESSION_BIN: tour another implementation of the same command line (the Haskell executable)
+        self.cli_path = os.environ.get("GHCI_SESSION_BIN") or os.path.join(self.dir, "bin", "ghci-session")
+        os.environ["GHCI_SESSION_DATA"] = self.dir
         self.state = os.path.join(self.proj, ".ghci-session")
         self.hs = os.path.join(self.proj, "src", "Hello.hs")
         self.ex = os.path.join(self.proj, "extra", "src", "Extra.hs")
@@ -155,11 +157,13 @@ class Tour:
         return None, time.time() - t0
 
     def served(self, session: str = "dev"):
-        try:
-            word, n = self.read(os.path.join(self.state, "hello.out")).split()
-            return word, int(n)
-        except (OSError, ValueError):
-            return None, -1
+        for _ in range(10):   # the server rewrites the file five times a second: a read can land on the empty instant
+            try:
+                word, n = self.read(os.path.join(self.state, "hello.out")).split()
+                return word, int(n)
+            except (OSError, ValueError):
+                time.sleep(0.03)
+        return None, -1
 
     def server_pid(self, session: str):
         out = self.run("server", "-s", session)[1]
