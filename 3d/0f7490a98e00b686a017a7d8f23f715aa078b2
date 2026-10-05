@@ -1,0 +1,24 @@
+ghci-session/examples/tour.py
+  s_6e55a4691f1b7b::t_5839ad601f8990 1-5,8-184,187-416,422-488,490-500,509-517
+  s_6e55a4691f1b7b::t_37665a1dd0fac8 6-7,185-186,417-421,489,501-508
+ghci-session/ghci_session/daemon.py
+  s_6e55a4691f1b7b::t_e7e4d021e581e7 1203
+ghci-session/README.md
+  s_6e55a4691f1b7b::t_2b90411955e961 29-65,260
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3d0f7490a98e00b686a017a7d8f23f715aa078b2",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
