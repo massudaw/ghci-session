@@ -29,10 +29,13 @@ import GhciSession.Sys
 
 data Leftovers = Leftovers { lDaemons :: [(String, Int)], lServers :: [(String, String, Int)], lBuilds :: [(Int, String)] }
 
+-- | Every process: (pid, parent, command line). The command line is read only for the processes that can be
+-- leftovers -- those whose parent is init: a daemon detaches, and an orphan is by definition reparented --
+-- so this is a kernel table and a few dozen lookups, not a @ps -o command@ of everything (40-60 ms).
 listProcesses :: IO [(Int, Int, String)]
 listProcesses = do
-  out <- rawSystemOut 10 "ps" ["-axo", "pid=,ppid=,command="]
-  pure [ (read a, read b, unwords r) | l <- lines (fromMaybe "" out), (a : b : r) <- [words l], all isDigit a, all isDigit b ]
+  rows <- processTable
+  forM rows (\(pid, pp, _) -> (,,) pid pp <$> (if pp == 1 then processArgs pid else pure ""))
 
 descendants :: [(Int, Int, String)] -> Int -> [Int]
 descendants procs pid = go [] [ c | (c, pp, _) <- procs, pp == pid ]

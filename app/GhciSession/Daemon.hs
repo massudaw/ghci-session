@@ -291,9 +291,7 @@ postLoad s r = do
   when (gHygiene cfg) $ do
     out <- c 60 (":module + " ++ gHygieneModule cfg ++ " GHC.Stats")
     vHygieneOn s =: not (noModule out)
-    if noModule out
-      then logS s ("hygiene OFF: " ++ gHygieneModule cfg ++ " is not in scope in this repl (add the ghci-session library to build-depends)")
-      else c 60 (":type " ++ gHygieneModule cfg ++ ".unlinkCafs") >>= \t -> vHasUnlink s =: not ("error" `isInfixOf` t)
+    when (noModule out) (logS s ("hygiene OFF: " ++ gHygieneModule cfg ++ " is not in scope in this repl (add the ghci-session library to build-depends)"))
   unless (null (gServers cfg)) $ do
     out <- c 60 (":module + " ++ gZygoteModule cfg)
     vZygoteOn s =: not (noModule out)

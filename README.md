@@ -13,6 +13,45 @@ ghci-session status         # one line: OK -- CHECK-PASS | COMPILE-ERROR: n erro
 ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in well under a second
 ```
 
+## Two implementations, one command line
+
+The tool exists twice, with the same commands, state files and socket protocol:
+
+- **Haskell** (`ghci-session.cabal`, `app/`, `cbits/`): ONE cabal package -- the `ghci-session` executable (client and
+  daemon in one binary) and the library your project links for the hygiene modules. It depends only on GHC's boot
+  packages; C covers what those lack (unix sockets, kqueue/inotify, POSIX regex, hashing, process tables) and the
+  executable's `main`, which picks the runtime's options per command. `cabal install exe:ghci-session`, or
+  `cabal run ghci-session -- ...`. This is the one being developed.
+- **Python** (`bin/ghci-session`, `ghci_session/`): the original, still what this repository's `tools/msq` drives.
+  (The two derive the daemon's socket path differently, so a client of one cannot talk to a daemon of the other.)
+
+`examples/tour.py` runs against either (`GHCI_SESSION_BIN=$(cabal list-bin exe:ghci-session) python3 examples/tour.py`)
+and passes on both, 123 steps of 123. What the Haskell one changes is the client and the tool's own overhead:
+
+| | Python | Haskell |
+|---|---|---|
+| `eval` | 90 ms | 10 ms |
+| `list` / `status` / `mem` | 260 / 150 / 220 ms | 10 / 20 / 10 ms |
+| `gc -n` / `autostop -n` | 160 / 210 ms | 30 / 20 ms |
+| `server stop` | 130 ms | 30 ms |
+| a reload, a save's verdict, a boot | the same: they are GHC, cabal and your check |
+| the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
+
+How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 68 self-tests in about a second:
+
+- **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
+  and once per session in every client command; `footprint` could hang. One libproc call now gives liveness, parent,
+  resident size and physical footprint for every process in 0.8 ms.
+- **Replies are `Text` and bytes end to end.** As `String`, a 0.5 MB load log was 20 MB allocated to decode, 14 MB to
+  find the verdict in, 16 MB to encode as JSON: 15 ms. Now 0.7 ms and 1 MB.
+- **Framing is linear.** Looking for the prompt in the whole buffer each time a chunk arrived was quadratic in the reply.
+- **Paths are bytes.** The watched-source signature of a 526-file project was 1 MB of cons cells and 5.6 MB a scan.
+- **The runtime is configured per command.** 15 of a client command's 21 ms were the Haskell runtime starting and
+  stopping: its interval timer (the exit waited out a tick) and the reservation of a terabyte of address space. The
+  client runs with `-V0 -xr1g`; the daemon keeps the timer, two capabilities and `GHC.Stats`.
+- HEAD is read from `.git` instead of spawning `git` every two seconds.
+
 ## Why not just `cabal repl`?
 
 | Problem | What this does |

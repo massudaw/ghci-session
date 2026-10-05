@@ -276,3 +276,48 @@ int ghs_proc_table(int *pids, int *ppids, int64_t *rss_kb, int64_t *foot_kb, int
 int ghs_pid_state(int pid) { return (kill(pid, 0) == 0 || errno == EPERM) ? 1 : 0; }
 int ghs_proc_table(int *a, int *b, int64_t *c, int64_t *d, int cap) { (void)a; (void)b; (void)c; (void)d; (void)cap; return 0; }
 #endif
+
+/* ---- a process's command line, for the few we must attribute (orphans): no `ps -o command` (40-60 ms) ---- */
+
+#if defined(__APPLE__)
+#include <sys/sysctl.h>
+/* the arguments joined by spaces into buf; the length, or -1 */
+int ghs_proc_args(int pid, char *buf, int cap) {
+  int mib[3] = { CTL_KERN, KERN_PROCARGS2, pid };
+  size_t size = 0;
+  if (sysctl(mib, 3, NULL, &size, NULL, 0) < 0 || size < sizeof(int)) return -1;
+  char *raw = malloc(size);
+  if (!raw) return -1;
+  if (sysctl(mib, 3, raw, &size, NULL, 0) < 0) { free(raw); return -1; }
+  int argc; memcpy(&argc, raw, sizeof argc);
+  char *p = raw + sizeof argc, *end = raw + size;
+  while (p < end && *p) p++;                 /* the executable's path */
+  while (p < end && !*p) p++;                /* padding */
+  int n = 0;
+  for (int i = 0; i < argc && p < end; i++) {
+    size_t l = strnlen(p, (size_t)(end - p));
+    if (n + (int)l + 2 > cap) break;
+    if (i) buf[n++] = ' ';
+    memcpy(buf + n, p, l); n += (int)l;
+    p += l + 1;
+  }
+  buf[n] = 0;
+  free(raw);
+  return n;
+}
+#elif defined(__linux__)
+int ghs_proc_args(int pid, char *buf, int cap) {
+  char path[64];
+  snprintf(path, sizeof path, "/proc/%d/cmdline", pid);
+  int fd = open(path, O_RDONLY);
+  if (fd < 0) return -1;
+  ssize_t n = read(fd, buf, (size_t)cap - 1);
+  close(fd);
+  if (n < 0) return -1;
+  for (ssize_t i = 0; i + 1 < n; i++) if (!buf[i]) buf[i] = ' ';
+  buf[n] = 0;
+  return (int)strlen(buf);
+}
+#else
+int ghs_proc_args(int pid, char *buf, int cap) { (void)pid; (void)buf; (void)cap; return -1; }
+#endif
