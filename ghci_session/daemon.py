@@ -12,6 +12,7 @@ import threading
 import time
 
 from . import config, watch
+from .paths import sock_path  # noqa: F401  (re-exported: tests and older callers)
 from .repl import Repl, ReplDied, ReplTimeout, strip_ansi
 
 PKG_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,14 +30,6 @@ def write_atomic(path: str, text: str) -> None:
     with open(tmp, "w") as fh:
         fh.write(text)
     os.replace(tmp, path)
-
-
-def sock_path(state_dir: str) -> str:
-    """A short, collision-free unix socket path (macOS caps sun_path near 104 bytes, which a nested worktree
-    easily exceeds), unique per absolute state dir."""
-    base = f"/tmp/ghci-session-{os.getuid()}"
-    os.makedirs(base, exist_ok=True, mode=0o700)
-    return os.path.join(base, hashlib.sha1(os.path.abspath(state_dir).encode()).hexdigest()[:16] + ".sock")
 
 
 def scan(root: str, dirs: list[str], exts: tuple) -> dict[str, float]:
@@ -147,7 +140,38 @@ def pid_alive(pid: int) -> bool:
         return True
 
 
+_GHC_VERSION: dict = {}
+
+
 def ghc_version() -> tuple:
+    """(major, minor) of the `ghc` on PATH, asked once per daemon and remembered on disk beside the compiler's
+    own path and mtime (asking is 50 ms of every boot)."""
+    import shutil
+    exe = os.path.realpath(shutil.which("ghc") or "")
+    if exe in _GHC_VERSION:
+        return _GHC_VERSION[exe]
+    cache = f"/tmp/ghci-session-{os.getuid()}/ghc-version.json"
+    try:
+        key = f"{exe}:{os.path.getmtime(exe)}"
+        with open(cache) as fh:
+            j = json.load(fh)
+        if j.get("key") == key:
+            _GHC_VERSION[exe] = tuple(j["version"])
+            return _GHC_VERSION[exe]
+    except (OSError, ValueError, KeyError):
+        key = None
+    v = _ghc_version_ask()
+    _GHC_VERSION[exe] = v
+    try:
+        if key and v != (0, 0):
+            os.makedirs(os.path.dirname(cache), exist_ok=True, mode=0o700)
+            write_atomic(cache, json.dumps({"key": key, "version": list(v)}))
+    except OSError:
+        pass
+    return v
+
+
+def _ghc_version_ask() -> tuple:
     try:
         v = subprocess.run(["ghc", "--numeric-version"], capture_output=True, text=True, timeout=20).stdout.strip()
         return tuple(int(x) for x in v.split(".")[:2])
@@ -341,6 +365,18 @@ class Session:
 
     def build_hygiene(self) -> None:
         script = os.path.join(PKG_DIR, "hygiene", "build.sh")
+        # Up to date? The libraries are newer than their sources, the script, and the compiler they were built
+        # against. Asked here, in a few stats, rather than by running the script (0.15 s to find that out).
+        clib_dir = os.path.join(self.conf["state_dir"], "clib")
+        try:
+            import shutil
+            ghc = os.path.realpath(shutil.which("ghc") or "")
+            srcs = [script, ghc] + glob.glob(os.path.join(PKG_DIR, "hygiene", "c", "*.c"))
+            libs = [os.path.join(clib_dir, n) for n in ("libghscafs.dylib", "libghscensus.dylib", "libghsloader.dylib")]
+            if ghc and all(os.path.exists(l) for l in libs) and min(map(os.path.getmtime, libs)) > max(map(os.path.getmtime, srcs)):
+                return
+        except OSError:
+            pass
         r = subprocess.run([script, os.path.join(self.conf["state_dir"], "clib")], capture_output=True, text=True, cwd=self.root)
         self.log("hygiene build: " + (r.stderr.strip() or r.stdout.strip() or "ok").replace("\n", "; "))
 
@@ -356,8 +392,13 @@ class Session:
             repl.command(f"GHC.Conc.setNumCapabilities {int(self.cfg['capabilities'])}", timeout=60)
         for expr in self.cfg["preload"]:
             repl.command(expr, timeout=120)
-        for m in self.cfg["modules"]:
-            repl.command(f":module + {m}", timeout=60)
+        mods = list(self.cfg["modules"])
+        if mods:
+            # one command for all of them (forty round trips were 0.3 s of a boot); one at a time only if
+            # that fails, so a single missing module does not cost the rest
+            if RE_NOMODULE.search(repl.command(":module + " + " ".join(mods), timeout=120)):
+                for m in mods:
+                    repl.command(f":module + {m}", timeout=60)
         if self.cfg["hygiene"]:
             out = repl.command(f":module + {self.hm} GHC.Stats", timeout=60)
             self.hygiene_on = not RE_NOMODULE.search(out)
@@ -546,15 +587,17 @@ class Session:
         first; this never makes anything wait longer than it would have."""
         def go():
             with self._work:
-                if self.stopping.is_set() or self.evaluated or not (self.repl and self.repl.alive):
+                if self.stopping.is_set() or not self.unlink_due or not (self.repl and self.repl.alive):
                     return
                 try:
                     t0 = time.time()
-                    for expr in self.cfg["warm"]:
-                        self.repl.command(expr, timeout=120)
-                    self.evaluated = True
+                    linked = self.evaluated
+                    if not linked:
+                        for expr in self.cfg["warm"]:
+                            self.repl.command(expr, timeout=120)
+                        self.evaluated = True
                     self.unlink_cafs()
-                    self.log(f"[warm] {time.time() - t0:.2f}s after a compile-only reload")
+                    self.log(f"[warm] {time.time() - t0:.2f}s after the verdict" + ("" if linked else " (linked the reloaded code first)"))
                 except Exception as e:  # noqa: BLE001
                     self.log(f"warm failed: {e}")
 
@@ -1106,7 +1149,10 @@ class Session:
             self.set_status(f"DEAD: {e}", str(e).splitlines()[-8:])
             raise
         try:   # `cabal repl` may chdir into the package: a check that writes a relative path lands there
-            self.cwd = self.repl.command(":!pwd", timeout=60).strip().splitlines()[-1] or self.root
+            # GHCi's own answer, no shell: "current working directory:\n  /path"
+            shown = self.repl.command(":show paths", timeout=60).splitlines()
+            i = next(k for k, l in enumerate(shown) if "current working directory" in l)
+            self.cwd = shown[i + 1].strip() or self.root
         except Exception:  # noqa: BLE001
             self.cwd = self.root
         self.context_ok = True
@@ -1147,7 +1193,10 @@ class Session:
             out = self._reload(do_check, refork, async_refork)
             self.phases_done("reload", t0)
         self.mem_sample_async()
-        if self.cfg["warm"] and not self.evaluated and self.compiled():
+        if self.unlink_due and self.compiled() and (self.evaluated or self.cfg["warm"]):
+            # The verdict does not depend on the unlink or its GC (0.2 s at 100 MB live, 0.5 s at 250 MB), so they
+            # run once it is published. After a check the reloaded code is already linked; after a compile-only
+            # reload the `warm` expressions link it first.
             self.warm_async()
         if self._refork_pending is not None:   # only now: the verdict it amends is on disk
             self._refork_thread, self._refork_pending = self._refork_pending, None
@@ -1189,8 +1238,7 @@ class Session:
         with self.phase("unlink"):
             self.unlink_cafs()   # "reload": now, which reaches the generation BEFORE the one just replaced
         self.after_load(out, do_check=do_check, t0=t0)
-        with self.phase("unlink"):
-            self.unlink_cafs()   # if the check ran; else after the next evaluation
+        # (if the check ran, the unlink and its GC follow in the background, once the verdict is out: reload())
         with self.phase("servers_running"):
             running = {l for l in self.server_labels() if self.server_running(l)}
         if running or self.owed:
@@ -1419,6 +1467,9 @@ class Session:
             self.mem_sample_async()
         except Exception as e:  # noqa: BLE001
             self.log(f"boot failed: {e}")
+            if self.last_status.startswith("starting"):   # a failure that named itself keeps its name
+                self._hold = 0
+                self.set_status(f"DEAD: boot failed: {type(e).__name__}: {e}")
             if self.repl:
                 self.repl.stop()
             self._unlink(os.path.join(self.dir, "pid"))

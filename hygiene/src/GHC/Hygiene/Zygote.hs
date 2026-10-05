@@ -221,25 +221,23 @@ zygoteAlive c = do
 
 -- | SIGTERM, wait up to @n@ tenths of a second, then SIGKILL.
 --
--- Returns 'True' if the child was gone without needing the kill.
+-- Returns 'True' if the child was gone without needing the kill. It looks every 10 ms: a server that exits
+-- on the signal is usually gone within a few, and the stop is the first half of every re-fork.
 zygoteStop :: ZygoteChild -> Int -> IO Bool
 zygoteStop c tenths = do
   _ <- try (signalProcess sigTERM (zcPid c)) :: IO (Either SomeException ())
-  gone <- waitGone tenths
+  gone <- waitGone (tenths * 10)
   if gone then pure True else do
     _ <- try (signalProcess sigKILL (zcPid c)) :: IO (Either SomeException ())
-    _ <- waitGone 20
+    _ <- waitGone 200
     pure False
   where
+    waitGone :: Int -> IO Bool
     waitGone 0 = not <$> zygoteAlive c
     waitGone k = do
+      threadDelay 10000
       alive <- zygoteAlive c
-      if not alive then pure True else do
-        threadDelayTenth
-        waitGone (k - 1)
-
-threadDelayTenth :: IO ()
-threadDelayTenth = threadDelay 100000
+      if not alive then pure True else waitGone (k - 1)
 
 -- | Drain every exited child. GHCi installs no SIGCHLD handling, so a forked
 -- server that exits stays a zombie until someone asks for its status.

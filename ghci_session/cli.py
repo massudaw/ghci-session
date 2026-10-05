@@ -8,8 +8,11 @@ import subprocess
 import sys
 import time
 
-from . import config, gc
-from .daemon import Session, sock_path
+from . import config
+from .paths import sock_path
+
+# The daemon and gc modules are imported where they are used: they pull in a third of the client's start-up
+# (hashing, ctypes, the watcher), and `eval` -- the command run most -- needs none of it.
 
 INIT_TEMPLATE = {
     "default": "lib",
@@ -127,7 +130,7 @@ def cmd_stop(conf, args) -> int:
         if not pid_of(conf, name):
             print(f"{name}: stopped")
             return 0
-        time.sleep(0.2)
+        time.sleep(0.05)
     os.kill(pid, signal.SIGKILL)
     print(f"{name}: killed")
     return 0
@@ -147,6 +150,7 @@ def cmd_status(conf, args) -> int:
                     continue
                 if first.startswith("stopped") and first != "stopped":
                     print(f"{name}: {first}")
+    from . import gc
     left = gc.find(conf)
     k = len(left["daemons"]) + len(left["servers"]) + len(left["builds"])
     if k:
@@ -291,6 +295,11 @@ def cmd_autostop(conf, args) -> int:
     return 0
 
 
+def cmd_gc(conf, args) -> int:
+    from . import gc
+    return 0 if gc.run(conf, args.dry_run, args.days) >= 0 else 1
+
+
 def cmd_log(conf, args) -> int:
     name = pick(conf, args.target)
     path = os.path.join(state(conf, name), args.which)
@@ -384,7 +393,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("gc", help="reap orphaned daemons, servers and build processes of THIS project; prune old state")
     p.add_argument("-n", "--dry-run", action="store_true")
     p.add_argument("--days", type=float, default=0, help="also prune state dirs of sessions idle longer than this")
-    p.set_defaults(fn=lambda conf, args: 0 if gc.run(conf, args.dry_run, args.days) >= 0 else 1)
+    p.set_defaults(fn=cmd_gc)
     sub.add_parser("init", help="write a ghci-session.json here").set_defaults(fn=None, cmd="init")
     p = sub.add_parser("_daemon")
     p.add_argument("target")
@@ -400,6 +409,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ghci-session: {e}", file=sys.stderr)
         return 2
     if args.cmd == "_daemon":
+        from .daemon import Session
         Session(conf, args.target, boot_check=not args.no_check).run()
         return 0
     return args.fn(conf, args)
