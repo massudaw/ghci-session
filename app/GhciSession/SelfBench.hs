@@ -58,6 +58,11 @@ run args = do
   _ <- evaluate (B.length wire)
   bench "json: parse that reply (the client)" 5 (evaluate (either length (maybe 0 T.length . lookupText "out") (parseJsonBS wire)))
 
+  -- hashing: what a server's code is (its object files)
+  let blob = B.replicate (64 * 1024 * 1024) 120
+  B.writeFile "/tmp/ghci-session-selfbench.blob" blob
+  bench "hash a 64 MB file" 5 (hashFile "/tmp/ghci-session-selfbench.blob" 1)
+
   -- a process table
   bench "the process table (was: ps, 20 ms)" 20 (processTable >>= evaluate . length)
   bench "pidAlive (was: ps, 20 ms)" 20 (pidAlive 1)

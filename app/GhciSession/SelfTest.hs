@@ -98,6 +98,16 @@ run = do
   h2 <- hashString "abd" 0
   check "hash: differs on content" (h1 /= h2 && h1 /= 0)
   eq "hash: 16 hex digits" (length (showHash h1)) 16
+  tmp0 <- getTemporaryDirectory
+  let hf body = writeFile (tmp0 </> "ghs-selftest-h.bin") body >> hashFile (tmp0 </> "ghs-selftest-h.bin") 1
+  ha <- hf (replicate 1000 'a')
+  hb <- hf (replicate 999 'a' ++ "b")           -- one byte, in the last partial stripe
+  hc <- hf (replicate 1001 'a')                  -- one byte longer
+  hd <- hf ('b' : replicate 999 'a')             -- one byte, in the first stripe
+  ha' <- hf (replicate 1000 'a')
+  he <- hf ""
+  check "file hash: stable, never 0, and moved by any one byte or the length" (ha == ha' && all (/= 0) [ha, hb, hc, hd, he] && length (filter (== ha) [hb, hc, hd, he]) == 0)
+  hashFile (tmp0 </> "no-such-file") 1 >>= \h -> eq "file hash: 0 for a file that cannot be read" h 0
 
   -- configuration, in a scratch project
   pid <- getProcessID

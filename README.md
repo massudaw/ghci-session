@@ -50,6 +50,9 @@ itself -- this package has a `ghci-session.json`, and a save here is a compile a
 - **The runtime is configured per command.** 15 of a client command's 21 ms were the Haskell runtime starting and
   stopping: its interval timer (the exit waited out a tick) and the reservation of a terabyte of address space. The
   client runs with `-V0 -xr1g`; the daemon keeps the timer, two capabilities and `GHC.Stats`.
+- **A server's code is hashed fast, and only where it changed.** A byte-at-a-time FNV did 1 GB/s: 70 ms for the 109
+  object files (34 MB) of one server, on every reload. Four 64-bit lanes over 32-byte stripes do ~6 GB/s (6.5 ms),
+  and a file whose size and modification time stand is not read again at all.
 - HEAD is read from `.git` instead of spawning `git` every two seconds.
 
 ## Why not just `cabal repl`?

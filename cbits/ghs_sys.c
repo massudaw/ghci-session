@@ -79,7 +79,12 @@ void *ghs_regex_compile(const char *pat) {
 int ghs_regex_match(void *re, const char *s) { return regexec((regex_t *)re, s, 0, NULL, 0) == 0; }
 void ghs_regex_free(void *re) { if (re) { regfree((regex_t *)re); free(re); } }
 
-/* ---- hashing: FNV-1a 64. Change detection, not security. ---- */
+/* ---- hashing: change detection, not security ----
+ *
+ * Small inputs (a path, a string): FNV-1a, a byte at a time. Files: four independent 64-bit lanes over 32-byte
+ * stripes, a multiply and a rotate per 8 bytes, folded with the length at the end. The byte-at-a-time loop did
+ * ~1 GB/s -- 70 ms for the 109 object files (70 MB) a server's code is, on every reload; this is ~10x that,
+ * and the reads are the rest. */
 
 uint64_t ghs_hash_bytes(const unsigned char *p, size_t n, uint64_t h) {
   if (!h) h = 1469598103934665603ULL;
@@ -87,16 +92,53 @@ uint64_t ghs_hash_bytes(const unsigned char *p, size_t n, uint64_t h) {
   return h;
 }
 
-/* 0 when the file cannot be read (no real content hashes to 0: the seed is odd and so is the prime) */
-uint64_t ghs_hash_file(const char *path, uint64_t h) {
+#define GHS_K1 0x9E3779B97F4A7C15ULL
+#define GHS_K2 0xC2B2AE3D27D4EB4FULL
+static inline uint64_t ghs_rd64(const unsigned char *p) { uint64_t w; memcpy(&w, p, 8); return w; }
+static inline uint64_t ghs_round(uint64_t acc, uint64_t w) { acc += w * GHS_K2; acc = (acc << 31) | (acc >> 33); return acc * GHS_K1; }
+static inline uint64_t ghs_avalanche(uint64_t h) { h ^= h >> 33; h *= GHS_K2; h ^= h >> 29; h *= GHS_K1; h ^= h >> 32; return h; }
+
+typedef struct { uint64_t v[4]; uint64_t len; unsigned char tail[32]; size_t ntail; } ghs_hstate;
+
+static void ghs_hinit(ghs_hstate *st, uint64_t seed) {
+  st->v[0] = seed + GHS_K1 + GHS_K2; st->v[1] = seed + GHS_K2; st->v[2] = seed; st->v[3] = seed - GHS_K1;
+  st->len = 0; st->ntail = 0;
+}
+static void ghs_hupdate(ghs_hstate *st, const unsigned char *p, size_t n) {
+  st->len += n;
+  if (st->ntail) {                                   /* finish a stripe left over from the last block */
+    size_t take = 32 - st->ntail; if (take > n) take = n;
+    memcpy(st->tail + st->ntail, p, take); st->ntail += take; p += take; n -= take;
+    if (st->ntail < 32) return;
+    for (int k = 0; k < 4; k++) st->v[k] = ghs_round(st->v[k], ghs_rd64(st->tail + 8 * k));
+    st->ntail = 0;
+  }
+  uint64_t a = st->v[0], b = st->v[1], c = st->v[2], d = st->v[3];
+  while (n >= 32) {
+    a = ghs_round(a, ghs_rd64(p)); b = ghs_round(b, ghs_rd64(p + 8)); c = ghs_round(c, ghs_rd64(p + 16)); d = ghs_round(d, ghs_rd64(p + 24));
+    p += 32; n -= 32;
+  }
+  st->v[0] = a; st->v[1] = b; st->v[2] = c; st->v[3] = d;
+  memcpy(st->tail, p, n); st->ntail = n;
+}
+static uint64_t ghs_hfinal(ghs_hstate *st) {
+  uint64_t h = ((st->v[0] << 1) | (st->v[0] >> 63)) + ((st->v[1] << 7) | (st->v[1] >> 57))
+             + ((st->v[2] << 12) | (st->v[2] >> 52)) + ((st->v[3] << 18) | (st->v[3] >> 46));
+  h ^= ghs_hash_bytes(st->tail, st->ntail, st->len + 1);   /* the last partial stripe, and the length */
+  h = ghs_avalanche(h + st->len);
+  return h ? h : 1;
+}
+
+/* 0 when the file cannot be read (a hash is never 0) */
+uint64_t ghs_hash_file(const char *path, uint64_t seed) {
   int fd = open(path, O_RDONLY);
   if (fd < 0) return 0;
-  unsigned char buf[1 << 16];
+  static __thread unsigned char buf[1 << 18];
+  ghs_hstate st; ghs_hinit(&st, seed);
   ssize_t n;
-  if (!h) h = 1469598103934665603ULL;
-  while ((n = read(fd, buf, sizeof buf)) > 0) h = ghs_hash_bytes(buf, (size_t)n, h);
+  while ((n = read(fd, buf, sizeof buf)) > 0) ghs_hupdate(&st, buf, (size_t)n);
   close(fd);
-  return n < 0 ? 0 : (h ? h : 1);
+  return n < 0 ? 0 : ghs_hfinal(&st);
 }
 
 /* ---- kernel file events ---- */

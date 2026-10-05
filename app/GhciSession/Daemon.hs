@@ -25,6 +25,8 @@ import System.Exit (ExitCode (..))
 import System.FilePath (makeRelative, takeDirectory, takeFileName, (</>))
 import System.IO
 import System.Info (os)
+import Data.Word (Word64)
+import System.Posix.Files (FileStatus, fileSize, getFileStatus, modificationTimeHiRes)
 import System.Posix.IO (fdToHandle)
 import System.Posix.Process (getProcessID)
 import System.Posix.Signals (sigKILL, sigTERM, signalProcess)
@@ -75,6 +77,7 @@ data S = S
   , vOkPrefix :: IORef String, vLiveMb :: IORef String
   , vMem :: IORef (Maybe (Double, Double)), vMemDone :: IORef (Maybe (MVar ()))
   , vSpawned :: IORef Double
+  , vHashes :: IORef (M.Map FilePath (Integer, Double, Word64))   -- ^ a file's hash, while its size and mtime stand
   }
 
 rd :: IORef a -> IO a
@@ -605,8 +608,9 @@ serverVerify :: S -> Server -> Int -> IO Bool
 serverVerify s z pid = case svPort z of
   Nothing -> do
     -- no port to watch: give a child that dies at once the moment to do it
+    -- (60 ms in three looks: asking is free now, and a child that dies of a bad action does so in a few)
     let wait n = do
-          threadDelay 50000
+          threadDelay 20000
           a <- pidAlive pid
           if a && n > (1 :: Int) then wait (n - 1) else pure a
     alive <- wait 3
@@ -748,8 +752,13 @@ codeFingerprint s z = do
   case objs of
     Nothing -> pure Nothing
     Just files -> do
-      h1 <- foldM (\h p -> case h of { Nothing -> pure Nothing; Just x -> hashString (rel s p) x >>= \x' -> (\r -> if r == 0 then Nothing else Just r) <$> hashFile p x' }) (Just 1) (sort files)
-      h2 <- foldM (\h p -> case h of { Nothing -> pure Nothing; Just x -> (\r -> if r == 0 then Nothing else Just r) <$> hashFile (sRoot s </> p) x }) h1 (gFingerprintFiles (sCfg s))
+      let step named h p = case h of
+            Nothing -> pure Nothing
+            Just x -> do
+              fh <- fileHash s p
+              if fh == 0 then pure Nothing else Just <$> hashString (named p ++ ":" ++ showHash fh) x
+      h1 <- foldM (step (rel s)) (Just 1) (sort files)
+      h2 <- foldM (step id) h1 (map (sRoot s </>) (gFingerprintFiles (sCfg s)))
       case h2 of
         Nothing -> pure Nothing   -- something we cannot see: make no claim
         Just x -> Just . showHash <$> hashString (svSpec z ++ show (svEnv z)) x
@@ -776,6 +785,23 @@ codeFingerprint s z = do
         isD <- doesDirectoryExist p
         if isD then findObjs p
           else pure [ p | ".o" `isSuffixOf` n, ("/" ++ sObjRel s ++ "/") `isInfixOf` p ]
+
+-- | A file's content hash, 0 if it cannot be read. Remembered while the file's size and modification time
+-- stand: a reload recompiles a module or two, and the other hundred objects need a stat, not a read.
+fileHash :: S -> FilePath -> IO Word64
+fileHash s p = do
+  st <- try (getFileStatus p) :: IO (Either IOException FileStatus)
+  case st of
+    Left _ -> pure 0
+    Right f -> do
+      let key = (fromIntegral (fileSize f), realToFrac (modificationTimeHiRes f))
+      cache <- rd (vHashes s)
+      case M.lookup p cache of
+        Just (sz, mt, h) | (sz, mt) == key -> pure h
+        _ -> do
+          h <- hashFile p 1
+          when (h /= 0) (modifyIORef' (vHashes s) (M.insert p (fst key, snd key, h)))
+          pure h
 
 codeUnchanged :: S -> String -> IO Bool
 codeUnchanged s label = case serverSpec s label of
@@ -1247,7 +1273,7 @@ runDaemon conf name bootCheck = do
          <*> newIORef 0 <*> newIORef root <*> newIORef t <*> newIORef 0
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
-         <*> newIORef t
+         <*> newIORef t <*> newIORef M.empty
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
