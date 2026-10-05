@@ -10,6 +10,11 @@ description:
   collection. The LIBRARY is for a project's own code: "GHC.Hygiene.Census" says what is holding the heap,
   "GHC.Hygiene.Zygote" hands a server's state to its replacement. See README.md.
 license:            MIT
+license-files:      LICENSE vendor/ghc-9.14.1/LICENSE
+author:             Wesley Massuda
+maintainer:         wesley.massuda@gmail.com
+homepage:           https://github.com/massudaw/ghci-session
+category:           Development
 build-type:         Simple
 extra-source-files: README.md hygiene/c/rts_syms.h
 

@@ -72,9 +72,9 @@ int ghs_loader_stats(void) {
         if (!own) { none++; continue; }
         int s = *(int *)(own + OC_STATUS); if (s >= 0 && s < 8) by_status[s]++;
         const char *fn = *(const char **)(own + 8);
-        if (fn && strstr(fn, ".a(")) archive++; else if (fn && strstr(fn, ".sprk/")) { objdir++; if (s == 4) unl_objdir++; }
+        if (fn && strstr(fn, ".a(")) archive++; else if (fn && strstr(fn, "/obj/")) { objdir++; if (s == 4) unl_objdir++; }
       }
-      fprintf(stderr, "loader_stats: dyn_caf_list owners: no static owner %ld; by status [ready %ld, unloaded %ld, other %ld]; from archives %ld, from .sprk obj dir %ld (of it unloaded %ld)\n",
+      fprintf(stderr, "loader_stats: dyn_caf_list owners: no static owner %ld; by status [ready %ld, unloaded %ld, other %ld]; from archives %ld, from a session obj dir %ld (of it unloaded %ld)\n",
               none, by_status[3], by_status[4], by_status[0] + by_status[1] + by_status[2], archive, objdir, unl_objdir);
       free(rs);
     }

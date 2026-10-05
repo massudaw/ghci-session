@@ -209,7 +209,7 @@ memNow = do
 
 
 -- | What ONE value retains (already evaluated or not), alone: bytes, closures and its constructors.
--- @Examples.MMHeap.censusOf "idx" (Examples.Projection.pjIdx p)@
+-- @GHC.Hygiene.Census.censusOf "idx" (My.Module.index v)@
 censusOf :: String -> a -> IO ()
 censusOf label x = withCensus $ \c -> do
   _ <- evaluate x
@@ -228,7 +228,7 @@ censusOf label x = withCensus $ \c -> do
 
 -- | Time an action in the session: wall, GC and allocation, and the live heap before and after. The tool
 -- for "is this slow, and is it the GC or the work?" without a profiling build.
--- @Examples.MMHeap.benchOf "quickBase" Examples.MMQuickEdit.quickBase@
+-- @GHC.Hygiene.Census.benchOf "rebuild" My.Module.rebuild@
 benchOf :: String -> IO a -> IO a
 benchOf label act = do
   performMajorGC

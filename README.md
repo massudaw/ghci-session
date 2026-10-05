@@ -3,8 +3,9 @@
 A warm GHCi per project, behind a small daemon, with the two things a long GHCi session needs and plain
 `cabal repl` does not give you: **a verdict you can trust** and **memory that does not grow with every edit**.
 
-Extracted from the `tools/msq` tooling of this repository, with nothing project-specific in it. (`tools/msq` is
-untouched and still what the sprinkler models use; moving it onto this tool is the next step, see *Status*.)
+It grew out of the session tooling of a large Haskell modelling project (several hundred modules, servers forked
+from the repl, days-long sessions) and has nothing of that project in it. **It needs GHC 9.14.1 and has only been
+run on macOS (arm64)**: see *Status*.
 
 ```
 ghci-session start          # boot once, leave it running
@@ -486,8 +487,7 @@ tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reprodu
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
 census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 69 self-tests,
-the tour (123 steps) and the end-to-end tests. This repository's own sessions run on it (`tools/msq` is a thin front
-end: it keeps `ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands).
+the tour (123 steps) and the end-to-end tests. This package's own two sessions (`tool`, `engine`) run on it.
 
 Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler
 other than GHC 9.14.1: the engine is that compiler's front end, so another needs its sources vendored and has not

@@ -293,7 +293,7 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
 int ghs_prune_cafs(void) { return ghs_prune_cafs_stats(NULL, NULL); }
 
 /* Every CAF the RTS roots, with the nearest symbol dladdr knows (for a heap census by owner:
- * Examples.MMHeap.cafReport). Fills up to `cap` entries; returns how many CAFs there are
+ * GHC.Hygiene.Census.cafReport). Fills up to `cap` entries; returns how many CAFs there are
  * (-1: an RTS we cannot read). The addresses are static closures. */
 int ghs_caf_list(uintptr_t *addrs, const char **names, int cap) {
   if (!rts_found()) return -1;

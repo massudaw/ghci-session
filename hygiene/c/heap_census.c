@@ -1,5 +1,5 @@
 /* A heap census in C: what a value (or every CAF, or every StablePtr-held value) retains, by
- * constructor, and the Strings among it -- Examples.MMHeap.censusCafs / censusKept.
+ * constructor, and the Strings among it -- GHC.Hygiene.Census.cafReport / keptReport.
  *
  * Why C. The same walk in Haskell (GHC.Exts.Heap) costs ~3 us and ~3 KB of allocation a closure,
  * a StableName a closure (the RTS table is scanned by every major GC), and took minutes over the
@@ -221,7 +221,7 @@ int ghs_cen_root(StgClosure *root, const char *label, int64_t cap) {
   return ri;
 }
 
-/* A StablePtr-held value (an msq `keptInMemory` / `keptRef`). */
+/* A StablePtr-held value (GHC.Hygiene.Census.keep). */
 int ghs_cen_stable(void *sp, const char *label, int64_t cap) {
   StgClosure *c = (StgClosure *)deRefStablePtr((StgStablePtr)sp);
   return ghs_cen_root(c, label, cap);
