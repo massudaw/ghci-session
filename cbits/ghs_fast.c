@@ -137,9 +137,12 @@ static int session_socket(const char *sdir, const char *session) {
 
 /* -1: not handled here; otherwise the exit status */
 int ghs_fast_client(int argc, char **argv) {
-  if (argc < 3 || strcmp(argv[1], "eval")) return -1;
+  const char *root = NULL;
+  int cmd = 1;
+  if (argc > 3 && !strcmp(argv[1], "--root")) { root = argv[2]; cmd = 3; }      /* (a project's wrapper says where) */
+  if (argc < cmd + 2 || strcmp(argv[cmd], "eval")) return -1;
   const char *session = NULL, *expr = NULL, *timeout = NULL;
-  for (int i = 2; i < argc; i++) {
+  for (int i = cmd + 1; i < argc; i++) {
     const char *a = argv[i];
     if (!strcmp(a, "-s") || !strcmp(a, "-t") || !strcmp(a, "--session")) { if (++i >= argc) return -1; session = argv[i]; }
     else if (!strcmp(a, "--timeout")) { if (++i >= argc) return -1; timeout = argv[i]; }
@@ -151,9 +154,14 @@ int ghs_fast_client(int argc, char **argv) {
   if (timeout) { char *e; strtod(timeout, &e); if (*e || e == timeout) return -1; }
 
   char dir[4096], path[4400];
-  if (!getcwd(dir, sizeof dir)) return -1;
   char *conf = NULL; size_t cn = 0;
-  for (;;) {
+  if (root) {
+    if (strlen(root) >= sizeof dir) return -1;
+    strcpy(dir, root);
+    snprintf(path, sizeof path, "%s/ghci-session.json", dir);
+    if (!(conf = slurp(path, &cn))) return -1;
+  } else if (!getcwd(dir, sizeof dir)) return -1;
+  while (!conf) {
     snprintf(path, sizeof path, "%s/ghci-session.json", dir);
     if ((conf = slurp(path, &cn))) break;
     char *sl = strrchr(dir, '/');
