@@ -1,0 +1,47 @@
+tools/ghci_cafs/build.sh
+  s_6e55a4691f1b7b::t_a3873a033ff9cc 26-28
+  s_6e55a4691f1b7b::t_48a838b346530c 13-16,22,52-53,66
+ghci-session/hygiene/repro/src/R.hs
+  s_6e55a4691f1b7b::t_d890c712f28929 1-35
+tools/ghci_cafs/ghci_cafs.c
+  s_6e55a4691f1b7b::t_4815aae88940b0 43,65-82,282,296,302
+ghci-session/hygiene/repro/.gitignore
+  s_6e55a4691f1b7b::t_cac4177432602a 1-2
+ghci-session/hygiene/repro/cabal.project
+  s_6e55a4691f1b7b::t_d890c712f28929 1-2
+ghci-session/hygiene/repro/run.sh
+  s_6e55a4691f1b7b::t_d890c712f28929 1-25
+ghci-session/hygiene/repro/README.md
+  s_6e55a4691f1b7b::t_cac4177432602a 1-32
+  s_6e55a4691f1b7b::t_1e46f0a13df90c 33-36
+ghci-session/hygiene/c/ghci_cafs.c
+  s_6e55a4691f1b7b::t_d890c712f28929 296
+  s_6e55a4691f1b7b::t_4815aae88940b0 43,65-82,282,302
+ghci-session/tests/test_e2e.py
+  s_6e55a4691f1b7b::t_cac4177432602a 219-235
+ghci-session/hygiene/repro/caf-repro.cabal
+  s_6e55a4691f1b7b::t_d890c712f28929 1-10
+ghci-session/hygiene/build.sh
+  s_6e55a4691f1b7b::t_a3873a033ff9cc 28-30
+  s_6e55a4691f1b7b::t_48a838b346530c 18-20
+ghci-session/README.md
+  s_6e55a4691f1b7b::t_b7d4c7a56a6093 78-81
+ghci-session/ghci_session/daemon.py
+  s_6e55a4691f1b7b::t_caa520edf59816 504-506
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4de9d96fcf4acc7f818de6142c7ba9cf6cb6158e",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
