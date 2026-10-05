@@ -1,0 +1,95 @@
+sprinkler-solver-estela/web/minigames.js
+  s_007485e9a70e7e::t_384011c3b6e9eb 221-313,1082-1201
+  s_007485e9a70e7e::t_952ae06e8ae678 1202
+sprinkler-solver-estela/README.md
+  s_007485e9a70e7e::t_8b0cfbe1269041 590
+  s_007485e9a70e7e::t_eaaa0c1670c441 587-589,591-596
+"sprinkler-solver-estela/vault/rooms/Book Nook.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 1-10
+"sprinkler-solver-estela/vault/activities/Animal Doodles.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-9,11-13,15-16
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+  s_007485e9a70e7e::t_8b0cfbe1269041 10
+"sprinkler-solver-estela/vault/activities/Cute Faces.md"
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-13,15-16
+"sprinkler-solver-estela/vault/activities/Make a Mini Book.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-4,6-14
+  s_007485e9a70e7e::t_8b0cfbe1269041 5
+"sprinkler-solver-estela/vault/assets/Sprite desk.md"
+  s_007485e9a70e7e::t_eaaa0c1670c441 16
+"sprinkler-solver-estela/vault/concepts/Kawaii Basics.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-33
+"sprinkler-solver-estela/vault/activities/Doodle Anything.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 5
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-4,6-13,15-16
+sprinkler-solver-estela/vault/bundle.json
+  s_007485e9a70e7e::t_384011c3b6e9eb 6,30,33-35,52,64,147,215,222,249,274,292,309-310
+  s_007485e9a70e7e::t_c9c54dbcf73f3f 311-312,332,375,410,413,441
+"sprinkler-solver-estela/vault/code/Game Code.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 11
+"sprinkler-solver-estela/vault/concepts/Book Making.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-37
+"sprinkler-solver-estela/vault/concepts/Kawaii Faces.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-33
+sprinkler-solver-estela/vault/process.txt
+  s_007485e9a70e7e::t_263e386a8ea6b2 259-269,467-475,542-552
+"sprinkler-solver-estela/vault/concepts/Kawaii Animals.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 1-33
+"sprinkler-solver-estela/vault/concepts/People Doodles.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-33
+"sprinkler-solver-estela/vault/concepts/Doodle Design.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-33
+"sprinkler-solver-estela/vault/code/Game zine.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-8
+  s_007485e9a70e7e::t_eaaa0c1670c441 9-12
+"sprinkler-solver-estela/vault/rooms/Doodle Corner.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-10
+"sprinkler-solver-estela/vault/routines/Afternoon Routine.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 6,9
+sprinkler-solver-estela/art/PROMPTS.md
+  s_007485e9a70e7e::t_eaaa0c1670c441 136-164
+sprinkler-solver-estela/vault/process.json
+  s_007485e9a70e7e::t_263e386a8ea6b2 1
+"sprinkler-solver-estela/vault/code/Game doodle.md"
+  s_007485e9a70e7e::t_eaaa0c1670c441 9-12
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-8
+"sprinkler-solver-estela/vault/houses/Art School.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 10,12
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+"sprinkler-solver-estela/vault/activities/Food Doodles.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 10
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-9,11-13,15-16
+sprinkler-solver-estela/vault/plan.json
+  s_007485e9a70e7e::t_263e386a8ea6b2 1
+"sprinkler-solver-estela/vault/concepts/Kawaii Food.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 1-33
+"sprinkler-solver-estela/vault/activities/Doodle Basics.md"
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-14
+sprinkler-solver-estela/src/Estela/World.hs
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 182,278,328
+"sprinkler-solver-estela/vault/activities/Doodle People.md"
+  s_007485e9a70e7e::t_8b0cfbe1269041 5
+  s_007485e9a70e7e::t_ab1e10ac14b5e5 1-4,6-13,15-16
+  s_007485e9a70e7e::t_eaaa0c1670c441 14
+sprinkler-solver-estela/vault/mastery.json
+  s_007485e9a70e7e::t_2a58d69302f36c 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7fd94e26465c3db0fc9d6034be7aa9eb446153ac",
+  "prompts": {},
+  "sessions": {
+    "s_007485e9a70e7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9cdacda1-9450-4683-8664-da232f7839e5",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
