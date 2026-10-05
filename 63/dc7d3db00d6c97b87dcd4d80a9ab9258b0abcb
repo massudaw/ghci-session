@@ -1,0 +1,38 @@
+sprinkler-solver-construction/src/Examples/ColchesterServices.hs
+  s_6e55a4691f1b7b::t_98202b27c41270 58-59,189-190,193,195,198
+sprinkler-solver-modeling/src/Examples/Projection.hs
+  s_6e55a4691f1b7b::t_e25c59f1cefaa8 77,121-122,140,195,207,210-215,474,953-955,960-961,964-982,1100,1135-1136,1144,1147,1183,1185,1382,1386,1389,1415,1419-1420
+sprinkler-solver-mm/src/Examples/MMFusion.hs
+  s_6e55a4691f1b7b::t_6cceb753a8c795 90
+  s_6e55a4691f1b7b::t_d96d30873ea655 365,750,752
+sprinkler-solver-mm/src/Examples/MMProjection.hs
+  s_6e55a4691f1b7b::t_6cceb753a8c795 70
+  s_6e55a4691f1b7b::t_80d0856b168f90 202,208,269,300,465,472
+  s_6e55a4691f1b7b::t_cbb1ccfd1a1242 680
+  s_6e55a4691f1b7b::t_ffa5daa1e76e1f 625,690,724-725,731,752-754,759
+sprinkler-solver-mm/src/Examples/MMQuickEdit.hs
+  s_6e55a4691f1b7b::t_423b07fa875dd9 44-45,57,60-62,65,102,187-188
+  s_6e55a4691f1b7b::t_f7ae679998a8be 189
+sprinkler-solver-construction/src/Examples/ColchesterConstraints.hs
+  s_6e55a4691f1b7b::t_98202b27c41270 166
+sprinkler-solver-mm/src/Examples/MMHeap.hs
+  s_6e55a4691f1b7b::t_50fc4f9addc75c 33,343-345
+  s_6e55a4691f1b7b::t_be9fe16ac22fb1 43-45,89,210,255,258,272,275,337,342,346-348
+  s_6e55a4691f1b7b::t_a74b1f6ad15780 338-341
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "63dc7d3db00d6c97b87dcd4d80a9ab9258b0abcb",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
