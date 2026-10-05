@@ -117,13 +117,17 @@ Measured on this package's own session (11 modules; macOS arm64, GHC 9.14.1), fr
 
 | operation | before | now | what changed |
 |---|---|---|---|
-| `eval -s NAME EXPR` | 13 ms | 8 ms | answered in C before the Haskell runtime starts (`cbits/ghs_fast.c`); 6 of the 8 are the executable being mapped |
+| `eval EXPR` | 13 ms | 8 ms | answered in C before the Haskell runtime starts (`cbits/ghs_fast.c`: the session named, or the only one running); 6 of the 8 are the executable being mapped |
 | `status` | 23 ms | 13 ms | the leftover scan asked for the ARGUMENTS of every child of launchd (324 of 402 processes); now only of those named like ours |
 | `gc -n` | 30 ms | 14 ms | the same |
 | save of a leaf module, with its check | 1.2 s | 0.4 s | the reload no longer costs a re-link of everything (below) |
 | reload with nothing changed, then the check | 1.0 s | 0.25 s | the same, and the check's own waits |
 | first `eval` after an edit | answer + 0.15 s | answer | the unlink and its GC run after the reply is out |
-| `start` with nothing for cabal to do | 5.7 s | 1.8 s | `start --fast` / `"fast_start": true`: cabal is not run (it is 3.4 s of re-planning and re-configuring to arrive at the same arguments) |
+| `stop` | 0.55 s | 0.03 s | the daemon's accept loop looked at its stop flag between connections, and sat out its half-second wait first |
+| `start`, nothing to build (the example) | 2.0 s | 1.3 s | cabal is not run when its answer still stands (below), and GHCi starts without ten trips through `xcrun` |
+| `start` after a `cabal build` elsewhere (this package) | 5.7 s | 1.5 s | the same: cabal alone was 3.4 s of re-planning to arrive at the same arguments |
+| a composed session changing members | 3.2 s | 1.8 s | one recorded start per member set |
+| a commit, to its full reload starting | up to 2 s | at once | HEAD and the branch's ref are watched, not looked at every two seconds |
 | the self-test (the check) | 0.55 s | 0.22 s | it waited for things that had already happened |
 
 **A reload relinks what changed, not everything.** GHC's `load` forgets every object it had linked -- the driver
@@ -145,6 +149,20 @@ executable file is scanned by XProtect when it is first loaded (twelve fresh dyl
 tool can avoid it. macOS can: **System Settings -> Privacy & Security -> Developer Tools**, add your terminal
 (`sudo spctl developer-mode enable-terminal` makes the list appear) -- processes started from it are then not
 scanned. Not measured here: it needs an administrator.
+
+**Cabal is asked how to start the repl once per command, not once per start.** Its answer is recorded
+(`launch/<hash of the command>/`) with what it depends on: the command, the engine, every build file and
+non-Haskell source the session watches, and -- found in cabal's own `plan.json` and each package's `.cabal` -- the
+sources of every local package the repl uses without loading. While none of that has changed, a `start` goes
+straight to GHCi; when a dependency's source has, cabal runs and rebuilds it. A `restart` by hand always asks
+cabal (`restart --fast` to not), and so does a changed `.c`, `.h` or `.cabal`. If cabal's plan does not say where a
+local dependency's source is, the session cannot see it and cabal is always asked, unless told otherwise
+(`start --fast`, `"fast_start": true`).
+
+**GHCi asks `gcc` where each system library is, ten times as it starts**, and on macOS `gcc` is a shim that asks
+`xcrun` which compiler to run: 30 ms a time, 0.2 s of a 0.45 s start, and again for every library linked. The daemon
+passes the compiler itself (`-pgml`, `-pgmc`, with the SDK the shim would have named in `SDKROOT`), when the `gcc`
+on PATH is that shim.
 
 Smaller things: GHC follows each such link with two `otool`s and an `install_name_tool` to add rpaths the library
 does not need (everything it names is already loaded): `-fno-use-rpaths` in the repl's options, 0.08 s. The pruner
@@ -304,7 +322,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `reload_on_commit` | `false` | a new git HEAD is a full reload -- checks and re-fork -- whatever the two above say |
 | `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
 | `handover_env` | `GHS_HANDOVER_OUT`, `GHS_HANDOVER_IN` | the two variables a forked server finds its state paths in (a project with its own copy of `GHC.Hygiene.Zygote` may name others) |
-| `fast_start` | `false` | start without running the build tool when its last answer still stands: the command, the engine and every `.cabal`, `cabal.project*` and C file the session watches are unchanged (`start --fast` once). Not seen: the sources of a local package the session depends on but does not load -- build that yourself, as you would for a reload |
+| `fast_start` | `false` | a start skips the build tool by itself when it can see everything the tool would build (see *What each operation costs*). This says to skip it also when it cannot -- a local dependency whose source cabal's plan does not place; then building that is yours (`start --fast` once) |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `watcher` | `auto` | kernel file events where the platform has them (kqueue on macOS/BSD, inotify on Linux), else `poll`. The mtime scan still decides what changed and still runs every 2 s: an event only says "look now" |
 | `poll_interval`, `debounce` | 0.2, 0.2 | when polling: how often the watcher looks, and how long it lets a burst of writes settle (with events a burst is over when they stop for 50 ms) |

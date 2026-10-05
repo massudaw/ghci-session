@@ -51,7 +51,7 @@ scan root dirs exts = foldM top M.empty dirs
     bexts = map BC.pack exts
     slash a b = B.concat [a, BC.pack "/", b]
     top acc d = do
-      let p = slash (toRaw root) (toRaw d)
+      let p = if take 1 d == "/" then toRaw d else slash (toRaw root) (toRaw d)      -- (an absolute path is itself)
       st <- try (R.getFileStatus p) :: IO (Either IOException FileStatus)
       case st of
         Left _ -> pure acc

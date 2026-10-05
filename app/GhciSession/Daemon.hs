@@ -2,7 +2,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
@@ -27,7 +27,7 @@ import System.IO
 import System.Info (os)
 import Data.Word (Word64)
 import System.Posix.Files (FileStatus, fileSize, getFileStatus, modificationTimeHiRes)
-import System.Posix.IO (fdToHandle)
+import System.Posix.IO (closeFd, fdToHandle)
 import System.Posix.Process (getProcessID)
 import System.Posix.Signals (sigKILL, sigTERM, signalProcess)
 import System.Posix.Types (CPid (..))
@@ -281,6 +281,37 @@ engineFacts s exe = do
         _ -> pure ()
       pure (mine, theirs, libdir)
 
+-- | On macOS, `gcc` -- what GHC is configured to link with -- is a shim that asks `xcrun` which compiler to
+-- run, 20 ms a time, and GHCi runs it TEN times while it starts (to ask where each system library is) and
+-- once for every library it links: 0.2 s of every boot. The compiler itself, with the SDK it would have been
+-- told about, is the same tool without the detour. Only when the `gcc` on PATH is that shim; remembered in
+-- the state directory per selected Xcode.
+toolchain :: S -> IO ([String], [(String, String)])
+toolchain s
+  | os /= "darwin" = pure ([], [])
+  | otherwise = do
+      gcc <- findExecutable "gcc"
+      sel <- either (\(_ :: IOException) -> "") id <$> try (getSymbolicLinkTarget "/var/db/xcode_select_link")
+      let cache = cStateDir (sConf s) </> "toolchain"
+      old <- fmap lines <$> readFileMaybe cache
+      found <- case old of
+        Just [k, c, sdk] | k == sel -> pure (Just (c, sdk))
+        _ | gcc /= Just "/usr/bin/gcc" -> pure Nothing
+          | otherwise -> do
+              c <- fmap trim <$> rawSystemOut 20 "xcrun" ["-f", "clang"]
+              sdk <- fmap trim <$> rawSystemOut 20 "xcrun" ["--show-sdk-path"]
+              case (c, sdk) of
+                (Just c', Just sdk') | not (null c') && not (null sdk') -> do
+                  void (try (writeAtomic cache (unlines [sel, c', sdk'])) :: IO (Either IOException ()))
+                  pure (Just (c', sdk'))
+                _ -> pure Nothing
+      case found of
+        Just (c, sdk) | gcc == Just "/usr/bin/gcc" -> do
+          ok <- (&&) <$> doesFileExist c <*> doesDirectoryExist sdk
+          set <- lookupEnv "SDKROOT"
+          pure (if ok then (["-pgml", c, "-pgmc", c], [ ("SDKROOT", sdk) | isNothing set ]) else ([], []))
+        _ -> pure ([], [])
+
 shq :: String -> String
 shq x = "'" ++ concatMap (\c -> if c == '\'' then "'\\''" else [c]) x ++ "'"
 
@@ -345,7 +376,7 @@ afterLoad s (Reply facts out) doCheck t0 = do
   modifyIORef' (vGeneration s) (+ 1)
   writeLoadedSources s
   writeAtomicT (sDir s </> "load.log") out
-  st <- either (\(_ :: SomeException) -> JObj []) id <$> try (ask s (Just 60) "state" [])
+  st <- phase s "state" (either (\(_ :: SomeException) -> JObj []) id <$> try (ask s (Just 60) "state" []))
   vLoaded s =: st
   forM_ (lookupStr "cwd" st) (vCwd s =:)
   vDiags s =: take 100 (lookupArr "diagnostics" facts)
@@ -850,19 +881,62 @@ serverOp s action member resume = do
 
 -- lifecycle --------------------------------------------------------------------------------
 
--- | What the build tool's answer depends on, as far as this session can see: the command, the engine, and
--- every build file and non-Haskell source it watches (the build tool is what compiles a package's C).
--- Not seen: the sources of a local package the session depends on but does not load.
-buildInputs :: S -> FilePath -> String -> IO String
-buildInputs s exe line = do
-  sig <- scan (sRoot s) (gWatch (sCfg s)) [".cabal", ".project", ".freeze", ".local", ".c", ".h", ".cmm", ".hsc", ".chs", ".x", ".y"]
+-- | What the build tool's answer depends on: the command, the engine, every build file and non-Haskell
+-- source the session watches (the build tool is what compiles a package's C), and the sources of the local
+-- packages it uses without loading.
+buildInputs :: S -> FilePath -> String -> [FilePath] -> IO String
+buildInputs s exe line deps = do
+  let built = [".cabal", ".project", ".freeze", ".local", ".c", ".h", ".cmm", ".hsc", ".chs", ".x", ".y"]
+  sig <- scan (sRoot s) (gWatch (sCfg s)) built
+  -- a local package the repl uses without loading: ALL its sources (the build tool is what compiles them)
+  dsig <- scan (sRoot s) deps (built ++ [".hs", ".lhs", ".hs-boot", ".cpp", ".m"])
   te <- modTime exe
-  pure (unlines (line : (exe ++ " " ++ show te) : [ fromRaw p ++ " " ++ show m | (p, m) <- M.toList sig ]))
+  pure (unlines (line : (exe ++ " " ++ show te) : [ fromRaw p ++ " " ++ show m | (p, m) <- M.toList (M.union sig dsig) ]))
 
--- | Start the engine. @fast@: nothing the build tool decides or builds has changed since it last told us how
--- (a restart for memory), so its answer is used again and it is not run.
-boot :: S -> Bool -> IO ()
-boot s fast = do
+-- | The local packages the repl USES but does not load, as what they are built from -- or 'Nothing' when
+-- that cannot be said for one of them. (The repl's arguments, and the per-unit argument files of a
+-- multi-unit repl: @-this-unit-id@ is a unit loaded, @-package-id X-inplace@ a local package used. Where a
+-- package's source is, is in the build tool's own plan.)
+localDeps :: S -> Launch -> IO (Maybe [FilePath])
+localDeps s l = do
+  files <- forM [ f | ('@' : f) <- lArgs l ] (fmap (maybe [] lines) . readFileMaybe)
+  let args = lArgs l ++ concat files
+      after k = [ v | (a, v) <- zip args (drop 1 args), a == k ]
+      mine = after "-this-unit-id"
+      outside = nub [ p | p <- after "-package-id", "-inplace" `isInfixOf` p, p `notElem` mine ]
+  if null mine then pure Nothing else if null outside then pure (Just []) else do
+    plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
+    let dirOf u = listToMaybe [ d | e <- maybe [] (lookupArr "install-plan") plan, lookupStr "id" e == Just u
+                                  , Just d <- [lookupStr "path" (e .: "pkg-src")] ]
+    case mapM dirOf outside of
+      Nothing -> pure Nothing
+      Just dirs -> Just . nub . concat <$> mapM packageSources (nub dirs)
+
+-- | What a package is built from, as far as its @.cabal@ file says: the file, its @hs-source-dirs@, and its C
+-- sources and include directories, for every component (more than a dependency needs, never less). A package
+-- that names no source directory is its whole directory.
+packageSources :: FilePath -> IO [FilePath]
+packageSources dir = do
+  names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents dir)
+  let cabals = [ dir </> n | n <- names, ".cabal" `isSuffixOf` n ]
+  texts <- catMaybes <$> mapM readFileMaybe cabals
+  let ls = concatMap lines texts
+      indent = length . takeWhile (== ' ')
+      field name = concat [ vals (drop (length name + 1) (dropWhile (== ' ') l)) ++ concatMap vals (takeWhile (\c -> indent c > indent l || null (trim c)) rest)
+                          | (l : rest) <- tailsOf ls, (name ++ ":") `isPrefixOf` map toLower (dropWhile (== ' ') l) ]
+      vals x = if "--" `isPrefixOf` dropWhile (== ' ') x then [] else filter (not . null) (words (map (\c -> if c == ',' then ' ' else c) x))
+      tailsOf [] = []
+      tailsOf x@(_ : r) = x : tailsOf r
+      hs = field "hs-source-dirs"
+      others = concatMap field ["c-sources", "cxx-sources", "asm-sources", "cmm-sources", "include-dirs"]
+  pure (cabals ++ (if null hs then [dir] else map (dir </>) (nub (hs ++ others))))
+
+-- | Start the engine. The build tool's last answer for this command is used again, and the tool not run, when
+-- nothing it reads has changed since AND either that was asked for (@Just True@: `--fast`, a restart for
+-- memory) or the session can see everything the tool would build ('selfContained'). @Just False@: ask it
+-- (a `restart` by hand, a changed C or build file).
+boot :: S -> Maybe Bool -> IO ()
+boot s how = do
   let cfg = sCfg s
   when (gHygiene cfg && any (`isInfixOf` gRtsFlags cfg) ["-xn", "--nonmoving-gc"]) $ do
     -- the pruner edits RTS lists the non-moving collector reads concurrently: the repl died at the first unlink
@@ -879,7 +953,6 @@ boot s fast = do
       setStatus s False "PREBUILD-ERROR: see prebuild.log" (lastN 8 (lines (trim (o ++ e)))) []
       throwIO (userError "prebuild failed")
   let env' = gEnv cfg ++ [("GHCI_SESSION", sName s)]
-      launchDir = sDir s </> "launch"
       outF = sDir s </> "repl.out"
       rts = if gRtsFlags cfg `elem` ["", "none"] then [] else ["+RTS"] ++ words (gRtsFlags cfg) ++ ["-RTS"]
   hold <- rd (vHold s)
@@ -892,16 +965,26 @@ boot s fast = do
   vUnlinkDue s =: False
   vHygieneOn s =: gHygiene cfg
   scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:)
-  (exe, ver, libdir) <- engineExe s
+  (exe, ver, libdir) <- phase s "engine_facts" (engineExe s)
   let dead why detail e = do
         setStatus s False ("DEAD: " ++ why) detail []
         throwIO (e :: ReplError)
   let line = replCommandLine s exe ver
-  inputs <- buildInputs s exe line
+  -- one recorded start per COMMAND: a composed session that goes back to a member set it has had finds that
+  -- set's answer still there
+  launchDir <- (\h -> sDir s </> "launch" </> showHash h) <$> hashString line 7
+  -- Without being asked, the build tool is skipped only when this session can SEE everything it would build:
+  -- its own units, and the sources of every other local package the repl uses.
+  before <- readLaunch launchDir
+  deps <- maybe (pure Nothing) (localDeps s) before
+  inputs <- phase s "build_inputs" (buildInputs s exe line (fromMaybe [] deps))
   was <- readFileMaybe (launchDir </> "inputs")
-  let wanted = fast || gFastStart cfg
-  known <- if wanted && was == Just inputs then readLaunch launchDir else pure Nothing
-  when (wanted && isNothing known) (logS s "fast start: a build file, the command or the engine changed since the build tool was last asked (or it never was) -- asking it")
+  let recorded = if was == Just inputs then before else Nothing
+      whole = isJust deps
+  let fast = how == Just True || gFastStart cfg
+      wanted = how /= Just False && (fast || whole)
+      known = if wanted then recorded else Nothing
+  when (how /= Just False && fast && isNothing known) (logS s "fast start: a build file, the command or the engine changed since the build tool was last asked (or it never was) -- asking it")
   launch <- case known of
     Just l -> do
       logS s "the build's answer is reused: the build tool is not run"
@@ -910,12 +993,16 @@ boot s fast = do
     Nothing -> do
       r <- phase s "build" (captureLaunch line (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
       case r of
-        Right l -> writeAtomic (launchDir </> "inputs") inputs >> pure l
+        Right l -> do
+          deps' <- localDeps s l          -- (now that the build tool has said what the repl uses)
+          buildInputs s exe line (fromMaybe [] deps') >>= writeAtomic (launchDir </> "inputs")
+          pure l
         Left said -> do
           writeAtomic (sDir s </> "load.log") said
           dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
   built <- fromMaybe "" <$> readFileMaybe outF
-  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts) launch env' outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
+  (tools, toolEnv) <- phase s "engine_facts" (toolchain s)
+  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools) launch (toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
   case r of
     Left (e :: ReplError) -> dead (takeWhile (/= '\n') (show e)) (lastN 12 (lines (show e))) e
     Right (repl, Reply facts out) -> do
@@ -926,7 +1013,7 @@ boot s fast = do
 
 -- | A fresh repl. The servers that were running come back on the new code (a plain session's children die
 -- with its repl; a composed session's are kept if their code did not change).
-restart :: S -> Bool -> IO String
+restart :: S -> Maybe Bool -> IO String
 restart s fast = do
   reforkJoin s
   t0 <- now
@@ -979,7 +1066,7 @@ reload' s doCheck doRefork async = do
   if budget > 0 && rss > budget
     then do
       logS s (printf "reload: repl at %.0f MB > budget %.0f MB -- restarting instead" rss budget)
-      out <- T.pack <$> restart s True
+      out <- T.pack <$> restart s (Just True)
       note s (printf "[repl RESTARTED instead of reloaded: it had grown to %.0f MB, over the %.0f MB budget; now restarted]" rss budget) []
       pure out
     else do
@@ -1042,6 +1129,22 @@ headCommit s = do
   where firstJust [] = pure Nothing
         firstJust (a : as) = a >>= maybe (firstJust as) (pure . Just)
 
+-- | What changes when HEAD does: HEAD itself, and the directory the branch's ref is rewritten in (a commit
+-- replaces the ref file, so it is the directory that sees it). Watched, a commit is noticed when it happens
+-- rather than at the next two-second look.
+gitWatchPaths :: S -> IO [FilePath]
+gitWatchPaths s = do
+  dotGit <- readFileMaybe (sRoot s </> ".git")
+  let gitDir = case dotGit of
+        Just t | "gitdir: " `isPrefixOf` t -> let d = trim (drop 8 t) in if "/" `isPrefixOf` d then d else sRoot s </> d
+        _ -> sRoot s </> ".git"
+  h <- fmap trim <$> readFileMaybe (gitDir </> "HEAD")
+  common <- maybe gitDir (\c -> let d = trim c in if "/" `isPrefixOf` d then d else gitDir </> d) <$> readFileMaybe (gitDir </> "commondir")
+  let refDirs = case h of
+        Just r | "ref: " `isPrefixOf` r -> [takeDirectory (common </> drop 5 r), takeDirectory (gitDir </> drop 5 r)]
+        _ -> []
+  filterM (\p -> (||) <$> doesFileExist p <*> doesDirectoryExist p) (nub ([gitDir </> "HEAD", gitDir] ++ refDirs))
+
 -- | What an eviction decision needs, answered without the repl: so it works while a reload holds it.
 info :: S -> IO Json
 info s = do
@@ -1068,6 +1171,13 @@ idleStopDue s = do
   if mins <= 0 || busy > 0 || t - lu < mins * 60 then pure False
     else not . any isJust <$> mapM (serverRunning s) (serverLabels s)
 
+-- | Stop: say so, and wake the accept loop (it looks at the flag between connections, and would otherwise
+-- sit out its half-second wait: every `stop` was 0.55 s).
+stopNow :: S -> IO ()
+stopNow s = do
+  vStopping s =: True
+  void (forkIO (sockPath (sDir s) >>= unixConnect >>= mapM_ (\fd -> void (try (closeFd fd) :: IO (Either IOException ())))))
+
 -- | Run a reload or restart from the watcher: under the same lock a client's command takes.
 drive :: S -> IO () -> IO ()
 drive s act = withMVar (vWork s) $ \_ -> do
@@ -1086,7 +1196,9 @@ watchLoop s = do
   let cfg = sCfg s
       doScan = scan (sRoot s) (gWatch cfg) (gWatchExt cfg)
   first <- doScan
-  roots <- filterM doesDirectoryExist [ sRoot s </> d | d <- gWatch cfg ]
+  roots0 <- filterM doesDirectoryExist [ sRoot s </> d | d <- gWatch cfg ]
+  git <- if gReloadOnCommit cfg then gitWatchPaths s else pure []
+  let roots = roots0 ++ git
   w <- makeWaiter (gWatcher cfg) (gPollInterval cfg) (gDebounce cfg) (M.keys first ++ map toRaw roots) (logS s)
   kind <- waiterKind w
   logS s ("watch: " ++ show (M.size first) ++ " sources by " ++ kind)
@@ -1099,7 +1211,7 @@ watchLoop s = do
           t <- now
           let due = t - slow >= 2.0
           if not fired && not due then loop lastSig headC slow else do
-            (lastSig1, headC1) <- if due && gReloadOnCommit cfg
+            (lastSig1, headC1) <- if gReloadOnCommit cfg       -- (a file is read: asked whenever anything stirred)
               then do
                 h <- headCommit s
                 if not (null h) && not (null headC) && h /= headC
@@ -1119,7 +1231,7 @@ watchLoop s = do
                 when idle $ do
                   logS s ("idle for " ++ show (gIdleStopMins cfg) ++ " min -- stopping (idle_stop_mins)")
                   vStopReason s =: (printf "stopped: idle for %s min (idle_stop_mins); `ghci-session start %s`" (showG (gIdleStopMins cfg)) (sName s))
-                  vStopping s =: True
+                  stopNow s
                 loop lastSig1 headC1 slow1
               else do
                 now >>= (vLastUsed s =:)      -- someone is editing
@@ -1134,7 +1246,7 @@ watchLoop s = do
                   if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
                     then do
                       logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
-                      drive s (void (restart s False))      -- (through the build tool: it is what compiles a package's C)
+                      drive s (void (restart s (Just False)))      -- (through the build tool: it is what compiles a package's C)
                     else do
                       logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
                       drive s (void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing))
@@ -1194,7 +1306,7 @@ handle s h = do
         "stop" -> do
           forM_ (lookupStr "reason" req) (vStopReason s =:)
           vKeepServers s =: fromMaybe False (lookupBool "keep_servers" req)
-          vStopping s =: True
+          stopNow s
           replyS True "stopping"
         _ -> do
           now >>= (vLastUsed s =:)
@@ -1216,7 +1328,7 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
     pure (Just out)
-  "restart" -> Just . T.pack <$> restart s (fromMaybe False (lookupBool "fast" req))
+  "restart" -> Just . T.pack <$> restart s (Just (fromMaybe False (lookupBool "fast" req)))      -- asked for by hand: through the build tool unless --fast
   _ | op `elem` ["server", "zygote"] -> do     -- "zygote" with fork/refork: the names an older client of this protocol used
     let action = case fromMaybe "status" (lookupStr "action" req) of { "fork" -> "start"; "refork" -> "restart"; a -> a }
     reforkJoin s
@@ -1259,7 +1371,7 @@ runDaemon conf name bootCheck fastStart = do
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
   r <- try $ oneVerdict s $ do
-    boot s (sFastStart s)
+    boot s (if sFastStart s then Just True else Nothing)
     started <- phase s "servers_boot" (serversBoot s)
     unless (null started) (note s ("[servers: " ++ intercalate "; " started ++ "]") [])
     phasesDone s "boot" t0

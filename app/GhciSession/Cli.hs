@@ -131,7 +131,7 @@ cmdStart conf target noCheck fast = do
       t0 <- now
       let limit = gLoadTimeout cfg + 120
           wait = do
-            threadDelay 50000
+            threadDelay 10000
             t <- now
             first <- firstLine (d </> "status")
             alive <- daemonPid conf name
@@ -159,8 +159,8 @@ cmdStop conf target keepServers reason = do
               else if n <= (0 :: Int) then do
                 void (try (signalProcess sigKILL (CPid (fromIntegral pid))) :: IO (Either IOException ()))
                 putStrLn (name ++ ": killed")
-              else threadDelay 50000 >> wait (n - 1)
-      wait 200
+              else threadDelay 5000 >> wait (n - 1)
+      wait 2000
       pure 0
 
 cmdStatus :: Conf -> Maybe String -> Bool -> IO Int

@@ -4,13 +4,14 @@
  * this (large, static) executable being mapped and the Haskell runtime starting and stopping. Everything an
  * `eval` needs is a connect, a line out and a line back, so it is done here, before the runtime is started:
  * ~6 ms. It handles exactly the plain case -- `eval [-s|-t|--session NAME] EXPR [--timeout N]` with the session
- * NAMED and running -- and returns -1 for anything else (no session named, an unknown flag, no socket, a
+ * named, or exactly one running -- and returns -1 for anything else (an unknown flag, no socket, a
  * reply it does not understand), which then takes the ordinary path and gets the ordinary messages.
  *
  * It finds the session the way the Haskell side does: the nearest ghci-session.json at or above the working
  * directory, its "state_dir" (default .ghci-session), and <state>/<session>/sock, a link the daemon leaves to
  * its socket (whose own path is short: sun_path is ~104 bytes).
  */
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -118,6 +119,22 @@ static char *slurp(const char *path, size_t *n) {
   return b;
 }
 
+/* a connection to a session's daemon, through the link it leaves in its state directory; -1 if it is not up */
+static int session_socket(const char *sdir, const char *session) {
+  char link[6000], sock[256];
+  snprintf(link, sizeof link, "%s/%s/sock", sdir, session);
+  ssize_t ln = readlink(link, sock, sizeof sock - 1);
+  if (ln <= 0) return -1;
+  sock[ln] = 0;
+  struct sockaddr_un sa; memset(&sa, 0, sizeof sa); sa.sun_family = AF_UNIX;
+  if ((size_t)ln >= sizeof sa.sun_path) return -1;
+  memcpy(sa.sun_path, sock, (size_t)ln + 1);
+  int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (fd < 0) return -1;
+  if (connect(fd, (struct sockaddr *)&sa, sizeof sa) < 0) { close(fd); return -1; }
+  return fd;
+}
+
 /* -1: not handled here; otherwise the exit status */
 int ghs_fast_client(int argc, char **argv) {
   if (argc < 3 || strcmp(argv[1], "eval")) return -1;
@@ -130,7 +147,7 @@ int ghs_fast_client(int argc, char **argv) {
     else if (!expr) expr = a;
     else return -1;
   }
-  if (!session || !expr || !*session || strchr(session, '/')) return -1;
+  if (!expr || (session && (!*session || strchr(session, '/')))) return -1;
   if (timeout) { char *e; strtod(timeout, &e); if (*e || e == timeout) return -1; }
 
   char dir[4096], path[4400];
@@ -156,18 +173,27 @@ int ghs_fast_client(int argc, char **argv) {
     memcpy(state, sb.p, sb.n + 1); free(sb.p);
   }
   free(conf);
-  char link[6000], sock[256];
-  if (state[0] == '/') snprintf(link, sizeof link, "%s/%s/sock", state, session);
-  else snprintf(link, sizeof link, "%s/%s/%s/sock", dir, state, session);
-  ssize_t ln = readlink(link, sock, sizeof sock - 1);
-  if (ln <= 0) return -1;
-  sock[ln] = 0;
-  struct sockaddr_un sa; memset(&sa, 0, sizeof sa); sa.sun_family = AF_UNIX;
-  if ((size_t)ln >= sizeof sa.sun_path) return -1;
-  memcpy(sa.sun_path, sock, (size_t)ln + 1);
-  int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  char sdir[5200];
+  if (state[0] == '/') snprintf(sdir, sizeof sdir, "%s", state);
+  else snprintf(sdir, sizeof sdir, "%s/%s", dir, state);
+  int fd = -1;
+  if (session) fd = session_socket(sdir, session);
+  else {
+    /* no session named: the only one running (more than one, or none, is the ordinary path's to decide) */
+    DIR *d = opendir(sdir);
+    if (!d) return -1;
+    struct dirent *e; int n = 0;
+    while ((e = readdir(d))) {
+      if (e->d_name[0] == '.') continue;
+      int c = session_socket(sdir, e->d_name);
+      if (c < 0) continue;
+      if (++n > 1) { close(c); break; }
+      fd = c;
+    }
+    closedir(d);
+    if (n != 1) { if (fd >= 0) close(fd); return -1; }
+  }
   if (fd < 0) return -1;
-  if (connect(fd, (struct sockaddr *)&sa, sizeof sa) < 0) { close(fd); return -1; }
 
   Buf req = {0};
   put(&req, "{\"op\":\"eval\",\"expr\":", 20);
