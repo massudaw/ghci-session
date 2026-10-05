@@ -1,0 +1,37 @@
+README.md
+  s_6e55a4691f1b7b::t_cec505c7bd5ea1 44,115-139,188-210,258,365,367,379-380,400-403,413,539
+app/GhciSession/Cli.hs
+  s_6e55a4691f1b7b::t_c17e6d90ec9384 3,193,257,292,344-350,376,378,383-388,394-398
+app/GhciSession/Config.hs
+  s_6e55a4691f1b7b::t_2a1c85b3ee16b4 59,76,109-111,249
+app/GhciSession/Daemon.hs
+  s_6e55a4691f1b7b::t_579f68e926e07c 10,39,72-73,366-369,395-396,610,1182-1221,1244-1269,1392,1446,1468,1511
+app/GhciSession/Doc.hs
+  s_6e55a4691f1b7b::t_d4266729cb85d3 1-196
+app/GhciSession/SelfTest.hs
+  s_6e55a4691f1b7b::t_e501ac9eac3e0a 23,62-63,75-94,175-178
+engine/GhsEngine.hs
+  s_6e55a4691f1b7b::t_6715aac4a98a1f 61-64,67,78,352-353,388-414
+examples/hello/ghci-session.json
+  s_6e55a4691f1b7b::t_143bc85329f815 15,37
+ghci-session.cabal
+  s_6e55a4691f1b7b::t_e02cd3240c711e 32-33
+ghci-session.json
+  s_6e55a4691f1b7b::t_c999b51c21998b 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f35d291160d346b2bb2042a24be0ad48b8c7e8a0",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
