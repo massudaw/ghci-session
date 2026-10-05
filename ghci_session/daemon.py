@@ -180,7 +180,34 @@ class Session:
         self.busy = 0                   # >0 while a command, a reload or a check holds the repl
         self._refork_thread: threading.Thread | None = None
         self._refork_pending: threading.Thread | None = None
+        self.phases: dict[str, float] = {}
         self._hold = 0                  # >0: an operation is in progress; its status is published once, at its end
+
+    # -- where the time goes --
+
+    def phase(self, name: str):
+        """Time a part of an operation: accumulated in `self.phases`, logged and put in status.json by the
+        operation when it ends (`phases_s`). The answer to "why did that take 2 s"."""
+        sess = self
+
+        class _P:
+            def __enter__(self):
+                self.t = time.time()
+
+            def __exit__(self, *exc):
+                sess.phases[name] = round(sess.phases.get(name, 0.0) + time.time() - self.t, 3)
+                return False
+
+        return _P()
+
+    def phases_done(self, what: str, t0: float) -> None:
+        total = time.time() - t0
+        rest = total - sum(self.phases.values())
+        ph = dict(self.phases, other=round(rest, 3))
+        self.log(f"[time] {what} {total:.2f}s: " + ", ".join(f"{k} {v:.2f}" for k, v in sorted(ph.items(), key=lambda kv: -kv[1]) if v >= 0.005))
+        self.last_json["phases_s"] = ph
+        self.last_json["op"] = what
+        self.phases = {}
 
     # -- logging and status --
 
@@ -302,6 +329,12 @@ class Session:
         r = subprocess.run([script, os.path.join(self.conf["state_dir"], "clib")], capture_output=True, text=True, cwd=self.root)
         self.log("hygiene build: " + (r.stderr.strip() or r.stdout.strip() or "ok").replace("\n", "; "))
 
+    def post_load_timed(self, repl: Repl) -> None:
+        # called by Repl.start once GHCi has answered: everything before this instant was cabal and the load
+        self.phases["load"] = round(time.time() - self._spawned, 3)
+        with self.phase("post_load"):
+            self.post_load(repl)
+
     def post_load(self, repl: Repl) -> None:
         repl.post_load_basics()
         if self.cfg["capabilities"]:
@@ -406,7 +439,8 @@ class Session:
             return "no check configured" + (f" for {member!r}" if member else "")
         t = t0 or time.time()
         self.push(f"{getattr(self, 'ok_prefix', 'OK')} -- running check")
-        results = [self._check_one(e) for e in entries]
+        with self.phase("check"):
+            results = [self._check_one(e) for e in entries]
         self.checked_at = time.time()
         write_atomic(os.path.join(self.dir, "run.log"), "\n".join(f"===== {r['member']} =====\n{r['body']}" for r in results) + "\n")
         took = round(time.time() - t, 2)
@@ -450,25 +484,43 @@ class Session:
         return total
 
     def prune_cafs(self) -> None:
-        """Unlink the CAFs this reload superseded, then log the session's memory. Best effort: never fails a reload."""
+        """Unlink the CAFs this reload superseded. Best effort: never fails a reload."""
         if not self.hygiene_on:
             return
         try:
-            before = self.repl_mb()
             t0 = time.time()
             out = self.repl.command(
                 self.hm + '.pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
                 '(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return "?") >>= \\l -> '
                 'putStrLn ("prune_cafs=" ++ show k ++ " live_mb=" ++ l)', timeout=300)
             k = next((l.split("=", 1)[1].split()[0] for l in out.splitlines() if l.startswith("prune_cafs=")), "?")
-            live = next((l.split("live_mb=", 1)[1].strip() for l in out.splitlines() if "live_mb=" in l), "?")
-            line = (f"[mem] prune_cafs: {k} unlinked in {time.time() - t0:.1f}s; repl {before:.0f} -> {self.repl_mb():.0f} MB, "
-                    f"live heap {live} MB, servers {self.servers_mb():.0f} MB")
-            self.log(line)
-            with open(os.path.join(self.dir, "reload.log"), "a") as fh:
-                fh.write("\n" + line + "\n")
+            self.live_mb = next((l.split("live_mb=", 1)[1].strip() for l in out.splitlines() if "live_mb=" in l), "?")
+            self.log(f"prune_cafs: {k} unlinked in {time.time() - t0:.2f}s, live heap {self.live_mb} MB")
         except Exception as e:  # noqa: BLE001
             self.log(f"prune_cafs failed: {e}")
+
+    def mem_sample_async(self) -> None:
+        """Measure the session's memory OFF the reload path, for the log and for the next reload's budget
+        check. Asking the OS for a process tree's footprint is 0.15-0.3 s a time; done inline (before the
+        reload for the budget, before and after the prune for the log) it was a third to a half of a reload
+        that had nothing else to do. The budget is a coarse limit: a reading one reload old serves it."""
+        def go():
+            try:
+                repl, servers = self.repl_mb(), self.servers_mb()
+                self.mem_cache = (repl, servers, time.time())
+                line = f"[mem] repl {repl:.0f} MB, live heap {getattr(self, 'live_mb', '?')} MB, servers {servers:.0f} MB"
+                self.log(line)
+                with open(os.path.join(self.dir, "reload.log"), "a") as fh:
+                    fh.write("\n" + line + "\n")
+            except Exception as e:  # noqa: BLE001
+                self.log(f"mem sample failed: {e}")
+
+        threading.Thread(target=go, daemon=True).start()
+
+    def repl_mb_recent(self) -> float:
+        """The repl's memory as last sampled (after the previous load); measured now only if never sampled."""
+        c = getattr(self, "mem_cache", None)
+        return c[0] if c else self.repl_mb()
 
     # -- servers: forked children of the repl (GHC.Hygiene.Zygote) --
 
@@ -539,8 +591,10 @@ class Session:
         sp = self.zm + ".zygoteSpec %s %s %s %s" % (json.dumps(label), json.dumps(self._sfile(label, "log")),
                                                           env_lit, "True" if self.server_detach() else "False")
         if not preforked:
-            self.server_prefork(spec)
+            with self.phase("prefork"):
+                self.server_prefork(spec)
         try:
+          with self.phase("fork"):
             out = self.repl.command("fmap %s.zcPid (%s.zygoteFork (%s) (%s))" % (self.zm, self.zm, sp, spec["action"]))
         except Exception as e:  # noqa: BLE001
             self.log(f"server[{label}]: fork failed: {e}")
@@ -554,10 +608,13 @@ class Session:
         self.log(f"server[{label}]: forked pid {pid} -> {self._sfile(label, 'log')}")
         # Verified BEFORE the pid file is written: a fork that dies on a busy port must not overwrite the
         # record of the healthy child it collided with.
-        if not self.server_verify(label, pid, spec):
+        with self.phase("fork_verify"):
+            ok = self.server_verify(label, pid, spec)
+        if not ok:
             return None
         write_atomic(self._sfile(label, "pid"), f"{pid}\n")
-        fp = self.code_fingerprint(spec)
+        with self.phase("fork_fingerprint"):
+            fp = self.code_fingerprint(spec)
         if fp:
             write_atomic(self._sfile(label, "code"), fp + "\n")
         else:
@@ -570,7 +627,11 @@ class Session:
         is not: a server may build its state before it listens, so a timeout only warns."""
         port = spec.get("port")
         if not port:
-            time.sleep(0.3)
+            # no port to watch: give a child that dies at once (a bad action, a missing file) the moment to do it
+            for _ in range(3):
+                time.sleep(0.05)
+                if not pid_alive(pid):
+                    break
             if pid_alive(pid):
                 return True
             self.log(f"server[{label}]: pid {pid} died at once -- {self._log_tail(label)}")
@@ -832,16 +893,19 @@ class Session:
         self.owed = set()
         if not was_running:
             return
-        kept = {l for l in was_running if self.server_running(l) and self.code_unchanged(l)}
+        with self.phase("fingerprint"):
+            kept = {l for l in was_running if self.server_running(l) and self.code_unchanged(l)}
         todo = [z for z in self.cfg["servers"] if z["member"] in was_running - kept]
         broken = {}
         for z in todo:
-            why = self.server_action_ok(z)
+            with self.phase("typecheck_action"):
+                why = self.server_action_ok(z)
             if why:
                 broken[z["member"]] = why
                 self.log(f"server[{z['member']}]: action does not typecheck, not re-forked: {why}")
             else:
-                self.server_prefork(z)
+                with self.phase("prefork"):
+                    self.server_prefork(z)
         res = []
         for z in todo:
             label = z["member"]
@@ -850,7 +914,8 @@ class Session:
                     self.owed.add(label)
                 continue
             carried = bool(self.server_running(label))
-            self.server_stop(label)   # it writes its state on the way out
+            with self.phase("server_stop"):
+                self.server_stop(label)   # it writes its state on the way out
             pid = self.server_fork(z, handover=carried, preforked=True)
             res.append((label, pid, carried and os.path.exists(self._sfile(label, "handover"))))
         for l in sorted(kept):
@@ -890,13 +955,15 @@ class Session:
                     continue
                 # a restart is a cut-over and carries the state the old child just wrote; a start brings up
                 # something that was NOT running, for an unknown time, so it is cold unless asked (--resume)
-                why = self.server_action_ok(z)
+                with self.phase("typecheck_action"):
+                    why = self.server_action_ok(z)
                 if why:
                     lines.append(f"{label}: FAILED, the action does not typecheck ({why})"
                                  + ("; the running server was left alone" if self.server_running(label) else ""))
                     continue
                 carry = resume or (action == "restart" and bool(self.server_running(label)))
-                self.server_stop(label)
+                with self.phase("server_stop"):
+                    self.server_stop(label)
                 pid = self.server_fork(z, handover=carry)
                 took = carry and os.path.exists(self._sfile(label, "handover"))
                 lines.append(f"{label}: {'pid %d' % pid if pid else 'FAILED (see daemon.log)'}{'+state' if pid and took else ''}")
@@ -911,11 +978,13 @@ class Session:
 
     def boot(self) -> None:
         if self.cfg["hygiene"] and self.cfg["hygiene_build"]:
-            self.build_hygiene()
+            with self.phase("hygiene_build"):
+                self.build_hygiene()
         if self.cfg["prebuild"]:
             t0 = time.time()
             r = subprocess.run(self.cfg["prebuild"], shell=True, cwd=self.root, capture_output=True, text=True)
             write_atomic(os.path.join(self.dir, "prebuild.log"), r.stdout + r.stderr)
+            self.phases["prebuild"] = round(time.time() - t0, 3)
             self.log(f"prebuild: exit {r.returncode} in {time.time() - t0:.1f}s")
             if r.returncode != 0:
                 self.set_status("PREBUILD-ERROR: see prebuild.log", (r.stdout + r.stderr).strip().splitlines()[-8:])
@@ -931,9 +1000,10 @@ class Session:
         self.set_status("starting")      # always visible at once: `start` waits on it
         self._hold = hold
         t0 = time.time()
+        self._spawned = t0
         self.pending_sig = scan(self.root, self.cfg["watch"], self.exts)
         try:
-            out = self.repl.start(self.post_load)
+            out = self.repl.start(self.post_load_timed)
         except (ReplDied, ReplTimeout) as e:
             self.set_status(f"DEAD: {e}", str(e).splitlines()[-8:])
             raise
@@ -947,13 +1017,19 @@ class Session:
         """A fresh repl. The servers that were running come back on the new code (a plain session's children
         die with its repl; a composed session's are kept if their code did not change)."""
         self.refork_join()
+        t0 = time.time()
         with self.one_verdict():
-            return self._restart(refork)
+            out = self._restart(refork)
+            self.phases_done("restart", t0)
+        self.mem_cache = None
+        self.mem_sample_async()
+        return out
 
     def _restart(self, refork: bool) -> str:
         self.log("restart")
         was_running = {l for l in self.server_labels() if self.server_running(l)}
-        self.repl.stop()
+        with self.phase("repl_stop"):
+            self.repl.stop()
         self.boot()
         if self.cfg["servers"]:
             if self.compiled() and refork:
@@ -967,8 +1043,11 @@ class Session:
         if async_refork is None:
             async_refork = bool(self.cfg["async_refork"]) or os.environ.get("GHS_ASYNC_REFORK") == "1"
         self._refork_pending = None
+        t0, self.phases = time.time(), {}
         with self.one_verdict():
             out = self._reload(do_check, refork, async_refork)
+            self.phases_done("reload", t0)
+        self.mem_sample_async()
         if self._refork_pending is not None:   # only now: the verdict it amends is on disk
             self._refork_thread, self._refork_pending = self._refork_pending, None
             self._refork_thread.start()
@@ -976,28 +1055,34 @@ class Session:
 
     def _reload(self, do_check: bool, refork: bool, async_refork: bool = False) -> str:
         budget = float(os.environ.get("GHS_REPL_BUDGET_MB", self.cfg["repl_budget_mb"]))
-        rss = self.repl_mb()
+        with self.phase("budget_mem"):
+            rss = self.repl_mb_recent() if budget > 0 else 0.0
         if budget > 0 and rss > budget:
             self.log(f"reload: repl at {rss:.0f} MB > budget {budget:.0f} MB -- restarting instead")
             out = self.restart()
-            self.note(f"[repl RESTARTED instead of reloaded: it had grown to {rss:.0f} MB, over the {budget:.0f} MB budget; now {self.repl_mb():.0f} MB]")
+            self.note(f"[repl RESTARTED instead of reloaded: it had grown to {rss:.0f} MB, over the {budget:.0f} MB budget; now restarted]")
             return out
         t0 = time.time()
-        self.pending_sig = scan(self.root, self.cfg["watch"], self.exts)
+        with self.phase("scan"):
+            self.pending_sig = scan(self.root, self.cfg["watch"], self.exts)
         self.push("reloading")
         try:
-            out = self.repl.command(":reload", timeout=self.cfg["load_timeout"])
+            with self.phase("ghci_reload"):
+                out = self.repl.command(":reload", timeout=self.cfg["load_timeout"])
         except (ReplDied, ReplTimeout) as e:
             self.set_status(f"DEAD: {e}")
             return str(e)
         write_atomic(os.path.join(self.dir, "reload.log"), out)
         try:
-            self.post_load(self.repl)
+            with self.phase("post_load"):
+                self.post_load(self.repl)
         except Exception as e:  # noqa: BLE001
             self.log(f"post_load after reload failed: {e}")
-        self.prune_cafs()
+        with self.phase("prune"):
+            self.prune_cafs()
         self.after_load(out, do_check=do_check, t0=t0)
-        running = {l for l in self.server_labels() if self.server_running(l)}
+        with self.phase("servers_running"):
+            running = {l for l in self.server_labels() if self.server_running(l)}
         if running or self.owed:
             # A reload updates the code the repl HOLDS, not the code a running child IS.
             if not self.compiled():
@@ -1042,9 +1127,11 @@ class Session:
         last = scan(self.root, self.cfg["watch"], self.exts)
         on_commit = self.cfg["reload_on_commit"]
         head, polls = (self.head_commit() if on_commit else ""), 0
-        while not self.stopping.wait(0.5):
+        poll = float(self.cfg["poll_interval"])
+        every = max(1, round(2.0 / poll))
+        while not self.stopping.wait(poll):
             polls += 1
-            if on_commit and polls % 4 == 0:
+            if on_commit and polls % every == 0:
                 now_head = self.head_commit()
                 if now_head and head and now_head != head:
                     # a commit is when everything catches up, whatever a save does: checks and servers too
@@ -1178,7 +1265,10 @@ class Session:
             elif op in ("server", "zygote"):   # "zygote" with fork/refork: the names an older client of this protocol used
                 req = dict(req, action={"fork": "start", "refork": "restart"}.get(req.get("action"), req.get("action", "status")))
                 self.refork_join()
+                t0, self.phases = time.time(), {}
                 out = self.server_op(req.get("action", "status"), req.get("member"), bool(req.get("resume")))
+                self.phases_done("server " + req["action"], t0)
+                self._publish()
             elif op == "mem":
                 out = (f"repl {self.repl_mb():.0f} MB (budget {self.cfg['repl_budget_mb']}), "
                        f"servers {self.servers_mb():.0f} MB")
@@ -1189,11 +1279,16 @@ class Session:
     def run(self) -> None:
         write_atomic(os.path.join(self.dir, "pid"), str(os.getpid()))
         try:
+            t0 = time.time()
             with self.one_verdict():
                 self.boot()
-                started = self.servers_boot()
+                with self.phase("servers_boot"):
+                    started = self.servers_boot()
                 if started:
                     self.note("[servers: " + "; ".join(started) + "]")
+                self.phases_done("boot", t0)
+            self.mem_cache = None
+            self.mem_sample_async()
         except Exception as e:  # noqa: BLE001
             self.log(f"boot failed: {e}")
             if self.repl:

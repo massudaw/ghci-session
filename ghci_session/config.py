@@ -38,7 +38,8 @@ DEFAULTS = {
     "watch_refork": True,    # ... and bring running servers onto the new code (off: only an explicit reload does)
     "reload_on_commit": False,  # a new git HEAD is a full reload (checks, re-fork) whatever the two above say
     "watch_ext": [".hs", ".hs-boot", ".c", ".h", ".cabal"],
-    "debounce": 0.4,
+    "poll_interval": 0.2,    # how often the watcher looks (a scan of ~600 sources is under 10 ms)
+    "debounce": 0.2,         # ... and how long it lets a burst of writes settle before reloading
     "status_url": None,      # POST every verdict here as JSON (a dashboard's event feed); best effort
     "idle_stop_mins": 0,     # the session stops itself after this long unused (0: never); not while it serves
     "async_refork": False,   # a reload returns at its verdict and re-forks the servers in the background
@@ -157,7 +158,7 @@ def resolve(conf: dict, session: str) -> dict:
 
     cfg = dict(DEFAULTS)
     if ts:
-        cfg.update({k: ts[0][k] for k in ("repl", "cabal_args", "rts_flags", "debounce", "prebuild", "status_url", "hygiene_module",
+        cfg.update({k: ts[0][k] for k in ("repl", "cabal_args", "rts_flags", "debounce", "poll_interval", "prebuild", "status_url", "hygiene_module",
                                           "zygote_module", "hygiene_build", "handover_env")})
     for key in ("units", "watch", "modules", "preload", "watch_ext", "fingerprint_files"):
         cfg[key] = union(key) if ts else list(DEFAULTS[key])

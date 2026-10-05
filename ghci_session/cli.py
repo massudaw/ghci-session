@@ -96,7 +96,7 @@ def cmd_start(conf, args) -> int:
     t0 = time.time()
     limit = config.resolve(conf, name)["load_timeout"] + 120
     while time.time() - t0 < limit:
-        time.sleep(0.5)
+        time.sleep(0.1)
         try:
             with open(os.path.join(d, "status")) as fh:
                 first = fh.readline().strip()
