@@ -1,0 +1,31 @@
+ghci-session/hygiene/src/GHC/Hygiene.hs
+  s_6e55a4691f1b7b::t_a70d3ac7a844ad 15,27-34,41-49
+ghci-session/ghci_session/config.py
+  s_6e55a4691f1b7b::t_01614d1dd705bf 35-36,171
+src/Solver/GhciHygiene.hs
+  s_6e55a4691f1b7b::t_a70d3ac7a844ad 16,28-35,42-50
+ghci-session/ghci_session/daemon.py
+  s_6e55a4691f1b7b::t_01614d1dd705bf 177-180,353-354,450,493-504,506-523,527,529,531-532,534-547,1051,1129,1131-1132,1189,1321-1322,1328
+ghci-session/tests/test_e2e.py
+  s_6e55a4691f1b7b::t_00d6a5251ef692 143
+CLAUDE.md
+  s_6e55a4691f1b7b::t_2c4d7a7b7094e6 80-84
+ghci-session/README.md
+  s_6e55a4691f1b7b::t_86a7548e4c03f2 43-44,47,64-72,80,82-85,140-141,249-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7bf09609a17d26272678c54a9b89738c6e6e09bf",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
