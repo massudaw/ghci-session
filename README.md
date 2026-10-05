@@ -62,6 +62,7 @@ or call it by path from any directory below a `ghci-session.json`.
 A **target** is a definition: what to load, what to check, what to serve. A **session** is one repl. `ghci-session start hello`
 is a session holding that one target; `dev` is a *composed* session holding whichever targets you choose.
 Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`) are shared by every target and overridable per target.
+`{session}`, `{root}`, `{state}` and `{dylib}` (`dylib` or `so`) are replaced in any string.
 
 | key | default | |
 |---|---|---|
@@ -70,6 +71,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `cabal_args` | `""` | extra arguments for the default command |
 | `watch` | `["src"]` | dirs polled for `.hs/.hs-boot/.c/.h/.cabal`; root-level `*.cabal` and `cabal.project*` are always watched |
 | `modules` | `[]` | `:module +` after every load |
+| `prebuild` | none | a shell command run before every boot of the repl (build a C bundle, generate code); a failure is `PREBUILD-ERROR` |
 | `preload` | `[]` | GHCi expressions run *before* the imports (e.g. `dlopen` a C bundle: importing an `-fobject-code` module links its objects there and then) |
 | `check` / `checks` | none | `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
 | `server` | none | see *Servers* |
@@ -81,12 +83,19 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
+| `watch_check`, `watch_refork` | `true` | what a SAVE does beyond compiling: run the checks, cut the servers over. Off, an explicit `reload` (or a commit, below) does them |
+| `reload_on_commit` | `false` | a new git HEAD is a full reload -- checks and re-fork -- whatever the two above say |
+| `status_url` | none | POST every verdict there as JSON, the intermediate ones too (`reloading`, `running check`): a dashboard's event feed. Best effort, 0.25 s |
+| `hygiene_module`, `zygote_module`, `hygiene_build`, `handover_env` | `GHC.Hygiene`, `GHC.Hygiene.Zygote`, `true`, `GHS_HANDOVER_OUT/IN` | for a project that carries its own copies of these modules |
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `load_timeout`, `eval_timeout` | 900, 600 | seconds |
 
 State lives in `.ghci-session/<session>/`: `status` (the verdict, then the failing lines), `status.json`, `load.log`/`reload.log`,
 `run.log` (the checks), `daemon.log`, `async.log` (output a background thread printed between commands), `server-<member>.log`.
-A reload publishes its status ONCE, when the verdict and what happened to the servers are both known.
+`loaded_sources.tsv` is the signature the loaded code was built from (`<mtime ns>\t<path>`), for a cache in the loaded
+code that is keyed by source. A reload publishes its status ONCE, when the verdict and what happened to the servers
+are both known. A failing check in a state dir where none has ever passed is marked `[NEVER-PASSED]`: suspect the
+target as much as the edit.
 
 ## Commands
 
@@ -221,4 +230,10 @@ Working: plain and composed sessions, per-member checks, auto-reload, verdicts a
 census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop, unit and
 end-to-end tests. Not carried over from `tools/msq`: the static-interpreter experiment, and its project-specific commands. Linux: the C builds
 are skipped (the offsets come from a Mach-O dylib); the session itself should run but is untested there. Port
-verification needs `lsof`. Next: move `tools/msq` onto this and delete the copy.
+verification needs `lsof`.
+
+This repository's own sessions run on it: `tools/msq` is a front end (`tools/model_session/msq.py`) that keeps
+`ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands. The project
+still carries its own copies of the hygiene and fork modules (`Solver.GhciHygiene`, `Solver.DES.Zygote`,
+`tools/ghci_cafs/`), named through `hygiene_module` / `zygote_module`; replacing them with the `ghci-hygiene`
+package is a dependency change to the core library and is not done.

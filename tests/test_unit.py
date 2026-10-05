@@ -196,6 +196,24 @@ class IdleTests(unittest.TestCase):
             self.assertEqual(config.resolve(conf, "ac")["idle_stop_mins"], 0)
 
 
+class ExpandTests(unittest.TestCase):
+    def test_placeholders_and_project_overrides(self):
+        with tempfile.TemporaryDirectory() as t:
+            conf = make(t, {"a": {"units": "lib:a", "env": {"WHO": "{session}"}, "preload": ["load \"{state}/clib/x.{dylib}\""],
+                                  "server": {"action": "A.s", "env": {"LOG": "{root}/l"}}}},
+                        sessions={"dev": ["a"]}, state_dir=".st", hygiene_module="My.Hygiene", zygote_module="My.Fork",
+                        handover_env=["MY_OUT", "MY_IN"], prebuild="make -C {root} clib", watch_check=False)
+            cfg = config.resolve(conf, "dev")
+            self.assertEqual(cfg["env"]["WHO"], "dev")
+            self.assertIn(os.path.join(t, ".st") + "/clib/x.", cfg["preload"][0])
+            self.assertEqual(cfg["servers"][0]["env"], {"WHO": "dev", "LOG": t + "/l"})
+            self.assertEqual(cfg["prebuild"], f"make -C {t} clib")
+            self.assertFalse(cfg["watch_check"])
+            s = Session(conf, "dev")
+            self.assertEqual((s.hm, s.zm), ("My.Hygiene", "My.Fork"))
+            self.assertIn("-odir=.st/dev/obj", s.repl_command())
+
+
 class VerdictTests(unittest.TestCase):
     def session(self, t):
         return Session(make(t), "lib")
@@ -229,7 +247,9 @@ class VerdictTests(unittest.TestCase):
             self.assertTrue(first.startswith("STALE(1) OK"), first)
             j = json.load(open(os.path.join(s.dir, "status.json")))
             self.assertTrue(j["ok"])
-            self.assertEqual(j["stale"], [src])
+            self.assertEqual(j["stale"], 1)
+            self.assertEqual(j["stale_files"], ["src/M.hs"])
+            self.assertEqual(j["kind"], "CHECK-PASS")
 
     def test_root_cabal_files_are_watched(self):
         with tempfile.TemporaryDirectory() as t:

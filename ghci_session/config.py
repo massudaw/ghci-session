@@ -16,6 +16,7 @@ DEFAULTS = {
     "cabal_args": "",        # extra arguments for the default command
     "watch": ["src"],        # dirs (relative to the project root) polled for source changes
     "modules": [],           # `:module +` after every load
+    "prebuild": None,        # a shell command run before every boot of the repl (build a C bundle, generate code)
     "preload": [],           # GHCi expressions run BEFORE the module imports (dlopen a C bundle, set capabilities)
     "check": None,           # {"expr": ..., "pass": regex, "fail": regex, "log": file the check writes, "name": label}
     "checks": [],            # several of them
@@ -27,10 +28,18 @@ DEFAULTS = {
     "repl_budget_mb": 6144,  # past this a reload is a restart (0 disables); GHCi never gives memory back
     "rts_flags": "-c",       # GHCi's own RTS flags ("" or "none" turns the wrapper off)
     "capabilities": 0,       # setNumCapabilities in the repl (0: leave GHCi's single one)
+    "hygiene_module": "GHC.Hygiene",        # where pruneCafs is, if your project re-exports or carries its own
+    "zygote_module": "GHC.Hygiene.Zygote",  # likewise zygoteSpec / zygoteFork / zygoteStop / ZygoteChild / zcPid
+    "hygiene_build": True,                  # build the C libraries (hygiene/build.sh) before boot
+    "handover_env": ["GHS_HANDOVER_OUT", "GHS_HANDOVER_IN"],   # what a server's handover paths are called
     "hygiene": False,        # prune CAFs after each reload (needs the ghci-hygiene package in the repl's scope)
     "auto_reload": True,     # reload when a watched file changes
+    "watch_check": True,     # ... and run the checks (off: a save only compiles; `reload`/`check` still run them)
+    "watch_refork": True,    # ... and bring running servers onto the new code (off: only an explicit reload does)
+    "reload_on_commit": False,  # a new git HEAD is a full reload (checks, re-fork) whatever the two above say
     "watch_ext": [".hs", ".hs-boot", ".c", ".h", ".cabal"],
     "debounce": 0.4,
+    "status_url": None,      # POST every verdict here as JSON (a dashboard's event feed); best effort
     "idle_stop_mins": 0,     # the session stops itself after this long unused (0: never); not while it serves
     "async_refork": False,   # a reload returns at its verdict and re-forks the servers in the background
     "fingerprint_files": [], # extra files whose content is part of a server's code (a C bundle, say)
@@ -78,6 +87,7 @@ def load(root: str) -> dict:
         for m in members:
             if m not in targets:
                 raise ConfigError(f"session {s!r}: unknown member {m!r}")
+    root = os.path.abspath(root)
     return {"root": root, "state_dir": os.path.join(root, raw.get("state_dir", ".ghci-session")),
             "state_rel": raw.get("state_dir", ".ghci-session"),
             "default": raw.get("default") or next(iter(targets)), "targets": targets, "sessions": sessions}
@@ -147,7 +157,8 @@ def resolve(conf: dict, session: str) -> dict:
 
     cfg = dict(DEFAULTS)
     if ts:
-        cfg.update({k: ts[0][k] for k in ("repl", "cabal_args", "rts_flags", "debounce")})
+        cfg.update({k: ts[0][k] for k in ("repl", "cabal_args", "rts_flags", "debounce", "prebuild", "status_url", "hygiene_module",
+                                          "zygote_module", "hygiene_build", "handover_env")})
     for key in ("units", "watch", "modules", "preload", "watch_ext", "fingerprint_files"):
         cfg[key] = union(key) if ts else list(DEFAULTS[key])
     cfg["env"] = {}
@@ -157,6 +168,9 @@ def resolve(conf: dict, session: str) -> dict:
         cfg[key] = max([t[key] for t in ts] or [DEFAULTS[key]])
     cfg["hygiene"] = any(t["hygiene"] for t in ts)
     cfg["auto_reload"] = any(t["auto_reload"] for t in ts) if ts else True
+    for key in ("watch_check", "watch_refork"):
+        cfg[key] = all(t[key] for t in ts)
+    cfg["reload_on_commit"] = any(t["reload_on_commit"] for t in ts)
     # a composed session idles out only if every member agrees to, at the longest of their waits
     mins = [t["idle_stop_mins"] for t in ts]
     cfg["idle_stop_mins"] = max(mins) if mins and all(m > 0 for m in mins) else 0
@@ -179,4 +193,18 @@ def resolve(conf: dict, session: str) -> dict:
         raise ConfigError(f"session {session!r}: a member with its own \"repl\" command cannot be composed "
                           "(give it \"units\" instead)")
     del cfg["check"], cfg["server"]
-    return cfg
+    return expand(cfg, {"session": session, "root": conf["root"], "state": conf["state_dir"],
+                        "dylib": "dylib" if __import__("sys").platform == "darwin" else "so"})
+
+
+def expand(x, vals: dict):
+    """`{session}`, `{root}`, `{state}`, `{dylib}` in any string of a session's configuration."""
+    if isinstance(x, str):
+        for k, v in vals.items():
+            x = x.replace("{" + k + "}", v)
+        return x
+    if isinstance(x, list):
+        return [expand(v, vals) for v in x]
+    if isinstance(x, dict):
+        return {k: expand(v, vals) for k, v in x.items()}
+    return x

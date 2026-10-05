@@ -173,6 +173,9 @@ class Session:
         self._work = threading.Lock()   # the watcher and a client both drive the repl; never at once
         self.hygiene_on = bool(self.cfg["hygiene"])
         self.zygote_on = bool(self.cfg["servers"])
+        self.hm, self.zm = self.cfg["hygiene_module"], self.cfg["zygote_module"]
+        self.generation = 0
+        self.cwd = self.root            # the repl's own working directory, asked at boot
         self.last_used = time.time()    # the last client command or source change: what "idle" is measured from
         self.busy = 0                   # >0 while a command, a reload or a check holds the repl
         self._refork_thread: threading.Thread | None = None
@@ -195,23 +198,56 @@ class Session:
         return sorted(p for p in set(now) | set(self.loaded_sig) if now.get(p) != self.loaded_sig.get(p))
 
     def set_status(self, text: str, detail: list[str] | None = None, **facts) -> None:
+        # A failure in a session that has NEVER passed is probably the target's, not the edit just made: say so.
+        lastpass = os.path.join(self.dir, "last-pass")
+        if text.startswith("OK") and "CHECK SKIPPED" not in text:
+            if not os.path.exists(lastpass):
+                write_atomic(lastpass, time.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+        elif text.startswith("CHECK-FAIL") and "[NEVER-PASSED" not in text and not os.path.exists(lastpass):
+            text += "  [NEVER-PASSED: no check has been green in this state dir -- suspect the target as much as your edit]"
         self.last_status = text
         stale = [] if text == "starting" else self.stale_files()
         head = f"STALE({len(stale)}) {text}" if stale else text
         stamp = lambda t: time.strftime("%H:%M:%S", time.localtime(t)) if t else "-"  # noqa: E731
-        lines = [head, f"session={self.name} loaded={stamp(self.loaded_at)} checked={stamp(self.checked_at)}"]
+        lines = [head, f"session={self.name} gen={self.generation} at={time.strftime('%Y-%m-%d %H:%M:%S')} "
+                       f"loaded={stamp(self.loaded_at)} checked={stamp(self.checked_at)}"]
         if stale:
             lines.append("stale: " + ", ".join(os.path.relpath(p, self.root) for p in stale[:6]))
         lines += detail or []
         self._status_text = "\n".join(lines) + "\n"
-        kind = text.split(":")[0].split(" ")[0].strip("-") or "?"
+        kind = next((k for k in ("DEAD", "stopped", "starting", "PREBUILD-ERROR", "COMPILE-ERROR") if text.startswith(k)), None) \
+            or next((k for k in ("CHECK-FAIL", "CHECK-PASS") if k in text), "OK")
+        warn = re.search(r"\((\d+) warning\(s\)\)", text)
         j = dict(self.last_json) if facts.pop("_keep", False) else {}
-        j.update({"session": self.name, "kind": kind, "ok": text.startswith("OK"), "stale": stale, "verdict": text,
-                  "failing": detail or [], "at": time.time()})
+        j.update({"session": self.name, "target": self.name, "kind": kind, "ok": kind in ("OK", "CHECK-PASS"),
+                  "stale": len(stale), "stale_files": [os.path.relpath(p, self.root) for p in stale],
+                  "warnings": int(warn.group(1)) if warn else 0, "verdict": text, "text": head,
+                  "failing": len(detail or []) if kind == "CHECK-FAIL" else 0, "detail": list(detail or [])[:30],
+                  "generation": self.generation, "at": time.time()})
+        j.setdefault("members", [])
+        j.setdefault("servers", [])
         j.update(facts)
         self.last_json = j
         if not self._hold:
             self._publish()
+        self.push(head, lines[1])
+
+    def push(self, verdict: str, detail: str = "") -> None:
+        """POST a verdict to `status_url`, if one is configured: what lets a dashboard be event-driven instead
+        of polling (a check that takes a second begins and ends between two polls, and a session busy
+        building is the one too busy to answer a probe). Sent for every status, the intermediate ones too.
+        Best effort, 0.25 s: an observer must never slow a session down or fail it."""
+        url = self.cfg["status_url"]
+        if not url:
+            return
+        try:
+            import urllib.request
+            body = json.dumps({"session": self.name, "target": self.name, "verdict": verdict, "detail": detail,
+                               "alive": "1", "kind": self.last_json.get("kind"), "ok": self.last_json.get("ok")}).encode()
+            urllib.request.urlopen(urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}),
+                                   timeout=0.25).close()
+        except Exception:  # noqa: BLE001
+            pass
 
     def _publish(self) -> None:
         # status first, status.json second: a reader that finds the JSON can trust the text beside it
@@ -237,7 +273,7 @@ class Session:
 
     def note(self, suffix: str, **facts) -> None:
         """Append to the verdict (what happened to the servers, a restart) without losing its facts."""
-        self.set_status(self.last_status + "  " + suffix, self.last_json.get("failing"), _keep=True, **facts)
+        self.set_status(self.last_status + "  " + suffix, self.last_json.get("detail"), _keep=True, **facts)
 
     # -- the repl --
 
@@ -275,15 +311,26 @@ class Session:
         for m in self.cfg["modules"]:
             repl.command(f":module + {m}", timeout=60)
         if self.cfg["hygiene"]:
-            out = repl.command(":module + GHC.Hygiene GHC.Stats", timeout=60)
+            out = repl.command(f":module + {self.hm} GHC.Stats", timeout=60)
             self.hygiene_on = not RE_NOMODULE.search(out)
             if not self.hygiene_on:
-                self.log("hygiene OFF: GHC.Hygiene is not in scope in this repl (add ghci-hygiene to build-depends)")
+                self.log(f"hygiene OFF: {self.hm} is not in scope in this repl (add ghci-hygiene to build-depends)")
         if self.cfg["servers"]:
-            out = repl.command(":module + GHC.Hygiene.Zygote", timeout=60)
+            out = repl.command(f":module + {self.zm}", timeout=60)
             self.zygote_on = not RE_NOMODULE.search(out)
             if not self.zygote_on:
-                self.log("servers OFF: GHC.Hygiene.Zygote is not in scope in this repl (add ghci-hygiene to build-depends)")
+                self.log(f"servers OFF: {self.zm} is not in scope in this repl (add ghci-hygiene to build-depends)")
+
+    def write_loaded_sources(self) -> None:
+        """The signature the loaded code was built from, as a file the loaded code can read:
+        `<mtime_ns>\t<path relative to the root>` per watched source. A cache keyed by SOURCE can trust a
+        source only while it still carries this stamp (an object's age cannot say it: GHC leaves an
+        unchanged module's .o alone however new its file)."""
+        try:
+            write_atomic(os.path.join(self.dir, "loaded_sources.tsv"),
+                         "".join(f"{int(round(m * 1e9))}\t{os.path.relpath(p, self.root)}\n" for p, m in sorted(self.loaded_sig.items())))
+        except OSError as e:
+            self.log(f"loaded_sources: {e}")
 
     def verdict_of(self, out: str) -> tuple[str, list[str]]:
         errs = [l for l in out.splitlines() if RE_ERROR.match(l)]
@@ -299,14 +346,18 @@ class Session:
     def after_load(self, out: str, do_check: bool = True, t0: float | None = None) -> None:
         self.loaded_sig = self.pending_sig or scan(self.root, self.cfg["watch"], self.exts)
         self.loaded_at = time.time()
+        self.generation += 1
+        self.write_loaded_sources()
         write_atomic(os.path.join(self.dir, "load.log"), out)
         v, detail = self.verdict_of(out)
+        warns = out.count(": warning:")
+        self.ok_prefix = "OK" + (f" ({warns} warning(s))" if warns else "")
         took = lambda: round(time.time() - (t0 or self.loaded_at), 2)  # noqa: E731
         if v != "OK":
             self.set_status(v, detail, duration_s=took())
         elif not do_check or not self.cfg["checks"]:
             why = "--no-check" if not do_check else "no check configured"
-            self.set_status(f"OK -- CHECK SKIPPED ({why}): this is a COMPILE verdict only", duration_s=took())
+            self.set_status(f"{self.ok_prefix} -- CHECK SKIPPED ({why}): this is a COMPILE verdict only", duration_s=took())
         else:
             self.run_check(t0=t0)
 
@@ -315,7 +366,7 @@ class Session:
     def _check_one(self, e: dict) -> dict:
         # Remember how old the check's log is, so a check that never ran cannot be scored against the PREVIOUS
         # run's file: a link failure leaves the log untouched and would read as a pass.
-        logp = os.path.join(self.root, e["log"]) if e.get("log") else None
+        logp = os.path.join(self.cwd, e["log"]) if e.get("log") else None
         before = -1.0
         if logp:
             try:
@@ -354,6 +405,7 @@ class Session:
         if not entries:
             return "no check configured" + (f" for {member!r}" if member else "")
         t = t0 or time.time()
+        self.push(f"{getattr(self, 'ok_prefix', 'OK')} -- running check")
         results = [self._check_one(e) for e in entries]
         self.checked_at = time.time()
         write_atomic(os.path.join(self.dir, "run.log"), "\n".join(f"===== {r['member']} =====\n{r['body']}" for r in results) + "\n")
@@ -361,7 +413,8 @@ class Session:
         bad = [r for r in results if r["kind"] != "PASS"]
         times = ", ".join(f"{r['member']} {r['duration_s']:.1f}s" for r in results)
         tag = f" [{len(results)} members: {times}]" if len(results) > 1 else ""
-        facts = [{k: r[k] for k in ("member", "kind", "duration_s", "failing")} for r in results]
+        facts = [{"member": r["member"], "name": r["member"], "kind": r["kind"], "duration_s": r["duration_s"],
+                  "failing": len(r["failing"]), "detail": r["failing"][:12]} for r in results]
         if any(r["kind"] == "DEAD" for r in results):
             self.set_status("DEAD: the repl died during a check", [f"{r['member']}: {r['body']}" for r in bad][:20], members=facts, duration_s=took)
         elif bad:
@@ -369,7 +422,7 @@ class Session:
             detail = [f"{r['member']}: {l}" for r in bad for l in (r["failing"] or [r["kind"]])]
             self.set_status(f"CHECK-FAIL: {n} failing in {', '.join(r['member'] for r in bad)}{tag}", detail[:30], members=facts, duration_s=took)
         else:
-            self.set_status(f"OK -- CHECK-PASS ({took:.1f}s){tag}", members=facts, duration_s=took)
+            self.set_status(f"{getattr(self, 'ok_prefix', 'OK')} -- CHECK-PASS ({took:.1f}s){tag}", members=facts, duration_s=took)
         return "\n".join(r["body"] for r in results)
 
     # -- memory --
@@ -404,7 +457,7 @@ class Session:
             before = self.repl_mb()
             t0 = time.time()
             out = self.repl.command(
-                'GHC.Hygiene.pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
+                self.hm + '.pruneCafs >>= \\k -> GHC.Stats.getRTSStatsEnabled >>= \\e -> '
                 '(if e then GHC.Stats.getRTSStats >>= \\s -> return (show (GHC.Stats.gcdetails_live_bytes (GHC.Stats.gc s) `div` 1000000)) else return "?") >>= \\l -> '
                 'putStrLn ("prune_cafs=" ++ show k ++ " live_mb=" ++ l)', timeout=300)
             k = next((l.split("=", 1)[1].split()[0] for l in out.splitlines() if l.startswith("prune_cafs=")), "?")
@@ -459,7 +512,7 @@ class Session:
         """None when the server's action typechecks in the loaded code, else GHC's complaint. Asked BEFORE an
         old server is stopped: a fork that cannot happen must not cost the server that is running."""
         if not self.zygote_on:
-            return "GHC.Hygiene.Zygote is not in scope in this repl (add ghci-hygiene to build-depends)"
+            return f"{self.zm} is not in scope in this repl (add ghci-hygiene to build-depends)"
         try:
             out = self.repl.command(f":type ({spec['action']}) :: IO ()", timeout=120)
         except Exception as e:  # noqa: BLE001
@@ -474,21 +527,21 @@ class Session:
         """
         label = spec["member"]
         if not self.zygote_on:
-            self.log(f"server[{label}]: cannot fork, GHC.Hygiene.Zygote is not in scope")
+            self.log(f"server[{label}]: cannot fork, {self.zm} is not in scope")
             return None
         env = {k: str(v) for k, v in spec.get("env", {}).items()}
         hpath = self._sfile(label, "handover")
-        env["GHS_HANDOVER_OUT"] = hpath
+        env[self.cfg["handover_env"][0]] = hpath
         if handover and os.path.exists(hpath):
-            env["GHS_HANDOVER_IN"] = hpath
+            env[self.cfg["handover_env"][1]] = hpath
         env_lit = "[" + ",".join("(%s,%s)" % (json.dumps(k), json.dumps(v)) for k, v in env.items()) + "]"
         # positional, not record update: GHC rejects a qualified record update on a field it also sees as a selector
-        sp = "GHC.Hygiene.Zygote.zygoteSpec %s %s %s %s" % (json.dumps(label), json.dumps(self._sfile(label, "log")),
+        sp = self.zm + ".zygoteSpec %s %s %s %s" % (json.dumps(label), json.dumps(self._sfile(label, "log")),
                                                           env_lit, "True" if self.server_detach() else "False")
         if not preforked:
             self.server_prefork(spec)
         try:
-            out = self.repl.command("fmap GHC.Hygiene.Zygote.zcPid (GHC.Hygiene.Zygote.zygoteFork (%s) (%s))" % (sp, spec["action"]))
+            out = self.repl.command("fmap %s.zcPid (%s.zygoteFork (%s) (%s))" % (self.zm, self.zm, sp, spec["action"]))
         except Exception as e:  # noqa: BLE001
             self.log(f"server[{label}]: fork failed: {e}")
             return None
@@ -560,8 +613,8 @@ class Session:
         """Stop one pid THROUGH the repl, which is what reaps it: GHCi installs no SIGCHLD handling, so a child
         killed from outside stays a zombie for the life of the session. Falls back to signals if the repl
         cannot take a command."""
-        expr = "GHC.Hygiene.Zygote.zygoteStop (GHC.Hygiene.Zygote.ZygoteChild %d %s %s) 30" % (
-            pid, json.dumps(label), json.dumps(self._sfile(label, "log")))
+        expr = "%s.zygoteStop (%s.ZygoteChild %d %s %s) 30" % (
+            self.zm, self.zm, pid, json.dumps(label), json.dumps(self._sfile(label, "log")))
         try:
             if not (self.repl and self.repl.alive and self.zygote_on):
                 raise ReplDied("no repl")
@@ -648,7 +701,7 @@ class Session:
                 continue
             uid = pkg = None
             wd = self.root
-            deps, mods = [], []
+            deps, mods, maybe = [], [], []
             i = 0
             while i < len(args):
                 a = args[i].strip()
@@ -665,9 +718,14 @@ class Session:
                     i += 2
                     continue
                 if not a.startswith("-") and modre.match(a):
-                    mods.append(a)
+                    # A capitalised word right after a flag may be that flag's VALUE (`-framework Accelerate`),
+                    # not a module: remember it, and let the missing object decide.
+                    prev = args[i - 1].strip() if i else ""
+                    (maybe if prev.startswith("-") else mods).append(a)
                 i += 1
             if uid:
+                odir = os.path.join(wd, self.obj_rel)
+                mods += [m for m in maybe if os.path.exists(os.path.join(odir, *m.split(".")) + ".o")]
                 units[uid] = {"pkg": pkg, "modules": mods, "deps": deps, "wd": wd}
         return units
 
@@ -755,7 +813,7 @@ class Session:
         """The re-fork in a thread, so a reload returns at its verdict. The repl is one process: a command
         sent during the prefork queues behind it, but the client is not held. The thread is started by
         'reload' once the verdict (with its "running in the background" note) has been published."""
-        self.set_status(self.last_status + self.PENDING, self.last_json.get("failing"), _keep=True, servers_pending=True)
+        self.set_status(self.last_status + self.PENDING, self.last_json.get("detail"), _keep=True, servers_pending=True)
 
         def go():
             try:
@@ -763,7 +821,7 @@ class Session:
             except Exception as e:  # noqa: BLE001
                 self.log(f"background re-fork: {type(e).__name__}: {e}")
                 self.set_status(self.last_status.replace(self.PENDING, "") + f"  [servers: background re-fork FAILED: {e}]",
-                                self.last_json.get("failing"), _keep=True, servers_pending=False)
+                                self.last_json.get("detail"), _keep=True, servers_pending=False)
 
         self._refork_pending = threading.Thread(target=go, daemon=True)
 
@@ -852,8 +910,16 @@ class Session:
     # -- lifecycle --
 
     def boot(self) -> None:
-        if self.cfg["hygiene"]:
+        if self.cfg["hygiene"] and self.cfg["hygiene_build"]:
             self.build_hygiene()
+        if self.cfg["prebuild"]:
+            t0 = time.time()
+            r = subprocess.run(self.cfg["prebuild"], shell=True, cwd=self.root, capture_output=True, text=True)
+            write_atomic(os.path.join(self.dir, "prebuild.log"), r.stdout + r.stderr)
+            self.log(f"prebuild: exit {r.returncode} in {time.time() - t0:.1f}s")
+            if r.returncode != 0:
+                self.set_status("PREBUILD-ERROR: see prebuild.log", (r.stdout + r.stderr).strip().splitlines()[-8:])
+                raise RuntimeError("prebuild failed")
         env = dict(self.cfg["env"])
         if self.cfg["rts_flags"] not in ("", "none"):
             env.setdefault("GHS_RTS_FLAGS", self.cfg["rts_flags"])
@@ -871,6 +937,10 @@ class Session:
         except (ReplDied, ReplTimeout) as e:
             self.set_status(f"DEAD: {e}", str(e).splitlines()[-8:])
             raise
+        try:   # `cabal repl` may chdir into the package: a check that writes a relative path lands there
+            self.cwd = self.repl.command(":!pwd", timeout=60).strip().splitlines()[-1] or self.root
+        except Exception:  # noqa: BLE001
+            self.cwd = self.root
         self.after_load(out, t0=t0)
 
     def restart(self, refork: bool = True) -> str:
@@ -914,6 +984,7 @@ class Session:
             return out
         t0 = time.time()
         self.pending_sig = scan(self.root, self.cfg["watch"], self.exts)
+        self.push("reloading")
         try:
             out = self.repl.command(":reload", timeout=self.cfg["load_timeout"])
         except (ReplDied, ReplTimeout) as e:
@@ -932,12 +1003,19 @@ class Session:
             if not self.compiled():
                 self.note("[servers: NOT re-forked (compile error) -- they still run the OLD code]")
             elif not refork:
-                self.note("[servers: NOT re-forked (--no-refork) -- they still run the OLD code]")
+                self.note("[servers: NOT re-forked -- they still run the OLD code; `reload` cuts them over]")
             elif async_refork:
                 self.refork_async(running)
             else:
                 self.refork(running)
         return out
+
+    def head_commit(self) -> str:
+        try:
+            r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.root, capture_output=True, text=True, timeout=5)
+            return r.stdout.strip() if r.returncode == 0 else ""
+        except (OSError, subprocess.SubprocessError):
+            return ""
 
     # -- idleness --
 
@@ -962,7 +1040,26 @@ class Session:
 
     def watch_loop(self) -> None:
         last = scan(self.root, self.cfg["watch"], self.exts)
+        on_commit = self.cfg["reload_on_commit"]
+        head, polls = (self.head_commit() if on_commit else ""), 0
         while not self.stopping.wait(0.5):
+            polls += 1
+            if on_commit and polls % 4 == 0:
+                now_head = self.head_commit()
+                if now_head and head and now_head != head:
+                    # a commit is when everything catches up, whatever a save does: checks and servers too
+                    self.log(f"commit {now_head[:10]}: full reload (check, re-fork)")
+                    self.last_used = time.time()
+                    with self._work:
+                        self.busy += 1
+                        try:
+                            last = scan(self.root, self.cfg["watch"], self.exts)
+                            self.reload(do_check=True, refork=True)
+                        except Exception as e:  # noqa: BLE001
+                            self.log(f"commit reload: {type(e).__name__}: {e}")
+                        finally:
+                            self.busy -= 1
+                head = now_head or head
             now = scan(self.root, self.cfg["watch"], self.exts)
             if now == last:
                 if self.idle_stop_due():
@@ -989,7 +1086,7 @@ class Session:
                         self.restart()
                     else:
                         self.log(f"watch: {len(changed)} file(s) changed -- reload")
-                        self.reload()
+                        self.reload(do_check=self.cfg["watch_check"], refork=self.cfg["watch_refork"])
                 except Exception as e:  # noqa: BLE001
                     self.log(f"watch: {type(e).__name__}: {e}")
                 finally:
@@ -1078,7 +1175,8 @@ class Session:
                 out = self.run_check(member=req.get("member"))
             elif op == "restart":
                 out = self.restart()
-            elif op == "server":
+            elif op in ("server", "zygote"):   # "zygote" with fork/refork: the names an older client of this protocol used
+                req = dict(req, action={"fork": "start", "refork": "restart"}.get(req.get("action"), req.get("action", "status")))
                 self.refork_join()
                 out = self.server_op(req.get("action", "status"), req.get("member"), bool(req.get("resume")))
             elif op == "mem":
