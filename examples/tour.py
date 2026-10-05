@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A tour of ghci-session: every feature exercised on `examples/hello`, each step checked and timed.
 
-    python3 examples/tour.py                  # the whole tour (~4 min), a table of steps and times
+    python3 examples/tour.py                  # the whole tour (~2.5 min), a table of steps and times
     python3 examples/tour.py --only servers   # one group (see --list)
     python3 examples/tour.py --json out.json  # the result as data
     python3 examples/tour.py --compare out.json   # ... and a later run against it: what got slower
@@ -76,10 +76,13 @@ class Tour:
         self.proj = os.path.join(self.dir, "examples", "hello")
         ig = shutil.ignore_patterns(".ghci-session", "dist-newstyle", "__pycache__")
         shutil.copytree(os.path.join(PKG, "examples", "hello"), self.proj, ignore=ig)
-        for d in ("hygiene", "bin", "ghci_session"):
+        # the example's cabal.project names the package two levels up: copy what cabal needs of it
+        for d in ("hygiene", "bin", "app", "cbits"):
             shutil.copytree(os.path.join(PKG, d), os.path.join(self.dir, d), ignore=ig)
-        # GHCI_SESSION_BIN: tour another implementation of the same command line (the Haskell executable)
-        self.cli_path = os.environ.get("GHCI_SESSION_BIN") or os.path.join(self.dir, "bin", "ghci-session")
+        for f in ("ghci-session.cabal", "README.md"):
+            shutil.copy(os.path.join(PKG, f), os.path.join(self.dir, f))
+        # the executable under test: GHCI_SESSION_BIN, else this checkout's (built if stale)
+        self.cli_path = os.environ.get("GHCI_SESSION_BIN") or os.path.join(PKG, "bin", "ghci-session")
         os.environ["GHCI_SESSION_DATA"] = self.dir
         self.state = os.path.join(self.proj, ".ghci-session")
         self.hs = os.path.join(self.proj, "src", "Hello.hs")

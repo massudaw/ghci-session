@@ -13,20 +13,15 @@ ghci-session status         # one line: OK -- CHECK-PASS | COMPILE-ERROR: n erro
 ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in well under a second
 ```
 
-## Two implementations, one command line
+## One Haskell package
 
-The tool exists twice, with the same commands, state files and socket protocol:
+`ghci-session.cabal` is the whole tool: the `ghci-session` executable (client and daemon in one binary) and the
+library your project links for the hygiene modules (`GHC.Hygiene`, `.Census`, `.Zygote`). It depends only on GHC's
+boot packages; C (`cbits/`) covers what those lack -- unix sockets, kqueue/inotify, POSIX regex, hashing, the process
+table -- and the executable's `main`, which picks the runtime's options per command.
 
-- **Haskell** (`ghci-session.cabal`, `app/`, `cbits/`): ONE cabal package -- the `ghci-session` executable (client and
-  daemon in one binary) and the library your project links for the hygiene modules. It depends only on GHC's boot
-  packages; C covers what those lack (unix sockets, kqueue/inotify, POSIX regex, hashing, process tables) and the
-  executable's `main`, which picks the runtime's options per command. `cabal install exe:ghci-session`, or
-  `cabal run ghci-session -- ...`. This is the one being developed.
-- **Python** (`bin/ghci-session`, `ghci_session/`): the original, still what this repository's `tools/msq` drives.
-  (The two derive the daemon's socket path differently, so a client of one cannot talk to a daemon of the other.)
-
-`examples/tour.py` runs against either (`GHCI_SESSION_BIN=$(cabal list-bin exe:ghci-session) python3 examples/tour.py`)
-and passes on both, 123 steps of 123. What the Haskell one changes is the client and the tool's own overhead:
+It began as a Python daemon (removed; the command line, the state files and the socket protocol are unchanged), and
+what the rewrite changed is the client and the tool's own overhead:
 
 | | Python | Haskell |
 |---|---|---|
@@ -38,7 +33,8 @@ and passes on both, 123 steps of 123. What the Haskell one changes is the client
 | the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
 
 How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
-itself -- this package has a `ghci-session.json`, and a save here is a compile and 68 self-tests in about a second:
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 70 self-tests in about a second
+(`ghci-session selftest` runs them from the binary):
 
 - **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
   and once per session in every client command; `footprint` could hang. One libproc call now gives liveness, parent,
@@ -141,8 +137,10 @@ reload. The unlink now waits for the check, or the first `eval`.)
 
 ## Install
 
-Nothing to install: `bin/ghci-session` runs from this directory (Python 3.10+, no packages). Put `bin/` on `PATH`,
-or call it by path from any directory below a `ghci-session.json`.
+`cabal install exe:ghci-session` from this directory, or run it from the checkout: `bin/ghci-session` builds the
+executable into `.bin/` when it is missing or older than its sources, then runs it (`./build.sh` does the build).
+A project that uses hygiene or servers adds this package to its `cabal.project` and `ghci-session` to its
+`build-depends` (see `examples/hello`).
 
 ## Configure
 
@@ -335,26 +333,26 @@ address, GHC #23182).
 ## Layout
 
 ```
-bin/ghci-session        the client (python -m ghci_session)
-bin/ghci-rts.sh         cabal repl --with-repl wrapper giving GHCi its own RTS flags
-ghci_session/           config, repl (pty + sentinel framing), daemon (watch, reload, budget, socket), cli
-hygiene/                ghci-hygiene.cabal, src/GHC/Hygiene*.hs, c/*.c, build.sh
+ghci-session.cabal      the package: library (hygiene/src) and executable (app/, cbits/)
+app/GhciSession/        Json, Config, Sys (the FFI), Repl (pty + framing), Watch, Daemon, Gc, Cli, SelfTest, SelfBench
+cbits/                  ghs_sys.c (sockets, file events, regex, hashing, processes), ghs_main.c (the entry point)
+hygiene/                src/GHC/Hygiene*.hs (the library), c/*.c + build.sh (built against YOUR GHC's RTS, at run time),
+                        repro/ (why a superseded CAF with a young value must stay listed)
+bin/ghci-session        run from a checkout (builds if stale); bin/ghci-rts.sh: GHCi's own RTS flags
+ghci-session.json       the session this package runs on itself
 examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over
 examples/tour.py        every feature on a copy of it, each step checked and timed (the benchmark)
-tests/                  test_unit.py (no GHC); test_e2e.py (GHS_E2E=1, ~1 min: a composed session, per-member checks,
-                        a server kept / re-forked with its state / protected from a broken action, adoption, prune, census)
+tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reproduction
 ```
 
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop, unit and
-end-to-end tests. Not carried over from `tools/msq`: the static-interpreter experiment, and its project-specific commands. Linux: the C builds
-are skipped (the offsets come from a Mach-O dylib); the session itself should run but is untested there. Port
-verification needs `lsof`.
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 70 self-tests,
+the tour (123 steps) and the end-to-end tests. This repository's own sessions run on it (`tools/msq` is a thin front
+end: it keeps `ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands).
 
-This repository's own sessions run on it: `tools/msq` is a front end (`tools/model_session/msq.py`) that keeps
-`ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands. The project
-still carries its own copies of the hygiene and fork modules (`Solver.GhciHygiene`, `Solver.DES.Zygote`,
-`tools/ghci_cafs/`), named through `hygiene_module` / `zygote_module`; replacing them with the `ghci-hygiene`
-package is a dependency change to the core library and is not done.
+Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). Linux: the C has
+`/proc` and inotify code paths that have not been run, and the hygiene C libraries are macOS-only (the session
+runs without them). Port verification needs `lsof`. The project still carries its own copies of the hygiene and
+fork modules (`Solver.GhciHygiene`, `Solver.DES.Zygote`), named through `hygiene_module` / `zygote_module`.

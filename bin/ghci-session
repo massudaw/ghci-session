@@ -1,4 +1,8 @@
 #!/bin/sh
-# ghci-session client; works from any directory below a ghci-session.json.
+# ghci-session from a checkout: the built executable, built first if it is not there or older than its sources.
 HERE=$(cd "$(dirname "$0")/.." && pwd)
-PYTHONPATH="$HERE${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m ghci_session "$@"
+B="$HERE/.bin/ghci-session"
+if [ ! -x "$B" ] || [ -n "$(find "$HERE/app" "$HERE/cbits" "$HERE/ghci-session.cabal" -newer "$B" -print -quit 2>/dev/null)" ]; then
+  "$HERE/build.sh" >&2 || exit 1
+fi
+exec "$B" "$@"

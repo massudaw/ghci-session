@@ -22,12 +22,12 @@ class EndToEnd(unittest.TestCase):
         cls.proj = os.path.join(cls.dir, "examples", "hello")
         shutil.copytree(os.path.join(HERE, "examples", "hello"), cls.proj,
                         ignore=shutil.ignore_patterns(".ghci-session", "dist-newstyle"))
-        shutil.copytree(os.path.join(HERE, "hygiene"), os.path.join(cls.dir, "hygiene"),
-                        ignore=shutil.ignore_patterns("dist-newstyle"))
-        # keep the example's `../../hygiene` pointing at the copy; the daemon needs the package's bin/ and hygiene/
-        shutil.copytree(os.path.join(HERE, "bin"), os.path.join(cls.dir, "bin"))
-        shutil.copytree(os.path.join(HERE, "ghci_session"), os.path.join(cls.dir, "ghci_session"))
-        cls.cli = os.path.join(cls.dir, "bin", "ghci-session")
+        for d in ("hygiene", "bin", "app", "cbits"):
+            shutil.copytree(os.path.join(HERE, d), os.path.join(cls.dir, d), ignore=shutil.ignore_patterns("dist-newstyle", ".obj", "clib"))
+        for f in ("ghci-session.cabal", "README.md"):
+            shutil.copy(os.path.join(HERE, f), os.path.join(cls.dir, f))
+        os.environ["GHCI_SESSION_DATA"] = cls.dir
+        cls.cli = os.environ.get("GHCI_SESSION_BIN") or os.path.join(HERE, "bin", "ghci-session")
 
     @classmethod
     def tearDownClass(cls):
