@@ -1,0 +1,47 @@
+sprinkler-solver-mm/src/Examples/MMDrawnSlabs.hs
+  s_6e55a4691f1b7b::t_f66c7219f6a007 44,115
+sprinkler-solver-mm/src/Examples/MMConstraints.hs
+  s_6e55a4691f1b7b::t_237871bae70221 1-3
+  s_6e55a4691f1b7b::t_21464d83e7f796 655-657
+sprinkler-solver-mm/src/Examples/MMServer.hs
+  s_6e55a4691f1b7b::t_237871bae70221 1-3
+  s_6e55a4691f1b7b::t_d1bd7672e4d4c7 138-139,197,200
+  s_6e55a4691f1b7b::t_21464d83e7f796 347
+sprinkler-solver-mm/src/Examples/MMHouse.hs
+  s_6e55a4691f1b7b::t_413a316ec3bc8b 62
+sprinkler-solver-mm/src/Examples/MMHeap.hs
+  s_6e55a4691f1b7b::t_3a31426f51bdb1 27,72,74,432-456
+sprinkler-solver-mm/src/Examples/MMFusion.hs
+  s_6e55a4691f1b7b::t_d1bd7672e4d4c7 83-84,771-775
+  s_6e55a4691f1b7b::t_6e794097dfd703 776
+sprinkler-solver-mm/src/Examples/MMElementCache.hs
+  s_6e55a4691f1b7b::t_5052aa1c33adc3 35,143-145
+  s_6e55a4691f1b7b::t_f15adca93b781e 146
+sprinkler-solver-construction/src/Examples/Colchester.hs
+  s_6e55a4691f1b7b::t_413a316ec3bc8b 25,39
+sprinkler-solver-modeling/src/Examples/SkpBuilding.hs
+  s_6e55a4691f1b7b::t_413a316ec3bc8b 36,51-52,90,110
+sprinkler-solver-mm/src/Examples/MMRegistration.hs
+  s_6e55a4691f1b7b::t_d1bd7672e4d4c7 19-20,62-66
+  s_6e55a4691f1b7b::t_6e794097dfd703 67
+sprinkler-solver-construction/src/Examples/House16FA.hs
+  s_6e55a4691f1b7b::t_413a316ec3bc8b 42,53
+CLAUDE.md
+  s_6e55a4691f1b7b::t_1d0c3e905d94a9 387-396
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "496f4c14bada800aff4b81fbec3742525a7d0094",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
