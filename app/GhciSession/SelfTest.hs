@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Daemon (countSub, replace, verdictOf, warningsIn)
+import GhciSession.Daemon (countSub, moduleDelta, replace, verdictOf, warningsIn)
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
@@ -62,6 +62,10 @@ run = do
   check "verdict: a module not loaded is not success, whatever was printed" ("COMPILE-ERROR" `isPrefixOf` fst (verdictOf (facts [] 0) (st 3 2) (T.pack "???")))
   eq "warnings counted from the verdict" (warningsIn "OK (12 warning(s)) -- CHECK-PASS (1.0s)") 12
   eq "warnings: none" (warningsIn "OK -- CHECK-PASS (1.0s)") 0
+  eq "build file: a module added is only that" (moduleDelta ["-O0", "-isrc", "A", "B.C"] ["-O0", "-isrc", "A", "B.C", "D"]) (Just (["D"], []))
+  eq "build file: a module removed is seen" (moduleDelta ["-isrc", "A", "B"] ["-isrc", "A"]) (Just ([], ["B"]))
+  eq "build file: a new dependency is not a module" (moduleDelta ["-package-id", "base-4", "A"] ["-package-id", "base-4", "-package-id", "text-2", "A", "D"]) Nothing
+  eq "build file: a flag's value that looks like a module" (moduleDelta ["A"] ["-framework", "Accelerate", "A"]) Nothing
   eq "countSub" (countSub ": warning:" "a: warning: x\nb: warning: y") 2
   eq "replace" (replace "  [pending]" "" "OK  [pending]  [more]") "OK  [more]"
 

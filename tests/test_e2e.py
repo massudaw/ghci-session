@@ -272,6 +272,22 @@ class KeepLinked(unittest.TestCase):
             self.assertEqual(ev("C.stamp"), "3", "C did not change: its counter must not have been reset by the reload")
             with open(os.path.join(d, ".ghci-session", "kl", "daemon.log")) as fh:
                 self.assertIn("1 module(s) stay linked, 2 to link again (A B)", fh.read())
+            # a NEW module, listed in the .cabal: the build tool is asked what changed, and as it is only a
+            # module the session is not restarted -- C's counter goes on counting
+            with open(os.path.join(d, "src", "E.hs"), "w") as fh:
+                fh.write("module E (e) where\ne :: Int\ne = 7\n")
+            with open(os.path.join(d, "kl.cabal"), "w") as fh:
+                fh.write(self.FILES["kl.cabal"].replace("A, B, C", "A, B, C, E"))
+            log = os.path.join(d, ".ghci-session", "kl", "daemon.log")
+            t0 = time.time()
+            while "the session stays up" not in open(log).read() and time.time() - t0 < 60:
+                time.sleep(0.2)
+            self.assertIn("differs only by 1 module(s) added (E): the session stays up", open(log).read())
+            t0 = time.time()
+            while ev("E.e") != "7" and time.time() - t0 < 30:
+                time.sleep(0.3)
+            self.assertEqual(ev("E.e"), "7")
+            self.assertEqual(ev("C.stamp"), "4", "adding a module must not have restarted the session")
         finally:
             run(cli, "stop", "kl", cwd=d)
             shutil.rmtree(d, ignore_errors=True)

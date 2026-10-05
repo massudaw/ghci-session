@@ -2,7 +2,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
@@ -10,7 +10,7 @@ import Control.Exception (IOException, SomeException, bracket_, displayException
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isDigit, isSpace, isUpper, toLower)
 import Data.IORef
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, sort, sortOn)
+import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, sort, sortOn, (\\))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -67,7 +67,11 @@ data S = S
   , vMem :: IORef (Maybe (Double, Double)), vMemDone :: IORef (Maybe (MVar ()))
   , vSpawned :: IORef Double
   , vHashes :: IORef (M.Map FilePath (Integer, Double, Word64))   -- ^ a file's hash, while its size and mtime stand
+  , vBoot :: IORef (Maybe Boot)       -- ^ how the engine now running was started
   }
+
+-- | How the running engine was started: what the build tool was asked, and what it answered.
+data Boot = Boot { bExe :: FilePath, bLine :: String, bEnv :: [(String, String)], bLaunchDir :: FilePath, bLaunch :: Launch }
 
 rd :: IORef a -> IO a
 rd = readIORef
@@ -1000,6 +1004,7 @@ boot s how = do
         Left said -> do
           writeAtomic (sDir s </> "load.log") said
           dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
+  vBoot s =: Just (Boot exe line env' launchDir launch)
   built <- fromMaybe "" <$> readFileMaybe outF
   (tools, toolEnv) <- phase s "engine_facts" (toolchain s)
   r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools) launch (toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
@@ -1010,6 +1015,66 @@ boot s how = do
       phase s "post_load" (postLoad s repl)
       afterLoad s (Reply facts (T.pack built <> out)) (sBootCheck s) t0
       compiled s >>= (vContextOk s =:)      -- a load that failed dropped the imports: the next good reload re-issues them
+
+-- | A @.cabal@ or @cabal.project@ changed. Most often that is a MODULE ADDED to a component's list, which is
+-- no reason to lose the session: the file is already found by the modules that import it, or can be added
+-- as a target. So the build tool is asked again, and its answer compared with the one the engine is running
+-- on. Only module names added: the session stays up. Anything else -- a dependency, a flag, a module removed
+-- -- is a new package set, and the engine is restarted on the answer just had.
+buildFileChanged :: S -> IO ()
+buildFileChanged s = do
+  mb <- rd (vBoot s)
+  alive <- rd (vRepl s) >>= maybe (pure False) replAlive
+  ok <- compiled s
+  case mb of
+    Just b | alive && ok -> do
+      let cfg = sCfg s
+      logS s "a build file changed: asking the build tool what it changes"
+      t0 <- now
+      r <- captureLaunch (bLine b) (sRoot s) (bEnv b) (bLaunchDir b) (sDir s </> "build.out") (gLoadTimeout cfg) (logS s)
+      t1 <- now
+      case r of
+        Left _ -> void (restart s (Just False))            -- (it will say what the build tool said)
+        Right new -> do
+          deps <- localDeps s new
+          buildInputs s (bExe b) (bLine b) (fromMaybe [] deps) >>= writeAtomic (bLaunchDir b </> "inputs")
+          old' <- launchWords (bLaunch b)
+          new' <- launchWords new
+          case moduleDelta old' new' of
+            Just (added, []) -> do
+              vBoot s =: Just b { bLaunch = new }
+              let multi = "-unit" `elem` lArgs new
+              logS s (printf "the build tool's answer (%.1fs) differs only by %d module(s) added (%s): the session stays up" (t1 - t0) (length added) (unwords added))
+              -- a module nothing imports yet becomes a target (a multi-unit GHCi cannot be given one: there it
+              -- is loaded when something imports it, or at the next start)
+              -- (by FILE: GHCi remembers that it once looked for the module and did not find it)
+              targets <- forM added $ \m -> do
+                let rels = [ d </> foldr1 (</>) (splitOn '.' m) ++ e | ('-' : 'i' : d) <- new', not (null d), e <- [".hs", ".lhs"] ]
+                found <- filterM (doesFileExist . (lCwd new </>)) rels
+                pure (fromMaybe m (listToMaybe found))
+              unless (multi || null added) (void (try (cmd s (Just (gLoadTimeout cfg)) (":add " ++ unwords (map show targets))) :: IO (Either SomeException T.Text)))
+              void (try (cmd s (Just 60) ":set -Wno-missing-home-modules") :: IO (Either SomeException T.Text))   -- (its list of them is the old one)
+              void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing)
+              unless (null added) (note s ("[" ++ show (length added) ++ " module(s) added to the build file: no restart]") [])
+            _ -> do
+              logS s "the build tool's answer changed (more than modules added): restarting the repl on it"
+              void (restart s (Just True))
+    _ -> void (restart s (Just False))
+
+-- | A start as one list of words: the arguments, with each per-unit argument file in place of its name.
+launchWords :: Launch -> IO [String]
+launchWords l = concat <$> mapM (\a -> case a of
+  '@' : f -> maybe [a] lines <$> readFileMaybe f
+  _ -> pure [a]) (lArgs l)
+
+-- | If two starts differ only in the module names they list: those added and those removed.
+moduleDelta :: [String] -> [String] -> Maybe ([String], [String])
+moduleDelta old new
+  | filter (not . isModuleName) old == filter (not . isModuleName) new = Just (mods new \\ mods old, mods old \\ mods new)
+  | otherwise = Nothing
+  where mods = filter isModuleName
+        isModuleName a = not (null a) && all part (splitOn '.' a) && take 1 a /= "." && not ("." `isSuffixOf` a) && not (".." `isInfixOf` a)
+        part p = case p of { (c : cs) -> isUpper c && all (\x -> isDigit x || x `elem` ("_'" :: String) || x `elem` ['a' .. 'z'] || x `elem` ['A' .. 'Z']) cs; [] -> False }
 
 -- | A fresh repl. The servers that were running come back on the new code (a plain session's children die
 -- with its repl; a composed session's are kept if their code did not change).
@@ -1243,7 +1308,9 @@ watchLoop s = do
                 when (gAutoReload cfg && cur2 /= loaded) $ do
                   let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
                   let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
-                  if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
+                  if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
+                    then drive s (buildFileChanged s)
+                  else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
                     then do
                       logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
                       drive s (void (restart s (Just False)))      -- (through the build tool: it is what compiles a package's C)
@@ -1366,7 +1433,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef 0 <*> newIORef root <*> newIORef t <*> newIORef 0
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
-         <*> newIORef t <*> newIORef M.empty
+         <*> newIORef t <*> newIORef M.empty <*> newIORef Nothing
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now

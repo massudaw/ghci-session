@@ -40,7 +40,7 @@ what the rewrite changed is the client and the tool's own overhead:
 | the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
 
 How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
-itself -- this package has a `ghci-session.json`, and a save here is a compile and 65 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 69 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
 (`ghci-session selftest` runs them from the binary):
 
 - **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
@@ -158,6 +158,15 @@ straight to GHCi; when a dependency's source has, cabal runs and rebuilds it. A 
 cabal (`restart --fast` to not), and so does a changed `.c`, `.h` or `.cabal`. If cabal's plan does not say where a
 local dependency's source is, the session cannot see it and cabal is always asked, unless told otherwise
 (`start --fast`, `"fast_start": true`).
+
+**A new module is not a restart.** A new file that a loaded module imports is simply found by the reload. Listing
+it in the `.cabal` used to cost the session -- any change to a build file restarted the repl. Now the build tool
+is asked again (its few seconds are unavoidable: only it can read the file) and its answer compared with the one
+the engine is running on: if the two differ only by module names added, the session stays up, with everything
+linked and every value computed still there, and a module nothing imports yet is added as a target (a multi-unit
+GHCi cannot be given one: there it loads when something imports it, or at the next start). Anything else -- a
+dependency, a flag, a module removed -- is a restart, on the answer just had, so cabal is not run twice. A changed
+`.c` or `.h` still restarts.
 
 **GHCi asks `gcc` where each system library is, ten times as it starts**, and on macOS `gcc` is a shim that asks
 `xcrun` which compiler to run: 30 ms a time, 0.2 s of a 0.45 s start, and again for every library linked. The daemon
@@ -315,7 +324,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `hygiene` | `false` | unlink superseded CAFs after each reload, report memory |
 | `unlink_after` | `eval` | when a reload's unlink happens: after the first evaluation (the check, or an `eval`), when the code that replaced it is linked; `reload` is at once, which reaches one generation less |
 | `prune_gc_idle_s` | `0` | `0`: the GC that frees what was unlinked runs at once. A positive value defers it to an idle moment and HAS CRASHED the repl (see the tour section); leave it |
-| `auto_reload` | `true` | reload when a watched file changes (a `.c`, `.h` or `.cabal` change restarts instead: a loaded C object, or a package set, cannot be replaced) |
+| `auto_reload` | `true` | reload when a watched file changes (a `.c` or `.h` change restarts instead, and so does a `.cabal` change that is more than modules added: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
 | `async_refork` | `false` | a reload returns at its verdict and re-forks the servers in the background (also `reload --async-refork`, env `GHS_ASYNC_REFORK=1`) |
 | `watch_check`, `watch_refork` | `true` | what a SAVE does beyond compiling: run the checks, cut the servers over. Off, an explicit `reload` (or a commit, below) does them |
@@ -476,7 +485,7 @@ tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reprodu
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 65 self-tests,
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 69 self-tests,
 the tour (123 steps) and the end-to-end tests. This repository's own sessions run on it (`tools/msq` is a thin front
 end: it keeps `ghci-session.json` generated from `tools/model_session/targets.json` and adds the project's commands).
 
