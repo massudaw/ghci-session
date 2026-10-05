@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -O2 #-}  -- decoding a reply: -O2 is a third faster here (0.47 -> 0.32 ms for 0.5 MB) and nowhere else
 -- | A GHCi behind a pty, framed by a sentinel prompt.
 --
 -- Every command written yields exactly one sentinel, so reading until the sentinel is a complete reply. The

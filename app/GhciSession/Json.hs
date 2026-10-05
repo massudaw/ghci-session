@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -O2 #-}  -- the byte-level parser and the encoder: -O2 is a third faster here (measured: parse 0.46 -> 0.31 ms on a 0.5 MB reply) and nowhere else in the package
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE ViewPatterns #-}
