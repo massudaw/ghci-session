@@ -86,7 +86,7 @@ request conf name req = do
       B.hPut h (encodeBS req)
       B.hPut h (BC.pack "\n")
       hFlush h
-      line <- B.hGetLine h
+      line <- BC.hGetLine h
       hClose h
       either (\e -> die' ("bad reply from the session: " ++ e)) pure (parseJsonBS line)
 

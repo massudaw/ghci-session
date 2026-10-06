@@ -1424,7 +1424,7 @@ serve s = do
 
 handle :: S -> Handle -> IO ()
 handle s h = do
-  line <- B.hGetLine h
+  line <- BC.hGetLine h
   let reply ok out = do
         stale <- staleFiles s
         j <- rd (vJson s)
