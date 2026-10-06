@@ -29,6 +29,7 @@ import GhciSession.Config
 import GhciSession.Daemon (runDaemon)
 import GhciSession.Gc
 import GhciSession.Json
+import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
 
 -- arguments --------------------------------------------------------------------
@@ -422,6 +423,7 @@ usage = unlines
   , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
+  , "  mcp                                serve the session's operations and its memory to an agent (MCP on stdin/stdout): claude mcp add ghci -- ghci-session mcp"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
   , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
@@ -538,6 +540,7 @@ cliMain = do
             name <- pick conf (opt a ["-s", "-t", "--session"])
             request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
           _ -> die' "date ID: when message ID was written"
+        "mcp" -> mcpMain conf >> pure 0
         "list" -> cmdList conf
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN

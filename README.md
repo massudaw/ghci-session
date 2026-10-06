@@ -168,13 +168,18 @@ size, whose parent is built) is replaced by its parent. A merged part is never s
 view is the same from one turn to the next (what lets a model cache it) and the distant past fades in resolution
 instead of being dropped. A line not summarized yet renders as `(not summarized yet: zoom it)`; `view --wait N`
 waits for the compactor first, as a turn should. Rendered: `<chat>`, one line a part, `id+n|text`
-(`GhciSession.History`; the fold and the schedule are self-tested).
+(`GhciSession.History`; the fold and the schedule are self-tested). A save's `tool` line carries the diff of
+each changed file against the copy taken when it was last seen (`history/loaded/`, seeded at boot), so the
+log says what was edited, not only that a file was.
 
 The summaries are written by a cheap model through `"summarize_cmd"`: a shell command the daemon runs with the
 instructions (OptChat's compactor prompt, `compactPrompt` there, with `"agent"` as the agent's name), the view's
 lines before the node (bare -- no ids, which a model copies into its answer), and the step -- the message
 whole, or the two lines to merge -- on its standard input, reading one line from its standard output:
-`"summarize_cmd": "claude -p --model claude-sonnet-4-5"`, say. Nodes are built one message at a time, in order,
+`"summarize_cmd": "python3 tools/summarize.py"` runs `tools/summarize.py`, which sends the instructions as
+the system prompt and the rest as the user message to an OpenAI-compatible chat endpoint -- DeepSeek's flash
+model by default (`DEEPSEEK_API_KEY`; `DEEPSEEK_MODEL`, `DEEPSEEK_BASE_URL`, or `OPENAI_*`, override; `pip install
+openai`). Nodes are built one message at a time, in order,
 with merges of finished parts alongside, `summarize_jobs` (8) at once, and no call sees a line that is not a
 summary. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
 shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its first failure is
@@ -189,9 +194,22 @@ which evaluations answered what, which edits failed and why, what a census said.
 needs are in the protocol: every reply carries `stale` (the echo says when an answer came from code that is no
 longer on disk), and a command that runs past its timeout is interrupted, not abandoned -- the engine is sent a
 SIGINT, GHCi turns it into `UserInterrupt` and is back at its prompt -- so a probe that hangs costs its timeout
-and nothing after it (it used to leave the next request queued behind it). The harness that owns the turns --
-a fresh model call per message, the view as its first block, `zoom` and `date` as its tools -- is not in this
-package: it needs a model client, and this package depends on the compiler's boot packages only.
+and nothing after it (it used to leave the next request queued behind it). Two ways in for an agent:
+
+- **`ghci-session mcp`** serves the session's operations and its memory to any agent client as tools, over
+  the Model Context Protocol on standard input and output (`claude mcp add ghci -- ghci-session mcp` from
+  the project's directory): `eval`, `status`, `typecheck`, `reload`, `test`, `doc`, `census`, `bench`,
+  `mem`, and the memory's `view`, `zoom`, `date`, `history` and `remember` (a finding kept for later turns,
+  logged as the agent's words). Each call is a request to the daemon, so it is in the history like any other.
+  The agent's edits are not: the session sees them as saves, with their diffs.
+- **`tools/chat.py`** is the endless chat itself, OptChat's turn loop over this history: a fresh model call
+  per message, whose input is the system prompt, the view (rendered before the message is logged) and the
+  message; the tools above plus the agent's hands on the files (`read`, `write`, `edit`, `ls`, `sh`), which
+  the harness logs; replies logged as `talk`, thoughts shown and never logged; a line typed while the agent
+  works delivered between tool calls. It waits for the view to settle before each turn. The model is an
+  OpenAI-compatible endpoint, DeepSeek's flash model by default, which caches the prompt's prefix on its own
+  (`python3 tools/chat.py -s dev`, `--once 'what was tried on X?'`, `--instructions AGENTS.md`). It is
+  Python because this package depends on the compiler's boot packages only and a model client is not one.
 
 ## What the heap holds, what an action costs, and the session's own scenario
 
@@ -556,6 +574,7 @@ autostop [--max-mem-mb N] [--idle-mins M] [--include-serving] [-n]
 mem | log [FILE] [-s SESSION] | list | init
 history [-n N] [--since ID] [--full] [--json] | history --kind user|talk|note TEXT
 view [--wait SECS] [--json] | zoom ID [N] | date ID
+mcp                                      # the session and its memory as an agent's tools (MCP on stdin/stdout)
 ```
 
 With no session named, a command goes to the one that is running (else the config's `default`).

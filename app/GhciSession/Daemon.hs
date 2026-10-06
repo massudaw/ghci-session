@@ -1551,7 +1551,7 @@ watchLoop s = do
                 when (gAutoReload cfg && cur2 /= loaded) $ do
                   let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
                   let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
-                  let saved = "save: " ++ intercalate ", " (map (rel s) (take 8 changed)) ++ (if length changed > 8 then ", ..." else "")
+                  saved <- saveLine s changed
                   if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
                     then histEvent s (saved ++ " (a build file)") (drive s (buildFileChanged s))
                   else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
@@ -1607,6 +1607,44 @@ verdictLine s = do
   j <- rd (vJson s)
   stale <- if "starting" `isPrefixOf` st then pure [] else staleFiles s
   pure (T.pack (intercalate "\n" ((if null stale then st else "STALE(" ++ show (length stale) ++ ") " ++ st) : take 30 (strs (j .: "detail")))))
+
+-- | What a save changed: the files, and for each a diff against the copy kept since it was last seen
+-- (@history/loaded/@, seeded at boot), capped -- the log then says WHAT was edited, not only that a file
+-- was. The copies are brought up to date here.
+saveLine :: S -> [FilePath] -> IO String
+saveLine s changed = do
+  let head' = "save: " ++ intercalate ", " (map (rel s) (take 8 changed)) ++ (if length changed > 8 then ", ..." else "")
+  case sHist s of
+    Nothing -> pure head'
+    Just _ -> do
+      ds <- forM (take 8 changed) $ \f -> do
+        let copy = sDir s </> "history" </> "loaded" </> rel s f
+        there <- doesFileExist f
+        had <- doesFileExist copy
+        d <- if not there then pure "(deleted)"
+             else if not had then pure "(new, or not seen before)"
+             else do
+               out <- rawSystemOut 10 "diff" ["-u", copy, f]
+               pure (maybe "(diff failed)" (hunks 60) out)
+        void (try (if there then createDirectoryIfMissing True (takeDirectory copy) >> copyFile f copy else removeFile copy) :: IO (Either IOException ()))
+        pure (if length changed == 1 then d else "== " ++ rel s f ++ "\n" ++ d)
+      pure (intercalate "\n" (head' : filter (not . null) ds))
+  where
+    -- the hunks of a unified diff, without the two header lines and their times; at most n lines
+    hunks n out = let ls = drop 2 (lines out) in intercalate "\n" (take n ls ++ [ "... (" ++ show (length ls - n) ++ " more lines)" | length ls > n ])
+
+-- | The copies the save diffs are taken against: every watched source, once the session is up.
+seedLoaded :: S -> IO ()
+seedLoaded s = forM_ (sHist s) $ \_ -> void (try go :: IO (Either SomeException ()))
+  where
+    go = do
+      sig <- rd (vLoadedSig s)
+      forM_ (M.keys sig) $ \p -> do
+        let f = fromRaw p
+            copy = sDir s </> "history" </> "loaded" </> rel s f
+        there <- doesFileExist copy
+        same <- if not there then pure False else (==) <$> modTime f <*> modTime copy
+        unless same $ void (try (createDirectoryIfMissing True (takeDirectory copy) >> copyFile f copy) :: IO (Either IOException ()))
 
 -- | Something the watcher did: what, then the verdict it ended on.
 histEvent :: S -> String -> IO () -> IO ()
@@ -2101,6 +2139,7 @@ runDaemon conf name bootCheck fastStart = do
     Right () -> do
       verdictLine s >>= histAdd s "echo"
       forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m c) :: IO (Either SomeException ())))
+      void (forkIO (seedLoaded s))
       vMem s =: Nothing
       memSampleAsync s
       now >>= (vLastUsed s =:)     -- idle is counted from the end of the boot, not from the daemon's start
