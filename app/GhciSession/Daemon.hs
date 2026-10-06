@@ -1174,16 +1174,24 @@ buildFileChanged s = do
           case moduleDelta old' new' of
             Just (added, []) -> do
               vBoot s =: Just b { bLaunch = new }
-              let multi = "-unit" `elem` lArgs new
               logS s (printf "the build tool's answer (%.1fs) differs only by %d module(s) added (%s): the session stays up" (t1 - t0) (length added) (unwords added))
-              -- a module nothing imports yet becomes a target (a multi-unit GHCi cannot be given one: there it
-              -- is loaded when something imports it, or at the next start)
+              -- a module nothing imports yet becomes a target of the unit that lists it. Not GHCi's `:add`: in
+              -- a multi-unit session (every GHCi 9.14 started from a unit file, `-unit` or not) that puts the
+              -- file in the INTERACTIVE unit, which compiles it too, into the same object file as the unit
+              -- that lists it -- the two builds overwrite each other and the next link of the real unit
+              -- fails with an undefined symbol. The engine gives it to the unit whose import paths hold it.
               -- (by FILE: GHCi remembers that it once looked for the module and did not find it)
               targets <- forM added $ \m -> do
                 let rels = [ d </> foldr1 (</>) (splitOn '.' m) ++ e | ('-' : 'i' : d) <- new', not (null d), e <- [".hs", ".lhs"] ]
                 found <- filterM (doesFileExist . (lCwd new </>)) rels
                 pure (fromMaybe m (listToMaybe found))
-              unless (multi || null added) (void (try (cmd s (Just (gLoadTimeout cfg)) (":add " ++ unwords (map show targets))) :: IO (Either SomeException T.Text)))
+              unless (null targets) $ do
+                r <- try (theRepl s >>= \rp -> replQueryOut rp (Just (gLoadTimeout cfg)) "add_targets" [("files", JArr (map JStr targets))]) :: IO (Either SomeException Reply)
+                logS s $ case r of
+                  Right (Reply j _) | lookupBool "ok" j == Just True ->
+                    "added as targets: " ++ unwords [ f ++ " [" ++ u ++ "]" | JObj o <- lookupArr "targets" j, Just (JStr f) <- [lookup "file" o], Just (JStr u) <- [lookup "unit" o] ]
+                  Right (Reply j _) -> "not added as targets (loaded when something imports them): " ++ fromMaybe "?" (lookupStr "error" j)
+                  Left e -> "not added as targets (loaded when something imports them): " ++ takeWhile (/= '\n') (show e)
               void (try (cmd s (Just 60) ":set -Wno-missing-home-modules") :: IO (Either SomeException T.Text))   -- (its list of them is the old one)
               void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing)
               unless (null added) (note s ("[" ++ show (length added) ++ " module(s) added to the build file: no restart]") [])

@@ -93,7 +93,7 @@ import GHCi.UI.Monad (GHCi)
 
 import GHC.Exts (Any)
 import GHC.Hygiene (engineSymbol, heapAuto, majorGC)
-import GhsAddUnits (addUnits)
+import GhsAddUnits (addTargets, addUnits)
 import GhsFastLoad (loadWith, setChanged)
 import GHC.Types.Error (mkUnknownDiagnostic)
 import GHC.Hygiene.Store (storeDrop, storeNames)
@@ -426,6 +426,13 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
     pure (case r of
       Left why -> failed why
       Right us -> JObj [("ok", JBool True), ("units", JArr (map JStr us))])
+  -- modules added to a unit that is running, each as a target of the unit whose import paths hold its file
+  -- (GhsAddUnits.addTargets; GHCi's :add would put it in the interactive unit); the daemon reloads after it
+  "add_targets" -> do
+    r <- addTargets [ f | JStr f <- lookupArr "files" q ]
+    pure (case r of
+      Left why -> failed why
+      Right ts -> JObj [("ok", JBool True), ("targets", JArr [ JObj [("file", JStr f), ("unit", JStr u)] | (f, u) <- ts ])])
   "typecheck" -> typecheck (arg "dir") (if lookupBool "since" q == Just True then Just [ f | JStr f <- lookupArr "files" q ] else Nothing)
   "typecheck_expr" -> do
     r <- MC.try (GHC.exprType TM_Inst (ioUnit (arg "expr")))

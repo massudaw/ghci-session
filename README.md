@@ -179,7 +179,9 @@ whole, or the two lines to merge -- on its standard input, reading one line from
 `"summarize_cmd": "python3 tools/summarize.py"` runs `tools/summarize.py`, which sends the instructions as
 the system prompt and the rest as the user message to an OpenAI-compatible chat endpoint -- DeepSeek's flash
 model by default (`DEEPSEEK_API_KEY`; `DEEPSEEK_MODEL`, `DEEPSEEK_BASE_URL`, or `OPENAI_*`, override; `pip install
-openai`). Nodes are built one message at a time, in order,
+openai`), asked without thinking: a reasoning model spends the answer's budget on its thoughts first, and a
+summary's budget was often all thoughts and no line (`SUMMARIZE_EFFORT=low|high|max` turns thinking on; an answer
+cut off before any text is asked again with a larger budget). Nodes are built one message at a time, in order,
 with merges of finished parts alongside, `summarize_jobs` (8) at once, and no call sees a line that is not a
 summary. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
 shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its first failure is
@@ -359,10 +361,13 @@ types are right the reload follows as before; the typecheck it repeats is the sm
 it in the `.cabal` used to cost the session -- any change to a build file restarted the repl. Now the build tool
 is asked again (its few seconds are unavoidable: only it can read the file) and its answer compared with the one
 the engine is running on: if the two differ only by module names added, the session stays up, with everything
-linked and every value computed still there, and a module nothing imports yet is added as a target (a multi-unit
-GHCi cannot be given one: there it loads when something imports it, or at the next start). Anything else -- a
-dependency, a flag, a module removed -- is a restart, on the answer just had, so cabal is not run twice. A changed
-`.c` or `.h` still restarts.
+linked and every value computed still there, and a module nothing imports yet is added as a target of the unit
+that lists it -- by the engine, not GHCi's `:add`: a GHCi 9.14 started from a unit file is a multi-unit session
+whether or not `-unit` was said (cabal passes one component as a bare `@file`), and there `:add` gives the file to
+the interactive unit, which compiles it too, into the same object file as the real unit -- the two builds
+overwrite each other and the next link fails with an undefined symbol (`hello-inplace_Stack_selfTest_closure`),
+until a restart. Anything else -- a dependency, a flag, a module removed -- is a restart, on the answer just had,
+so cabal is not run twice. A changed `.c` or `.h` still restarts.
 
 **GHCi asks `gcc` where each system library is, ten times as it starts**, and on macOS `gcc` is a shim that asks
 `xcrun` which compiler to run: 30 ms a time, 0.2 s of a 0.45 s start, and again for every library linked. The daemon
