@@ -60,6 +60,9 @@ data Cfg = Cfg
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
   , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String], gFastStart :: Bool, gWatchTypecheck :: Bool, gProfile :: [Json]
+  , gHistory :: Bool             -- ^ keep the session's history (every request and verdict) and its summary tree
+  , gSummarizeCmd :: Maybe String   -- ^ the command that compresses a message, or merges two lines, into one line (the compactor)
+  , gSummarizeJobs :: Int, gAgent :: String
   }
 
 -- | Every key a target may have, with its default. An unknown key is refused: a misspelt @chek@ would
@@ -77,6 +80,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 8), ("agent", JStr "Agent")
   ]
 
 reserved :: [String]
@@ -251,6 +255,8 @@ resolve conf session = do
         , gFastStart = not (null ts) && all (jBool "fast_start") ts
         , gWatchTypecheck = all (jBool "watch_typecheck") ts
         , gProfile = [ exJ st | t <- ts, st <- lookupArr "profile" t ]
+        , gHistory = all (jBool "history") ts, gSummarizeCmd = ex <$> jMaybeStr "summarize_cmd" t0
+        , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0
         }
     exJ j = case j of { JObj kvs -> JObj [ (k, case v of { JStr x -> JStr (expand vals0 x); _ -> v }) | (k, v) <- kvs ]; _ -> j }
     vals0 = [ ("session", session), ("root", cRoot conf), ("state", cStateDir conf), ("dylib", if os == "darwin" then "dylib" else "so") ]

@@ -8,6 +8,7 @@ import Control.Exception (IOException, SomeException, try)
 import Control.Monad (filterM, forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
+import Data.Char (isDigit)
 import Data.List (intercalate, isPrefixOf, nub, sortOn)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -418,6 +419,9 @@ usage = unlines
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
+  , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
+  , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
   , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
@@ -447,7 +451,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -513,6 +517,27 @@ cliMain = do
           when (null (aPos a)) (die' "doc: what are you looking for? (a name, part of one, its initials, or words of its type or documentation)")
           request conf name (JObj ([ ("op", JStr "doc"), ("words", JArr (map JStr (aPos a))), ("json", JBool (flag a ["--json"])) ]
                                    ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]))) >>= say
+        -- the session's history (see GhciSession.History): the log, the view a model reads, a line opened
+        "history" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          case (opt a ["--kind"], aPos a) of
+            (Just k, ws) | not (null ws) -> request conf name (JObj [("op", JStr "log"), ("kind", JStr k), ("text", JStr (unwords ws))]) >>= say
+            (Just _, []) -> die' "history --kind KIND TEXT: the text is needed"
+            _ -> request conf name (JObj ([ ("op", JStr "history"), ("json", JBool (flag a ["--json"])), ("full", JBool (flag a ["--full"])) ]
+                                           ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]) ++ maybe [] (\k -> [("since", JNum (read k))]) (opt a ["--since"]))) >>= say
+        "view" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          request conf name (JObj ([ ("op", JStr "view"), ("json", JBool (flag a ["--json"])) ] ++ maybe [] (\k -> [("wait", JNum (read k))]) (opt a ["--wait"]))) >>= say
+        "zoom" -> case (pos a 0, pos a 1) of
+          (Just i, n) | all isDigit i, maybe True (all isDigit) n -> do
+            name <- pick conf (opt a ["-s", "-t", "--session"])
+            request conf name (JObj [ ("op", JStr "zoom"), ("id", JNum (read i)), ("n", JNum (maybe 1 read n)) ]) >>= say
+          _ -> die' "zoom ID [N]: open the view's line ID+N into the two lines under it (N = 1, or none: the message whole)"
+        "date" -> case pos a 0 of
+          Just i | all isDigit i -> do
+            name <- pick conf (opt a ["-s", "-t", "--session"])
+            request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
+          _ -> die' "date ID: when message ID was written"
         "list" -> cmdList conf
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN

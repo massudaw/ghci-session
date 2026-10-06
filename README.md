@@ -4,8 +4,8 @@ A warm GHCi per project, behind a small daemon, with the two things a long GHCi 
 `cabal repl` does not give you: **a verdict you can trust** and **memory that does not grow with every edit**.
 
 It grew out of the session tooling of a large Haskell modelling project (several hundred modules, servers forked
-from the repl, days-long sessions) and has nothing of that project in it. **It needs GHC 9.14.1 and has only been
-run on macOS (arm64)**: see *Status*.
+from the repl, days-long sessions) and has nothing of that project in it. **It needs GHC 9.14.1; it is developed on
+macOS (arm64) and runs on Linux without the pruner**: see *Status*.
 
 ```
 ghci-session start          # boot once, leave it running
@@ -139,6 +139,59 @@ comment. Several words are first looked for TOGETHER, in one declaration (`raste
 them all, each word is answered on its own, best answers in turn -- two names typed together are two questions --
 and a word that finds nothing is named. What the scanner does not see: instances, class methods, constructors
 without fields, local definitions, and anything behind CPP it cannot follow.
+
+## The history: what was done to the session, as the memory of whoever works on it
+
+```
+ghci-session history                 # the log: every request and its answer, every save and its verdict
+ghci-session history --kind user 'keep the painted views across reloads'   # a harness logs the user's words (and its agent's replies: talk)
+ghci-session view --wait 10          # the whole history as one-line summaries, oldest first: what a model reads at the start of a turn
+ghci-session zoom 2184 8             # open line 2184+8 of the view into the two lines of 4 it was made from; zoom 2187 1 is message 2187 whole
+ghci-session date 2187               # when it was written
+```
+
+The daemon is the one process that sees everything done to a session -- a client's request (`eval`, `reload`,
+`test`, `doc`, `census`, ...) and what it answered, a save with the verdict it compiled to, a commit, a restart, a
+stop -- so it writes each as a line of `.ghci-session/<session>/history/main/YYYY-MM-DD.jsonl`: `tool` (the
+request, as one line: `eval Hello.greeting`, `save: src/Hello.hs`), `echo` (the answer: an evaluation's output cut
+to 30,000 characters with its head and tail kept, a verdict with its failing lines, the STALE warning the client
+was given), and, from a harness, `user`, `talk` and `note`. A line is written with one write and an fsync, and
+never edited; a torn line is skipped at load. `status` and `info` are not logged: a tool polls them.
+
+Over the log the daemon keeps a binary tree of one-line summaries, the design of OptChat (Victor Taelin): node
+`(l, i)` covers messages `[i*2^l, (i+1)*2^l)`, a line is at most 512 bytes, a parent is made from its two
+children, and a message or a pair that already fits IS its node, with no model call -- so a routine verdict
+(`OK -- CHECK-PASS (0.4s)`) costs nothing, and a session that saves two hundred times a day costs the merges
+above it. The view is the list of nodes tiling the whole log, oldest first, kept under 128,000 bytes: a new
+message is appended, and while the view is over budget the most due adjacent pair (the oldest relative to its
+size, whose parent is built) is replaced by its parent. A merged part is never split again, so the start of the
+view is the same from one turn to the next (what lets a model cache it) and the distant past fades in resolution
+instead of being dropped. A line not summarized yet renders as `(not summarized yet: zoom it)`; `view --wait N`
+waits for the compactor first, as a turn should. Rendered: `<chat>`, one line a part, `id+n|text`
+(`GhciSession.History`; the fold and the schedule are self-tested).
+
+The summaries are written by a cheap model through `"summarize_cmd"`: a shell command the daemon runs with the
+instructions (OptChat's compactor prompt, `compactPrompt` there, with `"agent"` as the agent's name), the view's
+lines before the node (bare -- no ids, which a model copies into its answer), and the step -- the message
+whole, or the two lines to merge -- on its standard input, reading one line from its standard output:
+`"summarize_cmd": "claude -p --model claude-sonnet-4-5"`, say. Nodes are built one message at a time, in order,
+with merges of finished parts alongside, `summarize_jobs` (8) at once, and no call sees a line that is not a
+summary. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
+shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its first failure is
+logged. Without a command the log and the free nodes are kept and the tree waits for a compactor outside the
+daemon: the `pending` operation answers the nodes ready to build, each with its prompt, and `tree_put` takes a
+line. The tree is stored (`history/tree/`) and never recomputed. `"history": false` turns all of it off.
+
+What it is for: an agent that works on the session as a sandbox -- an evaluation against the loaded code in
+milliseconds, a verdict it can trust, `doc` for a definition, a save the watcher reloads -- starts each turn from
+the view instead of from nothing, and its memory is what was actually done to this code, by it or by hand:
+which evaluations answered what, which edits failed and why, what a census said. Two things an agent's loop
+needs are in the protocol: every reply carries `stale` (the echo says when an answer came from code that is no
+longer on disk), and a command that runs past its timeout is interrupted, not abandoned -- the engine is sent a
+SIGINT, GHCi turns it into `UserInterrupt` and is back at its prompt -- so a probe that hangs costs its timeout
+and nothing after it (it used to leave the next request queued behind it). The harness that owns the turns --
+a fresh model call per message, the view as its first block, `zoom` and `date` as its tools -- is not in this
+package: it needs a model client, and this package depends on the compiler's boot packages only.
 
 ## What the heap holds, what an action costs, and the session's own scenario
 
@@ -475,7 +528,11 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `fingerprint_files` | `[]` | extra files that are part of a server's code (a C bundle) |
 | `watcher` | `auto` | kernel file events where the platform has them (kqueue on macOS/BSD, inotify on Linux), else `poll`. The mtime scan still decides what changed and still runs every 2 s: an event only says "look now" |
 | `poll_interval`, `debounce` | 0.2, 0.2 | when polling: how often the watcher looks, and how long it lets a burst of writes settle (with events a burst is over when they stop for 50 ms) |
-| `load_timeout`, `eval_timeout` | 900, 600 | seconds |
+| `load_timeout`, `eval_timeout` | 900, 600 | seconds. A command past `eval_timeout` is interrupted (SIGINT to the engine) |
+| `history` | `true` | keep the session's history (`<state>/<session>/history/`): every request and verdict, and the summary tree over it (see *The history*) |
+| `summarize_cmd` | none | the command that writes the tree's lines (stdin: the instructions, the context, the step; stdout: the line). None: the log is kept and the tree waits for an outside compactor |
+| `summarize_jobs` | `8` | how many of those run at once |
+| `agent` | `Agent` | the agent's name in the compactor's instructions |
 
 State lives in `.ghci-session/<session>/`: `status` (the verdict, then the failing lines), `status.json`, `load.log`/`reload.log`,
 `run.log` (the checks), `daemon.log`, `async.log` (output a background thread printed between commands), `server-<member>.log`.
@@ -497,6 +554,8 @@ server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
 gc [-n] [--days N]
 autostop [--max-mem-mb N] [--idle-mins M] [--include-serving] [-n]
 mem | log [FILE] [-s SESSION] | list | init
+history [-n N] [--since ID] [--full] [--json] | history --kind user|talk|note TEXT
+view [--wait SECS] [--json] | zoom ID [N] | date ID
 ```
 
 With no session named, a command goes to the one that is running (else the config's `default`).
@@ -803,5 +862,11 @@ the tour (123 steps) and the end-to-end tests. This package's own two sessions (
 
 Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler
 other than GHC 9.14.1: the engine is that compiler's front end, so another needs its sources vendored and has not
-been tried. Linux: the C has `/proc` and inotify code paths that have not been run, and the pruner reads a Mach-O
-symbol table (on ELF it finds nothing and the session runs without pruning). Port verification needs `lsof`.
+been tried. Port verification needs `lsof`.
+
+Linux (x86_64, GHC 9.14.1 and cabal 3.18 from ghcup, Ubuntu 24.04): both executables build, the example's session
+boots, and the tour passes 135 of its 145 steps. The ten others are the pruner and the heap census, which read a
+Mach-O symbol table (on ELF the engine finds nothing: hygiene turns itself off and says so, `census` answers that
+it has no census, and the leak the pruner exists for is measured but not stopped), and `compose --add`, which
+restarts the repl instead of adding the package live: cabal there starts the repl with ONE response file holding
+every argument, which the live path does not yet read. The history, the view and the compactor are platform-free.

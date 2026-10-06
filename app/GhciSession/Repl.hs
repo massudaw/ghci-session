@@ -20,7 +20,7 @@ import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar (MVar, isEmptyMVar, newMVar, withMVar)
 import Control.Concurrent.STM
 import Control.Exception (Exception, IOException, SomeException, throwIO, try)
-import Control.Monad (unless, void, when)
+import Control.Monad (forM_, unless, void, when)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
@@ -34,7 +34,7 @@ import System.Exit (ExitCode (..))
 import System.FilePath ((</>))
 import System.IO (BufferMode (..), Handle, IOMode (..), hClose, hFlush, hSetBinaryMode, hSetBuffering, openFile)
 import System.Posix.IO (fdToHandle)
-import System.Posix.Signals (nullSignal, sigKILL, sigTERM, signalProcessGroup)
+import System.Posix.Signals (nullSignal, sigINT, sigKILL, sigTERM, signalProcess, signalProcessGroup)
 import System.Posix.Types (CPid (..))
 import System.Process (CreateProcess (..), ProcessHandle, StdStream (..), createProcess, getPid, getProcessExitCode, proc, shell, waitForProcess)
 import System.Timeout (timeout)
@@ -194,8 +194,24 @@ roundTrip :: Repl -> Maybe Double -> B.ByteString -> IO Reply
 roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
   alive <- replAlive r
   unless alive (throwIO (ReplDied ""))
+  drain                       -- (a reply to a request that timed out and could not be interrupted)
   rSend r payload
-  await r "" (fromMaybe (rEvalTimeout r) mt)
+  res <- try (await r "" (fromMaybe (rEvalTimeout r) mt))
+  case res of
+    Right rep -> pure rep
+    -- A command that runs past its time is INTERRUPTED, not abandoned: GHCi turns a SIGINT into
+    -- `UserInterrupt` in the running command, prints "Interrupted." and is back at its prompt, where the
+    -- turn replies -- so the next request does not queue behind the one that hung (a check of 30 s had to
+    -- be killed; an agent's probe would hang its session). The caller still gets the timeout. A command
+    -- that cannot be interrupted (a foreign call that does not return) leaves its reply for 'drain'.
+    Left (ReplTimeout t) -> do
+      mp <- getPid (rProc r)
+      forM_ mp $ \p -> try (signalProcess sigINT (CPid (fromIntegral p))) :: IO (Either IOException ())
+      void (try (await r "" 5) :: IO (Either ReplError Reply))
+      throwIO (ReplTimeout t)
+    Left e -> throwIO e
+  where
+    drain = atomically (let go = tryReadTQueue (rReplies r) >>= maybe (pure ()) (const go) in go)
 
 -- | Run one GHCi command: its output, and the diagnostics the compiler logged while it ran. 'Nothing' for the
 -- session's default timeout. Throws 'ReplError'.

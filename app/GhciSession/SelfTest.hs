@@ -21,6 +21,9 @@ import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Daemon (countSub, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Doc
+import qualified GhciSession.History as H
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
@@ -210,6 +213,64 @@ run = do
   waiterClose w
   pw <- makeWaiter "poll" 0.01 0.01 [] (\_ -> pure ())
   waiterWait pw 0.5 >>= check "watch: polling always says look"
+
+  -- the history: the log, the tree, the view (GhciSession.History)
+  let hp = H.Params { H.pNode = 24, H.pView = 60, H.pCap = 30000 }
+  eq "history: the scale line is exactly NODE bytes" (H.byteLength (H.scaleLine H.defaultParams)) 512
+  eq "history: a cut never splits a character" (H.cutBytes 2 (T.pack "a\233b")) (T.pack "a")
+  eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")
+  check "history: a capped result keeps head and tail and says so" (let c = H.capText 10 (T.pack (replicate 40 'x')) in T.isInfixOf (T.pack "30 characters cut") c && T.isPrefixOf (T.pack "xxxxx\n") c && T.isSuffixOf (T.pack "xxxxx") c)
+  eq "history: a short result is not touched" (H.capText 10 (T.pack "short")) (T.pack "short")
+  let hdir = tmp </> "history"
+  (hm, torn0) <- H.openHistory hp hdir
+  eq "history: a new one is empty" torn0 0
+  ids <- mapM (H.appendMsg hm (T.pack "tool")) (map T.pack ["eval 1 + 1", "eval 2 * 3", T.unpack (T.replicate 40 (T.pack "long ")), "reload"])
+  eq "history: ids are the position" ids [0, 1, 2, 3]
+  sn1 <- H.snapshot hm
+  check "history: a short message is its own node, free" (M.member (0, 0) (H.sTree sn1) && M.member (0, 1) (H.sTree sn1))
+  check "history: a long one is not" (not (M.member (0, 2) (H.sTree sn1)))
+  check "history: two short lines that fit together merge free" (not (M.member (1, 0) (H.sTree sn1)))   -- 16+1+16 > 24: they do not
+  eq "history: the view tiles the log, one part a message while nothing can merge" (H.sView sn1) [(0, 0), (0, 1), (0, 2), (0, 3)]
+  check "history: an unbuilt line shows the placeholder" (T.isInfixOf (T.pack "2+1|(not summarized yet: zoom it)") (H.renderView sn1))
+  check "history: the view is not settled with one" (not (H.settled sn1))
+  let (jobs1, _) = H.pendingOf sn1 Set.empty M.empty 0 M.empty
+  eq "history: the pump compresses the first unbuilt message, and merges what lies before it" (map (\j -> (H.jL j, H.jI j)) jobs1) [(0, 2), (1, 0)]
+  check "history: a compress job carries the message whole, and the lines before it, bare" (case jobs1 of { (j : _) -> H.jStep j == H.Compress (T.pack ("tool: " ++ T.unpack (T.replicate 40 (T.pack "long ")))) && H.jContext j == [T.pack "tool: eval 1 + 1", T.pack "tool: eval 2 * 3"]; _ -> False })
+  check "history: a merge job carries its two lines" (case jobs1 of { [_, j] -> H.jStep j == H.Merge (T.pack "tool: eval 1 + 1") (T.pack "tool: eval 2 * 3"); _ -> False })
+  let (jobs2, _) = H.pendingOf sn1 (Set.fromList [(0, 2)]) M.empty 0 M.empty
+  eq "history: a busy node is not offered again" (map (\j -> (H.jL j, H.jI j)) jobs2) [(1, 0)]
+  let (jobs3, _) = H.pendingOf sn1 Set.empty (M.fromList [((0, 2), 100)]) 50 M.empty
+  eq "history: a failed node waits out its retry" (map (\j -> (H.jL j, H.jI j)) jobs3) [(1, 0)]
+  check "history: the prompt has no ids" (let pr = H.jobPrompt hp (head jobs1) in not (T.isInfixOf (T.pack "0+1") pr) && T.isInfixOf (T.pack "<chat>\ntool: eval 1 + 1\n") pr && T.isInfixOf (T.pack "exactly 24 bytes") pr)
+  H.putNode hm 0 2 (T.pack "tool: eval of a long one")
+  H.putNode hm 1 0 (T.pack "tool: two evals")
+  sn2 <- H.snapshot hm
+  check "history: the view settles once every line is built" (H.settled sn2)
+  eq "history: over budget, the most due pair with a built parent merges" (H.sView sn2) [(1, 0), (0, 2), (0, 3)]
+  zr <- H.zoom hm 0 2
+  eq "history: zoom opens a line into its two" zr (Right (T.pack "0+1|tool: eval 1 + 1\n1+1|tool: eval 2 * 3\n"))
+  z1 <- H.zoom hm 3 1
+  eq "history: zoom 1 is the message whole" z1 (Right (T.pack "3+0|tool: reload"))
+  H.zoom hm 1 2 >>= check "history: a line that is not in the tree's shape is refused" . either (const True) (const False)
+  ids2 <- mapM (H.appendMsg hm (T.pack "echo")) (map T.pack ["ok", "ok", "ok", "ok"])
+  eq "history: ids go on" ids2 [4 .. 7]
+  sn3 <- H.snapshot hm
+  check "history: a merged part is never split" (take 1 (H.sView sn3) == [(1, 0)])
+  (hm2, torn1) <- H.openHistory hp hdir
+  sn4 <- H.snapshot hm2
+  eq "history: reopened: no torn lines" torn1 0
+  eq "history: reopened: the same messages" (fmap H.mText (H.sRoot sn4)) (fmap H.mText (H.sRoot sn3))
+  eq "history: reopened: the same tree" (H.sTree sn4) (H.sTree sn3)
+  eq "history: reopened: the same view, folded again from message 0" (H.sView sn4) (H.sView sn3)
+  mainFiles <- listDirectory (hdir </> "main")
+  forM_ (take 1 mainFiles) $ \f -> appendFile (hdir </> "main" </> f) "{\"i\": 8, \"kind\": \"tool\", \"te"
+  (hm3, torn2) <- H.openHistory hp hdir
+  n3 <- H.count hm3
+  eq "history: a torn line is skipped and counted" (torn2, n3) (1, 8)
+  i9 <- H.appendMsg hm3 (T.pack "note") (T.pack "after the tear")
+  eq "history: the next line starts on its own line" i9 8
+  d9 <- H.dateOf hm3 8
+  check "history: a message has its date" (maybe False (> 0) d9)
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")
