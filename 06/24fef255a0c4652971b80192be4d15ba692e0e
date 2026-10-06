@@ -1,0 +1,99 @@
+.github/workflows/ci.yml
+  s_6e55a4691f1b7b::t_cf1feafa8e3388 9,30,33,53
+README.md
+  s_6e55a4691f1b7b::t_85f0e32ce4dad8 25-27,45,138-140,143-175,206-245,301-311,407-408,458,462-464,527-694,757-758,761-763,785,801
+app/GhciSession/Cli.hs
+  s_6e55a4691f1b7b::t_8db2c1d4a3d84a 23-24,257-329,421-427,450,469-471,473-506,510
+app/GhciSession/Config.hs
+  s_6e55a4691f1b7b::t_cdc7faa34561b8 55-57,62,73,79,239,253,255-256
+app/GhciSession/Daemon.hs
+  s_6e55a4691f1b7b::t_21f6656ebf7274 1-5,9,12,26,29,31,51,80-83,89-94,230-243,263-264,277-283,374-375,400-402,412-414,586,588-589,620-641,963-975,977-978,980-992,998-1002,1008,1012-1014,1017,1070-1071,1085-1086,1088-1089,1091-1104,1108,1118-1119,1125,1128-1134,1139-1140,1165-1166,1216,1244,1268-1274,1276-1285,1289,1331-1350,1418-1422,1424-1425,1431,1497,1511-1512,1634-1655,1677-1855,1865,1867-1868,1879,1902
+app/GhciSession/Doc.hs
+  s_6e55a4691f1b7b::t_dc35b7acae7fd8 13,140-155
+app/GhciSession/SelfTest.hs
+  s_6e55a4691f1b7b::t_c54ea0311c909a 11,22,69-73,99-100
+build.sh
+  s_6e55a4691f1b7b::t_25a7cfbafba57e 13-20
+cabal.project
+  s_6e55a4691f1b7b::t_bbf80b0877264d 1
+engine/GhsAddUnits.hs
+  s_6e55a4691f1b7b::t_6030bfafe5042b 1-108
+engine/GhsEngine.hs
+  s_6e55a4691f1b7b::t_50b99a7338a671 40-41,79,91-97,130-135,242-245,248,294-303,378-387,413-419,423-454,468-473,481-489,499-502
+engine/GhsFastLoad.hs
+  s_6e55a4691f1b7b::t_c876e0495b4319 1-169
+examples/hello/cabal.project
+  s_6e55a4691f1b7b::t_a196dec2a865ae 3-4
+examples/hello/ghci-session.json
+  s_6e55a4691f1b7b::t_0344feba1158b7 2-22,24-61,63-78,80-93,95-101
+examples/hello/hello.cabal
+  s_6e55a4691f1b7b::t_945c93fde41ffc 8-9
+examples/hello/src/Part/Base.hs
+  s_6e55a4691f1b7b::t_33824298e58ad0 1-5
+examples/hello/src/Part/Mid.hs
+  s_6e55a4691f1b7b::t_4ac9b66a9cff27 1-10
+examples/hello/src/Part/Side.hs
+  s_6e55a4691f1b7b::t_47d2f3431b58ef 1-6
+examples/hello/third/src/Third.hs
+  s_6e55a4691f1b7b::t_60549f64ab8b64 1-10
+examples/hello/third/third.cabal
+  s_6e55a4691f1b7b::t_9e4018b8a27aac 1-10
+examples/tour.py
+  s_6e55a4691f1b7b::t_c2c4706ee5a2d1 14,41-42,54,270-299,329-344,519
+ghci-session.cabal
+  s_6e55a4691f1b7b::t_72190e43598efc 29,42,46,48-52,54,57
+hygiene/c/exports.c
+  s_6e55a4691f1b7b::t_31b1e819c46dc3 6,9-13,17-19
+hygiene/c/gc_once.c
+  s_6e55a4691f1b7b::t_7a49bdcfcfd02d 1-46
+hygiene/c/ghci_cafs.c
+  s_6e55a4691f1b7b::t_4dc9413d56479f 121-130,132-139,160-161,220-305,316,322-324,336,342-348,361-364,376,378-380,383,387-388
+hygiene/c/heap_census.c
+  s_6e55a4691f1b7b::t_a2ca77d0e422ae 253-260
+hygiene/c/heap_dups.c
+  s_6e55a4691f1b7b::t_d492db244536cc 1-422
+hygiene/c/mem_return.c
+  s_6e55a4691f1b7b::t_b7c4f45f20608d 1-70
+hygiene/c/store.c
+  s_6e55a4691f1b7b::t_9448bfeaf11cae 1-88
+hygiene/ghci-hygiene.cabal
+  s_6e55a4691f1b7b::t_9dfbc0e69255bb 1-23
+hygiene/repro/cabal.project
+  s_6e55a4691f1b7b::t_e4cd3a4e02c08b 2
+hygiene/repro/caf-repro.cabal
+  s_6e55a4691f1b7b::t_ac37579fb433c2 9
+hygiene/src/GHC/Hygiene.hs
+  s_6e55a4691f1b7b::t_4c0e38bed95607 1,16,20-23,28-57
+hygiene/src/GHC/Hygiene/Census.hs
+  s_6e55a4691f1b7b::t_818dd3e5308581 1,12-13,16,18-19,25,27-28,31,36,86-87,113-168,172-176,198,202-205,212-214,270,288,308-326,331-339
+hygiene/src/GHC/Hygiene/Kept.hs
+  s_6e55a4691f1b7b::t_149aedb4ae4e37 1-321
+hygiene/src/GHC/Hygiene/Store.hs
+  s_6e55a4691f1b7b::t_0b5d48645ac875 1-106
+hygiene/src/GHC/Hygiene/Zygote.hs
+  s_6e55a4691f1b7b::t_004eec9a021505 1
+tests/test_e2e.py
+  s_6e55a4691f1b7b::t_8e35a1b2363059 232-235
+vendor/fetch.sh
+  s_6e55a4691f1b7b::t_eec6b5f13cefa0 3,28-30,35-49
+vendor/ghc-9.14.1/GHCi/UI.hs
+  s_6e55a4691f1b7b::t_ec5143327667a1 27,65,2377
+vendor/ghc-9.14.1/patched/GhcMain.hs
+  s_6e55a4691f1b7b::t_00bb770610f6b3 18,300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0624fef255a0c4652971b80192be4d15ba692e0e",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
