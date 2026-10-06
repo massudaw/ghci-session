@@ -41,9 +41,11 @@
 #define _DARWIN_C_SOURCE
 #include "Rts.h"
 #include <dlfcn.h>
+#if defined(__APPLE__)
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
+#endif
 #include <pthread.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -59,6 +61,7 @@
 #define CAF_STATIC_LINK 16
 #define LIST_END 3u
 
+#if defined(__APPLE__)
 /* Is this CAF's value out of reach of a MINOR collection?
  *
  * A CAF the RTS retains (dyn_caf_list) is NOT put on the mutable list when it is first entered -- newCAF does
@@ -76,6 +79,7 @@ static int value_is_old(uintptr_t c) {
   if (!p || !HEAP_ALLOCED(p)) return 1;                 /* a static closure: nothing to free */
   return Bdescr((StgPtr)p)->gen_no == RtsFlags.GcFlags.generations - 1;
 }
+#endif
 
 /* The three private things this reads, or 0 when this RTS does not have them by these names. */
 static pthread_mutex_t *rts_sm; static uintptr_t *rts_dyn; static char **rts_loaded;
@@ -88,6 +92,7 @@ static int rts_found(void) {
   return rts_sm && rts_loaded && rts_dyn;
 }
 
+#if defined(__APPLE__)
 /* Images already judged wholly superseded, kept between calls: once true it stays
  * true (a newer definition never goes away), and the judgement is the expensive part. */
 #define MAX_DEAD 4096
@@ -409,6 +414,14 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
   free(dead);
   return removed;
 }
+
+#else
+/* ELF: the walk of the loaded images and their symbol tables is not written yet (rts_syms.h finds nothing
+ * either), so the pruner says it cannot read this RTS and the daemon turns hygiene off; the census still
+ * works for everything that does not need a CAF's module. */
+int ghs_caf_owner(uintptr_t c, char *out, size_t cap) { (void)c; (void)out; (void)cap; return 0; }
+int ghs_prune_cafs_stats(int *seen, int *tmpcount) { (void)seen; (void)tmpcount; return -1; }
+#endif
 
 int ghs_prune_cafs(void) { return ghs_prune_cafs_stats(NULL, NULL); }
 
