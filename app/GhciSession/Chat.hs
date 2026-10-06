@@ -61,9 +61,11 @@ import GhciSession.Sys (now)
 capChars :: Int
 capChars = 30000
 
--- | Seconds a write or edit waits for the verdict of the reload it causes.
-saveWait :: Double
-saveWait = 45
+-- | Seconds a write or edit waits for the verdict of the reload it causes, at least: a project whose check
+-- takes longer gets three times the last verdict's duration (and a margin), up to ten minutes -- a wait
+-- that ends before the verdict only sends the agent to ask status, reload and test by hand.
+saveWait :: Double -> Double
+saveWait lastSecs = min 600 (max 45 (3 * lastSecs + 15))
 
 -- the options ------------------------------------------------------------------------------
 
@@ -138,10 +140,12 @@ view ch wait = do
     Right j | isJust (lookupText "view" j) -> (fromMaybe T.empty (lookupText "view" j), lookupBool "settled" j /= Just False, maybe 0 round (lookupNum "parts" j), maybe 0 round (lookupNum "messages" j))
     _ -> (out, False, 0, 0)
 
--- | The verdict now: its time stamp, its line, and what is behind it -- the compiler's diagnostics
+-- | The verdict now: its time stamp, its line, what is behind it -- the compiler's diagnostics
 -- (file:line:col and the message whole) behind a COMPILE-ERROR, the failing lines behind a CHECK-FAIL,
--- nothing behind an OK. Nothing when no session answers.
-verdictAt :: Chat -> IO (Maybe (Double, String, [String]))
+-- nothing behind an OK -- and how long it took. Nothing when no session answers.
+data Verdict = Verdict { vAt :: Double, vLine :: String, vBehind :: [String], vSecs :: Double }
+
+verdictAt :: Chat -> IO (Maybe Verdict)
 verdictAt ch = do
   r <- ask ch "status" []
   let j = r .: "status"
@@ -157,11 +161,11 @@ verdictAt ch = do
             Just "COMPILE-ERROR" -> (if null errs then detail else map diag (take 12 errs) ++ [ "[... " ++ show (length errs - 12) ++ " more]" | length errs > 12 ])
             Just "CHECK-FAIL" -> detail
             _ -> []
-      in Just (at, headL, behind)
+      in Just (Verdict at headL behind (fromMaybe 0 (lookupNum "duration_s" j)))
     _ -> Nothing
 
 -- | The verdict the session gives AFTER the one at @before@ (a save's), within the seconds; else Nothing.
-verdictAfter :: Chat -> Double -> Double -> IO (Maybe (Double, String, [String]))
+verdictAfter :: Chat -> Double -> Double -> IO (Maybe Verdict)
 verdictAfter ch before secs = do
   t0 <- now
   let go = do
@@ -169,7 +173,7 @@ verdictAfter ch before secs = do
         t <- now
         v <- verdictAt ch
         case v of
-          Just r@(at, _, _) | at > before -> pure (Just r)
+          Just r | vAt r > before -> pure (Just r)
           _ | t - t0 >= secs -> pure Nothing
             | otherwise -> go
   go
@@ -177,13 +181,14 @@ verdictAfter ch before secs = do
 -- | A save's answer: what was written, and the verdict of the reload it caused, when the file is one the
 -- session watches. A verdict that is not there within the wait is said to be pending (a long compile):
 -- status has it later. The save itself is good either way.
-saved :: Chat -> String -> Maybe (Double, String, [String]) -> IO (Bool, T.Text)
+saved :: Chat -> String -> Maybe Verdict -> IO (Bool, T.Text)
 saved _ what Nothing = pure (True, T.pack what)
-saved ch what (Just (before, _, _)) = do
-  v <- verdictAfter ch before saveWait
+saved ch what (Just before) = do
+  let wait = saveWait (vSecs before)
+  v <- verdictAfter ch (vAt before) wait
   pure $ case v of
-    Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs: status will have its verdict]" saveWait))
-    Just (_, headL, behind) -> (not ("ERROR" `isInfixOf` headL || "FAIL" `isInfixOf` headL), T.pack (what ++ "\nverdict: " ++ headL ++ concatMap ("\n" ++) behind))
+    Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the last verdict took %.0fs): status will have its verdict; do not reload by hand]" wait (vSecs before)))
+    Just r -> (not ("ERROR" `isInfixOf` vLine r || "FAIL" `isInfixOf` vLine r), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
 
 -- the tools ----------------------------------------------------------------------------------
 
