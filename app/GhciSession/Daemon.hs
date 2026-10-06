@@ -6,7 +6,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)

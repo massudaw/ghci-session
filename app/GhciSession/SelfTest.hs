@@ -19,7 +19,9 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Daemon (countSub, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Chat (arguments, chatTools, fuzzyReplace, isRed, nearest, saveWait, splitImports)
+import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified Data.Sequence as Seq
@@ -271,6 +273,42 @@ run = do
   eq "history: the next line starts on its own line" i9 8
   d9 <- H.dateOf hm3 8
   check "history: a message has its date" (maybe False (> 0) d9)
+
+  -- the compactor's context: the last pCtxMin..pCtxMax bytes of the lines before the node, cut at the front
+  let hpw = hp { H.pCtxMax = 30, H.pCtxMin = 20 }
+      (jobsW, _) = H.pendingOf hpw sn1 Set.empty M.empty 0 M.empty
+  check "history: over the context's maximum, the front is cut down to its minimum" (case jobsW of { (j : _) -> H.jContext j == [T.pack "tool: eval 2 * 3"]; _ -> False })
+  check "history: under the maximum, the context is every line before the node" (case jobs1 of { (j : _) -> length (H.jContext j) == 2; _ -> False })
+
+  -- the chat's harness (GhciSession.Chat): what it does to the model's calls and to the files
+  let toolNamed n = head [ t | t <- chatTools, tName t == n ]
+      args n kvs = arguments (toolNamed n) (JObj kvs)
+  eq "chat: an argument called by another name is taken by its name" (args "sh" [("command", JStr "ls")]) (JObj [("cmd", JStr "ls")], [])
+  eq "chat: an alias of an argument the tool does not take is left alone (zoom keeps its n)" (args "zoom" [("id", JNum 1), ("n", JNum 2)]) (JObj [("id", JNum 1), ("n", JNum 2)], [])
+  eq "chat: a missing argument is named" (snd (args "edit" [("path", JStr "a"), ("new", JStr "b")])) ["old"]
+  eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
+  check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
+  eq "chat: leading imports are their own commands" (splitImports ["import A", ":set -XB", "f 1"]) (["import A", ":set -XB"], ["f 1"])
+  eq "chat: a lone import stays what it is" (splitImports ["import A"]) ([], ["import A"])
+  eq "chat: an expression alone is untouched" (splitImports ["let a = 1 in a", "+ 2"]) ([], ["let a = 1 in a", "+ 2"])
+  let file = T.pack "x = 1\n  foo   bar\ny = 2\n"
+  eq "chat: an edit that differs only in spacing is applied where its words are" (fuzzyReplace file (T.pack "foo bar") (T.pack "baz")) (Just (T.pack "x = 1\n  baz\ny = 2\n", 2, 2))
+  eq "chat: ... the indent and newline the old text had come off the new text" (fuzzyReplace file (T.pack "  foo bar\n") (T.pack "  qux\n")) (Just (T.pack "x = 1\n  qux\ny = 2\n", 2, 2))
+  eq "chat: ... across lines" (fuzzyReplace file (T.pack "foo bar y = 2") (T.pack "z")) (Just (T.pack "x = 1\n  z\n", 2, 3))
+  eq "chat: ... but not when a word differs" (fuzzyReplace file (T.pack "foo baz") (T.pack "q")) Nothing
+  eq "chat: ... nor when the words occur twice" (fuzzyReplace (T.pack "a b\na  b\n") (T.pack "a b") (T.pack "c")) Nothing
+  check "chat: a text that occurs nowhere points at the line its first line matches" (T.isInfixOf (T.pack "line 2") (nearest file (T.pack "foo bar\nnope")))
+  check "chat: ... or says it matches none" (T.isInfixOf (T.pack "matches no line") (nearest file (T.pack "nothing like it")))
+  eq "chat: a save waits at least 45 s" (saveWait 0) 45
+  eq "chat: ... three times the longest verdict and a margin" (saveWait 100) 315
+  eq "chat: ... at most ten minutes" (saveWait 1000) 600
+  check "chat: red verdicts are red" (all isRed ["COMPILE-ERROR: 1 error(s)", "CHECK-FAIL: 2 failing in x", "CHECK-HANG: the check did not end in x", "DEAD: the repl died"])
+  check "chat: a pass is not, nor a stale pass" (not (any isRed ["OK -- CHECK-PASS (3.6s)", "STALE(1) OK (2 warning(s)) -- CHECK-PASS (0.1s)"]))
+
+  -- the hang detector: five times the median of the last passing checks, at least 15 s
+  eq "hang: no history, no limit (the check's own timeout)" (hangLimit []) Nothing
+  eq "hang: a fast check is given 15 s" (hangLimit [3, 3.2, 2.9]) (Just 15)
+  eq "hang: five times the median" (hangLimit [10, 30, 20]) (Just 100)
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")

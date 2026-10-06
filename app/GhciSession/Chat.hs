@@ -25,7 +25,11 @@
 -- of the turn. The model is 'GhciSession.Llm' -- DeepSeek's flash model by default, which caches the
 -- prompt's prefix on its own, so the stable layout above (system, then the view whose start does not
 -- change from turn to turn, then the message) is what makes a turn cheap.
-module GhciSession.Chat (chatMain, summarizeMain) where
+module GhciSession.Chat
+  ( chatMain, summarizeMain
+  -- (the pure parts, for the self-tests)
+  , arguments, chatTools, splitImports, nearest, fuzzyReplace, saveWait, isRed
+  ) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
@@ -35,7 +39,7 @@ import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isSpace)
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, sort)
+import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, sort, tails)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -108,8 +112,9 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
 usageFile :: Chat -> FilePath
 usageFile ch = cStateDir (cConf ch) </> cName ch </> "usage.jsonl"
 
--- | What a turn cost so far: model calls, tokens in, of them cached, tokens out, tool calls.
-data Spent = Spent { sCalls :: !Int, sIn :: !Int, sCached :: !Int, sOut :: !Int, sTools :: !Int }
+-- | What a turn cost so far: model calls, tokens in, of them cached, tokens out, tool calls -- and whether it
+-- has written to the files, and been told it was about to end red.
+data Spent = Spent { sCalls :: !Int, sIn :: !Int, sCached :: !Int, sOut :: !Int, sTools :: !Int, sTouched :: !Bool, sNudged :: !Bool }
 
 spend :: IORef Spent -> Usage -> IO ()
 spend ref u = modifyIORef' ref (\s -> s { sCalls = sCalls s + 1, sIn = sIn s + uIn u, sCached = sCached s + fromMaybe 0 (uCached u), sOut = sOut s + uOut u })
@@ -193,12 +198,16 @@ saved ch what (Just before) = do
   v <- verdictAfter ch (vAt before) wait
   pure $ case v of
     Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
-    Just r -> (not (any (`isInfixOf` vLine r) ["ERROR", "FAIL", "HANG", "DEAD"]), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+    Just r -> (not (isRed (vLine r)), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+
+-- | Is a verdict line a bad one: a compile error, failing or hung tests, a dead repl.
+isRed :: String -> Bool
+isRed l = any (`isInfixOf` l) ["ERROR", "FAIL", "HANG", "DEAD"]
 
 -- the tools ----------------------------------------------------------------------------------
 
 sessionToolNames :: [String]
-sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date"]
+sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date", "remember"]
 
 -- | The session's tools (as the MCP server defines them, the chat being one session) and the agent's hands on the files.
 chatTools :: [Tool]
@@ -261,7 +270,7 @@ withTimeout a = if isJust (lookupNum "timeout" a) then a else set "timeout" (JNu
 evalTool :: Chat -> Json -> IO (Bool, T.Text)
 evalTool ch a = do
   let ls = lines (trim (fromMaybe "" (lookupStr "expr" a)))
-      (heads, rest) = split ls
+      (heads, rest) = splitImports ls
       one e = call (cConf ch) "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
   outs <- forM heads $ \h -> do
     (ok, out) <- one h
@@ -274,10 +283,14 @@ evalTool ch a = do
                T.pack (printf "\n[interrupted after %.0fs, the default: an expression that needs longer says so with timeout]" evalTimeout)
            | otherwise = T.empty
   pure (ok, T.intercalate (T.pack "\n") (concat outs ++ [out <> hint]))
-  where
-    split ls@(l : more) | not (null more), "import " `isPrefixOf` l || ":" `isPrefixOf` l = let (hs, r) = split more in (l : hs, r)
-                        | otherwise = ([], ls)
-    split [] = ([], [])
+
+-- | An eval's leading import lines and : commands, each to be its own command, and the rest. A lone line
+-- stays what it is.
+splitImports :: [String] -> ([String], [String])
+splitImports ls@(l : more)
+  | not (null more), "import " `isPrefixOf` l || ":" `isPrefixOf` l = let (hs, r) = splitImports more in (l : hs, r)
+  | otherwise = ([], ls)
+splitImports [] = ([], [])
 
 -- | The watched files that differ from the loaded code right now.
 staleNow :: Chat -> IO [String]
@@ -322,11 +335,18 @@ fileTool ch name a = case name of
     let old = fromMaybe T.empty (lookupText "old" a)
         new = fromMaybe T.empty (lookupText "new" a)
         k = if T.null old then 0 else T.count old t
-    if k /= 1 then pure (False, T.pack (printf "%s: the text occurs %d times; it must occur exactly once" rel k) <> nearest t old) else do
-      before <- if watches ch rel then verdictAt ch else pure Nothing
-      let (pre, post) = T.breakOn old t
-      B.writeFile p (TE.encodeUtf8 (pre <> new <> T.drop (T.length old) post))
-      saved ch ("edited " ++ rel) before
+    case (k, fuzzyReplace t old new) of
+      (1, _) -> do
+        before <- if watches ch rel then verdictAt ch else pure Nothing
+        let (pre, post) = T.breakOn old t
+        B.writeFile p (TE.encodeUtf8 (pre <> new <> T.drop (T.length old) post))
+        saved ch ("edited " ++ rel) before
+      -- nowhere as written, once with its spacing squeezed: the model's copy lost a space or an indent
+      (0, Just (t', l0, l1)) -> do
+        before <- if watches ch rel then verdictAt ch else pure Nothing
+        B.writeFile p (TE.encodeUtf8 t')
+        saved ch (printf "edited %s (the text matched lines %d-%d only with its spacing squeezed: applied there)" rel l0 l1) before
+      _ -> pure (False, T.pack (printf "%s: the text occurs %d times; it must occur exactly once" rel k) <> (if k == 0 then nearest t old else T.empty))
   "ls" -> withPath $ \p -> do
     es <- filter (not . ("." `isPrefixOf`)) <$> listDirectory p
     tagged <- forM (sort es) $ \e -> (\d -> e ++ (if d then "/" else "")) <$> doesDirectoryExist (p </> e)
@@ -346,6 +366,38 @@ fileTool ch name a = case name of
     withPath k = case inside ch rel of
       Left why -> pure (False, T.pack why)
       Right p -> k p
+
+-- | The words of a text, each with the character offsets where it starts and ends.
+wordSpans :: T.Text -> [(T.Text, Int, Int)]
+wordSpans = go 0
+  where
+    go i s = let (sp, r) = T.span isSpace s
+                 i1 = i + T.length sp
+             in if T.null r then [] else
+                  let (w, r') = T.break isSpace r
+                      i2 = i1 + T.length w
+                  in (w, i1, i2) : go i2 r'
+
+-- | An edit whose text occurs nowhere as written but EXACTLY ONCE as the same words with any spacing
+-- between them: the file with that run replaced, and its first and last line. The run starts at its first
+-- word and ends at its last, so the whitespace the old text had around its words (an indent, a newline) is
+-- taken off the new text too when the new text has the same. Eight of 94 edits in one round of an agent's
+-- work failed on spacing alone.
+fuzzyReplace :: T.Text -> T.Text -> T.Text -> Maybe (T.Text, Int, Int)
+fuzzyReplace file old new
+  | null ows = Nothing
+  | otherwise = case matches of
+      [(s, e)] -> Just (T.take s file <> new' <> T.drop e file, lineAt s, lineAt e)
+      _ -> Nothing
+  where
+    ows = T.words old
+    n = length ows
+    matches = [ (s, e) | run@((w, s, _) : _) <- tails (wordSpans file), w == head ows
+                       , let ws = take n run, length ws == n, [ x | (x, _, _) <- ws ] == ows, let (_, _, e) = last ws ]
+    lead = T.takeWhile isSpace old
+    trail = T.takeWhileEnd isSpace old
+    new' = let a = fromMaybe new (T.stripPrefix lead new) in fromMaybe a (T.stripSuffix trail a)
+    lineAt i = 1 + T.count (T.pack "\n") (T.take i file)
 
 -- | Where a text that occurs nowhere was probably meant to be: the file's first line that matches its first
 -- non-blank line with the spaces squeezed, quoted -- the mismatch is most often whitespace or one word.
@@ -417,7 +469,8 @@ master who = unlines
   , ""
   , "You keep no memory between turns. Each turn starts with the view below,"
   , "followed by the user's new message. Summaries keep little of tool"
-  , "output, so say in your reply what you learned that will matter later."
+  , "output, so say in your reply what you learned that will matter later,"
+  , "or keep it with remember: a finding, a decision, what is left undone."
   , "Messages the user sends while you work reach you between tool calls." ]
 
 viewDoc :: String -> String
@@ -451,7 +504,7 @@ turn ch e o system texts pending = do
   unless settled (hPutStrLn stderr (printf "[view: %d lines, not all summarized yet; going on]" parts))
   forM_ texts (logH ch "user")
   let msgs0 = [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> T.intercalate (T.pack "\n\n") texts) ]
-  spent <- newIORef (Spent 0 0 0 0 0)
+  spent <- newIORef (Spent 0 0 0 0 0 False False)
   tStart <- now
   loop spent msgs0 0 (0 :: Int) (0 :: Int)
   tEnd <- now
@@ -489,9 +542,20 @@ turn ch e o system texts pending = do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
                     hPutStrLn stderr (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
                     loop spent (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
-                  else pure ()
+                  else do
+                    -- a turn that changed the files and ends with the verdict red is told so, once: it
+                    -- either fixes it or says plainly that it stops red, never ends there in silence
+                    s <- readIORef spent
+                    v <- if sTouched s && not (sNudged s) then verdictAt ch else pure Nothing
+                    case v of
+                      Just r | isRed (vLine r) -> do
+                        modifyIORef' spent (\x -> x { sNudged = True })
+                        hPutStrLn stderr "[the turn would end with the verdict red; saying so once]"
+                        loop spent (msgs' ++ [msg "user" (T.pack ("[harness: you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
+                                                                  ++ "\nFix it, or end by saying plainly that it is red and why you are stopping.]"))]) (step + 1) 0 0
+                      _ -> pure ()
                 else do
-                  modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p) })
+                  modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "sh"]) . tcName) (pToolCalls p) })
                   replies <- forM (pToolCalls p) $ \tc -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))

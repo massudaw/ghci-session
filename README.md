@@ -227,7 +227,12 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   follows a write (it used to see STALE and reload by hand); an eval of several lines runs its leading imports
   as their own commands (in one GHCi block they do not parse); an argument the model calls by another name
   (`command` for `cmd`) is taken by its name, and a missing one is said; a reply cut off at the output limit
-  (the thinking ran on) is asked to go on in smaller steps, not taken as the end of the turn. It began as
+  (the thinking ran on) is asked to go on in smaller steps, not taken as the end of the turn; a shell command
+  that edits a watched source answers with the reload's verdict too; an edit whose text occurs nowhere as
+  written but exactly once with its spacing squeezed is applied there, and says so (else it points at the
+  nearest line); a turn that changed the files and is about to end with the verdict red is told so once, so it
+  fixes it or says plainly that it stops red; `remember` keeps a finding for later turns as the agent's own
+  words. The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
 - **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
   `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,
