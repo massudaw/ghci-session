@@ -31,6 +31,7 @@ data Conf = Conf
   , cDefault :: String
   , cTargets :: [(String, Json)]
   , cSessions :: [(String, [String])]
+  , cPrices :: [(String, Json)]   -- ^ @"prices"@: per model, @{"input": .., "input_cached": .., "output": ..}@ per million tokens (for `usage`)
   }
 
 data Check = Check
@@ -84,7 +85,7 @@ defaults =
   ]
 
 reserved :: [String]
-reserved = ["targets", "state_dir", "default", "sessions"]
+reserved = ["targets", "state_dir", "default", "sessions", "prices"]
 
 -- | The nearest directory at or above the start holding @ghci-session.json@.
 findRoot :: Maybe FilePath -> IO (Either String FilePath)
@@ -127,7 +128,7 @@ loadConf root0 = do
                mapM_ (\m -> unless (isJust (lookup m ts)) (Left ("session " ++ show s ++ ": unknown member " ++ show m))) ms) sessions
       Right Conf { cRoot = root, cStateDir = root </> rel, cStateRel = rel
                  , cDefault = fromMaybe (fst (head ts)) (lookupStr "default" raw)
-                 , cTargets = ts, cSessions = sessions }
+                 , cTargets = ts, cSessions = sessions, cPrices = lookupObj "prices" raw }
 
 targetJson :: Conf -> String -> Json
 targetJson conf name = fromMaybe JNull (lookup name (cTargets conf))

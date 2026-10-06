@@ -10,6 +10,7 @@ module GhciSession.Llm
   ( Endpoint (..), endpointFromEnv, isDeepSeek
   , Request (..), request, Reply (..), Usage (..), ToolCall (..)
   , httpsPost
+  , usageFileEnv, recordUsage, human
   ) where
 
 import Control.Exception (SomeException, try)
@@ -23,7 +24,11 @@ import Foreign.Marshal.Alloc (allocaBytes)
 import Foreign.Marshal.Utils (with)
 import Foreign.Ptr (Ptr, nullPtr)
 import Foreign.Storable (peek)
+import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
+import Data.Time.Clock.POSIX (getPOSIXTime)
 import System.Environment (lookupEnv)
+import System.IO (IOMode (..), hClose, hPutStrLn, openFile)
+import Text.Printf (printf)
 
 import GhciSession.Json
 
@@ -49,6 +54,33 @@ httpsPost url headers body timeout = do
           pure (Right (fromIntegral status, bs))
   pure (either (\(e :: SomeException) -> Left (show e)) id r)
   where firstJust xs = case [ x | Just x <- xs, not (null x) ] of { (x : _) -> Just x; [] -> Nothing }
+
+-- the ledger ----------------------------------------------------------------------------------
+
+-- | The environment variable that names the usage ledger for a process the daemon runs (the compactor).
+usageFileEnv :: String
+usageFileEnv = "GHS_USAGE_FILE"
+
+-- | One model call appended to the ledger (@<state>/<session>/usage.jsonl@): when, who asked (chat,
+-- summarize), the model, the tokens in (and how many of them the provider had cached), the tokens out,
+-- the seconds. Best effort: accounting never fails a call.
+recordUsage :: FilePath -> String -> Endpoint -> Usage -> Double -> IO ()
+recordUsage file who e u secs = do
+  t <- realToFrac <$> getPOSIXTime :: IO Double
+  stamp <- formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S" <$> getCurrentTime
+  let line = encode (JObj [ ("t", JNum t), ("date", JStr stamp), ("who", JStr who), ("model", JStr (eModel e))
+                          , ("in", JNum (fromIntegral (uIn u))), ("cached", JNum (fromIntegral (fromMaybe 0 (uCached u))))
+                          , ("out", JNum (fromIntegral (uOut u))), ("secs", JNum (fromIntegral (round (secs * 10) :: Int) / 10)) ])
+  void (try (do { h <- openFile file AppendMode; hPutStrLn h line; hClose h }) :: IO (Either SomeException ()))
+  where void = fmap (const ())
+
+-- | A count of tokens as a person reads it: 950, 12.3k, 1.2M.
+human :: Int -> String
+human n | n >= 10000000 = printf "%.0fM" (fromIntegral n / 1e6 :: Double)
+        | n >= 1000000 = printf "%.1fM" (fromIntegral n / 1e6 :: Double)
+        | n >= 100000 = printf "%.0fk" (fromIntegral n / 1e3 :: Double)
+        | n >= 1000 = printf "%.1fk" (fromIntegral n / 1e3 :: Double)
+        | otherwise = show n
 
 -- the endpoint --------------------------------------------------------------------------------
 

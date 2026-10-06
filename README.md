@@ -221,6 +221,14 @@ and nothing after it (it used to leave the next request queued behind it). Two w
   (`command` for `cmd`) is taken by its name, and a missing one is said; a reply cut off at the output limit
   (the thinking ran on) is asked to go on in smaller steps, not taken as the end of the turn. It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
+- **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
+  `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,
+  seconds), each turn ends with its summary on standard error (`[turn: 12 model calls, 1.2M tokens in (99%
+  cached), 8.4k out, 15 tool calls, 94s]`), and `ghci-session usage [SESSION] [--since DAYS] [--json]` sums
+  the ledger by who asked and by day -- in money too when `"prices"` in `ghci-session.json` gives the model's
+  rates per million tokens (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`; the
+  cached and the uncached part of a prompt are priced apart, and with a stable prefix the cached part is most
+  of it).
 
 ## What the heap holds, what an action costs, and the session's own scenario
 

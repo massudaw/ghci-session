@@ -31,6 +31,7 @@ import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
 import Control.Concurrent.STM
 import Control.Exception (IOException, SomeException, try)
+import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isSpace)
@@ -98,6 +99,22 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
 -- the session ------------------------------------------------------------------------------
 
 data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched :: [FilePath], cAgent :: String }
+
+-- | The session's usage ledger: one line per model call, the chat's and the compactor's.
+usageFile :: Chat -> FilePath
+usageFile ch = cStateDir (cConf ch) </> cName ch </> "usage.jsonl"
+
+-- | What a turn cost so far: model calls, tokens in, of them cached, tokens out, tool calls.
+data Spent = Spent { sCalls :: !Int, sIn :: !Int, sCached :: !Int, sOut :: !Int, sTools :: !Int }
+
+spend :: IORef Spent -> Usage -> IO ()
+spend ref u = modifyIORef' ref (\s -> s { sCalls = sCalls s + 1, sIn = sIn s + uIn u, sCached = sCached s + fromMaybe 0 (uCached u), sOut = sOut s + uOut u })
+
+-- | The turn's summary line: always said (stderr), whatever --usage.
+spentLine :: Spent -> Double -> String
+spentLine s secs = printf "[turn: %d model call%s, %s tokens in (%d%% cached), %s out, %d tool call%s, %.0fs]"
+  (sCalls s) (plural (sCalls s)) (human (sIn s)) (if sIn s == 0 then 0 else (100 * sCached s) `div` sIn s :: Int) (human (sOut s)) (sTools s) (plural (sTools s)) secs
+  where plural n = if n == 1 then "" else "s" :: String
 
 -- | Is this path one the daemon watches (its targets' directories), or a build file? A save of one has a verdict.
 watches :: Chat -> FilePath -> Bool
@@ -372,12 +389,17 @@ turn ch e o system texts pending = do
   unless settled (hPutStrLn stderr (printf "[view: %d lines, not all summarized yet; going on]" parts))
   forM_ texts (logH ch "user")
   let msgs0 = [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> T.intercalate (T.pack "\n\n") texts) ]
-  loop msgs0 0 (0 :: Int) (0 :: Int)
+  spent <- newIORef (Spent 0 0 0 0 0)
+  tStart <- now
+  loop spent msgs0 0 (0 :: Int) (0 :: Int)
+  tEnd <- now
+  s <- readIORef spent
+  hPutStrLn stderr (spentLine s (tEnd - tStart))
   where
     msg role text = JObj [("role", JStr role), ("content", JText text)]
     byName = [ (tName t, t) | t <- chatTools ]
     toolsJson = map toolJson chatTools
-    loop msgs step cut failures
+    loop spent msgs step cut failures
       | step >= oMaxSteps o = hPutStrLn stderr "[the turn reached its step limit; stopping]"
       | otherwise = do
           t0 <- now
@@ -387,11 +409,13 @@ turn ch e o system texts pending = do
             Left why | failures < 2 -> do
               hPutStrLn stderr ("[" ++ why ++ "; asking again in 5s]")
               threadDelay 5000000
-              loop msgs step cut (failures + 1)
+              loop spent msgs step cut (failures + 1)
             Left why -> hPutStrLn stderr ("chat: " ++ why ++ "; the turn ends")
             Right p -> do
-              when (oUsage o) $ forM_ (pUsage p) $ \u ->
-                hPutStrLn stderr (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0))
+              forM_ (pUsage p) $ \u -> do
+                spend spent u
+                recordUsage (usageFile ch) "chat" e u (t1 - t0)
+                when (oUsage o) (hPutStrLn stderr (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0)))
               unless (T.null (T.strip (pReasoning p))) (hPutStrLn stderr ("\n[thinking] " ++ T.unpack (T.strip (pReasoning p)) ++ "\n"))
               let content = T.strip (pContent p)
               unless (T.null content) (TIO.putStrLn content >> putStrLn "" >> hFlush stdout >> logH ch "talk" content)
@@ -402,9 +426,10 @@ turn ch e o system texts pending = do
                   then do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
                     hPutStrLn stderr (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
-                    loop (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
+                    loop spent (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
                   else pure ()
                 else do
+                  modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p) })
                   replies <- forM (pToolCalls p) $ \tc -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))
@@ -424,7 +449,7 @@ turn ch e o system texts pending = do
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending
                   forM_ mid (logH ch "user")
-                  loop (msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]) (step + 1) 0 0
+                  loop spent (msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]) (step + 1) 0 0
 
 -- | The lines typed since last asked.
 drain :: TQueue (Maybe T.Text) -> IO [T.Text]
@@ -513,14 +538,18 @@ summarizeMain args = do
     then putStrLn (printf "system: %d bytes; user: %d bytes; thinking: %s; budget: %d" (T.length system) (T.length user) (if think0 then effort else "off") budget0) >> pure 0
     else do
       ep <- endpointFromEnv
+      ledger <- lookupEnv usageFileEnv
       case ep of
         Left why -> hPutStrLn stderr ("summarize: " ++ why) >> pure 2
         Right e -> do
           let go tries think budget
                 | tries >= (3 :: Int) = pure (Left "cut off at the output limit three times")
                 | otherwise = do
+                    t0 <- now
                     r <- request e (Request ([ JObj [("role", JStr "system"), ("content", JText system)] | not (T.null system) ] ++ [ JObj [("role", JStr "user"), ("content", JText user)] ])
                                             [] budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300)
+                    t1 <- now
+                    forM_ ledger $ \f -> forM_ (either (const Nothing) pUsage r) $ \u -> recordUsage f "summarize" e u (t1 - t0)
                     case r of
                       Left why -> pure (Left why)
                       Right p | not (T.null (T.strip (pContent p))) || pFinish p /= "length" -> pure (Right p)

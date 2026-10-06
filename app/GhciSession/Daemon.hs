@@ -50,6 +50,7 @@ import GhciSession.Repl
 import GhciSession.Sys
 import GhciSession.Watch
 import qualified GhciSession.History as H
+import qualified GhciSession.Llm as Llm
 
 data S = S
   { sConf :: Conf, sName :: String, sCfgV :: IORef Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
@@ -1749,7 +1750,7 @@ compactorLoop s m cmd = loop
           go tries extra
             | length tries >= 5 = pure tries
             | otherwise = do
-                r <- runShell cmd (base <> extra) 300
+                r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl")] cmd (base <> extra) 300
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
                     let line = T.strip (T.takeWhile (/= '\n') (T.strip out))
@@ -1770,9 +1771,11 @@ compactorLoop s m cmd = loop
 
 -- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
 -- 'Nothing' when it ran past the timeout (it is then stopped).
-runShell :: String -> T.Text -> Double -> IO (Maybe (ExitCode, T.Text, T.Text))
-runShell cmd input secs = do
-  (Just i, Just o, Just e, ph) <- createProcess (shell cmd) { std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe, close_fds = True }
+runShell :: [(String, String)] -> String -> T.Text -> Double -> IO (Maybe (ExitCode, T.Text, T.Text))
+runShell extraEnv cmd input secs = do
+  env0 <- getEnvironment
+  (Just i, Just o, Just e, ph) <- createProcess (shell cmd) { std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe, close_fds = True
+                                                             , env = Just ([ kv | kv@(k, _) <- env0, k `notElem` map fst extraEnv ] ++ extraEnv) }
   mapM_ (`hSetBinaryMode` True) [i, o, e]
   ov <- newEmptyMVar
   ev <- newEmptyMVar

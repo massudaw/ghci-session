@@ -10,6 +10,7 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.Char (isDigit)
 import Data.List (intercalate, isPrefixOf, nub, sortOn)
+import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing)
@@ -30,6 +31,7 @@ import GhciSession.Daemon (runDaemon)
 import GhciSession.Gc
 import GhciSession.Json
 import GhciSession.Chat (chatMain, summarizeMain)
+import GhciSession.Llm (human)
 import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
 
@@ -271,6 +273,48 @@ cmdCompose conf a = case aPos a of
             when (isJust up) (void (cmdStop conf (Just name) True Nothing))
             cmdStart conf (Just name) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
 
+-- | __What the model calls cost__: the session's ledger (@<state>/<session>/usage.jsonl@, one line a call --
+-- the chat's and the compactor's: when, who asked, the model, tokens in and of them cached, tokens out,
+-- seconds) summed by who asked and by day, and in money when @"prices"@ in the config prices the model
+-- (@{"MODEL": {"input": .., "input_cached": .., "output": ..}}@, per million tokens). Every session's, when
+-- none is named.
+cmdUsage :: Conf -> Args -> IO Int
+cmdUsage conf a = do
+  names <- case pos a 0 of
+    Just n -> (: []) <$> pick conf (Just n)
+    Nothing -> filterM (\n -> doesFileExist (stateOf conf n </> "usage.jsonl")) (sessionNames conf)
+  since <- case opt a ["--since"] of
+    Just d | [(k, "")] <- reads d -> (\t -> t - k * 86400) <$> now
+    _ -> pure 0
+  rows <- fmap concat $ forM names $ \n -> do
+    t <- readFileMaybe (stateOf conf n </> "usage.jsonl")
+    pure [ (n, j) | l <- maybe [] lines t, Right j <- [parseJson l], fromMaybe 0 (lookupNum "t" j) >= since ]
+  if null rows then putStrLn "no model calls recorded (the chat and the compactor write <state>/<session>/usage.jsonl)" >> pure 0
+  else if flag a ["--json"] then putStrLn (encode (JArr (map snd rows))) >> pure 0
+  else do
+    let price j = lookup (fromMaybe "" (lookupStr "model" j)) (cPrices conf)
+        cost j = do
+          p <- price j
+          i <- lookupNum "input" p
+          c <- lookupNum "input_cached" p
+          o <- lookupNum "output" p
+          let n k = fromMaybe 0 (lookupNum k j)
+          pure ((n "in" - n "cached") * i / 1e6 + n "cached" * c / 1e6 + n "out" * o / 1e6)
+        sumOf k js = round (sum [ fromMaybe 0 (lookupNum k j) | j <- js ]) :: Int
+        secsOf js = sum [ fromMaybe 0 (lookupNum "secs" j) | j <- js ] :: Double
+        money js = maybe "" (\cs -> printf "$%.3f" (sum cs)) (mapM cost js) :: String
+        line :: String -> [Json] -> String
+        line label js = printf "  %-24s %6d %9s %9s %9s %8.0fs  %s" label (length js) (human (sumOf "in" js)) (human (sumOf "cached" js)) (human (sumOf "out" js)) (secsOf js) (money js)
+        grouped key = M.toList (M.fromListWith (flip (++)) [ (key n j, [j]) | (n, j) <- rows ])
+        unpriced = nub [ m | (_, j) <- rows, Just m <- [lookupStr "model" j], isNothing (price j) ]
+    putStrLn (printf "  %-24s %6s %9s %9s %9s %9s  %s" ("" :: String) ("calls" :: String) ("in" :: String) ("cached" :: String) ("out" :: String) ("secs" :: String) (if null unpriced then "cost" else "" :: String))
+    forM_ (grouped (\n j -> n ++ " " ++ fromMaybe "?" (lookupStr "who" j))) (\(k, js) -> putStrLn (line k js))
+    putStrLn (line "total" (map snd rows))
+    putStrLn ""
+    forM_ (grouped (\_ j -> take 10 (fromMaybe "" (lookupStr "date" j)))) (\(d, js) -> putStrLn (line d js))
+    unless (null unpriced) $ putStrLn ("\n  no prices for " ++ intercalate ", " unpriced ++ ": \"prices\": {\"" ++ head unpriced ++ "\": {\"input\": .., \"input_cached\": .., \"output\": ..}} in ghci-session.json, in money per million tokens")
+    pure 0
+
 -- | __The session's own scenario, timed__: the steps a target lists under @"profile"@, run in order against
 -- the running session, each against its budget and against the last run.
 --
@@ -427,6 +471,7 @@ usage = unlines
   , "  mcp                                serve the session's operations and its memory to an agent (MCP on stdin/stdout): claude mcp add ghci -- ghci-session mcp"
   , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
   , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
+  , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
   , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
@@ -546,6 +591,7 @@ cliMain = do
           _ -> die' "date ID: when message ID was written"
         "mcp" -> mcpMain conf >> pure 0
         "chat" -> chatMain conf rest
+        "usage" -> cmdUsage conf a
         "list" -> cmdList conf
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN
