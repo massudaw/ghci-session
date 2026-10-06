@@ -263,6 +263,22 @@ evalTool ch a = do
                         | otherwise = ([], ls)
     split [] = ([], [])
 
+-- | After a shell command: the verdict of the reload it caused, if the session shows one coming (watched
+-- files differ from the loaded code, or a verdict newer than before the command), else Nothing.
+shSaved :: Chat -> Maybe Verdict -> IO (Maybe (Bool, T.Text))
+shSaved _ Nothing = pure Nothing
+shSaved ch (Just before) = do
+  let look n = do
+        r <- ask ch "status" []
+        v <- verdictAt ch
+        let stale = not (null (strs (r .: "stale")))
+            newer = maybe False ((> vAt before) . vAt) v
+        if stale || newer then pure True else if n <= (0 :: Int) then pure False else threadDelay 300000 >> look (n - 1)
+  coming <- look 6     -- (the watcher sees a save within a second or two)
+  if not coming then pure Nothing else do
+    (good, text) <- saved ch "" (Just before)
+    pure (Just (good, text))
+
 -- | The agent's hands on the files, inside the project only.
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
 fileTool ch name a = case name of
@@ -293,8 +309,15 @@ fileTool ch name a = case name of
     es <- filter (not . ("." `isPrefixOf`)) <$> listDirectory p
     tagged <- forM (sort es) $ \e -> (\d -> e ++ (if d then "/" else "")) <$> doesDirectoryExist (p </> e)
     pure (True, T.pack (intercalate "\n" tagged))
-  "sh" -> shTool (cDir ch) (fromMaybe "" (lookupStr "cmd" a)) (fromMaybe 120 (lookupNum "timeout" a))
+  "sh" -> do
+    before <- verdictAt ch
+    (ok, out) <- shTool (cDir ch) (fromMaybe "" (lookupStr "cmd" a)) (fromMaybe 120 (lookupNum "timeout" a))
+    -- a command that edited a watched source (sed -i, a generator, git) is a save too: the session reloads
+    -- it, and the answer waits for that verdict as write and edit do, else the agent reloads by hand
+    pending <- shSaved ch before
+    pure (ok && maybe True fst pending, out <> maybe T.empty snd pending)
   _ -> pure (False, T.pack ("unknown tool " ++ name))
+
   where
     rel = fromMaybe "." (lookupStr "path" a)
     withPath k = case inside ch rel of
