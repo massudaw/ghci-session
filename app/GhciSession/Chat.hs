@@ -62,10 +62,11 @@ capChars :: Int
 capChars = 30000
 
 -- | Seconds a write or edit waits for the verdict of the reload it causes, at least: a project whose check
--- takes longer gets three times the last verdict's duration (and a margin), up to ten minutes -- a wait
--- that ends before the verdict only sends the agent to ask status, reload and test by hand.
+-- takes longer gets three times the longest verdict seen (and a margin), up to ten minutes -- a wait that
+-- ends before the verdict only sends the agent to ask status, reload and test by hand. (The longest, not the
+-- last: the last is often a typecheck-only verdict of no duration, while the reload behind it takes the check's.)
 saveWait :: Double -> Double
-saveWait lastSecs = min 600 (max 45 (3 * lastSecs + 15))
+saveWait longest = min 600 (max 45 (3 * longest + 15))
 
 -- the options ------------------------------------------------------------------------------
 
@@ -100,7 +101,8 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
 
 -- the session ------------------------------------------------------------------------------
 
-data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched :: [FilePath], cAgent :: String }
+data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched :: [FilePath], cAgent :: String
+                 , cLongest :: IORef Double }   -- ^ the longest verdict (a reload with its check) seen: what a save may take
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -142,13 +144,14 @@ view ch wait = do
 
 -- | The verdict now: its time stamp, its line, what is behind it -- the compiler's diagnostics
 -- (file:line:col and the message whole) behind a COMPILE-ERROR, the failing lines behind a CHECK-FAIL,
--- nothing behind an OK -- and how long it took. Nothing when no session answers.
-data Verdict = Verdict { vAt :: Double, vLine :: String, vBehind :: [String], vSecs :: Double }
+-- nothing behind an OK. Nothing when no session answers; the longest duration seen is remembered on the way.
+data Verdict = Verdict { vAt :: Double, vLine :: String, vBehind :: [String] }
 
 verdictAt :: Chat -> IO (Maybe Verdict)
 verdictAt ch = do
   r <- ask ch "status" []
   let j = r .: "status"
+  forM_ (lookupNum "duration_s" j) (\d -> modifyIORef' (cLongest ch) (max d))
   pure $ case (lookupBool "ok" r, obj j, lookupNum "at" j) of
     (Just _, Just _, Just at) ->
       let headL = takeWhile (/= '\n') (fromMaybe "" (lookupStr "out" r))
@@ -161,7 +164,7 @@ verdictAt ch = do
             Just "COMPILE-ERROR" -> (if null errs then detail else map diag (take 12 errs) ++ [ "[... " ++ show (length errs - 12) ++ " more]" | length errs > 12 ])
             Just "CHECK-FAIL" -> detail
             _ -> []
-      in Just (Verdict at headL behind (fromMaybe 0 (lookupNum "duration_s" j)))
+      in Just (Verdict at headL behind)
     _ -> Nothing
 
 -- | The verdict the session gives AFTER the one at @before@ (a save's), within the seconds; else Nothing.
@@ -184,10 +187,11 @@ verdictAfter ch before secs = do
 saved :: Chat -> String -> Maybe Verdict -> IO (Bool, T.Text)
 saved _ what Nothing = pure (True, T.pack what)
 saved ch what (Just before) = do
-  let wait = saveWait (vSecs before)
+  longest <- readIORef (cLongest ch)
+  let wait = saveWait longest
   v <- verdictAfter ch (vAt before) wait
   pure $ case v of
-    Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the last verdict took %.0fs): status will have its verdict; do not reload by hand]" wait (vSecs before)))
+    Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
     Just r -> (not ("ERROR" `isInfixOf` vLine r || "FAIL" `isInfixOf` vLine r), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
 
 -- the tools ----------------------------------------------------------------------------------
@@ -499,8 +503,9 @@ chatMain conf args = case parseOpts args of
       Right name -> do
         cfg <- resolve conf name
         members <- readMembers conf name
+        longest <- newIORef 0
         let ms = if null members then [name] else members
-            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
+            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg) longest
         if oPrintView o then view ch 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           ep <- endpointFromEnv
           case ep of
