@@ -1,0 +1,97 @@
+README.md
+  s_6e55a4691f1b7b::t_e14fbabc4a630e 25-27,45,138-140,143-175,206-245,301-311,407-408,458,462-464,527-694,757-758,761-763,785,801
+app/GhciSession/Cli.hs
+  s_6e55a4691f1b7b::t_d2375b2f8a61aa 23-24,257-329,421-427,450,469-471,473-506,510
+app/GhciSession/Config.hs
+  s_6e55a4691f1b7b::t_1a6a38c21ed74e 55-57,62,73,79,239,253,255-256
+app/GhciSession/Daemon.hs
+  s_6e55a4691f1b7b::t_fcb325758d2315 1-5,9,12,26,29,31,51,80-83,89-94,230-243,263-264,277-283,374-375,400-402,412-414,586,588-589,620-641,963-975,977-978,980-992,999-1005,1011,1015-1017,1020,1073-1074,1088-1089,1091-1092,1094-1107,1111,1121-1122,1128,1131-1137,1142-1143,1168-1169,1219,1247,1271-1277,1279-1288,1292,1334-1353,1421-1425,1427-1428,1434,1500,1514-1515,1637-1658,1680-1859,1869,1871-1872,1883,1906
+app/GhciSession/Doc.hs
+  s_6e55a4691f1b7b::t_6c201b2f6b7d5e 13,140-155
+app/GhciSession/SelfTest.hs
+  s_6e55a4691f1b7b::t_84f5a8079f2adf 11,22,69-73,99-100
+build.sh
+  s_6e55a4691f1b7b::t_3dacc89fc9484c 13-20
+cabal.project
+  s_6e55a4691f1b7b::t_deac986b0bb5c4 1
+engine/GhsAddUnits.hs
+  s_6e55a4691f1b7b::t_29b073ed7b962a 1-108
+engine/GhsEngine.hs
+  s_6e55a4691f1b7b::t_7853ff8016de0a 40-41,79,91-97,130-135,242-245,248,294-303,378-387,413-419,423-454,468-473,481-489,499-502
+engine/GhsFastLoad.hs
+  s_6e55a4691f1b7b::t_0c314b89e96503 1-169
+examples/hello/cabal.project
+  s_6e55a4691f1b7b::t_b6ab13b444c39b 3-4
+examples/hello/ghci-session.json
+  s_6e55a4691f1b7b::t_e0521aa442c8ae 2-22,24-61,63-78,80-93,95-101
+examples/hello/hello.cabal
+  s_6e55a4691f1b7b::t_006a8a19913a18 8-9
+examples/hello/src/Part/Base.hs
+  s_6e55a4691f1b7b::t_b250312fa8cb94 1-5
+examples/hello/src/Part/Mid.hs
+  s_6e55a4691f1b7b::t_2bffd1d0f089c7 1-10
+examples/hello/src/Part/Side.hs
+  s_6e55a4691f1b7b::t_a17ddf3143236d 1-6
+examples/hello/third/src/Third.hs
+  s_6e55a4691f1b7b::t_89fb2157474e07 1-10
+examples/hello/third/third.cabal
+  s_6e55a4691f1b7b::t_03b5c82e575e43 1-10
+examples/tour.py
+  s_6e55a4691f1b7b::t_00e892abf0d016 14,41-42,54,270-299,329-344,519
+ghci-session.cabal
+  s_6e55a4691f1b7b::t_8f9132ea2d111d 29,40,44,46-50,52,55
+hygiene/c/exports.c
+  s_6e55a4691f1b7b::t_c592ef3ca1985f 6,9-13,17-19
+hygiene/c/gc_once.c
+  s_6e55a4691f1b7b::t_72a5d95dbaa400 1-46
+hygiene/c/ghci_cafs.c
+  s_6e55a4691f1b7b::t_5cfda3841071a6 121-130,132-139,160-161,220-305,316,322-324,336,342-348,361-364,376,378-380,383,387-388
+hygiene/c/heap_census.c
+  s_6e55a4691f1b7b::t_183e073126ce22 253-260
+hygiene/c/heap_dups.c
+  s_6e55a4691f1b7b::t_a16a0322bb266f 1-422
+hygiene/c/mem_return.c
+  s_6e55a4691f1b7b::t_7c6e3f2fac19d3 1-70
+hygiene/c/store.c
+  s_6e55a4691f1b7b::t_642b4316ca7d8c 1-88
+hygiene/ghci-hygiene.cabal
+  s_6e55a4691f1b7b::t_014b4bd7a0158e 1-23
+hygiene/repro/cabal.project
+  s_6e55a4691f1b7b::t_bde5dc58a981bd 2
+hygiene/repro/caf-repro.cabal
+  s_6e55a4691f1b7b::t_387192e6774bbe 9
+hygiene/src/GHC/Hygiene.hs
+  s_6e55a4691f1b7b::t_ebe1af7c5ed10b 1,16,20-23,28-57
+hygiene/src/GHC/Hygiene/Census.hs
+  s_6e55a4691f1b7b::t_617aa355e8d8b5 1,12-13,16,18-19,25,27-28,31,36,86-87,113-168,172-176,198,202-205,212-214,270,288,308-326,331-339
+hygiene/src/GHC/Hygiene/Kept.hs
+  s_6e55a4691f1b7b::t_aaf048131aed9e 1-320
+hygiene/src/GHC/Hygiene/Store.hs
+  s_6e55a4691f1b7b::t_fb3a2ab1212a70 1-106
+hygiene/src/GHC/Hygiene/Zygote.hs
+  s_6e55a4691f1b7b::t_7ed6d8206f461d 1
+tests/test_e2e.py
+  s_6e55a4691f1b7b::t_89b6f7951609c8 232-235
+vendor/fetch.sh
+  s_6e55a4691f1b7b::t_2fe851e788cbea 3,28-30,35-49
+vendor/ghc-9.14.1/GHCi/UI.hs
+  s_6e55a4691f1b7b::t_23d5571985b4bf 27,65,2377
+vendor/ghc-9.14.1/patched/GhcMain.hs
+  s_6e55a4691f1b7b::t_49c4ea8dcd43f7 18,300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "00f815cb1485266950fc22f5c440785dc2dd9f5d",
+  "prompts": {},
+  "sessions": {
+    "s_6e55a4691f1b7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6ec73439-e7f5-55aa-868c-b14d24f000b0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
