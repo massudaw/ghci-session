@@ -201,7 +201,12 @@ which evaluations answered what, which edits failed and why, what a census said.
 needs are in the protocol: every reply carries `stale` (the echo says when an answer came from code that is no
 longer on disk), and a command that runs past its timeout is interrupted, not abandoned -- the engine is sent a
 SIGINT, GHCi turns it into `UserInterrupt` and is back at its prompt -- so a probe that hangs costs its timeout
-and nothing after it (it used to leave the next request queued behind it). Two ways in for an agent:
+and nothing after it (it used to leave the next request queued behind it). A check that HANGS costs less than
+its timeout: the daemon keeps the seconds of each member's last five passing checks, and a run past five times
+their median (at least 15 s, never past the check's own `timeout`) is interrupted with the verdict `CHECK-HANG`
+and the last line it printed -- which test it hung in. (An emulator's frame loop that never ended cost an
+agent ten minutes a save, four times in an hour, while the check it guards takes three seconds.) The chat's
+`eval` and `bench` default to two minutes for the same reason, and say how to ask for more. Two ways in for an agent:
 
 - **`ghci-session mcp`** serves the session's operations and its memory to any agent client as tools, over
   the Model Context Protocol on standard input and output (`claude mcp add ghci -- ghci-session mcp` from

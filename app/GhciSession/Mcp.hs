@@ -95,7 +95,7 @@ tools =
   , Tool "test" "Run the project's tests on the loaded code." [("member", ("string", "one member of a composed session")), sessionArg] []
   , Tool "doc" "Find a definition: by name (a typo, a prefix or initials are fine), qualified, or by words of its type or comment. Answers the signature, the comment above it and file:line." [("query", ("string", "the name or words")), ("n", ("number", "how many answers (default 5)")), sessionArg] ["query"]
   , Tool "census" "What the heap holds: every CAF by what it retains (default), the Strings among it (mode strings), what a reload cannot drop (kept), sharing that is missed (dups), or one value alone (expr)." [("mode", ("string", "cafs | strings | kept | dups | mem")), ("expr", ("string", "one value: its bytes, closures and constructors")), ("top", ("number", "how many entries")), sessionArg] []
-  , Tool "bench" "Time an IO action in the session: wall, GC, allocation." [("expr", ("string", "the action")), sessionArg] ["expr"]
+  , Tool "bench" "Time an IO action in the session: wall, GC, allocation." [("expr", ("string", "the action")), ("timeout", ("number", "seconds; a hung action is interrupted (default 600)")), sessionArg] ["expr"]
   , Tool "mem" "The repl's memory and its servers'." [sessionArg] []
   , Tool "view" "The whole history of this session as one-line summaries, oldest first: `id+n|text`, the n messages from id on. Recent lines cover one message; the older, the more. Read it before starting a task." [("wait", ("number", "seconds to wait for every line to be a summary (default 10)")), sessionArg] []
   , Tool "zoom" "Open line id+n of the view into the two lines of n/2 it was made from; n = 1 gives message id whole." [("id", ("number", "the line's first message")), ("n", ("number", "how many messages it covers")), sessionArg] ["id", "n"]
@@ -132,7 +132,7 @@ call conf name args = do
         "test" -> go "check" (str "member" "member") >>= say
         "doc" -> go "doc" ([("words", JArr (map JStr (words (fromMaybe "" (s "query")))))] ++ num "n") >>= say
         "census" -> go "census" ([("mode", JStr (if isJust (s "expr") then "value" else fromMaybe "cafs" (s "mode")))] ++ str "expr" "expr" ++ num "top") >>= say
-        "bench" -> go "bench" (str "expr" "expr") >>= say
+        "bench" -> go "bench" (str "expr" "expr" ++ num "timeout") >>= say
         "mem" -> go "mem" [] >>= say
         "view" -> go "view" [("wait", JNum (fromMaybe 10 (n "wait")))] >>= say
         "zoom" -> go "zoom" (num "id" ++ num "n") >>= say

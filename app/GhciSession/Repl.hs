@@ -42,10 +42,10 @@ import System.Timeout (timeout)
 import GhciSession.Json
 import GhciSession.Sys (socketPair, socketShutdown)
 
-data ReplError = ReplDied String | ReplTimeout Double
+data ReplError = ReplDied String | ReplTimeout Double T.Text   -- ^ the seconds, and what the interrupted command had printed
 instance Show ReplError where
   show (ReplDied s) = if null s then "repl is not running" else s
-  show (ReplTimeout t) = "timed out after " ++ show (round t :: Int) ++ "s"
+  show (ReplTimeout t _) = "timed out after " ++ show (round t :: Int) ++ "s"
 instance Exception ReplError
 
 -- | How to start the engine: what the build tool would have run.
@@ -168,7 +168,7 @@ await r out secs = do
       let n = be32 b
           (j, o) = B.splitAt n (B.drop 4 b)
       pure (Reply (either (const (JObj [])) id (parseJsonBS j)) (decode o))
-    Left (Just t) -> throwIO (ReplTimeout t)
+    Left (Just t) -> throwIO (ReplTimeout t T.empty)
     Left Nothing -> do
       code <- timeout 2000000 (waitForProcess (rProc r))
       said <- if null out then pure "" else either (\(_ :: IOException) -> "") id <$> try (readFile out >>= \x -> length x `seq` pure x)
@@ -204,11 +204,12 @@ roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
     -- turn replies -- so the next request does not queue behind the one that hung (a check of 30 s had to
     -- be killed; an agent's probe would hang its session). The caller still gets the timeout. A command
     -- that cannot be interrupted (a foreign call that does not return) leaves its reply for 'drain'.
-    Left (ReplTimeout t) -> do
+    Left (ReplTimeout t _) -> do
       mp <- getPid (rProc r)
       forM_ mp $ \p -> try (signalProcess sigINT (CPid (fromIntegral p))) :: IO (Either IOException ())
-      void (try (await r "" 5) :: IO (Either ReplError Reply))
-      throwIO (ReplTimeout t)
+      -- (the interrupted command's output comes with the reply the interrupt frees: it says where it hung)
+      said <- try (await r "" 5) :: IO (Either ReplError Reply)
+      throwIO (ReplTimeout t (either (const T.empty) rOut said))
     Left e -> throwIO e
   where
     drain = atomically (let go = tryReadTQueue (rReplies r) >>= maybe (pure ()) (const go) in go)

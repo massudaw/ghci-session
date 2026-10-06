@@ -163,6 +163,7 @@ verdictAt ch = do
           behind = case lookupStr "kind" j of
             Just "COMPILE-ERROR" -> (if null errs then detail else map diag (take 12 errs) ++ [ "[... " ++ show (length errs - 12) ++ " more]" | length errs > 12 ])
             Just "CHECK-FAIL" -> detail
+            Just "CHECK-HANG" -> detail
             _ -> []
       in Just (Verdict at headL behind)
     _ -> Nothing
@@ -192,7 +193,7 @@ saved ch what (Just before) = do
   v <- verdictAfter ch (vAt before) wait
   pure $ case v of
     Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
-    Just r -> (not ("ERROR" `isInfixOf` vLine r || "FAIL" `isInfixOf` vLine r), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+    Just r -> (not (any (`isInfixOf` vLine r) ["ERROR", "FAIL", "HANG", "DEAD"]), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
 
 -- the tools ----------------------------------------------------------------------------------
 
@@ -240,11 +241,20 @@ runTool :: Chat -> Tool -> Json -> IO (Bool, T.Text)
 runTool ch t a0
   | not (null missing) = pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t)))
   | tName t == "eval" = evalTool ch a
-  | tName t `elem` sessionToolNames = call (cConf ch) (tName t) (set "session" (JStr (cName ch)) a)
+  | tName t `elem` sessionToolNames = call (cConf ch) (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
   | otherwise = do
       r <- try (fileTool ch (tName t) a) :: IO (Either IOException (Bool, T.Text))
       pure (either (\e -> (False, T.pack ("IOError: " ++ show e))) id r)
   where (a, missing) = arguments t a0
+
+-- | Seconds an eval or a bench may run before it is interrupted, when the call does not say: the session's
+-- own default is ten minutes, and an agent's expression that hangs (a loop that never ends) is a dead ten
+-- minutes of the turn; two are enough for anything an agent tries, and the answer says how to ask for more.
+evalTimeout :: Double
+evalTimeout = 120
+
+withTimeout :: Json -> Json
+withTimeout a = if isJust (lookupNum "timeout" a) then a else set "timeout" (JNum evalTimeout) a
 
 -- | An eval: leading import lines (and : commands) are each their own command -- in one block with the
 -- expression they do not parse -- and a block that still does not parse is told why.
@@ -252,15 +262,17 @@ evalTool :: Chat -> Json -> IO (Bool, T.Text)
 evalTool ch a = do
   let ls = lines (trim (fromMaybe "" (lookupStr "expr" a)))
       (heads, rest) = split ls
-      one e = call (cConf ch) "eval" (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ]))
+      one e = call (cConf ch) "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
   outs <- forM heads $ \h -> do
     (ok, out) <- one h
     pure [ T.pack h <> T.pack "\n" <> out | not ok || T.isInfixOf (T.pack "error") out ]
   let expr = intercalate "\n" rest
   (ok, out) <- one expr
-  let hint = if '\n' `elem` expr && T.isInfixOf (T.pack "parse error") out
-               then T.pack "\n[hint: a multi-line eval is ONE GHCi block (:{ :}); a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
-               else T.empty
+  let hint | '\n' `elem` expr && T.isInfixOf (T.pack "parse error") out =
+               T.pack "\n[hint: a multi-line eval is ONE GHCi block (:{ :}); a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
+           | T.isInfixOf (T.pack "timed out after") out && isNothing (lookupNum "timeout" a) =
+               T.pack (printf "\n[interrupted after %.0fs, the default: an expression that needs longer says so with timeout]" evalTimeout)
+           | otherwise = T.empty
   pure (ok, T.intercalate (T.pack "\n") (concat outs ++ [out <> hint]))
   where
     split ls@(l : more) | not (null more), "import " `isPrefixOf` l || ":" `isPrefixOf` l = let (hs, r) = split more in (l : hs, r)

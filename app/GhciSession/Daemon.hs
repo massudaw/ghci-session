@@ -87,6 +87,7 @@ data S = S
   , vTcLast :: IORef (Maybe (Sig, (Bool, String, Double, [String], [Json])))   -- ^ the sources the last typecheck saw, and its answer
   , vLastLoad :: IORef (Maybe Reply)   -- ^ what the engine said of the last reload (the answer again, while no source has changed)
   , vLinksSeen :: IORef Int, vLinksPruned :: IORef Int   -- ^ libraries the engine has linked: now, and at the last unlink
+  , vCheckSecs :: IORef (M.Map String [Double])   -- ^ per member, the seconds its last passing checks took: what a hang is measured against
   }
 
 -- | How the running engine was started: what the build tool was asked, and what it answered.
@@ -170,7 +171,7 @@ setStatus s keep text0 detail facts = do
   let headL = if null stale then text else "STALE(" ++ show (length stale) ++ ") " ++ text
       line2 = "session=" ++ sName s ++ " gen=" ++ show gen ++ " at=" ++ dt ++ " loaded=" ++ la ++ " checked=" ++ ca
       ls = [headL, line2] ++ [ "stale: " ++ intercalate ", " (map (rel s) (take 6 stale)) | not (null stale) ] ++ detail
-      kind = fromMaybe (fromMaybe "OK" (listToMaybe [ k | k <- ["CHECK-FAIL", "CHECK-PASS"], k `isInfixOf` text ]))
+      kind = fromMaybe (fromMaybe "OK" (listToMaybe [ k | k <- ["CHECK-FAIL", "CHECK-HANG", "CHECK-PASS"], k `isInfixOf` text ]))
                (listToMaybe [ k | k <- ["DEAD", "stopped", "starting", "PREBUILD-ERROR", "CONFIG-ERROR", "COMPILE-ERROR"], k `isPrefixOf` text ])
   vStatusText s =: (unlines ls)
   old <- rd (vJson s)
@@ -179,7 +180,7 @@ setStatus s keep text0 detail facts = do
              [ ("session", JStr (sName s)), ("target", JStr (sName s)), ("kind", JStr kind), ("ok", JBool (kind `elem` ["OK", "CHECK-PASS"]))
              , ("stale", JNum (fromIntegral (length stale))), ("stale_files", JArr (map (JStr . rel s) stale))
              , ("warnings", JNum (fromIntegral (warningsIn text))), ("verdict", JStr text), ("text", JStr headL)
-             , ("failing", JNum (if kind == "CHECK-FAIL" then fromIntegral (length detail) else 0))
+             , ("failing", JNum (if kind `elem` ["CHECK-FAIL", "CHECK-HANG"] then fromIntegral (length detail) else 0))
              , ("detail", JArr (map JStr (take 30 detail))), ("generation", JNum (fromIntegral gen)), ("at", JNum t)
              , ("diagnostics", JArr diags) ]
       j2 = setDefault "servers" (JArr []) (setDefault "members" (JArr []) j1)
@@ -460,6 +461,19 @@ countSub needle = go 0
 
 data CheckResult = CheckResult { crMember :: String, crKind :: String, crFailing :: [String], crBody :: T.Text, crSecs :: Double }
 
+-- | A check that runs far longer than it has been taking is HUNG (an evaluation that never ends, a loop
+-- in the code under test), and is interrupted at five times the median of its last passing runs -- at
+-- least 15 s, never past its own timeout -- with a verdict that says so and says where it hung (the last
+-- line it printed). The fixed timeout alone (ten minutes by default) cost an agent's loop ten minutes a
+-- save, four times in one hour, while the check it was guarding takes three seconds.
+hangLimit :: [Double] -> Maybe Double
+hangLimit [] = Nothing
+hangLimit ds = Just (max 15 (5 * medianOf ds))
+
+medianOf :: [Double] -> Double
+medianOf [] = 0
+medianOf ds = sort ds !! (length ds `div` 2)
+
 checkOne :: S -> Check -> IO CheckResult
 checkOne s e = do
   cwd' <- rd (vCwd s)
@@ -467,11 +481,19 @@ checkOne s e = do
   -- run's file: a link failure leaves the log untouched and would read as a pass.
   let logp = (cwd' </>) <$> ckLog e
   before <- maybe (pure Nothing) modTime logp
+  hist <- M.findWithDefault [] (ckMember e) <$> rd (vCheckSecs s)
+  let hard = fromMaybe (gEvalTimeout (sCfg s)) (ckTimeout e)
+      soft = [ so | Just so <- [hangLimit hist], so < hard ]
+      limit = case soft of { (so : _) -> Just so; [] -> ckTimeout e }
   t0 <- now
-  r <- try (cmd s (ckTimeout e) (ckExpr e))
+  r <- try (cmd s limit (ckExpr e))
   t1 <- now
   case r of
-    Left ex@(ReplTimeout _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
+    Left (ReplTimeout t said) | not (null soft) ->
+      let lastLine = case [ l | l <- map T.strip (T.lines said), not (T.null l), l /= T.pack "Interrupted." ] of { [] -> "nothing yet"; ls -> T.unpack (T.takeEnd 160 (last ls)) }
+          why = printf "hung: ran %.0fs where it takes about %.1fs (interrupted); last output: %s" t (medianOf hist) lastLine
+      in pure (CheckResult (ckMember e) "HANG" [why] (said <> T.pack ("\n[session] " ++ why)) (t1 - t0))
+    Left ex@(ReplTimeout _ _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
     Left ex -> pure (CheckResult (ckMember e) "DEAD" [show ex] (T.pack (show ex)) (t1 - t0))
     Right out -> do
       body <- case logp of
@@ -483,9 +505,12 @@ checkOne s e = do
             else fromMaybe (out <> T.pack ("\n[session] " ++ p ++ " unreadable")) <$> readFileText p
       fails <- maybe (pure []) (\pat -> map (T.unpack . T.strip) <$> linesMatching pat (T.lines body)) (ckFail e)
       passOk <- maybe (pure True) (`anyLineMatches` body) (ckPass e)
-      pure $ if not (null fails) then CheckResult (ckMember e) "FAIL" fails body (t1 - t0)
-        else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : map T.unpack (lastN 3 (T.lines (T.strip body)))) body (t1 - t0)
-        else CheckResult (ckMember e) "PASS" [] body (t1 - t0)
+      let result = if not (null fails) then CheckResult (ckMember e) "FAIL" fails body (t1 - t0)
+            else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : map T.unpack (lastN 3 (T.lines (T.strip body)))) body (t1 - t0)
+            else CheckResult (ckMember e) "PASS" [] body (t1 - t0)
+      -- (a passing run's seconds are what the next run's hang is measured against: the last five)
+      when (crKind result == "PASS") (modifyIORef' (vCheckSecs s) (M.insertWith (\new old -> take 5 (new ++ old)) (ckMember e) [t1 - t0]))
+      pure result
 
 runCheck :: S -> Maybe Double -> Maybe String -> IO T.Text
 runCheck s mt0 member = do
@@ -509,6 +534,9 @@ runCheck s mt0 member = do
                 , ("duration_s", JNum took) ]
     if any ((== "DEAD") . crKind) results
       then setStatus s False "DEAD: the repl died during a check" (take 20 [ crMember r ++ ": " ++ T.unpack (T.take 2000 (crBody r)) | r <- bad ]) facts
+      else if any ((== "HANG") . crKind) results
+        then setStatus s False ("CHECK-HANG: the check did not end in " ++ intercalate ", " [ crMember r | r <- bad, crKind r == "HANG" ] ++ " (interrupted)" ++ tag)
+               (take 30 [ crMember r ++ ": " ++ l | r <- bad, l <- (if null (crFailing r) then [crKind r] else crFailing r) ]) facts
       else if not (null bad)
         then setStatus s False ("CHECK-FAIL: " ++ show (sum [ max 1 (length (crFailing r)) | r <- bad ]) ++ " failing in " ++ intercalate ", " (map crMember bad) ++ tag)
                (take 30 [ crMember r ++ ": " ++ l | r <- bad, l <- (if null (crFailing r) then [crKind r] else crFailing r) ]) facts
@@ -2128,6 +2156,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
          <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
          <*> newIORef 0 <*> newIORef Nothing <*> newIORef Nothing <*> newIORef 0 <*> newIORef 0
+         <*> newIORef M.empty
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
