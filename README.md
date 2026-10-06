@@ -185,7 +185,10 @@ name, and the package still depends on nothing outside GHC's boot packages), ask
 summary's budget was often all thoughts and no line (`SUMMARIZE_EFFORT=low|high|max` turns thinking on; an answer
 cut off before any text is asked again with a larger budget). Nodes are built one message at a time, in order,
 with merges of finished parts alongside, `summarize_jobs` (8) at once, and no call sees a line that is not a
-summary. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
+summary. The context a call sees is the last 32-64 KB of those lines, cut at the front with hysteresis (dropped
+to 32 KB once over 64 KB, then left alone until it is over again), so the prefix the provider caches stays the
+same for a stretch of calls: the whole view went with every call before, and the compactor's calls were 70% of
+a session's tokens. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
 shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its first failure is
 logged. Without a command the log and the free nodes are kept and the tree waits for a compactor outside the
 daemon: the `pending` operation answers the nodes ready to build, each with its prompt, and `tree_put` takes a

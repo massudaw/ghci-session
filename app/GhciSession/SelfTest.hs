@@ -215,7 +215,7 @@ run = do
   waiterWait pw 0.5 >>= check "watch: polling always says look"
 
   -- the history: the log, the tree, the view (GhciSession.History)
-  let hp = H.Params { H.pNode = 24, H.pView = 60, H.pCap = 30000 }
+  let hp = H.Params { H.pNode = 24, H.pView = 60, H.pCap = 30000, H.pCtxMax = 65536, H.pCtxMin = 32768 }
   eq "history: the scale line is exactly NODE bytes" (H.byteLength (H.scaleLine H.defaultParams)) 512
   eq "history: a cut never splits a character" (H.cutBytes 2 (T.pack "a\233b")) (T.pack "a")
   eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")
@@ -233,13 +233,13 @@ run = do
   eq "history: the view tiles the log, one part a message while nothing can merge" (H.sView sn1) [(0, 0), (0, 1), (0, 2), (0, 3)]
   check "history: an unbuilt line shows the placeholder" (T.isInfixOf (T.pack "2+1|(not summarized yet: zoom it)") (H.renderView sn1))
   check "history: the view is not settled with one" (not (H.settled sn1))
-  let (jobs1, _) = H.pendingOf sn1 Set.empty M.empty 0 M.empty
+  let (jobs1, _) = H.pendingOf hp sn1 Set.empty M.empty 0 M.empty
   eq "history: the pump compresses the first unbuilt message, and merges what lies before it" (map (\j -> (H.jL j, H.jI j)) jobs1) [(0, 2), (1, 0)]
   check "history: a compress job carries the message whole, and the lines before it, bare" (case jobs1 of { (j : _) -> H.jStep j == H.Compress (T.pack ("tool: " ++ T.unpack (T.replicate 40 (T.pack "long ")))) && H.jContext j == [T.pack "tool: eval 1 + 1", T.pack "tool: eval 2 * 3"]; _ -> False })
   check "history: a merge job carries its two lines" (case jobs1 of { [_, j] -> H.jStep j == H.Merge (T.pack "tool: eval 1 + 1") (T.pack "tool: eval 2 * 3"); _ -> False })
-  let (jobs2, _) = H.pendingOf sn1 (Set.fromList [(0, 2)]) M.empty 0 M.empty
+  let (jobs2, _) = H.pendingOf hp sn1 (Set.fromList [(0, 2)]) M.empty 0 M.empty
   eq "history: a busy node is not offered again" (map (\j -> (H.jL j, H.jI j)) jobs2) [(1, 0)]
-  let (jobs3, _) = H.pendingOf sn1 Set.empty (M.fromList [((0, 2), 100)]) 50 M.empty
+  let (jobs3, _) = H.pendingOf hp sn1 Set.empty (M.fromList [((0, 2), 100)]) 50 M.empty
   eq "history: a failed node waits out its retry" (map (\j -> (H.jL j, H.jI j)) jobs3) [(1, 0)]
   check "history: the prompt has no ids" (let pr = H.jobPrompt hp (head jobs1) in not (T.isInfixOf (T.pack "0+1") pr) && T.isInfixOf (T.pack "<chat>\ntool: eval 1 + 1\n") pr && T.isInfixOf (T.pack "exactly 24 bytes") pr)
   H.putNode hm 0 2 (T.pack "tool: eval of a long one")

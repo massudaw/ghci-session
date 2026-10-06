@@ -267,17 +267,23 @@ evalTool ch a = do
                         | otherwise = ([], ls)
     split [] = ([], [])
 
--- | After a shell command: the verdict of the reload it caused, if the session shows one coming (watched
--- files differ from the loaded code, or a verdict newer than before the command), else Nothing.
-shSaved :: Chat -> Maybe Verdict -> IO (Maybe (Bool, T.Text))
-shSaved _ Nothing = pure Nothing
-shSaved ch (Just before) = do
+-- | The watched files that differ from the loaded code right now.
+staleNow :: Chat -> IO [String]
+staleNow ch = (\r -> strs (r .: "stale")) <$> ask ch "status" []
+
+-- | After a shell command: the verdict of the reload it caused, if the session shows one coming -- a file
+-- newly among those that differ from the loaded code, or a verdict newer than before the command -- else
+-- Nothing. (Not "files differ": with a compile error on disk the session stays that way until it is fixed,
+-- and a read-only command then waited the whole wait for a verdict that was never due.)
+shSaved :: Chat -> Maybe Verdict -> [String] -> IO (Maybe (Bool, T.Text))
+shSaved _ Nothing _ = pure Nothing
+shSaved ch (Just before) staleBefore = do
   let look n = do
-        r <- ask ch "status" []
+        stale <- staleNow ch
         v <- verdictAt ch
-        let stale = not (null (strs (r .: "stale")))
+        let fresh = any (`notElem` staleBefore) stale
             newer = maybe False ((> vAt before) . vAt) v
-        if stale || newer then pure True else if n <= (0 :: Int) then pure False else threadDelay 300000 >> look (n - 1)
+        if fresh || newer then pure True else if n <= (0 :: Int) then pure False else threadDelay 300000 >> look (n - 1)
   coming <- look 6     -- (the watcher sees a save within a second or two)
   if not coming then pure Nothing else do
     (good, text) <- saved ch "" (Just before)
@@ -304,7 +310,7 @@ fileTool ch name a = case name of
     let old = fromMaybe T.empty (lookupText "old" a)
         new = fromMaybe T.empty (lookupText "new" a)
         k = if T.null old then 0 else T.count old t
-    if k /= 1 then pure (False, T.pack (printf "%s: the text occurs %d times; it must occur exactly once" rel k)) else do
+    if k /= 1 then pure (False, T.pack (printf "%s: the text occurs %d times; it must occur exactly once" rel k) <> nearest t old) else do
       before <- if watches ch rel then verdictAt ch else pure Nothing
       let (pre, post) = T.breakOn old t
       B.writeFile p (TE.encodeUtf8 (pre <> new <> T.drop (T.length old) post))
@@ -315,10 +321,11 @@ fileTool ch name a = case name of
     pure (True, T.pack (intercalate "\n" tagged))
   "sh" -> do
     before <- verdictAt ch
+    staleBefore <- staleNow ch
     (ok, out) <- shTool (cDir ch) (fromMaybe "" (lookupStr "cmd" a)) (fromMaybe 120 (lookupNum "timeout" a))
     -- a command that edited a watched source (sed -i, a generator, git) is a save too: the session reloads
     -- it, and the answer waits for that verdict as write and edit do, else the agent reloads by hand
-    pending <- shSaved ch before
+    pending <- shSaved ch before staleBefore
     pure (ok && maybe True fst pending, out <> maybe T.empty snd pending)
   _ -> pure (False, T.pack ("unknown tool " ++ name))
 
@@ -328,7 +335,18 @@ fileTool ch name a = case name of
       Left why -> pure (False, T.pack why)
       Right p -> k p
 
--- | A path of the project, or why not.
+-- | Where a text that occurs nowhere was probably meant to be: the file's first line that matches its first
+-- non-blank line with the spaces squeezed, quoted -- the mismatch is most often whitespace or one word.
+nearest :: T.Text -> T.Text -> T.Text
+nearest file old = case filter (not . T.null . T.strip) (T.lines old) of
+  [] -> T.empty
+  (l0 : _) ->
+    let squeeze = T.unwords . T.words
+        hits = [ (i, l) | (i, l) <- zip [1 :: Int ..] (T.lines file), squeeze l == squeeze l0 ]
+    in case hits of
+      ((i, l) : _) | T.null (T.strip (T.pack (T.unpack l))) -> T.empty
+                   | otherwise -> T.pack (printf "\n[its first line matches line %d with spaces squeezed: %s -- the text differs after it, or in its spacing]" i (show (T.unpack l)))
+      [] -> T.pack "\n[its first line matches no line of the file: read the file around the spot and copy the text as it is]"
 inside :: Chat -> FilePath -> Either String FilePath
 inside ch p =
   let full = normalise (cDir ch </> p)

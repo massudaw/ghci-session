@@ -60,10 +60,13 @@ import GhciSession.Sys (now)
 -- | The budgets. @pNode@: a summary line's target size. @pView@: the view's budget. @pCap@: a tool result
 -- is cut to this many characters (head and tail kept) before it is logged: it is resent on every later
 -- step of a turn and lands in the permanent log.
-data Params = Params { pNode :: !Int, pView :: !Int, pCap :: !Int }
+data Params = Params
+  { pNode :: !Int, pView :: !Int, pCap :: !Int
+  , pCtxMax :: !Int, pCtxMin :: !Int   -- ^ the context a compactor call sees: the view's bytes before the node, cut at the front to pCtxMin once over pCtxMax
+  }
 
 defaultParams :: Params
-defaultParams = Params { pNode = 512, pView = 128000, pCap = 30000 }
+defaultParams = Params { pNode = 512, pView = 128000, pCap = 30000, pCtxMax = 65536, pCtxMin = 32768 }
 
 -- | One message of the log. @mKind@: @user@ (the user's words; a subagent's report starts "[id] "), @talk@
 -- (the agent's replies), @tool@ (a request: a command of this tool, an agent's tool call), @echo@ (its
@@ -290,8 +293,8 @@ data Job = Job { jL :: !Int, jI :: !Int, jContext :: [T.Text], jStep :: Step }
 -- are compressed one at a time, in order, while merges of finished parts run alongside, and no call ever
 -- sees a line that is not a summary. @frontier@: per level, the smallest index not known built (advanced
 -- here; a pure function of the snapshot otherwise).
-pendingOf :: Snap -> S.Set (Int, Int) -> M.Map (Int, Int) Double -> Double -> M.Map Int Int -> ([Job], M.Map Int Int)
-pendingOf sn busy fails t frontier = (concat jobs, M.fromList fr)
+pendingOf :: Params -> Snap -> S.Set (Int, Int) -> M.Map (Int, Int) Double -> Double -> M.Map Int Int -> ([Job], M.Map Int Int)
+pendingOf ps sn busy fails t frontier = (concat jobs, M.fromList fr)
   where
     tot = Seq.length (sRoot sn)
     built p = M.member p (sTree sn)
@@ -304,7 +307,17 @@ pendingOf sn busy fails t frontier = (concat jobs, M.fromList fr)
           cands = takeWhile (\i -> (i + 1) * 2 ^ l <= tot && end l i <= firstUnbuilt) [f1 ..]
       in ([ j | i <- cands, not (built (l, i)), not (S.member (l, i) busy), maybe True (<= t) (M.lookup (l, i) fails), Just j <- [job l i] ], (l, f1))
     end l i = if l == 0 then i else (i + 1) * 2 ^ l
-    context upto = [ partText sn p | p@(pl, pi) <- sView sn, (pi + 1) * 2 ^ pl <= upto ]
+    -- the view's lines before the node, as the compactor's context -- the LAST pCtxMin..pCtxMax bytes of
+    -- them: the whole view (128 KB, ~40k tokens) was sent with every call, the compactor's calls being
+    -- 70% of a session's tokens. Cut with hysteresis, so the prefix the provider caches stays the same
+    -- for a stretch (dropping one line a call would change it every time): once the lines are over
+    -- pCtxMax, the front is dropped down to pCtxMin, and stays until they are over pCtxMax again.
+    context upto = window [ partText sn p | p@(pl, pi) <- sView sn, (pi + 1) * 2 ^ pl <= upto ]
+    window ls | total ls <= pCtxMax ps = ls
+              | otherwise = dropFront ls
+    dropFront ls@(_ : rest) | total ls > pCtxMin ps = dropFront rest
+    dropFront ls = ls
+    total = sum . map ((+ 1) . byteLength)
     job 0 i = (\m -> Job 0 i (context i) (Compress (msgLine m))) <$> Seq.lookup i (sRoot sn)
     job l i = case (M.lookup (l - 1, 2 * i) (sTree sn), M.lookup (l - 1, 2 * i + 1) (sTree sn)) of
       (Just a, Just b) -> Just (Job l i (context ((i + 1) * 2 ^ l)) (Merge (oneLine a) (oneLine b)))
@@ -318,7 +331,7 @@ pending mem = withMVar (mLock mem) $ \_ -> do
   fails <- readIORef (mFail mem)
   fr <- readIORef (mFrontier mem)
   t <- now
-  let (js, fr') = pendingOf sn busy fails t fr
+  let (js, fr') = pendingOf (mParams mem) sn busy fails t fr
   writeIORef (mFrontier mem) fr'
   pure js
 
