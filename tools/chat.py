@@ -29,10 +29,12 @@ import socket
 import subprocess
 import sys
 import threading
+import time
 
 from openai import OpenAI
 
 CAP = 30000          # characters of a tool result kept (head and tail), as the spec logs them
+SAVE_WAIT = 45.0     # seconds a write or edit waits for the verdict of the reload it causes
 MODEL = os.environ.get("DEEPSEEK_MODEL") or os.environ.get("OPENAI_MODEL") or "deepseek-v4-flash"
 BASE = os.environ.get("DEEPSEEK_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or "https://api.deepseek.com"
 KEY = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("OPENAI_API_KEY")
@@ -65,6 +67,48 @@ class Session:
             name = up[0] if len(up) == 1 else conf.get("default", names[0])
         self.name = name
         self.sock = os.path.join(self.state, name, "sock")
+        # what the daemon watches (its targets' dirs, and the build files): a save of one of these has a verdict
+        members = conf.get("sessions", {}).get(name, [name])
+        self.watched = [d for m in members for d in conf.get("targets", {}).get(m, {}).get("watch", [])]
+
+    def watches(self, path):
+        p = os.path.normpath(path)
+        return (p.endswith(".cabal") or os.path.basename(p) == "cabal.project"
+                or any(p == d or p.startswith(os.path.normpath(d) + os.sep) for d in self.watched))
+
+    def verdict_at(self):
+        """(the verdict's time stamp, its line, what is behind it) now -- None when no session answers. Behind a
+        COMPILE-ERROR are the compiler's diagnostics, file:line:col and the message whole; behind a CHECK-FAIL
+        the failing lines; behind an OK nothing."""
+        r = self.request("status")
+        j = r.get("status") or {}
+        if r.get("ok") is None or not j:
+            return None
+        head = (r.get("out") or "").split("\n")[0]
+        if j.get("kind") == "COMPILE-ERROR":
+            ds = [d for d in j.get("diagnostics") or [] if isinstance(d, dict)]
+            errs = [d for d in ds if d.get("severity") == "error"] or ds
+            behind = [f"{d.get('file')}:{d.get('line')}:{d.get('col')}: {d.get('severity')}: {d.get('message', '').strip()}" for d in errs[:12]]
+            if len(errs) > 12:
+                behind.append(f"[... {len(errs) - 12} more]")
+            behind = behind or [str(x) for x in j.get("detail") or []]
+        elif j.get("kind") == "CHECK-FAIL":
+            behind = [str(x) for x in j.get("detail") or []]
+        else:
+            behind = []
+        return (j.get("at"), head, behind)
+
+    def verdict_after(self, before, secs):
+        """The verdict the session gives AFTER the one at `before` (a save's), waiting up to secs; else why not."""
+        if before is None:
+            return None
+        t0 = time.time()
+        while time.time() - t0 < secs:
+            time.sleep(0.25)
+            now = self.verdict_at()
+            if now and now[0] is not None and now[0] > before[0]:
+                return now
+        return None
 
     def request(self, op, **args):
         req = {"op": op, **{k: v for k, v in args.items() if v is not None}}
@@ -124,7 +168,7 @@ N = lambda d: {"type": "number", "description": d}       # noqa: E731
 B = lambda d: {"type": "boolean", "description": d}      # noqa: E731
 
 TOOLS = [
-    tool("eval", "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse), against the LOADED code. The answer is what GHCi printed.",
+    tool("eval", "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line.",
          {"expr": S("the expression or command"), "timeout": N("seconds; a hung evaluation is interrupted (default 600)")}, ["expr"]),
     tool("status", "The session's verdict: OK -- CHECK-PASS, COMPILE-ERROR: n error(s), CHECK-FAIL: n failing; STALE(n) when watched sources differ from the loaded code.", {}),
     tool("typecheck", "Do the sources on disk typecheck? Nothing is loaded; the errors are listed.", {}),
@@ -137,8 +181,8 @@ TOOLS = [
     tool("zoom", "Open the line id+n of the view into the two lines of n/2 under it; n = 1 gives the message whole.", {"id": N("the line's first message"), "n": N("how many messages it covers")}, ["id", "n"]),
     tool("date", "The date and time of message id.", {"id": N("the message")}, ["id"]),
     tool("read", "A file of the project, with line numbers.", {"path": S("relative to the project"), "start": N("first line (default 1)"), "lines": N("how many (default 200)")}, ["path"]),
-    tool("write", "Write a file of the project whole (the session reloads a watched source by itself: then check status).", {"path": S("relative to the project"), "content": S("the whole content")}, ["path", "content"]),
-    tool("edit", "Replace one exact, unique occurrence of a text in a file of the project.", {"path": S("relative to the project"), "old": S("the text as it is, unique in the file"), "new": S("its replacement")}, ["path", "old", "new"]),
+    tool("write", "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it.", {"path": S("relative to the project"), "content": S("the whole content")}, ["path", "content"]),
+    tool("edit", "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it.", {"path": S("relative to the project"), "old": S("the text as it is, unique in the file"), "new": S("its replacement")}, ["path", "old", "new"]),
     tool("ls", "List a directory of the project.", {"path": S("relative to the project (default: the root)")}),
     tool("sh", "Run a shell command in the project's directory: its output and status.", {"cmd": S("the command"), "timeout": N("seconds (default 120)")}, ["cmd"]),
 ]
@@ -157,7 +201,21 @@ def run_tool(sess, name, a):
         return full
 
     if name == "eval":
-        return sess.text("eval", expr=a.get("expr", ""), timeout=a.get("timeout"))
+        # leading import lines are each their own command (in one block with the expression they do not parse)
+        lines = [l for l in a.get("expr", "").strip().split("\n")]
+        heads = []
+        while len(lines) > 1 and (lines[0].startswith("import ") or lines[0].startswith(":")):
+            heads.append(lines.pop(0))
+        outs = []
+        for h in heads:
+            ok, out = sess.text("eval", expr=h, timeout=a.get("timeout"))
+            if not ok or "error" in out:
+                outs.append(h + "\n" + out)
+        expr = "\n".join(lines)
+        ok, out = sess.text("eval", expr=expr, timeout=a.get("timeout"))
+        if "\n" in expr.strip() and "parse error" in out:
+            out += "\n[hint: a multi-line eval is ONE GHCi block (:{ :}); a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
+        return ok, "\n".join(outs + [out])
     if name == "status":
         return sess.text("status")
     if name == "typecheck":
@@ -189,10 +247,11 @@ def run_tool(sess, name, a):
             return True, "\n".join(f"{i + 1:5d}  {l}" for i, l in enumerate(ls) if start <= i + 1 < start + n) or "(empty)"
         if name == "write":
             p = inside(a["path"])
+            before = sess.verdict_at() if sess.watches(a["path"]) else None
             os.makedirs(os.path.dirname(p), exist_ok=True)
             with open(p, "w", encoding="utf-8") as fh:
                 fh.write(a["content"])
-            return True, f"wrote {a['path']} ({len(a['content'])} characters)"
+            return saved(sess, f"wrote {a['path']} ({len(a['content'])} characters)", before)
         if name == "edit":
             p = inside(a["path"])
             with open(p, encoding="utf-8") as fh:
@@ -200,9 +259,10 @@ def run_tool(sess, name, a):
             k = t.count(a["old"])
             if k != 1:
                 return False, f"{a['path']}: the text occurs {k} times; it must occur exactly once"
+            before = sess.verdict_at() if sess.watches(a["path"]) else None
             with open(p, "w", encoding="utf-8") as fh:
                 fh.write(t.replace(a["old"], a["new"], 1))
-            return True, f"edited {a['path']}"
+            return saved(sess, f"edited {a['path']}", before)
         if name == "ls":
             p = inside(a.get("path"))
             return True, "\n".join(sorted(e + ("/" if os.path.isdir(os.path.join(p, e)) else "") for e in os.listdir(p) if not e.startswith(".")))
@@ -217,6 +277,21 @@ def run_tool(sess, name, a):
     return False, f"unknown tool {name}"
 
 
+def saved(sess, what, before):
+    """A save's answer: what was written, and the verdict of the reload it caused (waited for), when the file
+    is one the session watches. A verdict that is not there within the wait is said to be pending (a long
+    compile): status has it later. The save itself is good either way."""
+    if before is None:
+        return True, what
+    v = sess.verdict_after(before, SAVE_WAIT)
+    if v is None:
+        return True, what + f"\n[the session has not finished reloading this save after {SAVE_WAIT:.0f}s: status will have its verdict]"
+    _, head, behind = v
+    good = "ERROR" not in head and "FAIL" not in head
+    # a bad verdict brings what is behind it (the errors, the failing tests): no status call is needed to see them
+    return good, what + "\nverdict: " + head + "".join("\n" + l for l in behind)
+
+
 # the prompts ---------------------------------------------------------------------------
 
 def master(who):
@@ -227,10 +302,13 @@ instructions at the end of this prompt: they say who the user is, how
 their files are organized and how they want work done.
 
 The session is your sandbox: eval runs against the loaded code in
-milliseconds; a file you write or edit is reloaded by the session itself,
-and status is its verdict (COMPILE-ERROR, CHECK-FAIL, or OK; STALE when
-the loaded code is behind the disk). Prefer an evaluation to a guess, and
-the verdict to a belief that an edit is right.
+milliseconds; a file you write or edit is reloaded by the session itself
+and the write's answer carries that reload's verdict (COMPILE-ERROR,
+CHECK-FAIL, or OK -- CHECK-PASS); status repeats the latest verdict
+(STALE when the loaded code is behind the disk). Prefer an evaluation to
+a guess, and the verdict to a belief that an edit is right. Fix a
+COMPILE-ERROR before anything else: the session answers from the last
+code that compiled until you do.
 
 You keep no memory between turns. Each turn starts with the view below,
 followed by the user's new message. Summaries keep little of tool
@@ -272,12 +350,13 @@ def turn(client, sess, system, texts, pending, args):
     messages = [{"role": "system", "content": system},
                 {"role": "user", "content": v.get("view", "") + "\n\n" + "\n\n".join(texts)}]
     for step in range(args.max_steps):
+        t0 = time.time()
         r = client.chat.completions.create(model=args.model, max_tokens=args.max_tokens, messages=messages, tools=TOOLS, tool_choice="auto")
         m = r.choices[0].message
         u = r.usage
         if u is not None and args.usage:
             hit = getattr(u, "prompt_cache_hit_tokens", None)
-            print(f"[usage: in {u.prompt_tokens}, out {u.completion_tokens}" + (f", cached {hit}" if hit is not None else "") + "]", file=sys.stderr)
+            print(f"[usage: in {u.prompt_tokens}, out {u.completion_tokens}" + (f", cached {hit}" if hit is not None else "") + f", {time.time() - t0:.1f}s]", file=sys.stderr)
         thought = getattr(m, "reasoning_content", None)
         if thought:
             print("\n[thinking] " + thought.strip() + "\n", file=sys.stderr)
@@ -296,8 +375,11 @@ def turn(client, sess, system, texts, pending, args):
             print(f"> {name} {json.dumps(a, ensure_ascii=False)[:300]}", flush=True)
             if name not in SESSION_TOOLS:
                 sess.log("tool", f"{name} {json.dumps(a, ensure_ascii=False)}")
+            t1 = time.time()
             ok, out = run_tool(sess, name, a)
             out = cap(out)
+            if args.usage:
+                print(f"[tool: {name} {time.time() - t1:.1f}s]", file=sys.stderr)
             if name not in SESSION_TOOLS:
                 sess.log("echo", ("" if ok else "ERROR: ") + out)
             print("  " + out[:600].replace("\n", "\n  ") + ("..." if len(out) > 600 else ""), flush=True)
