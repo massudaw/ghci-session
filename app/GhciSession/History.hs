@@ -233,7 +233,10 @@ freeNodes ps root (l, i) tree
 fitView :: Params -> Int -> M.Map (Int, Int) T.Text -> [(Int, Int)] -> [(Int, Int)]
 fitView ps t tree = go
   where
-    size v = sum [ maybe (byteLength placeholder) byteLength (M.lookup p tree) | p <- v ]
+    -- the view as rendered: each line's text, its @id+n|@ and its newline, and the tags around them (the
+    -- texts alone left a view of 313 lines 1.7 KB over its budget, settled there)
+    size v = tags + sum [ byteLength (partName p) + 2 + maybe (byteLength placeholder) byteLength (M.lookup p tree) | p <- v ]
+    tags = byteLength (T.pack "<chat>\n</chat>\n")
     go v | size v <= pView ps = v
          | otherwise = case best v of
              Nothing -> v

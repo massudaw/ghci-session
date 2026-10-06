@@ -13,7 +13,7 @@ import Data.List (intercalate, isPrefixOf, nub, sortOn)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing)
+import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe)
 import System.Directory
 import System.Environment (getArgs, getExecutablePath)
 import System.Exit (ExitCode (..), exitWith)
@@ -579,14 +579,15 @@ cliMain = do
         "view" -> do
           name <- pick conf (opt a ["-s", "-t", "--session"])
           request conf name (JObj ([ ("op", JStr "view"), ("json", JBool (flag a ["--json"])) ] ++ maybe [] (\k -> [("wait", JNum (read k))]) (opt a ["--wait"]))) >>= say
-        "zoom" -> case (pos a 0, pos a 1) of
-          (Just i, n) | all isDigit i, maybe True (all isDigit) n -> do
-            name <- pick conf (opt a ["-s", "-t", "--session"])
-            request conf name (JObj [ ("op", JStr "zoom"), ("id", JNum (read i)), ("n", JNum (maybe 1 read n)) ]) >>= say
-          _ -> die' "zoom ID [N]: open the view's line ID+N into the two lines under it (N = 1, or none: the message whole)"
+        -- (ID, then N and the session in either order: a word that is not a number is the session)
+        "zoom" -> case (filter (all isDigit) (aPos a), filter (not . all isDigit) (aPos a)) of
+          (i : n, others) | not (null i), length n <= 1, length others <= 1 -> do
+            name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just s -> Just s; Nothing -> listToMaybe others })
+            request conf name (JObj [ ("op", JStr "zoom"), ("id", JNum (read i)), ("n", JNum (maybe 1 read (listToMaybe n))) ]) >>= say
+          _ -> die' "zoom ID [N] [SESSION]: open the view's line ID+N into the two lines under it (N = 1, or none: the message whole)"
         "date" -> case pos a 0 of
           Just i | all isDigit i -> do
-            name <- pick conf (opt a ["-s", "-t", "--session"])
+            name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just s -> Just s; Nothing -> pos a 1 })
             request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
           _ -> die' "date ID: when message ID was written"
         "mcp" -> mcpMain conf >> pure 0

@@ -249,6 +249,11 @@ run = do
   sn2 <- H.snapshot hm
   check "history: the view settles once every line is built" (H.settled sn2)
   eq "history: over budget, the most due pair with a built parent merges" (H.sView sn2) [(1, 0), (0, 2), (0, 3)]
+  -- the budget is the view as rendered (prefixes, newlines, tags): 4 lines of 68 bytes of text render as 103
+  eq "history: the budget counts each line's id+n| and newline, not the texts alone"
+     (H.fitView hp { H.pView = 80 } 4 (H.sTree sn2) [(0, 0), (0, 1), (0, 2), (0, 3)]) [(1, 0), (0, 2), (0, 3)]
+  check "history: ... and a view that fits as rendered is left alone"
+     (H.fitView hp { H.pView = 103 } 4 (H.sTree sn2) [(0, 0), (0, 1), (0, 2), (0, 3)] == [(0, 0), (0, 1), (0, 2), (0, 3)])
   zr <- H.zoom hm 0 2
   eq "history: zoom opens a line into its two" zr (Right (T.pack "0+1|tool: eval 1 + 1\n1+1|tool: eval 2 * 3\n"))
   z1 <- H.zoom hm 3 1
