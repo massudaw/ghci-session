@@ -24,6 +24,7 @@
 -----------------------------------------------------------------------------
 
 module GHCi.UI (
+        installInteractiveHomeUnits,
         interactiveUI,
         GhciSettings(..),
         defaultGhciSettings,
@@ -61,6 +62,7 @@ import GHC.Driver.Ppr hiding (printForUser)
 import GHC.Utils.Error hiding (traceCmd)
 import GHC.Driver.Monad ( modifySession, modifySessionM )
 import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )
+import qualified GhsFastLoad
 import GHC.Driver.Config.Parser
 import GHC.Driver.Config.Diagnostic
 import qualified GHC
@@ -2372,7 +2374,7 @@ doLoad load_type howmuch = do
       hmis <- ifaceCache <$> getGHCiState
       -- If GHCi message gets its own configuration at some stage then this will need to be
       -- modified to 'embedUnknownDiagnostic'.
-      ok <- trySuccess $ GHC.loadWithCache (Just hmis) (UnknownDiagnostic fromGhcOpts toGhcHint . GhciGhcMessage) howmuch
+      ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis) (UnknownDiagnostic fromGhcOpts toGhcHint . GhciGhcMessage) howmuch
       afterLoad ok load_type
       pure ok
 

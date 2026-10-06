@@ -1,3 +1,4 @@
+{-# LANGUAGE ImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | __Run a server as a forked CHILD of a warm GHCi session.__

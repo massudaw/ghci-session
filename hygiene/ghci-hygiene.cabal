@@ -1,0 +1,23 @@
+cabal-version:      2.4
+name:               ghci-hygiene
+version:            0.1.0.0
+synopsis:           For code loaded into a ghci-session: state and a memo that outlive a reload, a heap census
+description:
+  The library half of ghci-session, for a project's own code. "GHC.Hygiene.Store" keeps an IORef under a
+  name across reloads; "GHC.Hygiene.Kept" is a memo for the stages of a computation, keyed by what each
+  reads, with a log of what ran again and why; "GHC.Hygiene.Census" says what is holding the heap;
+  "GHC.Hygiene.Zygote" hands a forked server's state to its replacement. It depends on nothing of the
+  compiler's: what it needs of the session's engine it looks up in the running process, and outside one
+  it degrades to plain values.
+license:            MIT
+author:             Wesley Massuda
+maintainer:         wesley.massuda@gmail.com
+category:           Development
+build-type:         Simple
+
+library
+  hs-source-dirs:   src
+  exposed-modules:  GHC.Hygiene, GHC.Hygiene.Census, GHC.Hygiene.Kept, GHC.Hygiene.Store, GHC.Hygiene.Zygote
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, text, time, unix
+  default-language: Haskell2010
+  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-type-defaults

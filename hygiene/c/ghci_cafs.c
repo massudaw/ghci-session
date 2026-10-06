@@ -118,8 +118,25 @@ static int image_info(const struct mach_header_64 *h, uintptr_t *lo, uintptr_t *
 
 /* Is every exported symbol of this image resolved, newest first, to ANOTHER
  * image? (Stops at the first one that is still its own.) */
+/* Where a name is defined NOW: in the newest temporary library that itself defines it.
+ *
+ * dlsym(handle) does not stop at the handle's image: it goes on through the libraries that image was
+ * linked against. A library holding only some modules (every one, since unchanged modules stay linked)
+ * depends on the older libraries it uses and not on a newer one it does not, so asking the newest
+ * library for a name it lacks answers with a STALE copy in one of its dependencies while the current
+ * copy sits in a library in between -- whose CAFs were then unlinked as superseded, and their values
+ * freed under running code. So an answer counts only when it lies in the image asked (g_tmp_lo/hi, the
+ * ranges of the handles, set by ghs_prune_cafs_stats). */
+static uintptr_t *g_tmp_lo = NULL, *g_tmp_hi = NULL;
 static void *lookup_tmp(void **tmp, size_t nt, const char *name) {
-  for (size_t k = 0; k < nt; k++) { void *v = dlsym(tmp[k], name); if (v) return v; }
+  for (size_t k = 0; k < nt; k++) {
+    void *v = dlsym(tmp[k], name);
+    if (!v) continue;
+    static int through = -1;                  /* GHS_CAF_THROUGH_DEPS=1: the old answer, to see the tour's `partial` fail */
+    if (through < 0) through = getenv("GHS_CAF_THROUGH_DEPS") != NULL;
+    if (!through && g_tmp_hi && g_tmp_hi[k] && ((uintptr_t)v < g_tmp_lo[k] || (uintptr_t)v >= g_tmp_hi[k])) continue;   /* a dependency's */
+    return v;
+  }
   return NULL;
 }
 
@@ -140,8 +157,8 @@ static int wholly_superseded(const struct mach_header_64 *h, void **tmp, size_t 
     if (!(sy[i].n_type & N_EXT) || (sy[i].n_type & N_TYPE) != N_SECT) continue;
     const char *nm = str + sy[i].n_un.n_strx;
     if (nm[0] != '_' || !nm[1]) continue;
-    /* dlsym(handle) searches ONE image on macOS, so walk the temp libraries newest
-     * first (the RTS's own order); a symbol found inside this image is still current */
+    /* the temp libraries newest first (the RTS's own order), each asked for what IT defines
+     * ('lookup_tmp'); a symbol found inside this image is still current */
     void *now = lookup_tmp(tmp, nt, nm + 1);
     if (!now) return 0;                         /* cannot resolve: be conservative */
     if ((uintptr_t)now >= lo && (uintptr_t)now < hi) return 0;
@@ -200,6 +217,92 @@ static const char *export_at(Image *im, uintptr_t a) {
   return (lo < im->nexp && im->exps[lo].addr == a) ? im->exps[lo].name : NULL;
 }
 
+/* ---- a LOCAL CAF of a superseded module, in a library that is not wholly superseded -------------
+ *
+ * The session's first library holds every module, so it is never wholly superseded, and the local CAFs
+ * of the modules an edit relinks stayed in it for good: the first edit of a session cost their values
+ * a second time (60 MB on a 101-module session), and so did the first edit of any module after it.
+ *
+ * A local CAF has no name to look up, but it has neighbours. The linker lays a library's data out
+ * object by object, in order, so a closure that lies BETWEEN two exported closures of the same module
+ * is that module's. A module is relinked whole, so it is superseded when its exported closures resolve
+ * to another image. Hence: the nearest exported closure below and the nearest above, both of one module
+ * (a symbol is unit_Module_name_closure; `_` inside a name is z-encoded, so the second `_` ends the
+ * module), both now resolving elsewhere. A CAF at a module's edge, with a neighbour of another module,
+ * is left alone. */
+static size_t module_prefix(const char *nm) {
+  const char *a = strchr(nm, '_');
+  const char *b = a ? strchr(a + 1, '_') : NULL;
+  return b ? (size_t)(b - nm) : 0;
+}
+
+static int is_closure(const char *nm) {
+  size_t n = strlen(nm);
+  return n > 8 && !strcmp(nm + n - 8, "_closure");
+}
+
+#define MAX_MODS 16384
+typedef struct { const Image *im; const char *nm; size_t len; int superseded; } ModVerdict;   /* a module IN an image */
+
+static int module_superseded(ModVerdict *mv, size_t *nmv, Image *im, const Exp *e, void **tmps, size_t nt) {
+  size_t len = module_prefix(e->name);
+  if (!len) return 0;
+  for (size_t i = 0; i < *nmv; i++) if (mv[i].im == im && mv[i].len == len && !strncmp(mv[i].nm, e->name, len)) return mv[i].superseded;
+  void *now = lookup_tmp(tmps, nt, e->name);
+  int sup = now && !((uintptr_t)now >= im->lo && (uintptr_t)now < im->hi);
+  if (*nmv < MAX_MODS) { mv[*nmv].im = im; mv[*nmv].nm = e->name; mv[*nmv].len = len; mv[*nmv].superseded = sup; (*nmv)++; }
+  return sup;
+}
+
+static int local_of_superseded(Image *im, uintptr_t c, ModVerdict *mv, size_t *nmv, void **tmps, size_t nt) {
+  build_exports(im);
+  if (!im->exps) return 0;
+  size_t lo = 0, hi = im->nexp;
+  while (lo < hi) { size_t m = (lo + hi) / 2; if (im->exps[m].addr <= c) lo = m + 1; else hi = m; }
+  /* lo: the first export above c. The nearest CLOSURES on each side: */
+  size_t up = lo; while (up < im->nexp && !is_closure(im->exps[up].name)) up++;
+  size_t dn = lo; while (dn > 0 && !is_closure(im->exps[dn - 1].name)) dn--;
+  if (up >= im->nexp || dn == 0) return 0;
+  const Exp *a = &im->exps[dn - 1], *b = &im->exps[up];
+  size_t la = module_prefix(a->name), lb = module_prefix(b->name);
+  { const char *want = getenv("GHS_CAF_DEBUG_LOCAL");       /* a local CAF's dladdr name, e.g. LQ4eC_closure */
+    if (want) { Dl_info di; if (dladdr((void *)c, &di) && di.dli_sname && strstr(di.dli_sname, want))
+      fprintf(stderr, "  local %s %p in %s: below %.60s (+%ld) | above %.60s (-%ld)%s\n", di.dli_sname, (void *)c, im->label, a->name + (la > 24 ? la - 24 : 0), (long)(c - a->addr), b->name + (lb > 24 ? lb - 24 : 0), (long)(b->addr - c),
+              (!la || la != lb || strncmp(a->name, b->name, la)) ? " EDGE" : (module_superseded(mv, nmv, im, a, tmps, nt) ? " superseded" : " current")); } }
+  if (!la || la != lb || strncmp(a->name, b->name, la)) return 0;       /* an edge, or no module */
+  return module_superseded(mv, nmv, im, a, tmps, nt) && module_superseded(mv, nmv, im, b, tmps, nt);
+}
+
+/* The MODULE a closure of a temporary library belongs to, by the nearest exported closure below it (see
+ * above: a library's data is laid out object by object) -- for a report that would otherwise name a
+ * compiler-made local CAF "LQ4eC". Writes "Examples.Mod" (z-decoded as far as dots go); 0 if unknown. */
+int ghs_caf_owner(uintptr_t c, char *out, size_t cap) {
+  uint32_t nimg = _dyld_image_count();
+  for (uint32_t i = 0; i < nimg; i++) {
+    const struct mach_header_64 *h = (const struct mach_header_64 *)_dyld_get_image_header(i);
+    uintptr_t lo, hi; const struct nlist_64 *sy; uint32_t ns; const char *str;
+    if (!h || !image_info(h, &lo, &hi, &sy, &ns, &str) || c < lo || c >= hi) continue;
+    Image im; memset(&im, 0, sizeof im); im.lo = lo; im.hi = hi; im.h = h;
+    build_exports(&im);
+    if (!im.exps) return 0;
+    size_t a = 0, b = im.nexp;
+    while (a < b) { size_t m = (a + b) / 2; if (im.exps[m].addr <= c) a = m + 1; else b = m; }
+    while (a > 0 && !is_closure(im.exps[a - 1].name)) a--;
+    int ok = 0;
+    if (a > 0) {
+      const char *nm = im.exps[a - 1].name; const char *u = strchr(nm, '_'); size_t len = module_prefix(nm);
+      if (u && len > (size_t)(u - nm) + 1) {
+        size_t k = 0;
+        for (const char *q = u + 1; q < nm + len && k + 1 < cap; q++) { if (q[0] == 'z' && q[1] == 'i') { out[k++] = '.'; q++; } else out[k++] = *q; }
+        out[k] = 0; ok = 1;
+      }
+    }
+    free(im.exps);
+    return ok;
+  }
+  return 0;
+}
+
 /* Returns the number of CAFs unlinked, or -1 when this RTS does not have the lists
  * by the names we know (nothing is touched then). */
 int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
@@ -210,12 +313,15 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
 
   /* the temp libraries' handles, newest first (the RTS's own lookup order) */
   void **tmps = NULL; size_t nt = 0, tcap = 0;
+  const char **tfn = NULL;
   for (char *oc = *loaded; oc; oc = *(char **)(oc + OC_NEXT_LOADED)) {
     if (*(int *)(oc + OC_TYPE) != DYNAMIC_OBJECT) continue;
     void *h = *(void **)(oc + OC_DLOPEN_HANDLE);
     const char *fn = *(const char **)(oc + 8);   /* ObjectCode.fileName */
     if (!h || !fn || !strstr(fn, "libghc_tmp_")) continue;
-    if (nt == tcap) { tcap = tcap ? tcap * 2 : 64; void **t = realloc(tmps, tcap * sizeof *tmps); if (!t) { free(tmps); return -1; } tmps = t; }
+    if (nt == tcap) { tcap = tcap ? tcap * 2 : 64; void **t = realloc(tmps, tcap * sizeof *tmps); if (!t) { free(tmps); free(tfn); return -1; } tmps = t;
+                      const char **u = realloc(tfn, tcap * sizeof *tfn); if (!u) { free(tmps); free(tfn); return -1; } tfn = u; }
+    tfn[nt] = fn;
     tmps[nt++] = h;
   }
   /* and their images (address ranges), by walking dyld's list once: no dladdr */
@@ -227,11 +333,18 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
     const struct mach_header_64 *h = (const struct mach_header_64 *)_dyld_get_image_header(i);
     uintptr_t lo, hi; const struct nlist_64 *sy; uint32_t ns; const char *str;
     if (!h || !image_info(h, &lo, &hi, &sy, &ns, &str)) continue;
-    if (ni == icap) { icap = icap ? icap * 2 : 64; Image *t = realloc(ims, icap * sizeof *ims); if (!t) { free(tmps); free(ims); return -1; } ims = t; }
+    if (ni == icap) { icap = icap ? icap * 2 : 64; Image *t = realloc(ims, icap * sizeof *ims); if (!t) { free(tmps); free(tfn); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; free(ims); return -1; } ims = t; }
     ims[ni].lo = lo; ims[ni].hi = hi; ims[ni].h = h; ims[ni].exps = NULL; ims[ni].nexp = 0;
     ims[ni].dead = in_dead_image(lo);
     ims[ni].label = strrchr(nm, '/') ? strrchr(nm, '/') + 1 : nm;
     ni++;
+  }
+  /* each handle's own range ('lookup_tmp'), by the library's file name */
+  g_tmp_lo = calloc(nt ? nt : 1, sizeof *g_tmp_lo); g_tmp_hi = calloc(nt ? nt : 1, sizeof *g_tmp_hi);
+  if (!g_tmp_lo || !g_tmp_hi) { free(tmps); free(tfn); free(ims); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; return -1; }
+  for (size_t k = 0; k < nt; k++) {
+    const char *b = strrchr(tfn[k], '/') ? strrchr(tfn[k], '/') + 1 : tfn[k];
+    for (size_t j = 0; j < ni; j++) if (!strcmp(b, ims[j].label)) { g_tmp_lo[k] = ims[j].lo; g_tmp_hi[k] = ims[j].hi; break; }
   }
   int dbg = getenv("GHS_CAF_DEBUG") != NULL;
   /* judge each image once per call: wholly superseded? */
@@ -245,8 +358,10 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
 
   size_t cap = 1024, nd = 0;
   uintptr_t *dead = malloc(cap * sizeof *dead);
-  if (!dead) { free(tmps); free(ims); return -1; }
-  int total = 0, intmp = 0, young = 0;
+  if (!dead) { free(tmps); free(tfn); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; free(ims); return -1; }
+  int total = 0, intmp = 0, young = 0, locals = 0;
+  ModVerdict *mv = malloc(MAX_MODS * sizeof *mv); size_t nmv = 0;
+  int per_module = mv && !getenv("GHS_CAF_WHOLE_ONLY");
   for (uintptr_t cur = *dyn; cur != LIST_END; cur = *(uintptr_t *)((cur & ~(uintptr_t)3) + CAF_STATIC_LINK)) {
     uintptr_t c = cur & ~(uintptr_t)3;
     total++;
@@ -258,14 +373,19 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
     if (!kill) {                       /* an exported CAF whose name now resolves elsewhere */
       const char *nm = export_at(im, c);
       if (nm) { void *now = lookup_tmp(tmps, nt, nm); if (now && (uintptr_t)now != c) kill = 1; }
+      else if (per_module && local_of_superseded(im, c, mv, &nmv, tmps, nt)) { kill = 1; locals++; }
     }
+    { const char *want = getenv("GHS_CAF_DEBUG_NAME");
+      if (want) { const char *nm = export_at(im, c); if (nm && strstr(nm, want)) { void *now = lookup_tmp(tmps, nt, nm);
+        fprintf(stderr, "  caf %s at %p in %s (image %s): resolves to %p -> %s\n", nm, (void *)c, im->label, im->dead ? "dead" : "current", now, kill ? "UNLINK" : "keep"); } } }
     if (!kill) continue;
     if (!value_is_old(c)) { young++; if (!getenv("GHS_CAF_UNSAFE_YOUNG")) continue; }   /* the variable: for repro/run.sh only */
-    if (nd == cap) { cap *= 2; uintptr_t *t = realloc(dead, cap * sizeof *dead); if (!t) { free(tmps); free(ims); free(dead); return -1; } dead = t; }
+    if (nd == cap) { cap *= 2; uintptr_t *t = realloc(dead, cap * sizeof *dead); if (!t) { free(tmps); free(tfn); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; free(ims); free(dead); free(mv); return -1; } dead = t; }
     dead[nd++] = c;
   }
   for (size_t k = 0; k < ni; k++) free(ims[k].exps);
-  free(ims); free(tmps);
+  free(ims); free(tmps); free(tfn); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; free(mv);
+  if (dbg) fprintf(stderr, "prune_cafs: %d local CAFs of superseded modules in libraries still partly current\n", locals);
   if (dbg || getenv("GHS_CAF_YOUNG")) fprintf(stderr, "prune_cafs: %d superseded CAFs left on the list (value still young)\n", young);
   if (seen) *seen = total;
   if (tmpcount) *tmpcount = intmp;

@@ -22,8 +22,9 @@ ghci-session eval 'Foo.bar 3'   # evaluate against the ALREADY LOADED code, in w
   terminal was and the session's operations built in (below);
 - **`ghci-session`** is the command and the daemon (one binary): it owns one engine per session, watches the
   sources, publishes verdicts, keeps the servers;
-- **the library** (`GHC.Hygiene`, `.Census`, `.Zygote`) is for your project's own code: a heap census, and handing a
-  server's state to its replacement. A session needs none of it.
+- **the library** is its own small package, `ghci-hygiene` (`hygiene/ghci-hygiene.cabal`: `GHC.Hygiene`, `.Store`,
+  `.Kept`, `.Census`, `.Zygote`), for your project's own code: state and a memo that outlive a reload, a heap census,
+  handing a server's state to its replacement. It depends on nothing of the compiler's. A session needs none of it.
 
 It depends only on GHC's boot packages; C (`cbits/`) covers what those lack -- unix sockets, kqueue/inotify, POSIX
 regex, hashing, the process table -- and the executable's `main`, which picks the runtime's options per command.
@@ -41,7 +42,7 @@ what the rewrite changed is the client and the tool's own overhead:
 | the daemon | ~25 MB | 23 MB resident, 1 MB of live heap |
 
 How it got there is in `ghci-session selfbench` (the hot paths on realistic inputs) and was found with the tool
-itself -- this package has a `ghci-session.json`, and a save here is a compile and 81 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
+itself -- this package has a `ghci-session.json`, and a save here is a compile and 82 self-tests in a few seconds (target `tool`; `engine` is the engine's own session, a compile verdict in 0.3 s)
 (`ghci-session selftest` runs them from the binary):
 
 - **Processes are asked of the kernel.** Spawning `ps` to ask "is this pid alive" was 20 ms, several times a reload
@@ -134,8 +135,43 @@ query; the daemon answers without the repl, so it works while a reload is runnin
 
 A name is matched exactly, then as a prefix, then by the initials of a camelCase or snake_case name, then as a
 substring, a subsequence, and a near miss; any other word must appear in the module name, the signature or the
-comment. Every word has to be found. What the scanner does not see: instances, class methods, constructors
+comment. Several words are first looked for TOGETHER, in one declaration (`raster depth`); if no declaration has
+them all, each word is answered on its own, best answers in turn -- two names typed together are two questions --
+and a word that finds nothing is named. What the scanner does not see: instances, class methods, constructors
 without fields, local definitions, and anything behind CPP it cannot follow.
+
+## What the heap holds, what an action costs, and the session's own scenario
+
+```
+ghci-session mem --heap               # the live heap, and what the CAFs and the kept values retain
+ghci-session census [--top N]         # every CAF by what it retains, and the heap by constructor
+ghci-session census --strings         # the Strings among it (24 bytes a character), by their first characters
+ghci-session census 'My.Module.table' # ONE value, alone: bytes, closures, constructors
+ghci-session census --kept            # what a reload cannot drop: each slot of GHC.Hygiene.Store, each value given to Census.keep
+ghci-session store [--drop NAME]      # the named slots that outlive a reload: list them, or forget one
+ghci-session bench 'My.Module.rebuild'  # an IO action: wall, GC, allocation, live heap before and after
+ghci-session profile                  # the target's "profile" steps, timed
+```
+
+`census`, `bench` and `mem --heap` are answered by the engine itself (it runs "GHC.Hygiene.Census"), so they work
+in any session: the project does not have to depend on this package's library.
+
+`profile` runs the steps a target lists, in order, against the running session:
+
+```json
+"profile": [
+  { "name": "eval: the greeting", "eval": "Hello.greeting", "budget": 1, "expect": "hello" },
+  { "name": "edit a source",      "sh": "echo '-- probe' >> src/Hello.hs" },
+  { "name": "reload after it",    "cmd": "reload hello --no-test", "budget": 10 },
+  { "name": "revert",             "sh": "sed -i.bak '/^-- probe$/d' src/Hello.hs && rm -f src/Hello.hs.bak" }
+]
+```
+
+A step is an expression in the session (`eval`), one of this tool's own commands (`cmd`) or a shell command
+(`sh`: an edit, its revert), with an optional `budget` in seconds and an `expect` its output must match. Each run
+is saved under `<state>/<session>/profile/` and compared with the one before: a step more than 1.5 times and 1 s
+slower is marked a REGRESSION, and the command fails when a step fails, misses what it expected or goes over its
+budget. `--only NAME` runs some of them, `--no-save` does not record the run. `examples/hello` has one.
 
 ## What each operation costs, end to end
 
@@ -166,6 +202,46 @@ on such modules (`keepLinked` in `engine/GhsEngine.hs`). So after editing `A`: `
 again; a module that does not depend on `A` keeps its code, **and a CAF in it keeps its value** -- a table that took
 3 s to build is still there after an unrelated edit. `daemon.log` says `reload: 9 module(s) stay linked, 2 to link
 again (A B)`. `GHS_KEEP_LINKED=0` in a target's `env` turns it off. (`tests/test_e2e.py`, `KeepLinked`.)
+
+**Objects another session compiled.** A session's objects are in a directory of its own (two sessions running must
+not write one file), so one started after work in another compiled that work again. Before the engine starts, a
+module whose interface is missing or older than its source takes the interface and the object of a sibling session
+-- the same unit's directory under another session's name -- when that one is newer (a pair written in the last two
+seconds is left alone). Nothing is trusted: the compiler checks an interface against the source, the flags and its
+imports before it uses the object, and compiles what does not fit. `objects: N module(s) taken from ...` in
+`daemon.log`.
+
+**What is not asked twice.** A typecheck keeps its own module graph and the daemon says which files changed since
+the last one (no scan of every module: 0.13 -> 0.07 s on a hundred modules), answers from its last answer when none
+did, and runs once in the background after a reload or a start so its interfaces never lag the sources. A reload
+with every watched source as it was loaded is not sent to GHCi at all -- its last answer stands; the checks and the
+servers follow as ever. A member added live uses the build tool's recorded answer for that member set when nothing
+the tool reads has changed.
+
+**A member added to a session that is running** (`compose SESSION --add M`): GHCi has no command to add a package --
+its home units are the `-unit` arguments it starts with -- but a session IS a graph of home units, and the engine
+inserts one (`engine/GhsAddUnits.hs`: the unit's flags parsed over the session's flags from before its units, its
+package state, the two interactive units made again, its sources as targets). The daemon asks the build tool what the
+new set is started with (the question a start asks: 2-8 s), checks that the units already loaded would be started
+exactly as they were, hands the engine the new ones, and becomes the daemon of the new set: launch record, the new
+members' environment, imports, watched sources, checks and servers. What was linked stays linked. It restarts
+instead, saying why, when a member is removed, when the session has ONE unit (the build tool then writes no unit
+file), when the new set wants other RTS flags, prebuild or environment values, when the loaded units' flags would
+change, or when a new unit is a package the loaded units already use BUILT (it cannot be both: the compiler's module
+graph panics -- everything that uses it has to be set up again). On the example: a third package into a two-package session in 2.2 s, 2 of it the build tool. (The tour's
+`compose` group.)
+
+**A library then holds only some modules, and a name must be found where it is current.** `dlsym` on a library's
+handle goes on through the libraries it was linked against. While every reload linked everything that never mattered;
+with modules kept, the newest library depends on the older ones it uses and NOT on a newer one it does not use, so a
+module it lacks was found two generations back, past its current copy. Two things asked that way and both were wrong:
+GHCi's own lookup of a name (after a reload it ran the copy from before an edit) and the pruner (it unlinked the
+current copy's CAFs as superseded: their values were freed under running code, and the session died in a later
+collection or in the forked server). So on macOS the library the daemon inserts (`libghsmem.dylib`) opens GHCi's
+temporary libraries with `RTLD_FIRST` -- a handle answers for its own image -- and the pruner counts an answer only
+when it lies in the library asked. The engine keeps modules linked ONLY when that library is in place (elsewhere, or
+with it missing, every reload links everything, as GHCi does; `GHS_KEEP_LINKED=1` insists). The tour's `partial`
+group is the case: three modules, two libraries that do not depend on each other.
 
 **Loading a new library costs a quarter of a second on macOS, whatever its size, and it is not GHC.** After an
 edit, the first evaluation that needs the recompiled code links it into a temporary dylib and `dlopen`s it. The link
@@ -221,6 +297,17 @@ dependency, a flag, a module removed -- is a restart, on the answer just had, so
 `xcrun` which compiler to run: 30 ms a time, 0.2 s of a 0.45 s start, and again for every library linked. The daemon
 passes the compiler itself (`-pgml`, `-pgmc`, with the SDK the shim would have named in `SDKROOT`), when the `gcc`
 on PATH is that shim.
+
+**An optimisation pragma in a module does nothing in GHCi by default.** `{-# OPTIONS_GHC -O1 #-}` on the one
+module everything else calls is the obvious way to keep a session's compiles fast and its hot code fast. In GHCi it
+is accepted and has almost no effect: the session starts at `-O0`, which also means "ignore the pragmas in
+interface files", so the libraries' unfoldings are never read and the "optimised" module still calls `+` and `*`
+through class dictionaries (a numeric loop: 97 MB allocated with the pragma, 128 MB without, 0.2 MB when it really
+is optimised). Saying `-fno-ignore-interface-pragmas` in the pragma is too late; it has to be on GHCi's command
+line, and the daemon now puts it there. On a session of 87 modules whose projection engine carries the pragma:
+measured with and without the flag from empty object directories, the cold compile 33 -> 42 s, the first check
+33 -> 25 s, the full report with every view recomputed 19.5 -> 11.9 s, the repl 857 -> 913 MB. An object compiled before the flag was there is not recompiled because of
+it (GHCi ignores optimisation changes): touch the module, or delete its object.
 
 Smaller things: GHC follows each such link with two `otool`s and an `install_name_tool` to add rpaths the library
 does not need (everything it names is already loaded): `-fno-use-rpaths` in the repl's options, 0.08 s. The pruner
@@ -317,8 +404,8 @@ reload. The unlink now waits for the check, or the first `eval`.)
 `cabal install exe:ghci-session` from this directory, or run it from the checkout: `bin/ghci-session` builds the
 executable into `.bin/` when it is missing or older than its sources, then runs it (`./build.sh` does the build).
 `./build.sh` puts both executables in `.bin/`; the engine must sit beside `ghci-session`, and must have been built
-with the compiler on PATH (it says so if not). A project adds this package to its `build-depends` only to call the
-library from its own code (the census, a server's state handover: see `examples/hello`).
+with the compiler on PATH (it says so if not). A project adds `ghci-hygiene` (the package in `hygiene/`:
+list that directory in its `cabal.project`) to its `build-depends` only to call the library from its own code.
 
 ## Configure
 
@@ -368,10 +455,13 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
 | `repl_budget_mb` | `6144` | past this, a reload is a restart; `0` disables. Env `GHS_REPL_BUDGET_MB` overrides |
-| `rts_flags` | `-c` | GHCi's own RTS flags (the daemon starts it: `+RTS ... -RTS`); `none` for none. `-c` is the compacting old generation: on a 98-module session with 250 MB live, the repl's footprint was 1,251 MB copying, 1,094 MB with `-c`, 920 MB with `-c -F1.5` (and its forked server 569 / 412 / 385 MB), for 9.5 / 17.1 / 25.2 s of GC over a 100 s scenario. The non-moving collector is refused with `hygiene` (the pruner edits lists it reads concurrently: the repl died) |
+| `rts_flags` | `-c -Fd0.5` | GHCi's own RTS flags (the daemon starts it: `+RTS ... -RTS`); `none` for none. `-c` is the compacting old generation: on a 98-module session with 250 MB live, the repl's footprint was 1,251 MB copying, 1,094 MB with `-c`, 920 MB with `-c -F1.5` (and its forked server 569 / 412 / 385 MB), for 9.5 / 17.1 / 25.2 s of GC over a 100 s scenario. The non-moving collector is refused with `hygiene` (the pruner edits lists it reads concurrently: the repl died) |
 | `capabilities` | `0` | `setNumCapabilities` in the repl (GHCi evaluates on one; more buys the parallel GC) |
 | `hygiene` | `false` | unlink superseded CAFs after each reload, report memory |
 | `unlink_after` | `eval` | when a reload's unlink happens: after the first evaluation (the check, or an `eval`), when the code that replaced it is linked; `reload` is at once, which reaches one generation less |
+| `heap_auto` | `false` | keep the RTS's `-H` (allocation area up to the largest heap it has needed): more memory, fewer collections |
+| `mem_return` | `true` | macOS: memory the RTS frees leaves the footprint (`libghsmem.dylib` is inserted either way: it is also what makes a kept module's name resolve to its current copy) |
+| `prune_gc` | `copying` | the collection after a reload's unlink: `copying` (fast, parallel, more footprint) or `compact` (the RTS's own under `-c`) |
 | `prune_gc_idle_s` | `0` | `0`: the GC that frees what was unlinked runs at once. A positive value defers it to an idle moment and HAS CRASHED the repl (see the tour section); leave it |
 | `auto_reload` | `true` | reload when a watched file changes (a `.c` or `.h` change restarts instead, and so does a `.cabal` change that is more than modules added: a loaded C object, or a package set, cannot be replaced) |
 | `idle_stop_mins` | `0` | the session stops itself after this long unused (never while it serves). A composed session idles out only if every member sets it, at the longest |
@@ -433,6 +523,174 @@ session: the session gives every unit one object directory relative to its packa
 other's `Main.o`. Give them a session each (this package does: `tool` and `engine`).
 
 ## Servers
+
+### What a session's memory was, and three things that halved it
+
+Measured on a 101-module session (158 MB live when fresh), same scenario before and after: the repl's footprint
+went from 1,218 MB to 597 MB at the same wall time (91 s), and a fresh session from ~500 MB to ~410.
+
+- **`-H` is off** (`"heap_auto": false`, the default). The engine is built as GHC's own executable is, with
+  `-H`: after each major collection the RTS takes the largest heap it has needed and spends the difference on
+  allocation area. Fewer collections, for memory that is never live: the RTS held 807 MB where it now holds ~530,
+  and the run took exactly as long (more, smaller collections: 27 s of GC against 22, and 5 s less mutator).
+- **Memory the RTS returns is returned** (`"mem_return": true`, macOS). The RTS decommits free megablocks with
+  `madvise(MADV_FREE)`, which on macOS is a hint: the pages stay dirty and in the footprint until the system is
+  short. A session whose RTS reported 551 MB had 830 MB of heap pages counted, and the copying collection after a
+  reload looked 200 MB dearer than it is. `libghsmem.dylib` (`hygiene/c/mem_return.c`, built by `build.sh`, inserted
+  by the daemon when it starts the engine -- dyld honours an interposer only from a library) turns a `MADV_FREE`
+  inside the RTS's own heap reservation into a fresh anonymous mapping of the range, which drops the pages at once;
+  `GHC.Hygiene.memReturned` says how much (2.3 GB over that run). The footprint now tracks what the RTS holds.
+- **Nothing is left behind by an edit any more.** A session used to step up after its first edit and stay there
+  (296 -> 356 MB live on that session), for two reasons. GHCi links a reloaded module when a command first NEEDS it,
+  and the unlink ran once, after the reload's first evaluation: a module linked by a later command superseded its old
+  copy after the pruner had been -- one stale generation of every late-linked module, for good. The engine now says
+  how many libraries it has linked with every reply, and another unlink follows whenever that has grown. And a
+  superseded module's LOCAL CAFs (the compiler's floated constants, which have no name to look up) were only dropped
+  with a library that was superseded whole; a library holding other, still current, modules kept them. They are now
+  found by their neighbours: the linker lays a library's data out object by object, so a closure between two
+  exported closures of one module is that module's, and goes when those resolve elsewhere
+  (`GHS_CAF_WHOLE_ONLY=1` is the old rule). Eight edits of that session: 313 -> 316 MB live, flat, and a footprint
+  that ends BELOW where it started (617 -> 519 MB).
+- **A census gives its tables back.** The heap walk's visited set is 8 bytes a slot and doubles as it fills: 128 MB
+  for a few million closures, and it stayed allocated for the life of the session after the first `mem` or
+  `census` -- so measuring the memory added to it.
+
+### A reload without the compiler's scan (`GhsFastLoad`)
+
+GHCi's `:reload` is the compiler's `depanal` and then its `load'`. The first rebuilds the module graph from
+nothing -- every module's source opened, read and hashed to learn that it did not change -- and only then is the
+edited module compiled. The daemon already knows which watched files differ from what is loaded, and says so before
+each reload; the engine then takes the last load's graph, summarises only those files again (the compiler's own
+`summariseFile`), reads the object and interface dates of the others again, and calls `load'` with it. On a
+101-module session: the graph in 4-6 ms against 36-40 ms for the scan (up to 100 ms on the first), a leaf edit's
+reload 0.40 s against 0.43.
+
+It falls back to the scan whenever the last graph is not known to be enough: no change list or an empty one, a file
+added or removed, a changed file that is not in the graph, one whose IMPORTS changed (the graph's shape), or the
+session's first load, whose graph carries no source hashes (kept, every module would look changed). What only the
+scan does: the warnings about home modules missing from a `.cabal` and unused packages appear on a scanned load.
+
+`GHS_FAST_GRAPH=0` always scans. `GHS_FAST_GRAPH=verify` builds the graph both ways, says in the load's output
+(and in the file `GHS_FAST_GRAPH_LOG` names) whether they are identical, module by module -- source hash, imports,
+the four dates -- and loads the scanned one: 26 random edits over 26 modules of that session, single and in pairs,
+were identical every time. It is the one edit to the vendored `GHCi/UI.hs` (`vendor/fetch.sh` makes it).
+
+### When a start asks the build tool, and what
+
+`cabal repl` takes 4-8 s on a project of any size even when nothing needs building: it configures the session's units
+every time (a plain `cabal build` that finds everything up to date is 0.5 s). So a start asks it only for what only
+it can say, and what is recorded (`<state>/<session>/launch/<command hash>/`) is in two parts:
+
+- **the answer** -- how the engine is to be started: each unit's flags and modules. It depends on the command and on
+  the build files: the project files, every `.cabal` under the watched directories, and the `.cabal` of each package
+  the repl loads. A change there runs the repl command again (`build` in `[time] boot`).
+- **the dependencies** -- the sources of local packages the repl uses without loading. A change there changes nothing
+  in the answer; those packages have to be built: `cabal build --only-dependencies <units>` (`build_deps`), which is
+  the compile and no more. (With a `repl` command of your own the tool does not know how to ask that, and runs it.)
+
+Neither depends on the engine's binary, so rebuilding the tool does not send every session back to the build tool.
+`restart` by hand still asks; `restart --fast` and a plain `start` decide as above.
+
+### What the library and its commands cost
+
+On `examples/hello` (a 90 MB repl, which is GHCi itself): `store` and `why` 25 ms, `bench ACTION` 34 ms,
+`census EXPR` 26 ms, `census --kept` 30 ms, `mem --heap` 0.32 s, `census` (every CAF: 2 M closures) 0.36 s,
+`census --strings` 1 s. A major collection of even that heap is 0.17 s, and it used to be the floor of every one of
+these: `bench` forced two (now only with `--live`, for the live heap's change), a value's census one (a walk from a
+root reaches only what is live, so a minor collection -- for the indirections a just-evaluated thunk leaves -- gives
+the same numbers), `mem --heap` three (now one). In the session's own code: `storeRef` of an existing slot 1.5 us
+whatever the number of slots (a hash table), `kept` 2 us a decision, `sourceHash` of an unchanged file 5 us.
+
+### Where a reload's time goes inside GHCi, and `prune_gc`
+
+Sampling the engine through six saves of a one-module project: the compile is 22 ms; **0.22 s is `dlopen`** of the
+new temporary library (`fcntl` in `dyld`: macOS validating a file it has not seen; the Developer Tools setting
+avoids it -- System Settings, Privacy & Security, Developer Tools, the terminal app, then quit and reopen that app:
+measured, the save's reload went 0.45 -> 0.20 s); and **0.23 s is the major collection after the unlink**, most of it the compacting collector a session's
+`-c` selects, which is single-threaded. `"prune_gc": "copying"` (`GHS_PRUNE_GC` in the daemon's
+environment overrides) makes that one collection a copying one, using every capability: measured on a 370 MB session with 3
+capabilities **0.6 s -> 0.1 s after every reload** (0.31 -> 0.20 s on the one-capability example). It is the default
+since 2026-10-06, by choice of speed over memory: the same session ends at ~1,200 MB of footprint against ~1,000
+under `"prune_gc": "compact"` (the RTS's own compacting collection). It runs twice: the first copies into fresh space
+and the next major collection is what gives the old space back -- with the default `-Fd0.5` in `rts_flags` the RTS
+then reports LESS in use than under compaction (806 MB against 831), but macOS goes on counting those pages in the
+process's footprint, with or without `--disable-delayed-os-memory-return`: that part is real only under memory
+pressure. (`-Fd0` does not mean "at once": it switches returning off.) `GHC.Hygiene.majorGC False` is that collection for your own code. (It
+sets the old generation's `mark`/`compact` for the collection that follows at once: the flag alone takes effect a
+collection late. The generation's layout depends on the RTS's way, so `gc_once.c` is compiled as the threaded RTS's
+and checks what it reads before it writes.)
+
+### Sharing that is missed: `census --dups`
+
+```bash
+ghci-session census --dups [--top N]         # over every CAF
+ghci-session census --dups --kept            # over the store's slots
+ghci-session census --dups 'Mod.value'       # within one value
+```
+
+Every data closure gets a hash of what it IS, bottom-up -- its constructor (by name), its plain words, the hashes
+of what it points to; a byte array, its bytes -- and closures with one hash are the same value built twice. The
+report: how many bytes maximal sharing would give back, by constructor, by the root that holds the copies (roots
+are walked in order: a copy belongs to the later one), and the largest repeated values, shown, with what their
+extra copies cost. A thunk, a function or a mutable cell is only ever itself; a value repeated only because the
+value holding it is repeated is not listed again; a part two copies physically share is not counted, and an extra
+copy that many of them share is counted ONCE (a stray copy of a title that 222 one-cell lists point at is one
+string: charged to each list it read as 0.15 MB where 5 KB was lost). On a
+101-module session: 4.9 M closures in 2.6 s, 55 of 192 MB duplicated -- 86% of the boxed `Double`s, and the same
+4.4 MB painted view held four times by a memo. It runs as ONE foreign call: it keys closures by address, and the
+collector must not move anything under it (walking a root a call crashed, and reported terabytes).
+
+### State that outlives a reload: `GHC.Hygiene.Store`
+
+A reload reverts every CAF of the modules it links again, so a cache a module keeps in a top-level `IORef` starts
+empty after every edit. The engine is not reloaded, and holds named slots (`hygiene/c/store.c`):
+
+```haskell
+{-# NOINLINE cache #-}
+cache :: IORef (Map Key Value)
+cache = unsafePerformIO (storeRef "myproject.cache.v1" Map.empty)
+```
+
+`storeRef` hands back the same ref under a name for the life of the process. It is the idea of the `foreign-store`
+package with names instead of numbers, in the engine instead of a dependency -- so the tool can list the slots
+(`ghci-session store`), say what each retains (`census --kept`) and forget one (`store --drop NAME`: its owner starts
+from its initial value the next time it is linked). A project that does not want the library in its `build-depends`
+can look `ghs_store_get` / `ghs_store_put_new` up with `dlsym`, as any loaded code may. A slot is untyped: put a
+version in its name and change it with the type; and store evaluated values, since a thunk holds the code of the
+generation that built it. Outside the engine `storeRef` is a ref per name for the life of the process.
+
+### A memo that outlives a reload, and `why`: `GHC.Hygiene.Kept`
+
+A long computation is a chain of stages of which an edit changes few, and a reload throws all of their values away.
+A stage is remembered under a hash of the VALUES it reads:
+
+```haskell
+paint = hValue (kept "paint front" [("code", code), ("view", viewHash v), ("boxes", boxesHash)] edgesHash (render sc v))
+  where code = unsafePerformIO (sourceHash ["src/Render.hs"])
+```
+
+Equal values are held once: a stage whose output hash is that of a value already in the table, at the same type
+(`Typeable`: an entry is also only ever handed back at the type it was stored at), keeps that value -- so the output
+hash must identify the value. `census --dups` found one 4.4 MB painted view held four times; `why` says
+`(same value as <slot>: shared)`. "The same type" means the same LAYOUT: a `TypeRep` is a type's name, and a type of the
+program being edited keeps its name when its definition changes -- a value built before the change, handed to code
+compiled after it, is read at the wrong offsets (an edit that unpacked a record's fields and its revert killed a
+session). So a type that mentions any type of a package built in place is shared only between stages with the same
+input labelled `"code"` (what lays the value out; without one, only with its own slot's earlier key); a type made of
+installed packages' types alone -- bytes, text, numbers -- is shared across everything.
+
+The scheduler is laziness (a stage runs when its value is asked for; there is no graph to declare), a stage hands
+its own output hash to the stages after it (so one whose output did not change stops the recomputation there), and
+a slot keeps its last two keys (an edit and its revert both hit). `ghci-session why` prints what ran again since it
+was last asked, the input that moved and the seconds of the stage's own work -- plus the time spent reading inputs
+that are no stage, and anything wrapped in `timed`: the top line of a slow command is what to make a stage next.
+`KEPT_VERIFY=1` (set in the session: `System.Environment.setEnv`) recomputes on every hit and reports a kept value
+whose hash differs, which is how a key that misses an input is found; `KEPT_SKIP` bypasses the memo. The code a
+stage runs, and the modules defining its types, are an input like any other (`sourceHash`). A value that reads
+everything gains nothing here: it wants a faster search, which `why` followed by `bench` on its inputs will show.
+
+The engine compiles its own copy of the hygiene modules into itself rather than depending on this package: a
+session whose project depends on `ghci-hygiene` loads its own build, and the two share only the C store, by name.
 
 A target's `server` is run as a forked child of the repl (`GHC.Hygiene.Zygote`), with the session's loaded code:
 
@@ -496,9 +754,13 @@ GHC.Hygiene.Census.cafReport 10 100000000    -- what every CAF retains, by CAF a
 GHC.Hygiene.Census.cafStrings 10 100000000   -- the Strings among it (24 bytes a character)
 GHC.Hygiene.Census.censusOf "x" Mod.value    -- ONE value, alone
 GHC.Hygiene.Census.keep "name" v >> keptReport 100000000   -- values you hold on to across reloads
-GHC.Hygiene.Census.benchOf "label" action    -- wall, GC, allocation, live heap
+GHC.Hygiene.Census.benchQuick "label" action  -- wall, GC, allocation (`ghci-session bench`)
+GHC.Hygiene.Census.benchOf "label" action    -- the same and the live heap before and after: two collections (`bench --live`)
 GHC.Hygiene.Census.memNow
 
+GHC.Hygiene.Store.storeRef name initial                  -- an IORef that outlives a reload, by name
+GHC.Hygiene.Kept.kept slot inputs outHash value          -- a stage remembered across reloads under a hash of what it reads
+GHC.Hygiene.Kept.why                                     -- what ran again, the input that moved, the seconds (`ghci-session why`)
 GHC.Hygiene.Zygote.setHandoverExporter, handoverInPath   -- a server's state, out on SIGTERM and in at start
 GHC.Hygiene.Zygote.zygoteFork / zygoteStop               -- the fork the engine does, for use by hand
 ```
@@ -520,7 +782,7 @@ address, GHC #23182).
 ## Layout
 
 ```
-ghci-session.cabal      the package: the engine, the command, the library
+ghci-session.cabal      the package: the engine and the command (hygiene/ghci-hygiene.cabal: the library)
 app/GhciSession/        Json, Config, Sys (the FFI), Repl (starting the engine, its protocol), Watch, Daemon, Gc, Cli, SelfTest, SelfBench
 engine/, vendor/        the engine: GhsEngine.hs and Main.hs (ours), GHCi's own sources per compiler version
 cbits/                  ghs_sys.c (sockets, file events, regex, hashing, processes), ghs_main.c (the entry point)
@@ -536,7 +798,7 @@ tests/test_e2e.py       GHS_E2E=1: the lifecycle end to end, and the CAF reprodu
 ## Status
 
 Working: plain and composed sessions, per-member checks, auto-reload, verdicts and staleness, memory budget, pruner,
-census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 81 self-tests,
+census, forked servers (keep / re-fork, also in the background / handover / adoption), `gc`, idle stop; 82 self-tests,
 the tour (123 steps) and the end-to-end tests. This package's own two sessions (`tool`, `engine`) run on it.
 
 Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler

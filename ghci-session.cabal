@@ -18,13 +18,6 @@ category:           Development
 build-type:         Simple
 extra-source-files: README.md hygiene/c/rts_syms.h
 
-library
-  hs-source-dirs:   hygiene/src
-  exposed-modules:  GHC.Hygiene, GHC.Hygiene.Census, GHC.Hygiene.Zygote
-  build-depends:    base >=4.18 && <5, bytestring, containers, directory, text, unix
-  default-language: Haskell2010
-  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-type-defaults
-
 executable ghci-session
   hs-source-dirs:   app
   main-is:          Main.hs
@@ -33,7 +26,7 @@ executable ghci-session
                     GhciSession.Doc
   c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
-  build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-session
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010
   default-extensions: ScopedTypeVariables
   ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-unused-imports -threaded -no-hs-main
@@ -46,17 +39,22 @@ executable ghci-session
 executable ghci-session-engine
   if impl(ghc == 9.14.1)
     buildable: True
-    hs-source-dirs: engine, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched
+    hs-source-dirs: engine, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
   else
     buildable: False
   main-is:          Main.hs
-  other-modules:    GhsEngine, GhcMain, GhciSession.Json, GHC.Driver.Session.Lint, GHC.Driver.Session.Mode
+  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhcMain, GhciSession.Json, GHC.Driver.Session.Lint, GHC.Driver.Session.Mode
                     GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.UI.Print, GHCi.UI.Exception, GHCi.Util
+  -- the hygiene modules the engine itself runs are compiled INTO it (not the ghci-hygiene package): a session
+  -- whose project depends on that package loads its own build of it, and two libraries of one unit name in
+  -- one process resolve each other's symbols -- the first `census EXPR` after the split died in stg_ap_pp.
+  -- As its own modules they are another unit; the two copies share only the C store, by slot name.
+  other-modules:    GHC.Hygiene, GHC.Hygiene.Census, GHC.Hygiene.Store, GHC.Hygiene.Zygote
   -- the hygiene C is part of GHCi here: it reads the RTS this executable runs
-  c-sources:        hygiene/c/ghci_cafs.c, hygiene/c/heap_census.c, hygiene/c/loader_stats.c, hygiene/c/exports.c
+  c-sources:        hygiene/c/ghci_cafs.c, hygiene/c/heap_census.c, hygiene/c/heap_dups.c, hygiene/c/loader_stats.c, hygiene/c/store.c, hygiene/c/gc_once.c, hygiene/c/exports.c
   include-dirs:     hygiene/c
   build-depends:    base, array, bytestring, directory, process, filepath, containers, transformers, unix, text,
-                    ghc, ghc-boot, ghci, deepseq, ghc-prim, haskeline, exceptions, time, ghci-session
+                    ghc, ghc-boot, ghci, deepseq, ghc-prim, haskeline, exceptions, time
   cpp-options:      -DHAVE_INTERNAL_INTERPRETER
   default-language: GHC2021
   default-extensions: NoImplicitPrelude, ScopedTypeVariables, BangPatterns

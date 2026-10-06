@@ -15,6 +15,7 @@
 module GhcMain (main) where
 
 import GhsEngine (engineHook, engineSettings)
+import GhsAddUnits (rememberInitial)
 
 -- The official GHC API
 import qualified GHC
@@ -296,6 +297,7 @@ ghciUI _ _ _ =
   throwGhcException (CmdLineError "not built for interactive use")
 #else
 ghciUI units srcs maybe_expr = do
+  rememberInitial
   hs_srcs <- case NE.nonEmpty units of
     Just ne_units -> do
       initMulti ne_units (checkOptions DoMake)

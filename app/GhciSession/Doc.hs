@@ -10,7 +10,7 @@
 -- The search is fuzzy on the name -- exact, then prefix, then the initials of a camelCase name, then a
 -- substring, then a subsequence, then a near miss (a typo) -- and literal on everything else, so a word that
 -- is not a name still finds the definitions whose type or documentation says it.
-module GhciSession.Doc (Entry (..), indexFile, search, render, entryJson) where
+module GhciSession.Doc (Entry (..), indexFile, search, searchEach, render, entryJson) where
 
 import Data.Char (isAlphaNum, isLower, isSpace, isUpper, toLower)
 import Data.List (sortOn)
@@ -136,6 +136,22 @@ search es ws0 = sortOn (\(sc, e) -> (Down sc, T.length (eName e), eModule e)) (m
     qualified w = case T.breakOnEnd (T.pack ".") w of
       (q, n) | not (T.null q), not (T.null n), isUpper (T.head q), T.all (\c -> isAlphaNum c || c `elem` "_'") n -> Just (T.dropEnd 1 q, n)
       _ -> Nothing
+
+-- | When no entry has every word: each word on its own. The best entries for each, taken in turn (the first
+-- word's best, the second's best, the first's second, ...) and without repeats, and the words that find
+-- nothing at all. Two names typed together are two questions, and both get their answer.
+searchEach :: [Entry] -> [T.Text] -> ([(Int, Entry)], [T.Text])
+searchEach es ws = (dedupe (turns [ hits | (_, hits) <- per ]), [ w | (w, []) <- per ])
+  where
+    per = [ (w, search es [w]) | w <- ws, not (T.null w) ]
+    turns xss = case [ x | (x : _) <- xss ] of
+      [] -> []
+      heads -> heads ++ turns [ r | (_ : r) <- xss ]
+    dedupe = go []
+      where go _ [] = []
+            go seen (h@(_, e) : r) | key e `elem` seen = go seen r
+                                   | otherwise = h : go (key e : seen) r
+            key e = (eFile e, eLine e, eName e)
 
 -- | How well a word names an entry, or 'Nothing'.
 nameScore :: Entry -> T.Text -> T.Text -> Maybe Int

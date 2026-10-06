@@ -229,7 +229,10 @@ class YoungCafRepro(unittest.TestCase):
         self.assertIn("old f, after the major GC: 500501", out, out)
         self.assertIn("(exit 0)", out)
         bad = self.go("unsafe")
-        self.assertNotIn("old f, after the major GC", bad, "the unguarded pruner no longer crashes: is the repro still a repro?")
+        # the value was freed under the CAF: reading it kills the process, or -- while the freed memory has
+        # not been used again -- answers with something else (1, seen one run in four). Either is the repro;
+        # the RIGHT answer would mean it is no longer one.
+        self.assertNotIn("old f, after the major GC: 500501", bad, "the unguarded pruner still answers right: is the repro still a repro?")
 
 
 @unittest.skipUnless(os.environ.get("GHS_E2E") == "1" and shutil.which("cabal"), "set GHS_E2E=1 (needs cabal)")

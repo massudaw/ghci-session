@@ -37,7 +37,8 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.IORef
 import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
+import Foreign.Ptr (FunPtr)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Foreign.C.Types (CInt (..))
@@ -75,7 +76,7 @@ import GHC.Tc.Module (TcRnExprMode (..))
 import GHC.Types.Error (MessageClass (..), Severity (..))
 import GHC.Types.SrcLoc
 import GHC.Unit.Home.Graph (homeUnitEnv_dflags, homeUnitEnv_units, unitEnv_assocs)
-import GHC.Unit.Module.Graph (emptyMG, mgModSummaries)
+import GHC.Unit.Module.Graph (ModuleGraph, emptyMG, mgModSummaries)
 import GHC.Unit.Module.Location (ml_obj_file)
 import GHC.Unit.Module.ModSummary (ms_location, ms_mod, ms_unitid)
 import GHC.Unit.State (homeUnitDepends)
@@ -87,6 +88,13 @@ import GHC.Utils.Outputable (empty, ppr, renderWithContext, showSDocUnsafe)
 import GHCi.UI (GhciSettings (..))
 import GHCi.UI.Monad (GHCi)
 
+import GHC.Exts (Any)
+import GHC.Hygiene (engineSymbol, heapAuto, majorGC)
+import GhsAddUnits (addUnits)
+import GhsFastLoad (loadWith, setChanged)
+import GHC.Types.Error (mkUnknownDiagnostic)
+import GHC.Hygiene.Store (storeDrop, storeNames)
+import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusOf, keptReport, keptStrings, memNow)
 import GHC.Hygiene.Zygote (ZygoteChild (..), ZygoteSpec (..), zygoteFork)
 import GhciSession.Json
 
@@ -119,7 +127,12 @@ engineInit = do
   ctl <- lookupEnv "GHS_CONTROL"
   case cap of
     Just dir | "--interactive" `elem` args -> capture dir args >> exitImmediately ExitSuccess
-    _ -> when (ctl == Just "stdin") takeControl
+    _ -> do
+      -- GHS_HEAP_AUTO=0: without the -H this executable is built with, as GHC's is (the RTS then spends
+      -- the largest heap it has needed on allocation area: memory that is never live)
+      ha <- lookupEnv "GHS_HEAP_AUTO"
+      when (ha == Just "0") (void (heapAuto 0))
+      when (ctl == Just "stdin") takeControl
 
 -- | What @cabal repl@ would have run, as files: @args@ (the directory, then each argument, NUL-separated)
 -- and @env@. Cabal deletes the per-unit argument files of a multi-unit repl when the repl exits, so they are
@@ -226,9 +239,13 @@ engineSettings s = s
 turn :: Engine -> GHCi ()
 turn e = do
   (kept, dropped, names) <- keepLinked
+  -- how many libraries have been linked so far: GHCi links a reloaded module when a command first needs
+  -- it, so code superseded by a LATER command than the one the unlink followed is found by this growing
+  lv <- loaderVar
+  links <- liftIO (maybe 0 (length . temp_sos) <$> readMVar lv)
   (ds, errs, warns) <- liftIO (atomicModifyIORef' diagnostics (\d -> (([], 0, 0), d)))
   liftIO (reply e (JObj [ ("errors", JNum (fromIntegral errs)), ("warnings", JNum (fromIntegral warns)), ("diagnostics", JArr (reverse ds))
-                        , ("kept_linked", JNum (fromIntegral kept)), ("relink", JNum (fromIntegral dropped)), ("relink_modules", JArr (map JStr (take 12 names))) ]))
+                        , ("kept_linked", JNum (fromIntegral kept)), ("relink", JNum (fromIntegral dropped)), ("relink_modules", JArr (map JStr (take 12 names))), ("links", JNum (fromIntegral links)) ]))
   wait
   where
     wait = do
@@ -274,7 +291,16 @@ linkedBefore = unsafePerformIO (newIORef Nothing)
 
 {-# NOINLINE keepLinkedOn #-}
 keepLinkedOn :: Bool
-keepLinkedOn = unsafePerformIO ((/= Just "0") <$> lookupEnv "GHS_KEEP_LINKED")
+keepLinkedOn = unsafePerformIO $ do
+  -- Kept modules make a temporary library PARTIAL, and a name is then only found where it is current if
+  -- each library answers for its own names alone (hygiene/c/mem_return.c, ghs_dlopen: the library the
+  -- daemon inserts on macOS). Without that -- another system, the library missing -- every reload links
+  -- everything again, as GHCi does; GHS_KEEP_LINKED=1 insists.
+  e <- lookupEnv "GHS_KEEP_LINKED"
+  first <- (engineSymbol "ghs_dlopen_first" :: IO (Maybe (FunPtr ())))
+  let on = e /= Just "0" && (e == Just "1" || isJust first)
+  when (e /= Just "0" && not on) (hPutStrLn stderr "ghci-session-engine: modules are not kept linked across a reload (temporary libraries are not opened to answer for their own names only)")
+  pure on
 
 loaderVar :: GHCi (MVar (Maybe LoaderState))
 loaderVar = loader_state . interpLoader . hscInterp <$> GHC.getSession
@@ -349,7 +375,16 @@ reply e facts = do
 query :: Engine -> Json -> GHCi Json
 query e q = case fromMaybe "" (lookupStr "q" q) of
   "state" -> state
-  "typecheck" -> typecheck (arg "dir")
+  -- the watched files that differ from what is loaded: the next load need not scan every module to
+  -- find them ("GhsFastLoad")
+  "changed" -> liftIO (setChanged (Just [ f | JStr f <- lookupArr "files" q ])) >> pure (JObj [])
+  -- units added to the running session (GhsAddUnits); the daemon reloads after it
+  "add_units" -> do
+    r <- addUnits [ f | JStr f <- lookupArr "files" q ]
+    pure (case r of
+      Left why -> failed why
+      Right us -> JObj [("ok", JBool True), ("units", JArr (map JStr us))])
+  "typecheck" -> typecheck (arg "dir") (if lookupBool "since" q == Just True then Just [ f | JStr f <- lookupArr "files" q ] else Nothing)
   "typecheck_expr" -> do
     r <- MC.try (GHC.exprType TM_Inst (ioUnit (arg "expr")))
     pure $ case r of
@@ -375,10 +410,48 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
     -- Two minor collections age everything live into the old generation first; they cost what is young.
     performMinorGC >> performMinorGC
     k <- fromIntegral <$> c_prune :: IO Int
-    when (k > 0) performMajorGC        -- at once: see the README on why not later
+    -- at once (see the README on why not later). `prune_gc: "copying"` makes this one collection a copying
+    -- one whatever the RTS flags say: the compacting collection a session's -c gives is single-threaded and
+    -- most of this command (0.42 s of a 250 MB heap against 0.06 s) -- but the RTS then holds the copy's
+    -- space as far as macOS's footprint goes (measured: ~+200 MB on a 370 MB heap). The daemon's default.
+    -- (twice: the first copies into fresh space, and it is the NEXT major collection that hands the old
+    -- space back -- with a return-decay under 1, see the daemon's rts_flags; 0.07 s each against 0.46)
+    when (k > 0) (if lookupStr "gc" q == Just "copying" then majorGC False >> majorGC False else performMajorGC)
     on <- getRTSStatsEnabled
     live <- if on then Just . gcdetails_live_bytes . gc <$> getRTSStats else pure Nothing
     pure (JObj ([ ("unlinked", JNum (fromIntegral k)) ] ++ [ ("live_mb", JNum (fromIntegral (l `div` 1000000))) | Just l <- [live] ]))
+  -- what the heap holds, and what an action costs: "GHC.Hygiene.Census", run HERE -- so a session has them
+  -- whether or not its project depends on that library. What they print is the answer.
+  "census" -> do
+    let top = maybe 15 round (lookupNum "top" q) :: Int
+        cap = 1000000000
+    case arg "mode" of
+      "strings" -> liftIO (cafStrings top cap)
+      "kept" -> liftIO (keptReport cap)
+      "kept-strings" -> liftIO (keptStrings top cap)
+      "mem" -> liftIO memNow
+      -- sharing that is missed: closures structurally equal to one already in the heap
+      "dups" -> liftIO (dupsCafs top)
+      "dups-kept" -> liftIO (dupsKept top)
+      "dups-value" -> do
+        hv <- GHC.compileExpr ("(" ++ arg "expr" ++ ")")
+        liftIO (dupsOf (arg "expr") (unsafeCoerce hv :: Any) top)
+      -- the named slots that outlive a reload ("GHC.Hygiene.Store"): which there are, or forget one
+      "store" -> liftIO (storeNames >>= \ns -> if null ns then putStrLn "no slots" else mapM_ putStrLn ns)
+      "store-drop" -> liftIO (storeDrop (arg "expr") >>= \ok -> putStrLn (if ok then "dropped " ++ arg "expr" ++ ": its owner starts again when it is next linked" else "no slot " ++ arg "expr"))
+      "value" -> do
+        hv <- GHC.compileExpr ("(" ++ arg "expr" ++ ")")
+        liftIO (censusOf (arg "expr") (unsafeCoerce hv :: Any))
+      _ -> liftIO (cafReport top cap)
+    pure (JObj [])
+  "bench" -> do
+    -- (typed: an action of any monad -- `pure ()` -- compiles to a function of its dictionary, and running
+    -- that as an IO action took the process down)
+    hv <- GHC.compileExpr ("((" ++ arg "expr" ++ ") Prelude.>> Prelude.return ()) :: Prelude.IO ()")
+    -- (--live: with a collection before and after, for the live heap's change; 0.2 s each)
+    liftIO ((if lookupBool "live" q == Just True then benchOf else benchQuick) (arg "expr") (unsafeCoerce hv :: IO ()))
+    pure (JObj [])
+  "heap_auto" -> liftIO (heapAuto (if lookupBool "on" q == Just True then 1 else 0)) >> pure (JObj [])
   "capabilities" -> liftIO (setNumCapabilities (max 1 (round (fromMaybe 1 (lookupNum "n" q)))) >> pure (JObj []))
   other -> pure (failed ("unknown query " ++ show other))
   where
@@ -392,8 +465,12 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
 -- its interface files in a directory of its own (@dir@, per unit) -- so the next time, only what changed since
 -- the last typecheck is typechecked again. Then the session that was there is put back, and with it what was
 -- linked (a load forgets that: see 'keepLinked').
-typecheck :: FilePath -> GHCi Json
-typecheck dir = do
+--
+-- The copy's module graph is kept from one typecheck to the next ('tcGraph'), and @since@ -- the files that
+-- changed since the last one, when the daemon can say -- makes this a load WITHOUT the scan of every module
+-- ('GhsFastLoad', as for a reload): the scan was half of a typecheck after a one-file save.
+typecheck :: FilePath -> Maybe [FilePath] -> GHCi Json
+typecheck dir since = do
   saved <- GHC.getSession
   rememberLinked
   liftIO (writeIORef diagnostics ([], 0, 0))
@@ -401,8 +478,15 @@ typecheck dir = do
       -- (with NO module graph: a module whose source has not changed would otherwise keep the summary it has,
       -- and with it the flags it was summarised under -- and if it then needed compiling, it was compiled for
       -- real, into the session's own object directory)
-      noCode hsc = setModuleGraph emptyMG (foldl (\h (uid, _) -> hscUpdateHUG (updateUnitFlags uid (quiet uid)) h) hsc (unitEnv_assocs (hsc_HUG hsc)))
-  r <- MC.try (GHC.setSession (noCode saved) >> GHC.load GHC.LoadAllTargets)
+      noCode g hsc = setModuleGraph g (foldl (\h (uid, _) -> hscUpdateHUG (updateUnitFlags uid (quiet uid)) h) hsc (unitEnv_assocs (hsc_HUG hsc)))
+  kept <- liftIO (readIORef tcGraph)
+  -- (the files that changed are only meaningful against the graph of the typecheck before this one)
+  liftIO (setChanged (case (kept, since) of { (Just _, Just fs) -> Just fs; _ -> Nothing }))
+  r <- MC.try (GHC.setSession (noCode (fromMaybe emptyMG kept) saved) >> loadWith Nothing mkUnknownDiagnostic GHC.LoadAllTargets)
+  -- its graph is the next one's start -- unless it threw (a source that does not parse: the graph is partial)
+  after <- hsc_mod_graph <$> GHC.getSession
+  liftIO (setChanged Nothing)
+  liftIO (writeIORef tcGraph (case r of { Right _ | not (null (mgModSummaries after)) -> Just after; _ -> Nothing }))
   GHC.setSession saved
   _ <- keepLinked
   (ds, errs, warns) <- liftIO (atomicModifyIORef' diagnostics (\d -> (([], 0, 0), d)))
@@ -411,6 +495,10 @@ typecheck dir = do
         Right Failed -> (False, [])
         Left (x :: SomeException) -> (False, [ ("thrown", JStr (show x)) ])
   pure (JObj ([ ("ok", JBool ok), ("errors", JNum (fromIntegral errs)), ("warnings", JNum (fromIntegral warns)), ("diagnostics", JArr (reverse ds)) ] ++ thrown))
+
+{-# NOINLINE tcGraph #-}
+tcGraph :: IORef (Maybe ModuleGraph)
+tcGraph = unsafePerformIO (newIORef Nothing)
 
 -- | What is loaded: the directory, whether every module of the graph is, and each unit's objects -- which is
 -- what a server forked now would run.

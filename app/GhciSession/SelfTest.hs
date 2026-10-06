@@ -8,7 +8,7 @@ module GhciSession.SelfTest (run) where
 import Control.Exception (IOException, try)
 import Control.Monad (forM_, unless, void, when)
 import Data.IORef
-import Data.List (isInfixOf, isPrefixOf)
+import Data.List (isInfixOf, isPrefixOf, sortOn)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Daemon (countSub, moduleDelta, replace, verdictOf, warningsIn)
+import GhciSession.Daemon (countSub, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Doc
 import GhciSession.Json
 import GhciSession.Sys
@@ -66,6 +66,11 @@ run = do
   eq "warnings counted from the verdict" (warningsIn "OK (12 warning(s)) -- CHECK-PASS (1.0s)") 12
   eq "warnings: none" (warningsIn "OK -- CHECK-PASS (1.0s)") 0
   eq "build file: a module added is only that" (moduleDelta ["-O0", "-isrc", "A", "B.C"] ["-O0", "-isrc", "A", "B.C", "D"]) (Just (["D"], []))
+  -- a member added live: what is UNDER the loaded units (a package there cannot become a unit beside them)
+  let plan = either (const JNull) id (parseJson "{\"install-plan\":[{\"id\":\"top\",\"depends\":[\"mid\"]},{\"id\":\"mid\",\"components\":{\"lib\":{\"depends\":[\"low\",\"base\"]}}},{\"id\":\"low\",\"depends\":[\"base\"]},{\"id\":\"side\",\"depends\":[\"base\"]}]}")
+  eq "plan: under a unit, through a built package too" (sortOn id (unitsBelow plan ["top"])) ["base", "low", "mid"]
+  eq "plan: a package beside it is not under it" ("side" `elem` unitsBelow plan ["top"]) False
+  eq "plan: the units themselves are not under themselves" (unitsBelow plan ["top", "mid"]) (filter (`notElem` ["top", "mid"]) (unitsBelow plan ["top", "mid"]))
   eq "build file: a module removed is seen" (moduleDelta ["-isrc", "A", "B"] ["-isrc", "A"]) (Just ([], ["B"]))
   eq "build file: a new dependency is not a module" (moduleDelta ["-package-id", "base-4", "A"] ["-package-id", "base-4", "-package-id", "text-2", "A", "D"]) Nothing
   eq "build file: a flag's value that looks like a module" (moduleDelta ["A"] ["-framework", "Accelerate", "A"]) Nothing
@@ -91,6 +96,8 @@ run = do
   eq "doc: a word of the comment" (names ["slow"]) ["quickBase"]
   eq "doc: qualified" (names ["Mod.helper"]) ["helper"]
   eq "doc: every word must be found" (names ["quickBase", "nonsense"]) []
+  eq "doc: two names at once are two questions" ((\(hs, miss) -> (take 2 (map (T.unpack . eName . snd) hs), map T.unpack miss)) (searchEach es (map T.pack ["helper", "bExe", "nonsense"])))
+     (["helper", "bExe"], ["nonsense"])
 
   -- arguments
   let a = parseArgs ["-s", "-m", "--timeout", "-n", "--add"] ["1+1", "-s", "dev", "--no-check", "--add", "x", "--add", "y", "-5"]

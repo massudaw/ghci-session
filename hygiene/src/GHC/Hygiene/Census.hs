@@ -1,3 +1,4 @@
+{-# LANGUAGE ImplicitPrelude #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 
@@ -8,27 +9,31 @@
 -- The C is part of the session's engine; in any other GHCi every entry point says so and does nothing.
 module GHC.Hygiene.Census
   ( cafReport, cafStrings, keptReport, keptStrings, keep
-  , censusOf, benchOf, memNow, censusBench
+  , censusOf, benchOf, benchQuick, memNow, censusBench
+  , dupsCafs, dupsKept, dupsOf
   ) where
 
+import GHC.Hygiene.Store (storeRoots)
 import Control.Exception (evaluate)
-import Control.Monad (forM, forM_)
+import Control.Monad (forM, forM_, when)
+import Data.Maybe (isNothing)
 import qualified Data.IntMap.Strict as IMs
 import Data.Int (Int64)
 import Data.List (isPrefixOf, sortOn)
 import Data.Ord (Down (..))
 import qualified Data.Text as Tx
-import Foreign.C.String (CString, peekCAString, withCAString)
+import Foreign.C.String (CString, newCAString, peekCAString, withCAString)
 import Foreign.C.Types (CInt (..))
-import Foreign.Marshal.Alloc (allocaBytes)
-import Foreign.Marshal.Array (allocaArray, peekArray)
+import Foreign.Marshal.Alloc (allocaBytes, free)
+import Foreign.Marshal.Array (allocaArray, peekArray, withArray)
 import Foreign.Ptr (FunPtr, Ptr, castFunPtr, castPtr, intPtrToPtr, nullFunPtr, nullPtr, ptrToWordPtr, wordPtrToPtr)
 import Foreign.StablePtr (castStablePtrToPtr, freeStablePtr, newStablePtr)
+import System.IO (hFlush, stdout)
 import Foreign.Storable (peekElemOff)
 import GHC.Clock (getMonotonicTime)
 import GHC.Stats (GCDetails (..), RTSStats (..), getRTSStats)
 import System.Environment (getEnvironment, setEnv)
-import System.Mem (performMajorGC)
+import System.Mem (performMajorGC, performMinorGC)
 import GHC.Hygiene (engineSymbol)
 import Text.Printf (printf)
 
@@ -78,6 +83,8 @@ withCensus k = do
               pure [(kk, rr, vs)]
       }
     k cens
+    -- the walk's own tables go back: 128 MB of them stayed for the life of a session after one census
+    engineSymbol "ghs_cen_done" >>= maybe (pure ()) (cenReset . castFunPtr)
 
 -- | What the roots retain, by root and by constructor, and the Strings among it.
 censusPrint :: Census -> (String -> IO String) -> Int -> Bool -> IO ()
@@ -103,13 +110,72 @@ censusPrint c namer top strings = do
       forM_ (take 14 (sortOn (Down . (!! 0) . snd) is)) $ \(l, v) ->
         printf "%8.1f MB %10d  %s\n" (mb (v !! 0)) (v !! 1) l
 
+-- ---------------------------------------------------------------------------------------------------
+-- Sharing that is missed (@hygiene/c/heap_dups.c@)
+
+foreign import ccall unsafe "dynamic" dupAll :: FunPtr (Ptr (Ptr ()) -> Ptr CString -> CInt -> CInt -> CInt -> IO CString) -> Ptr (Ptr ()) -> Ptr CString -> CInt -> CInt -> CInt -> IO CString
+
+-- | Run a duplicate analysis over roots -- static closures (CAFs: no label, the C names them) or
+-- 'StablePtr'-held values with their labels -- and print the report, @top@ lines a section. One foreign
+-- call for the whole of it: the analysis keys closures by address, and the collector must not run inside.
+runDups :: Bool -> [(Ptr (), Maybe String)] -> Int -> IO ()
+runDups stable roots top = do
+  f <- engineSymbol "ghs_dup_all"
+  case f of
+    Nothing -> putStrLn "no duplicate analysis in this process: it is part of the session's engine (ghci-session-engine)"
+    Just g -> do
+      hFlush stdout
+      let n = length roots
+      labels <- mapM (maybe (pure nullPtr) newCAString . snd) roots
+      -- the report comes back as text and is printed HERE: written from inside the call it filled the
+      -- engine's output pipe, which nothing can drain while an unsafe call runs
+      text <- withArray (map fst roots) $ \ps -> withArray labels $ \ls ->
+        dupAll (castFunPtr g) ps (if all isNothing (map snd roots) then nullPtr else ls) (fromIntegral n) (if stable then 1 else 0) (fromIntegral top)
+      when (text /= nullPtr) (peekCAString text >>= putStr >> free text)
+      mapM_ (\l -> when (l /= nullPtr) (free l)) labels
+
+-- | __Sharing that is missed, over every CAF__: the closures that are structurally equal to one already
+-- reached -- how many bytes maximal sharing would give back, by constructor, by the CAF that holds the
+-- copies, and the largest repeated values.
+dupsCafs :: Int -> IO ()
+dupsCafs top = do
+  performMajorGC
+  f <- maybe nullFunPtr id <$> engineSymbol "ghs_caf_list"
+  let n = 200000
+  as <- allocaArray n $ \addrs -> do
+    got <- fromIntegral <$> callCafList f (castPtr addrs) nullPtr (fromIntegral n)
+    peekArray (min got n) (addrs :: Ptr (Ptr ()))
+  runDups False [ (a, Nothing) | a <- as ] top
+
+-- | The same over the values a reload cannot drop (the slots of "GHC.Hygiene.Store", what 'keep' registered).
+dupsKept :: Int -> IO ()
+dupsKept top = do
+  performMinorGC
+  env <- getEnvironment
+  let kept = [ (intPtrToPtr (fromInteger n), Just (drop 9 k)) | (k, v) <- env, "GHS_KEEP_" `isPrefixOf` k
+             , [(n, "")] <- [reads (case break (== '|') v of { (_, '|' : a) -> a; (a, _) -> a }) :: [(Integer, String)]] ]
+  slots <- storeRoots
+  runDups True (kept ++ [ (castPtr p, Just k) | (k, p) <- slots ]) top
+
+-- | The same within ONE value (as far as it has been evaluated: a thunk is only ever itself).
+dupsOf :: String -> a -> Int -> IO ()
+dupsOf label x top = do
+  _ <- evaluate x
+  performMinorGC
+  sp <- newStablePtr x
+  runDups True [(castStablePtrToPtr sp, Just label)] top
+  freeStablePtr sp
+
 -- | Every CAF the RTS roots ('ghs_caf_list'), walked in list order (newest first): what each retains that
 -- no earlier one did. @top@ roots shown; @cap@ closures at most a root.
 cafRoots :: Census -> Int -> IO ()
-cafRoots c cap = do
+cafRoots c cap = performMajorGC >> cafRootsNow c cap
+
+-- | 'cafRoots' on the heap as it stands (the caller has just collected).
+cafRootsNow :: Census -> Int -> IO ()
+cafRootsNow c cap = do
   f <- maybe nullFunPtr id <$> engineSymbol "ghs_caf_list"
   let n = 200000
-  performMajorGC
   allocaArray n $ \addrs -> do
     -- no names here: `dladdr` is ~1 ms a CAF, 10 s for 8k of them; roots are labelled by address
     -- and the few that get printed are named afterwards ('cafName')
@@ -129,17 +195,23 @@ cafName lab = do
 
 foreign import ccall unsafe "dynamic" callName :: FunPtr (Ptr () -> IO CString) -> Ptr () -> IO CString
 
--- | The values registered with 'keep' (held by a 'StablePtr', so a reload cannot drop them).
+-- | The values a reload cannot drop: those registered with 'keep', and the slots of "GHC.Hygiene.Store".
 keptRoots :: Census -> Int -> IO ()
 keptRoots c cap = do
   env <- getEnvironment
-  performMajorGC
+  -- a walk from a root reaches only what is live, collected or not: the collection is for the
+  -- indirections a just-evaluated thunk leaves, and those are young -- a minor one removes them (a major
+  -- one is 0.2 s of even a small session, and was all of this command's time)
+  performMinorGC
   cReset c
   forM_ [ (k, v) | (k, v) <- env, "GHS_KEEP_" `isPrefixOf` k ] $ \(k, v) -> do
     let addr = case break (== '|') v of { (_, '|' : a) -> a; (a, _) -> a }
     case reads addr :: [(Integer, String)] of
       [(n, "")] -> cStable c (intPtrToPtr (fromInteger n)) (drop 9 k) cap
       _ -> pure ()
+  -- and every slot of the engine's store ("GHC.Hygiene.Store")
+  slots <- storeRoots
+  forM_ slots $ \(k, p) -> cStable c (castPtr p) k cap
 
 -- | What every CAF retains, by CAF and by constructor (C, ~seconds). @top@ CAFs shown.
 cafReport :: Int -> Int -> IO ()
@@ -195,7 +267,7 @@ memNow = do
   let g = gc s
   printf "live %d MB, RTS holds %d MB, major GCs so far %d\n" (gcdetails_live_bytes g `div` 1000000) (gcdetails_mem_in_use_bytes g `div` 1000000) (major_gcs s)
   withCensus $ \c -> do
-    cafRoots c 1000000000
+    cafRootsNow c 1000000000
     cs <- cRows c
     let tot i = sum [ v !! i | (_, v) <- cs ]
     printf "CAFs retain %.1f MB (list cells %.1f, byte arrays %.1f)\n" (fromIntegral (tot 0) / 1e6 :: Double) (fromIntegral (tot 2) / 1e6 :: Double) (fromIntegral (tot 3) / 1e6 :: Double)
@@ -213,7 +285,7 @@ memNow = do
 censusOf :: String -> a -> IO ()
 censusOf label x = withCensus $ \c -> do
   _ <- evaluate x
-  performMajorGC
+  performMinorGC   -- (see 'keptRoots')
   sp <- newStablePtr x
   cReset c
   cStable c (castStablePtrToPtr sp) label 1000000000
@@ -233,18 +305,38 @@ benchOf :: String -> IO a -> IO a
 benchOf label act = do
   performMajorGC
   s0 <- getRTSStats
+  (r, t, s1) <- timedAct act
+  performMajorGC
+  s2 <- getRTSStats
+  printf "[bench] %s: %s, live %.0f -> %.0f MB\n" label (benchLine t s0 s1) (mb (gcdetails_live_bytes (gc s0))) (mb (gcdetails_live_bytes (gc s2)))
+  pure r
+
+-- | 'benchOf' without its two forced collections: the action's wall time, GC and allocation, and nothing
+-- about the live heap. The collections are 0.2 s each in even a small session, which was nearly all of a
+-- quick action's bench; without one first, the action's GC time can include a little of what was garbage
+-- before it ran.
+benchQuick :: String -> IO a -> IO a
+benchQuick label act = do
+  s0 <- getRTSStats
+  (r, t, s1) <- timedAct act
+  printf "[bench] %s: %s\n" label (benchLine t s0 s1)
+  pure r
+
+timedAct :: IO a -> IO (a, Double, RTSStats)
+timedAct act = do
   t0 <- getMonotonicTime
   r <- act
   t1 <- getMonotonicTime
   s1 <- getRTSStats
-  performMajorGC
-  s2 <- getRTSStats
-  let mb x = fromIntegral x / 1e6 :: Double
-      g = gc s2
-  printf "[bench] %s: %.2f s wall, %.2f s GC (%d major, %d minor), %.0f MB allocated, live %.0f -> %.0f MB\n" label (t1 - t0)
-    (fromIntegral (gc_elapsed_ns s1 - gc_elapsed_ns s0) / 1e9 :: Double) (major_gcs s1 - major_gcs s0) (gcs s1 - gcs s0 - (major_gcs s1 - major_gcs s0))
-    (mb (allocated_bytes s1 - allocated_bytes s0)) (mb (gcdetails_live_bytes (gc s0))) (mb (gcdetails_live_bytes g))
-  pure r
+  pure (r, t1 - t0, s1)
+
+benchLine :: Double -> RTSStats -> RTSStats -> String
+benchLine t s0 s1 = printf "%.2f s wall, %.2f s GC (%d major, %d minor), %.0f MB allocated" t
+  (fromIntegral (gc_elapsed_ns s1 - gc_elapsed_ns s0) / 1e9 :: Double) (major_gcs s1 - major_gcs s0) (gcs s1 - gcs s0 - (major_gcs s1 - major_gcs s0))
+  (mb (allocated_bytes s1 - allocated_bytes s0))
+
+mb :: Integral a => a -> Double
+mb x = fromIntegral x / 1e6
 
 -- | Register a value for 'keptReport' / 'keptStrings'. The address lives in an environment variable, because a
 -- Haskell-side registry would be a CAF and a @:reload@ resets those.

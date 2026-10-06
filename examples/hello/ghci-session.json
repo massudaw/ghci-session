@@ -1,49 +1,102 @@
 {
-  "default": "hello",
-  "hygiene": true,
-  "targets": {
-    "hello": {
-      "units": [
-        "lib:hello"
-      ],
-      "watch": [
-        "src"
-      ],
-      "modules": [
-        "Hello"
-      ],
-      "test": {
-        "expr": "Hello.selfTest",
-        "pass": "\\[PASS\\] table"
-      },
-      "server": {
-        "action": "Hello.serve",
-        "env": {
-          "HELLO_OUT": ".ghci-session/hello.out"
-        },
-        "prefork": "Control.Concurrent.threadDelay 3000000"
-      }
+ "default": "hello",
+ "hygiene": true,
+ "targets": {
+  "hello": {
+   "units": [
+    "lib:hello"
+   ],
+   "watch": [
+    "src"
+   ],
+   "modules": [
+    "Hello"
+   ],
+   "test": {
+    "expr": "Hello.selfTest",
+    "pass": "\\[PASS\\] table"
+   },
+   "server": {
+    "action": "Hello.serve",
+    "env": {
+     "HELLO_OUT": ".ghci-session/hello.out"
     },
-    "extra": {
-      "units": [
-        "lib:extra"
-      ],
-      "watch": [
-        "extra/src"
-      ],
-      "modules": [
-        "Extra"
-      ],
-      "test": {
-        "expr": "Extra.selfTest",
-        "pass": "\\[PASS\\] shout"
-      }
+    "prefork": "Control.Concurrent.threadDelay 3000000"
+   },
+   "profile": [
+    {
+     "name": "eval: the greeting",
+     "eval": "Hello.greeting",
+     "budget": 1,
+     "expect": "hello"
+    },
+    {
+     "name": "the test",
+     "cmd": "test hello",
+     "budget": 5,
+     "expect": "PASS"
+    },
+    {
+     "name": "edit a source",
+     "sh": "echo '-- profile probe' >> src/Hello.hs"
+    },
+    {
+     "name": "reload after the edit (compile only)",
+     "cmd": "reload hello --no-test",
+     "budget": 10
+    },
+    {
+     "name": "first eval after the edit (links)",
+     "eval": "length Hello.greeting",
+     "budget": 3
+    },
+    {
+     "name": "revert",
+     "sh": "sed -i.bak '/^-- profile probe$/d' src/Hello.hs && rm -f src/Hello.hs.bak"
+    },
+    {
+     "name": "reload after the revert, with its test",
+     "cmd": "reload hello",
+     "budget": 10,
+     "expect": "CHECK-PASS"
     }
+   ]
   },
-  "sessions": {
-    "dev": [
-      "hello",
-      "extra"
-    ]
+  "extra": {
+   "units": [
+    "lib:extra"
+   ],
+   "watch": [
+    "extra/src"
+   ],
+   "modules": [
+    "Extra"
+   ],
+   "test": {
+    "expr": "Extra.selfTest",
+    "pass": "\\[PASS\\] shout"
+   }
+  },
+  "third": {
+   "units": [
+    "lib:third"
+   ],
+   "watch": [
+    "third/src"
+   ],
+   "modules": [
+    "Third"
+   ],
+   "test": {
+    "expr": "Third.selfTest",
+    "pass": "\\[PASS\\] echo"
+   }
   }
+ },
+ "sessions": {
+  "dev": [
+   "hello",
+   "extra"
+  ]
+ }
 }

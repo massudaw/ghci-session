@@ -10,3 +10,11 @@ for x in ghci-session ghci-session-engine; do
   cp "$(cabal list-bin -v0 exe:$x)" .bin/$x.new
   mv .bin/$x.new .bin/$x
 done
+# macOS: the library that makes the RTS's memory returns real (hygiene/c/mem_return.c). It has to be a
+# library of its own -- dyld applies an interposer from an inserted library, not from the executable -- and
+# the daemon inserts it when it starts the engine. Optional: without it the engine runs as before.
+if [ "$(uname)" = Darwin ]; then
+  if [ ! -f .bin/libghsmem.dylib ] || [ hygiene/c/mem_return.c -nt .bin/libghsmem.dylib ]; then
+    cc -dynamiclib -O2 -o .bin/libghsmem.dylib.new hygiene/c/mem_return.c && mv .bin/libghsmem.dylib.new .bin/libghsmem.dylib
+  fi
+fi

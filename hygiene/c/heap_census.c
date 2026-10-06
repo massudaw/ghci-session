@@ -250,3 +250,11 @@ int ghs_cen_str_row(int i, char *key, char *rootlabel, int64_t *out) {
   return 1;
 }
 int64_t ghs_cen_visited(void) { return (int64_t)vs_n; }
+
+/* Give back what a census allocated to do its walk: the visited set is 8 bytes a slot and doubles as it
+ * fills -- 128 MB for a few million closures -- and it stayed allocated for the life of the session after
+ * the first `mem` or `census`. The rows already gathered (roots, constructors, strings) are kept. */
+void ghs_cen_done(void) {
+  free(vs_keys); vs_keys = 0; vs_cap = 0; vs_n = 0;
+  free(stk); stk = 0; stk_cap = 0; stk_n = 0;
+}

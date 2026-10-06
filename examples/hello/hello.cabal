@@ -5,6 +5,6 @@ build-type:    Simple
 
 library
   hs-source-dirs:   src
-  exposed-modules:  Hello
-  build-depends:    base, bytestring, containers, ghci-session
+  exposed-modules:  Hello, Part.Base, Part.Mid, Part.Side
+  build-depends:    base, bytestring, containers, ghci-hygiene
   default-language: Haskell2010

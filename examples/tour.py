@@ -11,7 +11,7 @@ It works on a COPY of the example in a temporary directory (the tour edits sourc
 to git there), so the checkout is not touched. Exit status 1 if any step's outcome was not the expected one.
 Read it as documentation too: each step is the command a person would type and what it must answer.
 
-The groups: boot, eval, reload, watch, stale, compose, servers, census, leak, budget, hooks, idle, gc.
+The groups: boot, eval, reload, watch, partial, stale, compose, servers, census, leak, budget, hooks, idle, gc.
 """
 import argparse
 import http.server
@@ -38,6 +38,8 @@ def config(push_port: int) -> dict:
              "check": {"expr": "Hello.selfTest", "pass": r"\[PASS\] table"}}
     extra = {"units": ["lib:extra"], "watch": ["extra/src"], "modules": ["Extra"],
              "check": {"expr": "Extra.selfTest", "pass": r"\[PASS\] shout"}}
+    third = {"units": ["lib:third"], "watch": ["third/src"], "modules": ["Third"],
+             "check": {"expr": "Third.selfTest", "pass": r"\[PASS\] echo"}}
     return {
         "default": "hello",
         "hygiene": True,
@@ -49,6 +51,7 @@ def config(push_port: int) -> dict:
                       "server": {"action": "Hello.serve", "env": {"HELLO_OUT": "{state}/hello.out"},
                                  "prefork": "Control.Concurrent.threadDelay 2000000"}},
             "extra": extra,
+            "third": third,
             # no watcher: so a changed source stays unloaded and the verdict must say STALE
             "manual": {**extra, "auto_reload": False, "hygiene": False},
             # the leak, with and without the pruner; reloads are explicit so the two are measured alike
@@ -264,6 +267,36 @@ class Tour:
         self.save("save: the fix", "hello", self.hs, self.hs0, good)
         self.cmd("stop", "stop", "hello", expect="stopped")
 
+    def g_partial(self):
+        """A library that holds only SOME modules: a name is found where it is current, not in a stale copy.
+
+        Unchanged modules stay linked, so a reload's new library has the edited modules alone. Mid and Side
+        import Base and not each other: edit Base and use Mid (a library with Base, Mid), edit Mid (a library
+        with Mid), use Side (a library with Side, which depends on the first and NOT on the second). Asked
+        through that newest library, Mid used to be found in the first one -- the copy before its edit --
+        and the current copy's CAFs were unlinked as superseded."""
+        part = lambda m: os.path.join(self.proj, "src", "Part", m + ".hs")  # noqa: E731
+        base0, mid0 = self.read(part("Base")), self.read(part("Mid"))
+        self.cmd("start hello", "start", "hello", expect="CHECK-PASS")
+        self.cmd("  three modules: Mid and Side over Base", "eval", "Part.Mid.mid ++ Part.Side.side", expect='"m0b0s0b0"')
+        self.write(part("Base"), base0.replace('"b0"', '"b1"'))
+        self.cmd("edit Base, reload", "reload", "--no-check", expect="CHECK SKIPPED")
+        self.cmd("  use Mid only (a library with Base and Mid)", "eval", "Part.Mid.mid", expect='"m0b1"')
+        self.write(part("Mid"), mid0.replace('"m0"', '"m1"'))
+        self.cmd("edit Mid, reload", "reload", "--no-check", expect="CHECK SKIPPED")
+        self.cmd("  use Mid (a library with Mid alone), and let its values grow old", "eval",
+                 "print (length Part.Mid.midTable) >> putStrLn Part.Mid.mid >> System.Mem.performMajorGC >> System.Mem.performMajorGC", expect="m1b1")
+        self.cmd("  use Side (a library that does not depend on that one)", "eval", "Part.Side.side", expect='"s0b1"')
+        time.sleep(0.5)     # (the unlink that follows a new library)
+        # (said by the census and not by reading the value: one freed under its CAF reads right until its memory is used again)
+        self.cmd("  the edited Mid's CAF is still a root", "eval", "GHC.Hygiene.Census.cafReport 8 100000000", expect="PartziMid_midTable_closure")
+        self.cmd("  and Mid is the EDITED Mid", "eval", "System.Mem.performMajorGC >> putStrLn (Part.Mid.mid ++ show (sum Part.Mid.midTable))", expect="m1b15000050000")
+        self.cmd("reload (nothing changed: every name is looked up again)", "reload", "--no-check", expect="CHECK SKIPPED")
+        self.cmd("  ... and after it", "eval", "putStrLn (Part.Mid.mid ++ Part.Side.side)", expect="m1b1s0b1")
+        self.write(part("Base"), base0)
+        self.write(part("Mid"), mid0)
+        self.cmd("stop", "stop", "hello", expect="stopped")
+
     def g_stale(self):
         """Without the watcher, a changed source is NOT loaded -- and every verdict and answer says so."""
         self.cmd("start manual (auto_reload off)", "start", "manual", expect="CHECK-PASS")
@@ -293,6 +326,22 @@ class Tour:
         self.save("save: edit hello -- extra, which imports it, follows", "dev", self.hs, self.hs0.replace('"hello"', '"hej"'), good)
         self.cmd("  the dependent member sees it", "eval", "Extra.shout", expect='"HEJ!"')
         self.save("save: back", "dev", self.hs, self.hs0, good)
+        # a member added to the session that is RUNNING: the repl takes the package, nothing is restarted
+        pid = self.read(os.path.join(self.state, "dev", "pid")).strip()
+        self.cmd("compose --add third (a package into the running repl)", "compose", "dev", "--add", "third", expect="no restart")
+        self.step("  the same daemon, the same repl", 0, self.read(os.path.join(self.state, "dev", "pid")).strip() == pid, "pid " + pid)
+        self.cmd("  it answers, over the packages that were there", "eval", "Third.echo", expect='"HELLO! HELLO!"')
+        self.step("  three members, a check each", 0, [m["member"] for m in self.status("dev")["members"]] == ["hello", "extra", "third"])
+        third = os.path.join(self.proj, "third", "src", "Third.hs")
+        third0 = self.read(third)
+        self.save("  save in the new package: its sources are watched", "dev", third, third0.replace('" " ++ shout', '" and " ++ shout'),
+                  lambda j: j["kind"] == "CHECK-FAIL")
+        self.save("  save: back", "dev", third, third0, good)
+        # a package UNDER what is loaded cannot be added beside it: the loaded units use it built. Said, and restarted.
+        self.cmd("compose dev extra third (the two packages over hello)", "compose", "dev", "extra", "third", expect="[2 members: extra")
+        self.cmd("compose --add hello (under them: refused, with the reason)", "compose", "dev", "--add", "hello", expect="as a built package")
+        self.cmd("  ... and restarted into the three", "eval", "(Hello.greeting, Third.echo)", expect='("hello","HELLO! HELLO!")')
+        self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
 
     def g_servers(self):
         """A server forked from the repl: kept, re-forked with its state, protected, in the background."""
@@ -467,7 +516,7 @@ class Tour:
             os.utime(old, (time.time() - 30 * 86400,) * 2)
             self.cmd("gc --days 7 prunes a session's old state", "gc", "--days", "7", expect="pruned manual")
 
-    GROUPS = ("boot", "eval", "reload", "watch", "stale", "compose", "servers", "census", "leak", "budget", "hooks", "idle", "gc")
+    GROUPS = ("boot", "eval", "reload", "watch", "partial", "stale", "compose", "servers", "census", "leak", "budget", "hooks", "idle", "gc")
     NEEDS_HELLO = ("eval", "reload", "watch")   # run inside the session `boot` leaves up
 
     def main(self, only: list[str]) -> int:

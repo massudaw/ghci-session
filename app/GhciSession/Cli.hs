@@ -20,7 +20,8 @@ import System.IO
 import System.Posix.IO (fdToHandle)
 import System.Posix.Signals (sigKILL, signalProcess)
 import System.Posix.Types (CPid (..))
-import System.Process (CreateProcess (..), StdStream (..), createProcess, proc)
+import System.Process (CreateProcess (..), StdStream (..), createProcess, proc, readCreateProcessWithExitCode, shell)
+import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import Text.Printf (printf)
 
 import GhciSession.Config
@@ -252,9 +253,80 @@ cmdCompose conf a = case aPos a of
         up <- daemonPid conf name
         if new == cur && isJust up then putStrLn (name ++ ": unchanged (" ++ (if null new then "none" else intercalate ", " new) ++ ")") >> pure 0 else do
           writeMembers conf name new
-          when (isJust up) (void (cmdStop conf (Just name) True Nothing))
           putStrLn (name ++ " members: " ++ (if null new then "(none)" else intercalate ", " new))
-          cmdStart conf (Just name) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
+          -- members only ADDED to a session that is up: the running repl takes them if it can (no restart);
+          -- the daemon says why not otherwise, and the repl is restarted as it always was
+          live <- if isJust up && all (`elem` new) cur && not (flag a ["--restart"])
+            then do
+              r <- try (request conf name (JObj [("op", JStr "add_members")])) :: IO (Either SomeException Json)
+              let out = either (const "RESTART-NEEDED: the daemon did not answer") (\j -> fromMaybe "" (lookupStr "out" j)) r
+              if "RESTART-NEEDED" `isPrefixOf` out
+                then putStrLn (name ++ ": " ++ drop 16 out ++ " -- restarting the repl") >> pure False
+                else putStrLn out >> pure True
+            else pure False
+          if live then pure 0 else do
+            when (isJust up) (void (cmdStop conf (Just name) True Nothing))
+            cmdStart conf (Just name) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
+
+-- | __The session's own scenario, timed__: the steps a target lists under @"profile"@, run in order against
+-- the running session, each against its budget and against the last run.
+--
+-- A step is @{"name": ..., and one of "eval": EXPR | "cmd": "reload --no-test" | "sh": "a shell command"}@
+-- with, optionally, @"budget"@ (seconds) and @"expect"@ (a regular expression its output must contain).
+-- @eval@ is an expression in the session, @cmd@ one of this tool's own commands, @sh@ anything else (an
+-- edit, its revert). A run is saved in @<state>/<session>/profile/@; a step more than 1.5 times and 1 s
+-- slower than in the run before is a REGRESSION, and the command fails if a step failed, missed what it
+-- expected or went over its budget.
+cmdProfile :: Conf -> Args -> IO Int
+cmdProfile conf a = do
+  name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just n -> Just n; Nothing -> pos a 0 })
+  cfg <- resolve conf name >>= either die' pure
+  let only = opts a ["--only"]
+      steps = [ st | st <- gProfile cfg, null only || fromMaybe "" (lookupStr "name" st) `elem` only ]
+      dir = stateOf conf name </> "profile"
+  when (null steps) (die' (name ++ ": no \"profile\" steps (a target lists them: {\"name\": .., \"eval\" | \"cmd\" | \"sh\": .., \"budget\": seconds, \"expect\": regex})"))
+  exe <- getExecutablePath
+  createDirectoryIfMissing True dir
+  olds <- filter (\f -> ".json" `isSuffixOf'` f) <$> getDirectoryContents dir
+  prev <- case reverse (sortOn id olds) of
+    (f : _) -> (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (dir </> f)
+    [] -> pure Nothing
+  let was nm = listToMaybe' [ sec | st <- maybe [] (lookupArr "steps") prev, lookupStr "name" st == Just nm, Just sec <- [lookupNum "seconds" st] ]
+  rows <- forM steps $ \st -> do
+    let nm = fromMaybe "?" (lookupStr "name" st)
+        budget = lookupNum "budget" st
+    t0 <- now
+    (ok, out) <- case (lookupStr "eval" st, lookupStr "cmd" st, lookupStr "sh" st) of
+      (Just e, _, _) -> do
+        r <- try (request conf name (JObj [("op", JStr "eval"), ("expr", JStr e)])) :: IO (Either SomeException Json)
+        pure (either (\x -> (False, show x)) (\j -> (lookupBool "ok" j == Just True, fromMaybe "" (lookupStr "out" j))) r)
+      (_, Just c, _) -> ran <$> readCreateProcessWithExitCode (proc exe (["--root", cRoot conf] ++ words c)) ""
+      (_, _, Just c) -> ran <$> readCreateProcessWithExitCode ((shell c) { cwd = Just (cRoot conf) }) ""
+      _ -> pure (False, "a step needs \"eval\", \"cmd\" or \"sh\"")
+    t1 <- now
+    met <- maybe (pure True) (\re -> anyLineMatches re (T.pack out)) (lookupStr "expect" st)
+    let secs = t1 - t0
+        over = maybe False (secs >) budget
+        slower = maybe False (\w -> secs > 1.5 * w && secs - w > 1) (was nm)
+        flags = [ "FAILED" | not ok ] ++ [ "NOT WHAT WAS EXPECTED" | ok && not met ] ++ [ "OVER BUDGET" | over ] ++ [ "REGRESSION" | slower ]
+    printf "  %-44s %7.2f s%s%s%s\n" (take 44 nm) secs (maybe "" (printf "  (budget %g)") budget :: String)
+      (maybe "" (printf "  [was %.2f]") (was nm) :: String) (if null flags then "" else "  " ++ intercalate ", " flags)
+    when (not ok || not met) (mapM_ (putStrLn . ("      " ++)) (lastLines 4 out))
+    hFlush stdout
+    pure (JObj [ ("name", JStr nm), ("seconds", JNum (fromIntegral (round (secs * 1000) :: Int) / 1000)), ("ok", JBool (ok && met)), ("over", JBool over), ("regression", JBool slower) ])
+  stamp <- formatTime defaultTimeLocale "%Y-%m-%dT%H%M%SZ" <$> getCurrentTime
+  let bad = length [ () | r <- rows, lookupBool "ok" r /= Just True || lookupBool "over" r == Just True ]
+      slow = length [ () | r <- rows, lookupBool "regression" r == Just True ]
+      total = sum [ x | r <- rows, Just x <- [lookupNum "seconds" r] ]
+  unless (flag a ["--no-save"]) (writeAtomic (dir </> (stamp ++ ".json")) (encodePretty (JObj [("at", JStr stamp), ("session", JStr name), ("steps", JArr rows)])))
+  printf "%s: %d steps in %.1f s: %d failed or over budget, %d regression(s)%s\n" name (length rows) total bad slow
+    (if isJust prev then " against the run before" else " (the first run: nothing to compare with)" :: String)
+  pure (if bad > 0 then 1 else 0)
+  where
+    ran (code, o, e) = (code == ExitSuccess, o ++ e)
+    isSuffixOf' x y = reverse x `isPrefixOf` reverse y
+    listToMaybe' xs = case xs of { (x : _) -> Just x; [] -> Nothing }
+    lastLines n t = let ls = lines t in drop (length ls - n) ls
 
 cmdLog :: Conf -> Args -> IO Int
 cmdLog conf a = do
@@ -346,6 +418,13 @@ usage = unlines
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
+  , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
+  , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
+  , "  why [--all] [-s SESSION]                                     what the memo recomputed since last asked, the input that moved, the seconds (GHC.Hygiene.Kept)"
+  , "  bench [--live] ACTION [-s SESSION] an IO action timed: wall, GC, allocation (--live: and the live heap before and after, two collections)"
+  , "  profile [SESSION] [--only NAME] [--no-save]   the target's \"profile\" steps timed, against their budgets and the last run"
+  , "  mem --heap [SESSION]               the live heap, and what the CAFs and the kept values retain"
   , "  doc WORDS... [-n N] [--json] [-s SESSION]   find a declaration of the session: its signature, its comment, where it is"
   , "  compose SESSION [MEMBERS...] [--add M] [--remove M] [--no-test]"
   , "  server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]"
@@ -368,7 +447,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -387,10 +466,48 @@ cliMain = do
           rc <- say r
           pure (if rc /= 0 then rc else if maybe False (T.isPrefixOf (T.pack "OK")) (lookupText "out" r) then 0 else 1)
         "eval" -> cmdEval conf a
+        "mem" | flag a ["--heap"] -> do
+          name <- pick conf (pos a 0)
+          request conf name (JObj [("op", JStr "census"), ("mode", JStr "mem")]) >>= say
         "mem" -> cmdSimple "mem" conf a
+        "census" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          let mode = case (pos a 0, flag a ["--strings"], flag a ["--kept"]) of
+                (Just _, _, _) | flag a ["--dups"] -> "dups-value"
+                (_, _, True) | flag a ["--dups"] -> "dups-kept"
+                _ | flag a ["--dups"] -> "dups"
+                (Just _, _, _) -> "value"
+                (_, True, True) -> "kept-strings"
+                (_, True, _) -> "strings"
+                (_, _, True) -> "kept"
+                _ -> "cafs"
+          request conf name (JObj ([ ("op", JStr "census"), ("mode", JStr mode) ] ++ maybe [] (\e -> [("expr", JStr e)]) (pos a 0)
+                                   ++ maybe [] (\k -> [("top", JNum (read k))]) (opt a ["--top"]))) >>= say
+        -- what the memo recomputed, and why (GHC.Hygiene.Kept, in the project's own code: asked there)
+        "why" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          r <- request conf name (JObj [("op", JStr "eval"), ("expr", JStr (if flag a ["--all"] then "GHC.Hygiene.Kept.whyAll" else "GHC.Hygiene.Kept.why"))])
+          if maybe False (T.isInfixOf (T.pack "GHC.Hygiene.Kept")) (lookupText "out" r) && maybe False (T.isInfixOf (T.pack "error")) (lookupText "out" r)
+            then putStrLn "why: this session's code does not use GHC.Hygiene.Kept (the ghci-hygiene package), so there is nothing to ask" >> pure 1
+            else say r
+        -- (a trial: units, as cabal's unit files, added to a session that is running)
+        "add-unit" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          fs <- mapM makeAbsolute (catMaybes [ pos a i | i <- [0 .. 7] ])
+          if null fs then die' "add-unit: a unit file is needed (.ghci-session/<session>/launch/unit-*)" else
+            request conf name (JObj [("op", JStr "add_units"), ("files", JArr (map JStr fs))]) >>= say
+        "store" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          request conf name (JObj (("op", JStr "census") : maybe [("mode", JStr "store")] (\n -> [("mode", JStr "store-drop"), ("expr", JStr n)]) (opt a ["--drop"]))) >>= say
+        "bench" -> case pos a 0 of
+          Nothing -> die' "bench: an IO action is needed"
+          Just e -> do
+            name <- pick conf (opt a ["-s", "-t", "--session"])
+            request conf name (JObj ([ ("op", JStr "bench"), ("expr", JStr e) ] ++ [ ("live", JBool True) | flag a ["--live"] ] ++ maybe [] (\t -> [("timeout", JNum (read t))]) (opt a ["--timeout"]))) >>= say
         "server" -> cmdServer conf a
         "compose" -> cmdCompose conf a
         "log" -> cmdLog conf a
+        "profile" -> cmdProfile conf a
         "doc" -> do
           name <- pick conf (opt a ["-s", "-t", "--session"])
           when (null (aPos a)) (die' "doc: what are you looking for? (a name, part of one, its initials, or words of its type or documentation)")

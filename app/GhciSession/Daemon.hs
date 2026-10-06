@@ -1,10 +1,15 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, TupleSections #-}
+-- 'sCfg' reads a variable through unsafePerformIO: a use must read it when it runs, not once for a loop it
+-- was floated out of. (NOT with -fno-cse as well: the two together give a daemon that dies with a bus error
+-- as soon as it has booted, GHC 9.14.1 -- each alone is fine.)
+{-# OPTIONS_GHC -fno-full-laziness #-}
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow) where
 
 import Control.Concurrent (forkIO, threadDelay)
+import System.IO.Unsafe (unsafePerformIO)
 import Control.Concurrent.MVar
 import Control.Exception (IOException, SomeException, bracket_, displayException, finally, throwIO, try)
 import Control.Applicative ((<|>))
@@ -18,12 +23,12 @@ import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
-import Data.Time (defaultTimeLocale, formatTime, getZonedTime, utcToLocalZonedTime)
+import Data.Time (defaultTimeLocale, diffUTCTime, formatTime, getCurrentTime, getZonedTime, utcToLocalZonedTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import System.Directory
-import System.Environment (getExecutablePath, lookupEnv)
+import System.Environment (getEnvironment, getExecutablePath, lookupEnv)
 import System.Exit (ExitCode (..))
-import System.FilePath (makeRelative, takeDirectory, takeFileName, (</>))
+import System.FilePath (isAbsolute, makeRelative, replaceExtension, takeDirectory, takeExtension, takeFileName, (</>))
 import System.IO
 import System.Info (os)
 import Data.Word (Word64)
@@ -43,7 +48,7 @@ import GhciSession.Sys
 import GhciSession.Watch
 
 data S = S
-  { sConf :: Conf, sName :: String, sCfg :: Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
+  { sConf :: Conf, sName :: String, sCfgV :: IORef Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
   , sBootCheck :: Bool, sFastStart :: Bool
   , vRepl :: IORef (Maybe Repl)
   , vStatus :: IORef String, vJson :: IORef Json, vStatusText :: IORef String
@@ -72,10 +77,20 @@ data S = S
   , vDocs :: IORef (M.Map B.ByteString (Double, [Entry]))   -- ^ each source's declarations, while its time stands
   , vLoadedOk :: IORef Bool          -- ^ did the last LOAD succeed (a save's type error is reported without one)
   , vBoot :: IORef (Maybe Boot)       -- ^ how the engine now running was started
+  , vWatchGen :: IORef Int            -- ^ which watcher is the one: a watcher of an earlier number ends ('addMembers' starts another, on the new sources)
+  , vTcLast :: IORef (Maybe (Sig, (Bool, String, Double, [String], [Json])))   -- ^ the sources the last typecheck saw, and its answer
+  , vLastLoad :: IORef (Maybe Reply)   -- ^ what the engine said of the last reload (the answer again, while no source has changed)
+  , vLinksSeen :: IORef Int, vLinksPruned :: IORef Int   -- ^ libraries the engine has linked: now, and at the last unlink
   }
 
 -- | How the running engine was started: what the build tool was asked, and what it answered.
 data Boot = Boot { bExe :: FilePath, bLine :: String, bEnv :: [(String, String)], bLaunchDir :: FilePath, bLaunch :: Launch }
+
+-- | The session's configuration NOW. It was fixed for a daemon's life until a member could be added to a
+-- running session ('addMembers'); it is read where it is used, so nothing is passed a copy to go stale.
+{-# NOINLINE sCfg #-}
+sCfg :: S -> Cfg
+sCfg s = unsafePerformIO (readIORef (sCfgV s))
 
 rd :: IORef a -> IO a
 rd = readIORef
@@ -212,7 +227,20 @@ theRepl s = rd (vRepl s) >>= maybe (throwIO (ReplDied "")) pure
 
 -- | A command's output as text: a load log or an evaluation can be megabytes.
 cmd :: S -> Maybe Double -> String -> IO T.Text
-cmd s t e = theRepl s >>= \r -> replCommand r t e
+cmd s t e = do
+  Reply facts out <- theRepl s >>= \r -> replRun r t e
+  noteLinks s facts
+  pure out
+
+-- | GHCi links a reloaded module when a command first needs it, so a command may supersede code AFTER the
+-- unlink that followed the reload's first evaluation: one stale generation of every late-linked module
+-- stayed alive (60 MB of a 101-module session, for good). The engine says how many libraries it has linked;
+-- when that has grown since the last unlink, another is due.
+noteLinks :: S -> Json -> IO ()
+noteLinks s facts = forM_ (lookupNum "links" facts) $ \n -> do
+  was <- rd (vLinksPruned s)
+  when (round n > was) (vUnlinkDue s =: True)
+  vLinksSeen s =: round n
 
 -- | Ask the engine (a query: see engine/GhsEngine.hs). An answer with @error@ is an exception here.
 ask :: S -> Maybe Double -> String -> [(String, Json)] -> IO Json
@@ -232,7 +260,8 @@ replCommandLine s exe v = case gRepl cfg of
   Just c -> replace "{engine}" (shq exe) c
   Nothing -> unwords $ filter (not . null) $
       [ "cabal repl" ]
-      ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) ]
+      -- (a composed session too, with one member: started as units, it can be given another while it runs)
+      ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) || gComposed cfg ]
       ++ [ "--with-repl=" ++ shq exe, "--repl-options=-fdiagnostics-color=never" ]
       ++ [ "--repl-options=-j" ++ show (gGhcJobs cfg) | gGhcJobs cfg > 0 ]
          -- object code: CAFs of interpreted code are not prunable by address, and a server's code is its
@@ -245,6 +274,13 @@ replCommandLine s exe v = case gRepl cfg of
          -- rpaths GHC follows the link with two `otool`s and an `install_name_tool` (0.08 s of every first
          -- evaluation after an edit). The library needs no rpath: everything it names is already loaded.
       ++ [ "--repl-options=-fno-use-rpaths" | objects, os == "darwin" ]
+         -- A module that asks to be optimised (`{-# OPTIONS_GHC -O1 #-}`: an engine everything else calls)
+         -- is NOT, in GHCi, unless interface pragmas are read from the start: without this the pragma runs
+         -- the optimiser over code that still does its arithmetic through class dictionaries, because the
+         -- libraries' unfoldings were never loaded. It has to be on the command line; in the pragma it is
+         -- too late. (A session of 87 modules whose engine has the pragma: its check 33 s -> 25 s, for 9 s
+         -- more of cold compile.)
+      ++ [ "--repl-options=-fno-ignore-interface-pragmas" | objects ]
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
         objects = gHygiene cfg || not (null (gServers cfg))
@@ -335,6 +371,8 @@ postLoad s r = do
   let cfg = sCfg s
       c t e = T.unpack <$> replCommand r (Just t) e
   when (gCapabilities cfg > 0) (void (replQuery r (Just 60) "capabilities" [("n", JNum (fromIntegral (gCapabilities cfg)))]))
+  -- the engine is built with -H as GHC is; a session does without unless it asks (heap_auto)
+  unless (gHeapAuto cfg) (void (try (replQuery r (Just 60) "heap_auto" [("on", JBool False)]) :: IO (Either SomeException Json)))
   -- an expression typed at a session is not the program: `1 + 1` should not answer with a paragraph about
   -- defaulting because the package is built -Wall
   void (c 60 ":seti -Wno-type-defaults")
@@ -359,6 +397,9 @@ writeLoadedSources s = do
 verdictOf :: Json -> Json -> T.Text -> (String, [String])
 verdictOf facts st out
   | nErr > 0 = ("COMPILE-ERROR: " ++ show nErr ++ " error(s)", take 20 (map line errs))
+  -- the compiler gave up: nothing was loaded, whatever the module counts still say (a load that panicked
+  -- left the session's verdict "OK" and its code the old code)
+  | not (null panicked) = ("COMPILE-ERROR: the compiler panicked", map T.unpack (take 8 panicked))
   | not (null printed) = ("COMPILE-ERROR: " ++ show (length printed) ++ " error(s)", map T.unpack (take 20 printed))
   | loaded < total = ("COMPILE-ERROR: " ++ show (total - loaded) ++ " of " ++ show total ++ " module(s) not loaded", map T.unpack (lastN 5 (T.lines (T.strip out))))
   | otherwise = ("OK", [])
@@ -368,6 +409,9 @@ verdictOf facts st out
     errs = [ d | d <- lookupArr "diagnostics" facts, lookupStr "severity" d == Just "error", lookupStr "file" d /= Just "<interactive>" ]
     nErr = length errs
     printed = filter (T.isInfixOf (T.pack ": error:")) (T.lines out)
+    panicked = case break (T.isInfixOf (T.pack "panic! (the 'impossible' happened)")) (T.lines out) of
+      (_, []) -> []
+      (_, ls) -> ls
     total = maybe 0 round (lookupNum "modules" st) :: Int
     loaded = maybe total round (lookupNum "loaded" st) :: Int
     line d = maybe "<no location>" (\f -> f ++ ":" ++ n "line" ++ ":" ++ n "col") (lookupStr "file" d) ++ ": error: "
@@ -539,8 +583,10 @@ unlinkCafs s = do
   ok <- and <$> mapM rd [vHygieneOn s, vUnlinkDue s, vEvaluated s]
   when ok $ do
     vUnlinkDue s =: False
+    rd (vLinksSeen s) >>= (vLinksPruned s =:)
     t0 <- now
-    r <- try (theRepl s >>= \rp -> replQueryOut rp (Just 300) "prune" [])
+    gcMode <- maybe (gPruneGc (sCfg s)) id <$> lookupEnv "GHS_PRUNE_GC"
+    r <- try (theRepl s >>= \rp -> replQueryOut rp (Just 300) "prune" [("gc", JStr gcMode)])
     t1 <- now
     case r of
       Left (e :: SomeException) -> logS s ("unlink_cafs failed: " ++ displayException e)
@@ -570,6 +616,28 @@ warmAsync s = rd (vUnlinkDue s) >>= \dueNow -> when dueNow $ void $ forkIO $ wit
     case r of
       Left (e :: SomeException) -> logS s ("warm failed: " ++ displayException e)
       Right () -> logS s (printf "[warm] %.2fs after the verdict%s" (t1 - t0) (if linked then "" else " (linked the reloaded code first)" :: String))
+
+-- | Keep the typecheck's own interfaces up with the sources, in the background. A save typechecks before it
+-- reloads; an explicit reload does not, so after a day of those the first save paid for all of it (4.2 s
+-- measured, against 0.13). After a reload that compiled -- and after a start -- the sources are typechecked
+-- once the verdict is out, under the work lock: a command that arrives first runs first. Nothing to do when
+-- no source changed since the last one.
+typecheckAsync :: S -> IO ()
+typecheckAsync s = when (gWatchTypecheck (sCfg s) && gAutoReload (sCfg s)) $ void $ forkIO $ do
+  -- (when the session has been left alone for a second: started at once, it stood in front of the first
+  --  command after a start for the 0.3 s it takes)
+  let idle k = do
+        threadDelay 1000000
+        busy <- rd (vBusy s)
+        used <- rd (vLastUsed s)
+        t <- now
+        if (busy == 0 && t - used >= 1.0) || k <= (0 :: Int) then pure () else idle (k - 1)
+  idle 30
+  withMVar (vWork s) $ \_ -> do
+   stopping <- rd (vStopping s)
+   ok <- (&&) <$> rd (vLoadedOk s) <*> compiled s
+   alive <- rd (vRepl s) >>= maybe (pure False) replAlive
+   when (not stopping && ok && alive) (void (try (typecheckNow s) :: IO (Either SomeException (Bool, String, Double, [String], [Json]))))
 
 -- servers: forked children of the engine ---------------------------------------------------
 
@@ -892,36 +960,61 @@ serverOp s action member resume = do
 
 -- lifecycle --------------------------------------------------------------------------------
 
--- | What the build tool's answer depends on: the command, the engine, every build file and non-Haskell
--- source the session watches (the build tool is what compiles a package's C), and the sources of the local
--- packages it uses without loading.
-buildInputs :: S -> FilePath -> String -> [FilePath] -> IO String
-buildInputs s exe line deps = do
+-- | What a recorded start depends on, in two parts.
+--
+-- The ANSWER (how the engine is to be started: each unit's flags and modules) depends on the command and on
+-- every build file and non-Haskell source the session watches -- the build tool is what compiles a loaded
+-- package's C, and what reads its @.cabal@. Not on the engine's binary: rebuilding the tool used to send
+-- every session back to the build tool for an answer that could not have changed; the capture's FORMAT is
+-- what it would have to agree with, and that is the version here.
+--
+-- The DEPENDENCIES are the sources of the local packages the repl uses without loading. A change there
+-- changes nothing in the answer: those packages have to be BUILT, which is a different and much cheaper
+-- question to ask (0.5 s when there is nothing to do, against 4-8 s for the repl's own configuring).
+buildInputs :: S -> String -> ([FilePath], [FilePath]) -> IO (String, String)
+buildInputs s line (deps, own) = do
   let built = [".cabal", ".project", ".freeze", ".local", ".c", ".h", ".cmm", ".hsc", ".chs", ".x", ".y"]
-  sig <- scan (sRoot s) (gWatch (sCfg s)) built
-  -- a local package the repl uses without loading: ALL its sources (the build tool is what compiles them)
+      rows m = unlines [ fromRaw p ++ " " ++ show t | (p, t) <- M.toList m ]
+  sig <- M.union <$> scan (sRoot s) (gWatch (sCfg s)) built <*> scan (sRoot s) own [".cabal"]
   dsig <- scan (sRoot s) deps (built ++ [".hs", ".lhs", ".hs-boot", ".cpp", ".m"])
-  te <- modTime exe
-  pure (unlines (line : (exe ++ " " ++ show te) : [ fromRaw p ++ " " ++ show m | (p, m) <- M.toList (M.union sig dsig) ]))
+  pure (unlines [line, "capture format 2"] ++ rows sig, rows (dsig `M.difference` sig))
+
+writeInputs :: FilePath -> (String, String) -> IO ()
+writeInputs dir (ask, bld) = writeAtomic (dir </> "inputs") ask >> writeAtomic (dir </> "inputs.deps") bld
+
+-- | Build the local packages the repl uses without loading (and only those): the build tool's own
+-- "dependencies only" of the session's units. 'Nothing': this session's command is its own (@repl@), so
+-- how to ask is not known.
+depsBuildLine :: S -> Maybe String
+depsBuildLine s = case gRepl cfg of
+  Just _ -> Nothing
+  Nothing -> Just (unwords (filter (not . null) ["cabal build -v1 --only-dependencies", gCabalArgs cfg, unwords (gUnits cfg)]))
+  where cfg = sCfg s
 
 -- | The local packages the repl USES but does not load, as what they are built from -- or 'Nothing' when
 -- that cannot be said for one of them. (The repl's arguments, and the per-unit argument files of a
 -- multi-unit repl: @-this-unit-id@ is a unit loaded, @-package-id X-inplace@ a local package used. Where a
 -- package's source is, is in the build tool's own plan.)
-localDeps :: S -> Launch -> IO (Maybe [FilePath])
-localDeps s l = do
+-- With them, the @.cabal@ files of the packages the repl LOADS: part of what the build
+-- tool's answer depends on, and not under a session's watched source directories (a start did not notice
+-- one edited while the session was down).
+localPackages :: S -> Launch -> IO (Maybe ([FilePath], [FilePath]))
+localPackages s l = do
   files <- forM [ f | ('@' : f) <- lArgs l ] (fmap (maybe [] lines) . readFileMaybe)
   let args = lArgs l ++ concat files
       after k = [ v | (a, v) <- zip args (drop 1 args), a == k ]
       mine = after "-this-unit-id"
       outside = nub [ p | p <- after "-package-id", "-inplace" `isInfixOf` p, p `notElem` mine ]
-  if null mine then pure Nothing else if null outside then pure (Just []) else do
+  if null mine then pure Nothing else do
     plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
     let dirOf u = listToMaybe [ d | e <- maybe [] (lookupArr "install-plan") plan, lookupStr "id" e == Just u
                                   , Just d <- [lookupStr "path" (e .: "pkg-src")] ]
+    own <- concat <$> forM (nub (mapMaybe dirOf mine)) (\d -> do
+             names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents d)
+             pure [ d </> n | n <- names, ".cabal" `isSuffixOf` n ])
     case mapM dirOf outside of
       Nothing -> pure Nothing
-      Just dirs -> Just . nub . concat <$> mapM packageSources (nub dirs)
+      Just dirs -> (\ds -> Just (nub (concat ds), own)) <$> mapM packageSources (nub dirs)
 
 -- | What a package is built from, as far as its @.cabal@ file says: the file, its @hs-source-dirs@, and its C
 -- sources and include directories, for every component (more than a dependency needs, never less). A package
@@ -974,6 +1067,8 @@ boot s how = do
   vSpawned s =: t0
   vEvaluated s =: False
   vUnlinkDue s =: False
+  vLinksSeen s =: 0
+  vLinksPruned s =: 0
   vHygieneOn s =: gHygiene cfg
   scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:)
   (exe, ver, libdir) <- phase s "engine_facts" (engineExe s)
@@ -987,15 +1082,30 @@ boot s how = do
   -- Without being asked, the build tool is skipped only when this session can SEE everything it would build:
   -- its own units, and the sources of every other local package the repl uses.
   before <- readLaunch launchDir
-  deps <- maybe (pure Nothing) (localDeps s) before
-  inputs <- phase s "build_inputs" (buildInputs s exe line (fromMaybe [] deps))
+  deps <- maybe (pure Nothing) (localPackages s) before
+  inputs <- phase s "build_inputs" (buildInputs s line (fromMaybe ([], []) deps))
   was <- readFileMaybe (launchDir </> "inputs")
-  let recorded = if was == Just inputs then before else Nothing
+  wasDeps <- readFileMaybe (launchDir </> "inputs.deps")
+  let asked = if was == Just (fst inputs) then before else Nothing     -- the answer still stands
       whole = isJust deps
+      depsMoved = wasDeps /= Just (snd inputs)
+  -- the answer stands but a package the repl uses without loading was edited: have it built, and no more
+  recorded <- case (asked, depsMoved, depsBuildLine s) of
+    (Just l, False, _) -> pure (Just l)
+    (Just l, True, Just bl) | how /= Just False && whole -> do
+      logS s ("a local dependency's source changed: " ++ bl)
+      base <- getEnvironment
+      (ec, o, e) <- phase s "build_deps" (readCreateProcessWithExitCode
+                      (shell bl) { cwd = Just (sRoot s), env = Just ([ kv | kv@(k, _) <- base, k `notElem` map fst env' ] ++ env') } "")
+      let said = o ++ e
+      if ec == ExitSuccess then writeInputs launchDir inputs >> pure (Just l) else do
+        writeAtomic (sDir s </> "load.log") said
+        dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
+    _ -> pure Nothing
   let fast = how == Just True || gFastStart cfg
       wanted = how /= Just False && (fast || whole)
       known = if wanted then recorded else Nothing
-  when (how /= Just False && fast && isNothing known) (logS s "fast start: a build file, the command or the engine changed since the build tool was last asked (or it never was) -- asking it")
+  when (how /= Just False && fast && isNothing known) (logS s "fast start: a build file or the command changed since the build tool was last asked (or it never was) -- asking it")
   launch <- case known of
     Just l -> do
       logS s "the build's answer is reused: the build tool is not run"
@@ -1005,20 +1115,29 @@ boot s how = do
       r <- phase s "build" (captureLaunch line (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
       case r of
         Right l -> do
-          deps' <- localDeps s l          -- (now that the build tool has said what the repl uses)
-          buildInputs s exe line (fromMaybe [] deps') >>= writeAtomic (launchDir </> "inputs")
+          deps' <- localPackages s l      -- (now that the build tool has said what the repl uses)
+          buildInputs s line (fromMaybe ([], []) deps') >>= writeInputs launchDir
           pure l
         Left said -> do
           writeAtomic (sDir s </> "load.log") said
           dead "the build failed (load.log)" (lastN 12 (lines said)) (ReplDied said)
   vBoot s =: Just (Boot exe line env' launchDir launch)
+  phase s "seed_objects" (seedObjects s launch)
   built <- fromMaybe "" <$> readFileMaybe outF
   (tools, toolEnv) <- phase s "engine_facts" (toolchain s)
-  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools) launch (toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
+  -- macOS: the RTS's "returned" memory stays in the footprint unless the engine starts with this inserted
+  let memLib = takeDirectory exe </> "libghsmem.dylib"
+  -- (and a temporary library answers for names it does not define: that half is not optional, the engine
+  -- keeps unchanged modules linked only with it -- so `mem_return: false` turns off the memory half alone)
+  haveMem <- if os == "darwin" then doesFileExist memLib else pure False
+  let memEnv = [ ("DYLD_INSERT_LIBRARIES", memLib) | haveMem ] ++ [ ("GHS_MEM_RETURN", "0") | haveMem, not (gMemReturn cfg) ]
+  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools) launch (memEnv ++ toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
   case r of
     Left (e :: ReplError) -> dead (takeWhile (/= '\n') (show e)) (lastN 12 (lines (show e))) e
     Right (repl, Reply facts out) -> do
       vRepl s =: Just repl
+      vLastLoad s =: Nothing       -- (another engine: nothing it said is known yet)
+      vTcLast s =: Nothing
       phase s "post_load" (postLoad s repl)
       afterLoad s (Reply facts (T.pack built <> out)) (sBootCheck s) t0
       compiled s >>= (vContextOk s =:)      -- a load that failed dropped the imports: the next good reload re-issues them
@@ -1043,8 +1162,8 @@ buildFileChanged s = do
       case r of
         Left _ -> void (restart s (Just False))            -- (it will say what the build tool said)
         Right new -> do
-          deps <- localDeps s new
-          buildInputs s (bExe b) (bLine b) (fromMaybe [] deps) >>= writeAtomic (bLaunchDir b </> "inputs")
+          deps <- localPackages s new
+          buildInputs s (bLine b) (fromMaybe ([], []) deps) >>= writeInputs (bLaunchDir b)
           old' <- launchWords (bLaunch b)
           new' <- launchWords new
           case moduleDelta old' new' of
@@ -1094,6 +1213,7 @@ restart s fast = do
     was <- filterM (fmap isJust . serverRunning s) (serverLabels s)
     phase s "repl_stop" (rd (vRepl s) >>= mapM_ (\r -> stopRepl r (logS s)))
     vRepl s =: Nothing
+    vLastLoad s =: Nothing
     boot s fast
     unless (null (gServers (sCfg s))) $ do
       ok <- compiled s
@@ -1121,6 +1241,7 @@ reload s doCheck doRefork asyncReq = do
   -- The verdict does not depend on the unlink or its GC, so they run once it is published. After a check the
   -- reloaded code is already linked; after a compile-only reload the `warm` expressions link it first.
   when (due && ok && (evaluated || not (null (gWarm (sCfg s))))) (warmAsync s)
+  typecheckAsync s
   rd (vReforkPending s) >>= mapM_ (\go -> do      -- only now: the verdict it amends is on disk
     done <- newEmptyMVar
     vRefork s =: Just done
@@ -1144,11 +1265,28 @@ reload' s doCheck doRefork async = do
     else do
       t0 <- now
       phase s "scan" (scan (sRoot s) (gWatch cfg) (gWatchExt cfg) >>= (vPendingSig s =:))
+      -- which files differ from what is loaded, when that is all that happened (none added, none gone):
+      -- the engine then reloads without scanning every module (GhsFastLoad). Said afresh before every
+      -- reload -- an empty list too, which is the scan.
+      loaded <- rd (vLoadedSig s)
+      pending <- rd (vPendingSig s)
+      let moved = if M.keysSet loaded == M.keysSet pending then [ fromRaw p | (p, t) <- M.toList pending, M.lookup p loaded /= Just t ] else []
+      void (try (theRepl s >>= \rp -> replQuery rp (Just 10) "changed" [("files", JArr (map JStr moved))]) :: IO (Either SomeException Json))
       push s "reloading" ""
-      r <- try (phase s "ghci_reload" (theRepl s >>= \rp -> replRun rp (Just (gLoadTimeout cfg)) ":reload"))
+      -- Nothing to reload: every watched source is what the loaded code was built from, and that load
+      -- compiled. GHCi would still scan every module and walk the graph to find that out (0.09 s and 150 MB
+      -- on a hundred modules); its last answer is the answer. (The checks and the servers follow as ever.)
+      lastOk <- rd (vLoadedOk s)
+      lastRep <- rd (vLastLoad s)
+      r <- case lastRep of
+        Just rep0 | lastOk && loaded == pending && not (M.null loaded) -> do
+          logS s "reload: no source changed since the load -- not asked again"
+          pure (Right rep0)
+        _ -> try (phase s "ghci_reload" (theRepl s >>= \rp -> replRun rp (Just (gLoadTimeout cfg)) ":reload"))
       case r of
         Left (e :: ReplError) -> setStatus s False ("DEAD: " ++ takeWhile (/= '\n') (show e)) [] [] >> pure (T.pack (show e))
         Right rep@(Reply facts out) -> do
+          vLastLoad s =: Just rep
           writeAtomicT (sDir s </> "reload.log") out
           let nf k = maybe 0 round (lookupNum k facts) :: Int
           when (nf "kept_linked" + nf "relink" > 0) $
@@ -1190,7 +1328,26 @@ typecheckSources s = (\(_, line, secs, detail, _) -> T.pack (unlines ((line ++ p
 typecheckNow :: S -> IO (Bool, String, Double, [String], [Json])
 typecheckNow s = do
   t0 <- now
-  Reply j out <- theRepl s >>= \rp -> replQueryOut rp (Just (gLoadTimeout (sCfg s))) "typecheck" [("dir", JStr (sDir s </> "typecheck"))]
+  -- The answer is a function of the sources: asked again with none of them changed, it is the answer there
+  -- was. And with the same files and some of them changed, the engine is told which (it then typechecks
+  -- without scanning every module).
+  sig <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
+  lastTc <- rd (vTcLast s)
+  case lastTc of
+    Just (sig0, res@(_, line, _, _, _)) | sig0 == sig -> do
+      logS s ("[time] typecheck 0.00s: " ++ line ++ " (no source changed since it was last asked)")
+      pure res
+    _ -> do
+      let since = case lastTc of
+            Just (sig0, _) | M.keysSet sig0 == M.keysSet sig -> [ ("since", JBool True), ("files", JArr [ JStr (fromRaw p) | (p, t) <- M.toList sig, M.lookup p sig0 /= Just t ]) ]
+            _ -> []
+      res <- typecheckAsk s since t0
+      vTcLast s =: Just (sig, res)
+      pure res
+
+typecheckAsk :: S -> [(String, Json)] -> Double -> IO (Bool, String, Double, [String], [Json])
+typecheckAsk s since t0 = do
+  Reply j out <- theRepl s >>= \rp -> replQueryOut rp (Just (gLoadTimeout (sCfg s))) "typecheck" (("dir", JStr (sDir s </> "typecheck")) : since)
   t1 <- now
   writeAtomicT (sDir s </> "typecheck.log") out
   let (v, detail) = verdictOf j (JObj []) T.empty
@@ -1258,14 +1415,20 @@ docSearch s req = do
   let entries = concatMap (snd . snd) (M.toList new)
       ws = map T.pack (strs (req .: "words"))
       n = maybe 8 round (lookupNum "n" req) :: Int
-      hits = take n (search entries ws)
+      together = search entries ws
+      -- every word in one declaration if there is such a one; else each word answered on its own
+      (found, missing) = if null together && length ws > 1 then searchEach entries ws else (together, [])
+      apart = null together && not (null found)
+      hits = take n found
       docLines = if n == 1 || length hits == 1 then 40 else 4
+      notes = [ T.pack ("(no declaration has all of: " ++ unwords (map T.unpack ws) ++ " -- each word on its own)") | apart ]
+              ++ [ T.pack ("(nothing matches: " ++ unwords (map T.unpack missing) ++ ")") | not (null missing), apart ]
   t1 <- now
   logS s (printf "[time] doc %.3fs: %d declarations in %d files, %d read again" (t1 - t0) (length entries) (M.size new)
             (length [ () | (p, (mt, _)) <- M.toList new, fmap fst (M.lookup p old) /= Just mt ]))
   pure $ if lookupBool "json" req == Just True then T.pack (encode (JArr [ entryJson sc e | (sc, e) <- hits ]))
          else if null hits then T.pack ("nothing in this session's " ++ show (length entries) ++ " declarations matches " ++ unwords (map T.unpack ws))
-         else T.intercalate (T.pack "\n") (map (render docLines . snd) hits)
+         else T.intercalate (T.pack "\n") (notes ++ map (render docLines . snd) hits)
 
 -- | What changes when HEAD does: HEAD itself, and the directory the branch's ref is rewritten in (a commit
 -- replaces the ref file, so it is the directory that sees it). Watched, a commit is noticed when it happens
@@ -1331,6 +1494,7 @@ drive s act = withMVar (vWork s) $ \_ -> do
 -- every couple of seconds regardless, because a waiter may miss an event.
 watchLoop :: S -> IO ()
 watchLoop s = do
+  gen <- rd (vWatchGen s)
   let cfg = sCfg s
       doScan = scan (sRoot s) (gWatch cfg) (gWatchExt cfg)
   first <- doScan
@@ -1344,7 +1508,8 @@ watchLoop s = do
   t0 <- now
   let loop lastSig headC slow = do
         stopping <- rd (vStopping s)
-        unless stopping $ do
+        mine <- (== gen) <$> rd (vWatchGen s)       -- (a member was added: another watcher has its sources)
+        unless (stopping || not mine) $ do
           fired <- waiterWait w 0.5
           t <- now
           let due = t - slow >= 2.0
@@ -1466,6 +1631,28 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
   "typecheck" -> Just <$> typecheckSources s
+  -- the members chosen since it started, taken by the running repl if they can be ('addMembers')
+  "add_members" -> do
+    r <- addMembers s
+    pure (Just (either (\why -> T.pack ("RESTART-NEEDED: " ++ why)) id r))
+  -- units added to the running repl (the engine's GhsAddUnits), then loaded by a reload: no restart
+  "add_units" -> do
+    Reply j out <- theRepl s >>= \rp -> replQueryOut rp (Just 120) "add_units" [("files", JArr [ JStr f | JStr f <- lookupArr "files" req ])]
+    case lookupStr "error" j of
+      Just e -> pure (Just (T.pack ("add-unit: " ++ e) <> out))
+      Nothing -> do
+        logS s ("added to the running repl: " ++ unwords [ u | JStr u <- lookupArr "units" j ])
+        vLastLoad s =: Nothing        -- (the engine has targets it has not loaded: this reload is a real one)
+        v <- reload s False False Nothing
+        pure (Just (T.pack ("added " ++ unwords [ u | JStr u <- lookupArr "units" j ] ++ "\n") <> v))
+  -- what the heap holds, and what an action costs (the engine's own: see its `census` and `bench`)
+  _ | op `elem` ["census", "bench"] -> do
+    Reply j out <- theRepl s >>= \rp -> replQueryOut rp (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) op
+                     ([ ("mode", JStr (fromMaybe "cafs" (lookupStr "mode" req))), ("expr", JStr (fromMaybe "" (lookupStr "expr" req))) ]
+                      ++ maybe [] (\n -> [("top", JNum n)]) (lookupNum "top" req) ++ [ ("live", JBool True) | lookupBool "live" req == Just True ])
+    vEvaluated s =: True
+    warmAsync s
+    pure (Just (T.dropWhileEnd (== '\n') out <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
@@ -1487,6 +1674,185 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     pure (Just (T.pack (printf "repl %.0f MB (budget %.0f), servers %.0f MB" r (gBudgetMb (sCfg s)) sv)))
   _ -> pure Nothing
 
+-- | Every package under these units in the build tool's plan (@plan.json@: what each depends on, package
+-- by package or component by component), the units themselves left out.
+unitsBelow :: Json -> [String] -> [String]
+unitsBelow plan roots = filter (`notElem` roots) (go [] roots)
+  where
+    deps u = nub (concat [ strs (e .: "depends") ++ concat [ strs (c .: "depends") | (_, c) <- fields (e .: "components") ]
+                         | e <- lookupArr "install-plan" plan, lookupStr "id" e == Just u ])
+    fields j = case j of { JObj kvs -> kvs; _ -> [] }
+    go seen [] = seen
+    go seen (u : rest)
+      | u `elem` seen = go seen rest
+      | otherwise = go (u : seen) (deps u ++ rest)
+
+-- | __Objects another session has already compiled.__ Each session keeps its objects in a directory of its
+-- own (two of them running must not write one file), so a session started after a day's work in another
+-- compiled all of that work again: `mm` after `dev`, 37 s of a 52 s start for modules `dev` held compiled.
+-- Before the engine starts, each unit's object directory takes, module by module, the interface and object
+-- of a SIBLING session (the same unit's directory under another session's name) whose interface is newer
+-- than its own, with their times. Nothing is assumed of them: the compiler checks an interface against the
+-- source, the flags and what it imports before it uses the object, and compiles the module when it does
+-- not fit -- a copy that is no use costs only the copy. A pair written in the last two seconds is left (a
+-- session may be writing it).
+seedObjects :: S -> Launch -> IO ()
+seedObjects s l = void (try go :: IO (Either SomeException ()))
+  where
+    go = do
+      files <- forM [ f | ('@' : f) <- lArgs l ] (fmap (maybe [] lines) . readFileMaybe)
+      let wds = nub ([ (w, srcDirs ls) | ls <- files, (k, w) <- zip ls (drop 1 ls), k == "-working-dir" ] ++ [ (lCwd l, srcDirs (lArgs l)) | null files ])
+          -- (a unit's source directories: its -i flags)
+          srcDirs ls = [ d | ('-' : 'i' : d) <- ls, not (null d) ]
+          stateRel = takeDirectory (takeDirectory (sObjRel s))        -- <state>/<session>/obj
+      t <- getCurrentTime
+      took <- forM wds $ \(wd, dirs) -> do
+        let mine = wd </> sObjRel s
+        names <- either (\(_ :: IOException) -> []) id <$> try (listDirectory (wd </> stateRel))
+        sibs <- filterM doesDirectoryExist [ wd </> stateRel </> n </> "obj" | n <- names, n /= sName s ]
+        his <- concat <$> forM sibs (\d -> map ((,) d) <$> hiFiles d "")
+        -- the newest interface of each module among the siblings, if newer than ours
+        best <- foldM (\m (d, rel) -> do
+                  tm <- getModificationTime (d </> rel)
+                  pure (M.insertWith (\a b -> if fst a >= fst b then a else b) rel (tm, d) m)) M.empty his
+        fmap catMaybes $ forM (M.toList best) $ \(rel, (tm, d)) -> do
+          have <- doesFileExist (mine </> rel)
+          own <- if have then Just <$> getModificationTime (mine </> rel) else pure Nothing
+          -- ours is only replaced when it is STALE -- older than the module's source (or missing). A sibling's
+          -- newer copy of an interface that is still good is the same module compiled later: taking it
+          -- would be eighty files copied back and forth between two sessions for nothing.
+          srcs <- filterM doesFileExist [ (if isAbsolute d then d else wd </> d) </> replaceExtension rel e | d <- dirs, e <- ["hs", "lhs"] ]
+          srcT <- mapM getModificationTime (take 1 srcs)
+          let good = case (own, srcT) of
+                (Just o, st : _) -> o >= st
+                _ -> False                     -- (ours missing, or no source found: by the times alone)
+          let obj = replaceExtension rel "o"
+          hasObj <- doesFileExist (d </> obj)
+          otm <- if hasObj then getModificationTime (d </> obj) else pure tm
+          if good || maybe False (>= tm) own || not hasObj || diffUTCTime t (max tm otm) < 2 then pure Nothing else do
+            createDirectoryIfMissing True (takeDirectory (mine </> rel))
+            copyFileWithMetadata (d </> obj) (mine </> obj)
+            copyFileWithMetadata (d </> rel) (mine </> rel)
+            pure (Just (takeFileName (takeDirectory d)))
+      let n = length (concat took)
+      when (n > 0) (logS s ("objects: " ++ show n ++ " module(s) taken from " ++ intercalate ", " (nub (concat took)) ++ " (compiled there since this session last compiled them)"))
+    hiFiles root rel = do
+      names <- either (\(_ :: IOException) -> []) id <$> try (listDirectory (root </> rel))
+      fmap concat $ forM names $ \n -> do
+        let r = if null rel then n else rel </> n
+        isDir <- doesDirectoryExist (root </> r)
+        if isDir then hiFiles root r else pure [ r | takeExtension n == ".hi" ]
+
+withRootFiles :: [FilePath] -> Cfg -> Cfg
+withRootFiles rootFiles cfg0 = cfg0 { gWatch = gWatch cfg0 ++ [ f | f <- rootFiles, f `notElem` gWatch cfg0 ] }
+
+-- | __Members added to the session that is running__, without a restart.
+--
+-- A repl's packages were fixed when it started, so a new member meant a new repl: every module loaded and
+-- linked again, every cached value computed again. The engine can take a unit while it runs ('GhsAddUnits'),
+-- so the daemon asks the build tool what the NEW member set is started with -- the same question a start
+-- asks, 4-8 s -- and, if the units already loaded would be started exactly as they were, hands the engine
+-- the new ones. Then it becomes the daemon of the new set: its configuration, its launch record (a later
+-- restart starts the whole set), the new members' environment, imports, sources to watch, checks and
+-- servers.
+--
+-- @Left why@: nothing was changed, and the caller restarts as before -- a member that was removed, a
+-- session with its own repl command, other settings for the process (its RTS flags, its prebuild step, a
+-- variable already set to something else), or units the build tool would now start differently.
+addMembers :: S -> IO (Either String T.Text)
+addMembers s = do
+  let old = sCfg s
+  rootFiles <- sort . filter (\f -> ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f) <$> getDirectoryContents (sRoot s)
+  rnew <- fmap (withRootFiles rootFiles) <$> resolve (sConf s) (sName s)
+  mboot <- rd (vBoot s)
+  case (rnew, mboot) of
+    (Left e, _) -> pure (Left e)
+    (_, Nothing) -> pure (Left "the session has not started")
+    (Right new, Just b)
+      | not (all (`elem` gMembers new) (gMembers old)) -> pure (Left "a member was removed")
+      | isJust (gRepl old) || isJust (gRepl new) -> pure (Left "a session with its own repl command")
+      | not (all (`elem` gUnits new) (gUnits old)) -> pure (Left "a unit was removed")
+      | same gRtsFlags || same gPrebuild || same gHygiene || same gCapabilities || same gCabalArgs || same gGhcJobs -> pure (Left "the new member set has other settings for the repl's process")
+      | not (all (`elem` gPreload new) (gPreload old)) -> pure (Left "a preload step was removed")
+      | not (null [ () | (k, v) <- gEnv new, Just v' <- [lookup k (gEnv old)], v /= v' ]) -> pure (Left "a variable of the repl's environment would change")
+      | otherwise -> do
+          tmp <- newIORef new
+          let s' = s { sCfgV = tmp }
+              env' = gEnv new ++ [("GHCI_SESSION", sName s)]
+          (exe, ver, _) <- engineExe s
+          let line = replCommandLine s' exe ver
+          launchDir <- (\h -> sDir s </> "launch" </> showHash h) <$> hashString line 7
+          -- the build tool's answer for THIS set, if it was asked before and nothing it reads has changed
+          -- since (a member added, removed and added again; the same rule a start follows): 2-6 s not spent
+          before <- readLaunch launchDir
+          depsB <- maybe (pure Nothing) (localPackages s') before
+          inputsB <- buildInputs s' line (fromMaybe ([], []) depsB)
+          wasIn <- readFileMaybe (launchDir </> "inputs")
+          wasDeps <- readFileMaybe (launchDir </> "inputs.deps")
+          r <- case before of
+            Just l0 | wasIn == Just (fst inputsB) && wasDeps == Just (snd inputsB) && isJust depsB -> do
+              logS s "the build's answer for the new member set is reused: the build tool is not run"
+              pure (Right l0)
+            _ -> captureLaunch line (sRoot s) env' launchDir (sDir s </> "add.out") (gLoadTimeout new) (logS s)
+          case r of
+            Left said -> writeAtomic (sDir s </> "load.log") said >> pure (Left "the build tool could not say how to start the new set (load.log)")
+            Right l -> do
+              let unitFiles la = [ f | ('@' : f) <- lArgs la ]
+                  -- (a unit's file is named unit-<n>-<its id>: the number is the build tool's, of that run)
+                  unitOf f = drop 1 (dropWhile (/= '-') (drop 5 (takeFileName f)))
+                  plain la = [ a | a <- lArgs la, take 1 a /= "@", a /= "-unit" ]
+              was <- forM (unitFiles (bLaunch b)) (\f -> (,) (unitOf f) <$> readFileMaybe f)
+              plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
+              let below = maybe [] (\pl -> unitsBelow pl (map fst was)) plan
+              now' <- forM (unitFiles l) (\f -> (,,) (unitOf f) f <$> readFileMaybe f)
+              let moved = [ u | (u, t) <- was, [ t' | (u', _, t') <- now', u' == u ] /= [t] ]
+                  fresh = [ f | (u, f, _) <- now', u `notElem` map fst was ]
+                  freshIds = [ u | (u, _, _) <- now', u `notElem` map fst was ]
+                  -- (named in a loaded unit's own flags, or anywhere UNDER one in the build tool's plan: a package
+                  --  a loaded unit reaches only through another built package is used built all the same)
+                  usedBuilt = [ u | u <- freshIds, any (\(_, t) -> u `elem` lines (fromMaybe "" t)) was || u `elem` below ]
+              -- (the build tool starts ONE unit with its flags on the command line and no unit file: there is
+              --  then nothing to compare the new set's with, and the flags the engine kept are that unit's)
+              if null (unitFiles (bLaunch b)) then pure (Left "the session was started with a single unit, not as units (it takes members live once it has two)")
+                else if plain l /= plain (bLaunch b) then pure (Left "the engine would be started with other arguments")
+                else if not (null moved) then pure (Left ("units already loaded would be built differently: " ++ unwords moved))
+                else if null fresh then pure (Left "the build tool names no new unit")
+                -- A package the loaded units already USE, built, cannot become a unit beside them: they were
+                -- set up with it as a package of the database, and the compiler then finds it in both places
+                -- (a panic in its module graph: tried, with the core library under two packages that use it).
+                -- Everything that uses it has to be set up again, which is a restart.
+                else if not (null usedBuilt) then pure (Left ("the units already loaded use " ++ unwords usedBuilt ++ " as a built package: making it a unit means loading them again"))
+                else do
+                  rp <- theRepl s
+                  Reply j _ <- replQueryOut rp (Just 300) "add_units" [("files", JArr (map JStr fresh))]
+                  case lookupStr "error" j of
+                    Just e -> pure (Left ("the engine did not take the units: " ++ e))
+                    Nothing -> do
+                      let added = [ u | JStr u <- lookupArr "units" j ]
+                          c t e = void (replCommand rp (Just t) e)
+                      logS s ("added to the running repl: " ++ unwords added)
+                      -- from here the daemon is the new set's
+                      writeIORef (sCfgV s) new
+                      deps' <- localPackages s l
+                      buildInputs s line (fromMaybe ([], []) deps') >>= writeInputs launchDir
+                      vBoot s =: Just (Boot (bExe b) line env' launchDir l)
+                      forM_ [ kv | kv@(k, _) <- gEnv new, isNothing (lookup k (gEnv old)) ] $ \(k, v) ->
+                        c 60 ("System.Environment.setEnv " ++ show k ++ " " ++ show (replaceSession v))
+                      forM_ [ pl | pl <- gPreload new, pl `notElem` gPreload old ] (c 120)
+                      -- (with the servers looked at: one whose code did not change is KEPT, and the verdict says so
+                      --  rather than "not re-forked")
+                      vLastLoad s =: Nothing        -- (the engine has targets it has not loaded)
+                      v <- reload s True True Nothing
+                      let ms = [ m | m <- gModules new, m `notElem` gModules old ]
+                      unless (null ms) (forM_ ms (\m -> c 60 (":module + " ++ m)))
+                      modifyIORef' (vWatchGen s) (+ 1)
+                      void (forkIO (void (try (watchLoop s) :: IO (Either SomeException ()))))
+                      started <- serversBoot s
+                      pure (Right (T.pack ("added " ++ unwords [ m | m <- gMembers new, m `notElem` gMembers old ] ++ " to the running repl (" ++ unwords added ++ "): no restart\n")
+                                   <> v <> (if null started then T.empty else T.pack ("\n[servers: " ++ intercalate "; " started ++ "]"))))
+      where same f = f old /= f new
+            replaceSession = id
+
 -- | Run the daemon for one session until it is told to stop (or idles out).
 runDaemon :: Conf -> String -> Bool -> Bool -> IO ()
 runDaemon conf name bootCheck fastStart = do
@@ -1496,9 +1862,10 @@ runDaemon conf name bootCheck fastStart = do
   createDirectoryIfMissing True dir
   -- build files at the root are watched too: a changed .cabal means a new package set, which a reload cannot adopt
   rootFiles <- sort . filter (\f -> ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f) <$> getDirectoryContents root
-  let cfg = cfg0 { gWatch = gWatch cfg0 ++ [ f | f <- rootFiles, f `notElem` gWatch cfg0 ] }
+  let cfg = withRootFiles rootFiles cfg0
   t <- now
-  s <- S conf name cfg root dir (cStateRel conf </> name </> "obj") bootCheck fastStart
+  cfgV <- newIORef cfg
+  s <- S conf name cfgV root dir (cStateRel conf </> name </> "obj") bootCheck fastStart
          <$> newIORef Nothing <*> newIORef "starting" <*> newIORef (JObj []) <*> newIORef ""
          <*> newIORef M.empty <*> newIORef M.empty <*> newIORef 0 <*> newIORef 0
          <*> newIORef False <*> newIORef False <*> newIORef "stopped" <*> newIORef []
@@ -1509,6 +1876,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef Nothing <*> newIORef Nothing <*> newIORef M.empty <*> newIORef 0
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
          <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
+         <*> newIORef 0 <*> newIORef Nothing <*> newIORef Nothing <*> newIORef 0 <*> newIORef 0
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
@@ -1531,6 +1899,7 @@ runDaemon conf name bootCheck fastStart = do
       memSampleAsync s
       now >>= (vLastUsed s =:)     -- idle is counted from the end of the boot, not from the daemon's start
       void (forkIO (void (try (watchLoop s) :: IO (Either SomeException ()))))
+      typecheckAsync s
       serve s `finally` do
         reforkJoin s
         keep <- rd (vKeepServers s)
