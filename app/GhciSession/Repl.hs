@@ -23,7 +23,7 @@ import Control.Exception (Exception, IOException, SomeException, throwIO, try)
 import Control.Monad (forM_, unless, void, when)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-import Data.IORef (IORef, newIORef, readIORef, writeIORef)
+import Data.IORef (IORef, newIORef, readIORef, writeIORef, modifyIORef')
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -38,14 +38,17 @@ import System.Posix.Signals (nullSignal, sigINT, sigKILL, sigTERM, signalProcess
 import System.Posix.Types (CPid (..))
 import System.Process (CreateProcess (..), ProcessHandle, StdStream (..), createProcess, getPid, getProcessExitCode, proc, shell, waitForProcess)
 import System.Timeout (timeout)
+import GHC.Clock (getMonotonicTime)
 
 import GhciSession.Json
 import GhciSession.Sys (socketPair, socketShutdown)
 
-data ReplError = ReplDied String | ReplTimeout Double T.Text   -- ^ the seconds, and what the interrupted command had printed
+-- | 'ReplTimeout': the seconds, whether the interrupt stopped the command, and what it had printed.
+data ReplError = ReplDied String | ReplTimeout Double Bool T.Text
 instance Show ReplError where
   show (ReplDied s) = if null s then "repl is not running" else s
-  show (ReplTimeout t _) = "timed out after " ++ show (round t :: Int) ++ "s"
+  show (ReplTimeout t stopped _) = "timed out after " ++ show (round t :: Int) ++ "s"
+    ++ (if stopped then "" else " -- and it did not stop when interrupted: the session runs it to its end before it answers anything else (a loop that does not allocate cannot be interrupted); `restart` ends it")
 instance Exception ReplError
 
 -- | How to start the engine: what the build tool would have run.
@@ -63,6 +66,7 @@ data Repl = Repl
   , rIO :: MVar ()                   -- ^ serialises whole round-trips
   , rEvalTimeout :: Double
   , rPgid :: IORef (Maybe CPid)
+  , rOwed :: IORef Int               -- ^ replies still to come for commands that timed out and did not stop: discarded as they arrive
   }
 
 -- | A reply's output as text: UTF-8, leniently.
@@ -128,7 +132,8 @@ startRepl exe pre l extraEnv out loadTimeout evalTimeout logF = do
   dead <- newTVarIO False
   io <- newMVar ()
   pg <- getPid ph >>= newIORef . fmap (CPid . fromIntegral)
-  let r = Repl ph (\b -> B.hPut h (frameLen (B.length b)) >> B.hPut h b >> hFlush h) (socketShutdown ours) replies dead io evalTimeout pg
+  owed <- newIORef 0
+  let r = Repl ph (\b -> B.hPut h (frameLen (B.length b)) >> B.hPut h b >> hFlush h) (socketShutdown ours) replies dead io evalTimeout pg owed
   _ <- forkIO (recvLoop h replies dead)
   _ <- forkIO (waitForProcess ph >> atomically (writeTVar dead True))
   load <- await r out loadTimeout
@@ -168,7 +173,7 @@ await r out secs = do
       let n = be32 b
           (j, o) = B.splitAt n (B.drop 4 b)
       pure (Reply (either (const (JObj [])) id (parseJsonBS j)) (decode o))
-    Left (Just t) -> throwIO (ReplTimeout t T.empty)
+    Left (Just t) -> throwIO (ReplTimeout t True T.empty)
     Left Nothing -> do
       code <- timeout 2000000 (waitForProcess (rProc r))
       said <- if null out then pure "" else either (\(_ :: IOException) -> "") id <$> try (readFile out >>= \x -> length x `seq` pure x)
@@ -194,9 +199,8 @@ roundTrip :: Repl -> Maybe Double -> B.ByteString -> IO Reply
 roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
   alive <- replAlive r
   unless alive (throwIO (ReplDied ""))
-  drain                       -- (a reply to a request that timed out and could not be interrupted)
   rSend r payload
-  res <- try (await r "" (fromMaybe (rEvalTimeout r) mt))
+  res <- try (own (fromMaybe (rEvalTimeout r) mt))
   case res of
     Right rep -> pure rep
     -- A command that runs past its time is INTERRUPTED, not abandoned: GHCi turns a SIGINT into
@@ -204,15 +208,28 @@ roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
     -- turn replies -- so the next request does not queue behind the one that hung (a check of 30 s had to
     -- be killed; an agent's probe would hang its session). The caller still gets the timeout. A command
     -- that cannot be interrupted (a foreign call that does not return) leaves its reply for 'drain'.
-    Left (ReplTimeout t _) -> do
+    Left (ReplTimeout t _ _) -> do
       mp <- getPid (rProc r)
       forM_ mp $ \p -> try (signalProcess sigINT (CPid (fromIntegral p))) :: IO (Either IOException ())
       -- (the interrupted command's output comes with the reply the interrupt frees: it says where it hung)
-      said <- try (await r "" 5) :: IO (Either ReplError Reply)
-      throwIO (ReplTimeout t (either (const T.empty) rOut said))
+      said <- try (own 5) :: IO (Either ReplError Reply)
+      case said of
+        Right rep -> throwIO (ReplTimeout t True (rOut rep))
+        -- it did not stop: its reply comes later, and must not be taken for the next request's (it was,
+        -- and every answer after it belonged to the request before: an agent took the session for stuck)
+        Left _ -> modifyIORef' (rOwed r) (+ 1) >> throwIO (ReplTimeout t False T.empty)
     Left e -> throwIO e
   where
-    drain = atomically (let go = tryReadTQueue (rReplies r) >>= maybe (pure ()) (const go) in go)
+    -- this request's reply: the engine answers in order, so the replies still owed to commands that timed
+    -- out come first, and are discarded; the time allowed covers them too
+    own secs = do
+      t0 <- getMonotonicTime
+      let go = do
+            el <- subtract t0 <$> getMonotonicTime
+            rep <- await r "" (max 0.05 (secs - el))
+            owed <- readIORef (rOwed r)
+            if owed > 0 then writeIORef (rOwed r) (owed - 1) >> go else pure rep
+      go
 
 -- | Run one GHCi command: its output, and the diagnostics the compiler logged while it ran. 'Nothing' for the
 -- session's default timeout. Throws 'ReplError'.

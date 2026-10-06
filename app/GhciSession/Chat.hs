@@ -212,13 +212,14 @@ sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "cen
 -- | The session's tools (as the MCP server defines them, the chat being one session) and the agent's hands on the files.
 chatTools :: [Tool]
 chatTools =
-  [ t { tProps = [ p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
+  [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
      , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output and status." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
-  where evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
+  where timeoutDesc = "seconds before it is interrupted (default 120): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
+        evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
 -- | A tool as the endpoint takes it.
 toolJson :: Tool -> Json

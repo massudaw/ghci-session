@@ -489,11 +489,11 @@ checkOne s e = do
   r <- try (cmd s limit (ckExpr e))
   t1 <- now
   case r of
-    Left (ReplTimeout t said) | not (null soft) ->
+    Left (ReplTimeout t _ said) | not (null soft) ->
       let lastLine = case [ l | l <- map T.strip (T.lines said), not (T.null l), l /= T.pack "Interrupted." ] of { [] -> "nothing yet"; ls -> T.unpack (T.takeEnd 160 (last ls)) }
           why = printf "hung: ran %.0fs where it takes about %.1fs (interrupted); last output: %s" t (medianOf hist) lastLine
       in pure (CheckResult (ckMember e) "HANG" [why] (said <> T.pack ("\n[session] " ++ why)) (t1 - t0))
-    Left ex@(ReplTimeout _ _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
+    Left ex@(ReplTimeout _ _ _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
     Left ex -> pure (CheckResult (ckMember e) "DEAD" [show ex] (T.pack (show ex)) (t1 - t0))
     Right out -> do
       body <- case logp of
