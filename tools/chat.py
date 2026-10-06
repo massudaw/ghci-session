@@ -190,9 +190,32 @@ TOOLS = [
 SESSION_TOOLS = {"eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem"}   # the daemon logs these itself
 
 
+# what a model calls an argument when it does not call it by its name
+ALIASES = {"cmd": ["command", "shell", "script"], "path": ["file", "filename", "file_path", "filepath"], "content": ["text", "contents", "data"],
+           "old": ["old_string", "old_text", "from", "search"], "new": ["new_string", "new_text", "to", "replace"], "expr": ["expression", "code", "command"],
+           "query": ["q", "name", "words"], "lines": ["count", "n", "limit"], "start": ["from_line", "line", "offset"]}
+REQUIRED = {t["function"]["name"]: t["function"]["parameters"]["required"] for t in TOOLS}
+
+
+def arguments(name, a):
+    """The call's arguments by their names (an alias is renamed), or what is missing."""
+    a = dict(a)
+    for k, als in ALIASES.items():
+        if k not in a:
+            for al in als:
+                if al in a:
+                    a[k] = a.pop(al)
+                    break
+    missing = [k for k in REQUIRED.get(name, []) if k not in a]
+    return a, missing
+
+
 def run_tool(sess, name, a):
     """(ok, text) of one tool call."""
     root = sess.root
+    a, missing = arguments(name, a)
+    if missing:
+        return False, f"{name}: missing argument(s) {', '.join(missing)}; it takes {', '.join(REQUIRED.get(name, []))}"
 
     def inside(p):
         full = os.path.realpath(os.path.join(root, p or "."))
@@ -272,7 +295,9 @@ def run_tool(sess, name, a):
             return r.returncode == 0, (out.strip() or "(no output)") + (f"\n[exit {r.returncode}]" if r.returncode else "")
     except subprocess.TimeoutExpired:
         return False, "timed out"
-    except (OSError, ValueError, KeyError) as e:
+    except KeyError as e:
+        return False, f"{name}: missing argument {e}"
+    except (OSError, ValueError) as e:
         return False, f"{type(e).__name__}: {e}"
     return False, f"unknown tool {name}"
 
