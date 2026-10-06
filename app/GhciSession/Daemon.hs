@@ -2146,7 +2146,10 @@ runDaemon conf name bootCheck fastStart = do
       rm (dir </> "pid")
     Right () -> do
       verdictLine s >>= histAdd s "echo"
-      forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m c) :: IO (Either SomeException ())))
+      exe <- getExecutablePath
+      -- ("ghci-session summarize" is this executable's own compactor, wherever the binary is)
+      let self c = case words c of { ("ghci-session" : rest) -> unwords (show exe : rest); _ -> c }
+      forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
       void (forkIO (seedLoaded s))
       vMem s =: Nothing
       memSampleAsync s

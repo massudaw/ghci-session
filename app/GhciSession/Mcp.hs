@@ -6,7 +6,7 @@
 -- are the memory. Nothing here touches the repl.
 --
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
-module GhciSession.Mcp (mcpMain) where
+module GhciSession.Mcp (mcpMain, Tool (..), tools, call, pick, request) where
 
 import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)

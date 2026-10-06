@@ -29,6 +29,7 @@ import GhciSession.Config
 import GhciSession.Daemon (runDaemon)
 import GhciSession.Gc
 import GhciSession.Json
+import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
 
@@ -424,6 +425,8 @@ usage = unlines
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
   , "  mcp                                serve the session's operations and its memory to an agent (MCP on stdin/stdout): claude mcp add ghci -- ghci-session mcp"
+  , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
+  , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
   , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
@@ -450,6 +453,7 @@ cliMain = do
     [] -> putStr usage >> pure 2
     (c : _) | c `elem` ["-h", "--help", "help"] -> putStr usage >> pure 0
     ("init" : _) -> cmdInit
+    ("summarize" : rest) -> summarizeMain rest          -- (no project needed: the daemon runs it from anywhere)
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
@@ -541,6 +545,7 @@ cliMain = do
             request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
           _ -> die' "date ID: when message ID was written"
         "mcp" -> mcpMain conf >> pure 0
+        "chat" -> chatMain conf rest
         "list" -> cmdList conf
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN

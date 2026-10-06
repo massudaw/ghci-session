@@ -176,10 +176,12 @@ The summaries are written by a cheap model through `"summarize_cmd"`: a shell co
 instructions (OptChat's compactor prompt, `compactPrompt` there, with `"agent"` as the agent's name), the view's
 lines before the node (bare -- no ids, which a model copies into its answer), and the step -- the message
 whole, or the two lines to merge -- on its standard input, reading one line from its standard output:
-`"summarize_cmd": "python3 tools/summarize.py"` runs `tools/summarize.py`, which sends the instructions as
-the system prompt and the rest as the user message to an OpenAI-compatible chat endpoint -- DeepSeek's flash
-model by default (`DEEPSEEK_API_KEY`; `DEEPSEEK_MODEL`, `DEEPSEEK_BASE_URL`, or `OPENAI_*`, override; `pip install
-openai`), asked without thinking: a reasoning model spends the answer's budget on its thoughts first, and a
+`"summarize_cmd": "ghci-session summarize"` runs the tool's own compactor (`GhciSession.Chat.summarizeMain`; the
+daemon runs its own executable, wherever that is), which sends the instructions as the system prompt and the rest
+as the user message to an OpenAI-compatible chat endpoint -- DeepSeek's flash model by default
+(`DEEPSEEK_API_KEY`; `DEEPSEEK_MODEL`, `DEEPSEEK_BASE_URL`, or `OPENAI_*`, override) -- over HTTPS through
+libcurl, found at run time (`cbits/ghs_http.c` `dlopen`s `libcurl.so.4` / `libcurl.4.dylib`: no headers, no link
+name, and the package still depends on nothing outside GHC's boot packages), asked without thinking: a reasoning model spends the answer's budget on its thoughts first, and a
 summary's budget was often all thoughts and no line (`SUMMARIZE_EFFORT=low|high|max` turns thinking on; an answer
 cut off before any text is asked again with a larger budget). Nodes are built one message at a time, in order,
 with merges of finished parts alongside, `summarize_jobs` (8) at once, and no call sees a line that is not a
@@ -204,14 +206,21 @@ and nothing after it (it used to leave the next request queued behind it). Two w
   `mem`, and the memory's `view`, `zoom`, `date`, `history` and `remember` (a finding kept for later turns,
   logged as the agent's words). Each call is a request to the daemon, so it is in the history like any other.
   The agent's edits are not: the session sees them as saves, with their diffs.
-- **`tools/chat.py`** is the endless chat itself, OptChat's turn loop over this history: a fresh model call
-  per message, whose input is the system prompt, the view (rendered before the message is logged) and the
-  message; the tools above plus the agent's hands on the files (`read`, `write`, `edit`, `ls`, `sh`), which
-  the harness logs; replies logged as `talk`, thoughts shown and never logged; a line typed while the agent
-  works delivered between tool calls. It waits for the view to settle before each turn. The model is an
-  OpenAI-compatible endpoint, DeepSeek's flash model by default, which caches the prompt's prefix on its own
-  (`python3 tools/chat.py -s dev`, `--once 'what was tried on X?'`, `--instructions AGENTS.md`). It is
-  Python because this package depends on the compiler's boot packages only and a model client is not one.
+- **`ghci-session chat`** is the endless chat itself (`GhciSession.Chat`), OptChat's turn loop over this
+  history: a fresh model call per message, whose input is the system prompt, the view (rendered before the
+  message is logged) and the message; the tools above (the MCP server's own definitions) plus the agent's hands
+  on the files (`read`, `write`, `edit`, `ls`, `sh`), which the harness logs; replies logged as `talk`, thoughts
+  shown and never logged; a line typed while the agent works delivered between tool calls. It waits for the view
+  to settle before each turn. The model is an OpenAI-compatible endpoint (`GhciSession.Llm`, over the same
+  libcurl), DeepSeek's flash model by default, which caches the prompt's prefix on its own (`ghci-session chat
+  -s dev`, `--once 'what was tried on X?'`, `--instructions AGENTS.md`, `--usage` for each call's tokens and
+  seconds). What letting it build an emulator taught the harness: a save answers with the verdict of the reload
+  it caused, and behind a bad verdict the compiler's diagnostics or the failing tests, so no `status` call
+  follows a write (it used to see STALE and reload by hand); an eval of several lines runs its leading imports
+  as their own commands (in one GHCi block they do not parse); an argument the model calls by another name
+  (`command` for `cmd`) is taken by its name, and a missing one is said; a reply cut off at the output limit
+  (the thinking ran on) is asked to go on in smaller steps, not taken as the end of the turn. It began as
+  `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
 
 ## What the heap holds, what an action costs, and the session's own scenario
 

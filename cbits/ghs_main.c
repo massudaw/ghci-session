@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     if (!strcmp(argv[i], "_daemon")) daemon = 1;
     if (!strcmp(argv[i], "selfbench") || !strcmp(argv[i], "selftest")) stats = 1;
+    if (!strcmp(argv[i], "chat")) stats = 1;     /* long-lived, threaded (a reader on stdin, the model call): the timer, not the client's -V0 */
   }
   RtsConfig conf = defaultRtsConfig;
   conf.rts_opts_enabled = RtsOptsAll;
