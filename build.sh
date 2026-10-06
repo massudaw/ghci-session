@@ -4,6 +4,13 @@
 # copy keeps running it.
 set -e
 cd "$(dirname "$0")"
+# cabal recompiles a C source when the .c changes, not when a header it includes does (and it does not even
+# look while no source has changed): a header newer than the last build touches the C sources, so a change
+# to hygiene/c/rts_syms.h (how the RTS's private symbols are found) is built in. Their contents stay as they are.
+newest=$(ls -t hygiene/c/*.h cbits/*.h 2>/dev/null | head -1)
+if [ -n "$newest" ] && [ -f .bin/ghci-session-engine ] && [ "$newest" -nt .bin/ghci-session-engine ]; then
+  touch hygiene/c/*.c cbits/*.c
+fi
 cabal build -v0 exe:ghci-session exe:ghci-session-engine
 mkdir -p .bin
 for x in ghci-session ghci-session-engine; do

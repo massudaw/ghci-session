@@ -1,3 +1,4 @@
+#define _GNU_SOURCE   /* dladdr and Dl_info on glibc (rts_syms.h) */
 /* ghs_prune_cafs -- the GHCi reload leak, mitigated from outside the RTS.
  *
  * What leaks. With a dynamically linked GHC (ghcup's, macOS) every `:reload`

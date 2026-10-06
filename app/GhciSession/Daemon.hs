@@ -631,7 +631,7 @@ unlinkCafs s = do
         live <- rd (vLiveMb s)
         if k < 0
           then do vHygieneOn s =: False
-                  logS s "hygiene OFF: the engine cannot read this RTS's CAF list (see hygiene/c/rts_syms.h)"
+                  logS s "hygiene OFF: the pruner cannot work on this platform (it walks each loaded library's symbols, written for Mach-O only): CAFs a reload supersedes are not unlinked; the heap census still works"
           else logS s (printf "unlink_cafs: %d unlinked in %.2fs with its GC, live heap %s MB" k (t1 - t0) live)
 
 -- | After the verdict is out: link the reloaded code if nothing has yet (the @warm@ expressions), then the
@@ -1922,7 +1922,12 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
                       ++ maybe [] (\n -> [("top", JNum n)]) (lookupNum "top" req) ++ [ ("live", JBool True) | lookupBool "live" req == Just True ])
     vEvaluated s =: True
     warmAsync s
-    pure (Just (T.dropWhileEnd (== '\n') out <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
+    -- a bench that did no work timed a value already evaluated (a top-level value is computed once per
+    -- load): say so, or the answer reads as "free" (22 of an agent's 89 benches were this, and it then timed
+    -- its tests in fresh GHCi processes through the shell, minutes each)
+    let idle = op == "bench" && T.isInfixOf (T.pack ": 0.00 s wall") out && T.isInfixOf (T.pack " 0 MB allocated") out
+        note = if idle then T.pack "\n[bench: no work was done -- the value was already evaluated (a top-level value, a CAF, is computed once per load and kept). Time a function applied to its input, or a value built inside the action; `reload` recomputes CAFs only for modules it recompiles.]" else T.empty
+    pure (Just (T.dropWhileEnd (== '\n') out <> note <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s

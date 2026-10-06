@@ -65,7 +65,65 @@ static void *ghs_rts_sym(const char *name) {
   }
   return NULL;
 }
+#elif defined(__ELF__)
+/* ELF: the RTS shared object's full symbol table (.symtab) is in the FILE, not in the mapped image (only the
+ * exported .dynsym is mapped), so the file is mapped once, read-only, and its local symbols read from there.
+ * The library a ghcup GHC ships is not stripped. A symbol is at its st_value plus the load bias: where the
+ * image is mapped minus the vaddr of its first loadable segment. */
+#include <elf.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+static void *ghs_rts_sym(const char *name) {
+  void *exported = dlsym(RTLD_DEFAULT, name);
+  if (exported) return exported;
+  static const unsigned char *file = NULL; static size_t flen = 0; static uintptr_t bias = 0; static int tried = 0;
+  if (!tried) {
+    tried = 1;
+    Dl_info di;
+    void *k = dlsym(RTLD_DEFAULT, "keepCAFs");
+    if (!k || !dladdr(k, &di) || !di.dli_fname || !di.dli_fbase) return NULL;
+    int fd = open(di.dli_fname, O_RDONLY | O_CLOEXEC);
+    if (fd < 0) return NULL;
+    struct stat st;
+    if (fstat(fd, &st) == 0 && (size_t)st.st_size > sizeof(Elf64_Ehdr)) {
+      void *m = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+      if (m != MAP_FAILED) { file = (const unsigned char *)m; flen = (size_t)st.st_size; }
+    }
+    close(fd);
+    if (!file) return NULL;
+    const Elf64_Ehdr *eh = (const Elf64_Ehdr *)file;
+    if (memcmp(eh->e_ident, ELFMAG, SELFMAG) || eh->e_ident[EI_CLASS] != ELFCLASS64 || eh->e_phoff + (size_t)eh->e_phnum * sizeof(Elf64_Phdr) > flen) { file = NULL; return NULL; }
+    const Elf64_Phdr *ph = (const Elf64_Phdr *)(file + eh->e_phoff);
+    uintptr_t first = 0; int any = 0;
+    for (int i = 0; i < eh->e_phnum; i++) if (ph[i].p_type == PT_LOAD) { if (!any || ph[i].p_vaddr < first) first = ph[i].p_vaddr; any = 1; }
+    bias = (uintptr_t)di.dli_fbase - (first & ~(uintptr_t)0xfff);
+  }
+  if (!file) return NULL;
+  const Elf64_Ehdr *eh = (const Elf64_Ehdr *)file;
+  if (eh->e_shoff + (size_t)eh->e_shnum * sizeof(Elf64_Shdr) > flen) return NULL;
+  const Elf64_Shdr *sh = (const Elf64_Shdr *)(file + eh->e_shoff);
+  for (int pass = 0; pass < 2; pass++) {               /* the full table first, the exported one after */
+    for (int i = 0; i < eh->e_shnum; i++) {
+      if (sh[i].sh_type != (pass == 0 ? SHT_SYMTAB : SHT_DYNSYM) || sh[i].sh_link >= eh->e_shnum) continue;
+      const Elf64_Shdr *strh = &sh[sh[i].sh_link];
+      if (sh[i].sh_offset + sh[i].sh_size > flen || strh->sh_offset + strh->sh_size > flen) continue;
+      const Elf64_Sym *sy = (const Elf64_Sym *)(file + sh[i].sh_offset);
+      const char *str = (const char *)(file + strh->sh_offset);
+      size_t n = sh[i].sh_size / sizeof(Elf64_Sym);
+      for (size_t j = 0; j < n; j++) {
+        if (sy[j].st_shndx == SHN_UNDEF || sy[j].st_name >= strh->sh_size) continue;
+        int ty = ELF64_ST_TYPE(sy[j].st_info);
+        if (ty != STT_OBJECT && ty != STT_NOTYPE && ty != STT_FUNC) continue;
+        if (!strcmp(str + sy[j].st_name, name)) return (void *)(bias + sy[j].st_value);
+      }
+    }
+  }
+  return NULL;
+}
 #else
-static void *ghs_rts_sym(const char *name) { (void)name; return NULL; }   /* ELF: not written yet */
+static void *ghs_rts_sym(const char *name) { (void)name; return NULL; }
 #endif
 #endif
