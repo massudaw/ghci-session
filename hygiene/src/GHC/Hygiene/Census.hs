@@ -11,6 +11,7 @@ module GHC.Hygiene.Census
   ( cafReport, cafStrings, keptReport, keptStrings, keep
   , censusOf, benchOf, benchQuick, memNow, censusBench
   , dupsCafs, dupsKept, dupsOf
+  , readSymbol, zdecode
   ) where
 
 import GHC.Hygiene.Store (storeRoots)
@@ -185,13 +186,38 @@ cafRootsNow c cap = do
     forM_ as $ \a -> cRoot c a (show (ptrToIntPtr' a)) cap
   where ptrToIntPtr' a = fromIntegral (ptrToWordPtr a) :: Integer
 
--- | A CAF root's label (its address, from 'cafRoots') as its symbol.
+-- | A CAF root's label (its address, from 'cafRoots') as its name: @unit:Module.name@, or "a local CAF of
+-- Module" for one the compiler made.
 cafName :: String -> IO String
 cafName lab = do
   f <- maybe nullFunPtr id <$> engineSymbol "ghs_caf_name"
   case reads lab :: [(Integer, String)] of
-    [(a, "")] -> do p <- callName f (wordPtrToPtr (fromIntegral a)); if p == nullPtr then pure lab else peekCAString p
+    [(a, "")] -> do p <- callName f (wordPtrToPtr (fromIntegral a)); if p == nullPtr then pure lab else readSymbol <$> peekCAString p
     _ -> pure lab
+
+-- | A symbol as GHC writes it, read back: @hellozm0zi1zi0zi0zminplace_Hello_bigTable_closure@ is
+-- @hello-0.1.0.0-inplace:Hello.bigTable@ (the unit, the module and the name, each z-encoded, joined by @_@;
+-- an @_@ inside any of them is encoded). Anything else is left as it is.
+readSymbol :: String -> String
+readSymbol s = case parts (dropSuffix "_closure" s) of
+  [u, m, n] | all (not . null) [u, m, n] -> zdecode u ++ ":" ++ zdecode m ++ "." ++ zdecode n
+  _ -> s
+  where
+    dropSuffix suf x = if reverse suf == take (length suf) (reverse x) then take (length x - length suf) x else x
+    parts x = case break (== '_') x of { (a, '_' : r) -> a : parts r; (a, _) -> [a] }
+
+-- | GHC's z-encoding undone (GHC.Utils.Encoding: @zi@ is @.@, @zm@ @-@, @zu@ @_@, @ZC@ @:@, ...). A code
+-- it does not know stays as written.
+zdecode :: String -> String
+zdecode ('z' : c : r) | Just d <- lookup c lower = d : zdecode r
+zdecode ('Z' : c : r) | Just d <- lookup c upper = d : zdecode r
+zdecode (c : r) = c : zdecode r
+zdecode [] = []
+
+lower, upper :: [(Char, Char)]
+lower = [ ('z', 'z'), ('a', '&'), ('b', '|'), ('c', '^'), ('d', '$'), ('e', '='), ('g', '>'), ('h', '#'), ('i', '.'), ('l', '<')
+        , ('m', '-'), ('n', '!'), ('p', '+'), ('q', '\''), ('r', '\\'), ('s', '/'), ('t', '*'), ('u', '_'), ('v', '%') ]
+upper = [ ('Z', 'Z'), ('L', '('), ('R', ')'), ('M', '['), ('N', ']'), ('C', ':') ]
 
 foreign import ccall unsafe "dynamic" callName :: FunPtr (Ptr () -> IO CString) -> Ptr () -> IO CString
 

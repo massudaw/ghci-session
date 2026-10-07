@@ -29,6 +29,7 @@ import qualified Data.Set as Set
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
+import GHC.Hygiene.Census (readSymbol, zdecode)
 
 -- | Run every check; prints @[PASS]@ / @[FAIL]@ lines and a summary, and says whether all passed.
 run :: IO Bool
@@ -309,6 +310,12 @@ run = do
   eq "chat: ... at most ten minutes" (saveWait 1000) 600
   check "chat: red verdicts are red" (all isRed ["COMPILE-ERROR: 1 error(s)", "CHECK-FAIL: 2 failing in x", "CHECK-HANG: the check did not end in x", "DEAD: the repl died"])
   check "chat: a pass is not, nor a stale pass" (not (any isRed ["OK -- CHECK-PASS (3.6s)", "STALE(1) OK (2 warning(s)) -- CHECK-PASS (0.1s)"]))
+
+  -- the census's names: a symbol read back as unit:Module.name
+  eq "census: a closure's symbol is read back" (readSymbol "hellozm0zi1zi0zi0zminplace_Hello_bigTable_closure") "hello-0.1.0.0-inplace:Hello.bigTable"
+  eq "census: ... with dots in the module and the name's own codes" (readSymbol "ghczm9zi14zi1zmc6c3_GHCziDataziFastString_stringTable_closure") "ghc-9.14.1-c6c3:GHC.Data.FastString.stringTable"
+  eq "census: a name that is not one is left alone" (readSymbol "a local CAF of Hello") "a local CAF of Hello"
+  eq "census: z-codes" (zdecode "zdwgo_zuzu_ZCzpZLZR") "$wgo____:+()"
 
   -- the hang detector: five times the median of the last passing checks, at least 15 s
   eq "hang: no history, no limit (the check's own timeout)" (hangLimit []) Nothing

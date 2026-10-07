@@ -16,7 +16,7 @@ maintainer:         wesley.massuda@gmail.com
 homepage:           https://github.com/massudaw/ghci-session
 category:           Development
 build-type:         Simple
-extra-source-files: README.md hygiene/c/rts_syms.h
+extra-source-files: README.md hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
 
 executable ghci-session
   hs-source-dirs:   app
