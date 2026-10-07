@@ -8,7 +8,7 @@ module GhciSession.SelfTest (run) where
 import Control.Exception (IOException, try)
 import Control.Monad (forM_, unless, void, when)
 import Data.IORef
-import Data.List (isInfixOf, isPrefixOf, sortOn)
+import Data.List (isInfixOf, isPrefixOf, sort, sortOn)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -312,6 +312,10 @@ run = do
   check "search: FFF C library is loaded and available" avail
   grepRes <- Search.grep "." "cmdSearch" 10
   check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
+  eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
+  eq "chat: a lone write is not a batch" (writeRuns ["write", "read", "edit", "sh", "write"]) []
+  eq "chat: writes to distinct files are separate groups, those sharing one stay together in order"
+     (sort (groupByPaths [(0, ["a.hs"]), (1, ["b.hs"]), (2, ["a.hs", "c.hs"]), (3, ["c.hs"]), (4, ["d.hs"])])) [[0, 2, 3], [1], [4]]
   eq "chat: leading imports are their own commands" (splitImports ["import A", ":set -XB", "f 1"]) (["import A", ":set -XB"], ["f 1"])
   eq "chat: a lone import stays what it is" (splitImports ["import A"]) ([], ["import A"])
   eq "chat: an expression alone is untouched" (splitImports ["let a = 1 in a", "+ 2"]) ([], ["let a = 1 in a", "+ 2"])

@@ -527,7 +527,11 @@ was not always, and the breakdown is how each of these was found:
   alone; write the files; `ghci-session release` reloads once and answers with that verdict (the same ten files:
   one reload of 1.0 s). A hold ends by itself after `--timeout` seconds (30, at most 600), so a writer that died
   does not leave the session deaf to saves; the watcher then reloads what was saved. The MCP server has both as
-  tools (`hold`, `release`). A tool that writes all its files in one go (the chat's `edits`) needs neither.
+  tools (`hold`, `release`). **The chat does it by itself:** writes (`write`, `edit`, `edits`) that come one after
+  the other in one model reply are a batch -- the session is held, the writes are made at once (those on the same
+  file stay in order), one release reloads, and the verdict comes with the last result. Ten `write`s in a reply:
+  ten sequential saves were 10 reloads and a 3 s turn, the batch is one reload and 1 s. (Calls in between, an
+  `eval` or a `read`, end a batch: they may depend on what was written.)
 - Every reload re-issued the session's `:module +` imports (40 of them, 0.1 s): now only after a reload that failed,
   which is the only kind that drops them.
 - The script that prepares the pruner ran `nm` on the RTS library once per symbol, sixteen times, before looking at

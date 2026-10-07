@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
+  , arguments, chatTools, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
   , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
@@ -41,7 +41,7 @@ import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isSpace)
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, sort, tails)
+import Data.List (groupBy, intercalate, isInfixOf, isPrefixOf, isSuffixOf, partition, sort, tails)
 import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
@@ -136,7 +136,9 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cDown :: IORef Bool                  -- ^ the last wait for the session to come back ended with it still down
                  , cRestart :: IORef Bool               -- ^ a restart was asked (SIGHUP): at the next model call
                  , cInTurn :: IORef Bool                -- ^ a turn is running (else a restart is at once)
-                 , cExe :: FilePath, cArgv :: [String] }   -- ^ the executable and the arguments to run again as
+                 , cExe :: FilePath, cArgv :: [String]   -- ^ the executable and the arguments to run again as
+                 , cBatch :: IORef (Maybe [Double])      -- ^ file writes of one reply are being made together: when each was written (they are not waited on one by one)
+                 }
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -284,6 +286,18 @@ awaitPending ch = do
 saved :: Chat -> String -> Maybe Double -> IO (Bool, T.Text)
 saved _ what Nothing = pure (True, T.pack what)
 saved ch what (Just written) = do
+  b <- readIORef (cBatch ch)
+  case b of
+    -- one of several writes made together ('runBatch'): the reload and its verdict are the batch's, not each one's
+    Just _ -> do
+      atomicModifyIORef' (cBatch ch) (\m -> (fmap (written :) m, ()))
+      pure (True, T.pack (what ++ "\n[saved with the others of this reply: one reload, its verdict with the last result]"))
+    Nothing -> savedNow ch what (Just written)
+
+-- | A save's answer, waiting for the verdict of the reload it caused.
+savedNow :: Chat -> String -> Maybe Double -> IO (Bool, T.Text)
+savedNow _ what Nothing = pure (True, T.pack what)
+savedNow ch what (Just written) = do
   longest <- readIORef (cLongest ch)
   let wait = saveWait longest
   v <- verdictAfter ch written wait
@@ -296,6 +310,65 @@ saved ch what (Just written) = do
       -- (a newer save's verdict settles any check an earlier one left running)
       modifyIORef' (cPending ch) (\p -> case p of { Just w | w <= written -> Nothing; _ -> p })
       pure (not (isRed (vLine r)), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+
+-- | The runs of two or more file-writing calls one after the other in a reply (their indices): written
+-- together and reloaded once.
+writeRuns :: [String] -> [[Int]]
+writeRuns names = [ map fst r | r@((_, True) : _ : _) <- groupBy (\a b -> snd a == snd b) (zip [0 ..] (map (`elem` ["write", "edit", "edits"]) names)) ]
+
+-- | Calls that touch a common file stay together, in order; the groups share no file, so they may run at once.
+groupByPaths :: [(Int, [FilePath])] -> [[Int]]
+groupByPaths = map (sort . fst) . foldl add []
+  where
+    add gs (i, ps) =
+      let (hit, miss) = partition (\(_, qs) -> any (`elem` qs) ps) gs
+      in miss ++ [(i : concatMap fst hit, ps ++ concatMap snd hit)]
+
+-- | The files of a write call, relative to the project.
+callPaths :: Chat -> Tool -> ToolCall -> [FilePath]
+callPaths ch t tc = map (normalise . makeRelative (cDir ch)) (maybe [] pure (lookupStr "path" a) ++ [ p | tName t == "edits", e <- lookupArr "edits" a, Just p <- [lookupStr "path" e] ])
+  where a = fst (arguments t (tcArgs tc))
+
+-- | The writes of a reply that come one after the other are made together: the session is told to hold its
+-- reloads, the writes run at once (those on the same file in order), and one release reloads once -- one
+-- compile and one verdict for the lot, which rides on the last result. (Written one by one, each save waited
+-- for its own reload: ten files were ten reloads.) The calls are logged first, as the agent made them.
+runBatches :: Chat -> [(String, Tool)] -> [ToolCall] -> IO (M.Map Int (Bool, T.Text))
+runBatches ch byName calls = M.unions <$> mapM (runBatch ch byName calls) (writeRuns (map tcName calls))
+
+runBatch :: Chat -> [(String, Tool)] -> [ToolCall] -> [Int] -> IO (M.Map Int (Bool, T.Text))
+runBatch ch byName calls run = do
+  forM_ run $ \i -> do
+    let tc = calls !! i
+    putStrLn ("> " ++ tcName tc ++ " " ++ take 300 (encode (tcArgs tc))) >> hFlush stdout
+    logH ch "tool" (T.pack (tcName tc ++ " " ++ encode (tcArgs tc)))
+  let paths i = maybe [] (\t -> callPaths ch t (calls !! i)) (lookup (tcName (calls !! i)) byName)
+      groups = groupByPaths [ (i, paths i) | i <- run ]
+      watched = any (watches ch) (concatMap paths run)
+  hPutStrLn stderr (printf "[%d file writes in this reply: made together, %d at once, reloaded once]" (length run) (length groups))
+  held <- if watched then (\r -> lookupBool "ok" r == Just True) <$> ask ch "hold" [("secs", JNum 30), ("quiet", JBool True)] else pure False
+  writeIORef (cBatch ch) (Just [])
+  let one i = do
+        let tc = calls !! i
+        r <- try (case lookup (tcName tc) byName of
+                    Just t -> runTool ch t (tcArgs tc)
+                    Nothing -> pure (False, T.pack ("unknown tool " ++ show (tcName tc))))
+        pure (i, either (\(e :: SomeException) -> (False, T.pack (tcName tc ++ ": " ++ show e))) id r)
+  dones <- forM groups $ \g -> do
+    mv <- newEmptyMVar
+    _ <- forkIO (mapM one g >>= putMVar mv)
+    pure mv
+  rs <- concat <$> mapM takeMVar dones
+  (do ws <- readIORef (cBatch ch)
+      writeIORef (cBatch ch) Nothing
+      when held (void (ask ch "release" [("quiet", JBool True)]))
+      let m = M.fromList rs
+      case ws of
+        Just ts@(_ : _) -> do
+          (okV, txt) <- savedNow ch (printf "[batch: %d writes, reloaded once]" (length run)) (Just (minimum ts))
+          pure (M.adjust (\(ok, o) -> (ok && okV, o <> T.pack "\n" <> txt)) (last run) m)
+        _ -> pure m)
+    `finally` (writeIORef (cBatch ch) Nothing)
 
 -- | When a save is written, if the session is up and watches the file: the time, for 'saved'.
 writtenAt :: Chat -> FilePath -> IO (Maybe Double)
@@ -1007,17 +1080,20 @@ goOn ch e o pending ts = do
                       _ -> pure ()
                 else do
                   modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "edits", "sh"]) . tcName) (pToolCalls p) })
+                  pre <- runBatches ch byName (pToolCalls p)      -- (the writes that come together in a reply: made at once, reloaded once)
                   replies <- forM (zip [0 :: Int ..] (pToolCalls p)) $ \(i, tc) -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))
-                    putStrLn ("> " ++ name ++ " " ++ shownArgs) >> hFlush stdout
                     -- every call is logged by the chat as the agent made it, and its answer as the agent saw it (the
                     -- session's own tools are asked quietly); remember writes the log itself
-                    unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
+                    unless (M.member i pre) $ do      -- (a batched call was shown and logged when the batch began)
+                      putStrLn ("> " ++ name ++ " " ++ shownArgs) >> hFlush stdout
+                      unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
                     t2 <- now
-                    (ok, out0) <- case lookup name byName of
-                      Just t -> runTool ch t (tcArgs tc)
-                      Nothing -> pure (False, T.pack ("unknown tool " ++ show name))
+                    (ok, out0) <- case (M.lookup i pre, lookup name byName) of
+                      (Just r, _) -> pure r
+                      (_, Just t) -> runTool ch t (tcArgs tc)
+                      _ -> pure (False, T.pack ("unknown tool " ++ show name))
                     late <- pendingNote ch
                     t3 <- now
                     -- a read: numbered, an alias of an earlier one when its text is that one's, else
@@ -1257,11 +1333,12 @@ chatMain conf args = case parseOpts args of
         down <- newIORef False
         restartR <- newIORef False
         inTurn <- newIORef False
+        batchR <- newIORef Nothing
         exe <- getExecutablePath
         argv <- getArgs
         let ms = if null members then [name] else members
             ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                      longest pendingCheck down restartR inTurn (stripDeleted exe) argv
+                      longest pendingCheck down restartR inTurn (stripDeleted exe) argv batchR
         if oPrintView o then view ch 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           ep <- endpointFromEnv
           case ep of

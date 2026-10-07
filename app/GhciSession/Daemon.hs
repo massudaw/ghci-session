@@ -1930,7 +1930,7 @@ handle s h = do
           logS s ("hold: saves are not reloaded for up to " ++ showG secs ++ " s, until `release`")
           replyS True ("holding: saves are not reloaded for up to " ++ showG secs ++ " s; `release` reloads them once")
         -- ... and `release` reloads what was written, once, and answers with that verdict
-        "release" -> vBatch s =: Nothing >> viaWork op req
+        "release" -> viaWork op req      -- (the hold stays until the reload is done: the watcher must not queue the same one)
         "doc" -> do          -- (reads the sources, not the repl: answers during a reload)
           logged req (histAdd s "tool" (describeReq op req))
           out <- docSearch s req
@@ -1985,7 +1985,7 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
   "typecheck" -> Just <$> typecheckSources s
-  "release" -> do
+  "release" -> (`finally` (vBatch s =: Nothing)) $ do
     cur <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
     loaded <- rd (vLoadedSig s)
     if cur == loaded then pure (Just (T.pack "released: nothing changed since the last load")) else do
