@@ -1,69 +1,131 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- | High-performance code and file search backed by the FFF SIMD library ('cbits/ghs_fff.c'),
--- with session-aware metadata logging and formatted terminal output.
+-- | Code and file search for the agent and the command line: content by the system @grep@, file names by a walk
+-- of the project, each answered as the same JSON, with session-aware metadata logging and formatted output.
+-- (It was a native library, FFF, loaded at run time; a plain @grep@ is on every machine this runs on and is as
+-- fast on a project of this size, with nothing to download, find or keep in step with a struct layout.)
 module GhciSession.Search
-  ( isAvailable
-  , grep
+  ( grep
   , searchFiles
   , formatGrep
   , formatFiles
   , recordSearchMetadata
+  -- (the pure parts, for the self-tests)
+  , parseGrepLine, grepFlags, fuzzyScore
   ) where
 
 import Control.Exception (SomeException, try)
-import qualified Data.ByteString as B
+import Control.Monad (void)
+import Data.Char (isUpper, toLower)
+import Data.List (isInfixOf, isPrefixOf, sortOn)
+import Data.Maybe (fromMaybe, mapMaybe)
 import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
-import Foreign.C.String (CString, withCString, peekCString)
-import Foreign.C.Types (CInt (..), CSize (..))
-import Foreign.Marshal.Alloc (allocaBytes)
-import System.FilePath ((</>))
-import System.Directory (doesFileExist, doesDirectoryExist, getFileSize, listDirectory)
-import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
+import System.Directory (doesDirectoryExist, listDirectory)
+import System.Exit (ExitCode (..))
+import System.FilePath ((</>), takeFileName)
+import System.Process (CreateProcess (..), proc, readCreateProcessWithExitCode)
+import System.Timeout (timeout)
 import Text.Printf (printf)
 
 import GhciSession.Json
 import GhciSession.Config
-import qualified GhciSession.History as H
+import qualified GhciSession.Mcp as Mcp
 
-foreign import ccall unsafe "ghs_fff_available" c_fff_available :: IO CInt
-foreign import ccall safe "ghs_fff_grep" c_fff_grep :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
-foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
+-- | Directories no search looks in: version control, this tool's own state, build output (@dist*@).
+skippedDir :: String -> Bool
+skippedDir n = n `elem` [".git", ".hg", ".svn", ".ghci-session", ".bin", "node_modules"] || "dist" `isPrefixOf` n
 
--- | Is the FFF native C library loaded and operational?
-isAvailable :: IO Bool
-isAvailable = (== 1) <$> c_fff_available
+-- | The flags of a @grep@ over a tree: recursive with line numbers, text files only, the skipped directories
+-- left out, at most @n@ lines from any one file; case-insensitive unless the query has a capital (smart case).
+-- A regular expression ('-E'), or with @literal@ the text as it is ('-F'), for a query that is not one.
+grepFlags :: Bool -> Int -> String -> [String]
+grepFlags literal n query =
+  ["-r", "-n", "-I", "-H", if literal then "-F" else "-E", "-m", show n]
+  ++ [ "-i" | not (any isUpper query) ]
+  ++ [ "--exclude-dir=" ++ d | d <- [".git", ".hg", ".svn", ".ghci-session", ".bin", "node_modules", "dist*"] ]
+  ++ ["-e", query, "."]
 
--- | Search file contents (live grep) in the given directory.
+-- | A line of @grep -rn@ output, @path:line:text@ (the path as grep walked it, from the project's root).
+parseGrepLine :: String -> Maybe (FilePath, Int, String)
+parseGrepLine l = case break (== ':') l of
+  (path, ':' : rest) | not (null path), (num@(_ : _), ':' : text) <- span (`elem` ['0' .. '9']) rest ->
+    Just (dropDot path, read num, text)
+  _ -> Nothing
+  where dropDot p = if "./" `isPrefixOf` p then drop 2 p else p
+
+-- | Search file contents in the given directory: the lines matching a regular expression (the literal text when
+-- it is not one), by path and line.
 grep :: FilePath -> String -> Int -> IO (Either String Json)
-grep dir query maxResults = do
-  avail <- isAvailable
-  if not avail
-    then fallbackGrep dir query maxResults
-    else withCString dir $ \cDir ->
-           withCString query $ \cQ ->
-             let bufSize = 512 * 1024  -- 512 KB buffer
-             in allocaBytes bufSize $ \cBuf -> do
-                  rc <- c_fff_grep cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
-                  str <- peekCString cBuf
-                  pure (parseJson str)
+grep dir query maxResults
+  | null query = pure (Left "empty query")
+  | otherwise = do
+      let n = if maxResults <= 0 then 30 else maxResults
+          run literal = timeout 30000000 (readCreateProcessWithExitCode (proc "grep" (grepFlags literal n query)) { cwd = Just dir } "")
+      r <- try (run False) :: IO (Either SomeException (Maybe (ExitCode, String, String)))
+      r' <- case r of
+        Right (Just (ExitFailure 2, _, _)) -> try (run True)      -- (not a regular expression: the text itself)
+        _ -> pure r
+      case r' of
+        Left e -> pure (Left ("grep: " ++ show e))
+        Right Nothing -> pure (Left "grep: no answer in 30 s")
+        Right (Just (code, out, err))
+          | code == ExitFailure 2 && null out -> pure (Left ("grep: " ++ takeWhile (/= '\n') err))
+          | otherwise -> do
+              let found = sortOn (\(p, l, _) -> (p, l)) (mapMaybe parseGrepLine (lines out))
+                  shown = take n found
+                  cut c = if length c > 300 then take 300 c ++ "..." else c
+              pure $ Right $ JObj
+                [ ("ok", JBool True)
+                , ("query", JStr query)
+                , ("mode", JStr "grep")
+                , ("count", JNum (fromIntegral (length shown)))
+                , ("total_matched", JNum (fromIntegral (length found)))
+                , ("items", JArr [ JObj [("path", JStr p), ("line", JNum (fromIntegral l)), ("content", JStr (cut c))] | (p, l, c) <- shown ]) ]
 
--- | Fuzzy search file names in the given directory.
+-- | Search file names in the given directory: those that contain the query (case does not matter), the ones whose
+-- file name does first, then those that have its letters in order.
 searchFiles :: FilePath -> String -> Int -> IO (Either String Json)
-searchFiles dir query maxResults = do
-  avail <- isAvailable
-  if not avail
-    then fallbackSearchFiles dir query maxResults
-    else withCString dir $ \cDir ->
-           withCString query $ \cQ ->
-             let bufSize = 256 * 1024  -- 256 KB buffer
-             in allocaBytes bufSize $ \cBuf -> do
-                  rc <- c_fff_search_files cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
-                  str <- peekCString cBuf
-                  pure (parseJson str)
+searchFiles dir query maxResults
+  | null query = pure (Left "empty query")
+  | otherwise = do
+      let n = if maxResults <= 0 then 20 else maxResults
+      files <- walk dir ""
+      let scored = sortOn (\(sc, f) -> (sc, length f, f)) [ (sc, f) | f <- files, Just sc <- [fuzzyScore query f] ]
+      pure $ Right $ JObj
+        [ ("ok", JBool True)
+        , ("query", JStr query)
+        , ("mode", JStr "files")
+        , ("count", JNum (fromIntegral (min n (length scored))))
+        , ("total_matched", JNum (fromIntegral (length scored)))
+        , ("items", JArr [ JObj [("path", JStr f)] | (_, f) <- take n scored ]) ]
+
+-- | How well a query names a path: 0 when the file's own name contains it, 1 when the path does, 2 when the
+-- path has its letters in order; nothing otherwise.
+fuzzyScore :: String -> FilePath -> Maybe Int
+fuzzyScore query path
+  | q `isInfixOf` map toLower (takeFileName path) = Just 0
+  | q `isInfixOf` p = Just 1
+  | inOrder q p = Just 2
+  | otherwise = Nothing
+  where
+    q = map toLower query
+    p = map toLower path
+    inOrder [] _ = True
+    inOrder _ [] = False
+    inOrder (x : xs) (y : ys) = if x == y then inOrder xs ys else inOrder (x : xs) ys
+
+-- | Every file under a directory, as paths from it, leaving out hidden and skipped directories.
+walk :: FilePath -> FilePath -> IO [FilePath]
+walk root rel = do
+  es <- try (listDirectory (if null rel then root else root </> rel)) :: IO (Either SomeException [FilePath])
+  case es of
+    Left _ -> pure []
+    Right names -> fmap concat $ mapM (entry) [ n | n <- names, not (null n), head n /= '.' ]
+  where
+    entry n = do
+      let r = if null rel then n else rel </> n
+      isD <- doesDirectoryExist (root </> r)
+      if isD then (if skippedDir n then pure [] else walk root r) else pure [r]
 
 -- | Format grep results for human terminal consumption or agent replies.
 formatGrep :: Json -> T.Text
@@ -71,19 +133,17 @@ formatGrep j = case lookupArr "items" j of
   [] -> T.pack "No matches found."
   items ->
     let total = fromMaybe (length items) (lookupNum "total_matched" j >>= Just . round) :: Int
-        searched = fromMaybe 0 (lookupNum "files_searched" j >>= Just . round) :: Int
         q = fromMaybe "" (lookupStr "query" j)
-        hdr = printf "Found %d match(es) for \"%s\" (searched %d files):\n" total q searched :: String
+        hdr = (if total > length items then printf "Found %d match(es) for \"%s\" (showing %d):\n" total q (length items)
+                                       else printf "Found %d match(es) for \"%s\":\n" total q) :: String
         renderItem item =
           let p = fromMaybe "" (lookupStr "path" item)
               ln = fromMaybe 0 (lookupNum "line" item >>= Just . round) :: Int
               c = fromMaybe "" (lookupStr "content" item)
-              st = fromMaybe "" (lookupStr "git_status" item)
-              badge = if null st || st == "clean" then "" else " [" ++ st ++ "]"
-          in printf "  %s:%d:%s %s" p ln badge (trimLeading c) :: String
+          in printf "  %s:%d: %s" p ln (trimLeading c) :: String
         linesOut = map renderItem items
     in T.pack (unlines (hdr : linesOut))
-  where trimLeading s = dropWhile (== ' ') s
+  where trimLeading = dropWhile (== ' ')
 
 -- | Format file search results.
 formatFiles :: Json -> T.Text
@@ -103,88 +163,9 @@ formatFiles j = case lookupArr "items" j of
         linesOut = map renderItem items
     in T.pack (unlines (hdr : linesOut))
 
--- | Record search metadata into the session's history log.
+-- | Note a search in the session's history (through the daemon, which owns the log: opening it here cost 0.9 s
+-- on a 5 MB history). A session that is not running has no history to add to, and nothing is lost by that.
 recordSearchMetadata :: Conf -> String -> String -> String -> Int -> IO ()
 recordSearchMetadata conf sname mode query hitCount = do
-  let sdir = cStateDir conf </> sname
-      hdir = sdir </> "history"
-  exists <- doesDirectoryExist hdir
-  if not exists then pure () else do
-    r <- try (do
-      (hm, _) <- H.openHistory H.defaultParams hdir
-      let msg = T.pack (printf "search [%s]: \"%s\" -> %d match(es)" mode query hitCount)
-      _ <- H.appendMsg hm (T.pack "note") msg
-      pure ()) :: IO (Either SomeException ())
-    case r of
-      Left _ -> pure ()
-      Right () -> pure ()
-
--- | Fallback grep if FFF dylib is not loaded on this system.
-fallbackGrep :: FilePath -> String -> Int -> IO (Either String Json)
-fallbackGrep dir query maxResults = do
-  let qT = T.pack query
-  files <- findFiles dir
-  matches <- fmap concat $ forM' (take 100 files) $ \f -> do
-    -- a source file, not a build product: over a megabyte, or with a NUL in its first 8 KB, is skipped
-    -- (decoding and splitting a 60 MB library into lines never came back)
-    t <- try (do sz <- getFileSize (dir </> f)
-                 if sz > 1000000 then pure B.empty else B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
-    case t of
-      Left _ -> pure []
-      Right bs | B.elem 0 (B.take 8000 bs) -> pure []
-      Right bs ->
-        let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
-            ls = zip [1 :: Int ..] (T.lines txt)
-            hits = [ JObj [ ("path", JStr f)
-                          , ("line", JNum (fromIntegral lnum))
-                          , ("content", JText l)
-                          , ("git_status", JStr "clean")
-                          , ("frecency", JNum 0) ]
-                   | (lnum, l) <- ls, qT `T.isInfixOf` l ]
-        in pure (take maxResults hits)
-  let res = take maxResults matches
-  pure $ Right $ JObj
-    [ ("ok", JBool True)
-    , ("query", JStr query)
-    , ("mode", JStr "grep-fallback")
-    , ("count", JNum (fromIntegral (length res)))
-    , ("total_matched", JNum (fromIntegral (length res)))
-    , ("files_searched", JNum (fromIntegral (length files)))
-    , ("items", JArr res) ]
-  where forM' = flip mapM
-
--- | Fallback file search.
-fallbackSearchFiles :: FilePath -> String -> Int -> IO (Either String Json)
-fallbackSearchFiles dir query maxResults = do
-  files <- findFiles dir
-  let qLower = map toLower query
-      matched = [ JObj [ ("path", JStr f), ("git_status", JStr "clean"), ("frecency", JNum 0) ]
-                | f <- files, qLower `isInfixOf'` map toLower f ]
-      res = take maxResults matched
-  pure $ Right $ JObj
-    [ ("ok", JBool True)
-    , ("query", JStr query)
-    , ("mode", JStr "files-fallback")
-    , ("count", JNum (fromIntegral (length res)))
-    , ("total_matched", JNum (fromIntegral (length matched)))
-    , ("items", JArr res) ]
-  where
-    toLower c = if c >= 'A' && c <= 'Z' then toEnum (fromEnum c + 32) else c
-    isInfixOf' needle haystack = needle `elem` [ take (length needle) (drop i haystack) | i <- [0 .. length haystack - length needle] ]
-
-findFiles :: FilePath -> IO [FilePath]
-findFiles root = go ""
-  where
-    go rel = do
-      let full = if null rel then root else root </> rel
-      es <- try (listDirectory full) :: IO (Either SomeException [FilePath])
-      case es of
-        Left _ -> pure []
-        Right names -> do
-          let valid = filter (\n -> not (null n) && head n /= '.' && not ("dist" `isPrefixOf` n)) names
-          fmap concat $ forM valid $ \name -> do
-            let subRel = if null rel then name else rel </> name
-                subFull = root </> subRel
-            isD <- doesDirectoryExist subFull
-            if isD then go subRel else pure [subRel]
-    forM = flip mapM
+  let msg = T.pack (printf "search [%s]: \"%s\" -> %d match(es)" mode query hitCount)
+  void (try (Mcp.request conf sname (JObj [("op", JStr "log"), ("kind", JStr "note"), ("text", JText msg)])) :: IO (Either SomeException Json))

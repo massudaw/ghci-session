@@ -658,6 +658,7 @@ start [--no-test] [--fast] | stop | restart [--fast] | status [-d] [SESSION]
 reload [--no-test] [--no-refork] [--async-refork] [SESSION]
 hold [--timeout SECS] [SESSION] | release [SESSION]
 typecheck [SESSION]
+search QUERY [--files] [-n N] [--json] [-s SESSION]   grep the code (a regular expression, else the text; smart case; build and binary files skipped), or file names
 test [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]
 compose SESSION [MEMBERS...] [--add M] [--remove M]

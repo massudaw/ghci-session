@@ -308,10 +308,23 @@ run = do
   check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
   check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
   check "chat: restart is a chat tool" ("restart" `elem` map tName chatTools)
-  avail <- Search.isAvailable
-  check "search: FFF C library is loaded and available" avail
-  grepRes <- Search.grep "." "cmdSearch" 10
-  check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
+  eq "search: a grep line is path, line and text (the text may hold colons)" (Search.parseGrepLine "./src/A.hs:12:x = a:b") (Just ("src/A.hs", 12, "x = a:b"))
+  eq "search: a line that is not one is not taken" (Search.parseGrepLine "Binary file x matches") Nothing
+  check "search: smart case: a capital in the query keeps the case, none ignores it" ("-i" `elem` Search.grepFlags False 5 "runsteps" && "-i" `notElem` Search.grepFlags False 5 "runSteps")
+  check "search: the text itself is searched with -F, a pattern with -E" ("-F" `elem` Search.grepFlags True 5 "a(" && "-E" `elem` Search.grepFlags False 5 "a|b")
+  eq "search: a file whose name has the query ranks before one whose path has it, before letters in order"
+     (map (Search.fuzzyScore "ppu") ["src/Nes/Ppu.hs", "ppu/Run.hs", "src/Nes/p/p/u.hs", "src/Nes/Cpu.hs"]) [Just 0, Just 1, Just 2, Nothing]
+  grepDir <- (</> ("ghci-session-grep-" ++ show (length "x"))) <$> getTemporaryDirectory
+  createDirectoryIfMissing True (grepDir </> "src")
+  createDirectoryIfMissing True (grepDir </> "dist-newstyle")
+  writeFile (grepDir </> "src" </> "A.hs") "module A where\nrunSteps :: Int\nrunSteps = 1 -- (a note\n"
+  writeFile (grepDir </> "dist-newstyle" </> "B.hs") "runSteps built\n"
+  grepRes <- Search.grep grepDir "runSteps" 10
+  check "search: grep finds the lines with their numbers, and leaves build directories alone"
+    (case grepRes of { Right j -> [ (lookupStr "path" i, lookupNum "line" i) | i <- lookupArr "items" j ] == [(Just "src/A.hs", Just 2), (Just "src/A.hs", Just 3)]; Left _ -> False })
+  grepLit <- Search.grep grepDir "(a note" 10
+  check "search: a query that is not a regular expression is searched as text" (case grepLit of { Right j -> length (lookupArr "items" j) == 1; Left _ -> False })
+  removeDirectoryRecursive grepDir
   eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
   eq "chat: a lone write is not a batch" (writeRuns ["write", "read", "edit", "sh", "write"]) []
   eq "chat: writes to distinct files are separate groups, those sharing one stay together in order"

@@ -503,7 +503,7 @@ usage = unlines
   , "  vfs [PATH] [-s SESSION] [--budget N] [--json]   virtual file system and line budget inspector (<250 lines)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
-  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   high-speed SIMD search across code or files (FFF engine), with session metadata"
+  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   search the code (grep: a regular expression, smart case) or, with --files, file names; noted in the session's history"
   , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"

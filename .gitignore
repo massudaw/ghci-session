@@ -5,8 +5,6 @@ arcade
 dist-newstyle/
 __pycache__/
 .bin/
-lib/*.dylib
-lib/*.so
 scratch/
 # the engine is built from these: the root ignores vendor/, this package tracks its own
 !vendor/

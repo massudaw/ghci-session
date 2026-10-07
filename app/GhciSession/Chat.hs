@@ -390,8 +390,8 @@ chatTools :: [Tool]
 chatTools =
   [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
-     , Tool "grep" "Search file contents across the project for an identifier, function, or pattern using the high-speed FFF SIMD engine. Returns line numbers, content, and git status. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
-     , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
+     , Tool "grep" "Search file contents across the project with grep, for an identifier, a function or a pattern: a regular expression (the literal text when it is not one; a query with no capital letter ignores case). Returns path:line and the line. Skips binary files and build directories. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
+     , Tool "find" "Find files of the project by name: those whose name contains the query, then those whose path does, then those with its letters in order. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
      , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
      , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
@@ -659,20 +659,14 @@ fileTool ch name a = case name of
     res <- Search.grep (cDir ch) q maxN
     case res of
       Left err -> pure (False, T.pack ("grep error: " ++ err))
-      Right j -> do
-        let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
-        Search.recordSearchMetadata (cConf ch) (cName ch) "grep" q hits
-        pure (True, Search.formatGrep j)
+      Right j -> pure (True, Search.formatGrep j)
   "find" -> do
     let q = fromMaybe "" (lookupStr "query" a)
         maxN = maybe 20 round (lookupNum "n" a) :: Int
     res <- Search.searchFiles (cDir ch) q maxN
     case res of
       Left err -> pure (False, T.pack ("find error: " ++ err))
-      Right j -> do
-        let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
-        Search.recordSearchMetadata (cConf ch) (cName ch) "files" q hits
-        pure (True, Search.formatFiles j)
+      Right j -> pure (True, Search.formatFiles j)
   "ls" -> withPath $ \p -> do
     es <- filter (not . ("." `isPrefixOf`)) <$> listDirectory p
     tagged <- forM (sort es) $ \e -> (\d -> e ++ (if d then "/" else "")) <$> doesDirectoryExist (p </> e)
