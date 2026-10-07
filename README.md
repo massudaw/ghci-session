@@ -960,6 +960,7 @@ cbits/                  ghs_sys.c (sockets, file events, regex, hashing, process
 hygiene/                c/*.c (the pruner, the census: compiled into the engine), src/GHC/Hygiene*.hs (the library),
                         repro/ (why a superseded CAF with a young value must stay listed)
 bin/ghci-session        run from a checkout (builds if stale)
+bin/ghci-history        save a session's history (log, tree, usage) to a git branch, and load it back: `save`, `load`, `status` (`--help`)
 ghci-session.json       the session this package runs on itself
 examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over
 examples/tour.py        every feature on a copy of it, each step checked and timed (the benchmark)
