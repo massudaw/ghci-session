@@ -312,17 +312,22 @@ such and is picked up when it starts.
   from Haskell. `Ghostty.Vt`: a `Terminal` of a size, `write` it the bytes a program prints, read its `screen`
   as a value (every cell's text, colors and attributes, the cursor, what changed since the last read), its
   title and working directory, the scrollback's viewport; `onWrite` for what the terminal answers to the
-  program. `Ghostty.Vt.Pty`: a program on a pseudo-terminal. The library is found at run time with dlopen
+  program; a `KeyEncoder` that writes a key as the program in that terminal expects it, by the modes it set
+  (application cursor keys, the kitty keyboard protocol, modifyOtherKeys). `Ghostty.Vt.Pty`: a program on a
+  pseudo-terminal. The library is found at run time with dlopen
   (`Ghostty.Vt.load`), so a program builds and runs without it and can say what is missing; the headers it is
   built against are in `ghostty-vt/include` (MIT, at the ghostty commit in `COMMIT`). Boot packages only.
 - **`ghostty-tui`** (`tui/`) is a small terminal UI library on it. `Tui.Buffer`: a frame of styled cells from
   what to put where, and the bytes that turn the last frame into it -- only the cells that changed, each run
   of a style under one sequence, so a frame that is mostly the same costs almost nothing and nothing flickers;
-  wide characters take their two columns. `Tui.Terminal`: raw mode, the size, keys decoded, the events a loop
-  waits on. `Tui.App`: the loop (draw, wait for a key, a resize, a tick or a wake, handle, draw again).
+  wide characters take their two columns. `Tui.Terminal`: raw mode, the size, keys decoded with their modifiers (the xterm forms, a control
+  character as Ctrl and its letter, an escape before a character as Alt), the events a loop waits on. `Tui.App`: the loop (draw, wait for a key, a resize, a tick or a wake, handle, draw again).
   `Tui.Pane`: a program on a pseudo-terminal whose screen libghostty-vt keeps, as a part of the frame -- the
   real terminal never sees the program's escape sequences, so a full-screen program in a pane and the UI
   around it do not fight, and scrollback, wrapping, wide characters and the alternate screen are the library's.
+  A key typed into a pane is not forwarded as the user's terminal encoded it -- that was for ITS modes -- but
+  decoded and encoded again by the pane's terminal for the modes the program set: an editor that asked for
+  application cursor keys gets `ESC O A` for Up where the outer terminal sent `ESC [ A`.
 
 Without libghostty-vt the monitor's other tabs work and the pane tabs say what is missing.
 `tools/libghostty-vt.sh` builds it into `.bin/` (a ghostty checkout at the headers' commit and zig 0.16,
