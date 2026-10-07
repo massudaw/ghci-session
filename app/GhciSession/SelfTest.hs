@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (arguments, chatTools, fuzzyReplace, isRed, nearest, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, fuzzyReplace, isRed, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -310,6 +310,16 @@ run = do
   check "chat: ... refused when it occurs twice" (either (T.isInfixOf (T.pack "2 times")) (const False) (replaceOnce (T.pack "x x") (T.pack "x") (T.pack "y")))
   check "chat: the edits tool takes an array of replacements" ("edits" `elem` map tName chatTools && maybe False ((== "array") . fst) (lookup "edits" (tProps (toolNamed "edits"))))
   check "chat: test takes an expression" ("expr" `elem` map fst (tProps (toolNamed "test")))
+  -- the reads a turn's context holds: numbered, aliased when unchanged, superseded by a read of their lines
+  eq "chat: a read's lines, from its answer" (readRange (T.pack "    7  a\n    8  b\n    9  c")) (Just (7, 9))
+  eq "chat: ... none in an answer that shows none" (readRange (T.pack "(empty)")) Nothing
+  let r1 = ReadRec 1 4 "src/A.hs" 1 200 (T.pack "text of A") Nothing False
+      r2 = ReadRec 2 6 "src/A.hs" 50 80 (T.pack "a part of A") Nothing False
+      r3 = ReadRec 3 8 "src/B.hs" 1 200 (T.pack "text of B") Nothing False
+  eq "chat: the same lines with the same text are an alias" (readAgainst [r1, r2, r3] "src/A.hs" (1, 200) (T.pack "text of A")) (Left 1)
+  eq "chat: changed text supersedes the reads its lines cover, in that file only" (readAgainst [r1, r2, r3] "src/A.hs" (1, 200) (T.pack "new A")) (Right [1, 2])
+  eq "chat: a narrower read supersedes nothing wider" (readAgainst [r1, r3] "src/A.hs" (50, 80) (T.pack "x")) (Right [])
+  eq "chat: a superseded read is no alias" (readAgainst [r1 { rrBy = Just 9 }] "src/A.hs" (1, 200) (T.pack "text of A")) (Right [])
   eq "chat: a save waits at least 45 s" (saveWait 0) 45
   eq "chat: ... three times the longest verdict and a margin" (saveWait 100) 315
   eq "chat: ... at most ten minutes" (saveWait 1000) 600

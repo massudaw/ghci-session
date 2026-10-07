@@ -241,7 +241,13 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   replacements, across files, checked together before any is written, with one reload; `test` takes an
   expression -- one group of the tests, run alone, scored by the check's own fail and pass patterns, the
   session's verdict left as it is; and `typecheck` answers at once, without waiting behind a running check,
-  when no source changed since it was last asked (four of an agent's waited 226 s each). The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
+  when no source changed since it was last asked (four of an agent's waited 226 s each). With tools out of the
+  way the model is the time, and a turn's conversation grows with every tool result, most of it files read
+  (17 reads in 42 calls of one round, 128k tokens carried into each call after): so every read's answer is
+  numbered; a read of lines the context already holds, unchanged, answers with a pointer to that read instead
+  of the text again; and a read supersedes the earlier reads of the lines it covers, which are rewritten as
+  one-line stubs naming it once 40,000 characters of them have piled up -- in a batch, because rewriting a
+  message ends the provider's cache of the prompt from there on (`GHS_CHAT_TRIM_AT` sets the threshold). The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
 - **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
   `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,

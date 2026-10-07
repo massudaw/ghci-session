@@ -29,6 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, saveWait, isRed
+  , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
@@ -41,6 +42,7 @@ import qualified Data.ByteString as B
 import Data.Char (isSpace)
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, sort, tails)
 import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
+import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
@@ -605,8 +607,9 @@ turn ch e o system texts pending = do
   forM_ texts (logH ch "user")
   let msgs0 = [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> T.intercalate (T.pack "\n\n") texts) ]
   spent <- newIORef (Spent 0 0 0 0 0 False False)
+  readsR <- newIORef ([] :: [ReadRec])
   tStart <- now
-  loop spent msgs0 0 (0 :: Int) (0 :: Int)
+  loop readsR spent msgs0 0 (0 :: Int) (0 :: Int)
   tEnd <- now
   s <- readIORef spent
   hPutStrLn stderr (spentLine s (tEnd - tStart))
@@ -614,7 +617,7 @@ turn ch e o system texts pending = do
     msg role text = JObj [("role", JStr role), ("content", JText text)]
     byName = [ (tName t, t) | t <- chatTools ]
     toolsJson = map toolJson chatTools
-    loop spent msgs step cut failures
+    loop readsR spent msgs step cut failures
       | step >= oMaxSteps o = hPutStrLn stderr "[the turn reached its step limit; stopping]"
       | otherwise = do
           t0 <- now
@@ -624,7 +627,7 @@ turn ch e o system texts pending = do
             Left why | failures < 2 -> do
               hPutStrLn stderr ("[" ++ why ++ "; asking again in 5s]")
               threadDelay 5000000
-              loop spent msgs step cut (failures + 1)
+              loop readsR spent msgs step cut (failures + 1)
             Left why -> hPutStrLn stderr ("chat: " ++ why ++ "; the turn ends")
             Right p -> do
               forM_ (pUsage p) $ \u -> do
@@ -641,7 +644,7 @@ turn ch e o system texts pending = do
                   then do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
                     hPutStrLn stderr (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
-                    loop spent (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
+                    loop readsR spent (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
                   else do
                     -- a turn that changed the files and ends with the verdict red is told so, once: it
                     -- either fixes it or says plainly that it stops red, never ends there in silence
@@ -652,12 +655,12 @@ turn ch e o system texts pending = do
                       Just r | isRed (vLine r) -> do
                         modifyIORef' spent (\x -> x { sNudged = True })
                         hPutStrLn stderr "[the turn would end with the verdict red; saying so once]"
-                        loop spent (msgs' ++ [msg "user" (T.pack ("[harness: you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
+                        loop readsR spent (msgs' ++ [msg "user" (T.pack ("[harness: you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
                                                                   ++ "\nFix it, or end by saying plainly that it is red and why you are stopping.]"))]) (step + 1) 0 0
                       _ -> pure ()
                 else do
                   modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "edits", "sh"]) . tcName) (pToolCalls p) })
-                  replies <- forM (pToolCalls p) $ \tc -> do
+                  replies <- forM (zip [0 :: Int ..] (pToolCalls p)) $ \(i, tc) -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))
                         isSession = name `elem` sessionToolNames
@@ -669,7 +672,23 @@ turn ch e o system texts pending = do
                       Nothing -> pure (False, T.pack ("unknown tool " ++ show name))
                     late <- pendingNote ch
                     t3 <- now
-                    let out = cap (out0 <> late)
+                    -- a read: numbered, an alias of an earlier one when its text is that one's, else
+                    -- superseding the earlier reads of its lines
+                    out1 <- case (name, ok, readRange out0, lookup name byName) of
+                      ("read", True, Just (lo, hi), Just t) -> do
+                        let path = normalise (fromMaybe "" (lookupStr "path" (fst (arguments t (tcArgs tc)))))
+                            idx = length msgs' + i
+                        recs <- readIORef readsR
+                        let k = length recs + 1
+                        case readAgainst recs path (lo, hi) out0 of
+                          Left j -> do
+                            writeIORef readsR (recs ++ [ReadRec k idx path lo hi T.empty Nothing True])
+                            pure (T.pack (printf "[read #%d: %s lines %d-%d are exactly as read #%d shows them above (unchanged since)]" k path lo hi j))
+                          Right sup -> do
+                            writeIORef readsR ([ if rrNum r `elem` sup then r { rrBy = Just k } else r | r <- recs ] ++ [ReadRec k idx path lo hi out0 Nothing False])
+                            pure (T.pack (printf "[read #%d: %s, lines %d-%d]\n" k path lo hi) <> cap out0)
+                      _ -> pure (cap out0)
+                    let out = out1 <> late
                         tagged = (if ok then T.empty else T.pack "ERROR: ") <> out
                     when (oUsage o) (hPutStrLn stderr (printf "[tool: %s %.1fs]" name (t3 - t2)))
                     unless isSession (logH ch "echo" tagged)
@@ -677,7 +696,61 @@ turn ch e o system texts pending = do
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending
                   forM_ mid (logH ch "user")
-                  loop spent (msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]) (step + 1) 0 0
+                  let next = msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
+                  -- the superseded reads, rewritten as stubs once there is enough of them
+                  recs <- readIORef readsR
+                  let due = [ r | r <- recs, isJust (rrBy r), not (rrTrimmed r) ]
+                      dueChars = sum (map (T.length . rrText) due)
+                  limit <- trimAtNow
+                  next' <- if null due || dueChars < limit then pure next else do
+                    let stubs = M.fromList [ (rrIdx r, T.pack (printf "[read #%d: %s lines %d-%d -- superseded by read #%d, which shows these lines as they are now]" (rrNum r) (rrPath r) (rrLo r) (rrHi r) (fromMaybe 0 (rrBy r)))) | r <- due ]
+                    writeIORef readsR [ if rrNum r `elem` map rrNum due then r { rrTrimmed = True, rrText = T.empty } else r | r <- recs ]
+                    hPutStrLn stderr (printf "[context: %d superseded read(s) trimmed, %d characters]" (length due) dueChars)
+                    pure [ maybe m (\st -> set "content" (JText st) m) (M.lookup ix stubs) | (ix, m) <- zip [0 ..] next ]
+                  loop readsR spent next' (step + 1) 0 0
+
+-- the reads a turn's context holds ---------------------------------------------------------------
+--
+-- A turn's conversation grows with every tool result, and most of it is files read: 17 reads in the first 42
+-- calls of one round, which then carried 128k tokens into every call. A file read again holds, in the new
+-- read, everything the older read of those lines held -- the older copy is superseded. And a file read again
+-- unchanged is the very text the context already has. So:
+--
+-- * every read's answer is numbered ("[read #3: src/A.hs, lines 1-200]");
+-- * a read whose lines and text are those of a read the context still holds answers with a pointer to it
+--   ("[read #7: src/A.hs lines 1-200 are exactly as read #3 shows them above]") -- an alias, no text;
+-- * a read supersedes the earlier reads of the same file whose lines lie within its own; once the superseded
+--   text adds up to 'trimAt' characters, those messages are rewritten as one-line stubs naming the read that
+--   holds their lines now. In a batch: rewriting a message ends the provider's cache of the prompt from that
+--   message on, so it is done seldom, for a large gain each time, not on every read.
+
+-- | A read in the context: its number, the message it is, the file, its first and last line, its text (none
+-- for an alias), the read that superseded it, and whether its message has been rewritten as a stub.
+data ReadRec = ReadRec { rrNum :: Int, rrIdx :: Int, rrPath :: FilePath, rrLo :: Int, rrHi :: Int, rrText :: T.Text, rrBy :: Maybe Int, rrTrimmed :: Bool }
+  deriving (Eq, Show)
+
+-- | Characters of superseded reads that make the stubs worth a broken cache (GHS_CHAT_TRIM_AT overrides it,
+-- to tune it against a round's tokens; 0 trims at every superseding read, a huge number never).
+trimAt :: Int
+trimAt = 40000
+
+trimAtNow :: IO Int
+trimAtNow = (\v -> case v >>= \x -> case reads x of { [(n, "")] -> Just n; _ -> Nothing } of { Just n -> n; Nothing -> trimAt }) <$> lookupEnv "GHS_CHAT_TRIM_AT"
+
+-- | The first and last line a read's answer shows ("   12  text" lines).
+readRange :: T.Text -> Maybe (Int, Int)
+readRange out = case [ n | l <- T.lines out, [(n, "")] <- [reads (T.unpack (T.takeWhile (/= ' ') (T.stripStart l))) :: [(Int, String)]] ] of
+  [] -> Nothing
+  ns -> Just (head ns, last ns)
+
+-- | A new read against the ones the context holds: 'Left' the read it is an alias of (the same lines, the
+-- same text, still whole in the context), or 'Right' the reads it supersedes (the same file, lines within its own).
+readAgainst :: [ReadRec] -> FilePath -> (Int, Int) -> T.Text -> Either Int [Int]
+readAgainst recs p (lo, hi) t =
+  case [ rrNum r | r <- recs, whole r, rrPath r == p, rrLo r == lo, rrHi r == hi, rrText r == t ] of
+    (j : _) -> Left j
+    [] -> Right [ rrNum r | r <- recs, whole r, rrPath r == p, rrLo r >= lo, rrHi r <= hi ]
+  where whole r = isNothing (rrBy r) && not (rrTrimmed r) && not (T.null (rrText r))
 
 -- | The lines typed since last asked.
 drain :: TQueue (Maybe T.Text) -> IO [T.Text]
