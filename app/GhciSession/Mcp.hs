@@ -6,7 +6,7 @@
 -- are the memory. Nothing here touches the repl.
 --
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
-module GhciSession.Mcp (mcpMain, Tool (..), tools, call, pick, request) where
+module GhciSession.Mcp (mcpMain, Tool (..), tools, call, callReach, Reach (..), pick, request) where
 
 import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)
@@ -113,17 +113,26 @@ toolJson t = JObj
 
 -- | A tool, as a request to the daemon: ok, and the text.
 call :: Conf -> String -> Json -> IO (Bool, T.Text)
-call conf name args = do
+call conf name args = (\(ok, t, _) -> (ok, t)) <$> callReach conf name args
+
+-- | Whether a call reached its session: it did; there was none to reach (nothing was done, so the call can
+-- be sent again); or the session went away during it (what it did is not known).
+data Reach = Reached | Unreached | Lost deriving (Eq, Show)
+
+-- | A tool, and whether it reached its session: a caller may wait out a session that is restarting.
+callReach :: Conf -> String -> Json -> IO (Bool, T.Text, Reach)
+callReach conf name args = do
   let s k = lookupStr k args
       n k = lookupNum k args
       num k = maybe [] (\v -> [(k, JNum v)]) (n k)
       str k k' = maybe [] (\v -> [(k', JStr v)]) (s k)
   picked <- pick conf (s "session")
   case picked of
-    Left e -> pure (False, T.pack e)
+    Left e -> pure (False, T.pack e, Reached)
     Right session -> do
       let go op extra = request conf session (JObj (("op", JStr op) : extra))
-          say r = pure (lookupBool "ok" r == Just True, staleNote r <> fromMaybe T.empty (lookupText "out" r))
+          say r = pure (lookupBool "ok" r == Just True, staleNote r <> fromMaybe T.empty (lookupText "out" r)
+                       , case lookupStr "down" r of { Just "before" -> Unreached; Just _ -> Lost; Nothing -> Reached })
       case name of
         "eval" -> go "eval" (str "expr" "expr" ++ num "timeout") >>= say
         "status" -> go "status" [] >>= say
@@ -140,7 +149,7 @@ call conf name args = do
         "date" -> go "date" (num "id") >>= say
         "history" -> go "history" (num "n" ++ num "since" ++ [("full", JBool True)]) >>= say
         "remember" -> go "log" [("kind", JStr "talk"), ("text", JStr (fromMaybe "" (s "text")))] >>= say
-        _ -> pure (False, T.pack ("unknown tool " ++ show name))
+        _ -> pure (False, T.pack ("unknown tool " ++ show name), Reached)
   where
     staleNote r = case strs (r .: "stale") of
       [] -> T.empty
@@ -170,13 +179,18 @@ request conf name req = do
   sp <- sockPath (cStateDir conf </> name)
   mfd <- unixConnect sp
   case mfd of
-    Nothing -> pure (JObj [("ok", JBool False), ("out", JStr (name ++ ": no session running (ghci-session start " ++ name ++ ")"))])
+    Nothing -> pure (JObj [("ok", JBool False), ("down", JStr "before"), ("out", JStr (name ++ ": no session running (ghci-session start " ++ name ++ ")"))])
     Just fd -> do
-      h <- fdToHandle fd
-      hSetBinaryMode h True
-      B.hPut h (encodeBS req)
-      B.hPut h (BC.pack "\n")
-      hFlush h
-      line <- BC.hGetLine h
-      hClose h
-      pure (either (\e -> JObj [("ok", JBool False), ("out", JStr ("bad reply from the session: " ++ e))]) id (parseJsonBS line))
+      -- (a session that stops or restarts during the request closes the connection: an answer, not an exception)
+      r <- try $ do
+        h <- fdToHandle fd
+        hSetBinaryMode h True
+        B.hPut h (encodeBS req)
+        B.hPut h (BC.pack "\n")
+        hFlush h
+        line <- BC.hGetLine h
+        hClose h
+        pure line
+      pure $ case r of
+        Left (e :: IOException) -> JObj [("ok", JBool False), ("down", JStr "during"), ("out", JStr (name ++ ": the session closed the connection before answering (it stopped or restarted): " ++ show e))]
+        Right line -> either (\e -> JObj [("ok", JBool False), ("out", JStr ("bad reply from the session: " ++ e))]) id (parseJsonBS line)

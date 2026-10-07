@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, editPaths, fuzzyReplace, isRed, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, capWith, editPaths, fuzzyReplace, isRed, ownGhci, shCap, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -307,6 +307,12 @@ run = do
   check "chat: ... or says it matches none" (T.isInfixOf (T.pack "matches no line") (nearest file (T.pack "nothing like it")))
   eq "chat: a replacement as written" (fst <$> replaceOnce (T.pack "a = 1\nb = 2\n") (T.pack "b = 2") (T.pack "b = 3")) (Right (T.pack "a = 1\nb = 3\n"))
   check "chat: ... or with its spacing squeezed, and says so" (either (const False) (T.isInfixOf (T.pack "x = 9") . fst) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")) && either (const False) (("spacing" `isInfixOf`) . snd) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")))
+  eq "chat: a GHCi of the agent's own, through sh"
+     (map ownGhci [ "timeout 300 ghci -isrc 2>&1 <<'EOF' | tail -5", "cd x && cabal repl lib:nes", "echo main | /opt/ghc/bin/ghci-9.14.1 -v0", "runghc Setup.hs", "ghc -e 'print 1'"
+                  , "ghci-session status nes", "grep -rn ghci src", "cabal build", "ghc -fno-code -isrc src/Nes.hs" ])
+     [True, True, True, True, True, False, False, False, False]
+  eq "chat: sh output within the cap is whole" (capWith shCap "" (T.pack "ok")) (T.pack "ok")
+  check "chat: ... over it, head and tail with the cut said" (let c = capWith shCap ": hint" (T.replicate 20000 (T.pack "x")) in T.length c < shCap + 200 && T.isInfixOf (T.pack "12000 characters cut: hint") c)
   eq "chat: edits without a path are in the file before them, else the call's"
      (map fst (editPaths (Just "B.hs") [JObj [("old", JStr "x")], JObj [("path", JStr "A.hs"), ("old", JStr "y")], JObj [("path", JStr ""), ("old", JStr "z")]]))
      [Just "B.hs", Just "A.hs", Just "A.hs"]

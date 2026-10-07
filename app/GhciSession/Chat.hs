@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed
+  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -59,7 +59,7 @@ import Text.Printf (printf)
 import GhciSession.Config
 import GhciSession.Json
 import GhciSession.Llm
-import GhciSession.Mcp (Tool (..), call, pick, tools)
+import GhciSession.Mcp (Tool (..), pick, tools)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now)
 
@@ -109,7 +109,8 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
 
 data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched :: [FilePath], cAgent :: String
                  , cLongest :: IORef Double     -- ^ the longest verdict (a reload with its check) seen: what a save may take
-                 , cPending :: IORef (Maybe Double) }   -- ^ a save whose CHECK was still running when its answer went out: when it was written
+                 , cPending :: IORef (Maybe Double)     -- ^ a save whose CHECK was still running when its answer went out: when it was written
+                 , cDown :: IORef Bool }                -- ^ the last wait for the session to come back ended with it still down
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -333,7 +334,7 @@ runTool :: Chat -> Tool -> Json -> IO (Bool, T.Text)
 runTool ch t a0
   | not (null missing) = pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t)))
   | tName t == "eval" = evalTool ch a
-  | tName t `elem` sessionToolNames = call (cConf ch) (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
+  | tName t `elem` sessionToolNames = sessionCall ch (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
   | otherwise = do
       r <- try (fileTool ch (tName t) a) :: IO (Either IOException (Bool, T.Text))
       pure (either (\e -> (False, T.pack ("IOError: " ++ show e))) id r)
@@ -348,13 +349,46 @@ evalTimeout = 120
 withTimeout :: Json -> Json
 withTimeout a = if isJust (lookupNum "timeout" a) then a else set "timeout" (JNum evalTimeout) a
 
+-- | Seconds a session tool waits for a session that is down -- stopped, or restarting (a restart loads the
+-- project again) -- to come back, before it answers that it is down; once a wait ended with it still down,
+-- the next calls wait a few seconds only. (Answering at once sent an agent to load the project in a GHCi
+-- of its own through sh, cold, on every call: 14 of them, 374 s.)
+downWait :: IO Double
+downWait = (\v -> fromMaybe 120 (v >>= \x -> case reads x of { [(n, "")] -> Just n; _ -> Nothing })) <$> lookupEnv "GHS_CHAT_DOWN_WAIT"
+
+-- | A session tool, waiting out a session that is down: a call that never reached it is sent again once it
+-- is back; one it went away during is not (what it did is not known), and the answer says so.
+sessionCall :: Chat -> String -> Json -> IO (Bool, T.Text)
+sessionCall ch name args = do
+  (ok, out, reach) <- Mcp.callReach (cConf ch) name args
+  if reach == Mcp.Reached then writeIORef (cDown ch) False >> pure (ok, out) else do
+    wasDown <- readIORef (cDown ch)
+    limit <- if wasDown then pure 5 else downWait
+    t0 <- now
+    hPutStrLn stderr (printf "[the session is down: waiting up to %.0fs for it to come back]" limit)
+    back <- waitUp (t0 + limit)
+    secs <- subtract t0 <$> now
+    writeIORef (cDown ch) (not back)
+    case (back, reach) of
+      (True, Mcp.Unreached) -> do
+        (ok', out', _) <- Mcp.callReach (cConf ch) name args
+        pure (ok', T.pack (printf "[the session was down (stopped or restarting); it came back after %.0fs and this is the answer]\n" secs) <> out')
+      (True, _) -> pure (False, out <> T.pack (printf "\n[the session went down during this call and came back after %.0fs: the call was not sent again -- send it again if it is still wanted]" secs))
+      (False, _) -> pure (False, out <> T.pack (printf "\n[still down after %.0fs of waiting. Starting it (as the answer says) loads the project once, warm for every call after; a GHCi of your own through sh loads it cold on every call]" secs))
+  where
+    waitUp deadline = do
+      r <- timeout 10000000 (ask ch "status" [])
+      let up = maybe True (isNothing . lookupStr "down") r     -- (a session that took the call but is busy loading is up)
+      t <- now
+      if up then pure True else if t >= deadline then pure False else threadDelay 2000000 >> waitUp deadline
+
 -- | An eval: leading import lines (and : commands) are each their own command -- in one block with the
 -- expression they do not parse -- and a block that still does not parse is told why.
 evalTool :: Chat -> Json -> IO (Bool, T.Text)
 evalTool ch a = do
   let ls = lines (trim (fromMaybe "" (lookupStr "expr" a)))
       (heads, rest) = splitImports ls
-      one e = call (cConf ch) "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
+      one e = sessionCall ch "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
   outs <- forM heads $ \h -> do
     (ok, out) <- one h
     pure [ T.pack h <> T.pack "\n" <> out | not ok || T.isInfixOf (T.pack "error") out ]
@@ -455,11 +489,17 @@ fileTool ch name a = case name of
     up <- isJust <$> verdictAt ch
     written <- if up then Just <$> now else pure Nothing
     staleBefore <- staleNow ch
-    (ok, out) <- shTool (cDir ch) (fromMaybe "" (lookupStr "cmd" a)) (fromMaybe 120 (lookupNum "timeout" a))
+    let cmd = fromMaybe "" (lookupStr "cmd" a)
+    t0 <- now
+    (ok, out) <- shTool (cDir ch) cmd (fromMaybe 120 (lookupNum "timeout" a))
+    secs <- subtract t0 <$> now
     -- a command that edited a watched source (sed -i, a generator, git) is a save too: the session reloads
     -- it, and the answer waits for that verdict as write and edit do, else the agent reloads by hand
     pending <- shSaved ch written staleBefore
-    pure (ok && maybe True fst pending, out <> maybe T.empty snd pending)
+    -- a GHCi of the agent's own loads the project cold, every time, what the session has loaded warm
+    let own | up && ownGhci cmd = T.pack (printf "\n[note: this started a GHCi of its own, loading the project cold (%.1fs); the session has it loaded -- eval, test with expr (one group of tests alone), typecheck answer from it in about a second]" secs)
+            | otherwise = T.empty
+    pure (ok && maybe True fst pending, capWith shCap shHint out <> own <> maybe T.empty snd pending)
   _ -> pure (False, T.pack ("unknown tool " ++ name))
 
   where
@@ -554,9 +594,39 @@ trim = dropWhileEnd' isSpace . dropWhile isSpace
 
 -- | A tool result, head and tail, when it is over the cap.
 cap :: T.Text -> T.Text
-cap t | T.length t <= capChars = t
-      | otherwise = T.take h t <> T.pack ("\n[... " ++ show (T.length t - 2 * h) ++ " characters cut ...]\n") <> T.takeEnd h t
-  where h = capChars `div` 2
+cap = capWith capChars ""
+
+-- | A text's head and tail when it is over n characters, the cut said (with a hint, if any).
+capWith :: Int -> String -> T.Text -> T.Text
+capWith n hint t
+  | T.length t <= n = t
+  | otherwise = T.take h t <> T.pack ("\n[... " ++ show (T.length t - 2 * h) ++ " characters cut" ++ hint ++ " ...]\n") <> T.takeEnd h t
+  where h = n `div` 2
+
+-- | Characters of a shell command's output kept (head and tail): a build log or a test run's whole output
+-- stays in the context of every later call of the turn, read again each time.
+shCap :: Int
+shCap = 8000
+
+shHint :: String
+shHint = ": filter it with grep, head or tail, or send it to a file and read the part you need"
+
+-- | Does a shell command start a GHCi (ghci, cabal repl, stack ghci, runghc, ghc -e)? The command of each
+-- part of a pipeline or list, past a timeout, env, time or nice -- not any word (a grep for ghci).
+ownGhci :: String -> Bool
+ownGhci cmd = any (ghciCmd . command . words) (segments cmd)
+  where
+    segments = lines . map (\c -> if c `elem` ";|&()`" then '\n' else c)
+    command (w : r) | w `elem` ["timeout", "env", "time", "nice", "exec", "stdbuf", "nohup"] = command (dropWhile arg r)
+                    | '=' `elem` w = command r
+                    | otherwise = (takeFileName w, r)
+    command [] = ("", [])
+    arg x = "-" `isPrefixOf` x || '=' `elem` x || (not (null x) && all (`elem` "0123456789.smh") x)
+    ghciCmd (w, r) = w `elem` ["ghci", "runghc", "runhaskell"]
+                  || ("ghci-" `isPrefixOf` w && all (`elem` "0123456789.") (drop 5 w))
+                  || (w == "cabal" && take 1 r `elem` [["repl"], ["v2-repl"]])
+                  || (w == "stack" && take 1 r `elem` [["ghci"], ["repl"]])
+                  || (w == "ghc" && any (`elem` ["-e", "--interactive"]) r)
 
 -- the prompts --------------------------------------------------------------------------------
 
@@ -782,8 +852,9 @@ chatMain conf args = case parseOpts args of
         members <- readMembers conf name
         longest <- newIORef 0
         pendingCheck <- newIORef Nothing
+        down <- newIORef False
         let ms = if null members then [name] else members
-            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg) longest pendingCheck
+            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg) longest pendingCheck down
         if oPrintView o then view ch 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           ep <- endpointFromEnv
           case ep of

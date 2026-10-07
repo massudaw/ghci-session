@@ -248,7 +248,12 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   numbered; a read of lines the context already holds, unchanged, answers with a pointer to that read instead
   of the text again; and a read supersedes the earlier reads of the lines it covers, which are rewritten as
   one-line stubs naming it once 40,000 characters of them have piled up -- in a batch, because rewriting a
-  message ends the provider's cache of the prompt from there on (`GHS_CHAT_TRIM_AT` sets the threshold). The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
+  message ends the provider's cache of the prompt from there on (`GHS_CHAT_TRIM_AT` sets the threshold). A shell
+  command's output is kept to 8,000 characters, head and tail, the cut said with how to narrow it. A session
+  tool that finds the session down (stopped, or restarting) waits up to two minutes for it to come back
+  (`GHS_CHAT_DOWN_WAIT`) and sends the call again, rather than answer at once -- an agent told "no session
+  running" loaded the project in a GHCi of its own through `sh`, cold, 14 times for 374 s; and a `sh` that does
+  start a GHCi of its own is told the session has the project loaded. The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
 - **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
   `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,
