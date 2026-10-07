@@ -32,11 +32,13 @@ executable ghci-session
   other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
-                    GhciSession.Search, GhciSession.Vfs
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
+                    GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Top
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_vt.c
   if flag(fff)
     c-sources:      cbits/ghs_fff.c
     cpp-options:    -DHAVE_FFF
+  -- (the prototypes of libghostty-vt, loaded at run time by cbits/ghs_vt.c: vendor/ghostty-vt, MIT)
+  include-dirs:     vendor/ghostty-vt/include
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010
