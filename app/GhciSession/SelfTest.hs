@@ -8,7 +8,7 @@ module GhciSession.SelfTest (run) where
 import Control.Exception (IOException, try)
 import Control.Monad (forM_, unless, void, when)
 import Data.IORef
-import Data.List (isInfixOf, isPrefixOf, sortOn)
+import Data.List (isInfixOf, isPrefixOf, sort, sortOn)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -19,11 +19,20 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Daemon (countSub, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
+import qualified GhciSession.History as H
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import Data.Maybe (fromMaybe)
+import qualified GhciSession.Search as Search
+import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
+import GHC.Hygiene.Census (readSymbol, zdecode)
 
 -- | Run every check; prints @[PASS]@ / @[FAIL]@ lines and a summary, and says whether all passed.
 run :: IO Bool
@@ -183,6 +192,10 @@ run = do
   loadConf tmp >>= \r -> case r of
     Right c -> resolve c "a" >>= \g -> eq "config: `test` is what `check` was" (either (const []) (map ckExpr . gChecks) g, either (const True) gWatchCheck g) (["T.run"], False)
     Left e -> check ("config: `test` accepted: " ++ e) False
+  writeConf "{\"targets\": {\"a\": {\"test\": {\"expr\": \"T.run\"}, \"watch_test\": true}}}"
+  loadConf tmp >>= \r -> case r of
+    Right c -> resolve c "a" >>= \g -> eq "config: watch_test can be enabled" (either (const False) gWatchCheck g) True
+    Left e -> check ("config: `test` accepted: " ++ e) False
   writeConf "{\"targets\": {\"a\": {\"chek\": {}}}}"
   loadConf tmp >>= \r -> check "config: an unknown key is refused" (either ("unknown key" `isInfixOf`) (const False) r)
   writeConf "{\"targets\": {\"a\": {}}, \"sessions\": {\"dev\": [\"nope\"]}}"
@@ -210,6 +223,182 @@ run = do
   waiterClose w
   pw <- makeWaiter "poll" 0.01 0.01 [] (\_ -> pure ())
   waiterWait pw 0.5 >>= check "watch: polling always says look"
+
+  -- the history: the log, the tree, the view (GhciSession.History)
+  let hp = H.Params { H.pNode = 24, H.pNodeMax = 24, H.pView = 60, H.pCap = 30000, H.pCtxMax = 65536, H.pCtxMin = 32768 }
+  let lp = H.defaultParams
+      long = T.unwords (replicate 300 (T.pack "word"))
+  check "history: a summary line up to NODE_MAX bytes is taken as it is" (H.nodeFits lp (T.replicate 1000 (T.pack "x")) && not (H.nodeFits lp (T.replicate 1025 (T.pack "x"))))
+  check "history: ... one still over it after the tries is cut at the last word that fits"
+        (let c = H.fitNode lp long in H.byteLength c <= 1024 && H.byteLength c > 1000 && T.isSuffixOf (T.pack "word") c)
+  eq "history: the scale line is exactly NODE bytes" (H.byteLength (H.scaleLine H.defaultParams)) 512
+  eq "history: a cut never splits a character" (H.cutBytes 2 (T.pack "a\233b")) (T.pack "a")
+  eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")
+  check "history: a capped result keeps head and tail and says so" (let c = H.capText 10 (T.pack (replicate 40 'x')) in T.isInfixOf (T.pack "30 characters cut") c && T.isPrefixOf (T.pack "xxxxx\n") c && T.isSuffixOf (T.pack "xxxxx") c)
+  eq "history: a short result is not touched" (H.capText 10 (T.pack "short")) (T.pack "short")
+  let hdir = tmp </> "history"
+  (hm, torn0) <- H.openHistory hp hdir
+  eq "history: a new one is empty" torn0 0
+  ids <- mapM (H.appendMsg hm (T.pack "tool")) (map T.pack ["eval 1 + 1", "eval 2 * 3", T.unpack (T.replicate 40 (T.pack "long ")), "reload"])
+  eq "history: ids are the position" ids [0, 1, 2, 3]
+  sn1 <- H.snapshot hm
+  check "history: a short message is its own node, free" (M.member (0, 0) (H.sTree sn1) && M.member (0, 1) (H.sTree sn1))
+  check "history: a long one is not" (not (M.member (0, 2) (H.sTree sn1)))
+  check "history: two short lines that fit together merge free" (not (M.member (1, 0) (H.sTree sn1)))   -- 16+1+16 > 24: they do not
+  eq "history: the view tiles the log, one part a message while nothing can merge" (H.sView sn1) [(0, 0), (0, 1), (0, 2), (0, 3)]
+  check "history: an unbuilt line shows the placeholder" (T.isInfixOf (T.pack "2+1|(not summarized yet: zoom it)") (H.renderView sn1))
+  check "history: the view is not settled with one" (not (H.settled sn1))
+  let (jobs1, _) = H.pendingOf hp sn1 Set.empty M.empty 0 M.empty
+  eq "history: the pump compresses the first unbuilt message, and merges what lies before it" (map (\j -> (H.jL j, H.jI j)) jobs1) [(0, 2), (1, 0)]
+  check "history: a compress job carries the message whole, and the lines before it, bare" (case jobs1 of { (j : _) -> H.jStep j == H.Compress (T.pack ("tool: " ++ T.unpack (T.replicate 40 (T.pack "long ")))) && H.jContext j == [T.pack "tool: eval 1 + 1", T.pack "tool: eval 2 * 3"]; _ -> False })
+  check "history: a merge job carries its two lines" (case jobs1 of { [_, j] -> H.jStep j == H.Merge (T.pack "tool: eval 1 + 1") (T.pack "tool: eval 2 * 3"); _ -> False })
+  let (jobs2, _) = H.pendingOf hp sn1 (Set.fromList [(0, 2)]) M.empty 0 M.empty
+  eq "history: a busy node is not offered again" (map (\j -> (H.jL j, H.jI j)) jobs2) [(1, 0)]
+  let (jobs3, _) = H.pendingOf hp sn1 Set.empty (M.fromList [((0, 2), 100)]) 50 M.empty
+  eq "history: a failed node waits out its retry" (map (\j -> (H.jL j, H.jI j)) jobs3) [(1, 0)]
+  check "history: the prompt has no ids" (let pr = H.jobPrompt hp (head jobs1) in not (T.isInfixOf (T.pack "0+1") pr) && T.isInfixOf (T.pack "<chat>\ntool: eval 1 + 1\n") pr && T.isInfixOf (T.pack "exactly 24 bytes") pr)
+  H.putNode hm 0 2 (T.pack "tool: eval of a long one")
+  H.putNode hm 1 0 (T.pack "tool: two evals")
+  sn2 <- H.snapshot hm
+  check "history: the view settles once every line is built" (H.settled sn2)
+  eq "history: over budget, the most due pair with a built parent merges" (H.sView sn2) [(1, 0), (0, 2), (0, 3)]
+  -- the budget is the view as rendered (prefixes, newlines, tags): 4 lines of 68 bytes of text render as 103
+  eq "history: the budget counts each line's id+n| and newline, not the texts alone"
+     (H.fitView hp { H.pView = 80 } 4 (H.sTree sn2) [(0, 0), (0, 1), (0, 2), (0, 3)]) [(1, 0), (0, 2), (0, 3)]
+  check "history: ... and a view that fits as rendered is left alone"
+     (H.fitView hp { H.pView = 103 } 4 (H.sTree sn2) [(0, 0), (0, 1), (0, 2), (0, 3)] == [(0, 0), (0, 1), (0, 2), (0, 3)])
+  zr <- H.zoom hm 0 2
+  eq "history: zoom opens a line into its two" zr (Right (T.pack "0+1|tool: eval 1 + 1\n1+1|tool: eval 2 * 3\n"))
+  z1 <- H.zoom hm 3 1
+  eq "history: zoom 1 is the message whole" z1 (Right (T.pack "3+0|tool: reload"))
+  H.zoom hm 1 2 >>= check "history: a line that is not in the tree's shape is refused" . either (const True) (const False)
+  ids2 <- mapM (H.appendMsg hm (T.pack "echo")) (map T.pack ["ok", "ok", "ok", "ok"])
+  eq "history: ids go on" ids2 [4 .. 7]
+  sn3 <- H.snapshot hm
+  check "history: a merged part is never split" (take 1 (H.sView sn3) == [(1, 0)])
+  (hm2, torn1) <- H.openHistory hp hdir
+  sn4 <- H.snapshot hm2
+  eq "history: reopened: no torn lines" torn1 0
+  eq "history: reopened: the same messages" (fmap H.mText (H.sRoot sn4)) (fmap H.mText (H.sRoot sn3))
+  eq "history: reopened: the same tree" (H.sTree sn4) (H.sTree sn3)
+  eq "history: reopened: the same view, folded again from message 0" (H.sView sn4) (H.sView sn3)
+  mainFiles <- listDirectory (hdir </> "main")
+  forM_ (take 1 mainFiles) $ \f -> appendFile (hdir </> "main" </> f) "{\"i\": 8, \"kind\": \"tool\", \"te"
+  (hm3, torn2) <- H.openHistory hp hdir
+  n3 <- H.count hm3
+  eq "history: a torn line is skipped and counted" (torn2, n3) (1, 8)
+  i9 <- H.appendMsg hm3 (T.pack "note") (T.pack "after the tear")
+  eq "history: the next line starts on its own line" i9 8
+  d9 <- H.dateOf hm3 8
+  check "history: a message has its date" (maybe False (> 0) d9)
+
+  -- the compactor's context: the last pCtxMin..pCtxMax bytes of the lines before the node, cut at the front
+  let hpw = hp { H.pCtxMax = 30, H.pCtxMin = 20 }
+      (jobsW, _) = H.pendingOf hpw sn1 Set.empty M.empty 0 M.empty
+  check "history: over the context's maximum, the front is cut down to its minimum" (case jobsW of { (j : _) -> H.jContext j == [T.pack "tool: eval 2 * 3"]; _ -> False })
+  check "history: under the maximum, the context is every line before the node" (case jobs1 of { (j : _) -> length (H.jContext j) == 2; _ -> False })
+
+  -- the chat's harness (GhciSession.Chat): what it does to the model's calls and to the files
+  let toolNamed n = head [ t | t <- chatTools, tName t == n ]
+      args n kvs = arguments (toolNamed n) (JObj kvs)
+  eq "chat: an argument called by another name is taken by its name" (args "sh" [("command", JStr "ls")]) (JObj [("cmd", JStr "ls")], [])
+  eq "chat: an alias of an argument the tool does not take is left alone (zoom keeps its n)" (args "zoom" [("id", JNum 1), ("n", JNum 2)]) (JObj [("id", JNum 1), ("n", JNum 2)], [])
+  eq "chat: a missing argument is named" (snd (args "edit" [("path", JStr "a"), ("new", JStr "b")])) ["old"]
+  eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
+  check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
+  check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
+  check "chat: restart is a chat tool" ("restart" `elem` map tName chatTools)
+  avail <- Search.isAvailable
+  check "search: FFF C library is loaded and available" avail
+  grepRes <- Search.grep "." "cmdSearch" 10
+  check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
+  eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
+  eq "chat: a lone write is not a batch" (writeRuns ["write", "read", "edit", "sh", "write"]) []
+  eq "chat: writes to distinct files are separate groups, those sharing one stay together in order"
+     (sort (groupByPaths [(0, ["a.hs"]), (1, ["b.hs"]), (2, ["a.hs", "c.hs"]), (3, ["c.hs"]), (4, ["d.hs"])])) [[0, 2, 3], [1], [4]]
+  eq "chat: leading imports are their own commands" (splitImports ["import A", ":set -XB", "f 1"]) (["import A", ":set -XB"], ["f 1"])
+  eq "chat: a lone import stays what it is" (splitImports ["import A"]) ([], ["import A"])
+  eq "chat: an expression alone is untouched" (splitImports ["let a = 1 in a", "+ 2"]) ([], ["let a = 1 in a", "+ 2"])
+  eq "chat: semicolon imports are split" (splitImports ["import A; import B"]) (["import A", "import B"], [])
+  eq "chat: semicolon import followed by expr is split" (splitImports ["import A; f 1"]) (["import A"], ["f 1"])
+  let file = T.pack "x = 1\n  foo   bar\ny = 2\n"
+  eq "chat: an edit that differs only in spacing is applied where its words are" (fuzzyReplace file (T.pack "foo bar") (T.pack "baz")) (Just (T.pack "x = 1\n  baz\ny = 2\n", 2, 2))
+  eq "chat: ... the indent and newline the old text had come off the new text" (fuzzyReplace file (T.pack "  foo bar\n") (T.pack "  qux\n")) (Just (T.pack "x = 1\n  qux\ny = 2\n", 2, 2))
+  eq "chat: ... across lines" (fuzzyReplace file (T.pack "foo bar y = 2") (T.pack "z")) (Just (T.pack "x = 1\n  z\n", 2, 3))
+  eq "chat: ... but not when a word differs" (fuzzyReplace file (T.pack "foo baz") (T.pack "q")) Nothing
+  eq "chat: ... nor when the words occur twice" (fuzzyReplace (T.pack "a b\na  b\n") (T.pack "a b") (T.pack "c")) Nothing
+  check "chat: a text that occurs nowhere points at the line its first line matches" (T.isInfixOf (T.pack "line 2") (nearest file (T.pack "foo bar\nnope")))
+  check "chat: ... or says it matches none" (T.isInfixOf (T.pack "matches no line") (nearest file (T.pack "nothing like it")))
+  eq "chat: a replacement as written" (fst <$> replaceOnce (T.pack "a = 1\nb = 2\n") (T.pack "b = 2") (T.pack "b = 3")) (Right (T.pack "a = 1\nb = 3\n"))
+  check "chat: ... or with its spacing squeezed, and says so" (either (const False) (T.isInfixOf (T.pack "x = 9") . fst) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")) && either (const False) (("spacing" `isInfixOf`) . snd) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")))
+  let ts = TurnState [ JObj [("role", JStr "system"), ("content", JText (T.pack "be brief \"quoted\" \955 \n tab\t"))]
+                     , JObj [("role", JStr "assistant"), ("content", JText T.empty), ("tool_calls", JArr [JObj [("id", JStr "call_1"), ("type", JStr "function"), ("function", JObj [("name", JStr "read"), ("arguments", JStr "{\"path\": \"src/A.hs\", \"lines\": 40}")])]])]
+                     , JObj [("role", JStr "tool"), ("tool_call_id", JStr "call_1"), ("content", JText (T.pack "    1  module A where"))] ]
+                     7 1 [ReadRec 1 2 "src/A.hs" 1 40 (T.pack "    1  module A where") Nothing False, ReadRec 2 5 "src/A.hs" 1 40 T.empty (Just 3) True]
+                     (Spent 7 123456 120000 2345 9 True False) 1759800000.25 (Just (ViewCtx 4400 [4400, 4401] (T.pack "the task, \"quoted\"\nline two")))
+      back = either (const Nothing) turnFrom (parseJson (encode (turnJson ts)))
+  eq "chat: a turn written out for a restart reads back as it was" back (Just ts)
+  check "chat: ... its conversation byte for byte (the provider's cache of it holds)" (fmap (map encode . tsMsgs) back == Just (map encode (tsMsgs ts)))
+  eq "chat: a turn in --context turn reads back as it was too" (either (const Nothing) turnFrom (parseJson (encode (turnJson ts { tsView = Nothing })))) (Just ts { tsView = Nothing })
+  let lg = [ (10, T.pack "user", T.pack "the task"), (11, T.pack "tool", T.pack "read {}"), (12, T.pack "echo", T.pack (replicate 100 'x')), (13, T.pack "talk", T.pack "done") ]
+  eq "chat: <recent> is the log after the boundary, whole, without the pinned message"
+     (renderTail [10] lg) (T.pack ("11|tool: read {}\n12|echo: " ++ replicate 100 'x' ++ "\n13|talk: done\n"))
+  eq "chat: the boundary moves past the oldest messages until the rest fits" (map (\k -> newBound k [10] lg) [1000, 50, 0]) [10, 13, 14]
+  let lgPlan = [ (10, T.pack "user", T.pack "the task")
+               , (11, T.pack "talk", T.pack "plan: 1. check, 2. fix")
+               , (12, T.pack "tool", T.pack "read {}")
+               , (13, T.pack "echo", T.pack "file content")
+               , (14, T.pack "user", T.pack "also test it")
+               , (15, T.pack "talk", T.pack "sure, adding test step") ]
+  eq "chat: <plan> keeps talk and mid-turn user messages up to planMax"
+     (renderPlan planMax [10] lgPlan)
+     (T.pack "11|talk: plan: 1. check, 2. fix\n14|user: also test it\n15|talk: sure, adding test step\n")
+  eq "chat: <plan> with small budget keeps the initial plan plus tail updates"
+     (renderPlan 70 [10] lgPlan)
+     (T.pack "11|talk: plan: 1. check, 2. fix\n15|talk: sure, adding test step\n")
+  eq "chat: the view's lines and the message each starts at" (map fst (viewLines (T.pack "<chat>\n0+8|a b\n8+4|c\n12+1|(not summarized yet: zoom it)\n</chat>\n"))) [0, 8, 12]
+  eq "chat: a GHCi of the agent's own, through sh"
+     (map ownGhci [ "timeout 300 ghci -isrc 2>&1 <<'EOF' | tail -5", "cd x && cabal repl lib:nes", "echo main | /opt/ghc/bin/ghci-9.14.1 -v0", "runghc Setup.hs", "ghc -e 'print 1'"
+                  , "ghci-session status nes", "grep -rn ghci src", "cabal build", "ghc -fno-code -isrc src/Nes.hs" ])
+     [True, True, True, True, True, False, False, False, False]
+  eq "chat: sh output within the cap is whole" (capWith shCap "" (T.pack "ok")) (T.pack "ok")
+  check "chat: ... over it, head and tail with the cut said" (let c = capWith shCap ": hint" (T.replicate 20000 (T.pack "x")) in T.length c < shCap + 200 && T.isInfixOf (T.pack "12000 characters cut: hint") c)
+  eq "chat: edits without a path are in the file before them, else the call's"
+     (map fst (editPaths (Just "B.hs") [JObj [("old", JStr "x")], JObj [("path", JStr "A.hs"), ("old", JStr "y")], JObj [("path", JStr ""), ("old", JStr "z")]]))
+     [Just "B.hs", Just "A.hs", Just "A.hs"]
+  eq "chat: ... and none at all is said so" (map fst (editPaths Nothing [JObj [("old", JStr "x")]])) [Nothing]
+  check "chat: ... refused when it occurs twice" (either (T.isInfixOf (T.pack "2 times")) (const False) (replaceOnce (T.pack "x x") (T.pack "x") (T.pack "y")))
+  check "chat: the edits tool takes an array of replacements" ("edits" `elem` map tName chatTools && maybe False ((== "array") . fst) (lookup "edits" (tProps (toolNamed "edits"))))
+  check "chat: test takes an expression" ("expr" `elem` map fst (tProps (toolNamed "test")))
+  -- the reads a turn's context holds: numbered, aliased when unchanged, superseded by a read of their lines
+  eq "chat: a read's lines, from its answer" (readRange (T.pack "    7  a\n    8  b\n    9  c")) (Just (7, 9))
+  eq "chat: ... none in an answer that shows none" (readRange (T.pack "(empty)")) Nothing
+  let r1 = ReadRec 1 4 "src/A.hs" 1 200 (T.pack "text of A") Nothing False
+      r2 = ReadRec 2 6 "src/A.hs" 50 80 (T.pack "a part of A") Nothing False
+      r3 = ReadRec 3 8 "src/B.hs" 1 200 (T.pack "text of B") Nothing False
+  eq "chat: the same lines with the same text are an alias" (readAgainst [r1, r2, r3] "src/A.hs" (1, 200) (T.pack "text of A")) (Left 1)
+  eq "chat: changed text supersedes the reads its lines cover, in that file only" (readAgainst [r1, r2, r3] "src/A.hs" (1, 200) (T.pack "new A")) (Right [1, 2])
+  eq "chat: a narrower read supersedes nothing wider" (readAgainst [r1, r3] "src/A.hs" (50, 80) (T.pack "x")) (Right [])
+  eq "chat: a superseded read is no alias" (readAgainst [r1 { rrBy = Just 9 }] "src/A.hs" (1, 200) (T.pack "text of A")) (Right [])
+  eq "chat: a save waits at least 45 s" (saveWait 0) 45
+  eq "chat: ... three times the longest verdict and a margin" (saveWait 100) 315
+  eq "chat: ... at most ten minutes" (saveWait 1000) 600
+  check "chat: red verdicts are red" (all isRed ["COMPILE-ERROR: 1 error(s)", "CHECK-FAIL: 2 failing in x", "CHECK-HANG: the check did not end in x", "DEAD: the repl died"])
+  check "chat: a pass is not, nor a stale pass" (not (any isRed ["OK -- CHECK-PASS (3.6s)", "STALE(1) OK (2 warning(s)) -- CHECK-PASS (0.1s)"]))
+  check "chat: vfs tool is present" ("vfs" `elem` map tName chatTools)
+  eq "vfs: formatLineBudget under" (Vfs.formatLineBudget 120 250) "120 lines [budget: 120/250 lines]"
+  eq "vfs: formatLineBudget over" (Vfs.formatLineBudget 260 250) "260 lines [OVER BUDGET: 260/250 lines!]"
+
+  -- the census's names: a symbol read back as unit:Module.name
+  eq "census: a closure's symbol is read back" (readSymbol "hellozm0zi1zi0zi0zminplace_Hello_bigTable_closure") "hello-0.1.0.0-inplace:Hello.bigTable"
+  eq "census: ... with dots in the module and the name's own codes" (readSymbol "ghczm9zi14zi1zmc6c3_GHCziDataziFastString_stringTable_closure") "ghc-9.14.1-c6c3:GHC.Data.FastString.stringTable"
+  eq "census: a name that is not one is left alone" (readSymbol "a local CAF of Hello") "a local CAF of Hello"
+  eq "census: z-codes" (zdecode "zdwgo_zuzu_ZCzpZLZR") "$wgo____:+()"
+
+  -- the hang detector: five times the median of the last passing checks, at least 15 s
+  eq "hang: no history, no limit (the check's own timeout)" (hangLimit []) Nothing
+  eq "hang: a fast check is given 15 s" (hangLimit [3, 3.2, 2.9]) (Just 15)
+  eq "hang: five times the median" (hangLimit [10, 30, 20]) (Just 100)
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")

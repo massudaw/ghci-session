@@ -289,7 +289,7 @@ class Tour:
         self.cmd("  use Side (a library that does not depend on that one)", "eval", "Part.Side.side", expect='"s0b1"')
         time.sleep(0.5)     # (the unlink that follows a new library)
         # (said by the census and not by reading the value: one freed under its CAF reads right until its memory is used again)
-        self.cmd("  the edited Mid's CAF is still a root", "eval", "GHC.Hygiene.Census.cafReport 8 100000000", expect="PartziMid_midTable_closure")
+        self.cmd("  the edited Mid's CAF is still a root", "eval", "GHC.Hygiene.Census.cafReport 8 100000000", expect="Part.Mid.midTable")
         self.cmd("  and Mid is the EDITED Mid", "eval", "System.Mem.performMajorGC >> putStrLn (Part.Mid.mid ++ show (sum Part.Mid.midTable))", expect="m1b15000050000")
         self.cmd("reload (nothing changed: every name is looked up again)", "reload", "--no-check", expect="CHECK SKIPPED")
         self.cmd("  ... and after it", "eval", "putStrLn (Part.Mid.mid ++ Part.Side.side)", expect="m1b1s0b1")

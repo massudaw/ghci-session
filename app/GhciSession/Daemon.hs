@@ -6,11 +6,13 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)
 import Control.Concurrent.MVar
+import Control.Concurrent.STM (atomically, check, orElse, readTVar, registerDelay)
+import qualified Data.Sequence as Seq
 import Control.Exception (IOException, SomeException, bracket_, displayException, finally, throwIO, try)
 import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
@@ -37,7 +39,8 @@ import System.Posix.IO (closeFd, fdToHandle)
 import System.Posix.Process (getProcessID)
 import System.Posix.Signals (sigKILL, sigTERM, signalProcess)
 import System.Posix.Types (CPid (..))
-import System.Process (CreateProcess (..), readCreateProcessWithExitCode, shell)
+import System.Process (CreateProcess (..), StdStream (..), createProcess, readCreateProcessWithExitCode, shell, terminateProcess, waitForProcess)
+import System.Timeout (timeout)
 import Text.Printf (printf)
 
 import GhciSession.Config
@@ -46,10 +49,13 @@ import GhciSession.Json
 import GhciSession.Repl
 import GhciSession.Sys
 import GhciSession.Watch
+import qualified GhciSession.History as H
+import qualified GhciSession.Llm as Llm
 
 data S = S
   { sConf :: Conf, sName :: String, sCfgV :: IORef Cfg, sRoot :: FilePath, sDir :: FilePath, sObjRel :: FilePath
   , sBootCheck :: Bool, sFastStart :: Bool
+  , sHist :: Maybe H.Mem           -- ^ the history: every request and verdict, the summary tree, the view ("GhciSession.History")
   , vRepl :: IORef (Maybe Repl)
   , vStatus :: IORef String, vJson :: IORef Json, vStatusText :: IORef String
   , vLoadedSig :: IORef Sig, vPendingSig :: IORef Sig
@@ -81,6 +87,9 @@ data S = S
   , vTcLast :: IORef (Maybe (Sig, (Bool, String, Double, [String], [Json])))   -- ^ the sources the last typecheck saw, and its answer
   , vLastLoad :: IORef (Maybe Reply)   -- ^ what the engine said of the last reload (the answer again, while no source has changed)
   , vLinksSeen :: IORef Int, vLinksPruned :: IORef Int   -- ^ libraries the engine has linked: now, and at the last unlink
+  , vCheckSecs :: IORef (M.Map String [Double])   -- ^ per member, the seconds its last passing checks took: what a hang is measured against
+  , vChecking :: IORef (Maybe (Double, Double, String))   -- ^ a check running now: when its reload began, when the check did, the compile verdict
+  , vBatch :: IORef (Maybe Double)   -- ^ a batch of edits is being written ('hold'): until when the watcher leaves the sources alone; 'release' reloads once
   }
 
 -- | How the running engine was started: what the build tool was asked, and what it answered.
@@ -164,7 +173,7 @@ setStatus s keep text0 detail facts = do
   let headL = if null stale then text else "STALE(" ++ show (length stale) ++ ") " ++ text
       line2 = "session=" ++ sName s ++ " gen=" ++ show gen ++ " at=" ++ dt ++ " loaded=" ++ la ++ " checked=" ++ ca
       ls = [headL, line2] ++ [ "stale: " ++ intercalate ", " (map (rel s) (take 6 stale)) | not (null stale) ] ++ detail
-      kind = fromMaybe (fromMaybe "OK" (listToMaybe [ k | k <- ["CHECK-FAIL", "CHECK-PASS"], k `isInfixOf` text ]))
+      kind = fromMaybe (fromMaybe "OK" (listToMaybe [ k | k <- ["CHECK-FAIL", "CHECK-HANG", "CHECK-PASS"], k `isInfixOf` text ]))
                (listToMaybe [ k | k <- ["DEAD", "stopped", "starting", "PREBUILD-ERROR", "CONFIG-ERROR", "COMPILE-ERROR"], k `isPrefixOf` text ])
   vStatusText s =: (unlines ls)
   old <- rd (vJson s)
@@ -173,7 +182,7 @@ setStatus s keep text0 detail facts = do
              [ ("session", JStr (sName s)), ("target", JStr (sName s)), ("kind", JStr kind), ("ok", JBool (kind `elem` ["OK", "CHECK-PASS"]))
              , ("stale", JNum (fromIntegral (length stale))), ("stale_files", JArr (map (JStr . rel s) stale))
              , ("warnings", JNum (fromIntegral (warningsIn text))), ("verdict", JStr text), ("text", JStr headL)
-             , ("failing", JNum (if kind == "CHECK-FAIL" then fromIntegral (length detail) else 0))
+             , ("failing", JNum (if kind `elem` ["CHECK-FAIL", "CHECK-HANG"] then fromIntegral (length detail) else 0))
              , ("detail", JArr (map JStr (take 30 detail))), ("generation", JNum (fromIntegral gen)), ("at", JNum t)
              , ("diagnostics", JArr diags) ]
       j2 = setDefault "servers" (JArr []) (setDefault "members" (JArr []) j1)
@@ -263,7 +272,8 @@ replCommandLine s exe v = case gRepl cfg of
       -- (a composed session too, with one member: started as units, it can be given another while it runs)
       ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) || gComposed cfg ]
       ++ [ "--with-repl=" ++ shq exe, "--repl-options=-fdiagnostics-color=never" ]
-      ++ [ "--repl-options=-j" ++ show (gGhcJobs cfg) | gGhcJobs cfg > 0 ]
+         -- -1 (the default): bare -j, GHC takes the number of processors; 0: off
+      ++ [ "--repl-options=-j" ++ (if gGhcJobs cfg > 0 then show (gGhcJobs cfg) else "") | gGhcJobs cfg /= 0 ]
          -- object code: CAFs of interpreted code are not prunable by address, and a server's code is its
          -- objects. Its own -odir (relative: under each unit's package dir) so `cabal build` is not disturbed.
       ++ (if objects then [ "--repl-options=-fobject-code", "--repl-options=-odir=" ++ sObjRel s, "--repl-options=-hidir=" ++ sObjRel s ] else [])
@@ -454,6 +464,19 @@ countSub needle = go 0
 
 data CheckResult = CheckResult { crMember :: String, crKind :: String, crFailing :: [String], crBody :: T.Text, crSecs :: Double }
 
+-- | A check that runs far longer than it has been taking is HUNG (an evaluation that never ends, a loop
+-- in the code under test), and is interrupted at five times the median of its last passing runs -- at
+-- least 15 s, never past its own timeout -- with a verdict that says so and says where it hung (the last
+-- line it printed). The fixed timeout alone (ten minutes by default) cost an agent's loop ten minutes a
+-- save, four times in one hour, while the check it was guarding takes three seconds.
+hangLimit :: [Double] -> Maybe Double
+hangLimit [] = Nothing
+hangLimit ds = Just (max 15 (5 * medianOf ds))
+
+medianOf :: [Double] -> Double
+medianOf [] = 0
+medianOf ds = sort ds !! (length ds `div` 2)
+
 checkOne :: S -> Check -> IO CheckResult
 checkOne s e = do
   cwd' <- rd (vCwd s)
@@ -461,11 +484,19 @@ checkOne s e = do
   -- run's file: a link failure leaves the log untouched and would read as a pass.
   let logp = (cwd' </>) <$> ckLog e
   before <- maybe (pure Nothing) modTime logp
+  hist <- M.findWithDefault [] (ckMember e) <$> rd (vCheckSecs s)
+  let hard = fromMaybe (gEvalTimeout (sCfg s)) (ckTimeout e)
+      soft = [ so | Just so <- [hangLimit hist], so < hard ]
+      limit = case soft of { (so : _) -> Just so; [] -> ckTimeout e }
   t0 <- now
-  r <- try (cmd s (ckTimeout e) (ckExpr e))
+  r <- try (cmd s limit (ckExpr e))
   t1 <- now
   case r of
-    Left ex@(ReplTimeout _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
+    Left (ReplTimeout t _ said) | not (null soft) ->
+      let lastLine = case [ l | l <- map T.strip (T.lines said), not (T.null l), l /= T.pack "Interrupted." ] of { [] -> "nothing yet"; ls -> T.unpack (T.takeEnd 160 (last ls)) }
+          why = printf "hung: ran %.0fs where it takes about %.1fs (interrupted); last output: %s" t (medianOf hist) lastLine
+      in pure (CheckResult (ckMember e) "HANG" [why] (said <> T.pack ("\n[session] " ++ why)) (t1 - t0))
+    Left ex@(ReplTimeout _ _ _) -> pure (CheckResult (ckMember e) "TIMEOUT" [show ex] (T.pack (show ex)) (t1 - t0))
     Left ex -> pure (CheckResult (ckMember e) "DEAD" [show ex] (T.pack (show ex)) (t1 - t0))
     Right out -> do
       body <- case logp of
@@ -477,9 +508,12 @@ checkOne s e = do
             else fromMaybe (out <> T.pack ("\n[session] " ++ p ++ " unreadable")) <$> readFileText p
       fails <- maybe (pure []) (\pat -> map (T.unpack . T.strip) <$> linesMatching pat (T.lines body)) (ckFail e)
       passOk <- maybe (pure True) (`anyLineMatches` body) (ckPass e)
-      pure $ if not (null fails) then CheckResult (ckMember e) "FAIL" fails body (t1 - t0)
-        else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : map T.unpack (lastN 3 (T.lines (T.strip body)))) body (t1 - t0)
-        else CheckResult (ckMember e) "PASS" [] body (t1 - t0)
+      let result = if not (null fails) then CheckResult (ckMember e) "FAIL" fails body (t1 - t0)
+            else if not passOk then CheckResult (ckMember e) "INCOMPLETE" ("the pass marker never appeared (did the check run?)" : map T.unpack (lastN 3 (T.lines (T.strip body)))) body (t1 - t0)
+            else CheckResult (ckMember e) "PASS" [] body (t1 - t0)
+      -- (a passing run's seconds are what the next run's hang is measured against: the last five)
+      when (crKind result == "PASS") (modifyIORef' (vCheckSecs s) (M.insertWith (\new old -> take 5 (new ++ old)) (ckMember e) [t1 - t0]))
+      pure result
 
 runCheck :: S -> Maybe Double -> Maybe String -> IO T.Text
 runCheck s mt0 member = do
@@ -488,7 +522,11 @@ runCheck s mt0 member = do
     t <- maybe now pure mt0
     prefix <- rd (vOkPrefix s)
     push s (prefix ++ " -- running check") ""
-    results <- phase s "check" (mapM (checkOne s) entries)
+    -- (every reply says so while it runs: a client that saved knows the code compiled, and need not wait
+    --  for the check to know that)
+    tc <- now
+    vChecking s =: Just (t, tc, prefix)
+    results <- phase s "check" (mapM (checkOne s) entries) `finally` (vChecking s =: Nothing)
     vEvaluated s =: True
     now >>= (vCheckedAt s =:)
     writeAtomicT (sDir s </> "run.log") (T.concat [ T.pack ("===== " ++ crMember r ++ " =====\n") <> crBody r <> T.pack "\n" | r <- results ])
@@ -503,6 +541,9 @@ runCheck s mt0 member = do
                 , ("duration_s", JNum took) ]
     if any ((== "DEAD") . crKind) results
       then setStatus s False "DEAD: the repl died during a check" (take 20 [ crMember r ++ ": " ++ T.unpack (T.take 2000 (crBody r)) | r <- bad ]) facts
+      else if any ((== "HANG") . crKind) results
+        then setStatus s False ("CHECK-HANG: the check did not end in " ++ intercalate ", " [ crMember r | r <- bad, crKind r == "HANG" ] ++ " (interrupted)" ++ tag)
+               (take 30 [ crMember r ++ ": " ++ l | r <- bad, l <- (if null (crFailing r) then [crKind r] else crFailing r) ]) facts
       else if not (null bad)
         then setStatus s False ("CHECK-FAIL: " ++ show (sum [ max 1 (length (crFailing r)) | r <- bad ]) ++ " failing in " ++ intercalate ", " (map crMember bad) ++ tag)
                (take 30 [ crMember r ++ ": " ++ l | r <- bad, l <- (if null (crFailing r) then [crKind r] else crFailing r) ]) facts
@@ -597,7 +638,7 @@ unlinkCafs s = do
         live <- rd (vLiveMb s)
         if k < 0
           then do vHygieneOn s =: False
-                  logS s "hygiene OFF: the engine cannot read this RTS's CAF list (see hygiene/c/rts_syms.h)"
+                  logS s "hygiene OFF: the pruner cannot read this RTS (its CAF list, or a temporary library's handle): CAFs a reload supersedes are not unlinked; GHS_CAF_DEBUG=1 in the target's env says why"
           else logS s (printf "unlink_cafs: %d unlinked in %.2fs with its GC, live heap %s MB" k (t1 - t0) live)
 
 -- | After the verdict is out: link the reloaded code if nothing has yet (the @warm@ expressions), then the
@@ -1169,16 +1210,24 @@ buildFileChanged s = do
           case moduleDelta old' new' of
             Just (added, []) -> do
               vBoot s =: Just b { bLaunch = new }
-              let multi = "-unit" `elem` lArgs new
               logS s (printf "the build tool's answer (%.1fs) differs only by %d module(s) added (%s): the session stays up" (t1 - t0) (length added) (unwords added))
-              -- a module nothing imports yet becomes a target (a multi-unit GHCi cannot be given one: there it
-              -- is loaded when something imports it, or at the next start)
+              -- a module nothing imports yet becomes a target of the unit that lists it. Not GHCi's `:add`: in
+              -- a multi-unit session (every GHCi 9.14 started from a unit file, `-unit` or not) that puts the
+              -- file in the INTERACTIVE unit, which compiles it too, into the same object file as the unit
+              -- that lists it -- the two builds overwrite each other and the next link of the real unit
+              -- fails with an undefined symbol. The engine gives it to the unit whose import paths hold it.
               -- (by FILE: GHCi remembers that it once looked for the module and did not find it)
               targets <- forM added $ \m -> do
                 let rels = [ d </> foldr1 (</>) (splitOn '.' m) ++ e | ('-' : 'i' : d) <- new', not (null d), e <- [".hs", ".lhs"] ]
                 found <- filterM (doesFileExist . (lCwd new </>)) rels
                 pure (fromMaybe m (listToMaybe found))
-              unless (multi || null added) (void (try (cmd s (Just (gLoadTimeout cfg)) (":add " ++ unwords (map show targets))) :: IO (Either SomeException T.Text)))
+              unless (null targets) $ do
+                r <- try (theRepl s >>= \rp -> replQueryOut rp (Just (gLoadTimeout cfg)) "add_targets" [("files", JArr (map JStr targets))]) :: IO (Either SomeException Reply)
+                logS s $ case r of
+                  Right (Reply j _) | lookupBool "ok" j == Just True ->
+                    "added as targets: " ++ unwords [ f ++ " [" ++ u ++ "]" | JObj o <- lookupArr "targets" j, Just (JStr f) <- [lookup "file" o], Just (JStr u) <- [lookup "unit" o] ]
+                  Right (Reply j _) -> "not added as targets (loaded when something imports them): " ++ fromMaybe "?" (lookupStr "error" j)
+                  Left e -> "not added as targets (loaded when something imports them): " ++ takeWhile (/= '\n') (show e)
               void (try (cmd s (Just 60) ":set -Wno-missing-home-modules") :: IO (Either SomeException T.Text))   -- (its list of them is the old one)
               void (reload s (gWatchCheck cfg) (gWatchRefork cfg) Nothing)
               unless (null added) (note s ("[" ++ show (length added) ++ " module(s) added to the build file: no restart]") [])
@@ -1187,10 +1236,20 @@ buildFileChanged s = do
               void (restart s (Just True))
     _ -> void (restart s (Just False))
 
--- | A start as one list of words: the arguments, with each per-unit argument file in place of its name.
+-- | A start as one list of words: the arguments, with each argument file in place of its name, and the
+-- files those name in place of theirs (cabal 3.18 on Linux: one file holding a `-unit @file` per unit).
 launchWords :: Launch -> IO [String]
-launchWords l = concat <$> mapM (\a -> case a of
-  '@' : f -> maybe [a] lines <$> readFileMaybe f
+launchWords l = expand (3 :: Int) (lArgs l)
+  where expand 0 as = pure as
+        expand n as = concat <$> mapM (\a -> case a of
+          '@' : f -> maybe (pure [a]) (expand (n - 1) . lines) =<< readFileMaybe f
+          _ -> pure [a]) as
+
+-- | A start's arguments as the engine reads them: an argument file that holds `-unit` entries (the whole
+-- command line, as cabal 3.18 on Linux writes it) opened up; a unit's own file left as its name.
+launchArgs :: Launch -> IO [String]
+launchArgs l = concat <$> mapM (\a -> case a of
+  '@' : f -> (\t -> case t of { Just c | "-unit" `elem` lines c -> lines c; _ -> [a] }) <$> readFileMaybe f
   _ -> pure [a]) (lArgs l)
 
 -- | If two starts differ only in the module names they list: those added and those removed.
@@ -1325,6 +1384,17 @@ typecheckSources :: S -> IO T.Text
 typecheckSources s = (\(_, line, secs, detail, _) -> T.pack (unlines ((line ++ printf " (%.1fs)" secs) : detail))) <$> typecheckNow s
 
 -- | ... as its parts: did they, the line, the errors, the compiler's diagnostics.
+-- | The last typecheck's answer, formatted as 'typecheckSources' does, when no source has changed since it
+-- was asked: it needs neither the work lock nor the repl. Nothing otherwise.
+typecheckCached :: S -> IO (Maybe T.Text)
+typecheckCached s = do
+  sig <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
+  lastTc <- rd (vTcLast s)
+  pure $ case lastTc of
+    Just (sig0, (_, line, secs, detail, _)) | sig0 == sig ->
+      Just (T.pack (unlines ((line ++ printf " (%.1fs, no source changed since)" secs) : detail)))
+    _ -> Nothing
+
 typecheckNow :: S -> IO (Bool, String, Double, [String], [Json])
 typecheckNow s = do
   t0 <- now
@@ -1521,7 +1591,7 @@ watchLoop s = do
                   then do
                     -- a commit is when everything catches up, whatever a save does: checks and servers too
                     logS s ("commit " ++ take 10 h ++ ": full reload (check, re-fork)")
-                    drive s (void (reload s True True Nothing))
+                    histEvent s ("commit " ++ take 10 h ++ ": full reload") (drive s (void (reload s True True Nothing)))
                     sg <- doScan
                     pure (sg, h)
                   else pure (lastSig, if null h then headC else h)
@@ -1542,26 +1612,266 @@ watchLoop s = do
                 cur2 <- doScan
                 ok <- waiterUpdate w (M.keys cur2 ++ map toRaw roots)   -- new files, and files saved by rename (a new inode)
                 unless ok (logS s "watch: cannot watch these paths with kernel events -- polling from here" >> toPolling w)
-                loaded <- rd (vLoadedSig s)
-                when (gAutoReload cfg && cur2 /= loaded) $ do
-                  let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
-                  let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
-                  if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
-                    then drive s (buildFileChanged s)
-                  else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
-                    then do
-                      logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
-                      drive s (void (restart s (Just False)))      -- (through the build tool: it is what compiles a package's C)
-                    else do
-                      logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
-                      drive s (watchReload s)
-                loop cur2 headC1 slow1
+                held <- batchHeld s
+                unless held (when (gAutoReload cfg) (applyChanges s (drive s) cur2))
+                -- (held: the old signature stays, so the next look finds the edits again, and a hold that ran out reloads)
+                loop (if held then lastSig1 else cur2) headC1 slow1
   loop first head0 t0 `finally` waiterClose w
+
+-- | A batch of edits is being written ('hold'): the watcher leaves the sources alone until 'release', or until the
+-- hold runs out (a client that died must not leave the session deaf to saves).
+batchHeld :: S -> IO Bool
+batchHeld s = do
+  b <- rd (vBatch s)
+  case b of
+    Nothing -> pure False
+    Just until' -> do
+      t <- now
+      if t < until' then pure True else do
+        vBatch s =: Nothing
+        logS s "watch: the hold ran out -- reloading what was saved"
+        pure False
+
+-- | Reload for the sources as they are now, when they differ from the loaded ones: what the watcher does after a
+-- save, and what 'release' does for the saves it held back. @run@ says how the reload is driven: the watcher takes
+-- the work lock ('drive'), a client request already has it.
+applyChanges :: S -> (IO () -> IO ()) -> Sig -> IO ()
+applyChanges s run cur2 = do
+  let cfg = sCfg s
+  loaded <- rd (vLoadedSig s)
+  when (cur2 /= loaded) $ do
+    let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
+    let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
+    saved <- saveLine s changed
+    if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
+      then histEvent s (saved ++ " (a build file)") (run (buildFileChanged s))
+    else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
+      then do
+        logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
+        histEvent s (saved ++ " (a restart)") (run (void (restart s (Just False))))      -- (through the build tool: it is what compiles a package's C)
+      else do
+        logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
+        histEvent s saved (run (watchReload s))
 
 showG :: Double -> String
 showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
 
 -- the socket ---------------------------------------------------------------------------------
+
+-- the history -----------------------------------------------------------------------
+--
+-- Every request a client makes and what it was answered, and every save with its verdict, go to the
+-- session's history ("GhciSession.History") as a @tool@ line and an @echo@ line: the daemon is the one
+-- process that sees them all. A verdict that is routine ("OK -- CHECK-PASS (0.4s)") is a short line, which
+-- the tree keeps verbatim at no cost; an error or an evaluation's output goes whole, capped, and is
+-- summarized. @status@ and @info@ are not logged: a tool polls them.
+
+histAdd :: S -> String -> T.Text -> IO ()
+histAdd s kind t = forM_ (sHist s) $ \m -> void (try (H.appendMsg m (T.pack kind) t) :: IO (Either SomeException Int))
+
+-- | A request as one line: the operation and what matters of its arguments.
+describeReq :: String -> Json -> T.Text
+describeReq op req = T.pack (unwords (op' : args))
+  where
+    op' = case op of { "check" -> "test"; "zygote" -> "server"; o -> o }
+    args = [ a | Just a <- [lookupStr "action" req] ] ++ [ "-m " ++ m | Just m <- [lookupStr "member" req] ]
+        ++ [ "--" ++ m | Just m <- [lookupStr "mode" req], m /= "cafs" ] ++ [ "--top " ++ show (round n :: Int) | Just n <- [lookupNum "top" req] ]
+        ++ [ "--no-test" | lookupBool "check" req == Just False ] ++ [ "--no-refork" | lookupBool "refork" req == Just False ]
+        ++ [ "--fast" | lookupBool "fast" req == Just True ] ++ [ "--resume" | lookupBool "resume" req == Just True ] ++ [ "--live" | lookupBool "live" req == Just True ]
+        ++ [ unwords [ w | JStr w <- lookupArr "words" req ] | op == "doc" ]
+        ++ [ e | Just e <- [lookupStr "expr" req], not (null e) ]
+        ++ [ f | JStr f <- lookupArr "files" req ]
+
+-- | A reply, capped, with the stale warning the client was given.
+histEcho :: S -> [FilePath] -> T.Text -> IO ()
+histEcho s stale out = forM_ (sHist s) $ \m -> do
+  let warn = if null stale then T.empty else T.pack ("[STALE: " ++ show (length stale) ++ " watched file(s) differ from the loaded code: " ++ intercalate ", " (map (rel s) (take 4 stale)) ++ "]\n")
+      body = T.strip out
+  histAdd s "echo" (warn <> H.capText (H.pCap (H.params m)) (if T.null body then T.pack "(no output)" else body))
+
+-- | The verdict as the log has it: the status line (with its STALE prefix) and the failing lines.
+verdictLine :: S -> IO T.Text
+verdictLine s = do
+  st <- rd (vStatus s)
+  j <- rd (vJson s)
+  stale <- if "starting" `isPrefixOf` st then pure [] else staleFiles s
+  pure (T.pack (intercalate "\n" ((if null stale then st else "STALE(" ++ show (length stale) ++ ") " ++ st) : take 30 (strs (j .: "detail")))))
+
+-- | What a save changed: the files, and for each a diff against the copy kept since it was last seen
+-- (@history/loaded/@, seeded at boot), capped -- the log then says WHAT was edited, not only that a file
+-- was. The copies are brought up to date here.
+saveLine :: S -> [FilePath] -> IO String
+saveLine s changed = do
+  let head' = "save: " ++ intercalate ", " (map (rel s) (take 8 changed)) ++ (if length changed > 8 then ", ..." else "")
+  case sHist s of
+    Nothing -> pure head'
+    Just _ -> do
+      ds <- forM (take 8 changed) $ \f -> do
+        let copy = sDir s </> "history" </> "loaded" </> rel s f
+        there <- doesFileExist f
+        had <- doesFileExist copy
+        d <- if not there then pure "(deleted)"
+             else if not had then pure "(new, or not seen before)"
+             else do
+               out <- rawSystemOut 10 "diff" ["-u", copy, f]
+               pure (maybe "(diff failed)" (hunks 60) out)
+        void (try (if there then createDirectoryIfMissing True (takeDirectory copy) >> copyFile f copy else removeFile copy) :: IO (Either IOException ()))
+        pure (if length changed == 1 then d else "== " ++ rel s f ++ "\n" ++ d)
+      pure (intercalate "\n" (head' : filter (not . null) ds))
+  where
+    -- the hunks of a unified diff, without the two header lines and their times; at most n lines
+    hunks n out = let ls = drop 2 (lines out) in intercalate "\n" (take n ls ++ [ "... (" ++ show (length ls - n) ++ " more lines)" | length ls > n ])
+
+-- | The copies the save diffs are taken against: every watched source, once the session is up.
+seedLoaded :: S -> IO ()
+seedLoaded s = forM_ (sHist s) $ \_ -> void (try go :: IO (Either SomeException ()))
+  where
+    go = do
+      sig <- rd (vLoadedSig s)
+      forM_ (M.keys sig) $ \p -> do
+        let f = fromRaw p
+            copy = sDir s </> "history" </> "loaded" </> rel s f
+        there <- doesFileExist copy
+        same <- if not there then pure False else (==) <$> modTime f <*> modTime copy
+        unless same $ void (try (createDirectoryIfMissing True (takeDirectory copy) >> copyFile f copy) :: IO (Either IOException ()))
+
+-- | Something the watcher did: what, then the verdict it ended on.
+histEvent :: S -> String -> IO () -> IO ()
+histEvent s what act = do
+  histAdd s "tool" (T.pack what)
+  act
+  verdictLine s >>= histAdd s "echo"
+
+histOps :: [String]
+histOps = ["history", "zoom", "date", "view", "log", "pending", "tree_put"]
+
+-- | The history's own operations: answered from the daemon's memory, with the repl untouched.
+histOp :: S -> String -> Json -> IO (Either String T.Text)
+histOp s op req = case sHist s of
+  Nothing -> pure (Left "this session keeps no history (\"history\": false)")
+  Just m -> case op of
+    "log" -> do
+      let kind = fromMaybe "" (lookupStr "kind" req)
+      if kind `notElem` ["user", "talk", "tool", "echo", "note"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, note; not " ++ show kind)) else do
+        i <- H.appendMsg m (T.pack kind) (fromMaybe T.empty (lookupText "text" req))
+        pure (Right (T.pack ("#" ++ show i)))
+    "history" -> do
+      n <- H.count m
+      let want = maybe 40 round (lookupNum "n" req) :: Int
+          from = maybe (max 0 (n - want)) round (lookupNum "since" req)
+      ms <- H.messages m from want
+      if lookupBool "json" req == Just True
+        then pure (Right (T.pack (encode (JArr [ JObj [("i", JNum (fromIntegral (H.mId x))), ("kind", JStr (T.unpack (H.mKind x))), ("text", JText (H.mText x)), ("date", JNum (H.mDate x))] | x <- ms ]))))
+        else do
+          ls <- forM ms $ \x -> do
+            d <- stamp (H.mDate x)
+            let full = lookupBool "full" req == Just True
+                body = if full then H.mText x else let l1 = T.takeWhile (/= '\n') (H.mText x) in (if T.length l1 > 160 then T.take 160 l1 <> T.pack "..." else l1) <> (if T.any (== '\n') (H.mText x) then T.pack " ..." else T.empty)
+            pure (T.pack ("#" ++ show (H.mId x) ++ " " ++ d ++ " " ++ T.unpack (H.mKind x) ++ ": ") <> body)
+          pure (Right (T.intercalate (T.pack "\n") ls <> (if null ms then T.pack ("no messages" ++ (if n > 0 then " from #" ++ show from else "")) else T.empty)))
+    "zoom" -> fmap T.stripEnd <$> H.zoom m (maybe (-1) round (lookupNum "id" req)) (maybe 0 round (lookupNum "n" req))
+    "date" -> do
+      d <- H.dateOf m (maybe (-1) round (lookupNum "id" req))
+      case d of
+        Nothing -> pure (Left ("no message " ++ maybe "?" (show . (round :: Double -> Int)) (lookupNum "id" req)))
+        Just t -> Right . T.pack <$> (formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S %Z" <$> utcToLocalZonedTime (posixSecondsToUTCTime (realToFrac t)))
+    "view" -> do
+      -- `wait`: until every line is a summary (a turn starts on a settled view), at most that many seconds
+      let secs = fromMaybe 0 (lookupNum "wait" req)
+      t0 <- now
+      let go = do
+            sn <- H.snapshot m
+            t <- now
+            if H.settled sn || t - t0 >= secs then pure sn else do
+              n <- H.changes m
+              tv <- registerDelay (round (min 1.0 (max 0.01 (secs - (t - t0))) * 1e6))
+              atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
+              go
+      sn <- go
+      let r = H.renderView sn
+      pure (Right (if lookupBool "json" req == Just True
+        then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (Seq.length (H.sRoot sn)))) ]))
+        else r))
+    -- for a compactor outside the daemon: the nodes ready to build, with their prompts; and one built
+    "pending" -> do
+      js <- H.pending m
+      let ps = H.params m
+      pure (Right (T.pack (encode (JArr [ JObj [("l", JNum (fromIntegral (H.jL j))), ("i", JNum (fromIntegral (H.jI j))), ("prompt", JText (H.jobPrompt ps j))] | j <- js ]))))
+    "tree_put" -> case (lookupNum "l" req, lookupNum "i" req, lookupText "text" req) of
+      (Just l, Just i, Just t) | not (T.null (T.strip t)) -> H.putNode m (round l) (round i) (T.strip t) >> pure (Right (T.pack "ok"))
+      _ -> pure (Left "tree_put: l, i and a text are needed")
+    _ -> pure (Left ("unknown op " ++ show op))
+
+-- | The compactor, through the configured command (@summarize_cmd@): it reads the instructions, the context
+-- and the step on its standard input and answers the line on its standard output. Up to @summarize_jobs@
+-- at once; a line over the size is asked again with the line cut where the limit falls, up to five times,
+-- and the shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its
+-- first failure is logged. (OptChat's retry goes on in the same conversation; a command has none, so the
+-- earlier answer and the note are appended to the prompt instead.)
+compactorLoop :: S -> H.Mem -> String -> IO ()
+compactorLoop s m cmd = loop
+  where
+    ps = H.params m
+    loop = do
+      stopping <- rd (vStopping s)
+      unless stopping $ do
+        n <- H.changes m
+        busy <- H.busyCount m
+        jobs <- H.pending m
+        forM_ (take (max 0 (gSummarizeJobs (sCfg s) - busy)) jobs) $ \j -> do
+          H.claim m (H.jL j, H.jI j)
+          void (forkIO (try (runJob j) >>= either (\(e :: SomeException) -> H.release m (H.jL j, H.jI j) >> logS s ("summarize: " ++ displayException e)) pure))
+        tv <- registerDelay 10000000
+        atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
+        loop
+    runJob j = do
+      let p = (H.jL j, H.jI j)
+          base = H.compactPrompt (gAgent (sCfg s)) <> T.pack "\n\n" <> H.jobPrompt ps j
+          go tries extra
+            | length tries >= 3 = pure tries
+            | otherwise = do
+                r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl")] cmd (base <> extra) 300
+                case r of
+                  Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
+                    let line = T.strip (T.takeWhile (/= '\n') (T.strip out))
+                    if H.nodeFits ps line then pure (tries ++ [line])
+                      else go (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line <> T.pack "\nAnswer again, shorter.")
+                  Just (code, _, err) -> do
+                    first <- H.failed m p 10
+                    when first (logS s ("summarize " ++ show p ++ ": the command failed (" ++ show code ++ "): " ++ take 300 (T.unpack (T.strip err))))
+                    pure tries
+                  Nothing -> do
+                    first <- H.failed m p 10
+                    when first (logS s ("summarize " ++ show p ++ ": the command timed out"))
+                    pure tries
+      tries <- go [] T.empty
+      case tries of
+        [] -> pure ()
+        _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries ])))
+
+-- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
+-- 'Nothing' when it ran past the timeout (it is then stopped).
+runShell :: [(String, String)] -> String -> T.Text -> Double -> IO (Maybe (ExitCode, T.Text, T.Text))
+runShell extraEnv cmd input secs = do
+  env0 <- getEnvironment
+  (Just i, Just o, Just e, ph) <- createProcess (shell cmd) { std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe, close_fds = True
+                                                             , env = Just ([ kv | kv@(k, _) <- env0, k `notElem` map fst extraEnv ] ++ extraEnv) }
+  mapM_ (`hSetBinaryMode` True) [i, o, e]
+  ov <- newEmptyMVar
+  ev <- newEmptyMVar
+  _ <- forkIO (B.hGetContents o >>= putMVar ov)
+  _ <- forkIO (B.hGetContents e >>= putMVar ev)
+  void (try (B.hPut i (TE.encodeUtf8 input) >> hClose i) :: IO (Either IOException ()))
+  code <- timeout (round (secs * 1e6)) (waitForProcess ph)
+  case code of
+    Nothing -> do
+      terminateProcess ph
+      void (timeout 2000000 (waitForProcess ph))
+      pure Nothing
+    Just c -> do
+      out <- takeMVar ov
+      err <- takeMVar ev
+      pure (Just (c, decode out, decode err))
 
 serve :: S -> IO ()
 serve s = do
@@ -1593,8 +1903,11 @@ handle s h = do
   let reply ok out = do
         stale <- staleFiles s
         j <- rd (vJson s)
+        ck <- rd (vChecking s)
+        -- (while a check runs: when its reload began, when the check did, and what the load compiled to)
+        let checking = [ ("checking", JObj [("began", JNum b), ("since", JNum c), ("compiled", JStr p)]) | Just (b, c, p) <- [ck] ]
         -- bytes straight to the socket: an evaluation's output can be megabytes
-        B.hPut h (encodeBS (JObj [ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ]))
+        B.hPut h (encodeBS (JObj ([ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ] ++ checking)))
         B.hPut h (BC.pack "\n")
         hFlush h
       replyS ok = reply ok . T.pack
@@ -1608,19 +1921,60 @@ handle s h = do
           st <- rd (vStatus s)
           replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
         "info" -> info s >>= replyS True . encode
-        "doc" -> docSearch s req >>= reply True          -- (reads the sources, not the repl: answers during a reload)
+        -- a batch of edits: the watcher waits (it must not take the work lock: a reload may be running) ...
+        "hold" -> do
+          let secs = max 1 (min 600 (fromMaybe 30 (lookupNum "secs" req)))
+          t <- now
+          vBatch s =: Just (t + secs)
+          vLastUsed s =: t
+          logS s ("hold: saves are not reloaded for up to " ++ showG secs ++ " s, until `release`")
+          replyS True ("holding: saves are not reloaded for up to " ++ showG secs ++ " s; `release` reloads them once")
+        -- ... and `release` reloads what was written, once, and answers with that verdict
+        "release" -> viaWork op req      -- (the hold stays until the reload is done: the watcher must not queue the same one)
+        "doc" -> do          -- (reads the sources, not the repl: answers during a reload)
+          logged req (histAdd s "tool" (describeReq op req))
+          out <- docSearch s req
+          logged req (histEcho s [] out)
+          reply True out
+        _ | op `elem` histOps -> histOp s op req >>= either (replyS False) (reply True)
         "stop" -> do
           forM_ (lookupStr "reason" req) (vStopReason s =:)
           vKeepServers s =: fromMaybe False (lookupBool "keep_servers" req)
           stopNow s
           replyS True "stopping"
-        _ -> do
-          now >>= (vLastUsed s =:)
-          out <- bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req)
-          maybe (replyS False ("unknown op " ++ show op)) (reply True) out
+        -- (the answer there was, when no source changed since: without waiting for the repl, which a
+        --  running check holds -- four typechecks of an agent's waited 226 s each behind one)
+        "typecheck" -> typecheckCached s >>= \c -> case c of
+          Just out -> logged req (histAdd s "tool" (describeReq op req) >> histEcho s [] out) >> reply True out
+          Nothing -> viaWork op req
+        _ -> viaWork op req
       case r of
         Left (e :: SomeException) -> void (try (replyS False (displayException e)) :: IO (Either SomeException ()))   -- a broken eval must not kill the daemon
         Right () -> pure ()
+  where
+    -- a request with "quiet" is not logged: its client logs it itself, as its agent saw it (the chat)
+    logged req act = unless (lookupBool "quiet" req == Just True) act
+    -- a request that needs the repl: under the work lock, logged with its answer
+    viaWork op req = do
+      now >>= (vLastUsed s =:)
+      logged req (histAdd s "tool" (describeReq op req))
+      r' <- try (bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req))
+      case r' of
+        Left (e :: SomeException) -> logged req (histAdd s "echo" (T.pack ("ERROR: " ++ displayException e))) >> throwIO e
+        Right Nothing -> logged req (histAdd s "echo" (T.pack ("unknown op " ++ show op))) >> replyS' False ("unknown op " ++ show op)
+        Right (Just out) -> do
+          stale <- staleFiles s
+          logged req (histEcho s stale out)
+          reply' True out
+    reply' ok out = do
+      stale <- staleFiles s
+      j <- rd (vJson s)
+      ck <- rd (vChecking s)
+      let checking = [ ("checking", JObj [("began", JNum b), ("since", JNum c), ("compiled", JStr p)]) | Just (b, c, p) <- [ck] ]
+      B.hPut h (encodeBS (JObj ([ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ] ++ checking)))
+      B.hPut h (BC.pack "\n")
+      hFlush h
+    replyS' ok = reply' ok . T.pack
 
 dispatch :: S -> String -> Json -> IO (Maybe T.Text)
 dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside the lock too: its answer must not straddle a reload
@@ -1631,6 +1985,13 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
   "typecheck" -> Just <$> typecheckSources s
+  "release" -> (`finally` (vBatch s =: Nothing)) $ do
+    cur <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
+    loaded <- rd (vLoadedSig s)
+    if cur == loaded then pure (Just (T.pack "released: nothing changed since the last load")) else do
+      applyChanges s id cur
+      v <- verdictLine s
+      pure (Just (T.pack "released: reloaded once\n" <> v))
   -- the members chosen since it started, taken by the running repl if they can be ('addMembers')
   "add_members" -> do
     r <- addMembers s
@@ -1652,7 +2013,36 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
                       ++ maybe [] (\n -> [("top", JNum n)]) (lookupNum "top" req) ++ [ ("live", JBool True) | lookupBool "live" req == Just True ])
     vEvaluated s =: True
     warmAsync s
-    pure (Just (T.dropWhileEnd (== '\n') out <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
+    -- a bench that did no work timed a value already evaluated (a top-level value is computed once per
+    -- load): say so, or the answer reads as "free" (22 of an agent's 89 benches were this, and it then timed
+    -- its tests in fresh GHCi processes through the shell, minutes each)
+    let idle = op == "bench" && T.isInfixOf (T.pack ": 0.00 s wall") out && T.isInfixOf (T.pack " 0 MB allocated") out
+        note = if idle then T.pack "\n[bench: no work was done -- the value was already evaluated (a top-level value, a CAF, is computed once per load and kept). Time a function applied to its input, or a value built inside the action; `reload` recomputes CAFs only for modules it recompiles.]" else T.empty
+    pure (Just (T.dropWhileEnd (== '\n') out <> note <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
+  -- one expression run as a test (a group of the target's): its failing lines by the target's own fail
+  -- pattern, its passing ones by the pass pattern -- and the session's verdict left as it is
+  "check_expr" -> do
+    let es = [ e | e <- gChecks (sCfg s), maybe True (\m -> m == ckMember e || m == takeWhile (/= ':') (ckMember e)) (lookupStr "member" req) ]
+        expr = fromMaybe "" (lookupStr "expr" req)
+        tmo = lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing
+    t0 <- now
+    r <- try (cmd s tmo expr)
+    t1 <- now
+    vEvaluated s =: True
+    warmAsync s
+    case r of
+      Left (e :: ReplError) -> pure (Just (T.pack (printf "SCOPED-TEST: %s (the session's verdict is not changed)" (show e))))
+      Right out -> do
+        let ls = T.lines out
+        fails <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckFail)
+        passes <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckPass)
+        let summary = case listToMaybe es of
+              Nothing -> "no check configured: read the output"
+              Just e | isNothing (ckFail e) -> printf "%d line(s) match the pass pattern; no fail pattern is configured, so read the output for failures" (length passes)
+              _ -> printf "%s, %d passing" (if null fails then "none failing" else show (length fails) ++ " failing") (length passes)
+        pure (Just (out <> T.pack (printf "\n[scoped test, %.1fs: %s -- the session's verdict is not changed]" (t1 - t0) (summary :: String))
+                         -- (the failing lines again only when the output is too long to read them in)
+                         <> (if length ls > 40 then T.concat [ T.pack "\n  " <> f | f <- take 30 fails ] else T.empty)))
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
@@ -1797,14 +2187,21 @@ addMembers s = do
           case r of
             Left said -> writeAtomic (sDir s </> "load.log") said >> pure (Left "the build tool could not say how to start the new set (load.log)")
             Right l -> do
-              let unitFiles la = [ f | ('@' : f) <- lArgs la ]
-                  -- (a unit's file is named unit-<n>-<its id>: the number is the build tool's, of that run)
-                  unitOf f = drop 1 (dropWhile (/= '-') (drop 5 (takeFileName f)))
-                  plain la = [ a | a <- lArgs la, take 1 a /= "@", a /= "-unit" ]
-              was <- forM (unitFiles (bLaunch b)) (\f -> (,) (unitOf f) <$> readFileMaybe f)
+              -- the start as the engine reads it: cabal on macOS puts `-unit @file` per unit on the command
+              -- line; on Linux (3.18) it puts EVERYTHING in one response file -- the flags, then a `-unit
+              -- @file` per unit -- which is opened up here, so a unit's file is the one after `-unit` either way
+              argsB <- launchArgs (bLaunch b)
+              argsL <- launchArgs l
+              let unitFiles args = [ f | ("-unit", '@' : f) <- zip ("" : args) args ]
+                  plain args = [ a | a <- args, take 1 a /= "@", a /= "-unit" ]
+                  -- a unit by the id it declares (-this-unit-id): its file's NAME carries the build tool's
+                  -- numbering of that run, which moves when a unit is added before it
+                  unitOf f t = fromMaybe (takeFileName f) (listToMaybe [ v | ("-this-unit-id", v) <- zip ls (drop 1 ls) ])
+                    where ls = lines (fromMaybe "" t)
+              was <- forM (unitFiles argsB) (\f -> readFileMaybe f >>= \t -> pure (unitOf f t, t))
               plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
               let below = maybe [] (\pl -> unitsBelow pl (map fst was)) plan
-              now' <- forM (unitFiles l) (\f -> (,,) (unitOf f) f <$> readFileMaybe f)
+              now' <- forM (unitFiles argsL) (\f -> readFileMaybe f >>= \t -> pure (unitOf f t, f, t))
               let moved = [ u | (u, t) <- was, [ t' | (u', _, t') <- now', u' == u ] /= [t] ]
                   fresh = [ f | (u, f, _) <- now', u `notElem` map fst was ]
                   freshIds = [ u | (u, _, _) <- now', u `notElem` map fst was ]
@@ -1813,8 +2210,8 @@ addMembers s = do
                   usedBuilt = [ u | u <- freshIds, any (\(_, t) -> u `elem` lines (fromMaybe "" t)) was || u `elem` below ]
               -- (the build tool starts ONE unit with its flags on the command line and no unit file: there is
               --  then nothing to compare the new set's with, and the flags the engine kept are that unit's)
-              if null (unitFiles (bLaunch b)) then pure (Left "the session was started with a single unit, not as units (it takes members live once it has two)")
-                else if plain l /= plain (bLaunch b) then pure (Left "the engine would be started with other arguments")
+              if null (unitFiles argsB) then pure (Left "the session was started with a single unit, not as units (it takes members live once it has two)")
+                else if plain argsL /= plain argsB then pure (Left "the engine would be started with other arguments")
                 else if not (null moved) then pure (Left ("units already loaded would be built differently: " ++ unwords moved))
                 else if null fresh then pure (Left "the build tool names no new unit")
                 -- A package the loaded units already USE, built, cannot become a unit beside them: they were
@@ -1865,7 +2262,16 @@ runDaemon conf name bootCheck fastStart = do
   let cfg = withRootFiles rootFiles cfg0
   t <- now
   cfgV <- newIORef cfg
-  s <- S conf name cfgV root dir (cStateRel conf </> name </> "obj") bootCheck fastStart
+  hist <- if not (gHistory cfg) then pure Nothing else do
+    r <- try (H.openHistory H.defaultParams (dir </> "history")) :: IO (Either SomeException (H.Mem, Int))
+    case r of
+      Right (m, torn) -> do
+        when (torn > 0) (void (try (appendFileUtf8 (dir </> "daemon.log") ("history: " ++ show torn ++ " torn line(s) skipped\n")) :: IO (Either IOException ())))
+        pure (Just m)
+      Left e -> do
+        void (try (appendFileUtf8 (dir </> "daemon.log") ("history: cannot open: " ++ displayException e ++ "\n")) :: IO (Either IOException ()))
+        pure Nothing
+  s <- S conf name cfgV root dir (cStateRel conf </> name </> "obj") bootCheck fastStart hist
          <$> newIORef Nothing <*> newIORef "starting" <*> newIORef (JObj []) <*> newIORef ""
          <*> newIORef M.empty <*> newIORef M.empty <*> newIORef 0 <*> newIORef 0
          <*> newIORef False <*> newIORef False <*> newIORef "stopped" <*> newIORef []
@@ -1877,9 +2283,11 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
          <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
          <*> newIORef 0 <*> newIORef Nothing <*> newIORef Nothing <*> newIORef 0 <*> newIORef 0
+         <*> newIORef M.empty <*> newIORef Nothing <*> newIORef Nothing
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
+  histAdd s "tool" (T.pack ("start " ++ name))
   r <- try $ oneVerdict s $ do
     boot s (if sFastStart s then Just True else Nothing)
     started <- phase s "servers_boot" (serversBoot s)
@@ -1893,8 +2301,15 @@ runDaemon conf name bootCheck fastStart = do
         vHold s =: 0
         setStatus s False ("DEAD: boot failed: " ++ takeWhile (/= '\n') (displayException e)) [] []
       rd (vRepl s) >>= mapM_ (\rp -> stopRepl rp (logS s))
+      verdictLine s >>= histAdd s "echo"
       rm (dir </> "pid")
     Right () -> do
+      verdictLine s >>= histAdd s "echo"
+      exe <- getExecutablePath
+      -- ("ghci-session summarize" is this executable's own compactor, wherever the binary is)
+      let self c = case words c of { ("ghci-session" : rest) -> unwords (show exe : rest); _ -> c }
+      forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
+      void (forkIO (seedLoaded s))
       vMem s =: Nothing
       memSampleAsync s
       now >>= (vLastUsed s =:)     -- idle is counted from the end of the boot, not from the daemon's start
@@ -1906,4 +2321,6 @@ runDaemon conf name bootCheck fastStart = do
         unless keep (serversStopAll s)
         rd (vRepl s) >>= mapM_ (\rp -> stopRepl rp (logS s))
         rd (vStopReason s) >>= \why -> setStatus s False why [] []
+        histAdd s "tool" (T.pack "stop")
+        rd (vStopReason s) >>= histAdd s "echo" . T.pack
         rm (dir </> "pid")

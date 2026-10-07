@@ -6,7 +6,7 @@
 module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
-  , targetJson
+  , targetJson, stateOf
   ) where
 
 import Control.Exception (IOException, try)
@@ -31,7 +31,12 @@ data Conf = Conf
   , cDefault :: String
   , cTargets :: [(String, Json)]
   , cSessions :: [(String, [String])]
+  , cPrices :: [(String, Json)]   -- ^ @"prices"@: per model, @{"input": .., "input_cached": .., "output": ..}@ per million tokens (for `usage`)
   }
+
+-- | The directory where a session's state is kept: @.ghci-session/<session>@
+stateOf :: Conf -> String -> FilePath
+stateOf conf name = cStateDir conf </> name
 
 data Check = Check
   { ckMember :: String, ckExpr :: String, ckPass :: Maybe String, ckFail :: Maybe String
@@ -60,6 +65,9 @@ data Cfg = Cfg
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
   , gStatusUrl :: Maybe String, gIdleStopMins :: Double, gAsyncRefork :: Bool, gFingerprintFiles :: [String], gFastStart :: Bool, gWatchTypecheck :: Bool, gProfile :: [Json]
+  , gHistory :: Bool             -- ^ keep the session's history (every request and verdict) and its summary tree
+  , gSummarizeCmd :: Maybe String   -- ^ the command that compresses a message, or merges two lines, into one line (the compactor)
+  , gSummarizeJobs :: Int, gAgent :: String
   }
 
 -- | Every key a target may have, with its default. An unknown key is refused: a misspelt @chek@ would
@@ -69,18 +77,19 @@ defaults =
   [ ("repl", JNull), ("units", JArr []), ("cabal_args", JStr ""), ("watch", JArr [JStr "src"])
   , ("modules", JArr []), ("prebuild", JNull), ("preload", JArr []), ("warm", JArr [])
   , ("check", JNull), ("checks", JArr []), ("server", JNull), ("env", JObj [])
-  , ("load_timeout", JNum 900), ("eval_timeout", JNum 600), ("repl_budget_mb", JNum 6144)
-  , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum 0), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
+  , ("load_timeout", JNum 900), ("eval_timeout", JNum 30), ("repl_budget_mb", JNum 6144)
+  , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum (-1)), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
   , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
   , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False)
-  , ("auto_reload", JBool True), ("watch_check", JBool True), ("watch_refork", JBool True)
+  , ("auto_reload", JBool True), ("watch_check", JBool False), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 8), ("agent", JStr "Agent")
   ]
 
 reserved :: [String]
-reserved = ["targets", "state_dir", "default", "sessions"]
+reserved = ["targets", "state_dir", "default", "sessions", "prices"]
 
 -- | The nearest directory at or above the start holding @ghci-session.json@.
 findRoot :: Maybe FilePath -> IO (Either String FilePath)
@@ -123,7 +132,7 @@ loadConf root0 = do
                mapM_ (\m -> unless (isJust (lookup m ts)) (Left ("session " ++ show s ++ ": unknown member " ++ show m))) ms) sessions
       Right Conf { cRoot = root, cStateDir = root </> rel, cStateRel = rel
                  , cDefault = fromMaybe (fst (head ts)) (lookupStr "default" raw)
-                 , cTargets = ts, cSessions = sessions }
+                 , cTargets = ts, cSessions = sessions, cPrices = lookupObj "prices" raw }
 
 targetJson :: Conf -> String -> Json
 targetJson conf name = fromMaybe JNull (lookup name (cTargets conf))
@@ -251,6 +260,8 @@ resolve conf session = do
         , gFastStart = not (null ts) && all (jBool "fast_start") ts
         , gWatchTypecheck = all (jBool "watch_typecheck") ts
         , gProfile = [ exJ st | t <- ts, st <- lookupArr "profile" t ]
+        , gHistory = all (jBool "history") ts, gSummarizeCmd = ex <$> jMaybeStr "summarize_cmd" t0
+        , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0
         }
     exJ j = case j of { JObj kvs -> JObj [ (k, case v of { JStr x -> JStr (expand vals0 x); _ -> v }) | (k, v) <- kvs ]; _ -> j }
     vals0 = [ ("session", session), ("root", cRoot conf), ("state", cStateDir conf), ("dylib", if os == "darwin" then "dylib" else "so") ]

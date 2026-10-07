@@ -1,0 +1,180 @@
+#!/bin/sh
+# Save a session's history to a git branch, and load it back.
+#
+#   ghci-history save   [-s SESSION] [--root DIR] [--repo DIR] [--branch data] [-m MSG] [--push] [--force]
+#   ghci-history load   [-s SESSION] [--root DIR] [--repo DIR] [--ref data] [--tree] [--usage] [--force]
+#   ghci-history status [-s SESSION] [--root DIR] [--repo DIR] [--branch data]
+#
+# A session keeps its log in <state>/<session>/history/main (append-only, one message a line: {i, kind, text, ..}),
+# the summary tree built over it in history/tree, and what the model calls cost in usage.jsonl. `save` puts the
+# log, the tree, usage.jsonl and the project's ghci-session.json / AGENTS.md on a branch of the project's git
+# repository (default `data`, an orphan branch made on the first save), through a temporary worktree, so the
+# checked-out branch and its files are not touched. `load` is the other way: the log goes into the session's
+# history/, with an empty tree unless --tree (the daemon builds the tree from the log, with whatever
+# summarize_cmd the session has: that is how another compaction is tried on the same log).
+#
+#   --root DIR    the project (default: the nearest directory up from here with ghci-session.json)
+#   --state DIR   the state directory (default: DIR/.ghci-session)
+#   -s SESSION    the session (default: the only one under the state directory that has a history)
+#   --repo DIR    the git repository that holds the branch (default: the project)
+#   --branch B    the branch (default: data); --ref R: load from any commit-ish (default: the branch)
+#   --push        after saving, push the branch to origin
+#   --force       save: even when the branch has later messages than the session; load: replace a history there
+#                 (the old one is kept as history.bak-DATE); a running session is never loaded into
+set -eu
+
+die() { echo "ghci-history: $*" >&2; exit 1; }
+
+cmd=${1:-}; [ $# -gt 0 ] && shift
+SESSION= ROOT= STATE= REPO= BRANCH=data REF= MSG= PUSH=0 FORCE=0 TREE=0 USAGE=0
+while [ $# -gt 0 ]; do
+  case $1 in
+    -s|--session) SESSION=${2:?-s needs a session}; shift 2 ;;
+    --root) ROOT=${2:?--root needs a directory}; shift 2 ;;
+    --state) STATE=${2:?--state needs a directory}; shift 2 ;;
+    --repo) REPO=${2:?--repo needs a directory}; shift 2 ;;
+    --branch) BRANCH=${2:?--branch needs a name}; shift 2 ;;
+    --ref) REF=${2:?--ref needs a commit-ish}; shift 2 ;;
+    -m|--message) MSG=${2:?-m needs a message}; shift 2 ;;
+    --push) PUSH=1; shift ;;
+    --force) FORCE=1; shift ;;
+    --tree) TREE=1; shift ;;
+    --usage) USAGE=1; shift ;;
+    -h|--help) sed -n '2,/^set -eu/p' "$0" | sed '$d; s/^# \{0,1\}//'; exit 0 ;;
+    *) die "unknown argument $1 (ghci-history --help)" ;;
+  esac
+done
+case $cmd in -h|--help) sed -n '2,/^set -eu/p' "$0" | sed '$d; s/^# \{0,1\}//'; exit 0 ;; esac
+case $cmd in save|load|status) ;; *) die "usage: ghci-history save|load|status [options] (--help)" ;; esac
+
+# the project, the state, the session ---------------------------------------------------------
+if [ -z "$ROOT" ]; then
+  ROOT=$PWD
+  while [ ! -f "$ROOT/ghci-session.json" ] && [ "$ROOT" != / ]; do ROOT=$(dirname "$ROOT"); done
+  [ -f "$ROOT/ghci-session.json" ] || ROOT=$PWD
+fi
+ROOT=$(cd "$ROOT" && pwd)
+[ -n "$STATE" ] || STATE=$ROOT/.ghci-session
+[ -n "$REPO" ] || REPO=$ROOT
+git -C "$REPO" rev-parse --git-dir >/dev/null 2>&1 || die "$REPO is not a git repository (--repo)"
+if [ -z "$SESSION" ]; then
+  found=
+  if [ -d "$STATE" ]; then
+    for d in "$STATE"/*/; do
+      [ -d "${d}history" ] && found="$found $(basename "$d")"
+    done
+  fi
+  set -- $found
+  case $# in
+    1) SESSION=$1 ;;
+    0) if [ "$cmd" = load ]; then die "no session under $STATE: name the one to load into (-s SESSION)"; else die "no session with a history under $STATE (-s, --root, --state)"; fi ;;
+    *) die "several sessions under $STATE ($*): name one (-s SESSION)" ;;
+  esac
+fi
+SDIR=$STATE/$SESSION
+[ -n "$REF" ] || REF=$BRANCH
+
+# the last message id of a log directory, or of a log in git; -1 for none -----------------------
+last_in_line() { sed -n 's/^{"i": \([0-9]*\),.*/\1/p' | tail -n 1; }
+last_local() {
+  f=$(ls "$1"/*.jsonl 2>/dev/null | sort | tail -n 1 || true)
+  if [ -n "$f" ]; then i=$(grep -v '^$' "$f" | tail -n 1 | last_in_line); echo "${i:--1}"; else echo -1; fi
+}
+count_local() { cat "$1"/*.jsonl 2>/dev/null | grep -c . || true; }
+last_git() {   # $1 a commit-ish
+  f=$(git -C "$REPO" ls-tree --name-only "$1" history/main/ 2>/dev/null | sort | tail -n 1 || true)
+  if [ -n "$f" ]; then i=$(git -C "$REPO" show "$1:$f" | grep -v '^$' | tail -n 1 | last_in_line); echo "${i:--1}"; else echo -1; fi
+}
+
+# the branch: fetched when there is an origin that has it ----------------------------------------
+has_ref() { git -C "$REPO" rev-parse -q --verify "$1^{commit}" >/dev/null 2>&1; }
+if git -C "$REPO" remote get-url origin >/dev/null 2>&1; then
+  git -C "$REPO" fetch -q origin "$BRANCH" 2>/dev/null || true
+fi
+resolve() {    # a commit-ish to read: the local ref, else origin's
+  if has_ref "$1"; then echo "$1"; elif has_ref "origin/$1"; then echo "origin/$1"; else echo; fi
+}
+
+case $cmd in
+status)
+  r=$(resolve "$REF")
+  echo "session  $SESSION ($SDIR/history/main): last message $(last_local "$SDIR/history/main"), $(count_local "$SDIR/history/main") lines"
+  if [ -n "$r" ]; then echo "branch   $r in $REPO: last message $(last_git "$r"), at $(git -C "$REPO" log -1 --format='%h %ad %s' --date=short "$r")"
+  else echo "branch   $REF: none yet in $REPO"; fi
+  ;;
+
+save)
+  [ -d "$SDIR/history/main" ] || die "no history at $SDIR/history/main"
+  here=$(last_local "$SDIR/history/main")
+  [ "$here" -ge 0 ] || die "the session's log is empty"
+  tmp=$(mktemp -d "${TMPDIR:-/tmp}/ghci-history.XXXXXX")
+  trap 'git -C "$REPO" worktree remove --force "$tmp/wt" >/dev/null 2>&1 || true; rm -rf "$tmp"' EXIT
+  r=$(resolve "$BRANCH")
+  if [ -n "$r" ]; then
+    there=$(last_git "$r")
+    if [ "$there" -gt "$here" ] && [ "$FORCE" = 0 ]; then
+      die "the branch has messages up to $there and the session's log ends at $here: saving would drop $((there - here)) of them (--force to do it anyway)"
+    fi
+    # a branch that is only at origin: made here from it; one behind origin: moved up (a fast-forward only)
+    if ! has_ref "refs/heads/$BRANCH"; then git -C "$REPO" branch -q "$BRANCH" "$r"
+    elif [ "$r" != "$BRANCH" ]; then
+      git -C "$REPO" merge-base --is-ancestor "$BRANCH" "$r" && git -C "$REPO" update-ref "refs/heads/$BRANCH" "$r" || die "$BRANCH and $r have diverged: reconcile them first"
+    fi
+    git -C "$REPO" worktree add -q "$tmp/wt" "$BRANCH" 2>/dev/null || die "cannot check $BRANCH out in a worktree (is it checked out elsewhere?)"
+  else
+    git -C "$REPO" worktree add -q --orphan -b "$BRANCH" "$tmp/wt" 2>/dev/null || die "cannot make the orphan branch $BRANCH (git 2.42 or newer)"
+  fi
+  wt=$tmp/wt
+  rm -rf "$wt/history/main"
+  mkdir -p "$wt/history" "$wt/config"
+  cp -R "$SDIR/history/main" "$wt/history/main"
+  # the tree is derived from the log: a session that has none yet (just loaded) leaves the branch's alone
+  if [ -n "$(ls "$SDIR/history/tree" 2>/dev/null)" ]; then rm -rf "$wt/history/tree"; cp -R "$SDIR/history/tree" "$wt/history/tree"; fi
+  [ -f "$SDIR/usage.jsonl" ] && cp "$SDIR/usage.jsonl" "$wt/usage.jsonl"
+  [ -f "$ROOT/ghci-session.json" ] && cp "$ROOT/ghci-session.json" "$wt/config/ghci-session.json"
+  [ -f "$ROOT/AGENTS.md" ] && cp "$ROOT/AGENTS.md" "$wt/config/AGENTS.md"
+  git -C "$wt" add -A
+  if git -C "$wt" diff --cached --quiet; then
+    echo "nothing to save: $BRANCH already has the session's history (through message $here)"
+  else
+    n=$(count_local "$SDIR/history/main")
+    git -C "$wt" commit -q -m "${MSG:-history: $SESSION through message $here ($n messages)}"
+    echo "saved $SESSION's history to $BRANCH: through message $here ($n messages), $(git -C "$wt" log -1 --format=%h)"
+  fi
+  if [ "$PUSH" = 1 ]; then
+    git -C "$wt" push -q -u origin "$BRANCH" || die "the push failed"
+    echo "pushed $BRANCH to origin"
+  fi
+  ;;
+
+load)
+  r=$(resolve "$REF")
+  [ -n "$r" ] || die "no $REF in $REPO (nor origin/$REF)"
+  there=$(last_git "$r")
+  [ "$there" -ge 0 ] || die "$r has no history/main"
+  if [ -f "$SDIR/pid" ] && kill -0 "$(cat "$SDIR/pid")" 2>/dev/null; then
+    die "session $SESSION is running (pid $(cat "$SDIR/pid")): stop it first (ghci-session stop $SESSION)"
+  fi
+  have=$(count_local "$SDIR/history/main")
+  if [ "$have" -gt 0 ]; then
+    [ "$FORCE" = 1 ] || die "$SDIR/history/main already has $have messages (through $(last_local "$SDIR/history/main")): --force replaces it (the old one is kept)"
+    bak=$SDIR/history.bak-$(date +%Y%m%d-%H%M%S)
+    mv "$SDIR/history" "$bak"
+    echo "kept the old history as $bak"
+  fi
+  tmp=$(mktemp -d "${TMPDIR:-/tmp}/ghci-history.XXXXXX")
+  trap 'rm -rf "$tmp"' EXIT
+  paths="history/main"
+  [ "$TREE" = 1 ] && paths="$paths history/tree"
+  [ "$USAGE" = 1 ] && paths="$paths usage.jsonl"
+  # shellcheck disable=SC2086
+  git -C "$REPO" archive "$r" $paths | tar -x -C "$tmp"
+  mkdir -p "$SDIR/history"
+  rm -rf "$SDIR/history/main" "$SDIR/history/tree"
+  mv "$tmp/history/main" "$SDIR/history/main"
+  if [ "$TREE" = 1 ] && [ -d "$tmp/history/tree" ]; then mv "$tmp/history/tree" "$SDIR/history/tree"; else mkdir -p "$SDIR/history/tree"; fi
+  [ "$USAGE" = 1 ] && [ -f "$tmp/usage.jsonl" ] && mv "$tmp/usage.jsonl" "$SDIR/usage.jsonl"
+  n=$(count_local "$SDIR/history/main")
+  echo "loaded $r into $SDIR/history: $n messages, through message $there$( [ "$TREE" = 1 ] && echo ", with its summary tree" || echo ", tree empty (the daemon builds it from the log)")"
+  ;;
+esac

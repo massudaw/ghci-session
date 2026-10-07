@@ -16,15 +16,16 @@ maintainer:         wesley.massuda@gmail.com
 homepage:           https://github.com/massudaw/ghci-session
 category:           Development
 build-type:         Simple
-extra-source-files: README.md hygiene/c/rts_syms.h
+extra-source-files: README.md hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
 
 executable ghci-session
   hs-source-dirs:   app
   main-is:          Main.hs
   other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
-                    GhciSession.Doc
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c
+                    GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
+                    GhciSession.Search, GhciSession.Vfs
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010
@@ -61,3 +62,8 @@ executable ghci-session-engine
   -- as the `ghc` executable is built: dynamically linked (so loaded code goes through the system linker, not
   -- GHC's own object loader), CAFs kept (interpreted code refers to them by address), its RTS flags
   ghc-options:      -threaded -dynamic -fkeep-cafs -rtsopts=all "-with-rtsopts=-K512M -H -I5 -T"
+  -- code loaded into the engine finds the hygiene C by name (dlsym: the census, the store that outlives a
+  -- reload, the major GC, the duplicate finder). macOS lets dlsym see an executable's own symbols; Linux only
+  -- those the link exports, which was none -- every one of them answered "not the engine". Only these.
+  if os(linux)
+    ld-options:     -Wl,--export-dynamic-symbol=ghs_*

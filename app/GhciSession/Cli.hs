@@ -8,10 +8,12 @@ import Control.Exception (IOException, SomeException, try)
 import Control.Monad (filterM, forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
+import Data.Char (isDigit)
 import Data.List (intercalate, isPrefixOf, nub, sortOn)
+import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing)
+import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe)
 import System.Directory
 import System.Environment (getArgs, getExecutablePath)
 import System.Exit (ExitCode (..), exitWith)
@@ -28,7 +30,13 @@ import GhciSession.Config
 import GhciSession.Daemon (runDaemon)
 import GhciSession.Gc
 import GhciSession.Json
+import GhciSession.Chat (chatMain, summarizeMain)
+import GhciSession.Llm (human)
+import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
+import qualified Data.Text.IO as TIO
+import qualified GhciSession.Search as Search
+import qualified GhciSession.Vfs as Vfs
 
 -- arguments --------------------------------------------------------------------
 
@@ -60,9 +68,6 @@ die' :: String -> IO a
 die' msg = hPutStrLn stderr msg >> exitWith (ExitFailure 2)
 
 -- plumbing -----------------------------------------------------------------------
-
-stateOf :: Conf -> String -> FilePath
-stateOf conf name = cStateDir conf </> name
 
 -- | The session a command is for: the one named, else the only one running, else the config's default.
 pick :: Conf -> Maybe String -> IO String
@@ -268,6 +273,48 @@ cmdCompose conf a = case aPos a of
             when (isJust up) (void (cmdStop conf (Just name) True Nothing))
             cmdStart conf (Just name) (flag a ["--no-test", "--no-check"]) (flag a ["--fast"])
 
+-- | __What the model calls cost__: the session's ledger (@<state>/<session>/usage.jsonl@, one line a call --
+-- the chat's and the compactor's: when, who asked, the model, tokens in and of them cached, tokens out,
+-- seconds) summed by who asked and by day, and in money when @"prices"@ in the config prices the model
+-- (@{"MODEL": {"input": .., "input_cached": .., "output": ..}}@, per million tokens). Every session's, when
+-- none is named.
+cmdUsage :: Conf -> Args -> IO Int
+cmdUsage conf a = do
+  names <- case pos a 0 of
+    Just n -> (: []) <$> pick conf (Just n)
+    Nothing -> filterM (\n -> doesFileExist (stateOf conf n </> "usage.jsonl")) (sessionNames conf)
+  since <- case opt a ["--since"] of
+    Just d | [(k, "")] <- reads d -> (\t -> t - k * 86400) <$> now
+    _ -> pure 0
+  rows <- fmap concat $ forM names $ \n -> do
+    t <- readFileMaybe (stateOf conf n </> "usage.jsonl")
+    pure [ (n, j) | l <- maybe [] lines t, Right j <- [parseJson l], fromMaybe 0 (lookupNum "t" j) >= since ]
+  if null rows then putStrLn "no model calls recorded (the chat and the compactor write <state>/<session>/usage.jsonl)" >> pure 0
+  else if flag a ["--json"] then putStrLn (encode (JArr (map snd rows))) >> pure 0
+  else do
+    let price j = lookup (fromMaybe "" (lookupStr "model" j)) (cPrices conf)
+        cost j = do
+          p <- price j
+          i <- lookupNum "input" p
+          c <- lookupNum "input_cached" p
+          o <- lookupNum "output" p
+          let n k = fromMaybe 0 (lookupNum k j)
+          pure ((n "in" - n "cached") * i / 1e6 + n "cached" * c / 1e6 + n "out" * o / 1e6)
+        sumOf k js = round (sum [ fromMaybe 0 (lookupNum k j) | j <- js ]) :: Int
+        secsOf js = sum [ fromMaybe 0 (lookupNum "secs" j) | j <- js ] :: Double
+        money js = maybe "" (\cs -> printf "$%.3f" (sum cs)) (mapM cost js) :: String
+        line :: String -> [Json] -> String
+        line label js = printf "  %-24s %6d %9s %9s %9s %8.0fs  %s" label (length js) (human (sumOf "in" js)) (human (sumOf "cached" js)) (human (sumOf "out" js)) (secsOf js) (money js)
+        grouped key = M.toList (M.fromListWith (flip (++)) [ (key n j, [j]) | (n, j) <- rows ])
+        unpriced = nub [ m | (_, j) <- rows, Just m <- [lookupStr "model" j], isNothing (price j) ]
+    putStrLn (printf "  %-24s %6s %9s %9s %9s %9s  %s" ("" :: String) ("calls" :: String) ("in" :: String) ("cached" :: String) ("out" :: String) ("secs" :: String) (if null unpriced then "cost" else "" :: String))
+    forM_ (grouped (\n j -> n ++ " " ++ fromMaybe "?" (lookupStr "who" j))) (\(k, js) -> putStrLn (line k js))
+    putStrLn (line "total" (map snd rows))
+    putStrLn ""
+    forM_ (grouped (\_ j -> take 10 (fromMaybe "" (lookupStr "date" j)))) (\(d, js) -> putStrLn (line d js))
+    unless (null unpriced) $ putStrLn ("\n  no prices for " ++ intercalate ", " unpriced ++ ": \"prices\": {\"" ++ head unpriced ++ "\": {\"input\": .., \"input_cached\": .., \"output\": ..}} in ghci-session.json, in money per million tokens")
+    pure 0
+
 -- | __The session's own scenario, timed__: the steps a target lists under @"profile"@, run in order against
 -- the running session, each against its budget and against the last run.
 --
@@ -409,15 +456,61 @@ cmdAutostop conf a = do
     pure 0
   where showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
 
+cmdSearch :: Conf -> Args -> IO Int
+cmdSearch conf a = do
+  let q = fromMaybe "" (pos a 0)
+  when (null q) (die' "search: what are you looking for? (e.g. `ghci-session search mySymbol` or `ghci-session search --files myFile`)")
+  sname <- pick conf (opt a ["-s", "-t", "--session"])
+  let maxN = maybe 30 read (opt a ["-n"]) :: Int
+      isFiles = flag a ["--files", "-f"]
+      isJson = flag a ["--json"]
+      mode = if isFiles then "files" else "grep"
+  res <- if isFiles
+           then Search.searchFiles (cRoot conf) q maxN
+           else Search.grep (cRoot conf) q maxN
+  case res of
+    Left err -> die' ("search error: " ++ err)
+    Right j -> do
+      let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
+      Search.recordSearchMetadata conf sname mode q hits
+      if isJson
+        then putStrLn (encodePretty j)
+        else TIO.putStrLn (if isFiles then Search.formatFiles j else Search.formatGrep j)
+      pure (if hits > 0 then 0 else 1)
+
+cmdVfs :: Conf -> Args -> IO Int
+cmdVfs conf a = do
+  sname <- pick conf (opt a ["-s", "-t", "--session"])
+  let mPath = pos a 0
+      budget = maybe 250 read (opt a ["--budget", "-b"]) :: Int
+      isJson = flag a ["--json"]
+  files <- Vfs.inspectLoaded conf sname budget mPath
+  if isJson
+    then putStrLn (encodePretty (Vfs.vfsJson files))
+    else TIO.putStrLn (Vfs.formatVfsTable files budget)
+  let overCount = length (filter Vfs.vfOver files)
+  pure (if overCount == 0 then 0 else 1)
+
 usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
   , ""
   , "  start [--no-test] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
   , "  reload [--no-test] [--no-refork] [--async-refork]  [SESSION]"
+  , "  hold [--timeout SECS] [SESSION]    saves are not reloaded until `release` (or SECS, default 30): write several files, then reload once"
+  , "  release [SESSION]                  reload what was saved since `hold`, once"
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
+  , "  vfs [PATH] [-s SESSION] [--budget N] [--json]   virtual file system and line budget inspector (<250 lines)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   high-speed SIMD search across code or files (FFF engine), with session metadata"
+  , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
+  , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
+  , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
+  , "  mcp                                serve the session's operations and its memory to an agent (MCP on stdin/stdout): claude mcp add ghci -- ghci-session mcp"
+  , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
+  , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
+  , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
   , "  store [--drop NAME] [-s SESSION]                             the named slots that outlive a reload (GHC.Hygiene.Store): list them, or forget one"
@@ -444,10 +537,11 @@ cliMain = do
     [] -> putStr usage >> pure 2
     (c : _) | c `elem` ["-h", "--help", "help"] -> putStr usage >> pure 0
     ("init" : _) -> cmdInit
+    ("summarize" : rest) -> summarizeMain rest          -- (no project needed: the daemon runs it from anywhere)
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -459,6 +553,17 @@ cliMain = do
         "restart" -> pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr "restart"), ("fast", JBool (flag a ["--fast"]))]) >>= say
         "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])
         "reload" -> cmdReload conf a
+        "hold" -> do
+          name <- pick conf (pos a 0)
+          request conf name (JObj ([("op", JStr "hold")] ++ [ ("secs", JNum v) | Just t <- [opt a ["-t", "--timeout"]], [(v, "")] <- [reads t] ])) >>= say
+        "release" -> do
+          name <- pick conf (pos a 0)
+          t0 <- now
+          rc <- request conf name (JObj [("op", JStr "release")]) >>= say
+          t1 <- now
+          hPutStrLn stderr (printf "(%.1fs)" (t1 - t0))
+          ok <- statusOk conf name
+          pure (if rc /= 0 then rc else if ok then 0 else 1)
         c' | c' `elem` ["test", "check"] -> cmdCheck conf a      -- (`check` is the name it had)
         "typecheck" -> do
           name <- pick conf (pos a 0)
@@ -513,7 +618,37 @@ cliMain = do
           when (null (aPos a)) (die' "doc: what are you looking for? (a name, part of one, its initials, or words of its type or documentation)")
           request conf name (JObj ([ ("op", JStr "doc"), ("words", JArr (map JStr (aPos a))), ("json", JBool (flag a ["--json"])) ]
                                    ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]))) >>= say
+        -- the session's history (see GhciSession.History): the log, the view a model reads, a line opened
+        "history" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          case (opt a ["--kind"], aPos a) of
+            (Just k, ws) | not (null ws) -> request conf name (JObj [("op", JStr "log"), ("kind", JStr k), ("text", JStr (unwords ws))]) >>= say
+            (Just _, []) -> die' "history --kind KIND TEXT: the text is needed"
+            _ -> request conf name (JObj ([ ("op", JStr "history"), ("json", JBool (flag a ["--json"])), ("full", JBool (flag a ["--full"])) ]
+                                           ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]) ++ maybe [] (\k -> [("since", JNum (read k))]) (opt a ["--since"]))) >>= say
+        "view" -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          request conf name (JObj ([ ("op", JStr "view"), ("json", JBool (flag a ["--json"])) ] ++ maybe [] (\k -> [("wait", JNum (read k))]) (opt a ["--wait"]))) >>= say
+        -- (ID, then N and the session in either order: a word that is not a number is the session)
+        "zoom" -> case (filter (all isDigit) (aPos a), filter (not . all isDigit) (aPos a)) of
+          (i : n, others) | not (null i), length n <= 1, length others <= 1 -> do
+            name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just s -> Just s; Nothing -> listToMaybe others })
+            request conf name (JObj [ ("op", JStr "zoom"), ("id", JNum (read i)), ("n", JNum (maybe 1 read (listToMaybe n))) ]) >>= say
+          _ -> die' "zoom ID [N] [SESSION]: open the view's line ID+N into the two lines under it (N = 1, or none: the message whole)"
+        "date" -> case pos a 0 of
+          Just i | all isDigit i -> do
+            name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just s -> Just s; Nothing -> pos a 1 })
+            request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
+          _ -> die' "date ID: when message ID was written"
+        "mcp" -> mcpMain conf >> pure 0
+        "chat" -> chatMain conf rest
+        "usage" -> cmdUsage conf a
         "list" -> cmdList conf
+        "search" -> cmdSearch conf a
+        "find" -> cmdSearch conf a
+        "grep" -> cmdSearch conf a
+        "vfs" -> cmdVfs conf a
+        "budget" -> cmdVfs conf a
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN
         _ -> hPutStr stderr usage >> pure 2

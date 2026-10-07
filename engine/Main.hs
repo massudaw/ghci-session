@@ -4,7 +4,12 @@ module Main (main) where
 import Prelude
 
 import qualified GhcMain
-import GhsEngine (engineInit)
+import GhsEngine (engineInit, libdirArgs)
+import System.Environment (getArgs, withArgs)
 
 main :: IO ()
-main = engineInit >> GhcMain.main
+main = do
+  engineInit
+  args <- getArgs
+  extra <- libdirArgs args
+  withArgs (extra ++ args) GhcMain.main

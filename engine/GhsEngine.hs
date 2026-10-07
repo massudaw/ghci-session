@@ -22,7 +22,7 @@
 --   cabal does not stay as a process between them, and a restart need not ask cabal again;
 -- * with @GHS_CONTROL=stdin@: standard input is the daemon's socket;
 -- * with neither: an ordinary GHCi.
-module GhsEngine (engineInit, engineSettings, engineHook) where
+module GhsEngine (engineInit, libdirArgs, engineSettings, engineHook) where
 
 import Prelude
 
@@ -47,7 +47,7 @@ import Data.Time (UTCTime)
 import System.Directory (copyFile, createDirectoryIfMissing, getCurrentDirectory, getModificationTime, renameFile)
 import System.Environment (getArgs, getEnvironment, lookupEnv)
 import System.Exit (ExitCode (..))
-import System.FilePath (isAbsolute, takeFileName, (</>))
+import System.FilePath (isAbsolute, takeDirectory, takeFileName, (</>))
 import System.IO
 import System.IO.Unsafe (unsafePerformIO)
 import System.Mem (performMajorGC, performMinorGC)
@@ -55,6 +55,9 @@ import System.Posix.IO
 import qualified System.Posix.IO.ByteString as PB
 import System.Posix.Process (ProcessStatus, exitImmediately, getProcessStatus)
 import System.Posix.Types (Fd (..))
+import System.Process (readProcess)
+import System.Directory (doesFileExist)
+import System.Environment (getExecutablePath)
 import Unsafe.Coerce (unsafeCoerce)
 
 import qualified GHC
@@ -90,7 +93,7 @@ import GHCi.UI.Monad (GHCi)
 
 import GHC.Exts (Any)
 import GHC.Hygiene (engineSymbol, heapAuto, majorGC)
-import GhsAddUnits (addUnits)
+import GhsAddUnits (addTargets, addUnits)
 import GhsFastLoad (loadWith, setChanged)
 import GHC.Types.Error (mkUnknownDiagnostic)
 import GHC.Hygiene.Store (storeDrop, storeNames)
@@ -125,8 +128,9 @@ engineInit = do
   args <- getArgs
   cap <- lookupEnv "GHS_CAPTURE"
   ctl <- lookupEnv "GHS_CONTROL"
+  interactive <- argsInteractive args
   case cap of
-    Just dir | "--interactive" `elem` args -> capture dir args >> exitImmediately ExitSuccess
+    Just dir | interactive -> capture dir args >> exitImmediately ExitSuccess
     _ -> do
       -- GHS_HEAP_AUTO=0: without the -H this executable is built with, as GHC's is (the RTS then spends
       -- the largest heap it has needed on allocation area: memory that is never live)
@@ -134,17 +138,55 @@ engineInit = do
       when (ha == Just "0") (void (heapAuto 0))
       when (ctl == Just "stdin") takeControl
 
+-- | The @-B@ this run needs, if it was given none. GHC finds its library directory beside its own executable
+-- (@../lib@ of it), which is right for the @ghc@ binary and wrong for this one, built elsewhere: the daemon
+-- passes @-B@ when it starts the engine, but the build tool probes its repl program (@--info@) without one
+-- and the macOS layout happened to answer. So: the compiler on PATH is asked (@GHS_LIBDIR@ says it without
+-- a process), unless a @lib/settings@ really is beside us.
+libdirArgs :: [String] -> IO [String]
+libdirArgs args
+  | any ("-B" `isPrefixOf`) args = pure []
+  | otherwise = do
+      exe <- getExecutablePath
+      own <- doesFileExist (takeDirectory exe </> ".." </> "lib" </> "settings")
+      if own then pure [] else do
+        env <- lookupEnv "GHS_LIBDIR"
+        l <- case env of
+          Just d | not (null d) -> pure d
+          _ -> either (\(_ :: IOException) -> "") (takeWhile (/= '\n')) <$> try (readProcess "ghc" ["--print-libdir"] "")
+        pure [ "-B" ++ l | not (null l) ]
+
+-- | Is this a @--interactive@ start? Cabal may put every argument in ONE response file (@\@file@, one
+-- argument a line: cabal 3.18 on Linux does), so those are read too.
+argsInteractive :: [String] -> IO Bool
+argsInteractive args
+  | "--interactive" `elem` args = pure True
+  | otherwise = or <$> forM [ f | '@' : f <- args ] (\f -> do
+      t <- try (readFile f >>= \x -> length x `seq` pure x) :: IO (Either IOException String)
+      pure (either (const False) (("--interactive" `elem`) . map (filter (/= '\r')) . lines) t))
+
 -- | What @cabal repl@ would have run, as files: @args@ (the directory, then each argument, NUL-separated)
--- and @env@. Cabal deletes the per-unit argument files of a multi-unit repl when the repl exits, so they are
--- copied and the arguments point at the copies.
+-- and @env@. Cabal deletes the per-unit argument files of a multi-unit repl when the repl exits, and a
+-- response file it wrote in a temporary directory, so they are copied and the arguments point at the
+-- copies -- a response file's own @\@file@ lines too.
 capture :: FilePath -> [String] -> IO ()
 capture dir args = do
   createDirectoryIfMissing True dir
   cwd <- getCurrentDirectory
+  let abs' f = if isAbsolute f then f else cwd </> f
   args' <- forM (zip [0 :: Int ..] args) $ \(i, a) -> case a of
     '@' : f -> do
       let to = dir </> ("unit-" ++ show i ++ "-" ++ takeFileName f)
-      copyFile (if isAbsolute f then f else cwd </> f) to
+      copyFile (abs' f) to
+      ls <- lines <$> readFile to
+      length ls `seq` pure ()
+      ls' <- forM (zip [0 :: Int ..] ls) $ \(k, l) -> case l of
+        '@' : g -> do
+          let to' = dir </> ("unit-" ++ show i ++ "-" ++ show k ++ "-" ++ takeFileName g)
+          copyFile (abs' g) to'
+          pure ('@' : to')
+        _ -> pure l
+      when (ls' /= ls) (writeFile (to ++ ".new") (unlines ls') >> renameFile (to ++ ".new") to)
       pure ('@' : to)
     _ -> pure a
   env <- getEnvironment
@@ -384,6 +426,13 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
     pure (case r of
       Left why -> failed why
       Right us -> JObj [("ok", JBool True), ("units", JArr (map JStr us))])
+  -- modules added to a unit that is running, each as a target of the unit whose import paths hold its file
+  -- (GhsAddUnits.addTargets; GHCi's :add would put it in the interactive unit); the daemon reloads after it
+  "add_targets" -> do
+    r <- addTargets [ f | JStr f <- lookupArr "files" q ]
+    pure (case r of
+      Left why -> failed why
+      Right ts -> JObj [("ok", JBool True), ("targets", JArr [ JObj [("file", JStr f), ("unit", JStr u)] | (f, u) <- ts ])])
   "typecheck" -> typecheck (arg "dir") (if lookupBool "since" q == Just True then Just [ f | JStr f <- lookupArr "files" q ] else Nothing)
   "typecheck_expr" -> do
     r <- MC.try (GHC.exprType TM_Inst (ioUnit (arg "expr")))

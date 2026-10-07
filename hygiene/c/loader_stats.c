@@ -1,3 +1,4 @@
+#define _GNU_SOURCE   /* dladdr and Dl_info on glibc (rts_syms.h) */
 /* ghs_loader_stats -- what the RTS linker is holding, read from inside the process.
  * A diagnostic for the reload leak: how many objects are loaded (by status and
  * kind), how many bytes of object code they hold, and how many CAFs are rooted on
