@@ -25,6 +25,7 @@ import qualified Data.ByteString.Char8 as BC
 import Data.Char (isDigit)
 import Data.List (intercalate, isInfixOf, isPrefixOf)
 import qualified Data.Map.Strict as M
+import qualified Data.Set as S
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -109,6 +110,9 @@ data St = St
   , sPanes :: M.Map Tab Pane
   , sVtErr :: Maybe String            -- ^ why there are no panes
   , sPrefix :: Bool                   -- ^ Ctrl-a was pressed: the next key is the monitor's
+  , sOpen :: S.Set Int                -- ^ the history's messages shown whole (the others are cut at 'cutAt' lines)
+  , sAllOpen :: Bool                  -- ^ every message shown whole
+  , sCur :: Maybe Int                 -- ^ the history's current message (none: the last)
   , sWake :: IO ()                    -- ^ what a pane calls when it has something to show
   }
 
@@ -122,7 +126,7 @@ topMain conf mname = do
   vtErr <- loadVt
   let dir = cStateDir conf </> name
       env = Env conf name dir
-      st0 = St THistory M.empty (M.fromList [ (t, True) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False (pure ())
+      st0 = St THistory M.empty (M.fromList [ (t, True) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing (pure ())
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -170,6 +174,14 @@ key env kp@(KeyPress k _ bytes) st
       KEnd -> pure (Just (follow True, False))
       KChar 'f' -> pure (Just (follow True, False))
       KChar 'r' -> pure (Just (st', True))
+      KChar 'n' | history -> pure (Just (moveCur 1, False))
+      KTab | history -> pure (Just (moveCur 1, False))
+      KChar 'p' | history -> pure (Just (moveCur (-1), False))
+      KChar 'N' | history -> pure (Just (moveCur (-1), False))
+      KEnter | history -> pure (Just (toggle, False))
+      KChar 'o' | history -> pure (Just (toggle, False))
+      KChar 'x' | history -> pure (Just (toggle, False))
+      KChar 'a' | history -> pure (Just (showCur st' { sAllOpen = not (sAllOpen st), sOpen = S.empty }, False))
       KChar 'R' -> act "reload" [] >> pure (Just (st' { sNote = "reload sent" }, True))
       KChar 'T' -> act "check" [] >> pure (Just (st' { sNote = "test sent" }, True))
       KEnter | isPane (sTab st) -> restartDead
@@ -186,6 +198,29 @@ key env kp@(KeyPress k _ bytes) st
     tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', TChat), ('c', TChat), ('7', TShell), ('s', TShell)]
     page = max 1 (snd (sSize st) - 4)
     follow on = st' { sFollow = M.insert (sTab st) on (sFollow st) }
+    history = sTab st == THistory && not (null (sHist st))
+    -- the current message, as an index into the history
+    curIx = case sCur st of
+      Just i | Just ix <- lookup i (zip (map mId (sHist st)) [0 ..]) -> ix
+      _ -> length (sHist st) - 1
+    moveCur d = let ix = max 0 (min (length (sHist st) - 1) (curIx + d))
+                    s1 = st' { sCur = Just (mId (sHist st !! ix)) }
+                in if ix == length (sHist st) - 1 then s1 { sFollow = M.insert THistory True (sFollow st) } else showCur s1
+    toggle = let i = mId (sHist st !! curIx)
+                 s1 = st' { sCur = Just i, sOpen = (if S.member i (sOpen st) then S.delete i else S.insert i) (sOpen st) }
+             in if M.findWithDefault True THistory (sFollow st) && curIx == length (sHist st) - 1 then s1 else showCur s1
+    -- scrolled so the current message's first line is on the screen, the end no longer followed
+    showCur s = let starts = scanl (+) 0 [ length (historyLines (fst (sSize st)) s m) | m <- sHist s ]
+                    ix = case sCur s of { Just i | Just x <- lookup i (zip (map mId (sHist s)) [0 ..]) -> x; _ -> length (sHist s) - 1 }
+                    start = starts !! ix
+                    off = M.findWithDefault 0 THistory (sScroll s)
+                    following = M.findWithDefault True THistory (sFollow s)
+                    total = last starts
+                    off0 = if following then max 0 (total - page) else off
+                    off' | start < off0 = start
+                         | start >= off0 + page = start - page + 1
+                         | otherwise = off0
+                in s { sScroll = M.insert THistory off' (sScroll s), sFollow = M.insert THistory False (sFollow s) }
     scrollBy d = pure (Just (st' { sScroll = M.insertWith (+) (sTab st) d (sScroll st), sFollow = M.insert (sTab st) False (sFollow st) }, False))
     act op args = void (forkIO (void (try (Mcp.request (eConf env) (eName env) (JObj (("op", JStr op) : args))) :: IO (Either SomeException Json))))
     withPane f = forM_ (M.lookup (sTab st) (sPanes st)) f
@@ -323,6 +358,7 @@ verdictStyle v
 bottom :: St -> [Span]
 bottom st
   | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-7 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
+  | sTab st == THistory = [ (stDim, " q quit  1-7 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
   | otherwise = [ (stDim, " q quit  1-7 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
 
 -- | The current tab's lines, from where it is scrolled.
@@ -330,7 +366,7 @@ panelLines :: Int -> St -> [[Span]]
 panelLines w st = drop off ls
   where
     ls = case sTab st of
-      THistory -> concatMap (historyLines w) (sHist st)
+      THistory -> concatMap (historyLines w st) (sHist st)
       TView -> viewLines w st
       TLog -> [ wrapped (logLine l) | l <- sLog st ] >>= id
       TVerdict -> verdictLines w (sStatus st)
@@ -342,14 +378,22 @@ panelLines w st = drop off ls
     off = if following then max 0 (length ls - page) else max 0 (min (length ls - 1) (M.findWithDefault 0 (sTab st) (sScroll st)))
     wrapped = wrapSpans w 4
 
-historyLines :: Int -> Msg -> [[Span]]
-historyLines w m = concatMap (wrapSpans w 4) (first : rest ++ more)
+-- | Lines of a message shown before it is cut.
+cutAt :: Int
+cutAt = 6
+
+-- | A message's lines: its number, time and kind, then its text -- whole when it is open (or all are),
+-- else its first 'cutAt' lines and how many more there are. The current message's number is marked.
+historyLines :: Int -> St -> Msg -> [[Span]]
+historyLines w st m = concatMap (wrapSpans w 4) (first : rest ++ more)
   where
     ls = lines (mText m)
-    shown = take 6 ls
-    first = [ (stDim, "#" ++ show (mId m) ++ " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " " ++ head' shown) ]
+    open = sAllOpen st /= S.member (mId m) (sOpen st)
+    shown = if open then ls else take cutAt ls
+    current = case sCur st of { Just i -> i == mId m; Nothing -> case sHist st of { [] -> False; ms -> mId (last ms) == mId m } }
+    first = [ (if current then stHi else stDim, "#" ++ show (mId m)), (stDim, " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " " ++ head' shown) ]
     rest = [ [(plain, "    " ++ l)] | l <- drop 1 shown ]
-    more = [ [(stDim, "    (" ++ show (length ls - 6) ++ " more lines)")] | length ls > 6 ]
+    more = [ [(stDim, "    (" ++ show (length ls - cutAt) ++ " more lines; Enter opens)")] | not open, length ls > cutAt ]
     head' xs = case xs of { (x : _) -> x; [] -> "" }
 
 kindStyle :: String -> Style

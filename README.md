@@ -305,7 +305,8 @@ ghci-session top [SESSION]
 A screen that follows the session as it works. The header is its verdict, memory and servers, idle time,
 generation, stale and warning counts, half a second behind. Below, a tab at a time: `1` the history as the
 daemon writes it (every request and its answer, a save with its diff, the chat's words; `f` follows the end,
-`j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll), `2` the view the model reads with the memory's numbers (lines, built nodes,
+`j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has: `n`/`p` move
+the cursor from message to message, `Enter` opens or closes the one under it, `a` all of them), `2` the view the model reads with the memory's numbers (lines, built nodes,
 settled or not, the compactor's jobs), `3` the daemon's log, `4` the verdict with what is behind it (the
 compiler's diagnostics, the failing lines, the members and the servers), `5` what the model calls cost, and two
 terminal panes: `6` the chat (`ghci-session chat --tui` on this session) and `7` a shell in the project. `R` sends a
