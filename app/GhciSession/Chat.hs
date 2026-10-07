@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , TurnState (..), Spent (..), turnJson, turnFrom
+  , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -82,23 +82,28 @@ saveWait longest = min 600 (max 45 (3 * longest + 15))
 data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
-  , oRestart :: Bool, oResume :: Maybe FilePath }
+  , oRestart :: Bool, oResume :: Maybe FilePath
+  , oView :: Bool, oTail :: Int }
 
 chatUsage :: String
 chatUsage = unlines
   [ "ghci-session chat [-s SESSION] [--once MESSAGE] [--instructions FILE] [--model M] [--base-url URL]"
-  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view]"
+  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES]"
   , "ghci-session chat --restart [-s SESSION]"
   , "  the endless chat with an agent on the session (DEEPSEEK_API_KEY or OPENAI_API_KEY); --once: one message, then exit;"
   , "  --instructions: a file of the user's own instructions (an AGENTS.md), appended to the system prompt;"
   , "  --max-steps: tool calls per turn (60); --settle: seconds to wait for the view's last lines to be summarized (120);"
   , "  --usage: print each call's tokens and seconds;"
+  , "  --context view: every model call is built from the log -- the view up to a boundary, the message, and the"
+  , "  log after the boundary whole (<recent>), which moves on in batches once over --tail bytes (96000; 0: the view"
+  , "  alone, every step waiting for the compactor); turn (the default): the view at the turn's start, then the turn's"
+  , "  own conversation;"
   , "  --restart: the session's running chat restarts as the executable now on disk (build it first), in the middle"
   , "  of its turn, which goes on where it was: it writes the turn out before its next model call and runs itself"
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -110,6 +115,8 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--max-steps", [(n, "")] <- reads v = go o { oMaxSteps = n } r
                      | k == "--settle", [(n, "")] <- reads v = go o { oSettle = n } r
                      | k == "--resume" = go o { oResume = Just v } r
+                     | k == "--context", v `elem` ["turn", "view"] = go o { oView = v == "view" } r
+                     | k == "--tail", [(n, "")] <- reads v = go o { oTail = n } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
                  | k == "--restart" = go o { oRestart = True } r
@@ -154,7 +161,15 @@ ask ch op args = Mcp.request (cConf ch) (cName ch) (JObj (("op", JStr op) : args
 
 -- | A line of the history, on the user's or the agent's behalf.
 logH :: Chat -> String -> T.Text -> IO ()
-logH ch kind text = void (try (ask ch "log" [("kind", JStr kind), ("text", JText text)]) :: IO (Either SomeException Json))
+logH ch kind text = void (logId ch kind text)
+
+-- | A line of the history, and its id.
+logId :: Chat -> String -> T.Text -> IO (Maybe Int)
+logId ch kind text = do
+  r <- try (ask ch "log" [("kind", JStr kind), ("text", JText text)]) :: IO (Either SomeException Json)
+  pure $ case r of
+    Right j | Just ('#' : n) <- lookupStr "out" j, [(i, "")] <- reads n -> Just i
+    _ -> Nothing
 
 -- | The view: its text, whether every line is a summary, how many lines, how many messages.
 view :: Chat -> Double -> IO (T.Text, Bool, Int, Int)
@@ -373,7 +388,8 @@ downWait = (\v -> fromMaybe 120 (v >>= \x -> case reads x of { [(n, "")] -> Just
 -- | A session tool, waiting out a session that is down: a call that never reached it is sent again once it
 -- is back; one it went away during is not (what it did is not known), and the answer says so.
 sessionCall :: Chat -> String -> Json -> IO (Bool, T.Text)
-sessionCall ch name args = do
+sessionCall ch name args0 = do
+  let args = set "quiet" (JBool True) args0
   (ok, out, reach) <- Mcp.callReach (cConf ch) name args
   if reach == Mcp.Reached then writeIORef (cDown ch) False >> pure (ok, out) else do
     wasDown <- readIORef (cDown ch)
@@ -689,16 +705,33 @@ viewDoc who = unlines
   , "last reply said, a decision, a past attempt or where a file is, before"
   , "you act, guess or ask. date(id) gives the date and time of message id." ]
 
+-- | In --context view, what follows the view: every call of a turn is built again from the log.
+recentDoc :: String -> String
+recentDoc who = unlines
+  [ ""
+  , "Each step of your turn starts fresh too: you see the view, the user's"
+  , "message, and then <recent> -- the messages logged after the view's last"
+  , "line, in full, oldest first: your tool calls (name and arguments) and"
+  , "their results, your replies, the session's own saves and verdicts, and"
+  , "what the user sent while you work. It is your record of this turn;"
+  , "your latest call and its result are at its end. Your earlier steps are"
+  , "only there, not in a conversation: when <recent> grows long its older"
+  , "messages move into the view as summaries -- zoom them when you need one"
+  , "whole. " ++ who ++ "'s thinking is not kept between steps: say in a reply"
+  , "what you found out and what you will do next, so it stays in the record." ]
+
 -- the turn loop ------------------------------------------------------------------------------
 
 -- | One fresh call: the view, then the message; its tools until it ends.
 turn :: Chat -> Endpoint -> Opts -> String -> [T.Text] -> TQueue (Maybe T.Text) -> IO ()
 turn ch e o system texts pending = do
-  (v, settled, parts, _) <- view ch (oSettle o)
+  (v, settled, parts, count) <- view ch (oSettle o)
   unless settled (hPutStrLn stderr (printf "[view: %d lines, not all summarized yet; going on]" parts))
-  forM_ texts (logH ch "user")
+  ids <- forM texts (logId ch "user")
   tStart <- now
-  goOn ch e o pending (TurnState [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> T.intercalate (T.pack "\n\n") texts) ] 0 0 [] (Spent 0 0 0 0 0 False False) tStart)
+  let task = T.intercalate (T.pack "\n\n") texts
+  goOn ch e o pending (TurnState [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> task) ] 0 0 [] (Spent 0 0 0 0 0 False False) tStart
+                                 (if oView o then Just (ViewCtx count (catMaybes ids) task) else Nothing))
 
 msg :: String -> T.Text -> Json
 msg role text = JObj [("role", JStr role), ("content", JText text)]
@@ -706,7 +739,14 @@ msg role text = JObj [("role", JStr role), ("content", JText text)]
 -- | Where a turn is, between two model calls: what a restarted harness needs to go on with it -- the
 -- conversation word for word (the provider's cache of it holds across the restart), the step and the
 -- cut-off replies so far, the reads in it, what it has spent, and when it began.
-data TurnState = TurnState { tsMsgs :: [Json], tsStep :: Int, tsCut :: Int, tsReads :: [ReadRec], tsSpent :: Spent, tsStart :: Double }
+data TurnState = TurnState { tsMsgs :: [Json], tsStep :: Int, tsCut :: Int, tsReads :: [ReadRec], tsSpent :: Spent, tsStart :: Double
+                           , tsView :: Maybe ViewCtx }
+  deriving (Eq, Show)
+
+-- | A turn in --context view: the log's first message not in the view (the boundary), the ids of the
+-- turn's own message (it is pinned after the view, so not shown again in <recent>), and that message.
+-- tsMsgs is then the call's fixed head: the system prompt, and the view up to the boundary with the message.
+data ViewCtx = ViewCtx { vcBound :: Int, vcSkip :: [Int], vcTask :: T.Text }
   deriving (Eq, Show)
 
 turnJson :: TurnState -> Json
@@ -715,7 +755,8 @@ turnJson ts = JObj
   , ("reads", JArr [ JObj [ ("num", int (rrNum r)), ("idx", int (rrIdx r)), ("path", JStr (rrPath r)), ("lo", int (rrLo r)), ("hi", int (rrHi r))
                           , ("text", JText (rrText r)), ("by", maybe JNull int (rrBy r)), ("trimmed", JBool (rrTrimmed r)) ] | r <- tsReads ts ])
   , ("spent", let x = tsSpent ts in JObj [ ("calls", int (sCalls x)), ("in", int (sIn x)), ("cached", int (sCached x)), ("out", int (sOut x))
-                                         , ("tools", int (sTools x)), ("touched", JBool (sTouched x)), ("nudged", JBool (sNudged x)) ]) ]
+                                         , ("tools", int (sTools x)), ("touched", JBool (sTouched x)), ("nudged", JBool (sNudged x)) ])
+  , ("view", maybe JNull (\vc -> JObj [ ("bound", int (vcBound vc)), ("skip", JArr (map int (vcSkip vc))), ("task", JText (vcTask vc)) ]) (tsView ts)) ]
   where int = JNum . fromIntegral
 
 turnFrom :: Json -> Maybe TurnState
@@ -727,6 +768,9 @@ turnFrom j = do
   TurnState ms <$> int "step" j <*> int "cut" j <*> pure rs
     <*> (Spent <$> int "calls" sj <*> int "in" sj <*> int "cached" sj <*> int "out" sj <*> int "tools" sj <*> lookupBool "touched" sj <*> lookupBool "nudged" sj)
     <*> lookupNum "start" j
+    <*> pure (case j .: "view" of
+                v | Just b <- int "bound" v, Just t <- lookupText "task" v -> Just (ViewCtx b [ round x | Just x <- map num (lookupArr "skip" v) ] t)
+                _ -> Nothing)
   where
     int k x = round <$> lookupNum k x
     readFrom r = ReadRec <$> int "num" r <*> int "idx" r <*> lookupStr "path" r <*> int "lo" r <*> int "hi" r <*> lookupText "text" r
@@ -768,6 +812,20 @@ goOn ch e o pending ts = do
   writeIORef (cInTurn ch) True
   spent <- newIORef (tsSpent ts)
   readsR <- newIORef (tsReads ts)
+  vcR <- newIORef (tsView ts)
+  let loop readsR spent msgs0 step cut failures
+        | step >= oMaxSteps o = hPutStrLn stderr "[the turn reached its step limit; stopping]"
+        | otherwise = do
+            -- in --context view the call is built from the log; msgs is then its head only
+            vc0 <- readIORef vcR
+            (msgs, callMsgs) <- case vc0 of
+              Nothing -> pure (msgs0, msgs0)
+              Just vc -> do
+                (hd, vc', c) <- viewCall ch o msgs0 vc
+                writeIORef vcR (Just vc')
+                pure (hd, c)
+            step1 readsR spent msgs callMsgs step cut failures
+      step1 = stepWith loop vcR
   loop readsR spent (tsMsgs ts) (tsStep ts) (tsCut ts) (0 :: Int)
   writeIORef (cInTurn ch) False
   tEnd <- now
@@ -776,17 +834,21 @@ goOn ch e o pending ts = do
   where
     byName = [ (tName t, t) | t <- chatTools ]
     toolsJson = map toolJson chatTools
-    loop readsR spent msgs step cut failures
-      | step >= oMaxSteps o = hPutStrLn stderr "[the turn reached its step limit; stopping]"
-      | otherwise = do
+    viewMode = isJust (tsView ts)
+    -- a harness note: a message of the conversation, or in --context view a line of the log
+    nudge msgs' text
+      | viewMode = logH ch "echo" (T.pack "harness: " <> text) >> pure msgs'
+      | otherwise = pure (msgs' ++ [msg "user" (T.pack "[harness: " <> text <> T.pack "]")])
+    stepWith loop vcR readsR spent msgs callMsgs step cut failures = do
           -- a restart asked for: here, between two model calls, nothing is half done
           asked <- readIORef (cRestart ch)
           when asked $ do
             s <- readIORef spent
             rs <- readIORef readsR
-            restart ch pending (Just (TurnState msgs step cut rs s (tsStart ts)))
+            vc <- readIORef vcR
+            restart ch pending (Just (TurnState msgs step cut rs s (tsStart ts) vc))
           t0 <- now
-          r <- request e (Request msgs toolsJson (oMaxTokens o) Nothing Nothing Nothing 900)
+          r <- request e (Request callMsgs toolsJson (oMaxTokens o) Nothing Nothing Nothing 900)
           t1 <- now
           case r of
             Left why | failures < 2 -> do
@@ -803,13 +865,14 @@ goOn ch e o pending ts = do
               let content = T.strip (pContent p)
               unless (T.null content) (TIO.putStrLn content >> putStrLn "" >> hFlush stdout >> logH ch "talk" content)
               let assistant = JObj ([("role", JStr "assistant"), ("content", JText (pContent p))] ++ [ ("tool_calls", JArr (map tcRaw (pToolCalls p))) | not (null (pToolCalls p)) ])
-                  msgs' = msgs ++ [assistant]
+                  msgs' = if viewMode then msgs else msgs ++ [assistant]
               if null (pToolCalls p)
                 then if pFinish p == "length" && cut < 3
                   then do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
                     hPutStrLn stderr (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
-                    loop readsR spent (msgs' ++ [msg "user" (T.pack (printf "[harness: your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first.]" (oMaxTokens o)))]) (step + 1) (cut + 1) 0
+                    m' <- nudge msgs' (T.pack (printf "your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first." (oMaxTokens o)))
+                    loop readsR spent m' (step + 1) (cut + 1) 0
                   else do
                     -- a turn that changed the files and ends with the verdict red is told so, once: it
                     -- either fixes it or says plainly that it stops red, never ends there in silence
@@ -820,17 +883,19 @@ goOn ch e o pending ts = do
                       Just r | isRed (vLine r) -> do
                         modifyIORef' spent (\x -> x { sNudged = True })
                         hPutStrLn stderr "[the turn would end with the verdict red; saying so once]"
-                        loop readsR spent (msgs' ++ [msg "user" (T.pack ("[harness: you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
-                                                                  ++ "\nFix it, or end by saying plainly that it is red and why you are stopping.]"))]) (step + 1) 0 0
+                        m' <- nudge msgs' (T.pack ("you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
+                                                    ++ "\nFix it, or end by saying plainly that it is red and why you are stopping."))
+                        loop readsR spent m' (step + 1) 0 0
                       _ -> pure ()
                 else do
                   modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "edits", "sh"]) . tcName) (pToolCalls p) })
                   replies <- forM (zip [0 :: Int ..] (pToolCalls p)) $ \(i, tc) -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))
-                        isSession = name `elem` sessionToolNames
                     putStrLn ("> " ++ name ++ " " ++ shownArgs) >> hFlush stdout
-                    unless isSession (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
+                    -- every call is logged by the chat as the agent made it, and its answer as the agent saw it (the
+                    -- session's own tools are asked quietly); remember writes the log itself
+                    unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
                     t2 <- now
                     (ok, out0) <- case lookup name byName of
                       Just t -> runTool ch t (tcArgs tc)
@@ -839,7 +904,7 @@ goOn ch e o pending ts = do
                     t3 <- now
                     -- a read: numbered, an alias of an earlier one when its text is that one's, else
                     -- superseding the earlier reads of its lines
-                    out1 <- case (name, ok, readRange out0, lookup name byName) of
+                    out1 <- case (if viewMode then "" else name, ok, readRange out0, lookup name byName) of
                       ("read", True, Just (lo, hi), Just t) -> do
                         let path = normalise (fromMaybe "" (lookupStr "path" (fst (arguments t (tcArgs tc)))))
                             idx = length msgs' + i
@@ -856,23 +921,102 @@ goOn ch e o pending ts = do
                     let out = out1 <> late
                         tagged = (if ok then T.empty else T.pack "ERROR: ") <> out
                     when (oUsage o) (hPutStrLn stderr (printf "[tool: %s %.1fs]" name (t3 - t2)))
-                    unless isSession (logH ch "echo" tagged)
+                    unless (name == "remember") (logH ch "echo" tagged)
                     TIO.putStrLn (T.pack "  " <> T.replace (T.pack "\n") (T.pack "\n  ") (T.take 600 out) <> (if T.length out > 600 then T.pack "..." else T.empty)) >> hFlush stdout
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending
                   forM_ mid (logH ch "user")
-                  let next = msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
+                  let next = if viewMode then msgs' else msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
                   -- the superseded reads, rewritten as stubs once there is enough of them
                   recs <- readIORef readsR
                   let due = [ r | r <- recs, isJust (rrBy r), not (rrTrimmed r) ]
                       dueChars = sum (map (T.length . rrText) due)
                   limit <- trimAtNow
-                  next' <- if null due || dueChars < limit then pure next else do
+                  next' <- if viewMode || null due || dueChars < limit then pure next else do
                     let stubs = M.fromList [ (rrIdx r, T.pack (printf "[read #%d: %s lines %d-%d -- superseded by read #%d, which shows these lines as they are now]" (rrNum r) (rrPath r) (rrLo r) (rrHi r) (fromMaybe 0 (rrBy r)))) | r <- due ]
                     writeIORef readsR [ if rrNum r `elem` map rrNum due then r { rrTrimmed = True, rrText = T.empty } else r | r <- recs ]
                     hPutStrLn stderr (printf "[context: %d superseded read(s) trimmed, %d characters]" (length due) dueChars)
                     pure [ maybe m (\st -> set "content" (JText st) m) (M.lookup ix stubs) | (ix, m) <- zip [0 ..] next ]
                   loop readsR spent next' (step + 1) 0 0
+
+-- the call built from the log (--context view) -----------------------------------------------
+--
+-- OptChat starts each TURN fresh, from the view, and carries the turn's own steps as a conversation: a turn
+-- of a hundred tool calls grew to 195k tokens and never met its own memory. Here every CALL is built from
+-- the log: the view up to a boundary, the turn's message, and the log after the boundary word for word
+-- (<recent>). Once <recent> is over 'tailMax' bytes, the boundary moves on to leave a third of it, and the
+-- view is taken again up to there -- in a batch, as the reads are trimmed, because the head of the call
+-- changes then and the provider's cache of it ends: between two moves each call is the last one and a bit
+-- more. A tail of 0 is the view alone, each call waiting for the compactor to summarize the step before.
+
+-- | Bytes of the log after the boundary that make the boundary move (a third of it stays).
+tailMax :: Int
+tailMax = 96000
+
+-- | The log after the boundary as <recent> shows it: one message after another, whole, `id|kind: text`.
+renderTail :: [Int] -> [(Int, T.Text, T.Text)] -> T.Text
+renderTail skip ms = T.concat [ T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack "\n" | (i, k, t) <- ms, i `notElem` skip ]
+
+-- | Where the boundary moves to: past the oldest messages, until what is left is within the bytes
+-- (the id after the last message when nothing is).
+newBound :: Int -> [Int] -> [(Int, T.Text, T.Text)] -> Int
+newBound keep skip ms = go ms
+  where go [] = maybe 0 (\(i, _, _) -> i + 1) (listToMaybe (reverse ms))
+        go rest@((i, _, _) : more) | byteLen (renderTail skip rest) <= keep = i
+                                   | otherwise = go more
+        byteLen = B.length . TE.encodeUtf8
+
+-- | The view's lines, each with its first message.
+viewLines :: T.Text -> [(Int, T.Text)]
+viewLines v = [ (n, l) | l <- T.lines v, (d, rest) <- [T.span (`elem` ['0' .. '9']) l], not (T.null d), T.pack "+" `T.isPrefixOf` rest, [(n, "")] <- [reads (T.unpack d)] ]
+
+-- | The log from message b on.
+logFrom :: Chat -> Int -> IO [(Int, T.Text, T.Text)]
+logFrom ch b = do
+  r <- ask ch "history" [("since", JNum (fromIntegral b)), ("n", JNum 1000000), ("json", JBool True)]
+  pure $ case parseJsonBS (TE.encodeUtf8 (fromMaybe T.empty (lookupText "out" r))) of
+    Right (JArr xs) -> [ (round i, k, t) | x <- xs, Just i <- [lookupNum "i" x], Just k <- [lookupText "kind" x], Just t <- [lookupText "text" x] ]
+    _ -> []
+
+-- | The view of the messages before b, once its lines are summaries (at most the settle's seconds).
+viewBefore :: Chat -> Int -> Double -> IO T.Text
+viewBefore ch b secs = do
+  t0 <- now
+  let go = do
+        (v, _, _, _) <- view ch 0
+        let keep = [ l | (start, l) <- viewLines v, start < b ]
+            unbuilt = any (T.isSuffixOf placeholderText) keep
+        t <- now
+        if unbuilt && t - t0 < secs then threadDelay 300000 >> go else do
+          when unbuilt (hPutStrLn stderr "[view: not all lines summarized yet; going on]")
+          pure (T.unlines (T.pack "<chat>" : keep ++ [T.pack "</chat>"]))
+  go
+  where placeholderText = T.pack "(not summarized yet: zoom it)"
+
+-- | This call's messages in --context view: the head, moved on first if <recent> has grown past the tail,
+-- and <recent> after the message. (The head, and where the boundary is now.)
+viewCall :: Chat -> Opts -> [Json] -> ViewCtx -> IO ([Json], ViewCtx, [Json])
+viewCall ch o hd vc = do
+  ms <- logFrom ch (vcBound vc)
+  let size = B.length (TE.encodeUtf8 (renderTail (vcSkip vc) ms))
+  (hd', vc', ms') <-
+    if size <= oTail o || null ms then pure (hd, vc, ms) else do
+      let b = newBound (oTail o `div` 3) (vcSkip vc) ms
+      v <- viewBefore ch b (oSettle o)
+      hPutStrLn stderr (printf "[context: the view now runs to message %d; <recent> is %d messages]" b (length (filter (\(i, _, _) -> i >= b) ms)))
+      pure (take 1 hd ++ [msg "user" (v <> T.pack "\n" <> vcTask vc)], vc { vcBound = b }, filter (\(i, _, _) -> i >= b) ms)
+  let recent = renderTail (vcSkip vc') ms'
+      call | T.null recent && not begun = hd'
+           | otherwise = init hd' ++ [msg "user" (fromMaybe T.empty (lookupText "content" (last hd')) <> T.pack "\n\n" <> turnNote
+                                                  <> (if T.null recent then T.empty else T.pack "\n<recent>\n" <> recent <> T.pack "</recent>"))]
+      -- a fresh call reads the message as new and does it again unless told where its own work on it is:
+      -- with no <recent> (a tail of 0) an agent ran the same evaluation 16 times, its answer in the view
+      start = maybe (vcBound vc') (+ 1) (listToMaybe (reverse (vcSkip vc')))
+      begun = vcBound vc' > start
+      turnNote = T.pack (if begun
+        then printf "[Your work on this message so far is the log from message %d on: lines %d.. of the view above, summarized (zoom them for the whole text), then <recent>. Go on from where it ends; do not start again.]" start start
+        else printf "[Your work on this message so far is the log from message %d on, in <recent>. Go on from where it ends; do not start again.]" start)
+  pure (hd', vc', call)
 
 -- the reads a turn's context holds ---------------------------------------------------------------
 --
@@ -955,7 +1099,7 @@ chatMain conf args = case parseOpts args of
             Right e0 -> do
               let e = e0 { eModel = fromMaybe (eModel e0) (oModel o), eBase = maybe (eBase e0) (reverse . dropWhile (== '/') . reverse) (oBase o) }
               instr <- maybe (pure "") (\f -> trim <$> readFile f) (oInstructions o)
-              let system = master (cAgent ch) ++ "\n" ++ viewDoc (cAgent ch) ++ (if null instr then "" else "\n" ++ instr)
+              let system = master (cAgent ch) ++ "\n" ++ viewDoc (cAgent ch) ++ (if oView o then recentDoc (cAgent ch) else "") ++ (if null instr then "" else "\n" ++ instr)
               pending <- newTQueueIO
               -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
               getProcessID >>= writeFile (chatPidFile conf name) . show

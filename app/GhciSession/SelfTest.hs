@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), capWith, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -316,10 +316,16 @@ run = do
                      , JObj [("role", JStr "assistant"), ("content", JText T.empty), ("tool_calls", JArr [JObj [("id", JStr "call_1"), ("type", JStr "function"), ("function", JObj [("name", JStr "read"), ("arguments", JStr "{\"path\": \"src/A.hs\", \"lines\": 40}")])]])]
                      , JObj [("role", JStr "tool"), ("tool_call_id", JStr "call_1"), ("content", JText (T.pack "    1  module A where"))] ]
                      7 1 [ReadRec 1 2 "src/A.hs" 1 40 (T.pack "    1  module A where") Nothing False, ReadRec 2 5 "src/A.hs" 1 40 T.empty (Just 3) True]
-                     (Spent 7 123456 120000 2345 9 True False) 1759800000.25
+                     (Spent 7 123456 120000 2345 9 True False) 1759800000.25 (Just (ViewCtx 4400 [4400, 4401] (T.pack "the task, \"quoted\"\nline two")))
       back = either (const Nothing) turnFrom (parseJson (encode (turnJson ts)))
   eq "chat: a turn written out for a restart reads back as it was" back (Just ts)
   check "chat: ... its conversation byte for byte (the provider's cache of it holds)" (fmap (map encode . tsMsgs) back == Just (map encode (tsMsgs ts)))
+  eq "chat: a turn in --context turn reads back as it was too" (either (const Nothing) turnFrom (parseJson (encode (turnJson ts { tsView = Nothing })))) (Just ts { tsView = Nothing })
+  let lg = [ (10, T.pack "user", T.pack "the task"), (11, T.pack "tool", T.pack "read {}"), (12, T.pack "echo", T.pack (replicate 100 'x')), (13, T.pack "talk", T.pack "done") ]
+  eq "chat: <recent> is the log after the boundary, whole, without the pinned message"
+     (renderTail [10] lg) (T.pack ("11|tool: read {}\n12|echo: " ++ replicate 100 'x' ++ "\n13|talk: done\n"))
+  eq "chat: the boundary moves past the oldest messages until the rest fits" (map (\k -> newBound k [10] lg) [1000, 50, 0]) [10, 13, 14]
+  eq "chat: the view's lines and the message each starts at" (map fst (viewLines (T.pack "<chat>\n0+8|a b\n8+4|c\n12+1|(not summarized yet: zoom it)\n</chat>\n"))) [0, 8, 12]
   eq "chat: a GHCi of the agent's own, through sh"
      (map ownGhci [ "timeout 300 ghci -isrc 2>&1 <<'EOF' | tail -5", "cd x && cabal repl lib:nes", "echo main | /opt/ghc/bin/ghci-9.14.1 -v0", "runghc Setup.hs", "ghc -e 'print 1'"
                   , "ghci-session status nes", "grep -rn ghci src", "cabal build", "ghc -fno-code -isrc src/Nes.hs" ])

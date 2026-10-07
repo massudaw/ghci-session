@@ -259,6 +259,19 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   running" loaded the project in a GHCi of its own through `sh`, cold, 14 times for 374 s; and a `sh` that does
   start a GHCi of its own is told the session has the project loaded. The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
+- **`--context view` builds every model call from the log**, not only each turn's first. OptChat starts a
+  turn fresh from the view and carries the turn's own steps as a conversation: a round of a hundred tool calls
+  grew to 195k tokens and never met its own memory. With `--context view` a call is: the system prompt, the
+  view up to a boundary, the turn's message, a line saying where the turn's own work starts in the log, and
+  `<recent>` -- the log after the boundary, word for word (`id|kind: text`). Once `<recent>` is over `--tail`
+  bytes (96,000) the boundary moves on to leave a third of it and the view is taken again up to there: in a
+  batch, so between two moves each call is the one before and a bit more, and the provider's cache holds.
+  `--tail 0` is the view alone, every call waiting for the compactor to summarize the step before. For the
+  log to be the prompt, the chat logs every tool call as the agent made it and every answer as the agent saw
+  it (with the notes the harness adds), and asks the session's own operations `quiet`ly so they are not
+  logged twice; the harness's own notices are logged too. (Without the line saying where its work starts, a
+  fresh call took the message for new: with a tail of 0 an agent ran the same evaluation 16 times, its answer
+  already in the view's last lines.)
 - **The harness upgrades in the middle of a turn.** `ghci-session chat --restart [-s SESSION]` (or `kill -HUP`
   the chat; its pid is `<state>/<session>/chat.pid`) has the running chat run itself again as the executable on
   disk now -- build first, and `bin/ghci-session` builds on its own. In a turn it waits for the step's tools to

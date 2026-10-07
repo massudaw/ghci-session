@@ -1896,9 +1896,9 @@ handle s h = do
           replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
         "info" -> info s >>= replyS True . encode
         "doc" -> do          -- (reads the sources, not the repl: answers during a reload)
-          histAdd s "tool" (describeReq op req)
+          logged req (histAdd s "tool" (describeReq op req))
           out <- docSearch s req
-          histEcho s [] out
+          logged req (histEcho s [] out)
           reply True out
         _ | op `elem` histOps -> histOp s op req >>= either (replyS False) (reply True)
         "stop" -> do
@@ -1909,24 +1909,26 @@ handle s h = do
         -- (the answer there was, when no source changed since: without waiting for the repl, which a
         --  running check holds -- four typechecks of an agent's waited 226 s each behind one)
         "typecheck" -> typecheckCached s >>= \c -> case c of
-          Just out -> histAdd s "tool" (describeReq op req) >> histEcho s [] out >> reply True out
+          Just out -> logged req (histAdd s "tool" (describeReq op req) >> histEcho s [] out) >> reply True out
           Nothing -> viaWork op req
         _ -> viaWork op req
       case r of
         Left (e :: SomeException) -> void (try (replyS False (displayException e)) :: IO (Either SomeException ()))   -- a broken eval must not kill the daemon
         Right () -> pure ()
   where
+    -- a request with "quiet" is not logged: its client logs it itself, as its agent saw it (the chat)
+    logged req act = unless (lookupBool "quiet" req == Just True) act
     -- a request that needs the repl: under the work lock, logged with its answer
     viaWork op req = do
       now >>= (vLastUsed s =:)
-      histAdd s "tool" (describeReq op req)
+      logged req (histAdd s "tool" (describeReq op req))
       r' <- try (bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req))
       case r' of
-        Left (e :: SomeException) -> histAdd s "echo" (T.pack ("ERROR: " ++ displayException e)) >> throwIO e
-        Right Nothing -> histAdd s "echo" (T.pack ("unknown op " ++ show op)) >> replyS' False ("unknown op " ++ show op)
+        Left (e :: SomeException) -> logged req (histAdd s "echo" (T.pack ("ERROR: " ++ displayException e))) >> throwIO e
+        Right Nothing -> logged req (histAdd s "echo" (T.pack ("unknown op " ++ show op))) >> replyS' False ("unknown op " ++ show op)
         Right (Just out) -> do
           stale <- staleFiles s
-          histEcho s stale out
+          logged req (histEcho s stale out)
           reply' True out
     reply' ok out = do
       stale <- staleFiles s
