@@ -308,10 +308,16 @@ daemon writes it (every request and its answer, a save with its diff, the chat's
 `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has: `n`/`p` move
 the cursor from message to message, `Enter` opens or closes the one under it, `a` all of them), `2` the view the model reads with the memory's numbers (lines, built nodes,
 settled or not, the compactor's jobs), `3` the daemon's log, `4` the verdict with what is behind it (the
-compiler's diagnostics, the failing lines, the members and the servers), `5` what the model calls cost, and two
-terminal panes: `6` the chat (`ghci-session chat --tui` on this session) and `7` a shell in the project. `R` sends a
-reload and `T` the tests; `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes the next key
-the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a Ctrl-a). A session that is not running shows as
+compiler's diagnostics, the failing lines, the members and the servers), `5` what the model calls cost, `6` the
+heap: the repl's resident memory graphed, a column each half second from the daemon's own reading (the axis starts
+near the lowest value, so a change of a few per cent shows; the servers' below it when there are any), and under
+it a report of the heap taken when asked, since each is a major collection and a walk of the heap with the
+session paused for a second or more: `M` its figures (live, what the RTS holds, major collections so far, what
+the CAFs and the kept values retain), `C` the CAFs by what they retain and the heap by constructor, `S` the
+strings, `K` the kept values, `D` the sharing that is missed -- `census` and `mem --heap` below, on the screen;
+and two terminal panes: `7` the chat (`ghci-session chat --tui` on this session) and `8` a shell in the project.
+`R` sends a reload and `T` the tests; `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes
+the next key the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a Ctrl-a). A session that is not running shows as
 such and is picked up when it starts.
 
 `top` and the chat's screen are applications of two packages of this repository, written for them and usable without them:
@@ -722,7 +728,7 @@ history [-n N] [--since ID] [--full] [--json] | history --kind user|talk|note TE
 view [--wait SECS] [--json] | zoom ID [N] | date ID
 mcp                                      # the session and its memory as an agent's tools (MCP on stdin/stdout)
 chat [-s SESSION] [--tui] [--once MSG]   # the endless chat: an agent on the session, remembering through its history
-top [SESSION]                            # watch the session: verdict, history, view, log, cost, and the chat and a shell in panes
+top [SESSION]                            # watch the session: verdict, history, view, log, cost, the heap, and the chat and a shell in panes
 ```
 
 With no session named, a command goes to the one that is running (else the config's `default`).
