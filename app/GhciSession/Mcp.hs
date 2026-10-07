@@ -92,7 +92,7 @@ tools =
   , Tool "status" "The session's verdict: OK -- CHECK-PASS, COMPILE-ERROR: n error(s), CHECK-FAIL: n failing; STALE(n) when watched sources differ from the loaded code." [sessionArg] []
   , Tool "typecheck" "Do the sources on disk typecheck? Nothing is loaded; the errors are listed." [sessionArg] []
   , Tool "reload" "Compile and load the sources on disk (a save does this by itself), then the tests unless test is false." [("test", ("boolean", "run the tests after a good load (default true)")), sessionArg] []
-  , Tool "test" "Run the project's tests on the loaded code." [("member", ("string", "one member of a composed session")), sessionArg] []
+  , Tool "test" "Run the project's tests on the loaded code -- the whole check, which sets the session's verdict; or, with expr, ONE expression run as a test (a group of the tests, say), scored by the check's own fail and pass patterns, the verdict left as it is: seconds instead of the whole suite." [("expr", ("string", "an expression to run as a test instead of the whole check, e.g. a test group")), ("member", ("string", "one member of a composed session")), ("timeout", ("number", "seconds, with expr (default 600)")), sessionArg] []
   , Tool "doc" "Find a definition: by name (a typo, a prefix or initials are fine), qualified, or by words of its type or comment. Answers the signature, the comment above it and file:line." [("query", ("string", "the name or words")), ("n", ("number", "how many answers (default 5)")), sessionArg] ["query"]
   , Tool "census" "What the heap holds: every CAF by what it retains (default), the Strings among it (mode strings), what a reload cannot drop (kept), sharing that is missed (dups), or one value alone (expr)." [("mode", ("string", "cafs | strings | kept | dups | mem")), ("expr", ("string", "one value: its bytes, closures and constructors")), ("top", ("number", "how many entries")), sessionArg] []
   , Tool "bench" "Time an IO action in the session: wall, GC, allocation (live: and the live heap before and after, two major collections). A top-level value is computed once per load, so time a function applied to its input." [("expr", ("string", "the action")), ("live", ("boolean", "also the live heap before and after")), ("timeout", ("number", "seconds; a hung action is interrupted (default 600)")), sessionArg] ["expr"]
@@ -129,7 +129,8 @@ call conf name args = do
         "status" -> go "status" [] >>= say
         "typecheck" -> go "typecheck" [] >>= say
         "reload" -> go "reload" [("check", JBool (lookupBool "test" args /= Just False))] >>= say
-        "test" -> go "check" (str "member" "member") >>= say
+        "test" | Just _ <- s "expr" -> go "check_expr" (str "expr" "expr" ++ str "member" "member" ++ num "timeout") >>= say
+               | otherwise -> go "check" (str "member" "member") >>= say
         "doc" -> go "doc" ([("words", JArr (map JStr (words (fromMaybe "" (s "query")))))] ++ num "n") >>= say
         "census" -> go "census" ([("mode", JStr (if isJust (s "expr") then "value" else fromMaybe "cafs" (s "mode")))] ++ str "expr" "expr" ++ num "top") >>= say
         "bench" -> go "bench" (str "expr" "expr" ++ num "timeout" ++ [ ("live", JBool True) | lookupBool "live" args == Just True ]) >>= say

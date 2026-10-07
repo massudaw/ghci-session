@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, splitImports, nearest, fuzzyReplace, saveWait, isRed
+  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, saveWait, isRed
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
@@ -40,7 +40,7 @@ import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isSpace)
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, sort, tails)
-import Data.Maybe (fromMaybe, isJust, isNothing)
+import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
@@ -106,7 +106,8 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
 -- the session ------------------------------------------------------------------------------
 
 data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched :: [FilePath], cAgent :: String
-                 , cLongest :: IORef Double }   -- ^ the longest verdict (a reload with its check) seen: what a save may take
+                 , cLongest :: IORef Double     -- ^ the longest verdict (a reload with its check) seen: what a save may take
+                 , cPending :: IORef (Maybe Double) }   -- ^ a save whose CHECK was still running when its answer went out: when it was written
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -150,14 +151,20 @@ view ch wait = do
 -- | The verdict now: its time stamp, its line, what is behind it -- the compiler's diagnostics
 -- (file:line:col and the message whole) behind a COMPILE-ERROR, the failing lines behind a CHECK-FAIL,
 -- nothing behind an OK. Nothing when no session answers; the longest duration seen is remembered on the way.
-data Verdict = Verdict { vAt :: Double, vLine :: String, vBehind :: [String] }
+-- @vStart@: when the reload that gave it began (a save's verdict is one whose reload began after the file was
+-- written -- not the end of a check that was already running); @vRunning@: the code compiled and its check
+-- is running now, so the line is the compile verdict.
+data Verdict = Verdict { vStart :: Double, vLine :: String, vBehind :: [String], vRunning :: Bool }
 
 verdictAt :: Chat -> IO (Maybe Verdict)
 verdictAt ch = do
   r <- ask ch "status" []
   let j = r .: "status"
   forM_ (lookupNum "duration_s" j) (\d -> modifyIORef' (cLongest ch) (max d))
+  let ck = r .: "checking"
   pure $ case (lookupBool "ok" r, obj j, lookupNum "at" j) of
+    (Just _, _, _) | Just began <- lookupNum "began" ck ->
+      Just (Verdict began (fromMaybe "OK" (lookupStr "compiled" ck) ++ " -- compiles; the check is running") [] True)
     (Just _, Just _, Just at) ->
       let headL = takeWhile (/= '\n') (fromMaybe "" (lookupStr "out" r))
           detail = strs (j .: "detail")
@@ -170,35 +177,93 @@ verdictAt ch = do
             Just "CHECK-FAIL" -> detail
             Just "CHECK-HANG" -> detail
             _ -> []
-      in Just (Verdict at headL behind)
+      in Just (Verdict (at - fromMaybe 0 (lookupNum "duration_s" j)) headL behind False)
     _ -> Nothing
 
--- | The verdict the session gives AFTER the one at @before@ (a save's), within the seconds; else Nothing.
+-- | The verdict of a reload that began after @written@ (a save's), within the seconds; else Nothing. Once the
+-- code compiles and its check runs, the check is given a few seconds more ('checkGrace') and then the compile
+-- verdict is the answer: the check's own comes later ('pendingNote').
 verdictAfter :: Chat -> Double -> Double -> IO (Maybe Verdict)
-verdictAfter ch before secs = do
+verdictAfter ch written secs = do
   t0 <- now
-  let go = do
+  let go running = do
         threadDelay 250000
         t <- now
         v <- verdictAt ch
         case v of
-          Just r | vAt r > before -> pure (Just r)
+          Just r | vStart r >= written - 0.05, not (vRunning r) -> pure (Just r)
+          Just r | vStart r >= written - 0.05 -> do
+            let since = fromMaybe t running
+            if t - since >= checkGrace then pure (Just r) else go (Just since)
           _ | t - t0 >= secs -> pure Nothing
-            | otherwise -> go
-  go
+            | otherwise -> go running
+  go Nothing
+
+-- | Seconds a save waits, once its code compiles, for a check that runs: a quick check's verdict comes with
+-- the save; a longer one is not waited for -- the agent goes on, and gets it with a later tool result.
+-- (Saves were 79 of an agent's 249 tool minutes, most of it checks of 20-100 s, once per edit of a fix.)
+checkGrace :: Double
+checkGrace = 6
+
+-- | The verdict of the check a save left running, once it is in: a note for the tool result it rides on.
+pendingNote :: Chat -> IO T.Text
+pendingNote ch = do
+  p <- readIORef (cPending ch)
+  case p of
+    Nothing -> pure T.empty
+    Just written -> do
+      v <- verdictAt ch
+      case v of
+        Just r | not (vRunning r), vStart r >= written - 0.05 -> do
+          writeIORef (cPending ch) Nothing
+          pure (T.pack ("\n[the check of your earlier save has finished: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r) ++ "]"))
+        _ -> pure T.empty
+
+-- | Wait for the check a save left running (at the end of a turn, before its verdict is judged).
+awaitPending :: Chat -> IO ()
+awaitPending ch = do
+  p <- readIORef (cPending ch)
+  forM_ p $ \written -> do
+    longest <- readIORef (cLongest ch)
+    v <- verdictAfter' written (saveWait longest)
+    when (isJust v) (writeIORef (cPending ch) Nothing)
+  where
+    verdictAfter' written secs = do
+      t0 <- now
+      let go = do
+            threadDelay 250000
+            t <- now
+            v <- verdictAt ch
+            case v of
+              Just r | not (vRunning r), vStart r >= written - 0.05 -> pure (Just r)
+              _ | t - t0 >= secs -> pure Nothing
+                | otherwise -> go
+      go
 
 -- | A save's answer: what was written, and the verdict of the reload it caused, when the file is one the
 -- session watches. A verdict that is not there within the wait is said to be pending (a long compile):
 -- status has it later. The save itself is good either way.
-saved :: Chat -> String -> Maybe Verdict -> IO (Bool, T.Text)
+saved :: Chat -> String -> Maybe Double -> IO (Bool, T.Text)
 saved _ what Nothing = pure (True, T.pack what)
-saved ch what (Just before) = do
+saved ch what (Just written) = do
   longest <- readIORef (cLongest ch)
   let wait = saveWait longest
-  v <- verdictAfter ch (vAt before) wait
-  pure $ case v of
-    Nothing -> (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
-    Just r -> (not (isRed (vLine r)), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+  v <- verdictAfter ch written wait
+  case v of
+    Nothing -> pure (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
+    Just r | vRunning r -> do
+      writeIORef (cPending ch) (Just written)
+      pure (True, T.pack (what ++ "\nverdict: " ++ vLine r ++ " -- its verdict comes with a later tool result; go on meanwhile"))
+    Just r -> do
+      -- (a newer save's verdict settles any check an earlier one left running)
+      modifyIORef' (cPending ch) (\p -> case p of { Just w | w <= written -> Nothing; _ -> p })
+      pure (not (isRed (vLine r)), T.pack (what ++ "\nverdict: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r)))
+
+-- | When a save is written, if the session is up and watches the file: the time, for 'saved'.
+writtenAt :: Chat -> FilePath -> IO (Maybe Double)
+writtenAt ch rel = if not (watches ch rel) then pure Nothing else do
+  up <- isJust <$> verdictAt ch
+  if up then Just <$> now else pure Nothing
 
 -- | Is a verdict line a bad one: a compile error, failing or hung tests, a dead repl.
 isRed :: String -> Bool
@@ -216,24 +281,33 @@ chatTools =
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
      , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
+     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output and status." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
   where timeoutDesc = "seconds before it is interrupted (default 120): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
--- | A tool as the endpoint takes it.
+-- | The edit tool, whose arguments each of the edits' replacements are read as.
+editTool :: Tool
+editTool = Tool "edit" "" [("path", ("string", "")), ("old", ("string", "")), ("new", ("string", ""))] ["path", "old", "new"]
+
+-- | A tool as the endpoint takes it. (An array is of replacements: the only one any tool takes.)
 toolJson :: Tool -> Json
 toolJson t = JObj [ ("type", JStr "function"), ("function", JObj
   [ ("name", JStr (tName t)), ("description", JStr (tDesc t))
   , ("parameters", JObj [ ("type", JStr "object")
-                        , ("properties", JObj [ (k, JObj [("type", JStr ty), ("description", JStr d)]) | (k, (ty, d)) <- tProps t ])
+                        , ("properties", JObj [ (k, JObj ([("type", JStr ty), ("description", JStr d)] ++ [ ("items", replacement) | ty == "array" ])) | (k, (ty, d)) <- tProps t ])
                         , ("required", JArr (map JStr (tReq t))) ]) ]) ]
+  where replacement = JObj [ ("type", JStr "object")
+                           , ("properties", JObj [ (k, JObj [("type", JStr "string")]) | k <- ["path", "old", "new"] ])
+                           , ("required", JArr (map JStr ["path", "old", "new"])) ]
 
 -- | What a model calls an argument when it does not call it by its name.
 aliases :: [(String, [String])]
 aliases = [ ("cmd", ["command", "shell", "script"]), ("path", ["file", "filename", "file_path", "filepath"]), ("content", ["text", "contents", "data"])
           , ("old", ["old_string", "old_text", "from", "search"]), ("new", ["new_string", "new_text", "to", "replace"]), ("expr", ["expression", "code", "command"])
-          , ("query", ["q", "name", "words"]), ("lines", ["count", "limit"]), ("start", ["from_line", "line", "offset"]) ]
+          , ("query", ["q", "name", "words"]), ("lines", ["count", "limit"]), ("start", ["from_line", "line", "offset"])
+          , ("edits", ["changes", "replacements", "edit_list"]) ]
 
 -- | The call's arguments by their names (an alias of an argument THIS tool takes is renamed), and what is missing.
 arguments :: Tool -> Json -> (Json, [String])
@@ -301,18 +375,18 @@ staleNow ch = (\r -> strs (r .: "stale")) <$> ask ch "status" []
 -- newly among those that differ from the loaded code, or a verdict newer than before the command -- else
 -- Nothing. (Not "files differ": with a compile error on disk the session stays that way until it is fixed,
 -- and a read-only command then waited the whole wait for a verdict that was never due.)
-shSaved :: Chat -> Maybe Verdict -> [String] -> IO (Maybe (Bool, T.Text))
+shSaved :: Chat -> Maybe Double -> [String] -> IO (Maybe (Bool, T.Text))
 shSaved _ Nothing _ = pure Nothing
-shSaved ch (Just before) staleBefore = do
+shSaved ch (Just written) staleBefore = do
   let look n = do
         stale <- staleNow ch
         v <- verdictAt ch
         let fresh = any (`notElem` staleBefore) stale
-            newer = maybe False ((> vAt before) . vAt) v
+            newer = maybe False ((>= written - 0.05) . vStart) v
         if fresh || newer then pure True else if n <= (0 :: Int) then pure False else threadDelay 300000 >> look (n - 1)
   coming <- look 6     -- (the watcher sees a save within a second or two)
   if not coming then pure Nothing else do
-    (good, text) <- saved ch "" (Just before)
+    (good, text) <- saved ch "" (Just written)
     pure (Just (good, text))
 
 -- | The agent's hands on the files, inside the project only.
@@ -327,38 +401,54 @@ fileTool ch name a = case name of
     pure (True, if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
   "write" -> withPath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
-    before <- if watches ch rel then verdictAt ch else pure Nothing
+    written <- writtenAt ch rel
     createDirectoryIfMissing True (takeDirectory p)
     B.writeFile p (TE.encodeUtf8 content)
-    saved ch (printf "wrote %s (%d characters)" rel (T.length content)) before
+    saved ch (printf "wrote %s (%d characters)" rel (T.length content)) written
   "edit" -> withPath $ \p -> do
     t <- decode <$> B.readFile p
     let old = fromMaybe T.empty (lookupText "old" a)
         new = fromMaybe T.empty (lookupText "new" a)
-        k = if T.null old then 0 else T.count old t
-    case (k, fuzzyReplace t old new) of
-      (1, _) -> do
-        before <- if watches ch rel then verdictAt ch else pure Nothing
-        let (pre, post) = T.breakOn old t
-        B.writeFile p (TE.encodeUtf8 (pre <> new <> T.drop (T.length old) post))
-        saved ch ("edited " ++ rel) before
-      -- nowhere as written, once with its spacing squeezed: the model's copy lost a space or an indent
-      (0, Just (t', l0, l1)) -> do
-        before <- if watches ch rel then verdictAt ch else pure Nothing
+    case replaceOnce t old new of
+      Right (t', how) -> do
+        written <- writtenAt ch rel
         B.writeFile p (TE.encodeUtf8 t')
-        saved ch (printf "edited %s (the text matched lines %d-%d only with its spacing squeezed: applied there)" rel l0 l1) before
-      _ -> pure (False, T.pack (printf "%s: the text occurs %d times; it must occur exactly once" rel k) <> (if k == 0 then nearest t old else T.empty))
+        saved ch ("edited " ++ rel ++ how) written
+      Left why -> pure (False, T.pack (rel ++ ": ") <> why)
+  -- several replacements, in one or more files: all checked against the files (as the ones before them
+  -- leave them) before any is written, then written together -- one reload, one verdict
+  "edits" -> do
+    let items = [ fst (arguments editTool e) | e <- lookupArr "edits" a ]
+        apply files [] = pure (Right files)
+        apply files ((i, e) : rest) = case inside ch (fromMaybe "" (lookupStr "path" e)) of
+          Left why -> pure (Left (T.pack (printf "replacement %d: %s" (i :: Int) why)))
+          Right p -> do
+            t <- maybe (decode <$> B.readFile p) pure (lookup p files)
+            case replaceOnce t (fromMaybe T.empty (lookupText "old" e)) (fromMaybe T.empty (lookupText "new" e)) of
+              Left why -> pure (Left (T.pack (printf "replacement %d, %s: " i (fromMaybe "?" (lookupStr "path" e))) <> why))
+              Right (t', _) -> apply ((p, t') : filter ((/= p) . fst) files) rest
+    if null items then pure (False, T.pack "edits: no replacements given (edits: [{path, old, new}, ...])") else do
+      r <- try (apply [] (zip [1 ..] items)) :: IO (Either IOException (Either T.Text [(FilePath, T.Text)]))
+      case r of
+        Left e -> pure (False, T.pack ("edits: " ++ show e ++ " -- nothing was written"))
+        Right (Left why) -> pure (False, why <> T.pack "\n[nothing was written: fix that replacement and send them all again]")
+        Right (Right files) -> do
+          let rels = [ makeRelative (cDir ch) f | (f, _) <- files ]
+          written <- fmap (listToMaybe . catMaybes) (mapM (writtenAt ch) rels)
+          forM_ files (\(f, t) -> B.writeFile f (TE.encodeUtf8 t))
+          saved ch (printf "edited %s (%d replacement(s))" (intercalate ", " (reverse rels)) (length items)) written
   "ls" -> withPath $ \p -> do
     es <- filter (not . ("." `isPrefixOf`)) <$> listDirectory p
     tagged <- forM (sort es) $ \e -> (\d -> e ++ (if d then "/" else "")) <$> doesDirectoryExist (p </> e)
     pure (True, T.pack (intercalate "\n" tagged))
   "sh" -> do
-    before <- verdictAt ch
+    up <- isJust <$> verdictAt ch
+    written <- if up then Just <$> now else pure Nothing
     staleBefore <- staleNow ch
     (ok, out) <- shTool (cDir ch) (fromMaybe "" (lookupStr "cmd" a)) (fromMaybe 120 (lookupNum "timeout" a))
     -- a command that edited a watched source (sed -i, a generator, git) is a save too: the session reloads
     -- it, and the answer waits for that verdict as write and edit do, else the agent reloads by hand
-    pending <- shSaved ch before staleBefore
+    pending <- shSaved ch written staleBefore
     pure (ok && maybe True fst pending, out <> maybe T.empty snd pending)
   _ -> pure (False, T.pack ("unknown tool " ++ name))
 
@@ -367,6 +457,15 @@ fileTool ch name a = case name of
     withPath k = case inside ch rel of
       Left why -> pure (False, T.pack why)
       Right p -> k p
+
+-- | One replacement in a text: exactly once as written, or (nowhere as written) once with its spacing
+-- squeezed; the new text and what was done, or why not.
+replaceOnce :: T.Text -> T.Text -> T.Text -> Either T.Text (T.Text, String)
+replaceOnce t old new
+  | k == 1 = let (pre, post) = T.breakOn old t in Right (pre <> new <> T.drop (T.length old) post, "")
+  | k == 0, Just (t', l0, l1) <- fuzzyReplace t old new = Right (t', printf " (the text matched lines %d-%d only with its spacing squeezed: applied there)" l0 l1)
+  | otherwise = Left (T.pack (printf "the text occurs %d times; it must occur exactly once" k) <> (if k == 0 then nearest t old else T.empty))
+  where k = if T.null old then 0 else T.count old t
 
 -- | The words of a text, each with the character offsets where it starts and ends.
 wordSpans :: T.Text -> [(T.Text, Int, Int)]
@@ -547,6 +646,7 @@ turn ch e o system texts pending = do
                     -- a turn that changed the files and ends with the verdict red is told so, once: it
                     -- either fixes it or says plainly that it stops red, never ends there in silence
                     s <- readIORef spent
+                    when (sTouched s && not (sNudged s)) (awaitPending ch)
                     v <- if sTouched s && not (sNudged s) then verdictAt ch else pure Nothing
                     case v of
                       Just r | isRed (vLine r) -> do
@@ -556,7 +656,7 @@ turn ch e o system texts pending = do
                                                                   ++ "\nFix it, or end by saying plainly that it is red and why you are stopping.]"))]) (step + 1) 0 0
                       _ -> pure ()
                 else do
-                  modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "sh"]) . tcName) (pToolCalls p) })
+                  modifyIORef' spent (\s -> s { sTools = sTools s + length (pToolCalls p), sTouched = sTouched s || any ((`elem` ["write", "edit", "edits", "sh"]) . tcName) (pToolCalls p) })
                   replies <- forM (pToolCalls p) $ \tc -> do
                     let name = tcName tc
                         shownArgs = take 300 (encode (tcArgs tc))
@@ -567,8 +667,9 @@ turn ch e o system texts pending = do
                     (ok, out0) <- case lookup name byName of
                       Just t -> runTool ch t (tcArgs tc)
                       Nothing -> pure (False, T.pack ("unknown tool " ++ show name))
+                    late <- pendingNote ch
                     t3 <- now
-                    let out = cap out0
+                    let out = cap (out0 <> late)
                         tagged = (if ok then T.empty else T.pack "ERROR: ") <> out
                     when (oUsage o) (hPutStrLn stderr (printf "[tool: %s %.1fs]" name (t3 - t2)))
                     unless isSession (logH ch "echo" tagged)
@@ -599,8 +700,9 @@ chatMain conf args = case parseOpts args of
         cfg <- resolve conf name
         members <- readMembers conf name
         longest <- newIORef 0
+        pendingCheck <- newIORef Nothing
         let ms = if null members then [name] else members
-            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg) longest
+            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg) longest pendingCheck
         if oPrintView o then view ch 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           ep <- endpointFromEnv
           case ep of

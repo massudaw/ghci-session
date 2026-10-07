@@ -88,6 +88,7 @@ data S = S
   , vLastLoad :: IORef (Maybe Reply)   -- ^ what the engine said of the last reload (the answer again, while no source has changed)
   , vLinksSeen :: IORef Int, vLinksPruned :: IORef Int   -- ^ libraries the engine has linked: now, and at the last unlink
   , vCheckSecs :: IORef (M.Map String [Double])   -- ^ per member, the seconds its last passing checks took: what a hang is measured against
+  , vChecking :: IORef (Maybe (Double, Double, String))   -- ^ a check running now: when its reload began, when the check did, the compile verdict
   }
 
 -- | How the running engine was started: what the build tool was asked, and what it answered.
@@ -519,7 +520,11 @@ runCheck s mt0 member = do
     t <- maybe now pure mt0
     prefix <- rd (vOkPrefix s)
     push s (prefix ++ " -- running check") ""
-    results <- phase s "check" (mapM (checkOne s) entries)
+    -- (every reply says so while it runs: a client that saved knows the code compiled, and need not wait
+    --  for the check to know that)
+    tc <- now
+    vChecking s =: Just (t, tc, prefix)
+    results <- phase s "check" (mapM (checkOne s) entries) `finally` (vChecking s =: Nothing)
     vEvaluated s =: True
     now >>= (vCheckedAt s =:)
     writeAtomicT (sDir s </> "run.log") (T.concat [ T.pack ("===== " ++ crMember r ++ " =====\n") <> crBody r <> T.pack "\n" | r <- results ])
@@ -1377,6 +1382,17 @@ typecheckSources :: S -> IO T.Text
 typecheckSources s = (\(_, line, secs, detail, _) -> T.pack (unlines ((line ++ printf " (%.1fs)" secs) : detail))) <$> typecheckNow s
 
 -- | ... as its parts: did they, the line, the errors, the compiler's diagnostics.
+-- | The last typecheck's answer, formatted as 'typecheckSources' does, when no source has changed since it
+-- was asked: it needs neither the work lock nor the repl. Nothing otherwise.
+typecheckCached :: S -> IO (Maybe T.Text)
+typecheckCached s = do
+  sig <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
+  lastTc <- rd (vTcLast s)
+  pure $ case lastTc of
+    Just (sig0, (_, line, secs, detail, _)) | sig0 == sig ->
+      Just (T.pack (unlines ((line ++ printf " (%.1fs, no source changed since)" secs) : detail)))
+    _ -> Nothing
+
 typecheckNow :: S -> IO (Bool, String, Double, [String], [Json])
 typecheckNow s = do
   t0 <- now
@@ -1861,8 +1877,11 @@ handle s h = do
   let reply ok out = do
         stale <- staleFiles s
         j <- rd (vJson s)
+        ck <- rd (vChecking s)
+        -- (while a check runs: when its reload began, when the check did, and what the load compiled to)
+        let checking = [ ("checking", JObj [("began", JNum b), ("since", JNum c), ("compiled", JStr p)]) | Just (b, c, p) <- [ck] ]
         -- bytes straight to the socket: an evaluation's output can be megabytes
-        B.hPut h (encodeBS (JObj [ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ]))
+        B.hPut h (encodeBS (JObj ([ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ] ++ checking)))
         B.hPut h (BC.pack "\n")
         hFlush h
       replyS ok = reply ok . T.pack
@@ -1887,20 +1906,37 @@ handle s h = do
           vKeepServers s =: fromMaybe False (lookupBool "keep_servers" req)
           stopNow s
           replyS True "stopping"
-        _ -> do
-          now >>= (vLastUsed s =:)
-          histAdd s "tool" (describeReq op req)
-          r' <- try (bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req))
-          case r' of
-            Left (e :: SomeException) -> histAdd s "echo" (T.pack ("ERROR: " ++ displayException e)) >> throwIO e
-            Right Nothing -> histAdd s "echo" (T.pack ("unknown op " ++ show op)) >> replyS False ("unknown op " ++ show op)
-            Right (Just out) -> do
-              stale <- staleFiles s
-              histEcho s stale out
-              reply True out
+        -- (the answer there was, when no source changed since: without waiting for the repl, which a
+        --  running check holds -- four typechecks of an agent's waited 226 s each behind one)
+        "typecheck" -> typecheckCached s >>= \c -> case c of
+          Just out -> histAdd s "tool" (describeReq op req) >> histEcho s [] out >> reply True out
+          Nothing -> viaWork op req
+        _ -> viaWork op req
       case r of
         Left (e :: SomeException) -> void (try (replyS False (displayException e)) :: IO (Either SomeException ()))   -- a broken eval must not kill the daemon
         Right () -> pure ()
+  where
+    -- a request that needs the repl: under the work lock, logged with its answer
+    viaWork op req = do
+      now >>= (vLastUsed s =:)
+      histAdd s "tool" (describeReq op req)
+      r' <- try (bracket_ (modifyIORef' (vBusy s) (+ 1)) (modifyIORef' (vBusy s) (subtract 1) >> now >>= (vLastUsed s =:)) (dispatch s op req))
+      case r' of
+        Left (e :: SomeException) -> histAdd s "echo" (T.pack ("ERROR: " ++ displayException e)) >> throwIO e
+        Right Nothing -> histAdd s "echo" (T.pack ("unknown op " ++ show op)) >> replyS' False ("unknown op " ++ show op)
+        Right (Just out) -> do
+          stale <- staleFiles s
+          histEcho s stale out
+          reply' True out
+    reply' ok out = do
+      stale <- staleFiles s
+      j <- rd (vJson s)
+      ck <- rd (vChecking s)
+      let checking = [ ("checking", JObj [("began", JNum b), ("since", JNum c), ("compiled", JStr p)]) | Just (b, c, p) <- [ck] ]
+      B.hPut h (encodeBS (JObj ([ ("ok", JBool ok), ("out", JText out), ("stale", JArr (map JStr (take 6 stale))), ("status", j) ] ++ checking)))
+      B.hPut h (BC.pack "\n")
+      hFlush h
+    replyS' ok = reply' ok . T.pack
 
 dispatch :: S -> String -> Json -> IO (Maybe T.Text)
 dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside the lock too: its answer must not straddle a reload
@@ -1938,6 +1974,30 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     let idle = op == "bench" && T.isInfixOf (T.pack ": 0.00 s wall") out && T.isInfixOf (T.pack " 0 MB allocated") out
         note = if idle then T.pack "\n[bench: no work was done -- the value was already evaluated (a top-level value, a CAF, is computed once per load and kept). Time a function applied to its input, or a value built inside the action; `reload` recomputes CAFs only for modules it recompiles.]" else T.empty
     pure (Just (T.dropWhileEnd (== '\n') out <> note <> maybe T.empty (\e -> T.pack ("\n" ++ e)) (lookupStr "error" j)))
+  -- one expression run as a test (a group of the target's): its failing lines by the target's own fail
+  -- pattern, its passing ones by the pass pattern -- and the session's verdict left as it is
+  "check_expr" -> do
+    let es = [ e | e <- gChecks (sCfg s), maybe True (\m -> m == ckMember e || m == takeWhile (/= ':') (ckMember e)) (lookupStr "member" req) ]
+        expr = fromMaybe "" (lookupStr "expr" req)
+        tmo = lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing
+    t0 <- now
+    r <- try (cmd s tmo expr)
+    t1 <- now
+    vEvaluated s =: True
+    warmAsync s
+    case r of
+      Left (e :: ReplError) -> pure (Just (T.pack (printf "SCOPED-TEST: %s (the session's verdict is not changed)" (show e))))
+      Right out -> do
+        let ls = T.lines out
+        fails <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckFail)
+        passes <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckPass)
+        let summary = case listToMaybe es of
+              Nothing -> "no check configured: read the output"
+              Just e | isNothing (ckFail e) -> printf "%d line(s) match the pass pattern; no fail pattern is configured, so read the output for failures" (length passes)
+              _ -> printf "%s, %d passing" (if null fails then "none failing" else show (length fails) ++ " failing") (length passes)
+        pure (Just (out <> T.pack (printf "\n[scoped test, %.1fs: %s -- the session's verdict is not changed]" (t1 - t0) (summary :: String))
+                         -- (the failing lines again only when the output is too long to read them in)
+                         <> (if length ls > 40 then T.concat [ T.pack "\n  " <> f | f <- take 30 fails ] else T.empty)))
   "check" -> do
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
@@ -2178,7 +2238,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
          <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
          <*> newIORef 0 <*> newIORef Nothing <*> newIORef Nothing <*> newIORef 0 <*> newIORef 0
-         <*> newIORef M.empty
+         <*> newIORef M.empty <*> newIORef Nothing
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now

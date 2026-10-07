@@ -232,7 +232,16 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   written but exactly once with its spacing squeezed is applied there, and says so (else it points at the
   nearest line); a turn that changed the files and is about to end with the verdict red is told so once, so it
   fixes it or says plainly that it stops red; `remember` keeps a finding for later turns as the agent's own
-  words. The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
+  words. Faster, because tools took 3.5 times the model's time in an agent's rounds (249 minutes to 70), most of
+  it saves waiting out a check of 20-100 s once per edit: a save answers once the code COMPILES (a compile error
+  at once, with its diagnostics; a check still running after six more seconds is not waited for), and the
+  check's verdict rides on whichever tool result comes after it is in -- the daemon's every reply carries a
+  `checking` record while a check runs, with when its reload began, and a save's verdict is one whose reload
+  began after the file was written, not the end of a check already running; `edits` applies several
+  replacements, across files, checked together before any is written, with one reload; `test` takes an
+  expression -- one group of the tests, run alone, scored by the check's own fail and pass patterns, the
+  session's verdict left as it is; and `typecheck` answers at once, without waiting behind a running check,
+  when no source changed since it was last asked (four of an agent's waited 226 s each). The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
 - **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
   `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,
