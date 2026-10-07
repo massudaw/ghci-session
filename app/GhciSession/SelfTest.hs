@@ -8,7 +8,7 @@ module GhciSession.SelfTest (run) where
 import Control.Exception (IOException, try)
 import Control.Monad (forM_, unless, void, when)
 import Data.IORef
-import Data.List (isInfixOf, isPrefixOf, sort, sortOn)
+import Data.List (isInfixOf, isPrefixOf, isSuffixOf, sort, sortOn)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -25,6 +25,8 @@ import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified GhciSession.Top as Top
+import Tui (Cell (..), Put (..), Key (..), cellAt, decodeKey, diff, frame, sgr, textLine)
+import Tui.Types
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 import Data.Maybe (fromMaybe)
@@ -406,14 +408,21 @@ run = do
   eq "hang: a fast check is given 15 s" (hangLimit [3, 3.2, 2.9]) (Just 15)
   eq "hang: five times the median" (hangLimit [10, 30, 20]) (Just 100)
 
-  -- the monitor's frame (GhciSession.Top): lines of exactly the width, styles closed, keys decoded
-  eq "top: a line is cut to the width and its style closed" (Top.fit 5 [("1", "hello world")]) "\ESC[1mhello\ESC[0m"
-  eq "top: a short line is padded" (Top.fit 8 [("", "ab"), ("32", "c")]) "ab\ESC[32mc\ESC[0m     "
-  eq "top: visible columns ignore the styles" (Top.visible [("1;31", "abc"), ("", "de")]) 5
-  eq "top: a long line wraps with its continuation indented" (Top.wrapSpans 6 2 [("", "abcdefghij")]) [[("", "abcdef")], [("", "  "), ("", "ghij")]]
-  eq "top: a span is not split when it fits" (Top.wrapSpans 10 2 [("1", "abc"), ("", "def")]) [[("1", "abc"), ("", "def")]]
-  eq "top: arrow keys" (map Top.decodeKey ["\ESC[A", "\ESC[B", "\ESCOA", "\ESC[5~", "\ESC[6~"]) [Top.KUp, Top.KDown, Top.KUp, Top.KPgUp, Top.KPgDn]
-  eq "top: plain keys" (map Top.decodeKey ["q", "\r", "\ESC"]) [Top.KChar 'q', Top.KEnter, Top.KEsc]
+  -- the TUI library's frame (ghostty-tui): cells from puts, the difference between two frames, keys
+  let fr = frame (8, 2) (textLine 0 0 8 [(plain, "ab"), (bold plain, "c")] ++ [PutText 0 1 plain "x\26085y"])   -- \26085 is a wide character
+  eq "tui: a line is padded to the width" (map (\x -> T.unpack (cText (cellAt fr x 0))) [0 .. 7]) ["a", "b", "c", " ", " ", " ", " ", " "]
+  eq "tui: a span keeps its style" (sBold (cStyle (cellAt fr 2 0)), sBold (cStyle (cellAt fr 1 0))) (True, False)
+  eq "tui: a wide character takes two columns" (map (\x -> (T.unpack (cText (cellAt fr x 1)), cCont (cellAt fr x 1))) [0 .. 3]) [("x", False), ("\26085", False), ("", True), ("y", False)]
+  check "tui: the first frame is written whole" (length (diff Nothing fr) > 20)
+  eq "tui: the same frame again costs nothing" (diff (Just fr) fr) ""
+  let fr2 = frame (8, 2) (textLine 0 0 8 [(plain, "ab"), (bold plain, "C")] ++ [PutText 0 1 plain "x\26085y"])
+  check "tui: one changed cell is one move and the cell" (let d = diff (Just fr) fr2 in T.count (T.pack "\ESC[") (T.pack d) == 2 && "C" `isSuffixOf` d)
+  eq "tui: the SGR of a style" (sgr (bold (withFg (Ansi 2) plain))) "\ESC[0;1;32;49m"
+  eq "tui: a true color" (sgr (withBg (Rgb 1 2 3) plain)) "\ESC[0;39;48;2;1;2;3m"
+  eq "tui: arrow and page keys" (map decodeKey ["\ESC[A", "\ESC[B", "\ESCOA", "\ESC[5~", "\ESC[6~", "\ESC[3~"]) [KUp, KDown, KUp, KPgUp, KPgDn, KDelete]
+  eq "tui: plain keys" (map decodeKey ["q", "\r", "\ESC", "\DEL"]) [KChar 'q', KEnter, KEsc, KBackspace]
+  eq "top: a long line wraps with its continuation indented" (Top.wrapSpans 6 2 [(plain, "abcdefghij")]) [[(plain, "abcdef")], [(plain, "  "), (plain, "ghij")]]
+  eq "top: a span is not split when it fits" (Top.wrapSpans 10 2 [(bold plain, "abc"), (plain, "def")]) [[(bold plain, "abc"), (plain, "def")]]
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")

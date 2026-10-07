@@ -1,0 +1,27 @@
+cabal-version:      2.4
+name:               ghostty-vt
+version:            0.1.0.0
+synopsis:           Ghostty's terminal emulation (libghostty-vt) from Haskell: a terminal to write bytes to and read a screen from, and a pseudo-terminal to run a program on
+description:
+  A binding to libghostty-vt, the terminal emulation of the Ghostty terminal as a C library, found at run
+  time with dlopen ("Ghostty.Vt.load") so a program builds and runs without it and can say what is missing.
+  "Ghostty.Vt": a 'Terminal' of a size, 'write' its input, 'screen' its cells with their text, colors and
+  attributes, the cursor; what the terminal answers to the program ('onWrite'). "Ghostty.Vt.Pty": a program
+  on a pseudo-terminal. Depends on the compiler's boot packages only. The C headers it is built against are
+  in include/ (MIT, from ghostty at the commit in COMMIT).
+license:            MIT
+license-files:      LICENSE.ghostty
+author:             Wesley Massuda
+maintainer:         wesley.massuda@gmail.com
+category:           Terminal
+build-type:         Simple
+extra-source-files: COMMIT, include/ghostty/vt.h, include/ghostty/vt/*.h, include/ghostty/vt/key/*.h, include/ghostty/vt/mouse/*.h
+
+library
+  hs-source-dirs:   src
+  exposed-modules:  Ghostty.Vt, Ghostty.Vt.Raw, Ghostty.Vt.Pty
+  c-sources:        cbits/gvt.c, cbits/gvt_pty.c
+  include-dirs:     include
+  build-depends:    base >=4.18 && <5, bytestring, text, unix
+  default-language: Haskell2010
+  ghc-options:      -Wall -Wno-name-shadowing

@@ -1,0 +1,23 @@
+cabal-version:      2.4
+name:               ghostty-tui
+version:            0.1.0.0
+synopsis:           A small terminal UI library: a frame of styled cells drawn by difference, keys and events, an app loop, and terminal panes on ghostty-vt
+description:
+  "Tui.Buffer": a frame of cells built from what to put where, and the ANSI that turns the last frame into
+  it (only the changed cells). "Tui.Terminal": the real terminal -- raw mode, its size, keys decoded, the
+  events a loop waits on. "Tui.App": the loop. "Tui.Pane": a program on a pseudo-terminal whose screen,
+  kept by libghostty-vt ("Ghostty.Vt"), is a part of the frame. Depends on the compiler's boot packages and
+  ghostty-vt only.
+license:            MIT
+author:             Wesley Massuda
+maintainer:         wesley.massuda@gmail.com
+category:           Terminal
+build-type:         Simple
+
+library
+  hs-source-dirs:   src
+  exposed-modules:  Tui, Tui.Types, Tui.Buffer, Tui.Terminal, Tui.Pane, Tui.App
+  c-sources:        cbits/tui.c
+  build-depends:    base >=4.18 && <5, array, bytestring, containers, stm, text, unix, ghostty-vt
+  default-language: Haskell2010
+  ghc-options:      -Wall -Wno-name-shadowing
