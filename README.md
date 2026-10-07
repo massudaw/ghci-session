@@ -255,6 +255,14 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   running" loaded the project in a GHCi of its own through `sh`, cold, 14 times for 374 s; and a `sh` that does
   start a GHCi of its own is told the session has the project loaded. The pure parts of all this are in the self-tests (`ghci-session selftest`). It began as
   `tools/chat.py` (removed), Python because a model client is not a boot package: `dlopen` made it one binary.
+- **The harness upgrades in the middle of a turn.** `ghci-session chat --restart [-s SESSION]` (or `kill -HUP`
+  the chat; its pid is `<state>/<session>/chat.pid`) has the running chat run itself again as the executable on
+  disk now -- build first, and `bin/ghci-session` builds on its own. In a turn it waits for the step's tools to
+  finish, writes the turn out (the conversation word for word, the step, the reads, what it has spent, the lines
+  typed and not yet taken) and `exec`s itself with `--resume FILE`: the same process, output and standard input,
+  and the turn goes on at the same step with the provider's cache of the prompt intact (the first call after
+  one restart: 3,456 of 3,621 tokens cached). Between turns it restarts at once. A restart that cannot `exec`
+  goes on as it was.
 - **What the model calls cost** is kept: every call of the chat and of the compactor appends a line to
   `<state>/<session>/usage.jsonl` (when, who asked, the model, tokens in and of them cached, tokens out,
   seconds), each turn ends with its summary on standard error (`[turn: 12 model calls, 1.2M tokens in (99%

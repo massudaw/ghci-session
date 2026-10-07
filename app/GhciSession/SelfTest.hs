@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, capWith, editPaths, fuzzyReplace, isRed, ownGhci, shCap, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), capWith, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -307,6 +307,14 @@ run = do
   check "chat: ... or says it matches none" (T.isInfixOf (T.pack "matches no line") (nearest file (T.pack "nothing like it")))
   eq "chat: a replacement as written" (fst <$> replaceOnce (T.pack "a = 1\nb = 2\n") (T.pack "b = 2") (T.pack "b = 3")) (Right (T.pack "a = 1\nb = 3\n"))
   check "chat: ... or with its spacing squeezed, and says so" (either (const False) (T.isInfixOf (T.pack "x = 9") . fst) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")) && either (const False) (("spacing" `isInfixOf`) . snd) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")))
+  let ts = TurnState [ JObj [("role", JStr "system"), ("content", JText (T.pack "be brief \"quoted\" \955 \n tab\t"))]
+                     , JObj [("role", JStr "assistant"), ("content", JText T.empty), ("tool_calls", JArr [JObj [("id", JStr "call_1"), ("type", JStr "function"), ("function", JObj [("name", JStr "read"), ("arguments", JStr "{\"path\": \"src/A.hs\", \"lines\": 40}")])]])]
+                     , JObj [("role", JStr "tool"), ("tool_call_id", JStr "call_1"), ("content", JText (T.pack "    1  module A where"))] ]
+                     7 1 [ReadRec 1 2 "src/A.hs" 1 40 (T.pack "    1  module A where") Nothing False, ReadRec 2 5 "src/A.hs" 1 40 T.empty (Just 3) True]
+                     (Spent 7 123456 120000 2345 9 True False) 1759800000.25
+      back = either (const Nothing) turnFrom (parseJson (encode (turnJson ts)))
+  eq "chat: a turn written out for a restart reads back as it was" back (Just ts)
+  check "chat: ... its conversation byte for byte (the provider's cache of it holds)" (fmap (map encode . tsMsgs) back == Just (map encode (tsMsgs ts)))
   eq "chat: a GHCi of the agent's own, through sh"
      (map ownGhci [ "timeout 300 ghci -isrc 2>&1 <<'EOF' | tail -5", "cd x && cabal repl lib:nes", "echo main | /opt/ghc/bin/ghci-9.14.1 -v0", "runghc Setup.hs", "ghc -e 'print 1'"
                   , "ghci-session status nes", "grep -rn ghci src", "cabal build", "ghc -fno-code -isrc src/Nes.hs" ])
