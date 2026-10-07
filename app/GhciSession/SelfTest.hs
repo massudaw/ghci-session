@@ -24,6 +24,7 @@ import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
+import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
 import qualified Ghostty.Vt as Vt
@@ -432,6 +433,21 @@ run = do
   eq "tui: an arrow with ctrl" (kev "\ESC[1;5A") (Just (Vt.KeyEvent Vt.Press "arrow_up" [Vt.Ctrl] T.empty Nothing))
   eq "top: a long line wraps with its continuation indented" (Top.wrapSpans 6 2 [(plain, "abcdefghij")]) [[(plain, "abcdef")], [(plain, "  "), (plain, "ghij")]]
   eq "top: a span is not split when it fits" (Top.wrapSpans 10 2 [(bold plain, "abc"), (plain, "def")]) [[(bold plain, "abc"), (plain, "def")]]
+  -- the chat's screen: the line typed, the transcript
+  let press x = decodeKeyPress (x :: String)
+      typed = foldl (\ed x -> maybe ed id (ChatTui.editKey (press x) ed)) ChatTui.editor
+  eq "chat tui: typing" (ChatTui.editText (typed ["h", "e", "y"])) "hey"
+  eq "chat tui: left, insert, backspace" (ChatTui.editText (typed ["a", "c", "\ESC[D", "b", "\DEL", "x"])) "axc"
+  eq "chat tui: ctrl-a, delete, ctrl-e" (ChatTui.editText (typed ["a", "b", "\SOH", "\ESC[3~", "\ENQ", "z"])) "bz"
+  eq "chat tui: ctrl-w takes the word before, ctrl-u the line before, ctrl-k the line after"
+     (map (ChatTui.editText . typed) [["o", "n", "e", " ", "t", "w", "o", "\ETB"], ["a", "b", "\NAK"], ["a", "b", "\ESC[D", "\VT"]]) ["one ", "", "a"]
+  eq "chat tui: a key that does not edit leaves the line alone" (ChatTui.editKey (press "\ESC[5~") (ChatTui.Editor "ba" "c")) Nothing
+  let entries = [ChatTui.Entry "talk" (T.pack "two\nlines"), ChatTui.Entry "user" (T.pack "hi")]     -- (newest first)
+  eq "chat tui: an entry is its label and its lines, what was said followed by a blank"
+     (map (concatMap snd) (ChatTui.entryLines 40 (ChatTui.Entry "tool" (T.pack "eval 1+1")))) ["tool:  eval 1+1"]
+  eq "chat tui: the lines of a talk" (map (concatMap snd) (ChatTui.entryLines 40 (head entries))) ["talk:  two", "       lines", ""]
+  eq "chat tui: the end of the transcript, following" (map (concatMap snd) (snd (ChatTui.scrollLines 40 2 0 entries))) ["       lines", ""]
+  eq "chat tui: scrolled back as far as there is" (let (b, ls) = ChatTui.scrollLines 40 2 100 entries in (b, map (concatMap snd) ls)) (3, ["user:  hi", ""])
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")
