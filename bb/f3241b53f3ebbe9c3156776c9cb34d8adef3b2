@@ -1,0 +1,16 @@
+app/GhciSession/Chat.hs
+  h_fd5809635b36a3 34,44,89-90,95-96,99,114,133,1248-1410,1472-1504
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 22,387-390
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bbf3241b53f3ebbe9c3156776c9cb34d8adef3b2",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
