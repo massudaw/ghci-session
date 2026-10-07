@@ -22,6 +22,7 @@ import System.Posix.IO (fdToHandle)
 import GhciSession.Config
 import GhciSession.Json
 import GhciSession.Sys
+import qualified GhciSession.Vfs as Vfs
 
 -- | Serve until standard input ends.
 mcpMain :: Conf -> IO ()
@@ -102,6 +103,7 @@ tools =
   , Tool "date" "The date and time of message id." [("id", ("number", "the message")), sessionArg] ["id"]
   , Tool "history" "The last messages of the log, word for word: every request and verdict." [("n", ("number", "how many (default 40)")), ("since", ("number", "from this message id")), sessionArg] []
   , Tool "remember" "Keep a finding in the session's memory for later turns, as your own words: what you learned, decided or left undone." [("text", ("string", "the finding")), sessionArg] ["text"]
+  , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path." [("path", ("string", "optional path or pattern filter (e.g. 'src', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)")), sessionArg] []
   ]
 
 toolJson :: Tool -> Json
@@ -149,6 +151,11 @@ callReach conf name args = do
         "date" -> go "date" (num "id") >>= say
         "history" -> go "history" (num "n" ++ num "since" ++ [("full", JBool True)]) >>= say
         "remember" -> go "log" [("kind", JStr "talk"), ("text", JStr (fromMaybe "" (s "text")))] >>= say
+        "vfs" -> do
+          let mPath = s "path"
+              budget = maybe 250 round (n "budget") :: Int
+          files <- Vfs.inspectLoaded conf session budget mPath
+          pure (True, Vfs.formatVfsTable files budget, Reached)
         _ -> pure (False, T.pack ("unknown tool " ++ show name), Reached)
   where
     staleNote r = case strs (r .: "stale") of

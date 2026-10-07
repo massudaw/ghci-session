@@ -6,7 +6,7 @@
 module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
-  , targetJson
+  , targetJson, stateOf
   ) where
 
 import Control.Exception (IOException, try)
@@ -33,6 +33,10 @@ data Conf = Conf
   , cSessions :: [(String, [String])]
   , cPrices :: [(String, Json)]   -- ^ @"prices"@: per model, @{"input": .., "input_cached": .., "output": ..}@ per million tokens (for `usage`)
   }
+
+-- | The directory where a session's state is kept: @.ghci-session/<session>@
+stateOf :: Conf -> String -> FilePath
+stateOf conf name = cStateDir conf </> name
 
 data Check = Check
   { ckMember :: String, ckExpr :: String, ckPass :: Maybe String, ckFail :: Maybe String

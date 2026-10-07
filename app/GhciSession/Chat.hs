@@ -59,6 +59,7 @@ import System.Process
 import System.Timeout (timeout)
 import Text.Printf (printf)
 import qualified GhciSession.Search as Search
+import qualified GhciSession.Vfs as Vfs
 
 import GhciSession.Config
 import GhciSession.Json
@@ -322,6 +323,7 @@ chatTools =
      , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
      , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
+     , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path. Extremely fast (<1ms in-memory). Always use this instead of running wc -l or du via sh." [("path", ("string", "optional path or pattern filter (e.g. 'src', 'Gba/Cpu', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output and status. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
   where timeoutDesc = "seconds before it is interrupted (default 30): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. Multi-line expressions are automatically wrapped in a GHCi block by the session (do NOT write :{ or :}). ONE expression, command or declaration group per call: make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
@@ -352,7 +354,7 @@ aliases :: [(String, [String])]
 aliases = [ ("cmd", ["command", "shell", "script"]), ("path", ["file", "filename", "file_path", "filepath"]), ("content", ["text", "contents", "data"])
           , ("old", ["old_string", "old_text", "from", "search"]), ("new", ["new_string", "new_text", "to", "replace"]), ("expr", ["expression", "code", "command"])
           , ("query", ["q", "name", "words", "pattern", "search", "term"]), ("lines", ["count", "limit"]), ("start", ["from_line", "line", "offset"])
-          , ("edits", ["changes", "replacements", "edit_list"]) ]
+          , ("edits", ["changes", "replacements", "edit_list"]), ("budget", ["limit", "threshold", "max_lines", "max"]) ]
 
 -- | The call's arguments by their names (an alias of an argument THIS tool takes is renamed), and what is missing.
 arguments :: Tool -> Json -> (Json, [String])
@@ -491,7 +493,9 @@ fileTool ch name a = case name of
     written <- writtenAt ch rel
     createDirectoryIfMissing True (takeDirectory p)
     B.writeFile p (TE.encodeUtf8 content)
-    saved ch (printf "wrote %s (%d characters)" rel (T.length content)) written
+    let nLines = if T.null content then 0 else T.count (T.pack "\n") content + (if T.last content == '\n' then 0 else 1)
+        budget = Vfs.formatLineBudget nLines 250
+    saved ch (printf "wrote %s (%d characters, %s)" rel (T.length content) budget) written
   "edit" -> withPath $ \p -> do
     t <- decode <$> B.readFile p
     let old = fromMaybe T.empty (lookupText "old" a)
@@ -500,7 +504,9 @@ fileTool ch name a = case name of
       Right (t', how) -> do
         written <- writtenAt ch rel
         B.writeFile p (TE.encodeUtf8 t')
-        saved ch ("edited " ++ rel ++ how) written
+        let nLines = if T.null t' then 0 else T.count (T.pack "\n") t' + (if T.last t' == '\n' then 0 else 1)
+            budget = Vfs.formatLineBudget nLines 250
+        saved ch (printf "edited %s%s (%s)" rel how budget) written
       Left why -> pure (False, T.pack (rel ++ ": ") <> why)
   -- several replacements, in one or more files: all checked against the files (as the ones before them
   -- leave them) before any is written, then written together -- one reload, one verdict
@@ -525,7 +531,25 @@ fileTool ch name a = case name of
           let rels = [ makeRelative (cDir ch) f | (f, _) <- files ]
           written <- fmap (listToMaybe . catMaybes) (mapM (writtenAt ch) rels)
           forM_ files (\(f, t) -> B.writeFile f (TE.encodeUtf8 t))
-          saved ch (printf "edited %s (%d replacement(s))" (intercalate ", " (reverse rels)) (length items)) written
+          let summaries = [ let n = if T.null t then 0 else T.count (T.pack "\n") t + (if T.last t == '\n' then 0 else 1)
+                            in printf "%s (%s)" (makeRelative (cDir ch) f) (Vfs.formatLineBudget n 250)
+                          | (f, t) <- files ]
+          saved ch (printf "edited %s (%d replacement(s))\n[line budgets: %s]" (intercalate ", " (reverse rels)) (length items) (intercalate "; " summaries)) written
+  "vfs" -> do
+    let mPath = lookupStr "path" a
+        budget = maybe 250 round (lookupNum "budget" a) :: Int
+    files <- Vfs.inspectLoaded (cConf ch) (cName ch) budget mPath
+    pure (True, Vfs.formatVfsTable files budget)
+  "wc" -> do
+    let mPath = lookupStr "path" a
+        budget = maybe 250 round (lookupNum "budget" a) :: Int
+    files <- Vfs.inspectLoaded (cConf ch) (cName ch) budget mPath
+    pure (True, Vfs.formatVfsTable files budget)
+  "files" -> do
+    let mPath = lookupStr "path" a
+        budget = maybe 250 round (lookupNum "budget" a) :: Int
+    files <- Vfs.inspectLoaded (cConf ch) (cName ch) budget mPath
+    pure (True, Vfs.formatVfsTable files budget)
   "grep" -> do
     let q = fromMaybe "" (lookupStr "query" a)
         maxN = maybe 30 round (lookupNum "lines" a) :: Int

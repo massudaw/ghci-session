@@ -36,6 +36,7 @@ import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
 import qualified Data.Text.IO as TIO
 import qualified GhciSession.Search as Search
+import qualified GhciSession.Vfs as Vfs
 
 -- arguments --------------------------------------------------------------------
 
@@ -67,9 +68,6 @@ die' :: String -> IO a
 die' msg = hPutStrLn stderr msg >> exitWith (ExitFailure 2)
 
 -- plumbing -----------------------------------------------------------------------
-
-stateOf :: Conf -> String -> FilePath
-stateOf conf name = cStateDir conf </> name
 
 -- | The session a command is for: the one named, else the only one running, else the config's default.
 pick :: Conf -> Maybe String -> IO String
@@ -480,6 +478,19 @@ cmdSearch conf a = do
         else TIO.putStrLn (if isFiles then Search.formatFiles j else Search.formatGrep j)
       pure (if hits > 0 then 0 else 1)
 
+cmdVfs :: Conf -> Args -> IO Int
+cmdVfs conf a = do
+  sname <- pick conf (opt a ["-s", "-t", "--session"])
+  let mPath = pos a 0
+      budget = maybe 250 read (opt a ["--budget", "-b"]) :: Int
+      isJson = flag a ["--json"]
+  files <- Vfs.inspectLoaded conf sname budget mPath
+  if isJson
+    then putStrLn (encodePretty (Vfs.vfsJson files))
+    else TIO.putStrLn (Vfs.formatVfsTable files budget)
+  let overCount = length (filter Vfs.vfOver files)
+  pure (if overCount == 0 then 0 else 1)
+
 usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
@@ -487,6 +498,7 @@ usage = unlines
   , "  start [--no-test] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
   , "  reload [--no-test] [--no-refork] [--async-refork]  [SESSION]"
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
+  , "  vfs [PATH] [-s SESSION] [--budget N] [--json]   virtual file system and line budget inspector (<250 lines)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
   , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   high-speed SIMD search across code or files (FFF engine), with session metadata"
@@ -622,6 +634,8 @@ cliMain = do
         "search" -> cmdSearch conf a
         "find" -> cmdSearch conf a
         "grep" -> cmdSearch conf a
+        "vfs" -> cmdVfs conf a
+        "budget" -> cmdVfs conf a
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN
         _ -> hPutStr stderr usage >> pure 2

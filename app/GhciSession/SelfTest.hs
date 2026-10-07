@@ -28,6 +28,7 @@ import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 import Data.Maybe (fromMaybe)
 import qualified GhciSession.Search as Search
+import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
@@ -373,6 +374,9 @@ run = do
   eq "chat: ... at most ten minutes" (saveWait 1000) 600
   check "chat: red verdicts are red" (all isRed ["COMPILE-ERROR: 1 error(s)", "CHECK-FAIL: 2 failing in x", "CHECK-HANG: the check did not end in x", "DEAD: the repl died"])
   check "chat: a pass is not, nor a stale pass" (not (any isRed ["OK -- CHECK-PASS (3.6s)", "STALE(1) OK (2 warning(s)) -- CHECK-PASS (0.1s)"]))
+  check "chat: vfs tool is present" ("vfs" `elem` map tName chatTools)
+  eq "vfs: formatLineBudget under" (Vfs.formatLineBudget 120 250) "120 lines [budget: 120/250 lines]"
+  eq "vfs: formatLineBudget over" (Vfs.formatLineBudget 260 250) "260 lines [OVER BUDGET: 260/250 lines!]"
 
   -- the census's names: a symbol read back as unit:Module.name
   eq "census: a closure's symbol is read back" (readSymbol "hellozm0zi1zi0zi0zminplace_Hello_bigTable_closure") "hello-0.1.0.0-inplace:Hello.bigTable"
