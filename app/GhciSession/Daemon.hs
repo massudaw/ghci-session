@@ -271,7 +271,8 @@ replCommandLine s exe v = case gRepl cfg of
       -- (a composed session too, with one member: started as units, it can be given another while it runs)
       ++ [ "--enable-multi-repl" | length (gUnits cfg) > 1 || not (null (gServers cfg)) || gComposed cfg ]
       ++ [ "--with-repl=" ++ shq exe, "--repl-options=-fdiagnostics-color=never" ]
-      ++ [ "--repl-options=-j" ++ show (gGhcJobs cfg) | gGhcJobs cfg > 0 ]
+         -- -1 (the default): bare -j, GHC takes the number of processors; 0: off
+      ++ [ "--repl-options=-j" ++ (if gGhcJobs cfg > 0 then show (gGhcJobs cfg) else "") | gGhcJobs cfg /= 0 ]
          -- object code: CAFs of interpreted code are not prunable by address, and a server's code is its
          -- objects. Its own -odir (relative: under each unit's package dir) so `cabal build` is not disturbed.
       ++ (if objects then [ "--repl-options=-fobject-code", "--repl-options=-odir=" ++ sObjRel s, "--repl-options=-hidir=" ++ sObjRel s ] else [])

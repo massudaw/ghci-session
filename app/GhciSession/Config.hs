@@ -78,7 +78,7 @@ defaults =
   , ("modules", JArr []), ("prebuild", JNull), ("preload", JArr []), ("warm", JArr [])
   , ("check", JNull), ("checks", JArr []), ("server", JNull), ("env", JObj [])
   , ("load_timeout", JNum 900), ("eval_timeout", JNum 30), ("repl_budget_mb", JNum 6144)
-  , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum 0), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
+  , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum (-1)), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
   , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
   , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False)
   , ("auto_reload", JBool True), ("watch_check", JBool False), ("watch_refork", JBool True)

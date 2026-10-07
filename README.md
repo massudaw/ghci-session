@@ -602,7 +602,7 @@ Keys at the top level (other than `targets`, `sessions`, `default`, `state_dir`)
 | `prebuild` | none | a shell command run before every boot of the repl (build a C bundle, generate code); a failure is `PREBUILD-ERROR` |
 | `preload` | `[]` | GHCi expressions run *before* the imports (e.g. `dlopen` a C bundle: importing an `-fobject-code` module links its objects there and then) |
 | `warm` | `[]` | expressions evaluated in the background after a reload that ran no test (`--no-test`, `watch_test` off), e.g. `"My.thing `seq` ()"`: GHCi links the reloaded code, and the unlink and its GC run, while you read the verdict rather than on your next command |
-| `ghc_jobs` | `0` | `-jN` for GHCi's compiles. It helps only a reload that recompiles many modules; on a 98-module session an interface change recompiled two (GHC's recompilation avoidance) and `-j8` changed nothing |
+| `ghc_jobs` | `-1` | `-jN` for GHCi's compiles: `-1` is bare `-j` (one per processor), `0` is off. It helps a reload that recompiles many modules (53 of 53 on a 4-core machine: 11.3 s -> 6.9 s) and nothing else: one file is 0.3 s either way, and on a 98-module session an interface change recompiled two (GHC's recompilation avoidance) and `-j8` changed nothing |
 | `test` / `tests` | none | (`check` / `checks` is the name they had, still read) `expr` to run after a good load; lines matching `fail` (default `^\[FAIL\]`) fail it, `pass` must appear; `log`: a file the check writes its real output to; `name` labels a second check |
 | `server` | none | see *Servers* |
 | `env` | `{}` | environment of the repl, and of the target's server |
