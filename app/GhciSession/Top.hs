@@ -142,17 +142,17 @@ event env e st = case e of
   EvTick -> Just <$> (refresh env st >>= panes env)
   EvResize -> Just <$> (refresh env st >>= panes env)
   EvWake -> Just <$> panes env st
-  EvKey bytes k -> do
-    r <- key env bytes k st
+  EvKey kp -> do
+    r <- key env kp st
     case r of
       Nothing -> pure Nothing
       Just (st', again) -> Just <$> ((if again then refresh env st' else pure st') >>= panes env)
 
 -- | A key's effect, and whether a fresh look follows; 'Nothing' to quit.
-key :: Env -> B.ByteString -> Key -> St -> IO (Maybe (St, Bool))
-key env bytes k st
+key :: Env -> KeyPress -> St -> IO (Maybe (St, Bool))
+key env kp@(KeyPress k _ bytes) st
   | sPrefix st || not (isPane (sTab st)) = case k of
-      _ | sPrefix st && bytes == BC.pack "\SOH" -> withPane (\p -> paneInput p bytes) >> pure (Just (st', False))
+      _ | sPrefix st && ctrlA -> withPane (\p -> paneInput p (BC.pack "\SOH")) >> pure (Just (st', False))
       KChar 'q' -> pure Nothing
       KChar '\ETX' | not (isPane (sTab st)) -> pure Nothing
       KEsc | not (isPane (sTab st)) -> pure Nothing
@@ -165,7 +165,7 @@ key env bytes k st
       KChar ' ' -> scrollBy (page - 1)
       KPgUp -> scrollBy (1 - page)
       KChar 'g' -> pure (Just (st' { sScroll = M.insert (sTab st) 0 (sScroll st), sFollow = M.insert (sTab st) False (sFollow st) }, False))
-      KHome -> key env bytes (KChar 'g') st
+      KHome -> key env kp { kKey = KChar 'g' } st
       KChar 'G' -> pure (Just (follow True, False))
       KEnd -> pure (Just (follow True, False))
       KChar 'f' -> pure (Just (follow True, False))
@@ -174,13 +174,14 @@ key env bytes k st
       KChar 'T' -> act "check" [] >> pure (Just (st' { sNote = "test sent" }, True))
       KEnter | isPane (sTab st) -> restartDead
       _ -> pure (Just (st', False))
-  | bytes == BC.pack "\SOH" = pure (Just (st { sPrefix = True }, False))
+  | ctrlA = pure (Just (st { sPrefix = True }, False))
   | otherwise = do
       dead <- maybe (pure Nothing) paneStatus (M.lookup (sTab st) (sPanes st))
       case (dead, k) of
         (Just _, KEnter) -> restartDead
-        _ -> withPane (\p -> paneInput p bytes) >> pure (Just (st, False))
+        _ -> withPane (\p -> paneKey p kp) >> pure (Just (st, False))
   where
+    ctrlA = bytes == BC.pack "\SOH"
     st' = st { sPrefix = False }
     tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', TChat), ('c', TChat), ('7', TShell), ('s', TShell)]
     page = max 1 (snd (sSize st) - 4)

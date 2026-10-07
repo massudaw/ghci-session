@@ -25,7 +25,8 @@ import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified GhciSession.Top as Top
-import Tui (Cell (..), Put (..), Key (..), cellAt, decodeKey, diff, frame, sgr, textLine)
+import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
+import qualified Ghostty.Vt as Vt
 import Tui.Types
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
@@ -421,6 +422,14 @@ run = do
   eq "tui: a true color" (sgr (withBg (Rgb 1 2 3) plain)) "\ESC[0;39;48;2;1;2;3m"
   eq "tui: arrow and page keys" (map decodeKey ["\ESC[A", "\ESC[B", "\ESCOA", "\ESC[5~", "\ESC[6~", "\ESC[3~"]) [KUp, KDown, KUp, KPgUp, KPgDn, KDelete]
   eq "tui: plain keys" (map decodeKey ["q", "\r", "\ESC", "\DEL"]) [KChar 'q', KEnter, KEsc, KBackspace]
+  eq "tui: modified keys" (map (\x -> let KeyPress k m _ = decodeKeyPress x in (k, m)) ["\ESC[1;5A", "\ESC[1;2C", "\ESC[3;3~", "\ESC[Z", "\ESCx", "\ETX"])
+     [(KUp, [Ctrl]), (KRight, [Shift]), (KDelete, [Alt]), (KTab, [Shift]), (KChar 'x', [Alt]), (KChar 'c', [Ctrl])]
+  let kev x = keyEventFor (decodeKeyPress x)
+  eq "tui: a letter is its key and its text" (kev "a") (Just (Vt.KeyEvent Vt.Press "a" [] (T.pack "a") (Just 'a')))
+  eq "tui: a capital is the key with shift" (kev "A") (Just (Vt.KeyEvent Vt.Press "a" [Vt.Shift] (T.pack "A") (Just 'a')))
+  eq "tui: a shifted symbol names its key" (kev "!") (Just (Vt.KeyEvent Vt.Press "digit_1" [Vt.Shift] (T.pack "!") (Just '1')))
+  eq "tui: a control character is ctrl and the letter" (kev "\ETX") (Just (Vt.KeyEvent Vt.Press "c" [Vt.Ctrl] T.empty (Just 'c')))
+  eq "tui: an arrow with ctrl" (kev "\ESC[1;5A") (Just (Vt.KeyEvent Vt.Press "arrow_up" [Vt.Ctrl] T.empty Nothing))
   eq "top: a long line wraps with its continuation indented" (Top.wrapSpans 6 2 [(plain, "abcdefghij")]) [[(plain, "abcdef")], [(plain, "  "), (plain, "ghij")]]
   eq "top: a span is not split when it fits" (Top.wrapSpans 10 2 [(bold plain, "abc"), (plain, "def")]) [[(bold plain, "abc"), (plain, "def")]]
 

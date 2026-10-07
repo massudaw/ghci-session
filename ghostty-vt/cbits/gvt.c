@@ -238,3 +238,87 @@ int gvt_render_cell_next(void *rp, int *wide, int *flags, int *fgset, uint8_t fg
   if (p_ghostty_render_state_row_cells_get(r->cells, GHOSTTY_RENDER_STATE_ROW_CELLS_DATA_GRAPHEMES_UTF8, &b) != GHOSTTY_SUCCESS) return 0;
   return (int)b.len;
 }
+
+/* ---- keys, encoded for the program ----------------------------------------------------------- */
+/* What the user's terminal sent for a key was encoded for ITS modes; the program in a pane may have asked
+ * the pane's terminal for others (application cursor keys, the kitty keyboard protocol, modifyOtherKeys).
+ * The encoder takes its options from that terminal and writes the key as the program expects it. */
+
+#define KEYS(KEY_) \
+  KEY_(backquote, BACKQUOTE) KEY_(backslash, BACKSLASH) KEY_(bracket_left, BRACKET_LEFT) KEY_(bracket_right, BRACKET_RIGHT) KEY_(comma, COMMA) \
+  KEY_(digit_0, DIGIT_0) KEY_(digit_1, DIGIT_1) KEY_(digit_2, DIGIT_2) KEY_(digit_3, DIGIT_3) KEY_(digit_4, DIGIT_4) KEY_(digit_5, DIGIT_5) \
+  KEY_(digit_6, DIGIT_6) KEY_(digit_7, DIGIT_7) KEY_(digit_8, DIGIT_8) KEY_(digit_9, DIGIT_9) KEY_(equal, EQUAL) \
+  KEY_(a, A) KEY_(b, B) KEY_(c, C) KEY_(d, D) KEY_(e, E) KEY_(f, F) KEY_(g, G) KEY_(h, H) KEY_(i, I) KEY_(j, J) KEY_(k, K) KEY_(l, L) KEY_(m, M) \
+  KEY_(n, N) KEY_(o, O) KEY_(p, P) KEY_(q, Q) KEY_(r, R) KEY_(s, S) KEY_(t, T) KEY_(u, U) KEY_(v, V) KEY_(w, W) KEY_(x, X) KEY_(y, Y) KEY_(z, Z) \
+  KEY_(minus, MINUS) KEY_(period, PERIOD) KEY_(quote, QUOTE) KEY_(semicolon, SEMICOLON) KEY_(slash, SLASH) \
+  KEY_(backspace, BACKSPACE) KEY_(enter, ENTER) KEY_(space, SPACE) KEY_(tab, TAB) KEY_(delete, DELETE) KEY_(end, END) KEY_(home, HOME) KEY_(insert, INSERT) \
+  KEY_(page_down, PAGE_DOWN) KEY_(page_up, PAGE_UP) KEY_(arrow_down, ARROW_DOWN) KEY_(arrow_left, ARROW_LEFT) KEY_(arrow_right, ARROW_RIGHT) KEY_(arrow_up, ARROW_UP) \
+  KEY_(escape, ESCAPE) KEY_(f1, F1) KEY_(f2, F2) KEY_(f3, F3) KEY_(f4, F4) KEY_(f5, F5) KEY_(f6, F6) KEY_(f7, F7) KEY_(f8, F8) KEY_(f9, F9) KEY_(f10, F10) KEY_(f11, F11) KEY_(f12, F12) \
+  KEY_(numpad_enter, NUMPAD_ENTER) KEY_(unidentified, UNIDENTIFIED)
+
+static const struct { const char *name; GhosttyKey key; } key_names[] = {
+#define ENTRY(n, k) { #n, GHOSTTY_KEY_##k },
+  KEYS(ENTRY)
+};
+
+#define KSYMS(X) \
+  X(ghostty_key_encoder_new) X(ghostty_key_encoder_free) X(ghostty_key_encoder_setopt_from_terminal) X(ghostty_key_encoder_encode) \
+  X(ghostty_key_event_new) X(ghostty_key_event_free) X(ghostty_key_event_set_action) X(ghostty_key_event_set_key) \
+  X(ghostty_key_event_set_mods) X(ghostty_key_event_set_utf8) X(ghostty_key_event_set_unshifted_codepoint)
+KSYMS(DECL)
+static int ksyms_loaded;
+
+typedef struct { GhosttyKeyEncoder enc; GhosttyKeyEvent ev; } Enc;
+
+void *gvt_key_encoder_new(void) {
+  if (!lib) return NULL;
+  if (!ksyms_loaded) {
+#define KLOAD(n) p_##n = (__typeof__(n) *)dlsym(lib, #n); if (!p_##n) { snprintf(err, sizeof err, "libghostty-vt lacks %s", #n); return NULL; }
+    KSYMS(KLOAD)
+    ksyms_loaded = 1;
+  }
+  Enc *e = calloc(1, sizeof *e);
+  if (!e) return NULL;
+  if (p_ghostty_key_encoder_new(NULL, &e->enc) != GHOSTTY_SUCCESS) { free(e); return NULL; }
+  if (p_ghostty_key_event_new(NULL, &e->ev) != GHOSTTY_SUCCESS) { p_ghostty_key_encoder_free(e->enc); free(e); return NULL; }
+  return e;
+}
+
+void gvt_key_encoder_free(void *ep) {
+  Enc *e = ep;
+  if (!e) return;
+  p_ghostty_key_event_free(e->ev);
+  p_ghostty_key_encoder_free(e->enc);
+  free(e);
+}
+
+/* Encode one key: `action` 1 press, 0 release, 2 repeat; `name` the key's name (the table above:
+ * "arrow_up", "a", "digit_1", "enter", ...); `mods` bits 1 shift, 2 ctrl, 4 alt, 8 super; `utf8` the text the
+ * key types, if any; `unshifted` the key's unshifted codepoint (0 for none). With `term`, the encoder first
+ * takes that terminal's modes. Returns the bytes written to `out`, -1 when `cap` is too small, -2 for an
+ * unknown key name, -3 when the library refuses. */
+int gvt_key_encode(void *ep, void *tp, int action, const char *name, unsigned mods, const char *utf8, size_t utf8len, uint32_t unshifted, char *out, size_t cap) {
+  Enc *e = ep; Term *tm = tp;
+  if (!e) return -3;
+  GhosttyKey key = GHOSTTY_KEY_UNIDENTIFIED;
+  int found = 0;
+  for (size_t i = 0; i < sizeof key_names / sizeof *key_names; i++)
+    if (!strcmp(key_names[i].name, name)) { key = key_names[i].key; found = 1; break; }
+  if (!found) return -2;
+  if (tm) p_ghostty_key_encoder_setopt_from_terminal(e->enc, tm->t);
+  p_ghostty_key_event_set_action(e->ev, action == 0 ? GHOSTTY_KEY_ACTION_RELEASE : action == 2 ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS);
+  p_ghostty_key_event_set_key(e->ev, key);
+  GhosttyMods m = 0;
+  if (mods & 1) m |= GHOSTTY_MODS_SHIFT;
+  if (mods & 2) m |= GHOSTTY_MODS_CTRL;
+  if (mods & 4) m |= GHOSTTY_MODS_ALT;
+  if (mods & 8) m |= GHOSTTY_MODS_SUPER;
+  p_ghostty_key_event_set_mods(e->ev, m);
+  p_ghostty_key_event_set_utf8(e->ev, utf8 ? utf8 : "", utf8 ? utf8len : 0);
+  p_ghostty_key_event_set_unshifted_codepoint(e->ev, unshifted);
+  size_t written = 0;
+  GhosttyResult r = p_ghostty_key_encoder_encode(e->enc, e->ev, out, cap, &written);
+  if (r == GHOSTTY_OUT_OF_SPACE) return -1;
+  if (r != GHOSTTY_SUCCESS) return -3;
+  return (int)written;
+}
