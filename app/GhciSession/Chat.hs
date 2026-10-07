@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax
+  , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -58,6 +58,7 @@ import System.IO
 import System.Process
 import System.Timeout (timeout)
 import Text.Printf (printf)
+import qualified GhciSession.Search as Search
 
 import GhciSession.Config
 import GhciSession.Json
@@ -98,6 +99,8 @@ chatUsage = unlines
   , "  log after the boundary whole (<recent>), which moves on in batches once over --tail bytes (96000; 0: the view"
   , "  alone, every step waiting for the compactor); turn (the default): the view at the turn's start, then the turn's"
   , "  own conversation;"
+  , "  --effort: reasoning effort (none, low, high, max); none disables thinking;"
+  , "  --plan: bytes of the turn's plan and directives kept in <plan> when the boundary moves (32000);"
   , "  --restart: the session's running chat restarts as the executable now on disk (build it first), in the middle"
   , "  of its turn, which goes on where it was: it writes the turn out before its next model call and runs itself"
   , "  again with --resume FILE (the same as kill -HUP)" ]
@@ -313,12 +316,14 @@ chatTools :: [Tool]
 chatTools =
   [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
-     , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
-     , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
+     , Tool "grep" "Search file contents across the project for an identifier, function, or pattern using the high-speed FFF SIMD engine. Returns line numbers, content, and git status. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
+     , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
+     , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
+     , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
      , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
-     , Tool "sh" "Run a shell command in the project's directory: its output and status." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
-  where timeoutDesc = "seconds before it is interrupted (default 120): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
+     , Tool "sh" "Run a shell command in the project's directory: its output and status. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
+  where timeoutDesc = "seconds before it is interrupted (default 30): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
 -- | Each replacement of an edits call with its file: its own path, else that of the replacement before
@@ -346,7 +351,7 @@ toolJson t = JObj [ ("type", JStr "function"), ("function", JObj
 aliases :: [(String, [String])]
 aliases = [ ("cmd", ["command", "shell", "script"]), ("path", ["file", "filename", "file_path", "filepath"]), ("content", ["text", "contents", "data"])
           , ("old", ["old_string", "old_text", "from", "search"]), ("new", ["new_string", "new_text", "to", "replace"]), ("expr", ["expression", "code", "command"])
-          , ("query", ["q", "name", "words"]), ("lines", ["count", "limit"]), ("start", ["from_line", "line", "offset"])
+          , ("query", ["q", "name", "words", "pattern", "search", "term"]), ("lines", ["count", "limit"]), ("start", ["from_line", "line", "offset"])
           , ("edits", ["changes", "replacements", "edit_list"]) ]
 
 -- | The call's arguments by their names (an alias of an argument THIS tool takes is renamed), and what is missing.
@@ -375,7 +380,7 @@ runTool ch t a0
 -- own default is ten minutes, and an agent's expression that hangs (a loop that never ends) is a dead ten
 -- minutes of the turn; two are enough for anything an agent tries, and the answer says how to ask for more.
 evalTimeout :: Double
-evalTimeout = 120
+evalTimeout = 30
 
 withTimeout :: Json -> Json
 withTimeout a = if isJust (lookupNum "timeout" a) then a else set "timeout" (JNum evalTimeout) a
@@ -436,10 +441,13 @@ evalTool ch a = do
 -- | An eval's leading import lines and : commands, each to be its own command, and the rest. A lone line
 -- stays what it is.
 splitImports :: [String] -> ([String], [String])
-splitImports ls@(l : more)
-  | not (null more), "import " `isPrefixOf` l || ":" `isPrefixOf` l = let (hs, r) = splitImports more in (l : hs, r)
-  | otherwise = ([], ls)
-splitImports [] = ([], [])
+splitImports ls
+  | null other && length imports <= 1 = ([], ls)
+  | otherwise = (imports, other)
+  where
+    isImp s = let t = dropWhile isSpace s in "import " `isPrefixOf` t || (":" `isPrefixOf` t && not ("::" `isPrefixOf` t))
+    imports = [ dropWhile isSpace l | l <- ls, isImp l ]
+    other = [ l | l <- ls, not (isImp l) ]
 
 -- | The watched files that differ from the loaded code right now.
 staleNow :: Chat -> IO [String]
@@ -513,6 +521,26 @@ fileTool ch name a = case name of
           written <- fmap (listToMaybe . catMaybes) (mapM (writtenAt ch) rels)
           forM_ files (\(f, t) -> B.writeFile f (TE.encodeUtf8 t))
           saved ch (printf "edited %s (%d replacement(s))" (intercalate ", " (reverse rels)) (length items)) written
+  "grep" -> do
+    let q = fromMaybe "" (lookupStr "query" a)
+        maxN = maybe 30 round (lookupNum "lines" a) :: Int
+    res <- Search.grep (cDir ch) q maxN
+    case res of
+      Left err -> pure (False, T.pack ("grep error: " ++ err))
+      Right j -> do
+        let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
+        Search.recordSearchMetadata (cConf ch) (cName ch) "grep" q hits
+        pure (True, Search.formatGrep j)
+  "find" -> do
+    let q = fromMaybe "" (lookupStr "query" a)
+        maxN = maybe 20 round (lookupNum "n" a) :: Int
+    res <- Search.searchFiles (cDir ch) q maxN
+    case res of
+      Left err -> pure (False, T.pack ("find error: " ++ err))
+      Right j -> do
+        let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
+        Search.recordSearchMetadata (cConf ch) (cName ch) "files" q hits
+        pure (True, Search.formatFiles j)
   "ls" -> withPath $ \p -> do
     es <- filter (not . ("." `isPrefixOf`)) <$> listDirectory p
     tagged <- forM (sort es) $ \e -> (\d -> e ++ (if d then "/" else "")) <$> doesDirectoryExist (p </> e)
@@ -719,7 +747,8 @@ recentDoc who = unlines
   , "your latest call and its result are at its end. Your earlier steps are"
   , "only there, not in a conversation: when <recent> grows long its older"
   , "messages move into the view as summaries -- zoom them when you need one"
-  , "whole. " ++ who ++ "'s thinking is not kept between steps: say in a reply"
+  , "whole. Your plan, replies and directives stay pinned in <plan> once the"
+  , "boundary moves. " ++ who ++ "'s thinking is not kept between steps: say in a reply"
   , "what you found out and what you will do next, so it stays in the record." ]
 
 -- the turn loop ------------------------------------------------------------------------------
@@ -850,7 +879,11 @@ goOn ch e o pending ts = do
             vc <- readIORef vcR
             restart ch pending (Just (TurnState msgs step cut rs s (tsStart ts) vc))
           t0 <- now
-          r <- request e (Request callMsgs toolsJson (oMaxTokens o) Nothing Nothing Nothing 900)
+          let (think, effort) = case oEffort o of
+                Just "none" -> (Just False, Nothing)
+                Just ef     -> (Just True, Just ef)
+                Nothing     -> (Nothing, Nothing)
+          r <- request e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900)
           t1 <- now
           case r of
             Left why | failures < 2 -> do
@@ -955,9 +988,48 @@ goOn ch e o pending ts = do
 tailMax :: Int
 tailMax = 96000
 
+-- | Bytes of the turn's plan and directives kept in <plan> when the boundary moves.
+planMax :: Int
+planMax = 32000
+
+-- | The first @n@ bytes, without splitting a character.
+cutBytes :: Int -> T.Text -> T.Text
+cutBytes n = T.dropWhileEnd (== '\xFFFD') . TE.decodeUtf8With TE.lenientDecode . B.take n . TE.encodeUtf8
+
+-- | Format a log message as `id|kind: text\n`.
+formatMsg :: (Int, T.Text, T.Text) -> T.Text
+formatMsg (i, k, t) = T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack "\n"
+
+-- | The turn's plan and directives before the boundary: talk and user messages up to the byte budget.
+-- If they exceed the budget, the initial message (the plan) is kept and subsequent messages are kept
+-- from the tail (the most recent updates).
+renderPlan :: Int -> [Int] -> [(Int, T.Text, T.Text)] -> T.Text
+renderPlan maxBytes skip ms
+  | maxBytes <= 0 = T.empty
+  | null relevant = T.empty
+  | totalBytes <= maxBytes = T.concat (map formatMsg relevant)
+  | otherwise = case relevant of
+      [] -> T.empty
+      (m0 : more) ->
+        let b0 = byteLen (formatMsg m0)
+        in if b0 >= maxBytes
+             then cutBytes maxBytes (formatMsg m0)
+             else let restTail = takeTail (maxBytes - b0) more
+                  in T.concat (map formatMsg (m0 : restTail))
+  where
+    relevant = [ m | m@(i, k, _) <- ms, i `notElem` skip, k `elem` [T.pack "talk", T.pack "user"] ]
+    totalBytes = sum (map (byteLen . formatMsg) relevant)
+    byteLen = B.length . TE.encodeUtf8
+    takeTail budget xs = go (reverse xs) budget []
+      where
+        go [] _ acc = acc
+        go (y : ys) b acc
+          | byteLen (formatMsg y) <= b = go ys (b - byteLen (formatMsg y)) (y : acc)
+          | otherwise                  = acc
+
 -- | The log after the boundary as <recent> shows it: one message after another, whole, `id|kind: text`.
 renderTail :: [Int] -> [(Int, T.Text, T.Text)] -> T.Text
-renderTail skip ms = T.concat [ T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack "\n" | (i, k, t) <- ms, i `notElem` skip ]
+renderTail skip ms = T.concat [ formatMsg m | m@(i, _, _) <- ms, i `notElem` skip ]
 
 -- | Where the boundary moves to: past the oldest messages, until what is left is within the bytes
 -- (the id after the last message when nothing is).
@@ -979,6 +1051,16 @@ logFrom ch b = do
   pure $ case parseJsonBS (TE.encodeUtf8 (fromMaybe T.empty (lookupText "out" r))) of
     Right (JArr xs) -> [ (round i, k, t) | x <- xs, Just i <- [lookupNum "i" x], Just k <- [lookupText "kind" x], Just t <- [lookupText "text" x] ]
     _ -> []
+
+-- | The log between messages a and b (exclusive of b).
+logRange :: Chat -> Int -> Int -> IO [(Int, T.Text, T.Text)]
+logRange ch a b
+  | b <= a = pure []
+  | otherwise = do
+      r <- ask ch "history" [("since", JNum (fromIntegral a)), ("n", JNum (fromIntegral (b - a))), ("json", JBool True)]
+      pure $ case parseJsonBS (TE.encodeUtf8 (fromMaybe T.empty (lookupText "out" r))) of
+        Right (JArr xs) -> [ (round i, k, t) | x <- xs, Just i <- [lookupNum "i" x], Just k <- [lookupText "kind" x], Just t <- [lookupText "text" x] ]
+        _ -> []
 
 -- | The view of the messages before b, once its lines are summaries (at most the settle's seconds).
 viewBefore :: Chat -> Int -> Double -> IO T.Text
@@ -1007,17 +1089,20 @@ viewCall ch o hd vc = do
       v <- viewBefore ch b (oSettle o)
       hPutStrLn stderr (printf "[context: the view now runs to message %d; <recent> is %d messages]" b (length (filter (\(i, _, _) -> i >= b) ms)))
       pure (take 1 hd ++ [msg "user" (v <> T.pack "\n" <> vcTask vc)], vc { vcBound = b }, filter (\(i, _, _) -> i >= b) ms)
-  let recent = renderTail (vcSkip vc') ms'
-      call | T.null recent && not begun = hd'
-           | otherwise = init hd' ++ [msg "user" (fromMaybe T.empty (lookupText "content" (last hd')) <> T.pack "\n\n" <> turnNote
-                                                  <> (if T.null recent then T.empty else T.pack "\n<recent>\n" <> recent <> T.pack "</recent>"))]
-      -- a fresh call reads the message as new and does it again unless told where its own work on it is:
-      -- with no <recent> (a tail of 0) an agent ran the same evaluation 16 times, its answer in the view
-      start = maybe (vcBound vc') (+ 1) (listToMaybe (reverse (vcSkip vc')))
+  let start = maybe (vcBound vc') (+ 1) (listToMaybe (reverse (vcSkip vc')))
       begun = vcBound vc' > start
+  priorMs <- if begun then logRange ch start (vcBound vc') else pure []
+  let plan = renderPlan (oPlan o) (vcSkip vc') priorMs
+      recent = renderTail (vcSkip vc') ms'
+      planBlock = if T.null plan then T.empty else T.pack "\n<plan>\n" <> plan <> T.pack "</plan>\n"
       turnNote = T.pack (if begun
-        then printf "[Your work on this message so far is the log from message %d on: lines %d.. of the view above, summarized (zoom them for the whole text), then <recent>. Go on from where it ends; do not start again.]" start start
+        then printf "[Your work on this message so far is the log from message %d on: %slines %d.. of the view above, summarized (zoom them for the whole text), then <recent>. Go on from where it ends; do not start again.]"
+                    start (if T.null plan then "" else "your plan is in <plan> above, ") start
         else printf "[Your work on this message so far is the log from message %d on, in <recent>. Go on from where it ends; do not start again.]" start)
+      call | T.null recent && not begun = hd'
+           | otherwise = init hd' ++ [msg "user" (fromMaybe T.empty (lookupText "content" (last hd')) <> T.pack "\n"
+                                                  <> (if T.null plan then T.pack "\n" else planBlock <> T.pack "\n") <> turnNote
+                                                  <> (if T.null recent then T.empty else T.pack "\n<recent>\n" <> recent <> T.pack "</recent>"))]
   pure (hd', vc', call)
 
 -- the reads a turn's context holds ---------------------------------------------------------------

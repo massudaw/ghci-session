@@ -73,7 +73,7 @@ defaults =
   [ ("repl", JNull), ("units", JArr []), ("cabal_args", JStr ""), ("watch", JArr [JStr "src"])
   , ("modules", JArr []), ("prebuild", JNull), ("preload", JArr []), ("warm", JArr [])
   , ("check", JNull), ("checks", JArr []), ("server", JNull), ("env", JObj [])
-  , ("load_timeout", JNum 900), ("eval_timeout", JNum 600), ("repl_budget_mb", JNum 6144)
+  , ("load_timeout", JNum 900), ("eval_timeout", JNum 30), ("repl_budget_mb", JNum 6144)
   , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum 0), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
   , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
   , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False)

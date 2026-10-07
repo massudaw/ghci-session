@@ -19,13 +19,15 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
+import Data.Maybe (fromMaybe)
+import qualified GhciSession.Search as Search
 import GhciSession.Json
 import GhciSession.Sys
 import GhciSession.Watch
@@ -299,6 +301,11 @@ run = do
   eq "chat: a missing argument is named" (snd (args "edit" [("path", JStr "a"), ("new", JStr "b")])) ["old"]
   eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
   check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
+  check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
+  avail <- Search.isAvailable
+  check "search: FFF C library is loaded and available" avail
+  grepRes <- Search.grep "." "cmdSearch" 10
+  check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
   eq "chat: leading imports are their own commands" (splitImports ["import A", ":set -XB", "f 1"]) (["import A", ":set -XB"], ["f 1"])
   eq "chat: a lone import stays what it is" (splitImports ["import A"]) ([], ["import A"])
   eq "chat: an expression alone is untouched" (splitImports ["let a = 1 in a", "+ 2"]) ([], ["let a = 1 in a", "+ 2"])
@@ -325,6 +332,18 @@ run = do
   eq "chat: <recent> is the log after the boundary, whole, without the pinned message"
      (renderTail [10] lg) (T.pack ("11|tool: read {}\n12|echo: " ++ replicate 100 'x' ++ "\n13|talk: done\n"))
   eq "chat: the boundary moves past the oldest messages until the rest fits" (map (\k -> newBound k [10] lg) [1000, 50, 0]) [10, 13, 14]
+  let lgPlan = [ (10, T.pack "user", T.pack "the task")
+               , (11, T.pack "talk", T.pack "plan: 1. check, 2. fix")
+               , (12, T.pack "tool", T.pack "read {}")
+               , (13, T.pack "echo", T.pack "file content")
+               , (14, T.pack "user", T.pack "also test it")
+               , (15, T.pack "talk", T.pack "sure, adding test step") ]
+  eq "chat: <plan> keeps talk and mid-turn user messages up to planMax"
+     (renderPlan planMax [10] lgPlan)
+     (T.pack "11|talk: plan: 1. check, 2. fix\n14|user: also test it\n15|talk: sure, adding test step\n")
+  eq "chat: <plan> with small budget keeps the initial plan plus tail updates"
+     (renderPlan 70 [10] lgPlan)
+     (T.pack "11|talk: plan: 1. check, 2. fix\n15|talk: sure, adding test step\n")
   eq "chat: the view's lines and the message each starts at" (map fst (viewLines (T.pack "<chat>\n0+8|a b\n8+4|c\n12+1|(not summarized yet: zoom it)\n</chat>\n"))) [0, 8, 12]
   eq "chat: a GHCi of the agent's own, through sh"
      (map ownGhci [ "timeout 300 ghci -isrc 2>&1 <<'EOF' | tail -5", "cd x && cabal repl lib:nes", "echo main | /opt/ghc/bin/ghci-9.14.1 -v0", "runghc Setup.hs", "ghc -e 'print 1'"

@@ -25,3 +25,6 @@ if [ "$(uname)" = Darwin ]; then
     cc -dynamiclib -O2 -o .bin/libghsmem.dylib.new hygiene/c/mem_return.c && mv .bin/libghsmem.dylib.new .bin/libghsmem.dylib
   fi
 fi
+if [ -f lib/libfff.dylib ] && [ ! -f .bin/libfff.dylib ]; then
+  cp lib/libfff.dylib .bin/libfff.dylib
+fi

@@ -34,6 +34,8 @@ import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Llm (human)
 import GhciSession.Mcp (mcpMain)
 import GhciSession.Sys
+import qualified Data.Text.IO as TIO
+import qualified GhciSession.Search as Search
 
 -- arguments --------------------------------------------------------------------
 
@@ -456,6 +458,28 @@ cmdAutostop conf a = do
     pure 0
   where showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
 
+cmdSearch :: Conf -> Args -> IO Int
+cmdSearch conf a = do
+  let q = fromMaybe "" (pos a 0)
+  when (null q) (die' "search: what are you looking for? (e.g. `ghci-session search mySymbol` or `ghci-session search --files myFile`)")
+  sname <- pick conf (opt a ["-s", "-t", "--session"])
+  let maxN = maybe 30 read (opt a ["-n"]) :: Int
+      isFiles = flag a ["--files", "-f"]
+      isJson = flag a ["--json"]
+      mode = if isFiles then "files" else "grep"
+  res <- if isFiles
+           then Search.searchFiles (cRoot conf) q maxN
+           else Search.grep (cRoot conf) q maxN
+  case res of
+    Left err -> die' ("search error: " ++ err)
+    Right j -> do
+      let hits = fromMaybe 0 (lookupNum "count" j >>= Just . round)
+      Search.recordSearchMetadata conf sname mode q hits
+      if isJson
+        then putStrLn (encodePretty j)
+        else TIO.putStrLn (if isFiles then Search.formatFiles j else Search.formatGrep j)
+      pure (if hits > 0 then 0 else 1)
+
 usage :: String
 usage = unlines
   [ "ghci-session: a warm GHCi per project"
@@ -465,6 +489,7 @@ usage = unlines
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
+  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   high-speed SIMD search across code or files (FFF engine), with session metadata"
   , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
@@ -594,6 +619,9 @@ cliMain = do
         "chat" -> chatMain conf rest
         "usage" -> cmdUsage conf a
         "list" -> cmdList conf
+        "search" -> cmdSearch conf a
+        "find" -> cmdSearch conf a
+        "grep" -> cmdSearch conf a
         "gc" -> runGc conf (flag aNoN ["-n", "--dry-run"]) (maybe 0 read (opt aNoN ["--days"])) >> pure 0
         "autostop" -> cmdAutostop conf aNoN
         _ -> hPutStr stderr usage >> pure 2

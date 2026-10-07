@@ -23,8 +23,9 @@ executable ghci-session
   main-is:          Main.hs
   other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
-                    GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
+                    GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
+                    GhciSession.Search
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010
