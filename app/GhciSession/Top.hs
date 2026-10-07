@@ -15,7 +15,7 @@
 -- follow new lines again, @R@ reload, @T@ test, @r@ look now, @q@ quit. In a pane every key goes to the
 -- program; @Ctrl-a@ first makes the next key the monitor's (@Ctrl-a 1@: the history, @Ctrl-a q@: quit,
 -- @Ctrl-a a@: a Ctrl-a for the program).
-module GhciSession.Top (topMain, Span, spansLine, wrapSpans, visible) where
+module GhciSession.Top (topMain, Span, spansLine, wrapSpans, visible, kindStyle, verdictStyle, stBold, stDim, stYellow, stHi) where
 
 import Control.Concurrent (forkIO)
 import Control.Exception (IOException, SomeException, try)
@@ -209,7 +209,7 @@ panes env st
         Nothing -> do
           exe <- getExecutablePath
           shell <- fromMaybe "/bin/sh" <$> lookupEnv "SHELL"
-          let cmd = if sTab st == TChat then shq exe ++ " chat -s " ++ shq (eName env) else shell
+          let cmd = if sTab st == TChat then shq exe ++ " chat --tui -s " ++ shq (eName env) else shell
           r <- newPane cmd (cRoot (eConf env)) size (sWake st)
           pure $ case r of
             Right p -> st { sPanes = M.insert (sTab st) p (sPanes st) }

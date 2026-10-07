@@ -61,6 +61,8 @@ import Text.Printf (printf)
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 
+import GhciSession.ChatTui (chatTui)
+import GhciSession.ChatUi
 import GhciSession.Config
 import GhciSession.Json
 import GhciSession.Llm
@@ -85,12 +87,13 @@ data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oResume :: Maybe FilePath
-  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int }
+  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool }
 
 chatUsage :: String
 chatUsage = unlines
   [ "ghci-session chat [-s SESSION] [--once MESSAGE] [--instructions FILE] [--model M] [--base-url URL]"
   , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES] [--effort none|low|high|max] [--plan BYTES]"
+  , "ghci-session chat --tui [-s SESSION] ...   the same, on a screen of its own"
   , "ghci-session chat --restart [-s SESSION]"
   , "  the endless chat with an agent on the session (DEEPSEEK_API_KEY or OPENAI_API_KEY); --once: one message, then exit;"
   , "  --instructions: a file of the user's own instructions (an AGENTS.md), appended to the system prompt;"
@@ -102,12 +105,13 @@ chatUsage = unlines
   , "  own conversation;"
   , "  --effort: reasoning effort (none, low, high, max); none disables thinking;"
   , "  --plan: bytes of the turn's plan and directives kept in <plan> when the boundary moves (32000);"
+  , "  --tui: the chat on a screen of its own (the transcript, the turn's state, a line to type on; Ctrl-C leaves);"
   , "  --restart: the session's running chat restarts as the executable now on disk (build it first), in the middle"
   , "  of its turn, which goes on where it was: it writes the turn out before its next model call and runs itself"
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax False)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -126,6 +130,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
                  | k == "--restart" = go o { oRestart = True } r
+                 | k == "--tui" = go o { oTui = True } r
     go _ (k : _) = Left ("chat: unexpected argument " ++ show k ++ "\n" ++ chatUsage)
 
 -- the session ------------------------------------------------------------------------------
@@ -138,25 +143,12 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cInTurn :: IORef Bool                -- ^ a turn is running (else a restart is at once)
                  , cExe :: FilePath, cArgv :: [String]   -- ^ the executable and the arguments to run again as
                  , cBatch :: IORef (Maybe [Double])      -- ^ file writes of one reply are being made together: when each was written (they are not waited on one by one)
+                 , cUi :: Ui                             -- ^ where what happens is shown
                  }
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
 usageFile ch = cStateDir (cConf ch) </> cName ch </> "usage.jsonl"
-
--- | What a turn cost so far: model calls, tokens in, of them cached, tokens out, tool calls -- and whether it
--- has written to the files, and been told it was about to end red.
-data Spent = Spent { sCalls :: !Int, sIn :: !Int, sCached :: !Int, sOut :: !Int, sTools :: !Int, sTouched :: !Bool, sNudged :: !Bool }
-  deriving (Eq, Show)
-
-spend :: IORef Spent -> Usage -> IO ()
-spend ref u = modifyIORef' ref (\s -> s { sCalls = sCalls s + 1, sIn = sIn s + uIn u, sCached = sCached s + fromMaybe 0 (uCached u), sOut = sOut s + uOut u })
-
--- | The turn's summary line: always said (stderr), whatever --usage.
-spentLine :: Spent -> Double -> String
-spentLine s secs = printf "[turn: %d model call%s, %s tokens in (%d%% cached), %s out, %d tool call%s, %.0fs]"
-  (sCalls s) (plural (sCalls s)) (human (sIn s)) (if sIn s == 0 then 0 else (100 * sCached s) `div` sIn s :: Int) (human (sOut s)) (sTools s) (plural (sTools s)) secs
-  where plural n = if n == 1 then "" else "s" :: String
 
 -- | Is this path one the daemon watches (its targets' directories), or a build file? A save of one has a verdict.
 watches :: Chat -> FilePath -> Bool
@@ -340,12 +332,12 @@ runBatch :: Chat -> [(String, Tool)] -> [ToolCall] -> [Int] -> IO (M.Map Int (Bo
 runBatch ch byName calls run = do
   forM_ run $ \i -> do
     let tc = calls !! i
-    putStrLn ("> " ++ tcName tc ++ " " ++ take 300 (encode (tcArgs tc))) >> hFlush stdout
+    uiCall (cUi ch) (tcName tc) (take 300 (encode (tcArgs tc)))
     logH ch "tool" (T.pack (tcName tc ++ " " ++ encode (tcArgs tc)))
   let paths i = maybe [] (\t -> callPaths ch t (calls !! i)) (lookup (tcName (calls !! i)) byName)
       groups = groupByPaths [ (i, paths i) | i <- run ]
       watched = any (watches ch) (concatMap paths run)
-  hPutStrLn stderr (printf "[%d file writes in this reply: made together, %d at once, reloaded once]" (length run) (length groups))
+  uiNote (cUi ch) (printf "[%d file writes in this reply: made together, %d at once, reloaded once]" (length run) (length groups))
   held <- if watched then (\r -> lookupBool "ok" r == Just True) <$> ask ch "hold" [("secs", JNum 30), ("quiet", JBool True)] else pure False
   writeIORef (cBatch ch) (Just [])
   let one i = do
@@ -479,7 +471,7 @@ sessionCall ch name args0 = do
     wasDown <- readIORef (cDown ch)
     limit <- if wasDown then pure 5 else downWait
     t0 <- now
-    hPutStrLn stderr (printf "[the session is down: waiting up to %.0fs for it to come back]" limit)
+    uiNote (cUi ch) (printf "[the session is down: waiting up to %.0fs for it to come back]" limit)
     back <- waitUp (t0 + limit)
     secs <- subtract t0 <$> now
     writeIORef (cDown ch) (not back)
@@ -934,7 +926,7 @@ recentDoc who = unlines
 turn :: Chat -> Endpoint -> Opts -> String -> [T.Text] -> TQueue (Maybe T.Text) -> IO ()
 turn ch e o system texts pending = do
   (v, settled, parts, count) <- view ch (oSettle o)
-  unless settled (hPutStrLn stderr (printf "[view: %d lines, not all summarized yet; going on]" parts))
+  unless settled (uiNote (cUi ch) (printf "[view: %d lines, not all summarized yet; going on]" parts))
   ids <- forM texts (logId ch "user")
   tStart <- now
   let task = T.intercalate (T.pack "\n\n") texts
@@ -1002,12 +994,12 @@ restart ch pending mts = do
   pend <- readIORef (cPending ch)
   B.writeFile (resumeFile ch) (encodeBS (JObj [ ("turn", maybe JNull turnJson mts), ("typed", JArr (map JText typed))
                                               , ("longest", JNum longest), ("pending", maybe JNull JNum pend) ]))
-  hPutStrLn stderr ("[harness: restarting as " ++ cExe ch ++ maybe "" (\ts -> printf "; the turn goes on at step %d" (tsStep ts)) mts ++ "]")
-  hFlush stdout >> hFlush stderr
+  uiNote (cUi ch) ("[harness: restarting as " ++ cExe ch ++ maybe "" (\ts -> printf "; the turn goes on at step %d" (tsStep ts)) mts ++ "]")
+  uiLeave (cUi ch)
   r <- try (executeFile (cExe ch) False (dropResume (cArgv ch) ++ ["--resume", resumeFile ch]) Nothing)
   case r of
     Left (err :: IOException) -> do
-      hPutStrLn stderr ("[harness: the restart failed (" ++ show err ++ "); going on as before]")
+      uiNote (cUi ch) ("[harness: the restart failed (" ++ show err ++ "); going on as before]")
       atomically (mapM_ (unGetTQueue pending . Just) (reverse typed))
     Right () -> pure ()
   where dropResume ("--resume" : _ : r) = dropResume r
@@ -1022,7 +1014,7 @@ goOn ch e o pending ts = do
   readsR <- newIORef (tsReads ts)
   vcR <- newIORef (tsView ts)
   let loop readsR spent msgs0 step cut failures
-        | step >= oMaxSteps o = hPutStrLn stderr "[the turn reached its step limit; stopping]"
+        | step >= oMaxSteps o = uiNote (cUi ch) "[the turn reached its step limit; stopping]"
         | otherwise = do
             -- in --context view the call is built from the log; msgs is then its head only
             vc0 <- readIORef vcR
@@ -1038,7 +1030,7 @@ goOn ch e o pending ts = do
   writeIORef (cInTurn ch) False
   tEnd <- now
   s <- readIORef spent
-  hPutStrLn stderr (spentLine s (tEnd - tsStart ts))
+  uiSpent (cUi ch) s (tEnd - tsStart ts)
   where
     byName = [ (tName t, t) | t <- chatTools ]
     toolsJson = map toolJson chatTools
@@ -1056,6 +1048,8 @@ goOn ch e o pending ts = do
             vc <- readIORef vcR
             restart ch pending (Just (TurnState msgs step cut rs s (tsStart ts) vc))
           t0 <- now
+          sp0 <- readIORef spent
+          uiBusy (cUi ch) (Just (printf "model call %d of the turn (step %d; %s tokens in so far, %s out)" (sCalls sp0 + 1) (step + 1) (human (sIn sp0)) (human (sOut sp0))))
           let (think, effort) = case oEffort o of
                 Just "none" -> (Just False, Nothing)
                 Just ef     -> (Just True, Just ef)
@@ -1064,25 +1058,25 @@ goOn ch e o pending ts = do
           t1 <- now
           case r of
             Left why | failures < 2 -> do
-              hPutStrLn stderr ("[" ++ why ++ "; asking again in 5s]")
+              uiNote (cUi ch) ("[" ++ why ++ "; asking again in 5s]")
               threadDelay 5000000
               loop readsR spent msgs step cut (failures + 1)
-            Left why -> hPutStrLn stderr ("chat: " ++ why ++ "; the turn ends")
+            Left why -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
             Right p -> do
               forM_ (pUsage p) $ \u -> do
                 spend spent u
                 recordUsage (usageFile ch) "chat" e u (t1 - t0)
-                when (oUsage o) (hPutStrLn stderr (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0)))
-              unless (T.null (T.strip (pReasoning p))) (hPutStrLn stderr ("\n[thinking] " ++ T.unpack (T.strip (pReasoning p)) ++ "\n"))
+                when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0)))
+              unless (T.null (T.strip (pReasoning p))) (uiThought (cUi ch) (T.strip (pReasoning p)))
               let content = T.strip (pContent p)
-              unless (T.null content) (TIO.putStrLn content >> putStrLn "" >> hFlush stdout >> logH ch "talk" content)
+              unless (T.null content) (uiTalk (cUi ch) content >> logH ch "talk" content)
               let assistant = JObj ([("role", JStr "assistant"), ("content", JText (pContent p))] ++ [ ("tool_calls", JArr (map tcRaw (pToolCalls p))) | not (null (pToolCalls p)) ])
                   msgs' = if viewMode then msgs else msgs ++ [assistant]
               if null (pToolCalls p)
                 then if pFinish p == "length" && cut < 3
                   then do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
-                    hPutStrLn stderr (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
+                    uiNote (cUi ch) (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
                     m' <- nudge msgs' (T.pack (printf "your reply was cut off at the output limit of %d tokens before any tool call -- the reasoning ran too long. Go on in smaller steps: act with a tool (eval to count or check, write a smaller piece) instead of working it all out first." (oMaxTokens o)))
                     loop readsR spent m' (step + 1) (cut + 1) 0
                   else do
@@ -1094,7 +1088,7 @@ goOn ch e o pending ts = do
                     case v of
                       Just r | isRed (vLine r) -> do
                         modifyIORef' spent (\x -> x { sNudged = True })
-                        hPutStrLn stderr "[the turn would end with the verdict red; saying so once]"
+                        uiNote (cUi ch) "[the turn would end with the verdict red; saying so once]"
                         m' <- nudge msgs' (T.pack ("you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
                                                     ++ "\nFix it, or end by saying plainly that it is red and why you are stopping."))
                         loop readsR spent m' (step + 1) 0 0
@@ -1108,8 +1102,9 @@ goOn ch e o pending ts = do
                     -- every call is logged by the chat as the agent made it, and its answer as the agent saw it (the
                     -- session's own tools are asked quietly); remember writes the log itself
                     unless (M.member i pre) $ do      -- (a batched call was shown and logged when the batch began)
-                      putStrLn ("> " ++ name ++ " " ++ shownArgs) >> hFlush stdout
+                      uiCall (cUi ch) name shownArgs
                       unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
+                    uiBusy (cUi ch) (Just ("running " ++ name ++ (if length (pToolCalls p) > 1 then printf " (%d of %d)" (i + 1) (length (pToolCalls p)) else "")))
                     t2 <- now
                     (ok, out0) <- case (M.lookup i pre, lookup name byName) of
                       (Just r, _) -> pure r
@@ -1135,9 +1130,9 @@ goOn ch e o pending ts = do
                       _ -> pure (cap out0)
                     let out = out1 <> late
                         tagged = (if ok then T.empty else T.pack "ERROR: ") <> out
-                    when (oUsage o) (hPutStrLn stderr (printf "[tool: %s %.1fs]" name (t3 - t2)))
+                    when (oUsage o) (uiNote (cUi ch) (printf "[tool: %s %.1fs]" name (t3 - t2)))
                     unless (name == "remember") (logH ch "echo" tagged)
-                    TIO.putStrLn (T.pack "  " <> T.replace (T.pack "\n") (T.pack "\n  ") (T.take 600 out) <> (if T.length out > 600 then T.pack "..." else T.empty)) >> hFlush stdout
+                    uiAnswer (cUi ch) (T.take 600 out <> (if T.length out > 600 then T.pack "..." else T.empty))
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending
                   forM_ mid (logH ch "user")
@@ -1150,7 +1145,7 @@ goOn ch e o pending ts = do
                   next' <- if viewMode || null due || dueChars < limit then pure next else do
                     let stubs = M.fromList [ (rrIdx r, T.pack (printf "[read #%d: %s lines %d-%d -- superseded by read #%d, which shows these lines as they are now]" (rrNum r) (rrPath r) (rrLo r) (rrHi r) (fromMaybe 0 (rrBy r)))) | r <- due ]
                     writeIORef readsR [ if rrNum r `elem` map rrNum due then r { rrTrimmed = True, rrText = T.empty } else r | r <- recs ]
-                    hPutStrLn stderr (printf "[context: %d superseded read(s) trimmed, %d characters]" (length due) dueChars)
+                    uiNote (cUi ch) (printf "[context: %d superseded read(s) trimmed, %d characters]" (length due) dueChars)
                     pure [ maybe m (\st -> set "content" (JText st) m) (M.lookup ix stubs) | (ix, m) <- zip [0 ..] next ]
                   loop readsR spent next' (step + 1) 0 0
 
@@ -1252,7 +1247,7 @@ viewBefore ch b secs = do
             unbuilt = any (T.isSuffixOf placeholderText) keep
         t <- now
         if unbuilt && t - t0 < secs then threadDelay 300000 >> go else do
-          when unbuilt (hPutStrLn stderr "[view: not all lines summarized yet; going on]")
+          when unbuilt (uiNote (cUi ch) "[view: not all lines summarized yet; going on]")
           pure (T.unlines (T.pack "<chat>" : keep ++ [T.pack "</chat>"]))
   go
   where placeholderText = T.pack "(not summarized yet: zoom it)"
@@ -1267,7 +1262,7 @@ viewCall ch o hd vc = do
     if size <= oTail o || null ms then pure (hd, vc, ms) else do
       let b = newBound (oTail o `div` 3) (vcSkip vc) ms
       v <- viewBefore ch b (oSettle o)
-      hPutStrLn stderr (printf "[context: the view now runs to message %d; <recent> is %d messages]" b (length (filter (\(i, _, _) -> i >= b) ms)))
+      uiNote (cUi ch) (printf "[context: the view now runs to message %d; <recent> is %d messages]" b (length (filter (\(i, _, _) -> i >= b) ms)))
       pure (take 1 hd ++ [msg "user" (v <> T.pack "\n" <> vcTask vc)], vc { vcBound = b }, filter (\(i, _, _) -> i >= b) ms)
   let start = maybe (vcBound vc') (+ 1) (listToMaybe (reverse (vcSkip vc')))
       begun = vcBound vc' > start
@@ -1358,68 +1353,76 @@ chatMain conf args = case parseOpts args of
         exe <- getExecutablePath
         argv <- getArgs
         let ms = if null members then [name] else members
-            ch = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                      longest pendingCheck down restartR inTurn (stripDeleted exe) argv batchR
-        if oPrintView o then view ch 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
+            chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
+                               longest pendingCheck down restartR inTurn (stripDeleted exe) argv batchR ui
+        if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           ep <- endpointFromEnv
           case ep of
             Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 2
             Right e0 -> do
               let e = e0 { eModel = fromMaybe (eModel e0) (oModel o), eBase = maybe (eBase e0) (reverse . dropWhile (== '/') . reverse) (oBase o) }
+                  agent = cAgent (chatWith stdoutUi)
               instr <- maybe (pure "") (\f -> trim <$> readFile f) (oInstructions o)
-              let system = master (cAgent ch) ++ "\n" ++ viewDoc (cAgent ch) ++ (if oView o then recentDoc (cAgent ch) else "") ++ (if null instr then "" else "\n" ++ instr)
-              pending <- newTQueueIO
-              -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
-              getProcessID >>= writeFile (chatPidFile conf name) . show
-              void $ installHandler sigHUP (Catch $ do
-                writeIORef restartR True
-                busy <- readIORef inTurn
-                if busy || isJust (oOnce o) then hPutStrLn stderr "[harness: a restart is asked; it happens before the next model call]"
-                  else restart ch pending Nothing) Nothing
-              resumed <- maybe (pure Nothing) (fmap Just . resumeFrom ch) (oResume o)
-              case resumed of
-                Nothing -> do
-                  (v, _, parts, messages) <- view ch 0
-                  TIO.putStrLn v
-                  putStrLn (printf "[%s: %d messages, %d lines; model %s]\n" name messages parts (eModel e))
-                Just _ -> putStrLn (printf "[%s: the harness restarted as %s; model %s]" name (cExe ch) (eModel e))
-              hFlush stdout
-              flip finally (void (try (removeFile (chatPidFile conf name)) :: IO (Either IOException ()))) $ do
-                -- a turn the restart was in goes on; lines typed before it and not yet taken are a turn of their own
-                case resumed of
-                  Just (mts, typed) -> do
-                    forM_ mts $ \ts -> do
-                      hPutStrLn stderr (printf "[harness: the turn goes on at step %d]" (tsStep ts))
-                      forM_ typed (logH ch "user")
-                      goOn ch e o pending ts { tsMsgs = tsMsgs ts ++ [ msg "user" (T.intercalate (T.pack "\n\n") typed) | not (null typed) ] }
-                    when (isNothing mts && not (null typed)) (turn ch e o system typed pending)
-                  Nothing -> pure ()
-                case (oOnce o, resumed) of
-                  (Just _, Just _) -> pure 0
-                  (Just m, Nothing) -> turn ch e o system [T.pack m] pending >> pure 0
-                  (Nothing, _) -> do
-                    hSetBuffering stdout LineBuffering
-                    -- (unbuffered: a line read ahead into a buffer would be lost to a restart)
-                    hSetBuffering stdin NoBuffering
-                    void $ forkIO $ do
-                      let reader = do
-                            eof <- hIsEOF stdin
-                            if eof then atomically (writeTQueue pending Nothing) else do
-                              l <- TIO.getLine
-                              atomically (writeTQueue pending (Just l))
-                              reader
-                      reader
-                    let loop = do
-                          putStr "> " >> hFlush stdout
-                          first <- atomically (readTQueue pending)
-                          case first of
-                            Nothing -> pure 0
-                            Just l -> do
-                              more <- drain pending
-                              let texts = filter (not . T.null . T.strip) (l : more)
-                              unless (null texts) (writeIORef inTurn True >> turn ch e o system texts pending >> writeIORef inTurn False)
-                              loop
-                    loop
+              let system = master agent ++ "\n" ++ viewDoc agent ++ (if oView o then recentDoc agent else "") ++ (if null instr then "" else "\n" ++ instr)
+                  dropPid = void (try (removeFile (chatPidFile conf name)) :: IO (Either IOException ()))
+                  -- the chat on a Ui: the lines to take come on the queue (standard input's, or the screen's)
+                  run ui pending = do
+                    let ch = chatWith ui
+                    -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
+                    getProcessID >>= writeFile (chatPidFile conf name) . show
+                    void $ installHandler sigHUP (Catch $ do
+                      writeIORef restartR True
+                      busy <- readIORef inTurn
+                      if busy || isJust (oOnce o) then uiNote ui "[harness: a restart is asked; it happens before the next model call]"
+                        else restart ch pending Nothing) Nothing
+                    resumed <- maybe (pure Nothing) (fmap Just . resumeFrom ch) (oResume o)
+                    case resumed of
+                      Nothing -> do
+                        (v, _, parts, messages) <- view ch 0
+                        uiView ui v
+                        uiNote ui (printf "[%s: %d messages, %d lines; model %s]" name messages parts (eModel e))
+                      Just _ -> uiNote ui (printf "[%s: the harness restarted as %s; model %s]" name (cExe ch) (eModel e))
+                    flip finally dropPid $ do
+                      -- a turn the restart was in goes on; lines typed before it and not yet taken are a turn of their own
+                      case resumed of
+                        Just (mts, typed) -> do
+                          forM_ mts $ \ts -> do
+                            uiNote ui (printf "[harness: the turn goes on at step %d]" (tsStep ts))
+                            forM_ typed (logH ch "user")
+                            goOn ch e o pending ts { tsMsgs = tsMsgs ts ++ [ msg "user" (T.intercalate (T.pack "\n\n") typed) | not (null typed) ] }
+                          when (isNothing mts && not (null typed)) (turn ch e o system typed pending)
+                        Nothing -> pure ()
+                      case (oOnce o, resumed) of
+                        (Just _, Just _) -> pure 0
+                        (Just m, Nothing) -> turn ch e o system [T.pack m] pending >> pure 0
+                        (Nothing, _) -> do
+                          let loop = do
+                                uiBusy ui Nothing
+                                first <- atomically (readTQueue pending)
+                                case first of
+                                  Nothing -> pure 0
+                                  Just l -> do
+                                    more <- drain pending
+                                    let texts = filter (not . T.null . T.strip) (l : more)
+                                    unless (null texts) (writeIORef inTurn True >> turn ch e o system texts pending >> writeIORef inTurn False)
+                                    loop
+                          loop
+              if oTui o
+                then chatTui name (eModel e) (cStateDir conf </> name) run `finally` dropPid
+                else do
+                  pending <- newTQueueIO
+                  hSetBuffering stdout LineBuffering
+                  -- (unbuffered: a line read ahead into a buffer would be lost to a restart)
+                  hSetBuffering stdin NoBuffering
+                  void $ forkIO $ do
+                    let reader = do
+                          eof <- hIsEOF stdin
+                          if eof then atomically (writeTQueue pending Nothing) else do
+                            l <- TIO.getLine
+                            atomically (writeTQueue pending (Just l))
+                            reader
+                    reader
+                  run stdoutUi pending
   where stripDeleted p = maybe p reverse (stripPrefix' (reverse " (deleted)") (reverse p))
         stripPrefix' pre x = if pre `isPrefixOf` x then Just (drop (length pre) x) else Nothing
 

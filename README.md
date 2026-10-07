@@ -226,7 +226,14 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   to settle before each turn. The model is an OpenAI-compatible endpoint (`GhciSession.Llm`, over the same
   libcurl), DeepSeek's flash model by default, which caches the prompt's prefix on its own (`ghci-session chat
   -s dev`, `--once 'what was tried on X?'`, `--instructions AGENTS.md`, `--usage` for each call's tokens and
-  seconds). What letting it build an emulator taught the harness: a save answers with the verdict of the reload
+  seconds). `ghci-session chat --tui` is the same chat on a screen of its own (`GhciSession.ChatTui`, on
+  `ghostty-tui` below): the transcript labelled by kind as `top`'s history shows it -- what was typed, what the
+  agent said and thought, every tool call and its answer, the harness's notes, the view the first turn read --
+  a status line saying what the turn is doing now (which model call with the tokens so far, which tool) or that a
+  line is waited for, the session's verdict in the header, and a line to type on at the bottom; a line typed
+  while the agent works reaches it between tool calls as before (Enter sends, Up recalls, PgUp/PgDn scroll,
+  Ctrl-C leaves). The turn loop prints nothing itself: it tells a `Ui` (`GhciSession.ChatUi`) what happened, and
+  the streams or the screen show it. What letting it build an emulator taught the harness: a save answers with the verdict of the reload
   it caused, and behind a bad verdict the compiler's diagnostics or the failing tests, so no `status` call
   follows a write (it used to see STALE and reload by hand); an eval of several lines runs its leading imports
   as their own commands (in one GHCi block they do not parse); an argument the model calls by another name
@@ -301,12 +308,12 @@ daemon writes it (every request and its answer, a save with its diff, the chat's
 `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll), `2` the view the model reads with the memory's numbers (lines, built nodes,
 settled or not, the compactor's jobs), `3` the daemon's log, `4` the verdict with what is behind it (the
 compiler's diagnostics, the failing lines, the members and the servers), `5` what the model calls cost, and two
-terminal panes: `6` the chat (`ghci-session chat` on this session) and `7` a shell in the project. `R` sends a
+terminal panes: `6` the chat (`ghci-session chat --tui` on this session) and `7` a shell in the project. `R` sends a
 reload and `T` the tests; `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes the next key
 the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a Ctrl-a). A session that is not running shows as
 such and is picked up when it starts.
 
-`top` is an application of two packages of this repository, written for it and usable without it:
+`top` and the chat's screen are applications of two packages of this repository, written for them and usable without them:
 
 - **`ghostty-vt`** (`ghostty-vt/`) binds **libghostty-vt** -- Ghostty's terminal emulation as a C library --
   from Haskell. `Ghostty.Vt`: a `Terminal` of a size, `write` it the bytes a program prints, read its `screen`
@@ -713,6 +720,7 @@ mem | log [FILE] [-s SESSION] | list | init
 history [-n N] [--since ID] [--full] [--json] | history --kind user|talk|note TEXT
 view [--wait SECS] [--json] | zoom ID [N] | date ID
 mcp                                      # the session and its memory as an agent's tools (MCP on stdin/stdout)
+chat [-s SESSION] [--tui] [--once MSG]   # the endless chat: an agent on the session, remembering through its history
 top [SESSION]                            # watch the session: verdict, history, view, log, cost, and the chat and a shell in panes
 ```
 
@@ -1006,7 +1014,7 @@ cbits/                  ghs_sys.c (sockets, file events, regex, hashing, process
 hygiene/                c/*.c (the pruner, the census: compiled into the engine), src/GHC/Hygiene*.hs (the library),
                         repro/ (why a superseded CAF with a young value must stay listed)
 ghostty-vt/             the binding to libghostty-vt (Ghostty.Vt, .Pty; cbits/gvt.c loads it at run time; include/ its headers)
-tui/                    ghostty-tui: Tui.Buffer, .Terminal, .App, .Pane -- the small TUI library `top` is written in
+tui/                    ghostty-tui: Tui.Buffer, .Terminal, .App, .Pane -- the small TUI library `top` and `chat --tui` are written in
 tools/libghostty-vt.sh  build libghostty-vt into .bin/ (zig 0.16, downloaded if absent)
 bin/ghci-session        run from a checkout (builds if stale)
 bin/ghci-history        save a session's history (log, tree, usage) to a git branch, and load it back: `save`, `load`, `status` (`--help`)
