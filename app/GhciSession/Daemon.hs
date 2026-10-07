@@ -1229,10 +1229,20 @@ buildFileChanged s = do
               void (restart s (Just True))
     _ -> void (restart s (Just False))
 
--- | A start as one list of words: the arguments, with each per-unit argument file in place of its name.
+-- | A start as one list of words: the arguments, with each argument file in place of its name, and the
+-- files those name in place of theirs (cabal 3.18 on Linux: one file holding a `-unit @file` per unit).
 launchWords :: Launch -> IO [String]
-launchWords l = concat <$> mapM (\a -> case a of
-  '@' : f -> maybe [a] lines <$> readFileMaybe f
+launchWords l = expand (3 :: Int) (lArgs l)
+  where expand 0 as = pure as
+        expand n as = concat <$> mapM (\a -> case a of
+          '@' : f -> maybe (pure [a]) (expand (n - 1) . lines) =<< readFileMaybe f
+          _ -> pure [a]) as
+
+-- | A start's arguments as the engine reads them: an argument file that holds `-unit` entries (the whole
+-- command line, as cabal 3.18 on Linux writes it) opened up; a unit's own file left as its name.
+launchArgs :: Launch -> IO [String]
+launchArgs l = concat <$> mapM (\a -> case a of
+  '@' : f -> (\t -> case t of { Just c | "-unit" `elem` lines c -> lines c; _ -> [a] }) <$> readFileMaybe f
   _ -> pure [a]) (lArgs l)
 
 -- | If two starts differ only in the module names they list: those added and those removed.
@@ -2072,14 +2082,21 @@ addMembers s = do
           case r of
             Left said -> writeAtomic (sDir s </> "load.log") said >> pure (Left "the build tool could not say how to start the new set (load.log)")
             Right l -> do
-              let unitFiles la = [ f | ('@' : f) <- lArgs la ]
-                  -- (a unit's file is named unit-<n>-<its id>: the number is the build tool's, of that run)
-                  unitOf f = drop 1 (dropWhile (/= '-') (drop 5 (takeFileName f)))
-                  plain la = [ a | a <- lArgs la, take 1 a /= "@", a /= "-unit" ]
-              was <- forM (unitFiles (bLaunch b)) (\f -> (,) (unitOf f) <$> readFileMaybe f)
+              -- the start as the engine reads it: cabal on macOS puts `-unit @file` per unit on the command
+              -- line; on Linux (3.18) it puts EVERYTHING in one response file -- the flags, then a `-unit
+              -- @file` per unit -- which is opened up here, so a unit's file is the one after `-unit` either way
+              argsB <- launchArgs (bLaunch b)
+              argsL <- launchArgs l
+              let unitFiles args = [ f | ("-unit", '@' : f) <- zip ("" : args) args ]
+                  plain args = [ a | a <- args, take 1 a /= "@", a /= "-unit" ]
+                  -- a unit by the id it declares (-this-unit-id): its file's NAME carries the build tool's
+                  -- numbering of that run, which moves when a unit is added before it
+                  unitOf f t = fromMaybe (takeFileName f) (listToMaybe [ v | ("-this-unit-id", v) <- zip ls (drop 1 ls) ])
+                    where ls = lines (fromMaybe "" t)
+              was <- forM (unitFiles argsB) (\f -> readFileMaybe f >>= \t -> pure (unitOf f t, t))
               plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
               let below = maybe [] (\pl -> unitsBelow pl (map fst was)) plan
-              now' <- forM (unitFiles l) (\f -> (,,) (unitOf f) f <$> readFileMaybe f)
+              now' <- forM (unitFiles argsL) (\f -> readFileMaybe f >>= \t -> pure (unitOf f t, f, t))
               let moved = [ u | (u, t) <- was, [ t' | (u', _, t') <- now', u' == u ] /= [t] ]
                   fresh = [ f | (u, f, _) <- now', u `notElem` map fst was ]
                   freshIds = [ u | (u, _, _) <- now', u `notElem` map fst was ]
@@ -2088,8 +2105,8 @@ addMembers s = do
                   usedBuilt = [ u | u <- freshIds, any (\(_, t) -> u `elem` lines (fromMaybe "" t)) was || u `elem` below ]
               -- (the build tool starts ONE unit with its flags on the command line and no unit file: there is
               --  then nothing to compare the new set's with, and the flags the engine kept are that unit's)
-              if null (unitFiles (bLaunch b)) then pure (Left "the session was started with a single unit, not as units (it takes members live once it has two)")
-                else if plain l /= plain (bLaunch b) then pure (Left "the engine would be started with other arguments")
+              if null (unitFiles argsB) then pure (Left "the session was started with a single unit, not as units (it takes members live once it has two)")
+                else if plain argsL /= plain argsB then pure (Left "the engine would be started with other arguments")
                 else if not (null moved) then pure (Left ("units already loaded would be built differently: " ++ unwords moved))
                 else if null fresh then pure (Left "the build tool names no new unit")
                 -- A package the loaded units already USE, built, cannot become a unit beside them: they were

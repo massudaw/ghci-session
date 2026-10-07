@@ -918,16 +918,18 @@ Not here: the deferred GC after an unlink (it crashed a large session; the GC is
 other than GHC 9.14.1: the engine is that compiler's front end, so another needs its sources vendored and has not
 been tried. Port verification needs `lsof`.
 
-Linux (x86_64, GHC 9.14.1 and cabal 3.18 from ghcup, Ubuntu 24.04): both executables build, the example's session
-boots, and the pruner works there too: the tour's `leak` group holds the live heap at 78 MB over five reloads
+Linux (x86_64, GHC 9.14.1 and cabal 3.18 from ghcup, Ubuntu 24.04): both executables build and the tour passes,
+145 of 145 steps. The pruner works there too: the tour's `leak` group holds the live heap at 78 MB over five reloads
 where plain GHCi grows 243 MB, its `partial` group passes, and `hygiene/repro/run.sh` passes (and `unsafe` dies,
 as on macOS). The ELF half of `hygiene/c/ghci_cafs.c` finds the libraries with `dl_iterate_phdr` and each one's
 exported symbols in its file's `.dynsym`; a temporary library's dlopen handle comes from `dlopen(RTLD_NOLOAD)`,
 since the ObjectCode offset measured on arm64 does not hold on x86_64 (the pruner checks the handle names the
 file, and touches nothing if one does not). The format-free parts are `caf_common.h` and `caf_modules.h`, which
-the Mach-O half includes where it had them. Still not on Linux: `compose --add`, which
-restarts the repl instead of adding the package live: cabal there starts the repl with ONE response file holding
-every argument, which the live path does not yet read. The history, the view and the compactor are platform-free.
+the Mach-O half includes where it had them. `compose --add` takes a package into the running repl there as on
+macOS: cabal 3.18 on Linux starts the repl with ONE response file holding every argument (the flags, then a
+`-unit @file` per unit), which the live path now opens up, and a unit is known by the `-this-unit-id` its file
+declares, not by the file's name (which carries the build tool's numbering of that run, moved by a unit added
+before it). The history, the view and the compactor are platform-free.
 The heap census works on Linux: the engine exports its `ghs_*` functions to code loaded into it
 (`--export-dynamic-symbol=ghs_*`; Linux shows `dlsym` none of an executable's own symbols otherwise, and every
 `census`, the store and the major GC answered "not the engine"), and the RTS's private lists (`dyn_caf_list`,
