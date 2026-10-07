@@ -15,7 +15,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe)
 import System.Directory
-import System.Environment (getArgs, getExecutablePath)
+import System.Environment (getArgs, getExecutablePath, setEnv)
 import System.Exit (ExitCode (..), exitWith)
 import System.FilePath (makeRelative, takeFileName, (</>))
 import System.IO
@@ -461,6 +461,7 @@ cmdSearch conf a = do
   let q = fromMaybe "" (pos a 0)
   when (null q) (die' "search: what are you looking for? (e.g. `ghci-session search mySymbol` or `ghci-session search --files myFile`)")
   sname <- pick conf (opt a ["-s", "-t", "--session"])
+  when (flag a ["--fff"]) (setEnv "GHS_SEARCH" "fff")
   let maxN = maybe 30 read (opt a ["-n"]) :: Int
       isFiles = flag a ["--files", "-f"]
       isJson = flag a ["--json"]
@@ -503,7 +504,7 @@ usage = unlines
   , "  vfs [PATH] [-s SESSION] [--budget N] [--json]   virtual file system and line budget inspector (<250 lines)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
-  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   search the code (grep: a regular expression, smart case) or, with --files, file names; noted in the session's history"
+  , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   search the code (grep: a regular expression, smart case) or, with --files, file names; --fff: with the FFF library instead (see README)"
   , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"

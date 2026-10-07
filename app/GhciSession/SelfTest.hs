@@ -320,8 +320,17 @@ run = do
   writeFile (grepDir </> "src" </> "A.hs") "module A where\nrunSteps :: Int\nrunSteps = 1 -- (a note\n"
   writeFile (grepDir </> "dist-newstyle" </> "B.hs") "runSteps built\n"
   grepRes <- Search.grep grepDir "runSteps" 10
-  check "search: grep finds the lines with their numbers, and leaves build directories alone"
-    (case grepRes of { Right j -> [ (lookupStr "path" i, lookupNum "line" i) | i <- lookupArr "items" j ] == [(Just "src/A.hs", Just 2), (Just "src/A.hs", Just 3)]; Left _ -> False })
+  fffOn <- Search.fffRequested      -- (opt-in: GHS_SEARCH=fff; then the library must load and find the same lines)
+  let hitsOf r = case r of { Right j -> [ (lookupStr "path" i, lookupNum "line" i) | i <- lookupArr "items" j ]; Left _ -> [] }
+      aLines = [(Just "src/A.hs", Just 2), (Just "src/A.hs", Just 3)]
+  check "search: grep finds the lines with their numbers" (all (`elem` hitsOf grepRes) aLines)
+  -- (the default engine leaves build directories out by name; FFF goes by .gitignore, and this directory has none)
+  unless fffOn (check "search: grep leaves build directories alone" (hitsOf grepRes == aLines))
+  when fffOn $ do
+    avail <- Search.isAvailable
+    check "search: FFF was asked for (GHS_SEARCH=fff) and its library is loaded" avail
+    viaFff <- Search.grep grepDir "runSteps" 10
+    check "search: FFF finds the lines too" (case viaFff of { Right j -> lookupStr "engine" j == Just "fff" && not (null (lookupArr "items" j)); Left _ -> False })
   grepLit <- Search.grep grepDir "(a note" 10
   check "search: a query that is not a regular expression is searched as text" (case grepLit of { Right j -> length (lookupArr "items" j) == 1; Left _ -> False })
   removeDirectoryRecursive grepDir

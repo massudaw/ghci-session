@@ -1,12 +1,17 @@
+{-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- | Code and file search for the agent and the command line: content by the system @grep@, file names by a walk
--- of the project, each answered as the same JSON, with session-aware metadata logging and formatted output.
--- (It was a native library, FFF, loaded at run time; a plain @grep@ is on every machine this runs on and is as
--- fast on a project of this size, with nothing to download, find or keep in step with a struct layout.)
+-- | Code and file search for the agent and the command line, answered as JSON, with session-aware metadata logging
+-- and formatted output. Two engines. The default is the system @grep@ for contents and a walk of the project for
+-- file names: on every machine this runs on, nothing to download. FFF (a native file-finder library,
+-- 'cbits/ghs_fff.c', loaded at run time) is opt-in: @GHS_SEARCH=fff@ in the environment, or @search --fff@, and
+-- @FETCH_FFF=1 ./build.sh@ fetches the library. If it was asked for and cannot be loaded, the answer is from the
+-- default engine and says so.
 module GhciSession.Search
   ( grep
   , searchFiles
+  , fffRequested
+  , isAvailable
   , formatGrep
   , formatFiles
   , recordSearchMetadata
@@ -16,6 +21,10 @@ module GhciSession.Search
 
 import Control.Exception (SomeException, try)
 import Control.Monad (void)
+import Foreign.C.String (CString, withCString, peekCString)
+import Foreign.C.Types (CInt (..), CSize (..))
+import Foreign.Marshal.Alloc (allocaBytes)
+import System.Environment (lookupEnv)
 import Data.Char (isUpper, toLower)
 import Data.List (isInfixOf, isPrefixOf, sortOn)
 import Data.Maybe (fromMaybe, mapMaybe)
@@ -30,6 +39,44 @@ import Text.Printf (printf)
 import GhciSession.Json
 import GhciSession.Config
 import qualified GhciSession.Mcp as Mcp
+
+-- the engine ---------------------------------------------------------------------------------
+
+foreign import ccall unsafe "ghs_fff_available" c_fff_available :: IO CInt
+foreign import ccall safe "ghs_fff_grep" c_fff_grep :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
+foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
+
+-- | Was FFF asked for (@GHS_SEARCH=fff@)?
+fffRequested :: IO Bool
+fffRequested = (== Just "fff") <$> lookupEnv "GHS_SEARCH"
+
+-- | Is the FFF native library loaded and operational?
+isAvailable :: IO Bool
+isAvailable = (== 1) <$> c_fff_available
+
+-- | Run a search with FFF when it was asked for and loads; else with the default engine, the answer saying why.
+withEngine :: (FilePath -> String -> Int -> IO (Either String Json))      -- ^ the default engine
+           -> (CString -> CString -> CInt -> CString -> CSize -> IO CInt)  -- ^ FFF's
+           -> Int -> FilePath -> String -> Int -> IO (Either String Json)
+withEngine plain fff bufSize dir query maxResults = do
+  wanted <- fffRequested
+  avail <- if wanted then isAvailable else pure False
+  if avail
+    then withCString dir $ \cDir -> withCString query $ \cQ -> allocaBytes bufSize $ \cBuf -> do
+           _ <- fff cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
+           str <- peekCString cBuf
+           pure (fmap (set "engine" (JStr "fff")) (parseJson str))
+    else do
+      r <- plain dir query maxResults
+      pure (if wanted then fmap (set "note" (JStr "FFF was asked for (GHS_SEARCH=fff) but its library could not be loaded: this is grep's answer")) r else r)
+
+-- | Search file contents (live grep) in the given directory.
+grep :: FilePath -> String -> Int -> IO (Either String Json)
+grep = withEngine grepSystem c_fff_grep (512 * 1024)
+
+-- | Search file names in the given directory.
+searchFiles :: FilePath -> String -> Int -> IO (Either String Json)
+searchFiles = withEngine filesWalk c_fff_search_files (256 * 1024)
 
 -- | Directories no search looks in: version control, this tool's own state, build output (@dist*@).
 skippedDir :: String -> Bool
@@ -55,8 +102,8 @@ parseGrepLine l = case break (== ':') l of
 
 -- | Search file contents in the given directory: the lines matching a regular expression (the literal text when
 -- it is not one), by path and line.
-grep :: FilePath -> String -> Int -> IO (Either String Json)
-grep dir query maxResults
+grepSystem :: FilePath -> String -> Int -> IO (Either String Json)
+grepSystem dir query maxResults
   | null query = pure (Left "empty query")
   | otherwise = do
       let n = if maxResults <= 0 then 30 else maxResults
@@ -84,8 +131,8 @@ grep dir query maxResults
 
 -- | Search file names in the given directory: those that contain the query (case does not matter), the ones whose
 -- file name does first, then those that have its letters in order.
-searchFiles :: FilePath -> String -> Int -> IO (Either String Json)
-searchFiles dir query maxResults
+filesWalk :: FilePath -> String -> Int -> IO (Either String Json)
+filesWalk dir query maxResults
   | null query = pure (Left "empty query")
   | otherwise = do
       let n = if maxResults <= 0 then 20 else maxResults
@@ -130,7 +177,7 @@ walk root rel = do
 -- | Format grep results for human terminal consumption or agent replies.
 formatGrep :: Json -> T.Text
 formatGrep j = case lookupArr "items" j of
-  [] -> T.pack "No matches found."
+  [] -> T.pack ("No matches found." ++ concatMap ("\n" ++) (noteOf j))
   items ->
     let total = fromMaybe (length items) (lookupNum "total_matched" j >>= Just . round) :: Int
         q = fromMaybe "" (lookupStr "query" j)
@@ -140,15 +187,17 @@ formatGrep j = case lookupArr "items" j of
           let p = fromMaybe "" (lookupStr "path" item)
               ln = fromMaybe 0 (lookupNum "line" item >>= Just . round) :: Int
               c = fromMaybe "" (lookupStr "content" item)
-          in printf "  %s:%d: %s" p ln (trimLeading c) :: String
+              st = fromMaybe "" (lookupStr "git_status" item)
+              badge = if null st || st == "clean" then "" else " [" ++ st ++ "]"
+          in printf "  %s:%d:%s %s" p ln badge (trimLeading c) :: String
         linesOut = map renderItem items
-    in T.pack (unlines (hdr : linesOut))
+    in T.pack (unlines (hdr : linesOut ++ noteOf j))
   where trimLeading = dropWhile (== ' ')
 
 -- | Format file search results.
 formatFiles :: Json -> T.Text
 formatFiles j = case lookupArr "items" j of
-  [] -> T.pack "No files found."
+  [] -> T.pack ("No files found." ++ concatMap ("\n" ++) (noteOf j))
   items ->
     let total = fromMaybe (length items) (lookupNum "total_matched" j >>= Just . round) :: Int
         q = fromMaybe "" (lookupStr "query" j)
@@ -161,7 +210,11 @@ formatFiles j = case lookupArr "items" j of
               frecBadge = if frec > 0 then printf " (frecency: %d)" frec else "" :: String
           in printf "  %s%s%s" p badge frecBadge :: String
         linesOut = map renderItem items
-    in T.pack (unlines (hdr : linesOut))
+    in T.pack (unlines (hdr : linesOut ++ noteOf j))
+
+-- | What the answer says about how it was made, when it matters: FFF asked for and not there.
+noteOf :: Json -> [String]
+noteOf j = [ "[" ++ n ++ "]" | Just n <- [lookupStr "note" j] ]
 
 -- | Note a search in the session's history (through the daemon, which owns the log: opening it here cost 0.9 s
 -- on a 5 MB history). A session that is not running has no history to add to, and nothing is lost by that.

@@ -25,3 +25,31 @@ if [ "$(uname)" = Darwin ]; then
     cc -dynamiclib -O2 -o .bin/libghsmem.dylib.new hygiene/c/mem_return.c && mv .bin/libghsmem.dylib.new .bin/libghsmem.dylib
   fi
 fi
+# FFF (https://github.com/dmtrKovalenko/fff), the opt-in search engine (GHS_SEARCH=fff, `search --fff`; the default
+# is the system grep). Not fetched unless asked for: FETCH_FFF=1 ./build.sh puts the latest release's library in
+# lib/ (git-ignored) and beside the executables in .bin/; FFF_URL overrides the source. A library already in lib/
+# is copied beside the executables, where it is looked for first.
+if [ "${FETCH_FFF:-0}" = 1 ]; then
+  case "$(uname -s)-$(uname -m)" in
+    Darwin-arm64)              fff_target=aarch64-apple-darwin;      fff_ext=dylib ;;
+    Darwin-x86_64)             fff_target=x86_64-apple-darwin;       fff_ext=dylib ;;
+    Linux-x86_64)              fff_target=x86_64-unknown-linux-gnu;  fff_ext=so ;;
+    Linux-aarch64|Linux-arm64) fff_target=aarch64-unknown-linux-gnu; fff_ext=so ;;
+    *)                         fff_target=;                          fff_ext= ;;
+  esac
+  if [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ]; then
+    mkdir -p lib
+    fff_url="${FFF_URL:-https://github.com/dmtrKovalenko/fff/releases/latest/download/c-lib-$fff_target.$fff_ext}"
+    if curl -fsSL --retry 2 -o "lib/libfff.$fff_ext.new" "$fff_url"; then
+      mv "lib/libfff.$fff_ext.new" "lib/libfff.$fff_ext"
+    else
+      rm -f "lib/libfff.$fff_ext.new"
+      echo "build.sh: could not download libfff from $fff_url" >&2
+    fi
+  fi
+fi
+for ext in dylib so; do
+  if [ -f "lib/libfff.$ext" ] && [ ! -f ".bin/libfff.$ext" ]; then
+    cp "lib/libfff.$ext" ".bin/libfff.$ext"
+  fi
+done

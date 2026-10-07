@@ -658,7 +658,7 @@ start [--no-test] [--fast] | stop | restart [--fast] | status [-d] [SESSION]
 reload [--no-test] [--no-refork] [--async-refork] [SESSION]
 hold [--timeout SECS] [SESSION] | release [SESSION]
 typecheck [SESSION]
-search QUERY [--files] [-n N] [--json] [-s SESSION]   grep the code (a regular expression, else the text; smart case; build and binary files skipped), or file names
+search QUERY [--files] [--fff] [-n N] [--json] [-s SESSION]   grep the code (a regular expression, else the text; smart case; build and binary files skipped), or file names
 test [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]
 compose SESSION [MEMBERS...] [--add M] [--remove M]
@@ -674,6 +674,13 @@ mcp                                      # the session and its memory as an agen
 With no session named, a command goes to the one that is running (else the config's `default`).
 `reload --no-test` stops at the compile verdict, and says so (`CHECK SKIPPED`), so a compile-only verdict is never
 mistaken for a check that passed.
+
+**Search** (`search`, and the chat's `grep` and `find`) uses the system `grep` for contents and a walk of the
+project for file names: a regular expression (the text itself when it is not one), case ignored unless the query
+has a capital, binary files and build directories (`dist*`, `.git`, ...) left out. [FFF](https://github.com/dmtrKovalenko/fff),
+a native file finder with frecency and git status, is the opt-in alternative: `FETCH_FFF=1 ./build.sh` fetches its
+library (into `lib/` and `.bin/`), and `GHS_SEARCH=fff` in the environment, or `search --fff`, uses it. Asked for
+and not loadable, the answer is grep's and says so.
 
 ## Composed sessions
 
