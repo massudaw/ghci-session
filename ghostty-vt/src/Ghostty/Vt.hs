@@ -16,6 +16,8 @@ module Ghostty.Vt
   , Scroll (..), scroll
     -- * Its screen
   , Screen (..), Row, Cell (..), Wide (..), RGB (..), CursorStyle (..), screen, screenText
+    -- * Keys for the program it runs
+  , KeyEncoder, newKeyEncoder, freeKeyEncoder, KeyEvent (..), KeyAction (..), Mod (..), encodeKey
   ) where
 
 import Control.Concurrent.MVar
@@ -27,6 +29,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import Data.Word (Word8)
+import Foreign.C.String (withCStringLen)
 import Foreign.C.String (peekCString, withCString)
 import Foreign.Marshal.Alloc (alloca, allocaBytes)
 import Foreign.Marshal.Array (peekArray)
@@ -224,3 +227,50 @@ rgb2 ws = (rgb1 ws, rgb1 (drop 3 ws))
 -- | The screen as plain lines (a wide character once, its spacer skipped), trailing blanks cut.
 screenText :: Screen -> [T.Text]
 screenText s = [ T.stripEnd (T.concat [ if T.null (cText c) then T.singleton ' ' else cText c | c <- row, cWide c /= SpacerTail, cWide c /= SpacerHead ]) | row <- sCells s ]
+
+-- keys ----------------------------------------------------------------------------------------
+
+-- | Encodes keys as the program in a terminal expects them, by the modes that terminal is in.
+newtype KeyEncoder = KeyEncoder (Ptr ())
+
+newKeyEncoder :: IO (Either String KeyEncoder)
+newKeyEncoder = do
+  p <- c_key_encoder_new
+  if p == nullPtr then Left <$> libraryError else pure (Right (KeyEncoder p))
+
+freeKeyEncoder :: KeyEncoder -> IO ()
+freeKeyEncoder (KeyEncoder p) = c_key_encoder_free p
+
+data KeyAction = Press | Release | Repeat
+  deriving (Eq, Show, Enum)
+
+data Mod = Shift | Ctrl | Alt | Super
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+-- | A key as a keyboard reports it: the physical key by name (@"a"@, @"digit_1"@, @"arrow_up"@, @"enter"@,
+-- @"f5"@, @"unidentified"@ ...), the modifiers held, the text it types under the layout (empty when none),
+-- and the key's unshifted character.
+data KeyEvent = KeyEvent
+  { keAction :: KeyAction
+  , keKey :: String
+  , keMods :: [Mod]
+  , keText :: T.Text
+  , keUnshifted :: Maybe Char
+  } deriving (Eq, Show)
+
+-- | The bytes the program in the terminal should receive for this key, encoded for the modes the terminal
+-- is in now (application cursor keys, the kitty keyboard protocol, modifyOtherKeys, ...). Empty when the
+-- key has no encoding (a lone modifier); 'Left' for a key name the encoder does not know.
+encodeKey :: KeyEncoder -> Terminal -> KeyEvent -> IO (Either String B.ByteString)
+encodeKey (KeyEncoder enc) t ev = withMVar (tLock t) $ \_ ->
+  withCString (keKey ev) $ \name -> withCStringLen (T.unpack (keText ev)) $ \(utf8, ulen) -> do
+    let mods = sum [ case m of { Shift -> 1; Ctrl -> 2; Alt -> 4; Super -> 8 } | m <- keMods ev ] :: Int
+        action = case keAction ev of { Press -> 1; Release -> 0; Repeat -> 2 }
+        unshifted = maybe 0 (fromIntegral . fromEnum) (keUnshifted ev)
+        go cap = allocaBytes cap $ \out -> do
+          n <- c_key_encode enc (tPtr t) action name (fromIntegral mods) utf8 (fromIntegral ulen) unshifted out (fromIntegral cap)
+          if n >= 0 then Right <$> B.packCStringLen (out, fromIntegral n)
+          else if n == -1 then go (cap * 4)
+          else if n == -2 then pure (Left ("unknown key " ++ show (keKey ev)))
+          else pure (Left "libghostty-vt could not encode the key")
+    go 256

@@ -5,9 +5,9 @@
 -- the write-to-program callback, so those two are @safe@ imports; the rest never call back.
 module Ghostty.Vt.Raw where
 
-import Data.Word (Word8)
+import Data.Word (Word32, Word8)
 import Foreign.C.String (CString)
-import Foreign.C.Types (CChar (..), CInt (..), CLong (..), CSize (..))
+import Foreign.C.Types (CChar (..), CInt (..), CLong (..), CSize (..), CUInt (..))
 import Foreign.Ptr (FunPtr, Ptr)
 
 type WriteFn = Ptr () -> Ptr Word8 -> CSize -> IO ()
@@ -36,3 +36,6 @@ foreign import ccall unsafe "gvt_pty_spawn" c_pty_spawn :: CString -> CString ->
 foreign import ccall unsafe "gvt_pty_resize" c_pty_resize :: CInt -> CInt -> CInt -> IO CInt
 foreign import ccall unsafe "gvt_pty_wait" c_pty_wait :: CInt -> IO CInt
 foreign import ccall "wrapper" mkWriteFn :: WriteFn -> IO (FunPtr WriteFn)
+foreign import ccall unsafe "gvt_key_encoder_new" c_key_encoder_new :: IO (Ptr ())
+foreign import ccall unsafe "gvt_key_encoder_free" c_key_encoder_free :: Ptr () -> IO ()
+foreign import ccall unsafe "gvt_key_encode" c_key_encode :: Ptr () -> Ptr () -> CInt -> CString -> CUInt -> Ptr CChar -> CSize -> Word32 -> Ptr CChar -> CSize -> IO CInt

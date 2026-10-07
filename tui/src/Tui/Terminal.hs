@@ -4,7 +4,7 @@
 -- a loop waits on.
 module Tui.Terminal
   ( withRawTerminal, termSize
-  , Key (..), decodeKey, Event (..), Events (..), startEvents, wake
+  , Key (..), Mod (..), KeyPress (..), decodeKey, decodeKeyPress, Event (..), Events (..), startEvents, wake
   ) where
 
 import Control.Concurrent (forkIO)
@@ -44,45 +44,65 @@ withRawTerminal act = do
     hFlush stdout
     setTerminalAttributes stdInput old Immediately
 
-data Key = KChar Char | KUp | KDown | KLeft | KRight | KPgUp | KPgDn | KHome | KEnd | KEsc | KEnter | KBackspace | KDelete | KTab | KFn Int
+data Key = KChar Char | KUp | KDown | KLeft | KRight | KPgUp | KPgDn | KHome | KEnd | KEsc | KEnter | KBackspace | KDelete | KInsert | KTab | KFn Int
+  deriving (Eq, Show)
+
+data Mod = Shift | Ctrl | Alt
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+-- | What was typed: the key, the modifiers the terminal reported with it, and the bytes it sent.
+data KeyPress = KeyPress { kKey :: Key, kMods :: [Mod], kBytes :: BC.ByteString }
   deriving (Eq, Show)
 
 -- | A key from the bytes a terminal sends for it; a sequence it does not know is 'KEsc'.
 decodeKey :: String -> Key
-decodeKey s = case s of
-  "\ESC[A" -> KUp
-  "\ESC[B" -> KDown
-  "\ESC[C" -> KRight
-  "\ESC[D" -> KLeft
-  "\ESCOA" -> KUp
-  "\ESCOB" -> KDown
-  "\ESCOC" -> KRight
-  "\ESCOD" -> KLeft
-  "\ESC[5~" -> KPgUp
-  "\ESC[6~" -> KPgDn
-  "\ESC[H" -> KHome
-  "\ESC[1~" -> KHome
-  "\ESCOH" -> KHome
-  "\ESC[F" -> KEnd
-  "\ESC[4~" -> KEnd
-  "\ESCOF" -> KEnd
-  "\ESC[3~" -> KDelete
-  "\ESCOP" -> KFn 1
-  "\ESCOQ" -> KFn 2
-  "\ESCOR" -> KFn 3
-  "\ESCOS" -> KFn 4
-  "\ESC" -> KEsc
-  "\r" -> KEnter
-  "\n" -> KEnter
-  "\t" -> KTab
-  "\DEL" -> KBackspace
-  "\b" -> KBackspace
-  [c] -> KChar c
-  _ -> KEsc
+decodeKey = kKey . decodeKeyPress
+
+-- | A key and its modifiers from the bytes: the xterm forms (@ESC [ 1 ; m A@, @ESC [ 3 ; m ~@, where
+-- @m - 1@ is a bitmask of shift 1, alt 2, ctrl 4), a control character as Ctrl and its letter, an escape
+-- before a character as Alt and the character.
+decodeKeyPress :: String -> KeyPress
+decodeKeyPress s = case s of
+  '\ESC' : '[' : rest | Just (params, final) <- csi rest -> let (k, ms) = csiKey params final in KeyPress k ms bytes
+  '\ESC' : 'O' : [c] -> KeyPress (ss3 c) [] bytes
+  ['\ESC', c] | c /= '\ESC' -> let KeyPress k ms _ = decodeKeyPress [c] in KeyPress k (Alt : ms) bytes
+  _ -> KeyPress (plainKey s) (mods s) bytes
+  where
+    bytes = BC.pack s
+    csi r = let (ps, f) = span (\c -> c < '@' || c > '~') r in case f of { [c] -> Just (ps, c); _ -> Nothing }
+    nums ps = map (\x -> case reads x of { [(n, "")] -> n; _ -> 0 :: Int }) (splitOn ';' ps)
+    splitOn c str = case break (== c) str of { (x, _ : y) -> x : splitOn c y; (x, []) -> [x] }
+    xmods n = [ Shift | n' `mod` 2 == 1 ] ++ [ Alt | n' `div` 2 `mod` 2 == 1 ] ++ [ Ctrl | n' `div` 4 `mod` 2 == 1 ] where n' = max 0 (n - 1)
+    csiKey params final =
+      let ns = nums params
+          m = case ns of { (_ : x : _) -> xmods x; _ -> [] }
+          byNum n = case n of { 1 -> KHome; 2 -> KInsert; 3 -> KDelete; 4 -> KEnd; 5 -> KPgUp; 6 -> KPgDn; 7 -> KHome; 8 -> KEnd
+                              ; 11 -> KFn 1; 12 -> KFn 2; 13 -> KFn 3; 14 -> KFn 4; 15 -> KFn 5; 17 -> KFn 6; 18 -> KFn 7; 19 -> KFn 8
+                              ; 20 -> KFn 9; 21 -> KFn 10; 23 -> KFn 11; 24 -> KFn 12; _ -> KEsc }
+      in case final of
+           'A' -> (KUp, m); 'B' -> (KDown, m); 'C' -> (KRight, m); 'D' -> (KLeft, m); 'H' -> (KHome, m); 'F' -> (KEnd, m)
+           'P' -> (KFn 1, m); 'Q' -> (KFn 2, m); 'R' -> (KFn 3, m); 'S' -> (KFn 4, m)
+           'Z' -> (KTab, Shift : m)
+           '~' -> (byNum (case ns of { (x : _) -> x; [] -> 0 }), m)
+           _ -> (KEsc, [])
+    ss3 c = case c of { 'A' -> KUp; 'B' -> KDown; 'C' -> KRight; 'D' -> KLeft; 'H' -> KHome; 'F' -> KEnd; 'P' -> KFn 1; 'Q' -> KFn 2; 'R' -> KFn 3; 'S' -> KFn 4; _ -> KEsc }
+    plainKey str = case str of
+      "\ESC" -> KEsc
+      "\r" -> KEnter
+      "\n" -> KEnter
+      "\t" -> KTab
+      "\DEL" -> KBackspace
+      "\b" -> KBackspace
+      [c] | c < ' ' -> KChar (toEnum (fromEnum c + 96))     -- ^A..^Z as the letter, with Ctrl
+      [c] -> KChar c
+      _ -> KEsc
+    mods str = case str of
+      [c] | c < ' ' && c `notElem` "\ESC\r\n\t\b" -> [Ctrl]
+      _ -> []
 
 -- | What a loop sees: a key with the bytes that made it, the terminal resized, a tick, or a wake from
 -- another thread.
-data Event = EvKey BC.ByteString Key | EvResize | EvTick | EvWake
+data Event = EvKey KeyPress | EvResize | EvTick | EvWake
   deriving (Eq, Show)
 
 data Events = Events { evQueue :: TQueue Event, evWakes :: TVar Int }
@@ -118,10 +138,10 @@ reader q = loop
             if c2 `elem` "[O" then do
               rest <- final
               push ('\ESC' : c2 : rest)
-            else push "\ESC" >> push [c2]
+            else push ['\ESC', c2]          -- (alt and the key)
           loop
         Right c -> push [c] >> loop
     final = do
       c <- hGetChar stdin
       if c >= '@' && c <= '~' then pure [c] else (c :) <$> final
-    push s = atomically (writeTQueue q (EvKey (BC.pack s) (decodeKey s)))
+    push s = atomically (writeTQueue q (EvKey (decodeKeyPress s)))
