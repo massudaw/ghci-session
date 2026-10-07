@@ -192,6 +192,10 @@ run = do
   loadConf tmp >>= \r -> case r of
     Right c -> resolve c "a" >>= \g -> eq "config: `test` is what `check` was" (either (const []) (map ckExpr . gChecks) g, either (const True) gWatchCheck g) (["T.run"], False)
     Left e -> check ("config: `test` accepted: " ++ e) False
+  writeConf "{\"targets\": {\"a\": {\"test\": {\"expr\": \"T.run\"}, \"watch_test\": true}}}"
+  loadConf tmp >>= \r -> case r of
+    Right c -> resolve c "a" >>= \g -> eq "config: watch_test can be enabled" (either (const False) gWatchCheck g) True
+    Left e -> check ("config: `test` accepted: " ++ e) False
   writeConf "{\"targets\": {\"a\": {\"chek\": {}}}}"
   loadConf tmp >>= \r -> check "config: an unknown key is refused" (either ("unknown key" `isInfixOf`) (const False) r)
   writeConf "{\"targets\": {\"a\": {}}, \"sessions\": {\"dev\": [\"nope\"]}}"

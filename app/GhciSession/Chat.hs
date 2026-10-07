@@ -225,7 +225,7 @@ verdictAfter :: Chat -> Double -> Double -> IO (Maybe Verdict)
 verdictAfter ch written secs = do
   t0 <- now
   let go running = do
-        threadDelay 250000
+        threadDelay 50000
         t <- now
         v <- verdictAt ch
         case v of
@@ -241,7 +241,7 @@ verdictAfter ch written secs = do
 -- the save; a longer one is not waited for -- the agent goes on, and gets it with a later tool result.
 -- (Saves were 79 of an agent's 249 tool minutes, most of it checks of 20-100 s, once per edit of a fix.)
 checkGrace :: Double
-checkGrace = 6
+checkGrace = 0
 
 -- | The verdict of the check a save left running, once it is in: a note for the tool result it rides on.
 pendingNote :: Chat -> IO T.Text
@@ -269,7 +269,7 @@ awaitPending ch = do
     verdictAfter' written secs = do
       t0 <- now
       let go = do
-            threadDelay 250000
+            threadDelay 50000
             t <- now
             v <- verdictAt ch
             case v of
