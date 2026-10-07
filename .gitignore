@@ -1,5 +1,7 @@
 .ghci-session/
 nes
+gba
+arcade
 dist-newstyle/
 __pycache__/
 .bin/
