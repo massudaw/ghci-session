@@ -23,6 +23,7 @@ import Control.Monad (forM, forM_, unless, void)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.Char (isDigit)
+import Data.IORef
 import Data.List (intercalate, isInfixOf, isPrefixOf)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
@@ -36,6 +37,7 @@ import System.Environment (getExecutablePath, lookupEnv)
 import System.Exit (exitWith, ExitCode (..))
 import System.FilePath (takeDirectory, (</>))
 import System.IO
+import Text.Printf (printf)
 
 import qualified Ghostty.Vt as Vt
 import Tui
@@ -84,11 +86,11 @@ stHi = inverse plain
 
 -- the state ----------------------------------------------------------------------------
 
-data Tab = THistory | TView | TLog | TVerdict | TUsage | TChat | TShell
+data Tab = THistory | TView | TLog | TVerdict | TUsage | THeap | TChat | TShell
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 tabName :: Tab -> String
-tabName t = case t of { THistory -> "1 history"; TView -> "2 view"; TLog -> "3 log"; TVerdict -> "4 verdict"; TUsage -> "5 usage"; TChat -> "6 chat"; TShell -> "7 shell" }
+tabName t = case t of { THistory -> "1 history"; TView -> "2 view"; TLog -> "3 log"; TVerdict -> "4 verdict"; TUsage -> "5 usage"; THeap -> "6 heap"; TChat -> "7 chat"; TShell -> "8 shell" }
 
 isPane :: Tab -> Bool
 isPane t = t == TChat || t == TShell
@@ -113,10 +115,17 @@ data St = St
   , sOpen :: S.Set Int                -- ^ the history's messages shown whole (the others are cut at 'cutAt' lines)
   , sAllOpen :: Bool                  -- ^ every message shown whole
   , sCur :: Maybe Int                 -- ^ the history's current message (none: the last)
+  , sMemHist :: [(Double, Int, Int)]  -- ^ the resident memory of the repl and the servers, MB, at each look; newest first
+  , sHeap :: Maybe Heap               -- ^ the last report of the heap
+  , sHeapBusy :: Maybe String         -- ^ a report being taken: which
   , sWake :: IO ()                    -- ^ what a pane calls when it has something to show
   }
 
-data Env = Env { eConf :: Conf, eName :: String, eDir :: FilePath }
+-- | A report of the heap: which, when it was taken and how long it took, its lines.
+data Heap = Heap { hMode :: String, hAt :: String, hSecs :: Double, hLines :: [String] }
+
+data Env = Env { eConf :: Conf, eName :: String, eDir :: FilePath
+               , eHeap :: IORef (Maybe Heap) }      -- ^ a report taken on a thread, until the screen takes it
 
 topMain :: Conf -> Maybe String -> IO ()
 topMain conf mname = do
@@ -125,8 +134,9 @@ topMain conf mname = do
   unless term (hPutStrLn stderr "top: standard input is not a terminal" >> exitWith (ExitFailure 2))
   vtErr <- loadVt
   let dir = cStateDir conf </> name
-      env = Env conf name dir
-      st0 = St THistory M.empty (M.fromList [ (t, True) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing (pure ())
+  heapBox <- newIORef Nothing
+  let env = Env conf name dir heapBox
+      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ())
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -145,7 +155,7 @@ event :: Env -> Event -> St -> IO (Maybe St)
 event env e st = case e of
   EvTick -> Just <$> (refresh env st >>= panes env)
   EvResize -> Just <$> (refresh env st >>= panes env)
-  EvWake -> Just <$> panes env st
+  EvWake -> Just <$> (takeHeap env st >>= panes env)
   EvKey kp -> do
     r <- key env kp st
     case r of
@@ -182,6 +192,7 @@ key env kp@(KeyPress k _ bytes) st
       KChar 'o' | history -> pure (Just (toggle, False))
       KChar 'x' | history -> pure (Just (toggle, False))
       KChar 'a' | history -> pure (Just (showCur st' { sAllOpen = not (sAllOpen st), sOpen = S.empty }, False))
+      KChar c | sTab st == THeap, Just mode <- lookup c heapKeys -> heapReport mode
       KChar 'R' -> act "reload" [] >> pure (Just (st' { sNote = "reload sent" }, True))
       KChar 'T' -> act "check" [] >> pure (Just (st' { sNote = "test sent" }, True))
       KEnter | isPane (sTab st) -> restartDead
@@ -195,7 +206,24 @@ key env kp@(KeyPress k _ bytes) st
   where
     ctrlA = bytes == BC.pack "\SOH"
     st' = st { sPrefix = False }
-    tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', TChat), ('c', TChat), ('7', TShell), ('s', TShell)]
+    tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', THeap), ('m', THeap), ('7', TChat), ('c', TChat), ('8', TShell), ('s', TShell)]
+    heapKeys = [('M', "mem"), ('C', "cafs"), ('S', "strings"), ('K', "kept"), ('D', "dups")]
+    -- a report of the heap, on a thread (a major collection and a walk of the heap: a second or more, the
+    -- session paused); the screen is woken when it is in
+    heapReport mode = case sHeapBusy st of
+      Just _ -> pure (Just (st' { sNote = "a report is being taken" }, False))
+      Nothing -> do
+        _ <- forkIO $ do
+          t0 <- now
+          r <- try (Mcp.request (eConf env) (eName env) (JObj [("op", JStr "census"), ("mode", JStr mode), ("top", JNum 12)])) :: IO (Either SomeException Json)
+          t1 <- now
+          at <- formatTime defaultTimeLocale "%H:%M:%S" <$> utcToLocalZonedTime (posixSecondsToUTCTime (realToFrac t1))
+          let ls = case r of
+                Right j -> lines (maybe "" T.unpack (lookupText "out" j))
+                Left e -> ["the request failed: " ++ show e]
+          writeIORef (eHeap env) (Just (Heap mode at (t1 - t0) ls))
+          sWake st
+        pure (Just (st' { sHeapBusy = Just mode, sScroll = M.insert THeap 0 (sScroll st) }, False))
     page = max 1 (snd (sSize st) - 4)
     follow on = st' { sFollow = M.insert (sTab st) on (sFollow st) }
     history = sTab st == THistory && not (null (sHist st))
@@ -277,8 +305,11 @@ refresh env st = do
       rows <- usageRows (eConf env) [eName env] 0
       pure (if null rows then ["  no model calls recorded (the chat and the compactor write usage.jsonl)"] else usageTable (eConf env) rows, t)
     else pure (sUsage st, sUsageAt st)
-  pure st { sSize = size, sStatus = status, sInfo = info, sHist = hist, sLog = logLines, sLogSize = logSize
-          , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt }
+  let memHist = case info of
+        Just i | Just r <- lookupNum "repl_mb" i -> take 2400 ((t, round r, maybe 0 round (lookupNum "servers_mb" i)) : sMemHist st)
+        _ -> sMemHist st
+  takeHeap env st { sSize = size, sStatus = status, sInfo = info, sHist = hist, sLog = logLines, sLogSize = logSize
+                  , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt, sMemHist = memHist }
   where
     answer op args = do
       r <- try (Mcp.request (eConf env) (eName env) (JObj (("op", JStr op) : args))) :: IO (Either SomeException Json)
@@ -287,6 +318,14 @@ refresh env st = do
         _ -> Nothing
     stamp 0 = pure "--:--:--"
     stamp d = formatTime defaultTimeLocale "%H:%M:%S" <$> utcToLocalZonedTime (posixSecondsToUTCTime (realToFrac d))
+
+-- | A report of the heap that came in on its thread.
+takeHeap :: Env -> St -> IO St
+takeHeap env st = do
+  r <- readIORef (eHeap env)
+  case r of
+    Nothing -> pure st
+    Just h -> writeIORef (eHeap env) Nothing >> pure st { sHeap = Just h, sHeapBusy = Nothing }
 
 lastN :: Int -> [a] -> [a]
 lastN n xs = drop (length xs - n) xs
@@ -345,7 +384,7 @@ header name st w =
     num k x = maybe "?" (\d -> show (round d :: Int)) (lookupNum k x)
     note | sPrefix st = "  Ctrl-a: next key is the monitor's"
          | isPane (sTab st) = take (w - 70) "  (keys go to the program; Ctrl-a first for the monitor)"
-         | M.findWithDefault True (sTab st) (sFollow st) = ""
+         | sTab st == THeap || M.findWithDefault True (sTab st) (sFollow st) = ""
          | otherwise = take (w - 60) "  (scrolled: f to follow)"
 
 verdictStyle :: String -> Style
@@ -357,9 +396,10 @@ verdictStyle v
 
 bottom :: St -> [Span]
 bottom st
-  | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-7 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
-  | sTab st == THistory = [ (stDim, " q quit  1-7 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
-  | otherwise = [ (stDim, " q quit  1-7 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-8 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
+  | sTab st == THistory = [ (stDim, " q quit  1-8 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | sTab st == THeap = [ (stDim, " q quit  1-8 tabs  j/k scroll  M the heap's figures  C CAFs  S strings  K kept  D dups  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | otherwise = [ (stDim, " q quit  1-8 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
 
 -- | The current tab's lines, from where it is scrolled.
 panelLines :: Int -> St -> [[Span]]
@@ -371,6 +411,7 @@ panelLines w st = drop off ls
       TLog -> [ wrapped (logLine l) | l <- sLog st ] >>= id
       TVerdict -> verdictLines w (sStatus st)
       TUsage -> [ [(plain, l)] | l <- sUsage st ]
+      THeap -> heapLines w st
       _ -> [ [(stRed, "no panes: " ++ fromMaybe "?" (sVtErr st))], [], [(plain, "libghostty-vt is Ghostty's terminal emulation as a C library: tools/libghostty-vt.sh builds it into .bin/,")], [(plain, "or put a libghostty-vt.so of your own beside ghci-session, or name one in GHS_LIBGHOSTTY.")] ]
     (_, h) = sSize st
     page = max 1 (h - 4)
@@ -410,6 +451,44 @@ viewLines w st = [ [ (stBold, " memory  "), (plain, stats) ], [] ] ++ concatMap 
     viewLine l = case break (== '|') l of
       (p, '|' : rest) | all (\c -> isDigit c || c == '+') p && not (null p) -> [ (stDim, p ++ "|"), (if "(not summarized yet" `isPrefixOf` rest then withFg (Ansi 3) plain else plain, rest) ]
       _ -> [ (stBold, l) ]
+
+-- | The heap tab: the resident memory as the daemon reads it at every look, graphed (a column a look, the
+-- last @w@ of them: half a second each); then the last report of the heap, and what the keys take.
+heapLines :: Int -> St -> [[Span]]
+heapLines w st = concat
+  [ wrapped [ (stBold, "resident memory"), (stDim, printf "  repl %d MB, servers %d MB  --  the last %s: %d to %d MB" replNow serversNow span' lo hi) ]
+  , graph 8 stGreen replSeries
+  , wrapped [ (stDim, "  (the repl: its heap and what the RTS holds; a column each half second, the newest at the right; the axis starts near the lowest)") ]
+  , if any (\(_, _, sv) -> sv > 0) (sMemHist st) then [ [] ] ++ graph 4 stBlue serverSeries ++ [ [ (stDim, "  (the servers)") ] ] else []
+  , [ [] ]
+  , wrapped [ (stBold, "the heap"), (stDim, "  M the heap's figures (live, what the RTS holds, major collections)  C the CAFs by what they retain  S the strings  K the kept values  D the sharing that is missed") ]
+  , wrapped [ (stDim, "  (each is a major collection and a walk of the heap: a second or more, the session paused meanwhile; taken when asked, not on its own)") ]
+  , case (sHeapBusy st, sHeap st) of
+      (Just mode, _) -> [ [ (stYellow, "  taking " ++ mode ++ "...") ] ]
+      (_, Nothing) -> [ [ (stDim, "  none taken yet") ] ]
+      (_, Just h) -> [ (stYellow, printf "  %s at %s, %.1fs" (hMode h) (hAt h) (hSecs h)) ] : concat [ wrapped [(plain, "  " ++ l)] | l <- hLines h ]
+  ]
+  where
+    wrapped = wrapSpans w 4
+    n = max 1 (w - 10)
+    samples = reverse (take n (sMemHist st))              -- oldest first
+    replSeries = [ r | (_, r, _) <- samples ]
+    serverSeries = [ sv | (_, _, sv) <- samples ]
+    (replNow, serversNow) = case sMemHist st of { ((_, r, sv) : _) -> (r, sv); [] -> (0, 0) }
+    (lo, hi) = if null replSeries then (0, 0) else (minimum replSeries, maximum replSeries)
+    span' = case samples of
+      ((t0, _, _) : _) | ((t1, _, _) : _) <- sMemHist st -> let secs = round (t1 - t0) :: Int in if secs >= 90 then printf "%d min" (secs `div` 60) else printf "%d s" secs
+      _ -> "moment" :: String
+    -- @rows@ rows of a bar graph of the series, from a little under its lowest value (so a change of a few
+    -- per cent shows) to its largest, a y axis of two labels at the left
+    graph rows style series = [ [ (stDim, printf "%6s |" (label r)), (style, concatMap (bar r) series) ] | r <- [rows - 1, rows - 2 .. 0] ]
+      where
+        top = maximum (0 : series)
+        bottom = max 0 (min (minimum (top : series) - (top - minimum (top : series)) `div` 4) (top - max 1 (top `div` 10)))
+        label r | r == rows - 1 = show top ++ " MB" | r == 0 = show bottom | otherwise = ""
+        -- the eighths of the row a value fills, as a block character
+        bar r v = let eighths = ((v - bottom) * rows * 8) `div` max 1 (top - bottom) - r * 8
+                  in [ if eighths >= 8 then '\x2588' else if eighths <= 0 then ' ' else toEnum (0x2580 + 8 - eighths) ]
 
 logLine :: String -> [Span]
 logLine l = case break (== ']') l of
