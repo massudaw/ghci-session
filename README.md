@@ -238,7 +238,8 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   check's verdict rides on whichever tool result comes after it is in -- the daemon's every reply carries a
   `checking` record while a check runs, with when its reload began, and a save's verdict is one whose reload
   began after the file was written, not the end of a check already running; `edits` applies several
-  replacements, across files, checked together before any is written, with one reload; `test` takes an
+  replacements, across files, checked together before any is written, with one reload (a replacement
+  without a path is in the file of the one before it); `test` takes an
   expression -- one group of the tests, run alone, scored by the check's own fail and pass patterns, the
   session's verdict left as it is; and `typecheck` answers at once, without waiting behind a running check,
   when no source changed since it was last asked (four of an agent's waited 226 s each). With tools out of the
