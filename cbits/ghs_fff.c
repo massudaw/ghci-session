@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <limits.h>
 
 typedef struct FffResult {
   bool success;
@@ -71,7 +72,7 @@ typedef struct FffGrepResult {
   char *regex_fallback_error;
 } FffGrepResult;
 
-typedef FffResult *(*fn_create)(const char *, const char *, const char *, bool, bool, bool, bool);
+typedef FffResult *(*fn_create)(const char *, const char *, const char *, bool, bool, bool, bool, bool);
 typedef void (*fn_destroy)(void *);
 typedef FffResult *(*fn_wait)(void *, uint64_t);
 typedef FffResult *(*fn_search)(void *, const char *, const char *, uint32_t, uint32_t, uint32_t, int32_t, uint32_t);
@@ -88,7 +89,7 @@ static fn_search s_fn_search = NULL;
 static fn_grep s_fn_grep = NULL;
 static fn_free_res s_fn_free_res = NULL;
 
-static char s_cached_dir[1024] = {0};
+static char s_cached_dir[PATH_MAX] = {0};
 static void *s_cached_instance = NULL;
 
 static void try_load_lib(void) {
@@ -141,7 +142,7 @@ static void *get_or_create_instance(const char *dir) {
     if (!ghs_fff_available()) return NULL;
     if (!dir || strlen(dir) == 0) dir = ".";
 
-    char real_path[1024];
+    char real_path[PATH_MAX];
     if (!realpath(dir, real_path)) {
         strncpy(real_path, dir, sizeof(real_path) - 1);
         real_path[sizeof(real_path) - 1] = '\0';
@@ -157,7 +158,7 @@ static void *get_or_create_instance(const char *dir) {
         s_cached_dir[0] = '\0';
     }
 
-    FffResult *r = s_fn_create(real_path, NULL, NULL, true, true, false, true);
+    FffResult *r = s_fn_create(real_path, NULL, NULL, true, true, false, true, false);
     if (!r || !r->success || !r->handle) {
         if (r) s_fn_free_res(r);
         return NULL;
