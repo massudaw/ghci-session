@@ -1,0 +1,14 @@
+web/nes_runner.hs
+  h_fd5809635b36a3 1-143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4913941d702c5c1571489c93015a324aaf97f948",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
