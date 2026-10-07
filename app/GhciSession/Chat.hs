@@ -83,12 +83,12 @@ data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oResume :: Maybe FilePath
-  , oView :: Bool, oTail :: Int }
+  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int }
 
 chatUsage :: String
 chatUsage = unlines
   [ "ghci-session chat [-s SESSION] [--once MESSAGE] [--instructions FILE] [--model M] [--base-url URL]"
-  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES]"
+  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES] [--effort none|low|high|max] [--plan BYTES]"
   , "ghci-session chat --restart [-s SESSION]"
   , "  the endless chat with an agent on the session (DEEPSEEK_API_KEY or OPENAI_API_KEY); --once: one message, then exit;"
   , "  --instructions: a file of the user's own instructions (an AGENTS.md), appended to the system prompt;"
@@ -103,7 +103,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -117,6 +117,8 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--resume" = go o { oResume = Just v } r
                      | k == "--context", v `elem` ["turn", "view"] = go o { oView = v == "view" } r
                      | k == "--tail", [(n, "")] <- reads v = go o { oTail = n } r
+                     | k == "--effort", v `elem` ["none", "low", "high", "max"] = go o { oEffort = Just v } r
+                     | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
                  | k == "--restart" = go o { oRestart = True } r
