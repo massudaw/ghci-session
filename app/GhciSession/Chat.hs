@@ -324,7 +324,7 @@ chatTools =
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output and status. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
   where timeoutDesc = "seconds before it is interrupted (default 30): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
-        evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
+        evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. Multi-line expressions are automatically wrapped in a GHCi block by the session (do NOT write :{ or :}). ONE expression, command or declaration group per call: make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
 -- | Each replacement of an edits call with its file: its own path, else that of the replacement before
 -- it, else the call's path. (A model writing several replacements to one file often names it only once.)
@@ -368,7 +368,9 @@ arguments t a = case a of
 -- | (ok, text) of one tool call.
 runTool :: Chat -> Tool -> Json -> IO (Bool, T.Text)
 runTool ch t a0
-  | not (null missing) = pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t)))
+  | not (null missing) =
+      let emptyHint = if null (obj a0) then " [hint: tool arguments were empty {}; if this was near the 8k token limit, output likely ran out of tokens before writing arguments -- please call the tool directly with less reasoning]" else ""
+      in pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t) ++ emptyHint))
   | tName t == "eval" = evalTool ch a
   | tName t `elem` sessionToolNames = sessionCall ch (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
   | otherwise = do
@@ -423,7 +425,8 @@ sessionCall ch name args0 = do
 -- expression they do not parse -- and a block that still does not parse is told why.
 evalTool :: Chat -> Json -> IO (Bool, T.Text)
 evalTool ch a = do
-  let ls = lines (trim (fromMaybe "" (lookupStr "expr" a)))
+  let rawLs = lines (trim (fromMaybe "" (lookupStr "expr" a)))
+      ls = [ l | l <- rawLs, let s = dropWhile isSpace (reverse (dropWhile isSpace l)), s /= ":{" && s /= ":}" ]
       (heads, rest) = splitImports ls
       one e = sessionCall ch "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
   outs <- forM heads $ \h -> do
@@ -432,7 +435,7 @@ evalTool ch a = do
   let expr = intercalate "\n" rest
   (ok, out) <- one expr
   let hint | '\n' `elem` expr && T.isInfixOf (T.pack "parse error") out =
-               T.pack "\n[hint: a multi-line eval is ONE GHCi block (:{ :}); a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
+               T.pack "\n[hint: multi-line eval is automatically wrapped in a GHCi block; a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
            | T.isInfixOf (T.pack "timed out after") out && isNothing (lookupNum "timeout" a) =
                T.pack (printf "\n[interrupted after %.0fs, the default: an expression that needs longer says so with timeout]" evalTimeout)
            | otherwise = T.empty
@@ -445,7 +448,9 @@ splitImports ls
   | null other && length imports <= 1 = ([], ls)
   | otherwise = (imports, other)
   where
-    isImp s = let t = dropWhile isSpace s in "import " `isPrefixOf` t || (":" `isPrefixOf` t && not ("::" `isPrefixOf` t))
+    isImp s = let t = dropWhile isSpace s
+              in ("import " `isPrefixOf` t || (":" `isPrefixOf` t && not ("::" `isPrefixOf` t)))
+                 && t /= ":{" && t /= ":}"
     imports = [ dropWhile isSpace l | l <- ls, isImp l ]
     other = [ l | l <- ls, not (isImp l) ]
 
@@ -574,6 +579,7 @@ replaceOnce :: T.Text -> T.Text -> T.Text -> Either T.Text (T.Text, String)
 replaceOnce t old new
   | k == 1 = let (pre, post) = T.breakOn old t in Right (pre <> new <> T.drop (T.length old) post, "")
   | k == 0, Just (t', l0, l1) <- fuzzyReplace t old new = Right (t', printf " (the text matched lines %d-%d only with its spacing squeezed: applied there)" l0 l1)
+  | k == 0, Just (t', l0, l1) <- lineTrimReplace t old new = Right (t', printf " (the text matched lines %d-%d with trailing whitespace trimmed: applied there)" l0 l1)
   | otherwise = Left (T.pack (printf "the text occurs %d times; it must occur exactly once" k) <> (if k == 0 then nearest t old else T.empty))
   where k = if T.null old then 0 else T.count old t
 
@@ -608,6 +614,29 @@ fuzzyReplace file old new
     trail = T.takeWhileEnd isSpace old
     new' = let a = fromMaybe new (T.stripPrefix lead new) in fromMaybe a (T.stripSuffix trail a)
     lineAt i = 1 + T.count (T.pack "\n") (T.take i file)
+
+-- | An edit where exact and fuzzy matching failed, but every line of 'old' matches consecutive lines in 'file'
+-- when line-trailing whitespace is stripped from both.
+lineTrimReplace :: T.Text -> T.Text -> T.Text -> Maybe (T.Text, Int, Int)
+lineTrimReplace file old new
+  | null target = Nothing
+  | length matches == 1 =
+      let (startLine, endLine) = head matches
+          preLines = take (startLine - 1) fileLs
+          postLines = drop endLine fileLs
+          newFile = T.intercalate (T.pack "\n") (preLines ++ [new] ++ postLines)
+      in Just (newFile, startLine, endLine)
+  | otherwise = Nothing
+  where
+    fileLs = T.splitOn (T.pack "\n") file
+    oldLs = T.splitOn (T.pack "\n") old
+    stripLs = map T.stripEnd
+    target = stripLs oldLs
+    n = length target
+    matches = [ (i + 1, i + n)
+              | i <- [0 .. length fileLs - n]
+              , stripLs (take n (drop i fileLs)) == target
+              ]
 
 -- | Where a text that occurs nowhere was probably meant to be: the file's first line that matches its first
 -- non-blank line with the spaces squeezed, quoted -- the mismatch is most often whitespace or one word.

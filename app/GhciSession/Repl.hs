@@ -236,12 +236,20 @@ roundTrip r mt payload = withMVar (rIO r) $ \_ -> do
 replRun :: Repl -> Maybe Double -> String -> IO Reply
 replRun r mt expr = do
   let e = trim expr
-      payload = if '\n' `elem` e then ":{\n" ++ e ++ "\n:}" else e
+      stripped = stripBlock e
+      payload = if '\n' `elem` stripped then ":{\n" ++ stripped ++ "\n:}" else stripped
   Reply f out <- roundTrip r mt (BC.cons 'C' (TE.encodeUtf8 (T.pack payload)))
   pure (Reply f (T.dropWhileEnd (== '\n') (T.dropWhile (== '\n') out)))
   where
     trim = dropWhileEnd' (`elem` " \n\r\t") . dropWhile (`elem` " \n\r\t")
     dropWhileEnd' p = reverse . dropWhile p . reverse
+    stripBlock s =
+      let ls = lines s
+          isL0 = case ls of (l:_) -> trim l == ":{"; _ -> False
+          isLn = case reverse ls of (l:_) -> trim l == ":}"; _ -> False
+      in if isL0 && isLn && length ls >= 2
+           then unlines (init (tail ls))
+           else s
 
 replCommand :: Repl -> Maybe Double -> String -> IO T.Text
 replCommand r mt expr = rOut <$> replRun r mt expr
