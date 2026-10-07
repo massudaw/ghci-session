@@ -485,9 +485,16 @@ fileTool ch name a = case name of
     t <- decode <$> B.readFile p
     let start = max 1 (maybe 1 round (lookupNum "start" a))
         n = maybe 200 round (lookupNum "lines" a) :: Int
-        ls = zip [1 :: Int ..] (T.splitOn (T.pack "\n") t)
+        allLines = if T.null t then [] else T.splitOn (T.pack "\n") t
+        totalLines = length allLines
+        ls = zip [1 :: Int ..] allLines
         shown = [ T.pack (printf "%5d  " i) <> l | (i, l) <- ls, i >= start, i < start + n ]
-    pure (True, if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
+        endLine = if null shown then 0 else start + length shown - 1
+        budgetStr = Vfs.formatLineBudget totalLines 250
+        remaining = 250 - totalLines
+        remStr = (if remaining >= 0 then printf "(%d lines remaining)" remaining else printf "(%d lines OVER BUDGET!)" (abs remaining)) :: String
+        header = T.pack (printf "[%s: lines %d-%d of %d | %s %s]\n" rel (if null shown then 0 else start) endLine totalLines budgetStr remStr)
+    pure (True, header <> if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
   "write" -> withPath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
     written <- writtenAt ch rel
