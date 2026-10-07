@@ -384,3 +384,12 @@ int ghs_proc_name(int pid, char *buf, int cap) { (void)pid; (void)buf; (void)cap
 
 /* ---- hang up a socket another thread is blocked reading: it sees end of file, and so does the peer ---- */
 int ghs_shutdown(int fd) { return shutdown(fd, SHUT_RDWR); }
+
+/* The terminal's size, for `ghci-session top` (TIOCGWINSZ on standard output): 0, or -1 when it is not a terminal. */
+#include <sys/ioctl.h>
+int ghs_term_size(int *rows, int *cols) {
+  struct winsize w;
+  if (ioctl(1, TIOCGWINSZ, &w) != 0 || w.ws_row == 0) return -1;
+  *rows = w.ws_row; *cols = w.ws_col;
+  return 0;
+}

@@ -1743,7 +1743,7 @@ histEvent s what act = do
   verdictLine s >>= histAdd s "echo"
 
 histOps :: [String]
-histOps = ["history", "zoom", "date", "view", "log", "pending", "tree_put"]
+histOps = ["history", "zoom", "date", "view", "log", "pending", "tree_put", "memory"]
 
 -- | The history's own operations: answered from the daemon's memory, with the repl untouched.
 histOp :: S -> String -> Json -> IO (Either String T.Text)
@@ -1792,6 +1792,17 @@ histOp s op req = case sHist s of
       pure (Right (if lookupBool "json" req == Just True
         then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (Seq.length (H.sRoot sn)))) ]))
         else r))
+    -- the memory's numbers, for a monitor: messages, lines of the view, is it settled, nodes built, the
+    -- compactor's jobs running and waiting on a retry, and whether one is configured
+    "memory" -> do
+      sn <- H.snapshot m
+      busy <- H.busyCount m
+      fails <- H.failedCount m
+      pure (Right (T.pack (encode (JObj [ ("messages", JNum (fromIntegral (Seq.length (H.sRoot sn)))), ("parts", JNum (fromIntegral (length (H.sView sn))))
+                                        , ("settled", JBool (H.settled sn)), ("built", JNum (fromIntegral (M.size (H.sTree sn))))
+                                        , ("unbuilt", JNum (fromIntegral (length [ () | p <- H.sView sn, not (M.member p (H.sTree sn)) ])))
+                                        , ("busy", JNum (fromIntegral busy)), ("failed", JNum (fromIntegral fails))
+                                        , ("compactor", JBool (isJust (gSummarizeCmd (sCfg s)))) ]))))
     -- for a compactor outside the daemon: the nodes ready to build, with their prompts; and one built
     "pending" -> do
       js <- H.pending m

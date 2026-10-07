@@ -24,6 +24,7 @@ import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
+import qualified GhciSession.Top as Top
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 import Data.Maybe (fromMaybe)
@@ -399,6 +400,15 @@ run = do
   eq "hang: no history, no limit (the check's own timeout)" (hangLimit []) Nothing
   eq "hang: a fast check is given 15 s" (hangLimit [3, 3.2, 2.9]) (Just 15)
   eq "hang: five times the median" (hangLimit [10, 30, 20]) (Just 100)
+
+  -- the monitor's frame (GhciSession.Top): lines of exactly the width, styles closed, keys decoded
+  eq "top: a line is cut to the width and its style closed" (Top.fit 5 [("1", "hello world")]) "\ESC[1mhello\ESC[0m"
+  eq "top: a short line is padded" (Top.fit 8 [("", "ab"), ("32", "c")]) "ab\ESC[32mc\ESC[0m     "
+  eq "top: visible columns ignore the styles" (Top.visible [("1;31", "abc"), ("", "de")]) 5
+  eq "top: a long line wraps with its continuation indented" (Top.wrapSpans 6 2 [("", "abcdefghij")]) [[("", "abcdef")], [("", "  "), ("", "ghij")]]
+  eq "top: a span is not split when it fits" (Top.wrapSpans 10 2 [("1", "abc"), ("", "def")]) [[("1", "abc"), ("", "def")]]
+  eq "top: arrow keys" (map Top.decodeKey ["\ESC[A", "\ESC[B", "\ESCOA", "\ESC[5~", "\ESC[6~"]) [Top.KUp, Top.KDown, Top.KUp, Top.KPgUp, Top.KPgDn]
+  eq "top: plain keys" (map Top.decodeKey ["q", "\r", "\ESC"]) [Top.KChar 'q', Top.KEnter, Top.KEsc]
 
   -- small OS things
   sp <- sockPath ("/a/very/" ++ concat (replicate 40 "long/") ++ "state")

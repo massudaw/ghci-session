@@ -10,6 +10,7 @@ module GhciSession.Sys
   , httpPost
   , processTable, processArgs, processName
   , now, writeAtomic, readFileMaybe, readFileUtf8, writeFileUtf8, appendFileUtf8, modTime, pidAlive, rawSystemOut, sockPath
+  , termSize
   ) where
 
 import Control.Exception (IOException, SomeException, evaluate, try)
@@ -21,11 +22,12 @@ import qualified Data.Text.Encoding.Error as TE
 import Data.Time.Clock.POSIX (getPOSIXTime, utcTimeToPOSIXSeconds)
 import Data.Int (Int64)
 import Data.Word (Word64)
-import Foreign.Marshal.Alloc (allocaBytes)
+import Foreign.Marshal.Alloc (alloca, allocaBytes)
 import Foreign.Marshal.Array (allocaArray, peekArray)
 import Foreign.C.String (CString, withCString)
 import Foreign.C.Types (CInt (..), CSize (..))
 import Foreign.Ptr (Ptr, nullPtr)
+import Foreign.Storable (peek)
 import Numeric (showHex)
 import System.Directory (createDirectoryIfMissing, getModificationTime, makeAbsolute, renameFile)
 import System.IO (hGetContents, hSetEncoding, utf8)
@@ -243,3 +245,14 @@ sockPath stateDir = do
   d <- makeAbsolute stateDir
   h <- hashString d 0
   pure (base ++ "/" ++ showHash h ++ ".sock")
+
+foreign import ccall unsafe "ghs_term_size" c_term_size :: Ptr CInt -> Ptr CInt -> IO CInt
+
+-- | The terminal's rows and columns (standard output), if it is one.
+termSize :: IO (Maybe (Int, Int))
+termSize = alloca $ \pr -> alloca $ \pc -> do
+  rc <- c_term_size pr pc
+  if rc /= 0 then pure Nothing else do
+    r <- peek pr
+    c <- peek pc
+    pure (Just (fromIntegral r, fromIntegral c))

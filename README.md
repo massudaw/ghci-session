@@ -289,6 +289,35 @@ agent ten minutes a save, four times in an hour, while the check it guards takes
   cached and the uncached part of a prompt are priced apart, and with a stable prefix the cached part is most
   of it).
 
+## Watching a session, and working in it: `top`
+
+```
+ghci-session top [SESSION]
+```
+
+A screen that follows the session as it works. The header is its verdict, memory and servers, idle time,
+generation, stale and warning counts, half a second behind. Below, a tab at a time: `1` the history as the
+daemon writes it (every request and its answer, a save with its diff, the chat's words; `f` follows the end,
+`j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll), `2` the view the model reads with the memory's numbers (lines, built nodes,
+settled or not, the compactor's jobs), `3` the daemon's log, `4` the verdict with what is behind it (the
+compiler's diagnostics, the failing lines, the members and the servers), `5` what the model calls cost, and two
+terminal panes: `6` the chat (`ghci-session chat` on this session) and `7` a shell in the project. `R` sends a
+reload and `T` the tests; `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes the next key
+the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a Ctrl-a). A session that is not running shows as
+such and is picked up when it starts.
+
+The panes run on **libghostty-vt** -- Ghostty's terminal emulation as a C library -- loaded at run time
+(`cbits/ghs_vt.c`, the way libcurl is for the model client): each pane is a program on its own pseudo-terminal
+whose output feeds a terminal of the pane's size, and what the monitor draws is that terminal's screen, read
+back cell by cell with its colors and written as true-color text into the monitor's frame. The real terminal
+never sees the program's escape sequences, so a full-screen program in a pane and the monitor around it do not
+fight, and scrollback, wrapping, wide characters and the alternate screen are the library's. Without the
+library the other tabs work and the pane tabs say what is missing. `tools/libghostty-vt.sh` builds it into
+`.bin/` (a ghostty checkout at the commit the vendored headers came from, `vendor/ghostty-vt`, and zig 0.16,
+downloaded if absent: a few minutes); or put a `libghostty-vt.so`/`.dylib` of your own beside the executable,
+or name one in `GHS_LIBGHOSTTY`. The rest needs no library: raw mode through the `unix` package, the size from
+an ioctl, ANSI sequences for the frame, drawn whole so nothing flickers.
+
 ## What the heap holds, what an action costs, and the session's own scenario
 
 ```
@@ -668,6 +697,7 @@ mem | log [FILE] [-s SESSION] | list | init
 history [-n N] [--since ID] [--full] [--json] | history --kind user|talk|note TEXT
 view [--wait SECS] [--json] | zoom ID [N] | date ID
 mcp                                      # the session and its memory as an agent's tools (MCP on stdin/stdout)
+top [SESSION]                            # watch the session: verdict, history, view, log, cost, and the chat and a shell in panes
 ```
 
 With no session named, a command goes to the one that is running (else the config's `default`).

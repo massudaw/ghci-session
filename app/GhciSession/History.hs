@@ -26,7 +26,7 @@ module GhciSession.History
   ( Params (..), defaultParams, Msg (..), Mem, Job (..), Step (..)
   , openHistory, appendMsg, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
-  , pending, claim, release, failed, busyCount, params
+  , pending, claim, release, failed, busyCount, failedCount, params
   , capText, msgLine, cutBytes, byteLength, nodeFits, fitNode, scaleLine, compactPrompt, jobPrompt, retryNote
   , Snap (..), snapshot, fitView, freeNodes, pendingOf, placeholder
   ) where
@@ -346,6 +346,9 @@ claim mem p = modifyIORef' (mBusy mem) (S.insert p)
 
 params :: Mem -> Params
 params = mParams
+
+failedCount :: Mem -> IO Int
+failedCount mem = M.size <$> readIORef (mFail mem)
 
 busyCount :: Mem -> IO Int
 busyCount mem = S.size <$> readIORef (mBusy mem)
