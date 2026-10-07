@@ -8,6 +8,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <limits.h>
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
 
 typedef struct FffResult {
   bool success;
@@ -92,8 +95,32 @@ static fn_free_res s_fn_free_res = NULL;
 static char s_cached_dir[PATH_MAX] = {0};
 static void *s_cached_instance = NULL;
 
+/* The directory of the running executable ("" when it cannot be said): libfff lives beside it (.bin/), so it is found
+   from any project, not only from the directory build.sh was run in. */
+static void exe_dir(char *out, size_t n) {
+    out[0] = '\0';
+#ifdef __APPLE__
+    char tmp[PATH_MAX]; uint32_t sz = (uint32_t)sizeof(tmp);
+    if (_NSGetExecutablePath(tmp, &sz) != 0 || !realpath(tmp, out)) { out[0] = '\0'; return; }
+#else
+    ssize_t r = readlink("/proc/self/exe", out, n - 1);
+    if (r <= 0) { out[0] = '\0'; return; }
+    out[r] = '\0';
+#endif
+    char *slash = strrchr(out, '/');
+    if (slash) *slash = '\0'; else out[0] = '\0';
+}
+
 static void try_load_lib(void) {
     if (s_loaded != -1) return;
+
+    char dir[PATH_MAX], beside[2][PATH_MAX + 16];
+    exe_dir(dir, sizeof(dir));
+    snprintf(beside[0], sizeof(beside[0]), "%s/libfff.so", dir);
+    snprintf(beside[1], sizeof(beside[1]), "%s/libfff.dylib", dir);
+    if (dir[0]) {
+        for (int i = 0; i < 2 && !s_lib; i++) s_lib = dlopen(beside[i], RTLD_NOW | RTLD_LOCAL);
+    }
 
     const char *paths[] = {
         ".bin/libfff.dylib",
@@ -107,9 +134,8 @@ static void try_load_lib(void) {
         NULL
     };
 
-    for (int i = 0; paths[i] != NULL; i++) {
+    for (int i = 0; !s_lib && paths[i] != NULL; i++) {
         s_lib = dlopen(paths[i], RTLD_NOW | RTLD_LOCAL);
-        if (s_lib) break;
     }
 
     if (!s_lib) {
@@ -221,19 +247,25 @@ int ghs_fff_grep(const char *base_dir, const char *query, int max_results, char 
     char q_esc[256];
     json_escape(query, q_esc, sizeof(q_esc));
 
+    /* a match in a binary file is a line of garbage (the build products): left out */
+    uint32_t text_matches = 0;
+    for (uint32_t i = 0; i < gres->count; i++) if (!gres->items[i].is_binary) text_matches++;
+
     size_t pos = snprintf(out_json, out_max,
         "{\"ok\":true,\"query\":\"%s\",\"mode\":\"grep\",\"count\":%u,\"total_matched\":%u,\"files_searched\":%u,\"items\":[",
-        q_esc, gres->count, gres->total_matched, gres->total_files_searched);
+        q_esc, text_matches, text_matches, gres->total_files_searched);
 
+    uint32_t emitted = 0;
     for (uint32_t i = 0; i < gres->count && pos + 256 < out_max; i++) {
         FffGrepMatch *m = &gres->items[i];
+        if (m->is_binary) continue;
         char p_esc[512], c_esc[1024];
         json_escape(m->relative_path ? m->relative_path : "", p_esc, sizeof(p_esc));
         json_escape(m->line_content ? m->line_content : "", c_esc, sizeof(c_esc));
 
         pos += snprintf(out_json + pos, out_max - pos,
             "%s{\"path\":\"%s\",\"line\":%llu,\"content\":\"%s\",\"git_status\":\"%s\",\"frecency\":%lld}",
-            (i > 0 ? "," : ""),
+            (emitted++ > 0 ? "," : ""),
             p_esc,
             (unsigned long long)m->line_number,
             c_esc,

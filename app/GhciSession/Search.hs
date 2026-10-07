@@ -20,7 +20,8 @@ import Foreign.C.String (CString, withCString, peekCString)
 import Foreign.C.Types (CInt (..), CSize (..))
 import Foreign.Marshal.Alloc (allocaBytes)
 import System.FilePath ((</>))
-import System.Directory (doesFileExist, doesDirectoryExist, listDirectory)
+import System.Directory (doesFileExist, doesDirectoryExist, getFileSize, listDirectory)
+import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Text.Printf (printf)
 
@@ -124,9 +125,13 @@ fallbackGrep dir query maxResults = do
   let qT = T.pack query
   files <- findFiles dir
   matches <- fmap concat $ forM' (take 100 files) $ \f -> do
-    t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
+    -- a source file, not a build product: over a megabyte, or with a NUL in its first 8 KB, is skipped
+    -- (decoding and splitting a 60 MB library into lines never came back)
+    t <- try (do sz <- getFileSize (dir </> f)
+                 if sz > 1000000 then pure B.empty else B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
     case t of
       Left _ -> pure []
+      Right bs | B.elem 0 (B.take 8000 bs) -> pure []
       Right bs ->
         let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
             ls = zip [1 :: Int ..] (T.lines txt)
@@ -176,7 +181,7 @@ findFiles root = go ""
       case es of
         Left _ -> pure []
         Right names -> do
-          let valid = filter (\n -> not (null n) && head n /= '.' && n /= "dist-newstyle") names
+          let valid = filter (\n -> not (null n) && head n /= '.' && not ("dist" `isPrefixOf` n)) names
           fmap concat $ forM valid $ \name -> do
             let subRel = if null rel then name else rel </> name
                 subFull = root </> subRel
