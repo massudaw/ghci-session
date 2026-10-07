@@ -4,11 +4,11 @@
 # (downloaded here when there is none on PATH), a few minutes and ~1 GB of build cache. The checkout is kept
 # under .bin/ghostty-vt-build/ for the next run.
 #
-#   tools/libghostty-vt.sh              # the commit the vendored headers came from (vendor/ghostty-vt/COMMIT)
+#   tools/libghostty-vt.sh              # the commit the vendored headers came from (ghostty-vt/COMMIT)
 #   tools/libghostty-vt.sh main         # any ref
 set -e
 HERE=$(cd "$(dirname "$0")/.." && pwd)
-REF=${1:-$(cat "$HERE/vendor/ghostty-vt/COMMIT")}
+REF=${1:-$(cat "$HERE/ghostty-vt/COMMIT")}
 B="$HERE/.bin/ghostty-vt-build"
 mkdir -p "$B"
 cd "$B"

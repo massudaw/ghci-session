@@ -306,17 +306,28 @@ reload and `T` the tests; `q` quits. In a pane every key goes to the program; `C
 the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a Ctrl-a). A session that is not running shows as
 such and is picked up when it starts.
 
-The panes run on **libghostty-vt** -- Ghostty's terminal emulation as a C library -- loaded at run time
-(`cbits/ghs_vt.c`, the way libcurl is for the model client): each pane is a program on its own pseudo-terminal
-whose output feeds a terminal of the pane's size, and what the monitor draws is that terminal's screen, read
-back cell by cell with its colors and written as true-color text into the monitor's frame. The real terminal
-never sees the program's escape sequences, so a full-screen program in a pane and the monitor around it do not
-fight, and scrollback, wrapping, wide characters and the alternate screen are the library's. Without the
-library the other tabs work and the pane tabs say what is missing. `tools/libghostty-vt.sh` builds it into
-`.bin/` (a ghostty checkout at the commit the vendored headers came from, `vendor/ghostty-vt`, and zig 0.16,
+`top` is an application of two packages of this repository, written for it and usable without it:
+
+- **`ghostty-vt`** (`ghostty-vt/`) binds **libghostty-vt** -- Ghostty's terminal emulation as a C library --
+  from Haskell. `Ghostty.Vt`: a `Terminal` of a size, `write` it the bytes a program prints, read its `screen`
+  as a value (every cell's text, colors and attributes, the cursor, what changed since the last read), its
+  title and working directory, the scrollback's viewport; `onWrite` for what the terminal answers to the
+  program. `Ghostty.Vt.Pty`: a program on a pseudo-terminal. The library is found at run time with dlopen
+  (`Ghostty.Vt.load`), so a program builds and runs without it and can say what is missing; the headers it is
+  built against are in `ghostty-vt/include` (MIT, at the ghostty commit in `COMMIT`). Boot packages only.
+- **`ghostty-tui`** (`tui/`) is a small terminal UI library on it. `Tui.Buffer`: a frame of styled cells from
+  what to put where, and the bytes that turn the last frame into it -- only the cells that changed, each run
+  of a style under one sequence, so a frame that is mostly the same costs almost nothing and nothing flickers;
+  wide characters take their two columns. `Tui.Terminal`: raw mode, the size, keys decoded, the events a loop
+  waits on. `Tui.App`: the loop (draw, wait for a key, a resize, a tick or a wake, handle, draw again).
+  `Tui.Pane`: a program on a pseudo-terminal whose screen libghostty-vt keeps, as a part of the frame -- the
+  real terminal never sees the program's escape sequences, so a full-screen program in a pane and the UI
+  around it do not fight, and scrollback, wrapping, wide characters and the alternate screen are the library's.
+
+Without libghostty-vt the monitor's other tabs work and the pane tabs say what is missing.
+`tools/libghostty-vt.sh` builds it into `.bin/` (a ghostty checkout at the headers' commit and zig 0.16,
 downloaded if absent: a few minutes); or put a `libghostty-vt.so`/`.dylib` of your own beside the executable,
-or name one in `GHS_LIBGHOSTTY`. The rest needs no library: raw mode through the `unix` package, the size from
-an ioctl, ANSI sequences for the frame, drawn whole so nothing flickers.
+or name one in `GHS_LIBGHOSTTY`.
 
 ## What the heap holds, what an action costs, and the session's own scenario
 
@@ -989,6 +1000,9 @@ engine/, vendor/        the engine: GhsEngine.hs and Main.hs (ours), GHCi's own 
 cbits/                  ghs_sys.c (sockets, file events, regex, hashing, processes), ghs_main.c (the entry point)
 hygiene/                c/*.c (the pruner, the census: compiled into the engine), src/GHC/Hygiene*.hs (the library),
                         repro/ (why a superseded CAF with a young value must stay listed)
+ghostty-vt/             the binding to libghostty-vt (Ghostty.Vt, .Pty; cbits/gvt.c loads it at run time; include/ its headers)
+tui/                    ghostty-tui: Tui.Buffer, .Terminal, .App, .Pane -- the small TUI library `top` is written in
+tools/libghostty-vt.sh  build libghostty-vt into .bin/ (zig 0.16, downloaded if absent)
 bin/ghci-session        run from a checkout (builds if stale)
 bin/ghci-history        save a session's history (log, tree, usage) to a git branch, and load it back: `save`, `load`, `status` (`--help`)
 ghci-session.json       the session this package runs on itself

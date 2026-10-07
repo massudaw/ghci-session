@@ -25,11 +25,9 @@ executable ghci-session
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
                     GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Top
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c, cbits/ghs_vt.c
-  -- (the prototypes of libghostty-vt, loaded at run time by cbits/ghs_vt.c: vendor/ghostty-vt, MIT)
-  include-dirs:     vendor/ghostty-vt/include
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
-  build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
+  build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene, ghostty-vt, ghostty-tui
   default-language: Haskell2010
   default-extensions: ScopedTypeVariables
   ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-unused-imports -threaded -no-hs-main
