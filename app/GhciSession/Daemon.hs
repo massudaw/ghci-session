@@ -631,7 +631,7 @@ unlinkCafs s = do
         live <- rd (vLiveMb s)
         if k < 0
           then do vHygieneOn s =: False
-                  logS s "hygiene OFF: the pruner cannot work on this platform (it walks each loaded library's symbols, written for Mach-O only): CAFs a reload supersedes are not unlinked; the heap census still works"
+                  logS s "hygiene OFF: the pruner cannot read this RTS (its CAF list, or a temporary library's handle): CAFs a reload supersedes are not unlinked; GHS_CAF_DEBUG=1 in the target's env says why"
           else logS s (printf "unlink_cafs: %d unlinked in %.2fs with its GC, live heap %s MB" k (t1 - t0) live)
 
 -- | After the verdict is out: link the reloaded code if nothing has yet (the @warm@ expressions), then the
