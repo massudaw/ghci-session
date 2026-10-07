@@ -104,6 +104,7 @@ tools =
   , Tool "history" "The last messages of the log, word for word: every request and verdict." [("n", ("number", "how many (default 40)")), ("since", ("number", "from this message id")), sessionArg] []
   , Tool "remember" "Keep a finding in the session's memory for later turns, as your own words: what you learned, decided or left undone." [("text", ("string", "the finding")), sessionArg] ["text"]
   , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path." [("path", ("string", "optional path or pattern filter (e.g. 'src', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)")), sessionArg] []
+  , Tool "restart" "Restart the GHCi session daemon cold. Re-runs cabal repl and reloads the project from scratch. Use this if the session is wedged, crashed, or after fundamental build-configuration changes." [("fast", ("boolean", "skip build tool check and restart immediately (default false)")), sessionArg] []
   ]
 
 toolJson :: Tool -> Json
@@ -156,6 +157,7 @@ callReach conf name args = do
               budget = maybe 250 round (n "budget") :: Int
           files <- Vfs.inspectLoaded conf session budget mPath
           pure (True, Vfs.formatVfsTable files budget, Reached)
+        "restart" -> go "restart" [("fast", JBool (lookupBool "fast" args == Just True))] >>= say
         _ -> pure (False, T.pack ("unknown tool " ++ show name), Reached)
   where
     staleNote r = case strs (r .: "stale") of

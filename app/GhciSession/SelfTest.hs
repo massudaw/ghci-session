@@ -303,6 +303,7 @@ run = do
   eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
   check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
   check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
+  check "chat: restart is a chat tool" ("restart" `elem` map tName chatTools)
   avail <- Search.isAvailable
   check "search: FFF C library is loaded and available" avail
   grepRes <- Search.grep "." "cmdSearch" 10
@@ -310,6 +311,8 @@ run = do
   eq "chat: leading imports are their own commands" (splitImports ["import A", ":set -XB", "f 1"]) (["import A", ":set -XB"], ["f 1"])
   eq "chat: a lone import stays what it is" (splitImports ["import A"]) ([], ["import A"])
   eq "chat: an expression alone is untouched" (splitImports ["let a = 1 in a", "+ 2"]) ([], ["let a = 1 in a", "+ 2"])
+  eq "chat: semicolon imports are split" (splitImports ["import A; import B"]) (["import A", "import B"], [])
+  eq "chat: semicolon import followed by expr is split" (splitImports ["import A; f 1"]) (["import A"], ["f 1"])
   let file = T.pack "x = 1\n  foo   bar\ny = 2\n"
   eq "chat: an edit that differs only in spacing is applied where its words are" (fuzzyReplace file (T.pack "foo bar") (T.pack "baz")) (Just (T.pack "x = 1\n  baz\ny = 2\n", 2, 2))
   eq "chat: ... the indent and newline the old text had come off the new text" (fuzzyReplace file (T.pack "  foo bar\n") (T.pack "  qux\n")) (Just (T.pack "x = 1\n  qux\ny = 2\n", 2, 2))

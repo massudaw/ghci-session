@@ -310,7 +310,7 @@ isRed l = any (`isInfixOf` l) ["ERROR", "FAIL", "HANG", "DEAD"]
 -- the tools ----------------------------------------------------------------------------------
 
 sessionToolNames :: [String]
-sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date", "remember"]
+sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date", "remember", "restart"]
 
 -- | The session's tools (as the MCP server defines them, the chat being one session) and the agent's hands on the files.
 chatTools :: [Tool]
@@ -431,30 +431,53 @@ evalTool ch a = do
       ls = [ l | l <- rawLs, let s = dropWhile isSpace (reverse (dropWhile isSpace l)), s /= ":{" && s /= ":}" ]
       (heads, rest) = splitImports ls
       one e = sessionCall ch "eval" (withTimeout (JObj ([("expr", JStr e), ("session", JStr (cName ch))] ++ [ ("timeout", JNum n) | Just n <- [lookupNum "timeout" a] ])))
-  outs <- forM heads $ \h -> do
+  headOuts <- forM heads $ \h -> do
     (ok, out) <- one h
-    pure [ T.pack h <> T.pack "\n" <> out | not ok || T.isInfixOf (T.pack "error") out ]
-  let expr = intercalate "\n" rest
-  (ok, out) <- one expr
-  let hint | '\n' `elem` expr && T.isInfixOf (T.pack "parse error") out =
+    let isErr = not ok || T.isInfixOf (T.pack "error") out
+    pure (ok && not isErr, [ T.pack h <> T.pack "\n" <> out | isErr ])
+  let anyHeadFail = any (not . fst) headOuts
+      headMsgs = concatMap snd headOuts
+  (ok, out) <- if null rest
+    then pure (not anyHeadFail, if not anyHeadFail && not (null heads) then T.pack "[ok: imported into session]" else T.empty)
+    else do
+      let expr = intercalate "\n" rest
+      (eOk, eOut) <- one expr
+      let isImp s = let t = dropWhile isSpace s in ("import " `isPrefixOf` t || (":" `isPrefixOf` t && not ("::" `isPrefixOf` t))) && t /= ":{" && t /= ":}"
+          onlyImports = not (null ls) && all isImp ls
+          eOut' = if eOk && T.null (T.strip eOut) && onlyImports
+                    then T.pack "[ok: imported into session]"
+                    else eOut
+      pure (eOk && not anyHeadFail, eOut')
+  let hint | '\n' `elem` intercalate "\n" rest && T.isInfixOf (T.pack "parse error") out =
                T.pack "\n[hint: multi-line eval is automatically wrapped in a GHCi block; a let on its own line does not parse there -- write `let a = 1; b = 2 in ...` on one line, or one declaration group per call]"
            | T.isInfixOf (T.pack "timed out after") out && isNothing (lookupNum "timeout" a) =
                T.pack (printf "\n[interrupted after %.0fs, the default: an expression that needs longer says so with timeout]" evalTimeout)
            | otherwise = T.empty
-  pure (ok, T.intercalate (T.pack "\n") (concat outs ++ [out <> hint]))
+  let allOut = if null headMsgs
+                 then (if T.null out then out else out <> hint)
+                 else T.intercalate (T.pack "\n") (headMsgs ++ [out <> hint | not (T.null out)])
+  pure (ok, allOut)
 
 -- | An eval's leading import lines and : commands, each to be its own command, and the rest. A lone line
--- stays what it is.
+-- stays what it is. Semicolon-delimited imports on a single line are expanded into separate commands.
 splitImports :: [String] -> ([String], [String])
-splitImports ls
-  | null other && length imports <= 1 = ([], ls)
+splitImports rawLs
+  | null other && length imports <= 1 = ([], expanded)
   | otherwise = (imports, other)
   where
+    expanded = concatMap expandOne rawLs
+    expandOne l
+      | isImp l && ';' `elem` l =
+          let parts = [ p' | p <- splitSemi l, let p' = trim p, not (null p') ]
+          in if null parts then [l] else parts
+      | otherwise = [l]
+    splitSemi "" = []
+    splitSemi s = let (w, r) = break (== ';') s in w : case r of { (';' : rest) -> splitSemi rest; _ -> [] }
     isImp s = let t = dropWhile isSpace s
               in ("import " `isPrefixOf` t || (":" `isPrefixOf` t && not ("::" `isPrefixOf` t)))
                  && t /= ":{" && t /= ":}"
-    imports = [ dropWhile isSpace l | l <- ls, isImp l ]
-    other = [ l | l <- ls, not (isImp l) ]
+    imports = [ dropWhile isSpace l | l <- expanded, isImp l ]
+    other = [ l | l <- expanded, not (isImp l) ]
 
 -- | The watched files that differ from the loaded code right now.
 staleNow :: Chat -> IO [String]

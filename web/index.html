@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GHCi-Session NES Arcade & Agent Live Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-border: rgba(56, 189, 248, 0.18);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #c084fc;
+      --accent-rose: #f43f5e;
+      --nes-red: #e11d48;
+      --nes-dark: #1e293b;
+      --nes-light: #cbd5e1;
+      --code-bg: #030712;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(225, 29, 72, 0.08) 0px, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      backdrop-filter: blur(14px);
+      background: rgba(8, 12, 20, 0.88);
+      border-bottom: 1px solid var(--bg-card-border);
+      padding: 0.85rem 1.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #e11d48, #9333ea);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 16px rgba(225, 29, 72, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #f8fafc, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.25rem;
+      gap: 0.35rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
+    }
+
+    .nav-btn.active.arcade {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      box-shadow: 0 2px 10px rgba(225, 29, 72, 0.35);
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    main {
+      flex: 1;
+      padding: 1.5rem 1.75rem 2.5rem;
+      max-width: 1560px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* =========================================================================
+       NES ARCADE PLAYER VIEW
+       ========================================================================= */
+    .view-container {
+      display: none;
+    }
+
+    .view-container.active {
+      display: block;
+    }
+
+    .arcade-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .arcade-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tv-console-chassis {
+      background: #0f172a;
+      border: 2px solid rgba(56, 189, 248, 0.25);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .arcade-hud {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+    }
+
+    .game-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hud-stats {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .fps-tag {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .mapper-tag {
+      color: #c084fc;
+      background: rgba(192, 132, 252, 0.12);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+
+    .crt-screen-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 768px;
+      aspect-ratio: 256 / 240;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.95), 0 0 40px rgba(56, 189, 248, 0.15);
+      border: 4px solid #1e293b;
+    }
+
+    #nes-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+                  radial-gradient(circle at center, transparent 65%, rgba(0,0,0,0.6) 100%);
+      background-size: 100% 4px, 100% 100%;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+    }
+
+    .crt-overlay.disabled {
+      opacity: 0;
+    }
+
+    .drag-drop-curtain {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      border: 3px dashed var(--accent-cyan);
+      border-radius: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 30;
+    }
+
+    .drag-drop-curtain.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drag-drop-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    /* Arcade Controls Toolbar */
+    .arcade-toolbar {
+      width: 100%;
+      max-width: 768px;
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.55rem 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-action.btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #fff;
+    }
+
+    .btn-action.btn-danger {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fff;
+    }
+
+    .volume-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.8rem;
+    }
+
+    .volume-slider {
+      width: 70px;
+      accent-color: var(--accent-cyan);
+    }
+
+    /* Retro Gamepad */
+    .gamepad-container {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nes-controller {
+      background: #cbd5e1;
+      border: 4px solid #475569;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.8);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .controller-stripe {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 35%;
+      height: 30%;
+      background: #1e293b;
+      z-index: 1;
+    }
+
+    .controller-layout {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* D-PAD */
+    .dpad-cross {
+      width: 100px;
+      height: 100px;
+      position: relative;
+    }
+
+    .dpad-btn {
+      position: absolute;
+      background: #1e293b;
+      border: 2px solid #0f172a;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.65rem;
+      user-select: none;
+      transition: background 0.1s, transform 0.1s;
+    }
+
+    .dpad-btn:active, .dpad-btn.pressed {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    .dpad-up    { top: 0; left: 34px; border-radius: 4px 4px 0 0; }
+    .dpad-down  { bottom: 0; left: 34px; border-radius: 0 0 4px 4px; }
+    .dpad-left  { top: 34px; left: 0; border-radius: 4px 0 0 4px; }
+    .dpad-right { top: 34px; right: 0; border-radius: 0 4px 4px 0; }
+    .dpad-center{ top: 34px; left: 34px; background: #1e293b; border: none; cursor: default; }
+
+    /* SELECT & START */
+    .middle-buttons {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .pill-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .pill-btn {
+      width: 36px;
+      height: 12px;
+      background: #334155;
+      border: 1px solid #0f172a;
+      border-radius: 6px;
+      transform: rotate(-25deg);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .pill-btn:active, .pill-btn.pressed {
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+
+    .pill-label {
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: #e11d48;
+      letter-spacing: 0.05em;
+    }
+
+    /* B & A ACTION BUTTONS */
+    .action-buttons {
+      display: flex;
+      gap: 0.85rem;
+      background: #94a3b8;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #64748b;
+    }
+
+    .action-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .round-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #e11d48;
+      border: 2px solid #9f1239;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .round-btn:active, .round-btn.pressed {
+      background: #f43f5e;
+      transform: scale(0.92);
+      box-shadow: 0 0 12px #f43f5e;
+    }
+
+    .action-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #e11d48;
+    }
+
+    /* Keybindings Cheatsheet */
+    .key-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .key-table tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .key-table td {
+      padding: 0.45rem 0.2rem;
+    }
+
+    .key-badge {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+    }
+
+    /* Cart Info Meta */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .info-item {
+      background: rgba(2, 6, 23, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.6rem;
+    }
+
+    .info-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .info-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 0.2rem;
+    }
+
+    /* =========================================================================
+       AGENT MONITOR VIEW
+       ========================================================================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* VFS Dashboard styles */
+    .vfs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .vfs-summary-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .vfs-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .vfs-stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .vfs-stat-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .vfs-search-box {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .vfs-search-box:focus {
+      border-color: var(--accent-cyan);
+    }
+    .vfs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 0.75rem;
+    }
+    .vfs-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .vfs-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      transform: translateY(-1px);
+    }
+    .vfs-card.over-budget {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.05);
+    }
+    .vfs-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .vfs-card-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .vfs-card-badges {
+      display: flex;
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+    .vfs-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .vfs-tag-synced { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .vfs-tag-stale { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .vfs-tag-clean { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .vfs-meter-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .vfs-meter-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .vfs-card-bot {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .terminal-box {
+      background: var(--code-bg);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 14px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      padding: 0.65rem 1rem;
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .terminal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulseLive 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseLive {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0.4; transform: scale(0.9); }
+    }
+
+    .task-badge {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .terminal-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .term-ctrl-btn {
+      padding: 0.28rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s ease;
+    }
+
+    .term-ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .term-ctrl-btn.active {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: rgba(56, 189, 248, 0.55);
+      color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    .term-search-input {
+      padding: 0.25rem 0.65rem;
+      font-size: 0.72rem;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-family: inherit;
+      width: 140px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .term-search-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+      width: 180px;
+    }
+
+    .session-toggle-group {
+      display: flex;
+      gap: 0.3rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px;
+      border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .session-pill {
+      padding: 0.22rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 5px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .session-pill.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+    }
+
+    .terminal-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+      scroll-behavior: smooth;
+    }
+
+    .log-line {
+      margin-bottom: 0.35rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    @keyframes newArrivalGlow {
+      0% {
+        background: rgba(56, 189, 248, 0.25);
+        box-shadow: inset 0 0 10px rgba(56, 189, 248, 0.35);
+        transform: translateY(-1px);
+      }
+      100% {
+        background: transparent;
+        box-shadow: none;
+        transform: translateY(0);
+      }
+    }
+
+    .log-line.new-arrival {
+      animation: newArrivalGlow 1.8s ease-out;
+    }
+
+    .log-line.tool {
+      background: rgba(192, 132, 252, 0.08);
+      border-left: 3px solid var(--accent-purple);
+      color: #e9d5ff;
+    }
+
+    .log-line.echo {
+      background: rgba(16, 185, 129, 0.06);
+      border-left: 3px solid var(--accent-emerald);
+      color: #6ee7b7;
+    }
+
+    .log-line.talk {
+      background: rgba(56, 189, 248, 0.06);
+      border-left: 3px solid var(--accent-cyan);
+      color: #bae6fd;
+    }
+
+    .file-input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">NES 8-BIT</div>
+      <div class="brand-title">GHCi-Session Arcade & Live Studio</div>
+    </div>
+
+    <div class="header-nav">
+      <button class="nav-btn active arcade" id="btn-view-arcade" onclick="switchView('arcade')">
+        🎮 NES Player
+      </button>
+      <button class="nav-btn" id="btn-view-monitor" onclick="switchView('monitor')">
+        📈 Agent Monitor
+      </button>
+    </div>
+
+    <div class="header-badges">
+      <div class="status-pill" id="header-status-pill">
+        <div class="status-dot"></div>
+        <span id="session-verdict-badge">OK -- CHECK-PASS (297)</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- =======================================================================
+         VIEW 1: NES ARCADE PLAYER
+         ======================================================================= -->
+    <div class="view-container active" id="view-arcade">
+      <div class="arcade-grid">
+        
+        <!-- Left Column: TV Chassis & Screen -->
+        <div class="tv-console-chassis" id="tv-chassis">
+          
+          <!-- Top HUD -->
+          <div class="arcade-hud">
+            <div class="game-badge">
+              <span style="color:#e11d48;">▶</span> <span id="hud-game-name">BUILT-IN SPRITE DEMO</span>
+            </div>
+            <div class="hud-stats">
+              <span class="mapper-tag" id="hud-mapper">NROM (MAPPER 0)</span>
+              <span class="fps-tag" id="hud-fps">60.0 FPS</span>
+            </div>
+          </div>
+
+          <!-- Screen Frame -->
+          <div class="crt-screen-wrapper" id="crt-wrapper">
+            <canvas id="nes-canvas" width="256" height="240"></canvas>
+            <div class="crt-overlay" id="crt-overlay"></div>
+            
+            <!-- Drag and Drop Overlay -->
+            <div class="drag-drop-curtain" id="drop-curtain">
+              <div style="font-size: 2.5rem;">📥</div>
+              <div class="drag-drop-text">DROP .NES ROM HERE TO PLAY</div>
+            </div>
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="arcade-toolbar">
+            <div class="tool-group">
+              <button class="btn-action btn-primary" id="btn-play-pause" onclick="togglePause()">
+                ⏸ Pause
+              </button>
+              <button class="btn-action" onclick="resetConsole()">
+                🔄 Reset
+              </button>
+              <button class="btn-action" onclick="loadDemoCart()">
+                📦 Load Demo
+              </button>
+              <button class="btn-action" onclick="document.getElementById('rom-file-input').click()">
+                📁 Upload ROM
+              </button>
+              <input type="file" id="rom-file-input" class="file-input" accept=".nes" onchange="uploadRomFile(this)">
+            </div>
+
+            <div class="tool-group">
+              <div class="volume-box">
+                <span id="vol-icon">🔊</span>
+                <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.05" value="0.7" oninput="setVolume(this.value)">
+              </div>
+              <button class="btn-action" id="btn-crt-toggle" onclick="toggleCRT()">
+                📺 CRT FX: ON
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Retro Controller & Info -->
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          
+          <!-- Interactive Gamepad Card -->
+          <div class="gamepad-container">
+            <div class="card-title">
+              <span>🎮</span> Controller 1 (Interactive)
+            </div>
+
+            <div class="nes-controller">
+              <div class="controller-stripe"></div>
+              
+              <div class="controller-layout">
+                <!-- D-Pad -->
+                <div class="dpad-cross">
+                  <div class="dpad-btn dpad-up" id="btn-up" data-mask="16">▲</div>
+                  <div class="dpad-btn dpad-down" id="btn-down" data-mask="32">▼</div>
+                  <div class="dpad-btn dpad-left" id="btn-left" data-mask="64">◀</div>
+                  <div class="dpad-btn dpad-right" id="btn-right" data-mask="128">▶</div>
+                  <div class="dpad-btn dpad-center"></div>
+                </div>
+
+                <!-- Select & Start -->
+                <div class="middle-buttons">
+                  <div class="pill-col">
+                    <div class="pill-btn" id="btn-select" data-mask="4"></div>
+                    <span class="pill-label">SELECT</span>
+                  </div>
+                  <div class="pill-col">
+                    <div class="pill-btn" id="btn-start" data-mask="8"></div>
+                    <span class="pill-label">START</span>
+                  </div>
+                </div>
+
+                <!-- B & A Buttons -->
+                <div class="action-buttons">
+                  <div class="action-col">
+                    <div class="round-btn" id="btn-b" data-mask="2"></div>
+                    <span class="action-label">B</span>
+                  </div>
+                  <div class="action-col">
+                    <div class="round-btn" id="btn-a" data-mask="1"></div>
+                    <span class="action-label">A</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Keyboard Guide -->
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">KEYBOARD MAPPINGS</div>
+              <table class="key-table">
+                <tr><td>D-Pad</td><td><span class="key-badge">Arrows</span> or <span class="key-badge">W A S D</span></td></tr>
+                <tr><td>A Button</td><td><span class="key-badge">X</span> or <span class="key-badge">K</span></td></tr>
+                <tr><td>B Button</td><td><span class="key-badge">Z</span> or <span class="key-badge">J</span></td></tr>
+                <tr><td>Start / Select</td><td><span class="key-badge">Enter</span> / <span class="key-badge">Shift</span></td></tr>
+                <tr><td>Gamepad API</td><td><span class="key-badge" id="gamepad-status-tag">Plug in USB/BT Controller</span></td></tr>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Cartridge Metadata Card -->
+          <div class="gamepad-container">
+            <div class="card-title">
+              <span>📼</span> Cartridge Hardware
+            </div>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Mapper</div>
+                <div class="info-val" id="info-mapper">NROM</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Mirroring</div>
+                <div class="info-val" id="info-mirror">Horizontal</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">PRG ROM</div>
+                <div class="info-val" id="info-prg">32 KiB</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">CHR Storage</div>
+                <div class="info-val" id="info-chr">8 KiB RAM</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW 2: AGENT ACTIVITY MONITOR
+         ======================================================================= -->
+    <div class="view-container" id="view-monitor">
+      
+      <!-- Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Session Verdict</div>
+          <div class="stat-value" id="card-verdict" style="color:var(--accent-emerald);">OK -- CHECK-PASS</div>
+          <div class="stat-sub" id="card-checks">297 checks passing (0.0s)</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Model & Engine</div>
+          <div class="stat-value" style="font-size:1.15rem; color:var(--accent-cyan);">deepseek-v4-flash</div>
+          <div class="stat-sub">reasoning_effort: low • 8k max</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Prompt Cache Status</div>
+          <div class="stat-value" style="color:#38bdf8;">~94%</div>
+          <div class="stat-sub">Fast turn turnaround on boundary moves</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Audio & PPU Status</div>
+          <div class="stat-value" style="color:var(--accent-purple);">44.7 kHz / 60 FPS</div>
+          <div class="stat-sub">DMC 7-bit + Pulse/Wave/Noise + Scanlines</div>
+        </div>
+
+        <div class="stat-card" id="card-vfs">
+          <div class="stat-label">VFS Line Budget</div>
+          <div class="stat-value" id="card-vfs-val" style="color:var(--accent-emerald);">26/26 &lt;250 L</div>
+          <div class="stat-sub" id="card-vfs-sub">3,503 total lines • 0 over budget</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-bar">
+        <button class="tab-btn active" id="tab-btn-live" onclick="switchMonitorTab('live')">Live Stream</button>
+        <button class="tab-btn" id="tab-btn-history" onclick="switchMonitorTab('history')">Session History</button>
+        <button class="tab-btn" id="tab-btn-diff" onclick="switchMonitorTab('diff')">Git Diffs</button>
+        <button class="tab-btn" id="tab-btn-vfs" onclick="switchMonitorTab('vfs')">VFS Line Budget</button>
+      </div>
+
+      <!-- Terminal Output -->
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div class="terminal-title-group">
+            <span class="pulse-dot"></span>
+            <span id="terminal-title" style="font-weight:700; letter-spacing:0.04em;">REAL-TIME AGENT OUTPUT</span>
+            <span class="task-badge" id="terminal-task-badge">task-1338</span>
+            <span id="terminal-meta" style="color:var(--text-muted); font-size:0.75rem;">Connecting...</span>
+          </div>
+          <div class="terminal-controls">
+            <div class="session-toggle-group">
+              <button class="session-pill active" id="pill-session-gba" onclick="switchSessionTarget('gba')">👾 GBA</button>
+              <button class="session-pill" id="pill-session-nes" onclick="switchSessionTarget('nes')">🎮 NES</button>
+            </div>
+            <input type="text" id="term-filter" class="term-search-input" placeholder="🔍 Filter output..." oninput="onFilterChange()" />
+            <button class="term-ctrl-btn active" id="btn-order" onclick="toggleLogOrder()" title="Toggle: Newest at Top vs Oldest at Top">
+              <span id="order-icon">▼</span> <span id="order-label">Newest First (Top)</span>
+            </button>
+            <button class="term-ctrl-btn active" id="btn-pin" onclick="toggleAutoPin()" title="Pin to newest output">
+              📌 Pin
+            </button>
+            <button class="term-ctrl-btn" onclick="clearTerminalView()" title="Clear terminal">
+              🧹 Clear
+            </button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminal-body"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // NES 64-Color Master Palette (RGB)
+    // -------------------------------------------------------------------------
+    const NES_PALETTE = [
+      [124,124,124], [0,0,252], [0,0,188], [68,40,188], [148,0,132], [168,0,32], [168,16,0], [136,20,0],
+      [80,48,0], [0,120,0], [0,104,0], [0,88,0], [0,64,88], [0,0,0], [0,0,0], [0,0,0],
+      [188,188,188], [0,120,248], [0,88,248], [104,68,252], [216,0,204], [228,0,88], [248,56,0], [228,92,16],
+      [172,124,0], [0,184,0], [0,168,0], [0,168,68], [0,136,136], [0,0,0], [0,0,0], [0,0,0],
+      [248,248,248], [60,188,252], [104,136,252], [152,120,248], [248,120,248], [248,88,152], [248,120,88], [252,160,68],
+      [248,184,0], [184,248,24], [88,216,84], [88,248,152], [0,232,216], [120,120,120], [0,0,0], [0,0,0],
+      [252,252,252], [164,228,252], [184,184,248], [216,184,248], [248,184,248], [248,164,192], [240,208,176], [252,224,168],
+      [248,216,120], [216,248,120], [184,248,184], [184,248,216], [0,252,252], [248,216,248], [0,0,0], [0,0,0]
+    ];
+
+    const PALETTE_RGBA = new Uint32Array(64);
+    for (let i = 0; i < 64; i++) {
+      const [r, g, b] = NES_PALETTE[i];
+      // Little-endian RGBA in 32-bit integer: A (top byte), B, G, R
+      PALETTE_RGBA[i] = (255 << 24) | (b << 16) | (g << 8) | r;
+    }
+
+    // -------------------------------------------------------------------------
+    // State & Controller Mask
+    // -------------------------------------------------------------------------
+    let currentPadMask = 0; // bit0: A, bit1: B, bit2: Select, bit3: Start, bit4: Up, bit5: Down, bit6: Left, bit7: Right
+    let isPaused = false;
+    let ws = null;
+    let fallbackLoopRunning = false;
+    let frameCount = 0;
+    let lastFpsUpdate = performance.now();
+
+    // Canvas
+    const canvas = document.getElementById("nes-canvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: false });
+    const imgData = ctx.createImageData(256, 240);
+    const buf32 = new Uint32Array(imgData.data.buffer);
+
+    // Audio Context
+    let audioCtx = null;
+    let audioGain = null;
+    let nextAudioTime = 0;
+    let masterVolume = 0.7;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext({ sampleRate: 44100 });
+        audioGain = audioCtx.createGain();
+        audioGain.gain.value = masterVolume;
+        audioGain.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playAudioSamples(int16Samples, sampleRate = 44744) {
+      if (!audioCtx || audioCtx.state !== 'running' || masterVolume <= 0) return;
+      const len = int16Samples.length;
+      if (len === 0) return;
+      const audioBuffer = audioCtx.createBuffer(1, len, sampleRate);
+      const channel = audioBuffer.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        channel[i] = int16Samples[i] / 32768.0;
+      }
+      const source = audioCtx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioGain);
+      const now = audioCtx.currentTime;
+      if (nextAudioTime < now) {
+        nextAudioTime = now + 0.02;
+      }
+      source.start(nextAudioTime);
+      nextAudioTime += audioBuffer.duration;
+    }
+
+    function setVolume(val) {
+      masterVolume = parseFloat(val);
+      if (audioGain) audioGain.gain.value = masterVolume;
+      document.getElementById('vol-icon').textContent = masterVolume === 0 ? '🔇' : '🔊';
+    }
+
+    // -------------------------------------------------------------------------
+    // WebSocket Emulator Streaming
+    // -------------------------------------------------------------------------
+    function connectEmulator() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${proto}//${location.host}/ws/nes`;
+      ws = new WebSocket(wsUrl);
+      ws.binaryType = "arraybuffer";
+
+      ws.onopen = () => {
+        console.log("NES WebSocket connected");
+        updateRomInfo();
+      };
+
+      ws.onmessage = (event) => {
+        if (event.data instanceof ArrayBuffer) {
+          handleBinaryFrame(event.data);
+          // Send current controller state for next frame
+          if (ws && ws.readyState === WebSocket.OPEN && !isPaused) {
+            pollGamepad();
+            ws.send(new Uint8Array([currentPadMask]));
+          }
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("NES WebSocket closed, retrying in 2s...");
+        setTimeout(connectEmulator, 2000);
+      };
+
+      ws.onerror = (e) => {
+        console.warn("WebSocket error, falling back to HTTP loop", e);
+        startHttpFallback();
+      };
+    }
+
+    function handleBinaryFrame(arrayBuffer) {
+      if (arrayBuffer.byteLength < 61444) return;
+      const view = new DataView(arrayBuffer);
+      const audioLen = view.getUint32(0); // big-endian
+      const videoBytes = new Uint8Array(arrayBuffer, 4, 61440);
+
+      // Render video in ~0.05ms
+      for (let i = 0; i < 61440; i++) {
+        buf32[i] = PALETTE_RGBA[videoBytes[i] & 63];
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // Audio
+      if (audioLen > 0 && arrayBuffer.byteLength >= 4 + 61440 + audioLen) {
+        const audioSamples = new Int16Array(arrayBuffer, 4 + 61440, audioLen / 2);
+        playAudioSamples(audioSamples);
+      }
+
+      // FPS tracking
+      frameCount++;
+      const now = performance.now();
+      if (now - lastFpsUpdate >= 1000) {
+        const fps = ((frameCount * 1000) / (now - lastFpsUpdate)).toFixed(1);
+        document.getElementById("hud-fps").textContent = `${fps} FPS`;
+        frameCount = 0;
+        lastFpsUpdate = now;
+      }
+    }
+
+    // HTTP fallback if WebSocket is unavailable
+    async function startHttpFallback() {
+      if (fallbackLoopRunning) return;
+      fallbackLoopRunning = true;
+      while (fallbackLoopRunning) {
+        if (!isPaused) {
+          try {
+            pollGamepad();
+            const res = await fetch(`/api/nes/step?pad=${currentPadMask}`, { method: 'POST' });
+            if (res.ok) {
+              const buf = await res.arrayBuffer();
+              handleBinaryFrame(buf);
+            }
+          } catch (e) {
+            await new Promise(r => setTimeout(r, 50));
+          }
+        }
+        await new Promise(r => requestAnimationFrame(r));
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Input Handling (Keyboard, Touch/Mouse, Gamepad API)
+    // -------------------------------------------------------------------------
+    const KEY_MAP = {
+      'x': 1, 'X': 1, 'k': 1, 'K': 1,          // A
+      'z': 2, 'Z': 2, 'j': 2, 'J': 2,          // B
+      'Shift': 4, 'c': 4, 'C': 4,              // Select
+      'Enter': 8, ' ': 8,                      // Start
+      'ArrowUp': 16, 'w': 16, 'W': 16,         // Up
+      'ArrowDown': 32, 's': 32, 'S': 32,       // Down
+      'ArrowLeft': 64, 'a': 64, 'A': 64,       // Left
+      'ArrowRight': 128, 'd': 128, 'D': 128    // Right
+    };
+
+    const BUTTON_ID_MAP = {
+      1: 'btn-a', 2: 'btn-b', 4: 'btn-select', 8: 'btn-start',
+      16: 'btn-up', 32: 'btn-down', 64: 'btn-left', 128: 'btn-right'
+    };
+
+    window.addEventListener('keydown', (e) => {
+      initAudio();
+      if (KEY_MAP[e.key] !== undefined) {
+        const mask = KEY_MAP[e.key];
+        currentPadMask |= mask;
+        const el = document.getElementById(BUTTON_ID_MAP[mask]);
+        if (el) el.classList.add('pressed');
+        if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+          e.preventDefault();
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (KEY_MAP[e.key] !== undefined) {
+        const mask = KEY_MAP[e.key];
+        currentPadMask &= ~mask;
+        const el = document.getElementById(BUTTON_ID_MAP[mask]);
+        if (el) el.classList.remove('pressed');
+      }
+    });
+
+    // Virtual Gamepad button clicks & touch
+    document.querySelectorAll('[data-mask]').forEach(el => {
+      const mask = parseInt(el.getAttribute('data-mask'));
+      const press = (ev) => {
+        ev.preventDefault();
+        initAudio();
+        currentPadMask |= mask;
+        el.classList.add('pressed');
+      };
+      const release = (ev) => {
+        ev.preventDefault();
+        currentPadMask &= ~mask;
+        el.classList.remove('pressed');
+      };
+      el.addEventListener('mousedown', press);
+      el.addEventListener('mouseup', release);
+      el.addEventListener('mouseleave', release);
+      el.addEventListener('touchstart', press);
+      el.addEventListener('touchend', release);
+    });
+
+    // HTML5 Gamepad API Polling
+    function pollGamepad() {
+      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      let gp = null;
+      for (let g of gamepads) {
+        if (g && g.connected) { gp = g; break; }
+      }
+      if (!gp) return;
+      document.getElementById('gamepad-status-tag').textContent = `Connected: ${gp.id.substring(0, 15)}...`;
+
+      let mask = 0;
+      // Standard Mapping
+      if (gp.buttons[0] && gp.buttons[0].pressed) mask |= 1;  // A
+      if (gp.buttons[1] && gp.buttons[1].pressed) mask |= 2;  // B / X
+      if (gp.buttons[2] && gp.buttons[2].pressed) mask |= 2;  // X -> B
+      if (gp.buttons[8] && gp.buttons[8].pressed) mask |= 4;  // Select
+      if (gp.buttons[9] && gp.buttons[9].pressed) mask |= 8;  // Start
+      if (gp.buttons[12] && gp.buttons[12].pressed) mask |= 16; // Up
+      if (gp.buttons[13] && gp.buttons[13].pressed) mask |= 32; // Down
+      if (gp.buttons[14] && gp.buttons[14].pressed) mask |= 64; // Left
+      if (gp.buttons[15] && gp.buttons[15].pressed) mask |= 128;// Right
+
+      // Analog stick threshold
+      if (gp.axes[1] < -0.4) mask |= 16; // Up
+      if (gp.axes[1] > 0.4)  mask |= 32; // Down
+      if (gp.axes[0] < -0.4) mask |= 64; // Left
+      if (gp.axes[0] > 0.4)  mask |= 128;// Right
+
+      currentPadMask |= mask;
+    }
+
+    // -------------------------------------------------------------------------
+    // Console Actions & ROM Upload
+    // -------------------------------------------------------------------------
+    function togglePause() {
+      initAudio();
+      isPaused = !isPaused;
+      const btn = document.getElementById("btn-play-pause");
+      btn.textContent = isPaused ? "▶ Resume" : "⏸ Pause";
+      btn.className = isPaused ? "btn-action btn-danger" : "btn-action btn-primary";
+    }
+
+    async function resetConsole() {
+      initAudio();
+      await fetch('/api/nes/reset', { method: 'POST' });
+    }
+
+    async function loadDemoCart() {
+      initAudio();
+      await fetch('/api/nes/demo', { method: 'POST' });
+      updateRomInfo();
+    }
+
+    function toggleCRT() {
+      const overlay = document.getElementById("crt-overlay");
+      const btn = document.getElementById("btn-crt-toggle");
+      overlay.classList.toggle("disabled");
+      btn.textContent = overlay.classList.contains("disabled") ? "📺 CRT FX: OFF" : "📺 CRT FX: ON";
+    }
+
+    async function updateRomInfo() {
+      try {
+        const res = await fetch('/api/nes/info');
+        if (res.ok) {
+          const info = await res.json();
+          document.getElementById('hud-game-name').textContent = (info.name || "NES CARTRIDGE").toUpperCase();
+          document.getElementById('hud-mapper').textContent = `${info.mapper || 'NROM'}`;
+          document.getElementById('info-mapper').textContent = info.mapper || 'NROM';
+          document.getElementById('info-mirror').textContent = info.mirror || 'Horizontal';
+          document.getElementById('info-prg').textContent = info.prgSize ? `${info.prgSize / 1024} KiB` : '32 KiB';
+          document.getElementById('info-chr').textContent = info.chrSize ? `${info.chrSize / 1024} KiB ROM` : '8 KiB RAM';
+        }
+      } catch (e) {}
+    }
+
+    async function uploadRomFile(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const res = await fetch('/api/nes/rom', {
+        method: 'POST',
+        headers: { 'X-Filename': file.name },
+        body: file
+      });
+      const data = await res.json();
+      if (data.ok) {
+        updateRomInfo();
+        if (isPaused) togglePause();
+      } else {
+        alert("Failed to load ROM: " + data.message);
+      }
+      input.value = "";
+    }
+
+    // Drag and Drop ROM loading
+    const chassis = document.getElementById("tv-chassis");
+    const dropCurtain = document.getElementById("drop-curtain");
+
+    window.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropCurtain.classList.add("active");
+    });
+    window.addEventListener("dragleave", (e) => {
+      if (e.clientX <= 0 || e.clientY <= 0) {
+        dropCurtain.classList.remove("active");
+      }
+    });
+    window.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      dropCurtain.classList.remove("active");
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.name.toLowerCase().endsWith(".nes")) {
+          initAudio();
+          const res = await fetch('/api/nes/rom', {
+            method: 'POST',
+            headers: { 'X-Filename': file.name },
+            body: file
+          });
+          const data = await res.json();
+          if (data.ok) {
+            updateRomInfo();
+            if (isPaused) togglePause();
+          } else {
+            alert("Failed to load ROM: " + data.message);
+          }
+        }
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // View Switcher & Monitoring Tab logic
+    // -------------------------------------------------------------------------
+    let currentSession = 'gba';
+    let logOrder = localStorage.getItem('ghs_log_order') || 'newest-top';
+    let autoPin = true;
+    let filterQuery = '';
+    let activeMonitorTab = 'live';
+    let eventSource = null;
+    let liveLogLines = []; // master array in chronological order
+
+    function switchView(viewName) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-container').forEach(c => c.classList.remove('active'));
+      if (viewName === 'arcade') {
+        document.getElementById('btn-view-arcade').classList.add('active');
+        document.getElementById('view-arcade').classList.add('active');
+      } else {
+        document.getElementById('btn-view-monitor').classList.add('active');
+        document.getElementById('view-monitor').classList.add('active');
+        loadMonitorLogs();
+      }
+    }
+
+    function switchMonitorTab(tab) {
+      activeMonitorTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-btn-${tab}`).classList.add('active');
+      loadMonitorLogs();
+    }
+
+    function updateOrderUi() {
+      const icon = document.getElementById('order-icon');
+      const label = document.getElementById('order-label');
+      const btn = document.getElementById('btn-order');
+      if (logOrder === 'newest-top') {
+        if (icon) icon.textContent = '▼';
+        if (label) label.textContent = 'Newest First (Top)';
+        if (btn) btn.classList.add('active');
+      } else {
+        if (icon) icon.textContent = '▲';
+        if (label) label.textContent = 'Oldest First (Bottom)';
+        if (btn) btn.classList.remove('active');
+      }
+    }
+
+    function toggleLogOrder() {
+      logOrder = (logOrder === 'newest-top') ? 'oldest-top' : 'newest-top';
+      localStorage.setItem('ghs_log_order', logOrder);
+      updateOrderUi();
+      renderLiveLogs();
+    }
+
+    function toggleAutoPin() {
+      autoPin = !autoPin;
+      const btn = document.getElementById('btn-pin');
+      if (btn) {
+        if (autoPin) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    }
+
+    function switchSessionTarget(target) {
+      currentSession = target;
+      const gbaPill = document.getElementById('pill-session-gba');
+      const nesPill = document.getElementById('pill-session-nes');
+      if (gbaPill) gbaPill.classList.toggle('active', target === 'gba');
+      if (nesPill) nesPill.classList.toggle('active', target === 'nes');
+      connectSse();
+      loadMonitorLogs();
+      updateSessionStatus();
+    }
+
+    function onFilterChange() {
+      const input = document.getElementById('term-filter');
+      filterQuery = (input ? input.value : '').toLowerCase().trim();
+      renderLiveLogs();
+    }
+
+    function clearTerminalView() {
+      liveLogLines = [];
+      const term = document.getElementById('terminal-body');
+      if (term) {
+        term.innerHTML = '<div style="color:var(--text-muted); padding:1rem; text-align:center;">Logs cleared. New stream output will appear here.</div>';
+      }
+    }
+
+    function formatLogLineHtml(line, isNew) {
+      const safe = escapeHtml(line);
+      let cls = 'log-line';
+      if (isNew) cls += ' new-arrival';
+      if (line.includes('[tool:') || line.startsWith('> ')) cls += ' tool';
+      else if (line.includes('[PASS]') || line.includes('CHECK-PASS') || line.includes('verdict: OK')) cls += ' echo';
+      else if (line.includes('[FAIL]') || line.includes('COMPILE-ERROR') || line.includes('CHECK-FAIL')) cls += ' tool';
+      else if (line.includes('[usage:') || line.includes('[thinking]')) cls += ' talk';
+      return `<div class="${cls}">${safe}</div>`;
+    }
+
+    function renderLiveLogs() {
+      const term = document.getElementById('terminal-body');
+      if (!term || activeMonitorTab !== 'live') return;
+
+      let filtered = liveLogLines;
+      if (filterQuery) {
+        filtered = liveLogLines.filter(l => l.toLowerCase().includes(filterQuery));
+      }
+
+      // If newest-top: reverse so the latest line is at the top
+      const displayLines = (logOrder === 'newest-top') ? [...filtered].reverse() : filtered;
+      term.innerHTML = displayLines.map(l => formatLogLineHtml(l, false)).join('');
+
+      if (autoPin) {
+        if (logOrder === 'newest-top') {
+          term.scrollTop = 0;
+        } else {
+          term.scrollTop = term.scrollHeight;
+        }
+      }
+    }
+
+    function appendNewLogLines(newLines) {
+      if (!newLines || newLines.length === 0) return;
+      for (const l of newLines) {
+        if (!l && l !== '') continue;
+        liveLogLines.push(l);
+      }
+      if (liveLogLines.length > 3000) {
+        liveLogLines = liveLogLines.slice(liveLogLines.length - 2500);
+      }
+
+      const term = document.getElementById('terminal-body');
+      if (!term || activeMonitorTab !== 'live') return;
+
+      const validNew = filterQuery ? newLines.filter(l => l.toLowerCase().includes(filterQuery)) : newLines;
+      if (validNew.length === 0) return;
+
+      if (logOrder === 'newest-top') {
+        // Prepend newest lines at the very top of the terminal
+        const reversed = [...validNew].reverse();
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = reversed.map(l => formatLogLineHtml(l, true)).join('');
+        while (tempDiv.lastChild) {
+          term.insertBefore(tempDiv.lastChild, term.firstChild);
+        }
+        if (autoPin) {
+          term.scrollTop = 0;
+        }
+      } else {
+        // Append at bottom
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = validNew.map(l => formatLogLineHtml(l, true)).join('');
+        while (tempDiv.firstChild) {
+          term.appendChild(tempDiv.firstChild);
+        }
+        if (autoPin) {
+          term.scrollTop = term.scrollHeight;
+        }
+      }
+    }
+
+    async function loadMonitorLogs() {
+      const term = document.getElementById('terminal-body');
+      if (!term) return;
+
+      if (activeMonitorTab === 'live') {
+        try {
+          const res = await fetch(`/api/log?session=${encodeURIComponent(currentSession)}`);
+          const data = await res.json();
+          if (data.task_log) {
+            const badge = document.getElementById('terminal-task-badge');
+            if (badge) badge.textContent = data.task_log;
+          }
+          liveLogLines = data.tail || [];
+          renderLiveLogs();
+        } catch (e) {}
+      } else if (activeMonitorTab === 'history') {
+        try {
+          const res = await fetch(`/api/history?session=${encodeURIComponent(currentSession)}`);
+          const data = await res.json();
+          let msgs = data.messages || [];
+          if (logOrder === 'newest-top') {
+            msgs = [...msgs].reverse();
+          }
+          term.innerHTML = msgs.map(m => {
+            const kind = m.kind || 'msg';
+            return `<div class="log-line ${kind}"><strong>#${m.i} [${kind.toUpperCase()}]</strong> ${escapeHtml(m.text || '')}</div>`;
+          }).join('');
+          if (autoPin) {
+            term.scrollTop = (logOrder === 'newest-top') ? 0 : term.scrollHeight;
+          }
+        } catch (e) {}
+      } else if (activeMonitorTab === 'diff') {
+        try {
+          const res = await fetch(`/api/diff?session=${encodeURIComponent(currentSession)}`);
+          const data = await res.json();
+          term.innerHTML = `<pre style="color:#38bdf8; padding:0.5rem;">${escapeHtml(data.diff_stat || 'No modified files.')}\n\n${escapeHtml(data.status || 'Working tree clean.')}</pre>`;
+        } catch (e) {}
+      } else if (activeMonitorTab === 'vfs') {
+        try {
+          const res = await fetch(`/api/vfs?session=${encodeURIComponent(currentSession)}`);
+          const data = await res.json();
+          renderVfsView(data);
+        } catch (e) {
+          term.innerHTML = `<div style="color:var(--accent-red); padding:1rem;">Failed to fetch VFS data: ${escapeHtml(String(e))}</div>`;
+        }
+      }
+    }
+
+    let currentVfsData = null;
+    let vfsFilterQuery = '';
+
+    function renderVfsView(data) {
+      if (data) currentVfsData = data;
+      const term = document.getElementById('terminal-body');
+      if (!term || !currentVfsData) return;
+
+      const files = currentVfsData.files || [];
+      const totalFiles = currentVfsData.count || files.length;
+      const totalLines = currentVfsData.total_lines || 0;
+      const overBudget = currentVfsData.over_budget || 0;
+      const session = currentVfsData.session || currentSession;
+
+      // Update the VFS stat card
+      const cardVal = document.getElementById('card-vfs-val');
+      const cardSub = document.getElementById('card-vfs-sub');
+      if (cardVal) {
+        cardVal.textContent = `${totalFiles - overBudget}/${totalFiles} <250 L`;
+        cardVal.style.color = overBudget === 0 ? 'var(--accent-emerald)' : '#f87171';
+      }
+      if (cardSub) {
+        cardSub.textContent = `${totalLines.toLocaleString()} total lines • ${overBudget} over budget`;
+      }
+
+      const filtered = files.filter(f => !vfsFilterQuery || (f.path || '').toLowerCase().includes(vfsFilterQuery));
+
+      term.innerHTML = `
+        <div class="vfs-container">
+          <div class="vfs-summary-strip">
+            <div class="vfs-stat-item">
+              <span class="vfs-stat-label">Session Target</span>
+              <span class="vfs-stat-val" style="color:var(--accent-cyan);">${escapeHtml(session.toUpperCase())}</span>
+            </div>
+            <div class="vfs-stat-item">
+              <span class="vfs-stat-label">Loaded Modules</span>
+              <span class="vfs-stat-val">${totalFiles}</span>
+            </div>
+            <div class="vfs-stat-item">
+              <span class="vfs-stat-label">Total Code Lines</span>
+              <span class="vfs-stat-val">${totalLines.toLocaleString()}</span>
+            </div>
+            <div class="vfs-stat-item">
+              <span class="vfs-stat-label">Line Budget Threshold</span>
+              <span class="vfs-stat-val">&lt;250 lines / file</span>
+            </div>
+            <div class="vfs-stat-item">
+              <span class="vfs-stat-label">Budget Compliance</span>
+              <span class="vfs-stat-val" style="color:${overBudget === 0 ? 'var(--accent-emerald)' : '#f87171'}">
+                ${overBudget === 0 ? '✓ 100% Compliant' : `⚠ ${overBudget} Exceeded`}
+              </span>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" class="vfs-search-box" id="vfs-search-input"
+                   placeholder="🔍 Filter loaded files (e.g. Bus, Cpu, Ppu, Oam)..."
+                   value="${escapeHtml(vfsFilterQuery)}"
+                   oninput="onVfsFilterInput(this.value)" />
+            <button class="term-ctrl-btn" onclick="loadMonitorLogs()" style="height:36px; padding:0 0.85rem;" title="Refresh VFS stats">🔄 Refresh</button>
+          </div>
+
+          <div class="vfs-grid">
+            ${filtered.map(f => {
+              const budget = f.budget || 250;
+              const lines = f.lines || 0;
+              const pct = Math.min(100, Math.round((lines / budget) * 100));
+              const remaining = Math.max(0, budget - lines);
+              let barColor = 'var(--accent-emerald)';
+              if (lines >= budget) barColor = '#f87171';
+              else if (lines >= 200) barColor = 'var(--accent-amber)';
+
+              const isOver = f.over || lines >= budget;
+              const syncClass = f.sync_state === '[synced]' ? 'vfs-tag-synced' : (f.sync_state === '[stale]' ? 'vfs-tag-stale' : '');
+              const gitClass = f.git_status === '[clean]' ? 'vfs-tag-clean' : 'vfs-tag-stale';
+
+              return `
+                <div class="vfs-card ${isOver ? 'over-budget' : ''}">
+                  <div class="vfs-card-top">
+                    <span class="vfs-card-path" title="${escapeHtml(f.path)}">${escapeHtml(f.path)}</span>
+                    <div class="vfs-card-badges">
+                      <span class="vfs-tag ${syncClass}">${escapeHtml(f.sync_state || '[synced]')}</span>
+                      <span class="vfs-tag ${gitClass}">${escapeHtml(f.git_status || '[clean]')}</span>
+                    </div>
+                  </div>
+                  <div class="vfs-meter-track" title="${lines} / ${budget} lines (${pct}%)">
+                    <div class="vfs-meter-fill" style="width:${pct}%; background:${barColor};"></div>
+                  </div>
+                  <div class="vfs-card-bot">
+                    <span style="font-weight:600; color:${barColor};">${lines} / ${budget} lines (${pct}%)</span>
+                    <span>${isOver ? '⚠ OVER BUDGET' : `${remaining} lines left`} • ${(f.bytes || 0).toLocaleString()} B</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function onVfsFilterInput(val) {
+      vfsFilterQuery = (val || '').toLowerCase().trim();
+      renderVfsView();
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function connectSse() {
+      if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+      }
+      const meta = document.getElementById('terminal-meta');
+      if (meta) meta.textContent = 'Connecting...';
+
+      try {
+        eventSource = new EventSource(`/api/stream?session=${encodeURIComponent(currentSession)}`);
+        eventSource.onopen = () => {
+          if (meta) meta.textContent = '● Live Stream';
+        };
+        eventSource.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (!msg) return;
+            if (msg.type === 'log_chunk') {
+              if (msg.task) {
+                const badge = document.getElementById('terminal-task-badge');
+                if (badge) badge.textContent = msg.task;
+              }
+              if (msg.chunk) {
+                const lines = msg.chunk.split(/\r?\n/);
+                appendNewLogLines(lines);
+              }
+            } else if (msg.type === 'status_update') {
+              handleStatusUpdate(msg.status);
+            }
+          } catch (err) {}
+        };
+        eventSource.onerror = () => {
+          if (meta) meta.textContent = 'Reconnecting...';
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          setTimeout(connectSse, 2500);
+        };
+      } catch (e) {
+        if (meta) meta.textContent = 'Polling fallback';
+      }
+    }
+
+    function handleStatusUpdate(data) {
+      if (!data || !data.status) return;
+      const verdict = data.status.verdict || 'OK';
+      const kind = data.status.kind || 'OK';
+      const dur = (data.status.duration_s !== undefined) ? data.status.duration_s : 0.0;
+      const target = data.target || currentSession;
+
+      const verdictBadge = document.getElementById('session-verdict-badge');
+      if (verdictBadge) verdictBadge.textContent = `${target.toUpperCase()}: ${verdict}`;
+
+      const cardVerdict = document.getElementById('card-verdict');
+      if (cardVerdict) {
+        cardVerdict.textContent = kind;
+        cardVerdict.style.color = (kind === 'OK' || kind === 'CHECK-PASS') ? 'var(--accent-emerald)' : '#f87171';
+      }
+
+      const cardChecks = document.getElementById('card-checks');
+      if (cardChecks) {
+        cardChecks.textContent = `${verdict} (${dur}s)`;
+      }
+    }
+
+    // Auto-update monitor session badge & VFS stats via REST fallback
+    async function updateSessionStatus() {
+      try {
+        const res = await fetch(`/api/status?session=${encodeURIComponent(currentSession)}`);
+        if (res.ok) {
+          const data = await res.json();
+          handleStatusUpdate(data);
+        }
+        const vfsRes = await fetch(`/api/vfs?session=${encodeURIComponent(currentSession)}`);
+        if (vfsRes.ok) {
+          const vfsData = await vfsRes.json();
+          if (activeMonitorTab === 'vfs') {
+            renderVfsView(vfsData);
+          } else {
+            const files = vfsData.files || [];
+            const totalFiles = vfsData.count || files.length;
+            const totalLines = vfsData.total_lines || 0;
+            const overBudget = vfsData.over_budget || 0;
+            const cardVal = document.getElementById('card-vfs-val');
+            const cardSub = document.getElementById('card-vfs-sub');
+            if (cardVal) {
+              cardVal.textContent = `${totalFiles - overBudget}/${totalFiles} <250 L`;
+              cardVal.style.color = overBudget === 0 ? 'var(--accent-emerald)' : '#f87171';
+            }
+            if (cardSub) {
+              cardSub.textContent = `${totalLines.toLocaleString()} total lines • ${overBudget} over budget`;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Start everything
+    updateOrderUi();
+    loadMonitorLogs();
+    connectSse();
+    setInterval(updateSessionStatus, 4000);
+    connectEmulator();
+    updateRomInfo();
+  </script>
+</body>
+</html>
