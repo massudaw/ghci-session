@@ -20,8 +20,11 @@ PORT = 8080
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WEB_DIR = os.path.join(ROOT_DIR, "web")
 NES_DIR = os.path.join(ROOT_DIR, "nes")
-BIN_DIR = os.path.join(ROOT_DIR, ".bin")
-NES_RUNNER_BIN = os.path.join(BIN_DIR, "nes-runner")
+NES_RUNNER_BIN = (
+    os.path.join(NES_DIR, ".bin", "nes-runner")
+    if os.path.exists(os.path.join(NES_DIR, ".bin", "nes-runner"))
+    else os.path.join(BIN_DIR, "nes-runner")
+)
 SESSION_DIR = os.path.join(NES_DIR, ".ghci-session", "nes")
 
 # -----------------------------------------------------------------------------
