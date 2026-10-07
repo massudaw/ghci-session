@@ -521,6 +521,13 @@ was not always, and the breakdown is how each of these was found:
 - 0.4-0.8 s of every reload went to asking the OS for the repl's memory footprint, three times, inline. It is now
   sampled once, after the reload returns, and reused by the next reload's budget check.
 - 0.65 s of every save was the watcher's poll and debounce. Now a kernel file event and a 50 ms quiet period.
+- **Several files, one reload: `hold` / `release`.** The watcher reloads once the events stop for 50 ms (at most
+  0.3 s into a burst), so files written further apart than that are a reload each: ten files 400 ms apart were ten
+  reloads, 1.8 s in all, and ten at 100 ms were five. `ghci-session hold` makes the watcher leave the sources
+  alone; write the files; `ghci-session release` reloads once and answers with that verdict (the same ten files:
+  one reload of 1.0 s). A hold ends by itself after `--timeout` seconds (30, at most 600), so a writer that died
+  does not leave the session deaf to saves; the watcher then reloads what was saved. The MCP server has both as
+  tools (`hold`, `release`). A tool that writes all its files in one go (the chat's `edits`) needs neither.
 - Every reload re-issued the session's `:module +` imports (40 of them, 0.1 s): now only after a reload that failed,
   which is the only kind that drops them.
 - The script that prepares the pruner ran `nm` on the RTS library once per symbol, sixteen times, before looking at
@@ -645,6 +652,7 @@ target as much as the edit.
 ```
 start [--no-test] [--fast] | stop | restart [--fast] | status [-d] [SESSION]
 reload [--no-test] [--no-refork] [--async-refork] [SESSION]
+hold [--timeout SECS] [SESSION] | release [SESSION]
 typecheck [SESSION]
 test [-m MEMBER] [SESSION]
 eval EXPR [-s SESSION]

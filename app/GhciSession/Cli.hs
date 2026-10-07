@@ -497,6 +497,8 @@ usage = unlines
   , ""
   , "  start [--no-test] [--fast] | stop | restart [--fast] | status [-d]   [SESSION]"
   , "  reload [--no-test] [--no-refork] [--async-refork]  [SESSION]"
+  , "  hold [--timeout SECS] [SESSION]    saves are not reloaded until `release` (or SECS, default 30): write several files, then reload once"
+  , "  release [SESSION]                  reload what was saved since `hold`, once"
   , "  typecheck [SESSION]                do the sources on disk typecheck? (no code generated, nothing reloaded)"
   , "  vfs [PATH] [-s SESSION] [--budget N] [--json]   virtual file system and line budget inspector (<250 lines)"
   , "  test [-m MEMBER] [SESSION]         run the target's test(s) on the loaded code"
@@ -551,6 +553,17 @@ cliMain = do
         "restart" -> pick conf (pos a 0) >>= \name -> request conf name (JObj [("op", JStr "restart"), ("fast", JBool (flag a ["--fast"]))]) >>= say
         "status" -> cmdStatus conf (pos a 0) (flag a ["-d", "--detail"])
         "reload" -> cmdReload conf a
+        "hold" -> do
+          name <- pick conf (pos a 0)
+          request conf name (JObj ([("op", JStr "hold")] ++ [ ("secs", JNum v) | Just t <- [opt a ["-t", "--timeout"]], [(v, "")] <- [reads t] ])) >>= say
+        "release" -> do
+          name <- pick conf (pos a 0)
+          t0 <- now
+          rc <- request conf name (JObj [("op", JStr "release")]) >>= say
+          t1 <- now
+          hPutStrLn stderr (printf "(%.1fs)" (t1 - t0))
+          ok <- statusOk conf name
+          pure (if rc /= 0 then rc else if ok then 0 else 1)
         c' | c' `elem` ["test", "check"] -> cmdCheck conf a      -- (`check` is the name it had)
         "typecheck" -> do
           name <- pick conf (pos a 0)

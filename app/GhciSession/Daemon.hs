@@ -89,6 +89,7 @@ data S = S
   , vLinksSeen :: IORef Int, vLinksPruned :: IORef Int   -- ^ libraries the engine has linked: now, and at the last unlink
   , vCheckSecs :: IORef (M.Map String [Double])   -- ^ per member, the seconds its last passing checks took: what a hang is measured against
   , vChecking :: IORef (Maybe (Double, Double, String))   -- ^ a check running now: when its reload began, when the check did, the compile verdict
+  , vBatch :: IORef (Maybe Double)   -- ^ a batch of edits is being written ('hold'): until when the watcher leaves the sources alone; 'release' reloads once
   }
 
 -- | How the running engine was started: what the build tool was asked, and what it answered.
@@ -1611,22 +1612,46 @@ watchLoop s = do
                 cur2 <- doScan
                 ok <- waiterUpdate w (M.keys cur2 ++ map toRaw roots)   -- new files, and files saved by rename (a new inode)
                 unless ok (logS s "watch: cannot watch these paths with kernel events -- polling from here" >> toPolling w)
-                loaded <- rd (vLoadedSig s)
-                when (gAutoReload cfg && cur2 /= loaded) $ do
-                  let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
-                  let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
-                  saved <- saveLine s changed
-                  if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
-                    then histEvent s (saved ++ " (a build file)") (drive s (buildFileChanged s))
-                  else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
-                    then do
-                      logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
-                      histEvent s (saved ++ " (a restart)") (drive s (void (restart s (Just False))))      -- (through the build tool: it is what compiles a package's C)
-                    else do
-                      logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
-                      histEvent s saved (drive s (watchReload s))
-                loop cur2 headC1 slow1
+                held <- batchHeld s
+                unless held (when (gAutoReload cfg) (applyChanges s (drive s) cur2))
+                -- (held: the old signature stays, so the next look finds the edits again, and a hold that ran out reloads)
+                loop (if held then lastSig1 else cur2) headC1 slow1
   loop first head0 t0 `finally` waiterClose w
+
+-- | A batch of edits is being written ('hold'): the watcher leaves the sources alone until 'release', or until the
+-- hold runs out (a client that died must not leave the session deaf to saves).
+batchHeld :: S -> IO Bool
+batchHeld s = do
+  b <- rd (vBatch s)
+  case b of
+    Nothing -> pure False
+    Just until' -> do
+      t <- now
+      if t < until' then pure True else do
+        vBatch s =: Nothing
+        logS s "watch: the hold ran out -- reloading what was saved"
+        pure False
+
+-- | Reload for the sources as they are now, when they differ from the loaded ones: what the watcher does after a
+-- save, and what 'release' does for the saves it held back. @run@ says how the reload is driven: the watcher takes
+-- the work lock ('drive'), a client request already has it.
+applyChanges :: S -> (IO () -> IO ()) -> Sig -> IO ()
+applyChanges s run cur2 = do
+  let cfg = sCfg s
+  loaded <- rd (vLoadedSig s)
+  when (cur2 /= loaded) $ do
+    let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
+    let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
+    saved <- saveLine s changed
+    if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
+      then histEvent s (saved ++ " (a build file)") (run (buildFileChanged s))
+    else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
+      then do
+        logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
+        histEvent s (saved ++ " (a restart)") (run (void (restart s (Just False))))      -- (through the build tool: it is what compiles a package's C)
+      else do
+        logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
+        histEvent s saved (run (watchReload s))
 
 showG :: Double -> String
 showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
@@ -1896,6 +1921,16 @@ handle s h = do
           st <- rd (vStatus s)
           replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
         "info" -> info s >>= replyS True . encode
+        -- a batch of edits: the watcher waits (it must not take the work lock: a reload may be running) ...
+        "hold" -> do
+          let secs = max 1 (min 600 (fromMaybe 30 (lookupNum "secs" req)))
+          t <- now
+          vBatch s =: Just (t + secs)
+          vLastUsed s =: t
+          logS s ("hold: saves are not reloaded for up to " ++ showG secs ++ " s, until `release`")
+          replyS True ("holding: saves are not reloaded for up to " ++ showG secs ++ " s; `release` reloads them once")
+        -- ... and `release` reloads what was written, once, and answers with that verdict
+        "release" -> vBatch s =: Nothing >> viaWork op req
         "doc" -> do          -- (reads the sources, not the repl: answers during a reload)
           logged req (histAdd s "tool" (describeReq op req))
           out <- docSearch s req
@@ -1950,6 +1985,13 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     pure (Just out)
   "reload" -> Just <$> reload s (fromMaybe True (lookupBool "check" req)) (fromMaybe True (lookupBool "refork" req)) (lookupBool "async_refork" req)
   "typecheck" -> Just <$> typecheckSources s
+  "release" -> do
+    cur <- scan (sRoot s) (gWatch (sCfg s)) (gWatchExt (sCfg s))
+    loaded <- rd (vLoadedSig s)
+    if cur == loaded then pure (Just (T.pack "released: nothing changed since the last load")) else do
+      applyChanges s id cur
+      v <- verdictLine s
+      pure (Just (T.pack "released: reloaded once\n" <> v))
   -- the members chosen since it started, taken by the running repl if they can be ('addMembers')
   "add_members" -> do
     r <- addMembers s
@@ -2241,7 +2283,7 @@ runDaemon conf name bootCheck fastStart = do
          <*> newIORef "OK" <*> newIORef "?" <*> newIORef Nothing <*> newIORef Nothing
          <*> newIORef t <*> newIORef M.empty <*> newIORef M.empty <*> newIORef False <*> newIORef Nothing
          <*> newIORef 0 <*> newIORef Nothing <*> newIORef Nothing <*> newIORef 0 <*> newIORef 0
-         <*> newIORef M.empty <*> newIORef Nothing
+         <*> newIORef M.empty <*> newIORef Nothing <*> newIORef Nothing
   pid <- getProcessID
   writeAtomic (dir </> "pid") (show pid)
   t0 <- now
