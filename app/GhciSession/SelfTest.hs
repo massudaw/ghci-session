@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, fuzzyReplace, isRed, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
+import GhciSession.Chat (ReadRec (..), arguments, chatTools, editPaths, fuzzyReplace, isRed, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports)
 import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -307,6 +307,10 @@ run = do
   check "chat: ... or says it matches none" (T.isInfixOf (T.pack "matches no line") (nearest file (T.pack "nothing like it")))
   eq "chat: a replacement as written" (fst <$> replaceOnce (T.pack "a = 1\nb = 2\n") (T.pack "b = 2") (T.pack "b = 3")) (Right (T.pack "a = 1\nb = 3\n"))
   check "chat: ... or with its spacing squeezed, and says so" (either (const False) (T.isInfixOf (T.pack "x = 9") . fst) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")) && either (const False) (("spacing" `isInfixOf`) . snd) (replaceOnce file (T.pack "foo bar") (T.pack "x = 9")))
+  eq "chat: edits without a path are in the file before them, else the call's"
+     (map fst (editPaths (Just "B.hs") [JObj [("old", JStr "x")], JObj [("path", JStr "A.hs"), ("old", JStr "y")], JObj [("path", JStr ""), ("old", JStr "z")]]))
+     [Just "B.hs", Just "A.hs", Just "A.hs"]
+  eq "chat: ... and none at all is said so" (map fst (editPaths Nothing [JObj [("old", JStr "x")]])) [Nothing]
   check "chat: ... refused when it occurs twice" (either (T.isInfixOf (T.pack "2 times")) (const False) (replaceOnce (T.pack "x x") (T.pack "x") (T.pack "y")))
   check "chat: the edits tool takes an array of replacements" ("edits" `elem` map tName chatTools && maybe False ((== "array") . fst) (lookup "edits" (tProps (toolNamed "edits"))))
   check "chat: test takes an expression" ("expr" `elem` map fst (tProps (toolNamed "test")))

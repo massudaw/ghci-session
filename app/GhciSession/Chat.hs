@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, saveWait, isRed
+  , arguments, chatTools, splitImports, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -283,11 +283,17 @@ chatTools =
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
      , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: no status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
-     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file)"))] ["edits"]
+     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output and status." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
   where timeoutDesc = "seconds before it is interrupted (default 120): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. ONE expression, command or declaration group per call: several lines are one GHCi block (:{ :}), so an import or a let on its own line fails to parse -- make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
+
+-- | Each replacement of an edits call with its file: its own path, else that of the replacement before
+-- it, else the call's path. (A model writing several replacements to one file often names it only once.)
+editPaths :: Maybe String -> [Json] -> [(Maybe String, Json)]
+editPaths _ [] = []
+editPaths before (e : es) = let p = case lookupStr "path" e of { Just x | not (null (trim x)) -> Just x; _ -> before } in (p, e) : editPaths p es
 
 -- | The edit tool, whose arguments each of the edits' replacements are read as.
 editTool :: Tool
@@ -420,14 +426,16 @@ fileTool ch name a = case name of
   -- several replacements, in one or more files: all checked against the files (as the ones before them
   -- leave them) before any is written, then written together -- one reload, one verdict
   "edits" -> do
-    let items = [ fst (arguments editTool e) | e <- lookupArr "edits" a ]
+    let items = editPaths (lookupStr "path" a) [ fst (arguments editTool e) | e <- lookupArr "edits" a ]
         apply files [] = pure (Right files)
-        apply files ((i, e) : rest) = case inside ch (fromMaybe "" (lookupStr "path" e)) of
-          Left why -> pure (Left (T.pack (printf "replacement %d: %s" (i :: Int) why)))
+        apply _ ((i, (Nothing, _)) : _) =
+          pure (Left (T.pack (printf "replacement %d: no path (each replacement is {path, old, new}; one without a path is in the file of the one before it)" (i :: Int))))
+        apply files ((i, (Just rp, e)) : rest) = case inside ch rp of
+          Left why -> pure (Left (T.pack (printf "replacement %d: %s" i why)))
           Right p -> do
             t <- maybe (decode <$> B.readFile p) pure (lookup p files)
             case replaceOnce t (fromMaybe T.empty (lookupText "old" e)) (fromMaybe T.empty (lookupText "new" e)) of
-              Left why -> pure (Left (T.pack (printf "replacement %d, %s: " i (fromMaybe "?" (lookupStr "path" e))) <> why))
+              Left why -> pure (Left (T.pack (printf "replacement %d, %s: " i rp) <> why))
               Right (t', _) -> apply ((p, t') : filter ((/= p) . fst) files) rest
     if null items then pure (False, T.pack "edits: no replacements given (edits: [{path, old, new}, ...])") else do
       r <- try (apply [] (zip [1 ..] items)) :: IO (Either IOException (Either T.Text [(FilePath, T.Text)]))
