@@ -218,7 +218,12 @@ run = do
   waiterWait pw 0.5 >>= check "watch: polling always says look"
 
   -- the history: the log, the tree, the view (GhciSession.History)
-  let hp = H.Params { H.pNode = 24, H.pView = 60, H.pCap = 30000, H.pCtxMax = 65536, H.pCtxMin = 32768 }
+  let hp = H.Params { H.pNode = 24, H.pNodeMax = 24, H.pView = 60, H.pCap = 30000, H.pCtxMax = 65536, H.pCtxMin = 32768 }
+  let lp = H.defaultParams
+      long = T.unwords (replicate 300 (T.pack "word"))
+  check "history: a summary line up to NODE_MAX bytes is taken as it is" (H.nodeFits lp (T.replicate 1000 (T.pack "x")) && not (H.nodeFits lp (T.replicate 1025 (T.pack "x"))))
+  check "history: ... one still over it after the tries is cut at the last word that fits"
+        (let c = H.fitNode lp long in H.byteLength c <= 1024 && H.byteLength c > 1000 && T.isSuffixOf (T.pack "word") c)
   eq "history: the scale line is exactly NODE bytes" (H.byteLength (H.scaleLine H.defaultParams)) 512
   eq "history: a cut never splits a character" (H.cutBytes 2 (T.pack "a\233b")) (T.pack "a")
   eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")

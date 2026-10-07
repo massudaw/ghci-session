@@ -159,7 +159,7 @@ was given), and, from a harness, `user`, `talk` and `note`. A line is written wi
 never edited; a torn line is skipped at load. `status` and `info` are not logged: a tool polls them.
 
 Over the log the daemon keeps a binary tree of one-line summaries, the design of OptChat (Victor Taelin): node
-`(l, i)` covers messages `[i*2^l, (i+1)*2^l)`, a line is at most 512 bytes, a parent is made from its two
+`(l, i)` covers messages `[i*2^l, (i+1)*2^l)`, a line is asked for in 512 bytes (and taken up to 1,024), a parent is made from its two
 children, and a message or a pair that already fits IS its node, with no model call -- so a routine verdict
 (`OK -- CHECK-PASS (0.4s)`) costs nothing, and a session that saves two hundred times a day costs the merges
 above it. The view is the list of nodes tiling the whole log, oldest first, kept under 128,000 bytes: a new
@@ -188,8 +188,12 @@ with merges of finished parts alongside, `summarize_jobs` (8) at once, and no ca
 summary. The context a call sees is the last 32-64 KB of those lines, cut at the front with hysteresis (dropped
 to 32 KB once over 64 KB, then left alone until it is over again), so the prefix the provider caches stays the
 same for a stretch of calls: the whole view went with every call before, and the compactor's calls were 70% of
-a session's tokens. A line over the size is asked again with the line cut where the limit falls, up to five times, and the
-shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its first failure is
+a session's tokens. A line is taken up to 1,024 bytes, twice what is asked
+for: a model asked for 512 writes 600-900, and asked again (up to five times, as it was) it made three calls a
+line, 41% of the lines kept still over 512. A line over 1,024 is asked again with the line cut where the limit
+falls, up to three tries, and the shortest is kept, cut at its last word within the limit. (Replayed over one
+round's 291 messages: 415 calls instead of 917, 111k tokens out instead of 239k, 13 minutes of compactor time
+instead of 30; the lines are 13% longer on average, so a view of the same budget holds that many fewer.) a failed node is tried again after ten seconds, for ever, and only its first failure is
 logged. Without a command the log and the free nodes are kept and the tree waits for a compactor outside the
 daemon: the `pending` operation answers the nodes ready to build, each with its prompt, and `tree_put` takes a
 line. The tree is stored (`history/tree/`) and never recomputed. `"history": false` turns all of it off.

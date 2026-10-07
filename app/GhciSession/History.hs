@@ -27,7 +27,7 @@ module GhciSession.History
   , openHistory, appendMsg, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, params
-  , capText, msgLine, cutBytes, byteLength, nodeFits, scaleLine, compactPrompt, jobPrompt, retryNote
+  , capText, msgLine, cutBytes, byteLength, nodeFits, fitNode, scaleLine, compactPrompt, jobPrompt, retryNote
   , Snap (..), snapshot, fitView, freeNodes, pendingOf, placeholder
   ) where
 
@@ -57,16 +57,18 @@ import System.Posix.Unistd (fileSynchronise)
 import GhciSession.Json
 import GhciSession.Sys (now)
 
--- | The budgets. @pNode@: a summary line's target size. @pView@: the view's budget. @pCap@: a tool result
+-- | The budgets. @pNode@: a summary line's target size, what the compactor is asked for; @pNodeMax@: the
+-- size a line is taken at -- a model asked for 512 bytes writes 600-900 (asked again, as it was up to five
+-- times, it wrote three answers a line and 41% of the lines kept were still over). @pView@: the view's budget. @pCap@: a tool result
 -- is cut to this many characters (head and tail kept) before it is logged: it is resent on every later
 -- step of a turn and lands in the permanent log.
 data Params = Params
-  { pNode :: !Int, pView :: !Int, pCap :: !Int
+  { pNode :: !Int, pNodeMax :: !Int, pView :: !Int, pCap :: !Int
   , pCtxMax :: !Int, pCtxMin :: !Int   -- ^ the context a compactor call sees: the view's bytes before the node, cut at the front to pCtxMin once over pCtxMax
   }
 
 defaultParams :: Params
-defaultParams = Params { pNode = 512, pView = 128000, pCap = 30000, pCtxMax = 65536, pCtxMin = 32768 }
+defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pCap = 30000, pCtxMax = 65536, pCtxMin = 32768 }
 
 -- | One message of the log. @mKind@: @user@ (the user's words; a subagent's report starts "[id] "), @talk@
 -- (the agent's replies), @tool@ (a request: a command of this tool, an agent's tool call), @echo@ (its
@@ -375,7 +377,15 @@ cutBytes :: Int -> T.Text -> T.Text
 cutBytes n = T.dropWhileEnd (== '\xFFFD') . TE.decodeUtf8With TE.lenientDecode . B.take n . TE.encodeUtf8
 
 nodeFits :: Params -> T.Text -> Bool
-nodeFits ps t = byteLength t <= pNode ps
+nodeFits ps t = byteLength t <= pNodeMax ps
+
+-- | A line within 'pNodeMax', cut at the last word that fits (a line still over it after the tries).
+fitNode :: Params -> T.Text -> T.Text
+fitNode ps t
+  | nodeFits ps t = t
+  | otherwise = let c = cutBytes (pNodeMax ps) t
+                    (w, _) = T.breakOnEnd (T.pack " ") c
+                in T.stripEnd (if T.length w > T.length c `div` 2 then w else c)
 
 -- | A realistic summary line of exactly 'pNode' bytes, for scale: models cannot count bytes.
 scaleLine :: Params -> T.Text
@@ -462,5 +472,5 @@ jobPrompt ps j = T.unlines $
 
 -- | What a line that is too long is told, with the line cut where the limit falls.
 retryNote :: Params -> T.Text -> T.Text
-retryNote ps line = T.pack ("That line is " ++ show (byteLength line) ++ " bytes; the limit is " ++ show (pNode ps) ++ ". It must end where it is cut here:\n")
-  <> cutBytes (pNode ps) line <> T.pack "| <- LIMIT"
+retryNote ps line = T.pack ("That line is " ++ show (byteLength line) ++ " bytes; aim for " ++ show (pNode ps) ++ ", and it must not pass " ++ show (pNodeMax ps) ++ ". It must end before where it is cut here:\n")
+  <> cutBytes (pNodeMax ps) line <> T.pack "| <- LIMIT"

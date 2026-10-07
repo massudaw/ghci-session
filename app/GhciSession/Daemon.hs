@@ -1802,7 +1802,7 @@ compactorLoop s m cmd = loop
       let p = (H.jL j, H.jI j)
           base = H.compactPrompt (gAgent (sCfg s)) <> T.pack "\n\n" <> H.jobPrompt ps j
           go tries extra
-            | length tries >= 5 = pure tries
+            | length tries >= 3 = pure tries
             | otherwise = do
                 r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl")] cmd (base <> extra) 300
                 case r of
@@ -1821,7 +1821,7 @@ compactorLoop s m cmd = loop
       tries <- go [] T.empty
       case tries of
         [] -> pure ()
-        _ -> H.putNode m (H.jL j) (H.jI j) (snd (minimum [ (H.byteLength t, t) | t <- tries ]))
+        _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries ])))
 
 -- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
 -- 'Nothing' when it ran past the timeout (it is then stopped).
