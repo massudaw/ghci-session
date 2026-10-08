@@ -20,7 +20,7 @@ module GhciSession.ChatTui
   , Editor (..), editor, editText, editKey, Entry (..), entryLines, scrollLines
   ) where
 
-import Control.Concurrent (forkIO)
+import Control.Concurrent (forkIO, killThread, newEmptyMVar, putMVar, tryReadMVar)
 import Control.Concurrent.STM
 import Control.Exception (SomeException, try)
 import Control.Monad (forM_, when)
@@ -132,6 +132,7 @@ chatTui name model dir chat = do
   wakeR <- newIORef (pure ())
   codeR <- newIORef Nothing
   old <- getTerminalAttributes stdInput
+  chatTidVar <- newEmptyMVar
   let post m = atomically (writeTQueue inbox m) >> (readIORef wakeR >>= id)
       entry k t = post (MEntry (Entry k t))
       ui = Ui { uiView = entry "view", uiTalk = entry "talk", uiThought = entry "think"
@@ -140,16 +141,20 @@ chatTui name model dir chat = do
               , uiDone = post MDone, uiLeave = leave old }
       start ev = do
         writeIORef wakeR (wake ev)
-        _ <- forkIO $ do
+        tid <- forkIO $ do
           r <- try (chat ui pending)
           case r of
             Right code -> writeIORef codeR (Just code)
             Left (err :: SomeException) -> entry "note" (T.pack ("chat: " ++ show err))
           post MDone
+        putMVar chatTidVar tid
         t <- now
         pure St { sEntries = [], sBack = 0, sEdit = editor, sSent = [], sRecall = Nothing, sBusy = Nothing, sSpent = Nothing, sTurns = 0
                 , sStatus = JObj [], sStatusAt = t - 10, sDone = False, sTicks = 0 }
   _ <- runApp App { appTick = 0.5, appDraw = draw name model, appEvent = event dir pending inbox } start
+  atomically (writeTQueue pending Nothing)
+  chatTid <- tryReadMVar chatTidVar
+  maybe (pure ()) killThread chatTid
   fromMaybe 0 <$> readIORef codeR
   where
     unbracket s = case (s, reverse s) of { ('[' : r, ']' : _) -> init r; _ -> s }
@@ -190,7 +195,7 @@ event dir pending inbox ev st = case ev of
       (_, h) <- fromMaybe (80, 24) <$> termSize
       pure (max 1 (h - 5))
     key kp = case (kKey kp, kMods kp) of
-      (KChar 'c', [Ctrl]) -> pure Nothing
+      (KChar 'c', [Ctrl]) -> atomically (writeTQueue pending Nothing) >> pure Nothing
       (KChar 'd', [Ctrl]) | null (editText (sEdit st)) -> atomically (writeTQueue pending Nothing) >> pure Nothing
       (KEnter, _) -> do
         let line = dropWhileEnd isSpace (editText (sEdit st))

@@ -31,7 +31,7 @@ executable ghci-session
   main-is:          Main.hs
   other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
-                    GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat, GhciSession.ChatUi, GhciSession.ChatTui,
+                    GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat, GhciSession.ChatUi, GhciSession.ChatProfile, GhciSession.ChatTui,
                     GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Top
   c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
   if flag(fff)

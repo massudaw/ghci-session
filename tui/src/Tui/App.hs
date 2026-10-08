@@ -4,6 +4,7 @@ module Tui.App
   ) where
 
 import Control.Concurrent.STM
+import Control.Exception (bracket)
 import Data.IORef
 import Data.Maybe (fromMaybe)
 import System.IO
@@ -21,8 +22,7 @@ data App s = App
 -- | Run the application in the raw terminal; @start@ makes the first state given the events (so threads
 -- it starts can 'wake' the loop). The last state is returned.
 runApp :: App s -> (Events -> IO s) -> IO s
-runApp app start = withRawTerminal $ do
-  ev <- startEvents
+runApp app start = withRawTerminal $ bracket startEvents stopEvents $ \ev -> do
   s0 <- start ev
   lastFrame <- newIORef Nothing
   let draw s = do

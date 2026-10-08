@@ -4,10 +4,10 @@
 -- a loop waits on.
 module Tui.Terminal
   ( withRawTerminal, termSize
-  , Key (..), Mod (..), KeyPress (..), decodeKey, decodeKeyPress, Event (..), Events (..), startEvents, wake
+  , Key (..), Mod (..), KeyPress (..), decodeKey, decodeKeyPress, Event (..), Events (..), startEvents, stopEvents, wake
   ) where
 
-import Control.Concurrent (forkIO)
+import Control.Concurrent (ThreadId, forkIO, killThread)
 import Control.Concurrent.STM
 import Control.Exception (IOException, finally, try)
 import qualified Data.ByteString.Char8 as BC
@@ -33,6 +33,8 @@ termSize = alloca $ \pr -> alloca $ \pc -> do
 -- back when the action ends, however it ends.
 withRawTerminal :: IO a -> IO a
 withRawTerminal act = do
+  hSetBinaryMode stdin True
+  hSetBuffering stdin NoBuffering
   old <- getTerminalAttributes stdInput
   let raw = (foldl withoutMode old [EnableEcho, ProcessInput, KeyboardInterrupts, StartStopOutput, ExtendedFunctions, MapCRtoLF]) `withMinInput` 1 `withTime` 0
   setTerminalAttributes stdInput raw Immediately
@@ -105,7 +107,7 @@ decodeKeyPress s = case s of
 data Event = EvKey KeyPress | EvResize | EvTick | EvWake
   deriving (Eq, Show)
 
-data Events = Events { evQueue :: TQueue Event, evWakes :: TVar Int }
+data Events = Events { evQueue :: TQueue Event, evWakes :: TVar Int, evReader :: !ThreadId }
 
 -- | Keys from standard input (an escape followed within a few milliseconds by more bytes is one sequence)
 -- and the window's size changes, as events.
@@ -115,10 +117,12 @@ startEvents = do
   wakes <- newTVarIO 0
   winch <- c_sigwinch
   _ <- installHandler winch (Catch (atomically (writeTQueue q EvResize))) Nothing
-  hSetBinaryMode stdin True
-  hSetBuffering stdin NoBuffering
-  _ <- forkIO (reader q)
-  pure (Events q wakes)
+  tid <- forkIO (reader q)
+  pure (Events q wakes tid)
+
+-- | Stop reading events and terminate the reader thread.
+stopEvents :: Events -> IO ()
+stopEvents ev = killThread (evReader ev)
 
 -- | Another thread has something to show.
 wake :: Events -> IO ()
