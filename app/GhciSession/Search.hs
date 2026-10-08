@@ -48,7 +48,8 @@ grep dir query maxResults = do
              in allocaBytes bufSize $ \cBuf -> do
                   rc <- c_fff_grep cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
-                  pure (parseJson str)
+                  -- (0 is a failure, and the buffer then says why -- unless it is empty)
+                  pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
 
 -- | Fuzzy search file names in the given directory.
 searchFiles :: FilePath -> String -> Int -> IO (Either String Json)
@@ -62,7 +63,8 @@ searchFiles dir query maxResults = do
              in allocaBytes bufSize $ \cBuf -> do
                   rc <- c_fff_search_files cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
-                  pure (parseJson str)
+                  -- (0 is a failure, and the buffer then says why -- unless it is empty)
+                  pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
 
 -- | Format grep results for human terminal consumption or agent replies.
 formatGrep :: Json -> T.Text
