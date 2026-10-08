@@ -1,6 +1,8 @@
 {
   "default": "tool",
   "hygiene": true,
+  "summarize_cmd": "/Users/wesleymassuda/code/claude-sdk-bridge/bin/ghci-claude-summarize",
+  "summarize_jobs": 8,
   "targets": {
     "tool": {
       "units": [
