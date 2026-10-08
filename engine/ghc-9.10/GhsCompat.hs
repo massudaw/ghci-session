@@ -3,7 +3,7 @@
 -- unit graph (its module and its lookup), a module's direct dependencies, and how a session is given another
 -- module graph. One copy per compiler (engine/ghc-X.Y); "GhsEngine" is the same for all.
 --
--- GHC 9.6: the graph is "GHC.Unit.Env"'s, its lookup is pure, a dependency has no import level, and the
+-- GHC 9.6 and 9.10: the graph is "GHC.Unit.Env"'s, its lookup is pure, a dependency has no import level, and the
 -- session's module graph is a plain field.
 module GhsCompat
   ( homeUnits, mapUnitFlags, withModuleGraph, homeObject, promptUnit
@@ -21,6 +21,9 @@ import GHC.Driver.Make (ModIfaceCache, depanalE, load', summariseFile)
 import GHC.Types.SrcLoc (unLoc)
 import GHC.Unit.Module.Graph (ModuleGraphNode (..), mgModSummaries', mkModuleGraph)
 import GHC.Utils.Outputable (ppr, showSDocUnsafe)
+import GHC.Driver.Errors.Types (GhcMessage)
+import GHC.Driver.Make (AnyGhcDiagnostic)
+import GHC.Types.Error (mkUnknownDiagnostic)
 import GHC.Driver.Env (HscEnv (..), hscActiveUnitId, hscSetActiveUnitId, hscUpdateHUG, hsc_HUG)
 import GHC.Driver.Monad (modifySession)
 import GHC.Driver.Session (DynFlags)
@@ -54,7 +57,7 @@ homeObject hsc m =
 
 -- | The unit the prompt works in: the one from which the most home units are in scope.
 --
--- GHCi 9.6 has no interactive units. The prompt resolves a module through the ACTIVE home unit, which finds
+-- GHCi 9.6 and 9.10 have no interactive units. The prompt resolves a module through the ACTIVE home unit, which finds
 -- its own modules and those of the home units it depends on DIRECTLY (GHC.Unit.Finder: the active unit's
 -- homeUnitDepends) -- and the active unit is simply the first one the build tool listed. In a composed
 -- session (a package and one that imports it) that can be the one underneath, and the other package's
@@ -80,19 +83,19 @@ promptUnit = do
 -- | How a load reports its diagnostics: the front end's wrapper (on 9.6 there is none, and it is @()@).
 -- What follows is the load "GhsFastLoad" makes: the scan of every module, the graph's own load, and a summary
 -- of each module mapped over a graph.
-type Diag = ()
+type Diag = GhcMessage -> AnyGhcDiagnostic
 
 noDiag :: Diag
-noDiag = ()
+noDiag = mkUnknownDiagnostic
 
 loadScan :: GhcMonad m => Maybe ModIfaceCache -> Diag -> LoadHowMuch -> m SuccessFlag
-loadScan cache () how = GHC.loadWithCache cache how
+loadScan = GHC.loadWithCache
 
 depanalScan :: GhcMonad m => Diag -> Messager -> m ModuleGraph
 depanalScan _ _ = snd <$> depanalE [] False
 
 loadGraph :: GhcMonad m => Maybe ModIfaceCache -> LoadHowMuch -> Diag -> Messager -> ModuleGraph -> m SuccessFlag
-loadGraph cache how () msg = load' cache how (Just msg)
+loadGraph cache how diag msg = load' cache how diag (Just msg)
 
 mapSummaries :: (ModSummary -> IO ModSummary) -> ModuleGraph -> IO ModuleGraph
 mapSummaries f g = mkModuleGraph <$> forM (mgModSummaries' g) (\node -> case node of

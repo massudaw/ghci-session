@@ -63,7 +63,8 @@ import Unsafe.Coerce (unsafeCoerce)
 import qualified GHC
 import GHC.Data.FastString (unpackFS)
 import GHC.Driver.Backend (noBackend)
-import GHC.Driver.Session (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set)
+import GHC.Driver.Session (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set, xopt)
+import GHC.LanguageExtensions (Extension (QuasiQuotes, TemplateHaskell))
 import GHC.Driver.Env (hscInterp, hsc_mod_graph)
 import GHC.Types.Basic (SuccessFlag (..))
 import GHC.Linker.Types (Linkable, Loader (..), LoaderState (..), linkableObjs)
@@ -76,7 +77,7 @@ import GHC.Types.Error (MessageClass (..), Severity (..))
 import GHC.Types.SrcLoc
 import GHC.Unit.Module.Graph (ModuleGraph, emptyMG, mgModSummaries)
 import GHC.Unit.Module.Location (ml_obj_file)
-import GHC.Unit.Module.ModSummary (ms_location, ms_mod, ms_unitid)
+import GHC.Unit.Module.ModSummary (ModSummary (ms_hspp_opts), ms_location, ms_mod, ms_unitid)
 import GHC.Unit.Types (unitIdString)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
@@ -518,12 +519,18 @@ typecheck dir since = do
   saved <- GHC.getSession
   rememberLinked
   liftIO (writeIORef diagnostics ([], 0, 0))
-  let quiet uid df = (df { backend = noBackend, ghcLink = NoLink, hiDir = Just (dir </> unitIdString uid) }) `gopt_set` Opt_WriteInterface
+  let quiet uid df = (df { backend = noBackend, ghcLink = NoLink, hiDir = Just (dir </> unitIdString uid) }) `gopt_set` Opt_WriteInterface `gopt_set` Opt_UseBytecodeRatherThanObjects
       -- (with NO module graph: a module whose source has not changed would otherwise keep the summary it has,
       -- and with it the flags it was summarised under -- and if it then needed compiling, it was compiled for
       -- real, into the session's own object directory)
       noCode g hsc = withModuleGraph g (mapUnitFlags quiet hsc)
-  kept <- liftIO (readIORef tcGraph)
+  -- The previous pass's graph is the next one's start -- but not in a project that uses Template Haskell. GHC
+  -- enables code generation for what a splice needs (the home modules its splices run) in the scan that builds
+  -- the graph (enableCodeGenForTH, in downsweep); a graph kept from before, or patched for the files that
+  -- changed, gives a module that changed a summary without it, and the next splice that needs that module
+  -- finds it with no code to run (GHC panics: expectJust getLinkDeps). So with a splice in the graph each pass
+  -- scans: the interfaces it wrote last time still say what need not be compiled again.
+  kept <- liftIO (fmap (>>= \g -> if usesTemplateHaskell g then Nothing else Just g) (readIORef tcGraph))
   -- (the files that changed are only meaningful against the graph of the typecheck before this one)
   liftIO (setChanged (case (kept, since) of { (Just _, Just fs) -> Just fs; _ -> Nothing }))
   r <- MC.try (GHC.setSession (noCode (fromMaybe emptyMG kept) saved) >> loadAll)
@@ -539,6 +546,10 @@ typecheck dir since = do
         Right Failed -> (False, [])
         Left (x :: SomeException) -> (False, [ ("thrown", JStr (show x)) ])
   pure (JObj ([ ("ok", JBool ok), ("errors", JNum (fromIntegral errs)), ("warnings", JNum (fromIntegral warns)), ("diagnostics", JArr (reverse ds)) ] ++ thrown))
+
+-- | Does any module of the graph use Template Haskell (a splice or a quasi-quote)?
+usesTemplateHaskell :: ModuleGraph -> Bool
+usesTemplateHaskell g = any (\ms -> let d = ms_hspp_opts ms in xopt TemplateHaskell d || xopt QuasiQuotes d) (mgModSummaries g)
 
 {-# NOINLINE tcGraph #-}
 tcGraph :: IORef (Maybe ModuleGraph)

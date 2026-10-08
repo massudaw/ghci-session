@@ -18,7 +18,7 @@ jobs:
         # and the whole tour on it
         include:
           - { ghc: "9.6.7", engine: true }
-          - { ghc: "9.10.3" }
+          - { ghc: "9.10.3", engine: true }
           - { ghc: "9.14.1", engine: true }
           - { ghc: "9.14.1", engine: true, fff: true }
     env:

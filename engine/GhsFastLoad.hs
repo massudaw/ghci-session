@@ -22,6 +22,9 @@
 --
 -- @GHS_FAST_GRAPH@: @0@ always scans; @verify@ builds the graph both ways, says where they differ
 -- (stderr, so the load's log) and loads the SCANNED one; anything else, or unset, is on.
+--
+-- One module for every compiler: what differs between them (the load's arguments, the graph's nodes, what an
+-- import is) is "GhsCompat"'s.
 module GhsFastLoad (loadWith, loadAll, setChanged) where
 
 import Control.Monad (forM, unless)
@@ -38,25 +41,19 @@ import GHC.Clock (getMonotonicTime)
 import GHC.Fingerprint (fingerprint0)
 import Text.Printf (printf)
 
-import qualified GHC
 import GHC (GhcMonad, LoadHowMuch (..), ModSummary (..), SuccessFlag, getSession, ms_mod_name)
-import GHC.Driver.Downsweep (summariseFile)
 import GHC.Driver.Env (HscEnv, hscSetActiveUnitId, hsc_mod_graph, hsc_unit_env)
-import GHC.Driver.Errors.Types (GhcMessage)
-import GHC.Driver.Make (ModIfaceCache, depanalE, load')
-import GHC.Driver.Main (batchMsg, batchMultiMsg)
-import GHC.Driver.Messager (Messager)
+import GHC.Driver.Make (ModIfaceCache)
 import GHC.Driver.Env (hsc_all_home_unit_ids)
 import qualified Data.Set as S
-import GHC.Types.Error (UnknownDiagnostic, mkUnknownDiagnostic)
-import GHC.Driver.Errors.Types (AnyGhcDiagnostic)
-import GHC.Types.SrcLoc (unLoc)
 import GHC.Unit.Env (ue_unitHomeUnit)
-import GHC.Unit.Module.Graph (ModuleGraph, ModuleNodeInfo (..), mgMapM, mgModSummaries)
+import GHC.Unit.Module.Graph (ModuleGraph, mgModSummaries)
 import GHC.Unit.Module.Location (ml_dyn_obj_file, ml_hi_file, ml_hie_file, ml_hs_file, ml_obj_file)
 import GHC.Unit.Module.ModSummary (ms_unitid)
 import GHC.Utils.Misc (modificationTimeIfExists)
 import GHC.Utils.Outputable (showSDocUnsafe, ppr)
+
+import GhsCompat (Diag, Messager, batchMsg, batchMultiMsg, depanalScan, importKeys, loadGraph, loadScan, mapSummaries, noDiag, summariseFile)
 
 -- | The watched files that differ from what is loaded, for the NEXT load only (absolute paths).
 {-# NOINLINE changed #-}
@@ -67,12 +64,12 @@ setChanged :: Maybe [FilePath] -> IO ()
 setChanged = writeIORef changed
 
 -- | @GHC.loadWithCache@, with the graph taken from the last load when that is known to be enough.
-loadWith :: GhcMonad m => Maybe ModIfaceCache -> (GhcMessage -> AnyGhcDiagnostic) -> LoadHowMuch -> m SuccessFlag
+loadWith :: GhcMonad m => Maybe ModIfaceCache -> Diag -> LoadHowMuch -> m SuccessFlag
 loadWith cache diag how = do
   files <- liftIO (atomicModifyIORef' changed (\c -> (Nothing, c)))
   mode <- liftIO (lookupEnv "GHS_FAST_GRAPH")
   hsc <- getSession
-  let scan = GHC.loadWithCache cache diag how
+  let scan = loadScan cache diag how
   case (files, how, mode) of
     (_, _, Just "0") -> scan
     (Just fs@(_ : _), LoadAllTargets, _) | not (null (mgModSummaries (hsc_mod_graph hsc))) -> do
@@ -82,22 +79,22 @@ loadWith cache diag how = do
       case fast of
         Left why -> liftIO (say ("fast graph: not used (" ++ why ++ "): scanning")) >> scan
         Right g | mode == Just "verify" -> do
-          (_, scanned) <- depanalE diag (Just (mkBatchMsg hsc)) [] False
+          scanned <- depanalScan diag (mkBatchMsg hsc)
           t2 <- liftIO getMonotonicTime
           let ds = differences g scanned
           liftIO (say (printf "fast graph: verify, %d module(s) from %d changed file(s): built in %.1f ms, the scan %.1f ms; %s"
                          (length (mgModSummaries g)) (length fs) ((t1 - t0) * 1000) ((t2 - t1) * 1000)
                          (if null ds then "IDENTICAL to the scan" else "DIFFERS from the scan in " ++ show (length ds) ++ ": " ++ unwords (take 6 ds))))
-          load' cache how diag (Just (mkBatchMsg hsc)) scanned
+          loadGraph cache how diag (mkBatchMsg hsc) scanned
         Right g -> do
           liftIO (say (printf "fast graph: %d module(s) from %d changed file(s) in %.1f ms (no scan)" (length (mgModSummaries g)) (length fs) ((t1 - t0) * 1000)))
-          load' cache how diag (Just (mkBatchMsg hsc)) g
+          loadGraph cache how diag (mkBatchMsg hsc) g
     _ -> scan
   where say m = hPutStrLn stderr m >> (lookupEnv "GHS_FAST_GRAPH_LOG" >>= maybe (pure ()) (\f -> appendFile f (m ++ "\n")))
 
 -- | Everything, with no interface cache: the engine's typecheck.
 loadAll :: GhcMonad m => m SuccessFlag
-loadAll = loadWith Nothing mkUnknownDiagnostic LoadAllTargets
+loadAll = loadWith Nothing noDiag LoadAllTargets
 
 -- | The compiler's own choice of progress messages (@GHC.Driver.Make.mkBatchMsg@, which it does not export).
 mkBatchMsg :: HscEnv -> Messager
@@ -131,19 +128,14 @@ fastGraph hsc files = do
         let moved = [ f | (f, s, Right n) <- news, imports s /= imports n || ms_mod s /= ms_mod n ]
         if not (null moved) then pure (Left ("imports changed: " ++ unwords (take 3 moved))) else do
           let fresh = M.fromList [ ((ms_unitid n, ms_mod n), n) | (_, _, Right n) <- news ]
-          Right <$> mgMapM (\info -> case info of
-            ModuleNodeCompile s -> case M.lookup (ms_unitid s, ms_mod s) fresh of
-              Just n -> pure (ModuleNodeCompile n)
-              Nothing -> ModuleNodeCompile <$> redate s
-            other -> pure other) old
+          Right <$> mapSummaries (\s -> maybe (redate s) pure (M.lookup (ms_unitid s, ms_mod s) fresh)) old
   where
     isSource f = any (`isSuffix` f) [".hs", ".lhs", ".hs-boot", ".lhs-boot", ".hsig"]
     isSuffix suf s = drop (length s - length suf) s == suf
 
 -- | What a module imports, as the graph's edges see it.
 imports :: ModSummary -> ([String], [String])
-imports s = ( sort [ show lvl ++ " " ++ showSDocUnsafe (ppr q) ++ " " ++ showSDocUnsafe (ppr (unLoc m)) | (lvl, q, m) <- ms_textual_imps s ]
-            , sort [ showSDocUnsafe (ppr (unLoc m)) | m <- ms_srcimps s ] )
+imports s = let (ordinary, source) = importKeys s in (sort ordinary, sort source)
 
 -- | An unchanged module's summary with the dates of what was built from it read again (what the scan
 -- does for a module whose source hash is what it was).

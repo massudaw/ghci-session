@@ -4,6 +4,7 @@
 # compiler exactly: they are built against its `ghc` library.
 #   vendor/fetch.sh 9.14.1
 #   vendor/fetch.sh 9.6.7
+#   vendor/fetch.sh 9.10.3
 set -e
 V=${1:?a GHC version, e.g. 9.14.1}
 D="$(cd "$(dirname "$0")" && pwd)/ghc-$V"
@@ -12,6 +13,7 @@ mkdir -p "$D"
 # (the front end's modules moved between versions: 9.6 has GHCi.UI.Tags and keeps the mode and lint code in Main)
 case "$V" in
   9.6.*) FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Tags.hs GHCi/Leak.hs GHCi/Util.hs" ;;
+  9.10.*) FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs" ;;
   *)     FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Print.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs
                 GHC/Driver/Session/Lint.hs GHC/Driver/Session/Mode.hs" ;;
 esac
@@ -47,7 +49,11 @@ src = open(p).read()
 def once(s, a, b):
     assert s.count(a) == 1, (a, s.count(a))
     return s.replace(a, b)
-src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis)", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis)")
+if "ok <- trySuccess $ GHC.loadWithCache (Just hmis) howmuch" in src:
+    # (a load with no diagnostic wrapper -- 9.6's -- is given () for one: GhsFastLoad.loadWith takes it everywhere)
+    src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis) howmuch", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis) () howmuch")
+else:
+    src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis)", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis)")
 src = once(src, "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )", "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )\nimport qualified GhsFastLoad")
 # ... and it exports how the two interactive units are made (GhsAddUnits makes them again when a unit is added;
 # a GHCi before them -- 9.6 -- has none, and adds no unit to a running session)
