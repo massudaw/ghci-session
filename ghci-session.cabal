@@ -10,7 +10,7 @@ description:
   collection. The LIBRARY is for a project's own code: "GHC.Hygiene.Census" says what is holding the heap,
   "GHC.Hygiene.Zygote" hands a server's state to its replacement. See README.md.
 license:            MIT
-license-files:      LICENSE vendor/ghc-9.14.1/LICENSE
+license-files:      LICENSE vendor/ghc-9.14.1/LICENSE vendor/ghc-9.6.7/LICENSE
 author:             Wesley Massuda
 maintainer:         wesley.massuda@gmail.com
 homepage:           https://github.com/massudaw/ghci-session
@@ -38,14 +38,20 @@ executable ghci-session
 -- compiler (vendor/fetch.sh), so it builds for exactly that version -- and a session needs it. For another
 -- GHC: `vendor/fetch.sh X.Y.Z` and a stanza here.
 executable ghci-session-engine
+  -- (the engine's own modules that reach into the compiler's internals are per version: engine/ghc-X.Y)
   if impl(ghc == 9.14.1)
     buildable: True
-    hs-source-dirs: engine, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
+    hs-source-dirs: engine, engine/ghc-9.14, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
+    other-modules:  GHC.Driver.Session.Lint, GHC.Driver.Session.Mode, GHCi.UI.Print, GHCi.UI.Exception
+  elif impl(ghc == 9.6.7)
+    buildable: True
+    hs-source-dirs: engine, engine/ghc-9.6, app, vendor/ghc-9.6.7, vendor/ghc-9.6.7/patched, hygiene/src
+    other-modules:  GHCi.UI.Tags
   else
     buildable: False
   main-is:          Main.hs
-  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhcMain, GhciSession.Json, GHC.Driver.Session.Lint, GHC.Driver.Session.Mode
-                    GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.UI.Print, GHCi.UI.Exception, GHCi.Util
+  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhsCompat, GhcMain, GhciSession.Json
+                    GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.Util
   -- the hygiene modules the engine itself runs are compiled INTO it (not the ghci-hygiene package): a session
   -- whose project depends on that package loads its own build of it, and two libraries of one unit name in
   -- one process resolve each other's symbols -- the first `census EXPR` after the split died in stg_ap_pp.

@@ -75,9 +75,26 @@
  * before the unlink; a major GC run at once, before any minor one, hides it by promoting the value.
  *
  * So a CAF whose value is not in the oldest generation is left on the list: a later pass takes it. */
+#if !defined(HEAP_ALLOCED)
+/* GHC 9.6 keeps HeapAlloc.h among the RTS's private headers. Its test on a 64-bit RTS (USE_LARGE_ADDRESS_SPACE)
+ * is a range check against `mblock_address_space`, which is private too: found by name like the lists below.
+ * 1 or 0, or -1 when the range is not there to read. */
+static int heap_alloced(const void *p) {
+  static const W_ *range = NULL;                       /* struct mblock_address_range: begin, end, padding */
+  if (!range) range = (const W_ *)ghs_rts_sym("mblock_address_space");
+  if (!range) return -1;
+  return (W_)p >= range[0] && (W_)p < range[1];
+}
+#else
+static int heap_alloced(const void *p) { return HEAP_ALLOCED(p) ? 1 : 0; }
+#endif
+
 static int value_is_old(uintptr_t c) {
   StgClosure *p = UNTAG_CLOSURE(((StgIndStatic *)c)->indirectee);
-  if (!p || !HEAP_ALLOCED(p)) return 1;                 /* a static closure: nothing to free */
+  if (!p) return 1;
+  int h = heap_alloced(p);
+  if (h < 0) return 0;                                  /* cannot tell: left on the list, as a young value is */
+  if (!h) return 1;                                     /* a static closure: nothing to free */
   return Bdescr((StgPtr)p)->gen_no == RtsFlags.GcFlags.generations - 1;
 }
 #endif
@@ -214,6 +231,11 @@ int ghs_caf_owner(uintptr_t c, char *out, size_t cap) {
 /* Returns the number of CAFs unlinked, or -1 when this RTS does not have the lists
  * by the names we know (nothing is touched then). */
 int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
+#if __GLASGOW_HASKELL__ < 914
+  /* OC_DLOPEN_HANDLE was measured on GHC 9.14 (arm64); an older ObjectCode has it elsewhere (9.6: 24 bytes
+   * earlier on x86_64), and a wrong handle here would be dlsym'd. Not measured on macOS: the pruner is off. */
+  (void)seen; (void)tmpcount; return -1;
+#endif
   if (!rts_found()) return -1;
   pthread_mutex_t *sm = rts_sm;
   uintptr_t *dyn = rts_dyn;
