@@ -11,8 +11,8 @@ ghci-session eval 'Foo.bar 3'   # evaluate against the already loaded code, in m
 ```
 
 It needs **GHC 9.14.1, 9.10.3 or 9.6.7** (the engine is that compiler's own GHCi front end, vendored per version)
-and runs on Linux and macOS. It started in the tooling of a large Haskell modelling project (hundreds of modules,
-servers forked from the repl, days-long sessions) and contains nothing of that project.
+and runs on Linux and macOS. It is built for large projects: hundreds of modules, servers forked from the repl,
+days-long sessions.
 
 ## What it does
 
