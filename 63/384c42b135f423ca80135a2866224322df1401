@@ -1,0 +1,42 @@
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 1749,1798-1808
+cbits/ghs_sys.c
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 387-395
+cbits/ghs_vt.c
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 1-232
+app/GhciSession/History.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 29,350-351
+app/GhciSession/Cli.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 6,35-36,311,314,509,643
+app/GhciSession/Sys.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 13,25,30,248-258
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 27,409-416
+app/GhciSession/Top.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 1-592
+cbits/ghs_main.c
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 24
+ghci-session.cabal
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 40-41
+  s_ee2f22f51d8bdb::t_7042c5a2ccf3b1 35-36
+app/GhciSession/Usage.hs
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 1-50
+tools/libghostty-vt.sh
+  s_ee2f22f51d8bdb::t_4e1689b4797ba4 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "63384c42b135f423ca80135a2866224322df1401",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
