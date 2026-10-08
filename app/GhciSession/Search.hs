@@ -144,23 +144,15 @@ fallbackGrep :: FilePath -> String -> Int -> IO (Either String Json)
 fallbackGrep dir query maxResults = do
   let qT = T.pack query
   files <- findFiles dir
-  matches <- fmap concat $ forM' (take 100 files) $ \f -> do
-    t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
-    case t of
-      Left _ -> pure []
-      -- a binary file is not searched as text (a NUL in its first 8000 bytes, as git and grep tell): decoding
-      -- one leniently is a byte-at-a-time repair, and an 11 MB library in the tree took over a minute
-      Right bs | B.elem 0 (B.take 8000 bs) -> pure []
-      Right bs ->
-        let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
-            ls = zip [1 :: Int ..] (T.lines txt)
-            hits = [ JObj [ ("path", JStr f)
-                          , ("line", JNum (fromIntegral lnum))
-                          , ("content", JText l)
-                          , ("git_status", JStr "clean")
-                          , ("frecency", JNum 0) ]
-                   | (lnum, l) <- ls, qT `T.isInfixOf` l ]
-        in pure (take maxResults hits)
+  -- (every file is searched, in order, until there are enough hits: a cap on the files searched made a hit in a late
+  -- directory unfindable in a tree whose early directories are large)
+  let go acc searched [] = pure (acc, searched)
+      go acc searched (f : fs)
+        | length acc >= maxResults = pure (acc, searched)
+        | otherwise = do
+            hits <- fileHits qT f
+            go (acc ++ hits) (searched + 1 :: Int) fs
+  (matches, searchedN) <- go [] 0 files
   let res = take maxResults matches
   pure $ Right $ JObj
     [ ("ok", JBool True)
@@ -168,9 +160,24 @@ fallbackGrep dir query maxResults = do
     , ("mode", JStr "grep-fallback")
     , ("count", JNum (fromIntegral (length res)))
     , ("total_matched", JNum (fromIntegral (length res)))
-    , ("files_searched", JNum (fromIntegral (length files)))
+    , ("files_searched", JNum (fromIntegral searchedN))
     , ("items", JArr res) ]
-  where forM' = flip mapM
+  where
+    fileHits qT f = do
+      t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
+      case t of
+        Left _ -> pure []
+        -- a binary file is not searched as text (a NUL in its first 8000 bytes, as git and grep tell): decoding
+        -- one leniently is a byte-at-a-time repair, and an 11 MB library in the tree took over a minute
+        Right bs | B.elem 0 (B.take 8000 bs) -> pure []
+        Right bs ->
+          let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
+          in pure [ JObj [ ("path", JStr f)
+                         , ("line", JNum (fromIntegral lnum))
+                         , ("content", JText l)
+                         , ("git_status", JStr "clean")
+                         , ("frecency", JNum 0) ]
+                  | (lnum, l) <- zip [1 :: Int ..] (T.lines txt), qT `T.isInfixOf` l ]
 
 -- | Fallback file search.
 fallbackSearchFiles :: FilePath -> String -> Int -> IO (Either String Json)
