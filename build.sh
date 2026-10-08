@@ -11,8 +11,9 @@ newest=$(ls -t hygiene/c/*.h cbits/*.h 2>/dev/null | head -1)
 if [ -n "$newest" ] && [ -f .bin/ghci-session-engine ] && [ "$newest" -nt .bin/ghci-session-engine ]; then
   touch hygiene/c/*.c cbits/*.c
 fi
-# GHS_FFF=0: built without libfff (the package's fff flag off: search is a plain scan), and none is fetched
-fff_flag=; [ "${GHS_FFF:-1}" = 0 ] && fff_flag=--flags=-fff
+# GHS_FFF=1: built with libfff (the package's fff flag, off by default: search is then a plain scan), and the
+# library fetched below
+fff_flag=; [ "${GHS_FFF:-0}" = 1 ] && fff_flag=--flags=+fff
 cabal build -v0 $fff_flag exe:ghci-session exe:ghci-session-engine
 mkdir -p .bin
 for x in ghci-session ghci-session-engine; do
@@ -27,9 +28,9 @@ if [ "$(uname)" = Darwin ]; then
     cc -dynamiclib -O2 -o .bin/libghsmem.dylib.new hygiene/c/mem_return.c && mv .bin/libghsmem.dylib.new .bin/libghsmem.dylib
   fi
 fi
-# libfff (https://github.com/dmtrKovalenko/fff), the file finder behind grep / find (cbits/ghs_fff.c dlopens it).
-# Optional, like the macOS library above: without it the search falls back to a plain scan. Fetched from the
-# latest release into lib/ (git-ignored) when neither lib/ nor .bin/ has one; FFF_URL overrides the source.
+# libfff (https://github.com/dmtrKovalenko/fff), the file finder behind grep / find (cbits/ghs_fff.c dlopens it),
+# with GHS_FFF=1 only. Optional, like the macOS library above: without it the search falls back to a plain scan.
+# Fetched from the latest release into lib/ (git-ignored) when neither lib/ nor .bin/ has one; FFF_URL overrides it.
 case "$(uname -s)-$(uname -m)" in
   Darwin-arm64)             fff_target=aarch64-apple-darwin;      fff_ext=dylib ;;
   Darwin-x86_64)            fff_target=x86_64-apple-darwin;       fff_ext=dylib ;;
@@ -37,7 +38,7 @@ case "$(uname -s)-$(uname -m)" in
   Linux-aarch64|Linux-arm64) fff_target=aarch64-unknown-linux-gnu; fff_ext=so ;;
   *)                        fff_target=;                          fff_ext= ;;
 esac
-if [ -z "$fff_flag" ] && [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ] && [ ! -f ".bin/libfff.$fff_ext" ]; then
+if [ -n "$fff_flag" ] && [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ] && [ ! -f ".bin/libfff.$fff_ext" ]; then
   mkdir -p lib
   fff_url="${FFF_URL:-https://github.com/dmtrKovalenko/fff/releases/latest/download/c-lib-$fff_target.$fff_ext}"
   if curl -fsSL --retry 2 -o "lib/libfff.$fff_ext.new" "$fff_url"; then
@@ -48,7 +49,7 @@ if [ -z "$fff_flag" ] && [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ] 
   fi
 fi
 for ext in dylib so; do
-  if [ -f "lib/libfff.$ext" ] && [ ! -f ".bin/libfff.$ext" ]; then
+  if [ -n "$fff_flag" ] && [ -f "lib/libfff.$ext" ] && [ ! -f ".bin/libfff.$ext" ]; then
     cp "lib/libfff.$ext" ".bin/libfff.$ext"
   fi
 done

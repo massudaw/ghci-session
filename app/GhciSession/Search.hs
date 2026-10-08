@@ -3,8 +3,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | High-performance code and file search backed by the FFF SIMD library ('cbits/ghs_fff.c'),
--- with session-aware metadata logging and formatted terminal output. Built without the package's @fff@ flag,
--- search is always the plain scan (and the C that loads the library is not built).
+-- with session-aware metadata logging and formatted terminal output. Built without the package's @fff@ flag (the
+-- default), search is always the plain scan (and the C that loads the library is not built).
 module GhciSession.Search
   ( isAvailable
   , builtWithFff

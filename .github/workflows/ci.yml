@@ -18,9 +18,9 @@ jobs:
         include:
           - ghc: "9.6.7"
             engine: true
-          # (the build without libfff: search is always the plain scan)
+          # (the build with libfff, off by default: the C that loads it, and the self-test that it loads where it is)
           - ghc: "9.10.3"
-            flags: "--flags=-fff"
+            flags: "--flags=+fff"
           - ghc: "9.14.1"
             engine: true
     steps:
