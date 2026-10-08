@@ -88,7 +88,7 @@ import GHCi.UI.Monad (GHCi)
 import GHC.Exts (Any)
 import GHC.Hygiene (engineSymbol, heapAuto, majorGC)
 import GhsAddUnits (addTargets, addUnits)
-import GhsCompat (homeObject, homeUnits, mapUnitFlags, withModuleGraph)
+import GhsCompat (homeObject, homeUnits, mapUnitFlags, promptUnit, withModuleGraph)
 import GhsFastLoad (loadAll, setChanged)
 import GHC.Hygiene.Store (storeDrop, storeNames)
 import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusOf, keptReport, keptStrings, memNow)
@@ -235,7 +235,10 @@ engineHook = do
   on <- liftIO (readIORef engine)
   case on of
     Nothing -> pure ()
-    Just _ -> GHC.modifyLogger (pushLogHook record)
+    Just _ -> do
+      GHC.modifyLogger (pushLogHook record)
+      chosen <- promptUnit
+      liftIO (maybe (pure ()) (\u -> hPutStrLn stderr ("engine: the prompt works in " ++ u)) chosen)
 
 record :: LogAction -> LogAction
 record next flags cls sp doc = do

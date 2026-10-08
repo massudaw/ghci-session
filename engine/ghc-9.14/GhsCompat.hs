@@ -2,10 +2,11 @@
 -- | The few places the engine reads or rewrites the compiler's session where GHC versions differ: the home
 -- unit graph (its module and its lookup), a module's direct dependencies, and how a session is given another
 -- module graph. One copy per compiler (engine/ghc-X.Y); "GhsEngine" is the same for all.
-module GhsCompat (homeUnits, mapUnitFlags, withModuleGraph, homeObject) where
+module GhsCompat (homeUnits, mapUnitFlags, withModuleGraph, homeObject, promptUnit) where
 
 import qualified Data.Set as S
 
+import GHC (GhcMonad)
 import GHC.Driver.Env (HscEnv, hscUpdateHUG, hsc_HUG, setModuleGraph)
 import GHC.Driver.Session (DynFlags)
 import GHC.Linker.Types (Linkable)
@@ -36,3 +37,8 @@ homeObject hsc m = do
     Just hmi | Just ln <- homeModInfoObject hmi ->
       Just (ln, [ mkModule (RealUnit (Definite u)) (gwib_mod n) | (_, u, n) <- S.toList (dep_direct_mods (mi_deps (hm_iface hmi))) ])
     _ -> Nothing
+
+-- | The unit the prompt works in. Nothing to choose here: GHCi 9.14's interactive units depend on every home
+-- unit, so every one is in scope at the prompt.
+promptUnit :: GhcMonad m => m (Maybe String)
+promptUnit = pure Nothing
