@@ -65,7 +65,7 @@ grep dir query maxResults = do
            withCString query $ \cQ ->
              let bufSize = 512 * 1024  -- 512 KB buffer
              in allocaBytes bufSize $ \cBuf -> do
-                  _rc <- c_fff_grep cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
+                  rc <- c_fff_grep cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
                   -- (0 is a failure, and the buffer then says why -- unless it is empty)
                   pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
@@ -80,7 +80,7 @@ searchFiles dir query maxResults = do
            withCString query $ \cQ ->
              let bufSize = 256 * 1024  -- 256 KB buffer
              in allocaBytes bufSize $ \cBuf -> do
-                  _rc <- c_fff_search_files cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
+                  rc <- c_fff_search_files cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
                   -- (0 is a failure, and the buffer then says why -- unless it is empty)
                   pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
