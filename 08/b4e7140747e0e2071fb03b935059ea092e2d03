@@ -1,0 +1,29 @@
+ghostty-vt/cbits/gvt.c
+  s_ee2f22f51d8bdb::t_ab39745c163a2c 1,26-36,51
+tools/libghostty-vt.sh
+  s_ee2f22f51d8bdb::t_ab39745c163a2c 42-44
+ghostty-vt/ghostty-vt.cabal
+  s_ee2f22f51d8bdb::t_ab39745c163a2c 20,22-26,34-40
+  s_ee2f22f51d8bdb::t_12f572eaa54ba6 21
+build.sh
+  s_ee2f22f51d8bdb::t_ab39745c163a2c 17-18,20,23
+  s_ee2f22f51d8bdb::t_12f572eaa54ba6 19
+README.md
+  s_ee2f22f51d8bdb::t_8a50c9d469f6a9 368-371
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "08b4e7140747e0e2071fb03b935059ea092e2d03",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
