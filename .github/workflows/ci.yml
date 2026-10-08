@@ -42,9 +42,12 @@ jobs:
         run: $(cabal list-bin -v0 exe:ghci-session) --help
       - name: Self-test
         run: $(cabal list-bin -v0 exe:ghci-session) selftest
-      - name: A session (the tour's boot and eval)
+      # (every feature on a copy of examples/hello, each step checked and timed: ~2 min; a step where this compiler is
+      #  known to differ checks what it does instead, and the tour exits 1 on anything unexpected)
+      - name: The tour
         if: matrix.engine
-        run: ./build.sh && python3 examples/tour.py --only boot --only eval
+        timeout-minutes: 20
+        run: ./build.sh && python3 examples/tour.py
 
   # GHCi itself (engine/GhsEngine.hs), vendored for GHC 9.14.1, on macOS.
   engine:
