@@ -4,6 +4,7 @@
 # compiler exactly: they are built against its `ghc` library.
 #   vendor/fetch.sh 9.14.1
 #   vendor/fetch.sh 9.6.7
+#   vendor/fetch.sh 9.10.3
 set -e
 V=${1:?a GHC version, e.g. 9.14.1}
 D="$(cd "$(dirname "$0")" && pwd)/ghc-$V"
@@ -12,6 +13,7 @@ mkdir -p "$D"
 # (the front end's modules moved between versions: 9.6 has GHCi.UI.Tags and keeps the mode and lint code in Main)
 case "$V" in
   9.6.*) FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Tags.hs GHCi/Leak.hs GHCi/Util.hs" ;;
+  9.10.*) FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs" ;;
   *)     FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Print.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs
                 GHC/Driver/Session/Lint.hs GHC/Driver/Session/Mode.hs" ;;
 esac

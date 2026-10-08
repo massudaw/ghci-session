@@ -364,8 +364,8 @@ class Tour:
         self.save("save: edit hello -- extra, which imports it, follows", "dev", self.hs, self.hs0.replace('"hello"', '"hej"'), good)
         self.cmd("  the dependent member sees it", "eval", "Extra.shout", expect='"HEJ!"')
         self.save("save: back", "dev", self.hs, self.hs0, good)
-        if self.ghc[:2] == (9, 6):
-            self.compose_96()
+        if (0,) < self.ghc < (9, 14):       # (interactive home units are GHCi 9.14's)
+            self.compose_without_interactive_units()
             return
         # a member added to the session that is RUNNING: the repl takes the package, nothing is restarted
         pid = self.read(os.path.join(self.state, "dev", "pid")).strip()
@@ -384,12 +384,12 @@ class Tour:
         self.cmd("  ... and restarted into the three", "eval", "(Hello.greeting, Third.echo)", expect='("hello","HELLO! HELLO!")')
         self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
 
-    def compose_96(self):
-        """The rest of the compose group on GHC 9.6, whose GHCi differs in two known ways: it takes its units at
+    def compose_without_interactive_units(self):
+        """The rest of the compose group before GHC 9.14, whose GHCi (9.6, 9.10) differs in two known ways: it takes its units at
         the start only (a member added is a restart), and its prompt sees ONE home unit and the units that one
         depends on directly (the engine picks the unit that sees the most) -- so of three packages in a chain,
         one is out of scope there."""
-        out = self.cmd("compose --add third (on 9.6: a restart, with the reason)", "compose", "dev", "--add", "third",
+        out = self.cmd("compose --add third (before 9.14: a restart, with the reason)", "compose", "dev", "--add", "third",
                        expect="restarting the repl", rc=None)
         self.known("  the repl was restarted", "its GHCi takes units at the start only", "takes its units at the start only" in out)
         self.step("  three members, a check each", 0, [m["member"] for m in self.status("dev")["members"]] == ["hello", "extra", "third"])
