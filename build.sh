@@ -11,9 +11,19 @@ newest=$(ls -t hygiene/c/*.h cbits/*.h 2>/dev/null | head -1)
 if [ -n "$newest" ] && [ -f .bin/ghci-session-engine ] && [ "$newest" -nt .bin/ghci-session-engine ]; then
   touch hygiene/c/*.c cbits/*.c
 fi
-cabal build -v0 exe:ghci-session exe:ghci-session-engine
+# The engine is GHC 9.14.1's own GHCi (vendor/ghc-9.14.1), so it builds with that compiler only; with another
+# the command is still built (the library and `ghci-session` build on 9.6 and later), and a session cannot start
+# until an engine built with 9.14.1 is beside it.
+ghc_version=$(cabal exec -v0 -- ghc --numeric-version)
+if [ "$ghc_version" = 9.14.1 ]; then
+  exes="ghci-session ghci-session-engine"
+else
+  exes="ghci-session"
+  echo "build.sh: GHC $ghc_version: building ghci-session only; the engine (which a session needs) is GHC 9.14.1's GHCi and builds with that compiler only (see the README)" >&2
+fi
+cabal build -v0 $(for x in $exes; do printf 'exe:%s ' "$x"; done)
 mkdir -p .bin
-for x in ghci-session ghci-session-engine; do
+for x in $exes; do
   cp "$(cabal list-bin -v0 exe:$x)" .bin/$x.new
   mv .bin/$x.new .bin/$x
 done

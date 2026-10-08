@@ -567,7 +567,8 @@ reload. The unlink now waits for the check, or the first `eval`.)
 `cabal install exe:ghci-session` from this directory, or run it from the checkout: `bin/ghci-session` builds the
 executable into `.bin/` when it is missing or older than its sources, then runs it (`./build.sh` does the build).
 `./build.sh` puts both executables in `.bin/`; the engine must sit beside `ghci-session`, and must have been built
-with the compiler on PATH (it says so if not). A project adds `ghci-hygiene` (the package in `hygiene/`:
+with the compiler on PATH (it says so if not). With a compiler other than GHC 9.14.1, `./build.sh` builds `ghci-session` alone and says so: the
+engine is 9.14.1's GHCi, and a session cannot start without it. A project adds `ghci-hygiene` (the package in `hygiene/`:
 list that directory in its `cabal.project`) to its `build-depends` only to call the library from its own code.
 
 ## Configure

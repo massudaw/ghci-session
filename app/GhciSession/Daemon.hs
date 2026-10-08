@@ -1637,7 +1637,6 @@ batchHeld s = do
 -- the work lock ('drive'), a client request already has it.
 applyChanges :: S -> (IO () -> IO ()) -> Sig -> IO ()
 applyChanges s run cur2 = do
-  let cfg = sCfg s
   loaded <- rd (vLoadedSig s)
   when (cur2 /= loaded) $ do
     let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
