@@ -1,0 +1,19 @@
+app/GhciSession/Search.hs
+  s_ee2f22f51d8bdb::t_bed9f90d6bb4b6 147-155,163,165-180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "50ac5fa863f4879b69fa63badfd5eb1d8c58e8da",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
