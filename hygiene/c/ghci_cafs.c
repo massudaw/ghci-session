@@ -3,7 +3,7 @@
  *
  * What leaks. With a dynamically linked GHC (ghcup's, macOS) every `:reload`
  * links the modules it recompiled -- and their dependents -- into a NEW
- * temporary shared library (libghc_tmp_N.dylib) and never unloads the old one:
+ * temporary shared library (libghc_tmp_N.dylib; libghc_N on GHC 9.6) and never unloads the old one:
  * GHC.Linker.Loader.unload_wkr, "We don't do any cleanup when linking objects
  * with the dynamic linker". Worse, the RTS chains every CAF of every such
  * library onto `dyn_caf_list`, and `markCAFs` treats that whole list as GC
@@ -54,6 +54,21 @@
 #include <string.h>
 
 #include "rts_syms.h"
+
+/* A library GHCi linked a reload's objects into, by its file name: libghc_tmp_N.so|dylib (GHC 9.14) or
+ * libghc_N.so|dylib (GHC 9.6), in a temporary directory of the session's own. Nothing else is named so:
+ * the compiler's own libraries are libHSghc-*. */
+static int is_tmp_lib(const char *path) {
+  if (!path) return 0;
+  const char *b = strrchr(path, '/');
+  b = b ? b + 1 : path;
+  if (strncmp(b, "libghc_", 7)) return 0;
+  b += 7;
+  if (!strncmp(b, "tmp_", 4)) return 1;
+  if (*b < '0' || *b > '9') return 0;
+  while (*b >= '0' && *b <= '9') b++;
+  return *b == '.';
+}
 
 #define OC_TYPE 32
 #define OC_NEXT_LOADED 144
@@ -248,7 +263,7 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
     if (*(int *)(oc + OC_TYPE) != DYNAMIC_OBJECT) continue;
     void *h = *(void **)(oc + OC_DLOPEN_HANDLE);
     const char *fn = *(const char **)(oc + 8);   /* ObjectCode.fileName */
-    if (!h || !fn || !strstr(fn, "libghc_tmp_")) continue;
+    if (!h || !fn || !is_tmp_lib(fn)) continue;
     if (nt == tcap) { tcap = tcap ? tcap * 2 : 64; void **t = realloc(tmps, tcap * sizeof *tmps); if (!t) { free(tmps); free(tfn); return -1; } tmps = t;
                       const char **u = realloc(tfn, tcap * sizeof *tfn); if (!u) { free(tmps); free(tfn); return -1; } tfn = u; }
     tfn[nt] = fn;
@@ -259,7 +274,7 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
   uint32_t nimg = _dyld_image_count();
   for (uint32_t i = 0; i < nimg; i++) {
     const char *nm = _dyld_get_image_name(i);
-    if (!nm || !strstr(nm, "libghc_tmp_")) continue;
+    if (!nm || !is_tmp_lib(nm)) continue;
     const struct mach_header_64 *h = (const struct mach_header_64 *)_dyld_get_image_header(i);
     uintptr_t lo, hi; const struct nlist_64 *sy; uint32_t ns; const char *str;
     if (!h || !image_info(h, &lo, &hi, &sy, &ns, &str)) continue;
@@ -506,7 +521,7 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
   for (char *oc = *loaded; oc; oc = *(char **)(oc + OC_NEXT_LOADED)) {
     if (*(int *)(oc + OC_TYPE) != DYNAMIC_OBJECT) continue;
     const char *fn = *(const char **)(oc + 8);    /* ObjectCode.fileName */
-    if (!fn || !strstr(fn, "libghc_tmp_")) continue;
+    if (!fn || !is_tmp_lib(fn)) continue;
     void *h = dlopen(fn, RTLD_NOLOAD | RTLD_LAZY);
     if (h) dlclose(h);                            /* (the reference this took: GHC's own keeps it loaded) */
     struct link_map *lm = NULL;
@@ -520,11 +535,25 @@ int ghs_prune_cafs_stats(int *seen, int *tmpcount) {
     tfn[nt] = fn; tmps[nt++] = h;
   }
   scan_images();
+  /* GHC 9.6 loads a temporary library with a bare dlopen (addDLL), which leaves no ObjectCode on the loaded
+   * list: none was found above. Its libraries are then the images, in the order the dynamic linker loaded them
+   * (g_img only grows), newest first -- the order the RTS looks a name up in -- each by its own handle. */
+  int from_images = nt == 0;
+  for (size_t k = g_nimg; from_images && k > 0; k--) {
+    if (!is_tmp_lib(g_img[k - 1].label)) continue;
+    const char *fn = g_img[k - 1].path;
+    void *h = dlopen(fn, RTLD_NOLOAD | RTLD_LAZY);
+    if (h) dlclose(h);                            /* (as above: only the reference this took) */
+    if (!h) continue;
+    if (nt == tcap) { tcap = tcap ? tcap * 2 : 64; void **t = realloc(tmps, tcap * sizeof *tmps); const char **u = t ? realloc(tfn, tcap * sizeof *tfn) : NULL;
+                      if (!t || !u) { free(t ? t : tmps); free(tfn); return -1; } tmps = t; tfn = u; }
+    tfn[nt] = fn; tmps[nt++] = h;
+  }
   /* the temp libraries among the images, and each handle's own range ('lookup_tmp') */
   Image **ims = malloc((g_nimg ? g_nimg : 1) * sizeof *ims); size_t ni = 0;
   g_tmp_lo = calloc(nt ? nt : 1, sizeof *g_tmp_lo); g_tmp_hi = calloc(nt ? nt : 1, sizeof *g_tmp_hi);
   if (!ims || !g_tmp_lo || !g_tmp_hi) { free(ims); free(tmps); free(tfn); free(g_tmp_lo); free(g_tmp_hi); g_tmp_lo = g_tmp_hi = NULL; return -1; }
-  for (size_t k = 0; k < g_nimg; k++) if (strstr(g_img[k].label, "libghc_tmp_")) { g_img[k].dead = g_img[k].dead || in_dead_image(g_img[k].lo); ims[ni++] = &g_img[k]; }
+  for (size_t k = 0; k < g_nimg; k++) if (is_tmp_lib(g_img[k].label)) { g_img[k].dead = g_img[k].dead || in_dead_image(g_img[k].lo); ims[ni++] = &g_img[k]; }
   for (size_t k = 0; k < nt; k++) {
     const char *b = strrchr(tfn[k], '/') ? strrchr(tfn[k], '/') + 1 : tfn[k];
     for (size_t j = 0; j < ni; j++) if (!strcmp(b, ims[j]->label)) { g_tmp_lo[k] = ims[j]->lo; g_tmp_hi[k] = ims[j]->hi; break; }
