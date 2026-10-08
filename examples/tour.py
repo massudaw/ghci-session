@@ -76,6 +76,13 @@ class Tour:
     def __init__(self, keep: bool):
         self.keep = keep
         self.steps: list[dict] = []
+        # the compiler: the engine runs only on the one on PATH, so this is the session's. A few steps differ, as
+        # known, on an older one ('known'); (0,) when it cannot be said, and then nothing is expected to differ.
+        try:
+            self.ghc = tuple(int(x) for x in subprocess.run(["ghc", "--numeric-version"], capture_output=True, text=True,
+                                                            timeout=60).stdout.strip().split("."))
+        except (OSError, ValueError, subprocess.SubprocessError):
+            self.ghc = (0,)
         self.group = ""
         self.pushes: list[dict] = []
         self.dir = tempfile.mkdtemp(prefix="ghci-session-tour-")
@@ -202,11 +209,20 @@ class Tour:
 
     # -- recording --
 
-    def step(self, name: str, seconds: float, ok: bool, note: str = "") -> bool:
-        self.steps.append({"group": self.group, "name": name, "seconds": round(seconds, 2), "ok": bool(ok), "note": note})
+    def step(self, name: str, seconds: float, ok: bool, note: str = "", known: str = "") -> bool:
+        self.steps.append({"group": self.group, "name": name, "seconds": round(seconds, 2), "ok": bool(ok), "note": note,
+                           **({"known": known} if known else {})})
         flag = "" if ok else "   <-- UNEXPECTED"
         print(f"  {name:58s} {seconds:7.2f} s  {note}{flag}", flush=True)
         return ok
+
+    def ghc_name(self) -> str:
+        return ".".join(map(str, self.ghc))
+
+    def known(self, name: str, why: str, ok: bool, note: str = "") -> bool:
+        """A step where this compiler is KNOWN to differ: what it does instead is checked (and is unexpected if it
+        does not hold), and the step says why it differs."""
+        return self.step(name, 0, ok, f"[GHC {self.ghc_name()}: {why}] {note}".rstrip(), known=why)
 
     def cmd(self, name: str, *argv, expect: str | None = None, rc: int | None = 0, env=None, note=None) -> str:
         """One client command as a step: its exit status and, if given, a string its output must contain."""
@@ -348,6 +364,9 @@ class Tour:
         self.save("save: edit hello -- extra, which imports it, follows", "dev", self.hs, self.hs0.replace('"hello"', '"hej"'), good)
         self.cmd("  the dependent member sees it", "eval", "Extra.shout", expect='"HEJ!"')
         self.save("save: back", "dev", self.hs, self.hs0, good)
+        if self.ghc[:2] == (9, 6):
+            self.compose_96()
+            return
         # a member added to the session that is RUNNING: the repl takes the package, nothing is restarted
         pid = self.read(os.path.join(self.state, "dev", "pid")).strip()
         self.cmd("compose --add third (a package into the running repl)", "compose", "dev", "--add", "third", expect="no restart")
@@ -365,6 +384,23 @@ class Tour:
         self.cmd("  ... and restarted into the three", "eval", "(Hello.greeting, Third.echo)", expect='("hello","HELLO! HELLO!")')
         self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
 
+    def compose_96(self):
+        """The rest of the compose group on GHC 9.6, whose GHCi differs in two known ways: it takes its units at
+        the start only (a member added is a restart), and its prompt sees ONE home unit and the units that one
+        depends on directly (the engine picks the unit that sees the most) -- so of three packages in a chain,
+        one is out of scope there."""
+        out = self.cmd("compose --add third (on 9.6: a restart, with the reason)", "compose", "dev", "--add", "third",
+                       expect="restarting the repl", rc=None)
+        self.known("  the repl was restarted", "its GHCi takes units at the start only", "takes its units at the start only" in out)
+        self.step("  three members, a check each", 0, [m["member"] for m in self.status("dev")["members"]] == ["hello", "extra", "third"])
+        code, o, e, _ = self.run("eval", "(Hello.greeting, Extra.shout, Third.echo)", "-s", "dev")
+        self.known("  one of the chain is out of scope at the prompt", "the prompt sees one unit and its direct dependencies",
+                   "Not in scope" in o + e, "not in scope" if "Not in scope" in o + e else f"rc={code} {(o + e).strip()[-80:]!r}")
+        # two packages, one directly over the other: the prompt sees both (third depends on extra)
+        self.cmd("compose dev extra third (the two packages over hello)", "compose", "dev", "extra", "third", expect="[2 members: extra")
+        self.cmd("  both in scope", "eval", "(Extra.shout, Third.echo)", "-s", "dev", expect='("HELLO!","HELLO! HELLO!")')
+        self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
+
     def g_servers(self):
         """A server forked from the repl: kept, re-forked with its state, protected, in the background."""
         good = lambda j: j["kind"] == "CHECK-PASS"  # noqa: E731
@@ -377,7 +413,13 @@ class Tour:
         self.step("  it serves the loaded code", 0, self.served()[0] == "hello", " ".join(map(str, self.served())))
         j = self.save("save: a comment -- the server is KEPT", "dev", self.hs, self.hs0 + "-- c\n", good,
                       lambda j: j["verdict"].split("[servers:")[-1][:60])
-        self.step("  same pid", 0, self.server_pid("dev") == pid and bool(j) and j["servers"][0]["action"] == "kept")
+        if self.ghc >= (9, 12) or self.ghc == (0,):
+            self.step("  same pid", 0, self.server_pid("dev") == pid and bool(j) and j["servers"][0]["action"] == "kept")
+        else:
+            # (-fobject-determinism is 9.12's: an older compiler gives an identical source a different object, so
+            #  the server's code looks changed, and it is re-forked -- with its state)
+            self.known("  re-forked, not kept", "no -fobject-determinism before 9.12",
+                       bool(j) and j["servers"][0]["action"] == "re-forked")
         ticks = self.served()[1]
         j = self.save("save: a real change -- RE-FORKED, state carried", "dev", self.hs, self.hs0.replace('"hello"', '"bonjour"'),
                       good, lambda j: j["verdict"].split("[servers:")[-1][:60])
@@ -570,8 +612,10 @@ class Tour:
                 shutil.rmtree(self.dir, ignore_errors=True)
         bad = [s for s in self.steps if not s["ok"]]
         timed = [s for s in self.steps if s["seconds"] > 0]
+        known = [s for s in self.steps if s.get("known")]
         print(f"\n== {len(self.steps)} steps, {len(timed)} timed, {time.time() - t0:.0f} s in all: "
-              f"{'all as expected' if not bad else str(len(bad)) + ' UNEXPECTED'}")
+              f"{'all as expected' if not bad else str(len(bad)) + ' UNEXPECTED'}"
+              + (f" ({len(known)} known to differ on GHC {self.ghc_name()})" if known else ""))
         for s in bad:
             print(f"   {s['group']}/{s['name'].strip()}: {s['note']}")
         return 1 if bad else 0
