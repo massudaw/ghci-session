@@ -1,0 +1,21 @@
+README.md
+  s_ee2f22f51d8bdb::t_1ad29456b03c3f 412
+bin/ghs
+  s_ee2f22f51d8bdb::t_713e128c1a8e54 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9698e9629f239a1690648cd539e6f914f68967a7",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
