@@ -68,6 +68,7 @@ data Cfg = Cfg
   , gHistory :: Bool             -- ^ keep the session's history (every request and verdict) and its summary tree
   , gSummarizeCmd :: Maybe String   -- ^ the command that compresses a message, or merges two lines, into one line (the compactor)
   , gSummarizeJobs :: Int, gAgent :: String
+  , gSharedPrompt :: Bool        -- ^ @"compact_prompt": "shared"@: one system prompt (and the turns' tools) for turns and compactions; else each its own
   }
 
 -- | Every key a target may have, with its default. An unknown key is refused: a misspelt @chek@ would
@@ -85,7 +86,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 8), ("agent", JStr "Agent")
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 8), ("agent", JStr "Agent"), ("compact_prompt", JStr "own")
   ]
 
 reserved :: [String]
@@ -262,6 +263,7 @@ resolve conf session = do
         , gProfile = [ exJ st | t <- ts, st <- lookupArr "profile" t ]
         , gHistory = all (jBool "history") ts, gSummarizeCmd = ex <$> jMaybeStr "summarize_cmd" t0
         , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0
+        , gSharedPrompt = jStr "compact_prompt" t0 == "shared"
         }
     exJ j = case j of { JObj kvs -> JObj [ (k, case v of { JStr x -> JStr (expand vals0 x); _ -> v }) | (k, v) <- kvs ]; _ -> j }
     vals0 = [ ("session", session), ("root", cRoot conf), ("state", cStateDir conf), ("dylib", if os == "darwin" then "dylib" else "so") ]

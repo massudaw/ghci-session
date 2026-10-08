@@ -1755,7 +1755,7 @@ histOp s op req = case sHist s of
   Just m -> case op of
     "log" -> do
       let kind = fromMaybe "" (lookupStr "kind" req)
-      if kind `notElem` ["user", "talk", "tool", "echo", "note"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, note; not " ++ show kind)) else do
+      if kind `notElem` ["user", "talk", "tool", "echo", "work", "note"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, work, note; not " ++ show kind)) else do
         i <- H.appendMsg m (T.pack kind) (fromMaybe T.empty (lookupText "text" req))
         pure (Right (T.pack ("#" ++ show i)))
     "history" -> do
@@ -1816,12 +1816,15 @@ histOp s op req = case sHist s of
       _ -> pure (Left "tree_put: l, i and a text are needed")
     _ -> pure (Left ("unknown op " ++ show op))
 
--- | The compactor, through the configured command (@summarize_cmd@): it reads the instructions, the context
--- and the step on its standard input and answers the line on its standard output. Up to @summarize_jobs@
--- at once; a line over the size is asked again with the line cut where the limit falls, up to five times,
--- and the shortest try is kept; a failed node is tried again after ten seconds, for ever, and only its
--- first failure is logged. (OptChat's retry goes on in the same conversation; a command has none, so the
--- earlier answer and the note are appended to the prompt instead.)
+-- | The compactor, through the configured command (@summarize_cmd@): it reads the system prompt (its own,
+-- 'H.compactPrompt'; or with @"compact_prompt": "shared"@ the one a turn has, 'H.systemPrompt', and then
+-- the command sends the turns' tools too), its view and the task on its standard input and answers the
+-- line on its standard output. An answer that is no line ('H.junkLine') is asked for again. Up to @summarize_jobs@ at once; a line over the size is asked again with the line cut
+-- where the limit falls, up to five times, and the shortest try is kept (a few bytes over is fine: the
+-- view measures real sizes); a failed node is tried again after ten seconds, for ever, and only its first
+-- failure is logged. (UniiChat's retry goes on in the same conversation; a command has none, so the
+-- earlier answer and the note are appended to the prompt instead -- at its end, so the prefix a provider
+-- caches is the same.)
 compactorLoop :: S -> H.Mem -> String -> IO ()
 compactorLoop s m cmd = loop
   where
@@ -1840,16 +1843,19 @@ compactorLoop s m cmd = loop
         loop
     runJob j = do
       let p = (H.jL j, H.jI j)
-          base = H.compactPrompt (gAgent (sCfg s)) <> T.pack "\n\n" <> H.jobPrompt ps j
-          go tries extra
-            | length tries >= 3 = pure tries
+          shared = gSharedPrompt (sCfg s)
+          base = (if shared then H.systemPrompt else H.compactPrompt) (gAgent (sCfg s)) <> T.pack "\n" <> H.jobPrompt ps j
+          go :: Int -> [T.Text] -> T.Text -> IO [T.Text]
+          go n tries extra
+            | n >= (5 :: Int) = pure tries
             | otherwise = do
-                r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl")] cmd (base <> extra) 300
+                r <- runShell ((Llm.usageFileEnv, sDir s </> "usage.jsonl") : [ ("SUMMARIZE_TOOLS", "0") | not shared ]) cmd (base <> extra) 300
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
-                    let line = T.strip (T.takeWhile (/= '\n') (T.strip out))
-                    if H.nodeFits ps line then pure (tries ++ [line])
-                      else go (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line <> T.pack "\nAnswer again, shorter.")
+                    let line = T.strip (H.stripHead (T.takeWhile (/= '\n') (T.strip out)))
+                    if H.junkLine line then go (n + 1) tries extra
+                      else if H.nodeFits ps line then pure (tries ++ [line])
+                      else go (n + 1) (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line)
                   Just (code, _, err) -> do
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command failed (" ++ show code ++ "): " ++ take 300 (T.unpack (T.strip err))))
@@ -1858,10 +1864,13 @@ compactorLoop s m cmd = loop
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command timed out"))
                     pure tries
-      tries <- go [] T.empty
+      tries <- go 0 [] T.empty
       case tries of
-        [] -> pure ()
-        _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries ])))
+        [] -> do
+          -- (nothing kept: a command that failed has said so; one that answered no line five times has not)
+          first <- H.failed m p 10
+          when first (logS s ("summarize " ++ show p ++ ": no line in the answers"))
+        _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries, not (T.null t) ])))
 
 -- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
 -- 'Nothing' when it ran past the timeout (it is then stopped).

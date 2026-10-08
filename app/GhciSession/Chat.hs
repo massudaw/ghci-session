@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 -- | __The endless chat__: @ghci-session chat@, an agent that works on a session as its sandbox and
--- remembers through the session's history (OptChat's turn loop, over the daemon's log, tree and view).
+-- remembers through the session's history (UniiChat's turn loop, over the daemon's log, tree and view).
 --
 -- > ghci-session chat                      # from the project: the chat, on the default session
 -- > ghci-session chat -s dev               # a session
@@ -8,7 +8,7 @@
 -- > ghci-session chat --instructions AGENTS.md
 --
 -- Each message starts a FRESH model call: no conversation is carried over. The call sees the system prompt
--- ('master', 'viewDoc', the instructions file), then the view -- the whole history as one-line summaries,
+-- ('H.systemPrompt', 'master', the instructions file), then the view -- the whole history as one-line summaries,
 -- rendered by the daemon before the new message is logged -- then the message. Its tools are the session's
 -- operations (eval, status, typecheck, reload, test, doc, census, bench, mem: the daemon logs each with
 -- its answer), the memory's (zoom, date), and the agent's hands on the files (read, write, edit, ls, sh),
@@ -66,6 +66,7 @@ import GhciSession.ChatUi
 import GhciSession.Config
 import GhciSession.Json
 import GhciSession.Llm
+import qualified GhciSession.History as H
 import GhciSession.Mcp (Tool (..), pick, tools)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now)
@@ -838,15 +839,14 @@ ownGhci cmd = any (ghciCmd . command . words) (segments cmd)
 
 -- the prompts --------------------------------------------------------------------------------
 
-master :: String -> String
-master who = unlines
-  [ "You are " ++ who ++ ", an AI agent that works for one user in a single chat that"
-  , "never ends, on a Haskell project whose code is loaded in a warm GHCi session."
-  , "Do the user's tasks yourself, with your tools, following the user's"
-  , "instructions at the end of this prompt: they say who the user is, how"
-  , "their files are organized and how they want work done."
+-- | What follows the memory's own prompt ('H.systemPrompt': the view, turns, compactions -- the part a
+-- compaction shares, and reads from the turns' cache): what the session is and what its tools are for.
+master :: String
+master = unlines
+  [ "# The session"
   , ""
-  , "The session is your sandbox: eval runs against the loaded code in"
+  , "The chat is about a Haskell project whose code is loaded in a warm GHCi"
+  , "session. The session is your sandbox: eval runs against the loaded code in"
   , "milliseconds; a file you write or edit is reloaded by the session itself"
   , "and the write's answer carries that reload's verdict (COMPILE-ERROR,"
   , "CHECK-FAIL, or OK -- CHECK-PASS); status repeats the latest verdict"
@@ -876,33 +876,9 @@ master who = unlines
   , "- sh is for what none of these does: not grep or find (use the tools), not"
   , "  ghci or cabal (the session is already warm)."
   , ""
-  , "You keep no memory between turns. Each turn starts with the view below,"
-  , "followed by the user's new message. Summaries keep little of tool"
-  , "output, so say in your reply what you learned that will matter later,"
-  , "or keep it with remember: a finding, a decision, what is left undone."
-  , "Messages the user sends while you work reach you between tool calls." ]
-
-viewDoc :: String -> String
-viewDoc who = unlines
-  [ "The view: the whole history of this session -- the chat between " ++ who ++ " and the"
-  , "user, and everything done to the code by hand -- oldest first, inside"
-  , "<chat> tags, as one-line summaries. Each line is"
-  , ""
-  , "  id+n|text   the n messages from id on, summarized (newlines shown as spaces)"
-  , ""
-  , "A summary tags each item with its kind: user (the user's words), talk"
-  , "(" ++ who ++ "'s replies), tool (a request: an evaluation, a reload, a save of a"
-  , "file), echo (its result: the output, the verdict), note (memories from"
-  , "before this chat). A short message is its own line, word for word. Recent"
-  , "lines cover one message each; the older the messages, the more a line"
-  , "covers. A message not summarized yet shows as \"(not summarized yet: zoom"
-  , "it)\". No message appears in full, not even the last ones."
-  , ""
-  , "Navigating: zoom(id, n) opens line id+n into the two lines of n/2"
-  , "messages it was made from; zoom(id, 1) gives message id in full. Zoom"
-  , "whenever a summary only mentions something you need, such as what your"
-  , "last reply said, a decision, a past attempt or where a file is, before"
-  , "you act, guess or ask. date(id) gives the date and time of message id." ]
+  , "The view holds what was done to the code by hand too: a save of a file is"
+  , "a tool line, its verdict an echo. What you learned that will matter later"
+  , "can also be kept with remember: a finding, a decision, what is left undone." ]
 
 -- | In --context view, what follows the view: every call of a turn is built again from the log.
 recentDoc :: String -> String
@@ -1151,7 +1127,7 @@ goOn ch e o pending ts = do
 
 -- the call built from the log (--context view) -----------------------------------------------
 --
--- OptChat starts each TURN fresh, from the view, and carries the turn's own steps as a conversation: a turn
+-- UniiChat starts each TURN fresh, from the view, and carries the turn's own steps as a conversation: a turn
 -- of a hundred tool calls grew to 195k tokens and never met its own memory. Here every CALL is built from
 -- the log: the view up to a boundary, the turn's message, and the log after the boundary word for word
 -- (<recent>). Once <recent> is over 'tailMax' bytes, the boundary moves on to leave a third of it, and the
@@ -1363,7 +1339,7 @@ chatMain conf args = case parseOpts args of
               let e = e0 { eModel = fromMaybe (eModel e0) (oModel o), eBase = maybe (eBase e0) (reverse . dropWhile (== '/') . reverse) (oBase o) }
                   agent = cAgent (chatWith stdoutUi)
               instr <- maybe (pure "") (\f -> trim <$> readFile f) (oInstructions o)
-              let system = master agent ++ "\n" ++ viewDoc agent ++ (if oView o then recentDoc agent else "") ++ (if null instr then "" else "\n" ++ instr)
+              let system = T.unpack ((if either (const False) gSharedPrompt cfg then H.systemPrompt else H.turnPrompt) agent) ++ "\n" ++ master ++ (if oView o then recentDoc agent else "") ++ (if null instr then "" else "\n" ++ instr)
                   dropPid = void (try (removeFile (chatPidFile conf name)) :: IO (Either IOException ()))
                   -- the chat on a Ui: the lines to take come on the queue (standard input's, or the screen's)
                   run ui pending = do
@@ -1483,23 +1459,33 @@ summarizeMain args = do
     else do
       ep <- endpointFromEnv
       ledger <- lookupEnv usageFileEnv
+      noTools <- lookupEnv "SUMMARIZE_TOOLS"      -- 0: send no tools (a local model that takes none)
       case ep of
         Left why -> hPutStrLn stderr ("summarize: " ++ why) >> pure 2
         Right e -> do
-          let go tries think budget
-                | tries >= (3 :: Int) = pure (Left "cut off at the output limit three times")
+          -- the turns' tools go with the call, never called: a compaction is a call like a turn, with the
+          -- same tools and system prompt, so it reads them from the turns' cache entry. A model that calls
+          -- one all the same, and writes no line, is asked again without them.
+          let go tries think budget withTools
+                | tries >= (3 :: Int) = pure (Left "no line after three tries (cut off at the output limit, or a tool called)")
                 | otherwise = do
                     t0 <- now
                     r <- request e (Request ([ JObj [("role", JStr "system"), ("content", JText system)] | not (T.null system) ] ++ [ JObj [("role", JStr "user"), ("content", JText user)] ])
-                                            [] budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300)
+                                            (if withTools then map toolJson chatTools else []) budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300)
                     t1 <- now
                     forM_ ledger $ \f -> forM_ (either (const Nothing) pUsage r) $ \u -> recordUsage f "summarize" e u (t1 - t0)
                     case r of
-                      Left why -> pure (Left why)
-                      Right p | not (T.null (T.strip (pContent p))) || pFinish p /= "length" -> pure (Right p)
-                              -- cut off before any text: the budget went to thoughts -- ask again without them, and with more
-                              | otherwise -> go (tries + 1) False (budget * 4)
-          r <- go 0 think0 budget0
+                      -- (an endpoint whose model takes no tools refuses the request: once more without them)
+                      Left why | withTools -> go (tries + 1) think budget False
+                               | otherwise -> pure (Left why)
+                      Right p | not (T.null (T.strip (pContent p))) -> pure (Right p)
+                              | withTools && not (null (pToolCalls p)) -> go (tries + 1) think budget False
+                              | pFinish p /= "length" -> pure (Right p)
+                              -- cut off before any text: the budget went to thoughts -- ask again without them, with
+                              -- room for a line and no more (four times a thinking budget was 16,000 tokens: seven
+                              -- minutes of a local model's time for a line of 512 bytes)
+                              | otherwise -> go (tries + 1) False 1600 withTools
+          r <- go 0 think0 budget0 (noTools `notElem` map Just ["0", "no", "off"])
           case r of
             Left why -> hPutStrLn stderr ("summarize: " ++ why) >> pure 1
             Right p -> case filter (not . T.null) (map T.strip (T.lines (pContent p))) of
