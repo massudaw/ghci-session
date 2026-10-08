@@ -43,6 +43,9 @@ def config(push_port: int) -> dict:
     return {
         "default": "hello",
         "hygiene": True,
+        # a save runs the check (the default is a save that only compiles, since a42f9f5): every group that saves
+        # waits for the CHECKED verdict; `oncommit` turns it off again
+        "watch_check": True,
         "status_url": f"http://127.0.0.1:{push_port}/push",
         "targets": {
             # the main one: a check, a server with something slow to do before it forks, a prebuild, a placeholder
