@@ -1,4 +1,4 @@
-/* libghostty-vt, found at run time with dlopen, behind flat functions a Haskell binding can call: no structs
+/* libghostty-vt, found at run time with dlopen (or, built with GVT_STATIC, linked in), behind flat functions a Haskell binding can call: no structs
  * cross the boundary, every sized struct is filled here, and a terminal's write-back callback is a plain
  * function pointer with a context. gvt_load() first; everything answers an error until it has. */
 #include <dlfcn.h>
@@ -23,6 +23,17 @@ SYMS(DECL)
 const char *gvt_error(void) { return err; }
 int gvt_loaded(void) { return lib != NULL; }
 
+#ifdef GVT_STATIC
+/* libghostty-vt.a is linked in: the pointers are the functions, and there is nothing to find. */
+int gvt_load(const char *path) {
+  (void)path;
+  if (lib) return 0;
+#define LINK(n) p_##n = n;
+  SYMS(LINK)
+  lib = (void *)&err;      /* (only "loaded" is asked of it) */
+  return 0;
+}
+#else
 /* `path` first (may be empty), then the names the system linker knows. 0, or -1 with gvt_error(). */
 int gvt_load(const char *path) {
   if (lib) return 0;
@@ -37,6 +48,7 @@ int gvt_load(const char *path) {
   SYMS(LOAD)
   return 0;
 }
+#endif
 
 /* ---- the terminal ---------------------------------------------------------------------- */
 

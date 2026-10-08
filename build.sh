@@ -14,10 +14,13 @@ fi
 # GHS_FFF=1: built with libfff (the package's fff flag, off by default: search is then a plain scan), and the
 # library fetched below
 fff_flag=; [ "${GHS_FFF:-0}" = 1 ] && fff_flag=--flags=+fff
-cabal build -v0 $fff_flag exe:ghci-session exe:ghci-session-engine
+# GHS_STATIC_VT=1: libghostty-vt linked in (.bin/libghostty-vt-static.a, left by tools/libghostty-vt.sh) instead of
+# found at run time
+vt_flag=; [ "${GHS_STATIC_VT:-0}" = 1 ] && vt_flag="--constraint=ghostty-vt+static --extra-lib-dirs=$PWD/.bin"
+cabal build -v0 $fff_flag $vt_flag exe:ghci-session exe:ghci-session-engine
 mkdir -p .bin
 for x in ghci-session ghci-session-engine; do
-  cp "$(cabal list-bin -v0 $fff_flag exe:$x)" .bin/$x.new
+  cp "$(cabal list-bin -v0 $fff_flag $vt_flag exe:$x)" .bin/$x.new
   mv .bin/$x.new .bin/$x
 done
 # macOS: the library that makes the RTS's memory returns real (hygiene/c/mem_return.c). It has to be a

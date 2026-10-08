@@ -365,6 +365,10 @@ Without libghostty-vt the other tabs work and the pane tabs say what is missing.
 into `.bin/` (a ghostty checkout at the headers' commit and zig 0.16, downloaded if absent); or put a
 `libghostty-vt.so`/`.dylib` beside the executable, or name one in `GHS_LIBGHOSTTY`.
 
+To link it in instead, so the executable needs no library beside it: `tools/libghostty-vt.sh` also leaves
+`.bin/libghostty-vt-static.a`, and `GHS_STATIC_VT=1 ./build.sh` builds with it (the `ghostty-vt` package's `static`
+flag; about 1.3 MB more, and libc++ is linked).
+
 ## Install
 
 ```

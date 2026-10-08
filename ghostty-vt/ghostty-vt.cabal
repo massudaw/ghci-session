@@ -17,6 +17,13 @@ category:           Terminal
 build-type:         Simple
 extra-source-files: COMMIT, include/ghostty/vt.h, include/ghostty/vt/*.h, include/ghostty/vt/key/*.h, include/ghostty/vt/mouse/*.h
 
+-- libghostty-vt.a linked in rather than found at run time: tools/libghostty-vt.sh leaves it in ../.bin as
+-- libghostty-vt-static.a (GHS_STATIC_VT=1 ./build.sh, which also gives cabal --extra-lib-dirs=.bin)
+flag static
+  description: link libghostty-vt statically
+  default:     False
+  manual:      True
+
 library
   hs-source-dirs:   src
   exposed-modules:  Ghostty.Vt, Ghostty.Vt.Raw, Ghostty.Vt.Pty
@@ -24,4 +31,11 @@ library
   include-dirs:     include
   build-depends:    base >=4.18 && <5, bytestring, text, unix
   default-language: Haskell2010
+  if flag(static)
+    cc-options:     -DGVT_STATIC
+    extra-libraries: ghostty-vt-static
+    if os(osx)
+      extra-libraries: c++
+    else
+      extra-libraries: stdc++
   ghc-options:      -Wall -Wno-name-shadowing

@@ -39,4 +39,6 @@ case "$(uname -s)" in
   Darwin) cp "$(ls zig-out/lib/libghostty-vt.*.dylib zig-out/lib/libghostty-vt.dylib 2>/dev/null | head -1)" "$HERE/.bin/libghostty-vt.dylib" ;;
   *) cp "$(ls zig-out/lib/libghostty-vt.so.* | head -1)" "$HERE/.bin/libghostty-vt.so" ;;
 esac
-ls "$HERE/.bin"/libghostty-vt.* >&2
+# (the archive too, for a build that links it in: GHS_STATIC_VT=1 ./build.sh)
+cp zig-out/lib/libghostty-vt.a "$HERE/.bin/libghostty-vt-static.a"
+ls "$HERE/.bin"/libghostty-vt* >&2
