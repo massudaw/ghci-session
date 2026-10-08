@@ -1,0 +1,21 @@
+tools/fake-llm.py
+  s_ee2f22f51d8bdb::t_36fe2f05a1ad07 1-78
+README.md
+  s_ee2f22f51d8bdb::t_07c7b66a75d307 304-306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "78121c78e581273aef0b4252ae7285a16c3370f2",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
