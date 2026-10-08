@@ -1,10 +1,13 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | High-performance code and file search backed by the FFF SIMD library ('cbits/ghs_fff.c'),
--- with session-aware metadata logging and formatted terminal output.
+-- with session-aware metadata logging and formatted terminal output. Built without the package's @fff@ flag,
+-- search is always the plain scan (and the C that loads the library is not built).
 module GhciSession.Search
   ( isAvailable
+  , builtWithFff
   , grep
   , searchFiles
   , formatGrep
@@ -28,6 +31,11 @@ import GhciSession.Json
 import GhciSession.Config
 import qualified GhciSession.History as H
 
+-- | Was this built with the @fff@ flag (the C that loads libfff)?
+builtWithFff :: Bool
+#if defined(HAVE_FFF)
+builtWithFff = True
+
 foreign import ccall unsafe "ghs_fff_available" c_fff_available :: IO CInt
 foreign import ccall safe "ghs_fff_grep" c_fff_grep :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
 foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
@@ -35,6 +43,17 @@ foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -
 -- | Is the FFF native C library loaded and operational?
 isAvailable :: IO Bool
 isAvailable = (== 1) <$> c_fff_available
+#else
+builtWithFff = False
+
+isAvailable :: IO Bool
+isAvailable = pure False
+
+-- (never called: 'isAvailable' is False; they keep one definition of grep and searchFiles for both builds)
+c_fff_grep, c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
+c_fff_grep _ _ _ _ _ = pure 0
+c_fff_search_files _ _ _ _ _ = pure 0
+#endif
 
 -- | Search file contents (live grep) in the given directory.
 grep :: FilePath -> String -> Int -> IO (Either String Json)

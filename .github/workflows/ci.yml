@@ -18,6 +18,9 @@ jobs:
         include:
           - ghc: "9.6.7"
             engine: true
+          # (the build without libfff: search is always the plain scan)
+          - ghc: "9.10.3"
+            flags: "--flags=-fff"
           - ghc: "9.14.1"
             engine: true
     steps:
@@ -35,13 +38,13 @@ jobs:
           key: ${{ runner.os }}-ghc-${{ matrix.ghc }}-${{ hashFiles('ghci-session.cabal', 'hygiene/ghci-hygiene.cabal') }}
           restore-keys: ${{ runner.os }}-ghc-${{ matrix.ghc }}-
       - name: Build
-        run: cabal build --ghc-options=-Werror lib:ghci-hygiene exe:ghci-session ${{ matrix.engine && 'exe:ghci-session-engine' || '' }}
+        run: cabal build ${{ matrix.flags }} --ghc-options=-Werror lib:ghci-hygiene exe:ghci-session ${{ matrix.engine && 'exe:ghci-session-engine' || '' }}
       # (with the client's own runtime options -- the self-test runs with the daemon's, and an option this GHC's
       #  runtime does not know stops every other command before it starts)
       - name: The command starts
-        run: $(cabal list-bin -v0 exe:ghci-session) --help
+        run: $(cabal list-bin -v0 ${{ matrix.flags }} exe:ghci-session) --help
       - name: Self-test
-        run: $(cabal list-bin -v0 exe:ghci-session) selftest
+        run: $(cabal list-bin -v0 ${{ matrix.flags }} exe:ghci-session) selftest
       # (every feature on a copy of examples/hello, each step checked and timed: ~2 min; a step where this compiler is
       #  known to differ checks what it does instead, and the tour exits 1 on anything unexpected)
       - name: The tour

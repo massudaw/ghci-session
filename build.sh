@@ -11,10 +11,12 @@ newest=$(ls -t hygiene/c/*.h cbits/*.h 2>/dev/null | head -1)
 if [ -n "$newest" ] && [ -f .bin/ghci-session-engine ] && [ "$newest" -nt .bin/ghci-session-engine ]; then
   touch hygiene/c/*.c cbits/*.c
 fi
-cabal build -v0 exe:ghci-session exe:ghci-session-engine
+# GHS_FFF=0: built without libfff (the package's fff flag off: search is a plain scan), and none is fetched
+fff_flag=; [ "${GHS_FFF:-1}" = 0 ] && fff_flag=--flags=-fff
+cabal build -v0 $fff_flag exe:ghci-session exe:ghci-session-engine
 mkdir -p .bin
 for x in ghci-session ghci-session-engine; do
-  cp "$(cabal list-bin -v0 exe:$x)" .bin/$x.new
+  cp "$(cabal list-bin -v0 $fff_flag exe:$x)" .bin/$x.new
   mv .bin/$x.new .bin/$x
 done
 # macOS: the library that makes the RTS's memory returns real (hygiene/c/mem_return.c). It has to be a
@@ -35,7 +37,7 @@ case "$(uname -s)-$(uname -m)" in
   Linux-aarch64|Linux-arm64) fff_target=aarch64-unknown-linux-gnu; fff_ext=so ;;
   *)                        fff_target=;                          fff_ext= ;;
 esac
-if [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ] && [ ! -f ".bin/libfff.$fff_ext" ]; then
+if [ -z "$fff_flag" ] && [ -n "$fff_target" ] && [ ! -f "lib/libfff.$fff_ext" ] && [ ! -f ".bin/libfff.$fff_ext" ]; then
   mkdir -p lib
   fff_url="${FFF_URL:-https://github.com/dmtrKovalenko/fff/releases/latest/download/c-lib-$fff_target.$fff_ext}"
   if curl -fsSL --retry 2 -o "lib/libfff.$fff_ext.new" "$fff_url"; then

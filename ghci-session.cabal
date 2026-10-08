@@ -18,6 +18,14 @@ category:           Development
 build-type:         Simple
 extra-source-files: README.md hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
 
+-- libfff (https://github.com/dmtrKovalenko/fff), the file finder behind `grep` / `find`: loaded at run time when
+-- it is there (build.sh fetches it), and without it search is a plain scan. Off (-f-fff): the C that loads it is not
+-- built, nothing is fetched, and search is always the scan.
+flag fff
+  description: search with libfff when it can be loaded (cbits/ghs_fff.c)
+  default:     True
+  manual:      True
+
 executable ghci-session
   hs-source-dirs:   app
   main-is:          Main.hs
@@ -25,7 +33,10 @@ executable ghci-session
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
                     GhciSession.Search, GhciSession.Vfs
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
+  if flag(fff)
+    c-sources:      cbits/ghs_fff.c
+    cpp-options:    -DHAVE_FFF
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010

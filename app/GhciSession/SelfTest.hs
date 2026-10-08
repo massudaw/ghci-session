@@ -312,7 +312,9 @@ run = do
   -- (libfff is optional -- build.sh fetches it when it can, and search falls back to a scan without it -- so it
   --  must load where it is there to load: the places ghs_fff.c looks first, from the directory this runs in)
   present <- or <$> mapM doesFileExist [ d ++ "/libfff." ++ e | d <- [".bin", "lib"], e <- ["so", "dylib"] ]
-  check "search: FFF C library is loaded where it is present" (avail || not present)
+  if Search.builtWithFff
+    then check "search: FFF C library is loaded where it is present" (avail || not present)
+    else check "search: built without the fff flag, so never loaded" (not avail)
   grepRes <- Search.grep "." "cmdSearch" 10
   check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
   eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
