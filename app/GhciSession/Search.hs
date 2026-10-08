@@ -129,6 +129,9 @@ fallbackGrep dir query maxResults = do
     t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
     case t of
       Left _ -> pure []
+      -- a binary file is not searched as text (a NUL in its first 8000 bytes, as git and grep tell): decoding
+      -- one leniently is a byte-at-a-time repair, and an 11 MB library in the tree took over a minute
+      Right bs | B.elem 0 (B.take 8000 bs) -> pure []
       Right bs ->
         let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
             ls = zip [1 :: Int ..] (T.lines txt)
