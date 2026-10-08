@@ -409,7 +409,7 @@ cbits/                  sockets, file events, regex, hashing, processes; the exe
 ghostty-vt/, tui/       libghostty-vt bindings and a terminal UI library on them (`top`, `chat --tui`)
 tools/libghostty-vt.sh  builds libghostty-vt into .bin/
 hygiene/                c/*.c (the pruner and the census, compiled into the engine), src/ (the library), repro/
-bin/ghci-session        run from a checkout (builds if stale)
+bin/ghci-session        run from a checkout (builds if stale); bin/ghs is a symlink to it, for short
 bin/ghci-history        save a session's history to a git branch and load it back
 ghci-session.json       the sessions this package runs on itself
 examples/hello/         two packages, a CAF that leaks without pruning, a server with state to hand over, Template Haskell splices
