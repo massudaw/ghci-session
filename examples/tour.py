@@ -151,17 +151,36 @@ class Tour:
         except (OSError, ValueError, KeyError):
             return 0.0
 
-    def wait(self, session: str, pred, since: float, secs: float = 120):
-        """Wait for a status newer than `since` that satisfies `pred`; (status or None, seconds waited)."""
+    def wait(self, session: str, pred, since: float, secs: float = 120, settle: float = 5.0):
+        """Wait for a status newer than `since` that satisfies `pred`; (status or None, seconds waited).
+
+        It also stops at the session's ANSWER when that is not the one wanted: a status newer than `since`, about
+        the sources as they are (not stale), with nothing still under way (not starting, no server re-fork
+        pending), unchanged for `settle` seconds. A step that cannot pass then fails in seconds with the verdict
+        it got, not at the limit; `secs` is left for a session that never settles (a hang, which is worth
+        seeing as one). Why it stopped is in self.waited, for the step's note."""
         t0 = time.time()
+        last_at, last_t = None, 0.0
+        j = {}
         while time.time() - t0 < secs:
             try:
                 j = self.status(session)
-                if j["at"] > since and not j.get("servers_pending") and pred(j):
+                newer = j["at"] > since and not j.get("servers_pending")
+                if newer and pred(j):
+                    self.waited = ""
                     return j, time.time() - t0
+                if newer and not j.get("stale") and j.get("kind") != "starting":
+                    if j["at"] != last_at:
+                        last_at, last_t = j["at"], time.time()
+                    elif time.time() - last_t >= settle:
+                        self.waited = f"answered: {j.get('verdict', '?')[:90]}"
+                        return None, time.time() - t0
+                else:
+                    last_at = None
             except (OSError, ValueError, KeyError):
                 pass
             time.sleep(0.05)
+        self.waited = f"timed out: {j.get('verdict', '?')[:90] if j else '?'}"
         return None, time.time() - t0
 
     def served(self, session: str = "dev"):
@@ -204,7 +223,7 @@ class Tour:
         since = self.at(session)
         self.write(path, text)
         j, dt = self.wait(session, pred, since)
-        self.step(name, dt, j is not None, note_of(j) if j else f"timed out: {self.status(session).get('verdict', '?')[:90]}")
+        self.step(name, dt, j is not None, note_of(j) if j else self.waited)
         return j
 
     def stop_all(self) -> None:
@@ -478,7 +497,7 @@ class Tour:
         subprocess.run(["git", "-c", "user.name=tour", "-c", "user.email=tour@example.org", "commit", "-qam", "a commit"],
                        cwd=self.proj, capture_output=True)
         j, dt = self.wait("oncommit", lambda j: j["kind"] == "CHECK-PASS", since)
-        self.step("git commit: a full reload, the check runs", dt, j is not None, j["verdict"][:50] if j else "timed out")
+        self.step("git commit: a full reload, the check runs", dt, j is not None, j["verdict"][:50] if j else self.waited)
         self.write(self.ex, self.ex0)
         self.cmd("stop", "stop", "oncommit", expect="stopped")
         out = self.cmd("start broken: a check that has never passed", "start", "broken", expect="NEVER-PASSED", rc=1,
