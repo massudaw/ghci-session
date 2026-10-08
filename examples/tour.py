@@ -335,6 +335,38 @@ class Tour:
         self.write(part("Mid"), mid0)
         self.cmd("stop", "stop", "hello", expect="stopped")
 
+    def g_th(self):
+        """Template Haskell: a splice's input, the code behind it and a declaration splice, each changed by a save.
+
+        Splice.Use runs code of Splice.Gen (an expression splice and a declaration splice). A save-time typecheck
+        that generates no code has nothing to run for those: GHC enables code generation for what a splice needs
+        when it scans the module graph, and a graph kept from the last pass, or patched for the files that
+        changed, gave the module that changed no code -- GHC then panicked (expectJust getLinkDeps), the verdict
+        was COMPILE-ERROR and the session stayed on the old code. Each save here is the second or later: the first
+        typecheck of a session scans."""
+        good = lambda j: j["kind"] == "CHECK-PASS"  # noqa: E731
+        gen, use = (os.path.join(self.proj, "src", "Splice", m + ".hs") for m in ("Gen", "Use"))
+        gen0, use0 = self.read(gen), self.read(use)
+        self.cmd("start hello", "start", "hello", expect="CHECK-PASS")
+        self.cmd("  the splices ran", "eval", "(Splice.Use.answer, Splice.Use.greeting)", expect='(40,"hi")')
+        self.save("save: the splice's input (scaled 4 -> 5)", "hello", use, use0.replace("scaled 4", "scaled 5"), good)
+        self.cmd("  the expression splice ran again", "eval", "Splice.Use.answer", expect="50")
+        self.save("save: the code behind it (n * 10 -> n * 100)", "hello", gen, gen0.replace("n * 10", "n * 100"), good)
+        self.cmd("  the splice that runs it was rebuilt", "eval", "Splice.Use.answer", expect="500")
+        self.save("save: a declaration splice's argument", "hello", use, use0.replace("scaled 4", "scaled 5").replace('"hi"', '"salut"'), good)
+        self.cmd("  the declaration splice ran again", "eval", "Splice.Use.greeting", expect='"salut"')
+        j = self.save("save: a type error in the splice's module", "hello", gen, gen0.replace("n * 10", "n * 100").replace("litE (integerL", "litE (stringL"),
+                      lambda j: j["kind"] == "COMPILE-ERROR")
+        self.step("  a real diagnostic, not a GHC panic", 0, bool(j) and "getLinkDeps" not in json.dumps(j.get("diagnostics")) and
+                  any("Gen.hs" in (d.get("file") or "") for d in j.get("diagnostics", [])), j["verdict"][:60] if j else "")
+        self.cmd("  the code that compiled still answers", "eval", "Splice.Use.answer", expect="500")
+        self.save("save: fixed", "hello", gen, gen0.replace("n * 10", "n * 100"), good)
+        self.write(gen, gen0)
+        self.write(use, use0)
+        self.cmd("reload: the original", "reload", "--no-check", expect="CHECK SKIPPED")
+        self.cmd("  the original splices", "eval", "(Splice.Use.answer, Splice.Use.greeting)", expect='(40,"hi")')
+        self.cmd("stop", "stop", "hello", expect="stopped")
+
     def g_stale(self):
         """Without the watcher, a changed source is NOT loaded -- and every verdict and answer says so."""
         self.cmd("start manual (auto_reload off)", "start", "manual", expect="CHECK-PASS")
@@ -580,7 +612,7 @@ class Tour:
             os.utime(old, (time.time() - 30 * 86400,) * 2)
             self.cmd("gc --days 7 prunes a session's old state", "gc", "--days", "7", expect="pruned manual")
 
-    GROUPS = ("boot", "eval", "reload", "watch", "partial", "stale", "compose", "servers", "census", "leak", "budget", "hooks", "idle", "gc")
+    GROUPS = ("boot", "eval", "reload", "watch", "partial", "th", "stale", "compose", "servers", "census", "leak", "budget", "hooks", "idle", "gc")
     NEEDS_HELLO = ("eval", "reload", "watch")   # run inside the session `boot` leaves up
 
     def main(self, only: list[str]) -> int:
