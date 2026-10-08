@@ -301,6 +301,9 @@ cache entry (`SUMMARIZE_TOOLS=0` for a model that takes no tools).
   boundary, then the log after it word for word) instead of carrying a turn's steps as a conversation.
   `chat --restart` has a running chat run itself again as the executable on disk now, in the middle of a turn, with
   the provider's cache intact.
+  `tools/fake-llm.py` is a stand-in endpoint for trying it without a key (`OPENAI_API_KEY=fake
+  OPENAI_BASE_URL=http://127.0.0.1:8799`): `eval EXPR` and `tool NAME [JSON]` make it call a tool, anything else is
+  echoed, and a request without tools (a compaction) gets a one-line summary.
 
 What the harness does for an agent that works on a session: every reply carries `stale`; a command past its timeout
 is interrupted, not abandoned; a check that hangs is interrupted at five times the median of its last passing runs
