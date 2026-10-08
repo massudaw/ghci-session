@@ -22,7 +22,7 @@
 --
 -- @GHS_FAST_GRAPH@: @0@ always scans; @verify@ builds the graph both ways, says where they differ
 -- (stderr, so the load's log) and loads the SCANNED one; anything else, or unset, is on.
-module GhsFastLoad (loadWith, setChanged) where
+module GhsFastLoad (loadWith, loadAll, setChanged) where
 
 import Control.Monad (forM, unless)
 import Control.Monad.IO.Class (liftIO)
@@ -48,7 +48,7 @@ import GHC.Driver.Main (batchMsg, batchMultiMsg)
 import GHC.Driver.Messager (Messager)
 import GHC.Driver.Env (hsc_all_home_unit_ids)
 import qualified Data.Set as S
-import GHC.Types.Error (UnknownDiagnostic)
+import GHC.Types.Error (UnknownDiagnostic, mkUnknownDiagnostic)
 import GHC.Driver.Errors.Types (AnyGhcDiagnostic)
 import GHC.Types.SrcLoc (unLoc)
 import GHC.Unit.Env (ue_unitHomeUnit)
@@ -94,6 +94,10 @@ loadWith cache diag how = do
           load' cache how diag (Just (mkBatchMsg hsc)) g
     _ -> scan
   where say m = hPutStrLn stderr m >> (lookupEnv "GHS_FAST_GRAPH_LOG" >>= maybe (pure ()) (\f -> appendFile f (m ++ "\n")))
+
+-- | Everything, with no interface cache: the engine's typecheck.
+loadAll :: GhcMonad m => m SuccessFlag
+loadAll = loadWith Nothing mkUnknownDiagnostic LoadAllTargets
 
 -- | The compiler's own choice of progress messages (@GHC.Driver.Make.mkBatchMsg@, which it does not export).
 mkBatchMsg :: HscEnv -> Messager

@@ -63,26 +63,20 @@ import Unsafe.Coerce (unsafeCoerce)
 import qualified GHC
 import GHC.Data.FastString (unpackFS)
 import GHC.Driver.Backend (noBackend)
-import GHC.Driver.DynFlags (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set)
-import GHC.Driver.Env (hscInterp, hscUpdateHUG, hsc_HUG, hsc_mod_graph, setModuleGraph)
+import GHC.Driver.Session (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set)
+import GHC.Driver.Env (hscInterp, hsc_mod_graph)
 import GHC.Types.Basic (SuccessFlag (..))
 import GHC.Linker.Types (Linkable, Loader (..), LoaderState (..), linkableObjs)
 import GHC.Runtime.Interpreter.Types (interpLoader)
-import GHC.Unit.Home.Graph (lookupHugByModule, updateUnitFlags)
-import GHC.Unit.Home.ModInfo (HomeModInfo (..), homeModInfoObject)
-import GHC.Unit.Module.Deps (dep_direct_mods)
 import GHC.Unit.Module.Env (extendModuleEnv, moduleEnvToList)
-import GHC.Unit.Module.ModIface (mi_deps)
-import GHC.Unit.Types (Definite (..), GenUnit (..), GenWithIsBoot (..), Module, isInteractiveModule, mkModule)
+import GHC.Unit.Types (Module, isInteractiveModule)
 import GHC.Driver.Session (thisPackageName, workingDirectory)
 import GHC.Tc.Module (TcRnExprMode (..))
 import GHC.Types.Error (MessageClass (..), Severity (..))
 import GHC.Types.SrcLoc
-import GHC.Unit.Home.Graph (homeUnitEnv_dflags, homeUnitEnv_units, unitEnv_assocs)
 import GHC.Unit.Module.Graph (ModuleGraph, emptyMG, mgModSummaries)
 import GHC.Unit.Module.Location (ml_obj_file)
 import GHC.Unit.Module.ModSummary (ms_location, ms_mod, ms_unitid)
-import GHC.Unit.State (homeUnitDepends)
 import GHC.Unit.Types (unitIdString)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
@@ -94,8 +88,8 @@ import GHCi.UI.Monad (GHCi)
 import GHC.Exts (Any)
 import GHC.Hygiene (engineSymbol, heapAuto, majorGC)
 import GhsAddUnits (addTargets, addUnits)
-import GhsFastLoad (loadWith, setChanged)
-import GHC.Types.Error (mkUnknownDiagnostic)
+import GhsCompat (homeObject, homeUnits, mapUnitFlags, promptUnit, withModuleGraph)
+import GhsFastLoad (loadAll, setChanged)
 import GHC.Hygiene.Store (storeDrop, storeNames)
 import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusOf, keptReport, keptStrings, memNow)
 import GHC.Hygiene.Zygote (ZygoteChild (..), ZygoteSpec (..), zygoteFork)
@@ -241,7 +235,10 @@ engineHook = do
   on <- liftIO (readIORef engine)
   case on of
     Nothing -> pure ()
-    Just _ -> GHC.modifyLogger (pushLogHook record)
+    Just _ -> do
+      GHC.modifyLogger (pushLogHook record)
+      chosen <- promptUnit
+      liftIO (maybe (pure ()) (\u -> hPutStrLn stderr ("engine: the prompt works in " ++ u)) chosen)
 
 record :: LogAction -> LogAction
 record next flags cls sp doc = do
@@ -377,14 +374,12 @@ keepLinked = do
       if null lost then pure (0, 0, []) else do
         -- each lost module as it is loaded now: its object's time, and the home modules it imports
         infos <- liftIO $ forM lost $ \(m, was) -> do
-          mi <- lookupHugByModule m (hsc_HUG hsc)
+          mi <- homeObject hsc m
           case mi of
-            Just hmi | Just ln <- homeModInfoObject hmi -> do
+            Just (ln, deps) -> do
               is <- objTimes ln
-              pure (m, (ln, if not (null was) && is == was
-                              then Just [ mkModule (RealUnit (Definite u)) (gwib_mod n) | (_, u, n) <- S.toList (dep_direct_mods (mi_deps (hm_iface hmi))) ]
-                              else Nothing))
-            _ -> pure (m, (undefinedLinkable, Nothing))
+              pure (m, (ln, if not (null was) && is == was then Just deps else Nothing))
+            Nothing -> pure (m, (undefinedLinkable, Nothing))
         let table = M.fromList infos
             -- a module stands if its object is unchanged and every home module it imports stands (one already
             -- in the loader's table, or outside what was lost, is not ours to judge: it stands)
@@ -527,11 +522,11 @@ typecheck dir since = do
       -- (with NO module graph: a module whose source has not changed would otherwise keep the summary it has,
       -- and with it the flags it was summarised under -- and if it then needed compiling, it was compiled for
       -- real, into the session's own object directory)
-      noCode g hsc = setModuleGraph g (foldl (\h (uid, _) -> hscUpdateHUG (updateUnitFlags uid (quiet uid)) h) hsc (unitEnv_assocs (hsc_HUG hsc)))
+      noCode g hsc = withModuleGraph g (mapUnitFlags quiet hsc)
   kept <- liftIO (readIORef tcGraph)
   -- (the files that changed are only meaningful against the graph of the typecheck before this one)
   liftIO (setChanged (case (kept, since) of { (Just _, Just fs) -> Just fs; _ -> Nothing }))
-  r <- MC.try (GHC.setSession (noCode (fromMaybe emptyMG kept) saved) >> loadWith Nothing mkUnknownDiagnostic GHC.LoadAllTargets)
+  r <- MC.try (GHC.setSession (noCode (fromMaybe emptyMG kept) saved) >> loadAll)
   -- its graph is the next one's start -- unless it threw (a source that does not parse: the graph is partial)
   after <- hsc_mod_graph <$> GHC.getSession
   liftIO (setChanged Nothing)
@@ -556,14 +551,13 @@ state = do
   hsc <- GHC.getSession
   cwd <- liftIO getCurrentDirectory
   let sums = mgModSummaries (hsc_mod_graph hsc)
-  loaded <- filterM (GHC.isLoadedHomeModule . ms_mod) sums
+  loaded <- filterM (\x -> GHC.isLoadedModule (ms_unitid x) (GHC.ms_mod_name x)) sums
   let units =
         [ JObj [ ("id", JStr (unitIdString uid)), ("package", JStr (fromMaybe "" (thisPackageName df)))
-               , ("deps", JArr (map (JStr . unitIdString) (homeUnitDepends (homeUnitEnv_units ue))))
+               , ("deps", JArr (map (JStr . unitIdString) deps))
                , ("objects", JArr [ JStr (if isAbsolute o then o else wd </> o)
                                   | s <- sums, ms_unitid s == uid, let o = ml_obj_file (ms_location s) ]) ]
-        | (uid, ue) <- unitEnv_assocs (hsc_HUG hsc)
-        , let df = homeUnitEnv_dflags ue
+        | (uid, df, deps) <- homeUnits hsc
         , let wd = maybe cwd (\d -> if isAbsolute d then d else cwd </> d) (workingDirectory df)
         , not ("interactive" `isPrefixOf` unitIdString uid) ]
   pure (JObj [ ("cwd", JStr cwd), ("modules", JNum (fromIntegral (length sums))), ("loaded", JNum (fromIntegral (length loaded)))

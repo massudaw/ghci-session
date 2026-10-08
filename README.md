@@ -4,8 +4,9 @@ A warm GHCi per project, behind a small daemon, with the two things a long GHCi 
 `cabal repl` does not give you: **a verdict you can trust** and **memory that does not grow with every edit**.
 
 It grew out of the session tooling of a large Haskell modelling project (several hundred modules, servers forked
-from the repl, days-long sessions) and has nothing of that project in it. **It needs GHC 9.14.1; it is developed on
-macOS (arm64) and runs on Linux without the pruner**: see *Status*.
+from the repl, days-long sessions) and has nothing of that project in it. **It needs GHC 9.14.1 or 9.6.7; it is
+developed on macOS (arm64) with 9.14.1, and runs on Linux with either**: see *Status* (9.6 has a few known
+differences there).
 
 ```
 ghci-session start          # boot once, leave it running
@@ -62,7 +63,8 @@ itself -- this package has a `ghci-session.json`, and a save here is a compile a
 ## The engine: GHCi with a socket where its terminal was
 
 `ghci-session-engine` IS GHCi: the `ghc` executable's interactive front end, vendored unchanged
-(`vendor/ghc-9.14.1`, 7,600 lines; `vendor/fetch.sh VERSION` gets another, plus a stanza in the cabal file) and built
+(`vendor/ghc-9.14.1`, 7,600 lines, and `vendor/ghc-9.6.7`; `vendor/fetch.sh VERSION` gets another, plus a stanza in the
+cabal file, and the engine's few modules that reach into the compiler's session are per version, `engine/ghc-X.Y`) and built
 against the same `ghc` library, so every command behaves exactly as it does there. A session's GHCi is always this
 one; there is no second way to drive a stock `ghci` through a terminal (there was: a pseudo-terminal, a prompt
 chosen so it could be found in the output, and every question to GHCi asked as a command whose printed answer was
@@ -946,8 +948,11 @@ exported symbol now resolves to a newer one), plus exported CAFs whose name reso
 
 **Safety.** The C finds the RTS's private lists by name in the mapped RTS image's symbol table; where they are not
 there it returns `-1` and the session just does not prune (and says so once, in `daemon.log`). The object and
-closure layouts it then reads are GHC 9.14.1's, which is the compiler the engine is built for.
-Tested on GHC 9.14.1, macOS arm64. `keepCAFs = 0` is *not* an option (SIGBUS: interpreted code refers to CAFs by raw
+closure layouts it then reads are the compiler's the engine is built for: the closures through that compiler's own
+`Rts.h`; the few offsets written in the C (`ObjectCode`'s type, file name and links, `Section`, `StgIndStatic`'s
+static link) were measured with `offsetof` against GHC 9.14.1's and 9.6.7's headers and are the same on x86_64.
+Tested on GHC 9.14.1 (macOS arm64, Linux x86_64) and 9.6.7 (Linux x86_64; on macOS the pruner is off before 9.14,
+the dlopen handle it reads there having been measured on 9.14 only). `keepCAFs = 0` is *not* an option (SIGBUS: interpreted code refers to CAFs by raw
 address, GHC #23182).
 
 ## Layout
@@ -974,8 +979,23 @@ census, forked servers (keep / re-fork, also in the background / handover / adop
 the tour (123 steps) and the end-to-end tests. This package's own two sessions (`tool`, `engine`) run on it.
 
 Not here: the deferred GC after an unlink (it crashed a large session; the GC is immediate). A compiler
-other than GHC 9.14.1: the engine is that compiler's front end, so another needs its sources vendored and has not
-been tried. Port verification needs `lsof`.
+other than GHC 9.14.1 and 9.6.7: the engine is that compiler's front end, so another needs its sources vendored
+(`vendor/fetch.sh`) and has not been tried. Port verification needs `lsof`.
+
+GHC 9.6.7 (Linux x86_64, cabal 3.18): both executables build and the tour passes, 142 steps with 3 known to differ
+(the tour reads the compiler and checks what 9.6 does instead), in 97 s; 9.14.1 is 145 of 145 there. The pruner
+holds the `leak` group flat (+0 MB over five reloads, against +243 MB without it) and `partial` passes; the census,
+servers, budget, hooks, idle stop and `gc` are as on 9.14. What differs on 9.6, all from its GHCi:
+- **A composed session sees one unit at the prompt.** GHCi 9.6 has no interactive units: the prompt resolves a
+  module through one home unit, which finds its own modules and its direct home dependencies'. The engine makes
+  that unit the one that sees the most (`promptUnit`, `engine/ghc-9.6/GhsCompat.hs`), so a package and one that
+  imports it are both in scope; of three packages in a chain, one is not.
+- **A package added to a running session restarts the repl** (`compose --add`): its GHCi takes units at the start.
+- **A save that changes only a comment re-forks a server** instead of keeping it (with its state): there is no
+  `-fobject-determinism` before 9.12, so an identical source compiles to a different object.
+- Its reload libraries are `libghc_N`, loaded with a plain `dlopen` that the RTS keeps no record of; the pruner
+  finds them through the dynamic linker instead (`ghci_cafs.c`).
+- The client's start-up skips `-xr` (GHC 9.10's): the older runtime refuses an option it does not know.
 
 Linux (x86_64, GHC 9.14.1 and cabal 3.18 from ghcup, Ubuntu 24.04): both executables build and the tour passes,
 145 of 145 steps. The pruner works there too: the tour's `leak` group holds the live heap at 78 MB over five reloads

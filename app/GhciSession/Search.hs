@@ -1,10 +1,13 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | High-performance code and file search backed by the FFF SIMD library ('cbits/ghs_fff.c'),
--- with session-aware metadata logging and formatted terminal output.
+-- with session-aware metadata logging and formatted terminal output. Built without the package's @fff@ flag (the
+-- default), search is always the plain scan (and the C that loads the library is not built).
 module GhciSession.Search
   ( isAvailable
+  , builtWithFff
   , grep
   , searchFiles
   , formatGrep
@@ -28,6 +31,11 @@ import GhciSession.Json
 import GhciSession.Config
 import qualified GhciSession.History as H
 
+-- | Was this built with the @fff@ flag (the C that loads libfff)?
+builtWithFff :: Bool
+#if defined(HAVE_FFF)
+builtWithFff = True
+
 foreign import ccall unsafe "ghs_fff_available" c_fff_available :: IO CInt
 foreign import ccall safe "ghs_fff_grep" c_fff_grep :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
 foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
@@ -35,6 +43,17 @@ foreign import ccall safe "ghs_fff_search_files" c_fff_search_files :: CString -
 -- | Is the FFF native C library loaded and operational?
 isAvailable :: IO Bool
 isAvailable = (== 1) <$> c_fff_available
+#else
+builtWithFff = False
+
+isAvailable :: IO Bool
+isAvailable = pure False
+
+-- (never called: 'isAvailable' is False; they keep one definition of grep and searchFiles for both builds)
+c_fff_grep, c_fff_search_files :: CString -> CString -> CInt -> CString -> CSize -> IO CInt
+c_fff_grep _ _ _ _ _ = pure 0
+c_fff_search_files _ _ _ _ _ = pure 0
+#endif
 
 -- | Search file contents (live grep) in the given directory.
 grep :: FilePath -> String -> Int -> IO (Either String Json)
@@ -48,7 +67,8 @@ grep dir query maxResults = do
              in allocaBytes bufSize $ \cBuf -> do
                   rc <- c_fff_grep cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
-                  pure (parseJson str)
+                  -- (0 is a failure, and the buffer then says why -- unless it is empty)
+                  pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
 
 -- | Fuzzy search file names in the given directory.
 searchFiles :: FilePath -> String -> Int -> IO (Either String Json)
@@ -62,7 +82,8 @@ searchFiles dir query maxResults = do
              in allocaBytes bufSize $ \cBuf -> do
                   rc <- c_fff_search_files cDir cQ (fromIntegral maxResults) cBuf (fromIntegral bufSize)
                   str <- peekCString cBuf
-                  pure (parseJson str)
+                  -- (0 is a failure, and the buffer then says why -- unless it is empty)
+                  pure (if rc == 0 && null str then Left "fff: no answer" else parseJson str)
 
 -- | Format grep results for human terminal consumption or agent replies.
 formatGrep :: Json -> T.Text
@@ -127,6 +148,9 @@ fallbackGrep dir query maxResults = do
     t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
     case t of
       Left _ -> pure []
+      -- a binary file is not searched as text (a NUL in its first 8000 bytes, as git and grep tell): decoding
+      -- one leniently is a byte-at-a-time repair, and an 11 MB library in the tree took over a minute
+      Right bs | B.elem 0 (B.take 8000 bs) -> pure []
       Right bs ->
         let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
             ls = zip [1 :: Int ..] (T.lines txt)

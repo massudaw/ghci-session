@@ -43,6 +43,9 @@ def config(push_port: int) -> dict:
     return {
         "default": "hello",
         "hygiene": True,
+        # a save runs the check (the default is a save that only compiles, since a42f9f5): every group that saves
+        # waits for the CHECKED verdict; `oncommit` turns it off again
+        "watch_check": True,
         "status_url": f"http://127.0.0.1:{push_port}/push",
         "targets": {
             # the main one: a check, a server with something slow to do before it forks, a prebuild, a placeholder
@@ -73,6 +76,13 @@ class Tour:
     def __init__(self, keep: bool):
         self.keep = keep
         self.steps: list[dict] = []
+        # the compiler: the engine runs only on the one on PATH, so this is the session's. A few steps differ, as
+        # known, on an older one ('known'); (0,) when it cannot be said, and then nothing is expected to differ.
+        try:
+            self.ghc = tuple(int(x) for x in subprocess.run(["ghc", "--numeric-version"], capture_output=True, text=True,
+                                                            timeout=60).stdout.strip().split("."))
+        except (OSError, ValueError, subprocess.SubprocessError):
+            self.ghc = (0,)
         self.group = ""
         self.pushes: list[dict] = []
         self.dir = tempfile.mkdtemp(prefix="ghci-session-tour-")
@@ -148,17 +158,36 @@ class Tour:
         except (OSError, ValueError, KeyError):
             return 0.0
 
-    def wait(self, session: str, pred, since: float, secs: float = 120):
-        """Wait for a status newer than `since` that satisfies `pred`; (status or None, seconds waited)."""
+    def wait(self, session: str, pred, since: float, secs: float = 120, settle: float = 5.0):
+        """Wait for a status newer than `since` that satisfies `pred`; (status or None, seconds waited).
+
+        It also stops at the session's ANSWER when that is not the one wanted: a status newer than `since`, about
+        the sources as they are (not stale), with nothing still under way (not starting, no server re-fork
+        pending), unchanged for `settle` seconds. A step that cannot pass then fails in seconds with the verdict
+        it got, not at the limit; `secs` is left for a session that never settles (a hang, which is worth
+        seeing as one). Why it stopped is in self.waited, for the step's note."""
         t0 = time.time()
+        last_at, last_t = None, 0.0
+        j = {}
         while time.time() - t0 < secs:
             try:
                 j = self.status(session)
-                if j["at"] > since and not j.get("servers_pending") and pred(j):
+                newer = j["at"] > since and not j.get("servers_pending")
+                if newer and pred(j):
+                    self.waited = ""
                     return j, time.time() - t0
+                if newer and not j.get("stale") and j.get("kind") != "starting":
+                    if j["at"] != last_at:
+                        last_at, last_t = j["at"], time.time()
+                    elif time.time() - last_t >= settle:
+                        self.waited = f"answered: {j.get('verdict', '?')[:90]}"
+                        return None, time.time() - t0
+                else:
+                    last_at = None
             except (OSError, ValueError, KeyError):
                 pass
             time.sleep(0.05)
+        self.waited = f"timed out: {j.get('verdict', '?')[:90] if j else '?'}"
         return None, time.time() - t0
 
     def served(self, session: str = "dev"):
@@ -180,11 +209,20 @@ class Tour:
 
     # -- recording --
 
-    def step(self, name: str, seconds: float, ok: bool, note: str = "") -> bool:
-        self.steps.append({"group": self.group, "name": name, "seconds": round(seconds, 2), "ok": bool(ok), "note": note})
+    def step(self, name: str, seconds: float, ok: bool, note: str = "", known: str = "") -> bool:
+        self.steps.append({"group": self.group, "name": name, "seconds": round(seconds, 2), "ok": bool(ok), "note": note,
+                           **({"known": known} if known else {})})
         flag = "" if ok else "   <-- UNEXPECTED"
         print(f"  {name:58s} {seconds:7.2f} s  {note}{flag}", flush=True)
         return ok
+
+    def ghc_name(self) -> str:
+        return ".".join(map(str, self.ghc))
+
+    def known(self, name: str, why: str, ok: bool, note: str = "") -> bool:
+        """A step where this compiler is KNOWN to differ: what it does instead is checked (and is unexpected if it
+        does not hold), and the step says why it differs."""
+        return self.step(name, 0, ok, f"[GHC {self.ghc_name()}: {why}] {note}".rstrip(), known=why)
 
     def cmd(self, name: str, *argv, expect: str | None = None, rc: int | None = 0, env=None, note=None) -> str:
         """One client command as a step: its exit status and, if given, a string its output must contain."""
@@ -201,7 +239,7 @@ class Tour:
         since = self.at(session)
         self.write(path, text)
         j, dt = self.wait(session, pred, since)
-        self.step(name, dt, j is not None, note_of(j) if j else f"timed out: {self.status(session).get('verdict', '?')[:90]}")
+        self.step(name, dt, j is not None, note_of(j) if j else self.waited)
         return j
 
     def stop_all(self) -> None:
@@ -326,6 +364,9 @@ class Tour:
         self.save("save: edit hello -- extra, which imports it, follows", "dev", self.hs, self.hs0.replace('"hello"', '"hej"'), good)
         self.cmd("  the dependent member sees it", "eval", "Extra.shout", expect='"HEJ!"')
         self.save("save: back", "dev", self.hs, self.hs0, good)
+        if self.ghc[:2] == (9, 6):
+            self.compose_96()
+            return
         # a member added to the session that is RUNNING: the repl takes the package, nothing is restarted
         pid = self.read(os.path.join(self.state, "dev", "pid")).strip()
         self.cmd("compose --add third (a package into the running repl)", "compose", "dev", "--add", "third", expect="no restart")
@@ -343,6 +384,23 @@ class Tour:
         self.cmd("  ... and restarted into the three", "eval", "(Hello.greeting, Third.echo)", expect='("hello","HELLO! HELLO!")')
         self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
 
+    def compose_96(self):
+        """The rest of the compose group on GHC 9.6, whose GHCi differs in two known ways: it takes its units at
+        the start only (a member added is a restart), and its prompt sees ONE home unit and the units that one
+        depends on directly (the engine picks the unit that sees the most) -- so of three packages in a chain,
+        one is out of scope there."""
+        out = self.cmd("compose --add third (on 9.6: a restart, with the reason)", "compose", "dev", "--add", "third",
+                       expect="restarting the repl", rc=None)
+        self.known("  the repl was restarted", "its GHCi takes units at the start only", "takes its units at the start only" in out)
+        self.step("  three members, a check each", 0, [m["member"] for m in self.status("dev")["members"]] == ["hello", "extra", "third"])
+        code, o, e, _ = self.run("eval", "(Hello.greeting, Extra.shout, Third.echo)", "-s", "dev")
+        self.known("  one of the chain is out of scope at the prompt", "the prompt sees one unit and its direct dependencies",
+                   "Not in scope" in o + e, "not in scope" if "Not in scope" in o + e else f"rc={code} {(o + e).strip()[-80:]!r}")
+        # two packages, one directly over the other: the prompt sees both (third depends on extra)
+        self.cmd("compose dev extra third (the two packages over hello)", "compose", "dev", "extra", "third", expect="[2 members: extra")
+        self.cmd("  both in scope", "eval", "(Extra.shout, Third.echo)", "-s", "dev", expect='("HELLO!","HELLO! HELLO!")')
+        self.cmd("compose dev hello extra (a member REMOVED is a restart)", "compose", "dev", "hello", "extra", expect="[2 members: hello")
+
     def g_servers(self):
         """A server forked from the repl: kept, re-forked with its state, protected, in the background."""
         good = lambda j: j["kind"] == "CHECK-PASS"  # noqa: E731
@@ -355,7 +413,13 @@ class Tour:
         self.step("  it serves the loaded code", 0, self.served()[0] == "hello", " ".join(map(str, self.served())))
         j = self.save("save: a comment -- the server is KEPT", "dev", self.hs, self.hs0 + "-- c\n", good,
                       lambda j: j["verdict"].split("[servers:")[-1][:60])
-        self.step("  same pid", 0, self.server_pid("dev") == pid and bool(j) and j["servers"][0]["action"] == "kept")
+        if self.ghc >= (9, 12) or self.ghc == (0,):
+            self.step("  same pid", 0, self.server_pid("dev") == pid and bool(j) and j["servers"][0]["action"] == "kept")
+        else:
+            # (-fobject-determinism is 9.12's: an older compiler gives an identical source a different object, so
+            #  the server's code looks changed, and it is re-forked -- with its state)
+            self.known("  re-forked, not kept", "no -fobject-determinism before 9.12",
+                       bool(j) and j["servers"][0]["action"] == "re-forked")
         ticks = self.served()[1]
         j = self.save("save: a real change -- RE-FORKED, state carried", "dev", self.hs, self.hs0.replace('"hello"', '"bonjour"'),
                       good, lambda j: j["verdict"].split("[servers:")[-1][:60])
@@ -475,7 +539,7 @@ class Tour:
         subprocess.run(["git", "-c", "user.name=tour", "-c", "user.email=tour@example.org", "commit", "-qam", "a commit"],
                        cwd=self.proj, capture_output=True)
         j, dt = self.wait("oncommit", lambda j: j["kind"] == "CHECK-PASS", since)
-        self.step("git commit: a full reload, the check runs", dt, j is not None, j["verdict"][:50] if j else "timed out")
+        self.step("git commit: a full reload, the check runs", dt, j is not None, j["verdict"][:50] if j else self.waited)
         self.write(self.ex, self.ex0)
         self.cmd("stop", "stop", "oncommit", expect="stopped")
         out = self.cmd("start broken: a check that has never passed", "start", "broken", expect="NEVER-PASSED", rc=1,
@@ -548,8 +612,10 @@ class Tour:
                 shutil.rmtree(self.dir, ignore_errors=True)
         bad = [s for s in self.steps if not s["ok"]]
         timed = [s for s in self.steps if s["seconds"] > 0]
+        known = [s for s in self.steps if s.get("known")]
         print(f"\n== {len(self.steps)} steps, {len(timed)} timed, {time.time() - t0:.0f} s in all: "
-              f"{'all as expected' if not bad else str(len(bad)) + ' UNEXPECTED'}")
+              f"{'all as expected' if not bad else str(len(bad)) + ' UNEXPECTED'}"
+              + (f" ({len(known)} known to differ on GHC {self.ghc_name()})" if known else ""))
         for s in bad:
             print(f"   {s['group']}/{s['name'].strip()}: {s['note']}")
         return 1 if bad else 0

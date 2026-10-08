@@ -3,13 +3,19 @@
 # for the mechanical edits below (four to Main.hs, three to GHCi/UI.hs; each asserted to apply exactly once). They must match the
 # compiler exactly: they are built against its `ghc` library.
 #   vendor/fetch.sh 9.14.1
+#   vendor/fetch.sh 9.6.7
 set -e
 V=${1:?a GHC version, e.g. 9.14.1}
 D="$(cd "$(dirname "$0")" && pwd)/ghc-$V"
 BASE="https://gitlab.haskell.org/ghc/ghc/-/raw/ghc-$V-release"
 mkdir -p "$D"
-for f in Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Print.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs \
-         GHC/Driver/Session/Lint.hs GHC/Driver/Session/Mode.hs; do
+# (the front end's modules moved between versions: 9.6 has GHCi.UI.Tags and keeps the mode and lint code in Main)
+case "$V" in
+  9.6.*) FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Tags.hs GHCi/Leak.hs GHCi/Util.hs" ;;
+  *)     FILES="Main.hs GHCi/UI.hs GHCi/UI/Monad.hs GHCi/UI/Info.hs GHCi/UI/Print.hs GHCi/UI/Exception.hs GHCi/Leak.hs GHCi/Util.hs
+                GHC/Driver/Session/Lint.hs GHC/Driver/Session/Mode.hs" ;;
+esac
+for f in $FILES; do
   mkdir -p "$D/$(dirname $f)"
   curl -fsS -m 60 -o "$D/$f" "$BASE/ghc/$f"
 done
@@ -43,8 +49,10 @@ def once(s, a, b):
     return s.replace(a, b)
 src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis)", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis)")
 src = once(src, "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )", "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )\nimport qualified GhsFastLoad")
-# ... and it exports how the two interactive units are made (GhsAddUnits makes them again when a unit is added)
-src = once(src, "module GHCi.UI (\n        interactiveUI,", "module GHCi.UI (\n        installInteractiveHomeUnits,\n        interactiveUI,")
+# ... and it exports how the two interactive units are made (GhsAddUnits makes them again when a unit is added;
+# a GHCi before them -- 9.6 -- has none, and adds no unit to a running session)
+if "installInteractiveHomeUnits ::" in src:
+    src = once(src, "module GHCi.UI (\n        interactiveUI,", "module GHCi.UI (\n        installInteractiveHomeUnits,\n        interactiveUI,")
 open(p, "w").write(src)
 PY
 wc -l $(find "$D" -name '*.hs') | tail -1

@@ -53,7 +53,10 @@ int ghs_madvise(void *addr, size_t len, int advice) {
  * this is in place). */
 static _Atomic int firsts = 0;
 static void *ghs_dlopen(const char *path, int mode) {
-  if (path && strstr(path, "libghc_tmp_")) { mode |= RTLD_FIRST; firsts++; }
+  /* (libghc_tmp_N on GHC 9.14, libghc_N on 9.6: see is_tmp_lib in ghci_cafs.c) */
+  const char *base = path ? strrchr(path, '/') : NULL;
+  base = base ? base + 1 : path;
+  if (base && !strncmp(base, "libghc_", 7) && (!strncmp(base + 7, "tmp_", 4) || (base[7] >= '0' && base[7] <= '9'))) { mode |= RTLD_FIRST; firsts++; }
   return dlopen(path, mode);
 }
 int ghs_dlopen_first(void) { return firsts; }

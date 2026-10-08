@@ -143,11 +143,31 @@ cmdStart conf target noCheck fast = do
             alive <- daemonPid conf name
             let verdict = if "STALE(" `isPrefixOf` first then drop 2 (dropWhile (/= ')') first) else first
             if not (null first) && verdict /= "starting"
-              then putStrLn first >> pure (if any (`isPrefixOf` first) ["OK", "STALE"] then 0 else 1)
+              then do
+                answering
+                putStrLn first >> pure (if any (`isPrefixOf` first) ["OK", "STALE"] then 0 else 1)
               else if isNothing alive && t - t0 > 3
                 then hPutStrLn stderr (name ++ ": the daemon died while booting; see " ++ (d </> "daemon.out")) >> pure 1
                 else if t - t0 > limit then hPutStrLn stderr (name ++ ": still booting after " ++ show (round limit :: Int) ++ "s") >> pure 1
                 else wait
+          -- the verdict is written before the daemon listens on its socket: a command sent the moment `start`
+          -- returns could find no session ("no session running" -- seen in the tour's autostop step). So
+          -- `start` returns once the session answers a request too (an `info`), or once its daemon is gone, or
+          -- after 10 s.
+          answering = go (0 :: Int)
+            where go n = do
+                    sp <- sockPath d
+                    mfd <- unixConnect sp
+                    case mfd of
+                      Just fd -> do
+                        h <- fdToHandle fd
+                        hSetBinaryMode h True
+                        void (try (B.hPut h (encodeBS (JObj [("op", JStr "info")])) >> B.hPut h (BC.pack "\n") >> hFlush h
+                                   >> BC.hGetLine h) :: IO (Either IOException BC.ByteString))
+                        hClose h
+                      Nothing -> do
+                        alive <- daemonPid conf name
+                        when (isJust alive && n < 500) (threadDelay 20000 >> go (n + 1))
       wait
 
 cmdStop :: Conf -> Maybe String -> Bool -> Maybe String -> IO Int

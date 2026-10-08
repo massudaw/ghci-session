@@ -10,13 +10,21 @@ description:
   collection. The LIBRARY is for a project's own code: "GHC.Hygiene.Census" says what is holding the heap,
   "GHC.Hygiene.Zygote" hands a server's state to its replacement. See README.md.
 license:            MIT
-license-files:      LICENSE vendor/ghc-9.14.1/LICENSE
+license-files:      LICENSE vendor/ghc-9.14.1/LICENSE vendor/ghc-9.6.7/LICENSE
 author:             Wesley Massuda
 maintainer:         wesley.massuda@gmail.com
 homepage:           https://github.com/massudaw/ghci-session
 category:           Development
 build-type:         Simple
 extra-source-files: README.md hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
+
+-- libfff (https://github.com/dmtrKovalenko/fff), a file finder for `grep` / `find`. Off by default: search is a
+-- plain scan, and nothing is fetched. On (-f+fff, or GHS_FFF=1 ./build.sh, which fetches the library): the C that
+-- loads it at run time is built, and search uses it when it is there to load (a scan otherwise).
+flag fff
+  description: search with libfff when it can be loaded (cbits/ghs_fff.c)
+  default:     False
+  manual:      True
 
 executable ghci-session
   hs-source-dirs:   app
@@ -25,7 +33,10 @@ executable ghci-session
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat,
                     GhciSession.Search, GhciSession.Vfs
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c, cbits/ghs_fff.c
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
+  if flag(fff)
+    c-sources:      cbits/ghs_fff.c
+    cpp-options:    -DHAVE_FFF
   -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene
   default-language: Haskell2010
@@ -38,14 +49,20 @@ executable ghci-session
 -- compiler (vendor/fetch.sh), so it builds for exactly that version -- and a session needs it. For another
 -- GHC: `vendor/fetch.sh X.Y.Z` and a stanza here.
 executable ghci-session-engine
+  -- (the engine's own modules that reach into the compiler's internals are per version: engine/ghc-X.Y)
   if impl(ghc == 9.14.1)
     buildable: True
-    hs-source-dirs: engine, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
+    hs-source-dirs: engine, engine/ghc-9.14, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
+    other-modules:  GHC.Driver.Session.Lint, GHC.Driver.Session.Mode, GHCi.UI.Print, GHCi.UI.Exception
+  elif impl(ghc == 9.6.7)
+    buildable: True
+    hs-source-dirs: engine, engine/ghc-9.6, app, vendor/ghc-9.6.7, vendor/ghc-9.6.7/patched, hygiene/src
+    other-modules:  GHCi.UI.Tags
   else
     buildable: False
   main-is:          Main.hs
-  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhcMain, GhciSession.Json, GHC.Driver.Session.Lint, GHC.Driver.Session.Mode
-                    GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.UI.Print, GHCi.UI.Exception, GHCi.Util
+  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhsCompat, GhcMain, GhciSession.Json
+                    GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.Util
   -- the hygiene modules the engine itself runs are compiled INTO it (not the ghci-hygiene package): a session
   -- whose project depends on that package loads its own build of it, and two libraries of one unit name in
   -- one process resolve each other's symbols -- the first `census EXPR` after the split died in stg_ap_pp.

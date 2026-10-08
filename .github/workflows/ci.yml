@@ -6,15 +6,24 @@ on:
   pull_request:
 
 jobs:
-  # The library (the `ghci-hygiene` package, hygiene/) and the `ghci-session` command, on each GHC they build with. (The engine is a
-  # vendored GHC 9.14.1 front end for macOS, so it is built in its own job below.)
+  # The library (the `ghci-hygiene` package, hygiene/) and the `ghci-session` command, on each GHC they build with; and on
+  # each GHC the engine is vendored for (vendor/ghc-X.Y.Z), the engine too, and a session run on it.
   build:
-    name: GHC ${{ matrix.ghc }} (linux)
+    name: GHC ${{ matrix.ghc }}${{ matrix.fff && ' +fff' || '' }} (linux)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.6.7", "9.10.3", "9.14.1"]
+        # every flag on the latest compiler: libfff (the fff flag, off by default) built in, fetched by build.sh,
+        # and the whole tour on it
+        include:
+          - { ghc: "9.6.7", engine: true }
+          - { ghc: "9.10.3" }
+          - { ghc: "9.14.1", engine: true }
+          - { ghc: "9.14.1", engine: true, fff: true }
+    env:
+      GHS_FFF: ${{ matrix.fff && '1' || '0' }}
+      FLAGS: ${{ matrix.fff && '--flags=+fff' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: haskell-actions/setup@v2
@@ -27,14 +36,24 @@ jobs:
           path: |
             ${{ steps.setup.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ runner.os }}-ghc-${{ matrix.ghc }}-${{ hashFiles('ghci-session.cabal', 'hygiene/ghci-hygiene.cabal') }}
-          restore-keys: ${{ runner.os }}-ghc-${{ matrix.ghc }}-
+          key: ${{ runner.os }}-ghc-${{ matrix.ghc }}-fff${{ env.GHS_FFF }}-${{ hashFiles('ghci-session.cabal', 'hygiene/ghci-hygiene.cabal') }}
+          restore-keys: ${{ runner.os }}-ghc-${{ matrix.ghc }}-fff${{ env.GHS_FFF }}-
       - name: Build
-        run: cabal build --ghc-options=-Werror lib:ghci-hygiene exe:ghci-session
+        run: cabal build $FLAGS --ghc-options=-Werror lib:ghci-hygiene exe:ghci-session ${{ matrix.engine && 'exe:ghci-session-engine' || '' }}
+      # (with the client's own runtime options -- the self-test runs with the daemon's, and an option this GHC's
+      #  runtime does not know stops every other command before it starts)
+      - name: The command starts
+        run: $(cabal list-bin -v0 $FLAGS exe:ghci-session) --help
       - name: Self-test
-        run: $(cabal list-bin -v0 exe:ghci-session) selftest
+        run: $(cabal list-bin -v0 $FLAGS exe:ghci-session) selftest
+      # (every feature on a copy of examples/hello, each step checked and timed: ~2 min; a step where this compiler is
+      #  known to differ checks what it does instead, and the tour exits 1 on anything unexpected; build.sh reads GHS_FFF)
+      - name: The tour
+        if: matrix.engine
+        timeout-minutes: 20
+        run: ./build.sh && python3 examples/tour.py
 
-  # GHCi itself (engine/GhsEngine.hs), vendored for GHC 9.14.1 and built for macOS.
+  # GHCi itself (engine/GhsEngine.hs), vendored for GHC 9.14.1, on macOS.
   engine:
     name: GHC 9.14.1 (macos, with the engine)
     runs-on: macos-latest

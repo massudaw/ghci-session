@@ -1567,7 +1567,11 @@ watchLoop s = do
   gen <- rd (vWatchGen s)
   let cfg = sCfg s
       doScan = scan (sRoot s) (gWatch cfg) (gWatchExt cfg)
-  first <- doScan
+  -- the baseline is what was LOADED, not a scan of now: the boot publishes its verdict before this thread
+  -- starts, and a save in between -- a client that saves as soon as `start` answers -- would otherwise be
+  -- taken for the loaded source and never reloaded (seen on CI: the save waited out its 120 s)
+  loaded <- rd (vLoadedSig s)
+  first <- if M.null loaded then doScan else pure loaded
   roots0 <- filterM doesDirectoryExist [ sRoot s </> d | d <- gWatch cfg ]
   git <- if gReloadOnCommit cfg then gitWatchPaths s else pure []
   let roots = roots0 ++ git
@@ -1637,7 +1641,6 @@ batchHeld s = do
 -- the work lock ('drive'), a client request already has it.
 applyChanges :: S -> (IO () -> IO ()) -> Sig -> IO ()
 applyChanges s run cur2 = do
-  let cfg = sCfg s
   loaded <- rd (vLoadedSig s)
   when (cur2 /= loaded) $ do
     let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]

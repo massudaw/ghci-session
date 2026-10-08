@@ -25,7 +25,12 @@ int main(int argc, char **argv) {
   }
   RtsConfig conf = defaultRtsConfig;
   conf.rts_opts_enabled = RtsOptsAll;
+  /* (-xr is GHC 9.10's: an older runtime refuses to start on an option it does not know) */
+#if __GLASGOW_HASKELL__ >= 910
   conf.rts_opts = daemon ? "-N2 -A2m -T" : stats ? "-N2 -A2m -T" : "-V0 -xr1g -A1m";
+#else
+  conf.rts_opts = daemon ? "-N2 -A2m -T" : stats ? "-N2 -A2m -T" : "-V0 -A1m";
+#endif
   hs_init_ghc(&argc, &argv, conf);
   int rc = ghsMain();
   hs_exit();
