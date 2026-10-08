@@ -49,7 +49,11 @@ src = open(p).read()
 def once(s, a, b):
     assert s.count(a) == 1, (a, s.count(a))
     return s.replace(a, b)
-src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis)", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis)")
+if "ok <- trySuccess $ GHC.loadWithCache (Just hmis) howmuch" in src:
+    # (a load with no diagnostic wrapper -- 9.6's -- is given () for one: GhsFastLoad.loadWith takes it everywhere)
+    src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis) howmuch", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis) () howmuch")
+else:
+    src = once(src, "ok <- trySuccess $ GHC.loadWithCache (Just hmis)", "ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis)")
 src = once(src, "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )", "import GHC.Driver.Make ( newIfaceCache, ModIfaceCache(..) )\nimport qualified GhsFastLoad")
 # ... and it exports how the two interactive units are made (GhsAddUnits makes them again when a unit is added;
 # a GHCi before them -- 9.6 -- has none, and adds no unit to a running session)

@@ -17,9 +17,8 @@
 -- What is already loaded and linked is not touched. A unit must be NEW (a unit whose flags changed is a
 -- restart: its modules are compiled against the old ones) and may depend only on what is there.
 --
--- GHC 9.6 and 9.10: their GHCi has no interactive home units (step 3 has nothing to make again: the prompt is one of the
--- home units), so a unit is not added to a running session -- 'addUnits' says so and the daemon restarts the
--- repl with the new set, as it does for any change it cannot make live. 'addTargets' is the same as 9.14's.
+-- The adding itself is per compiler ("GhsUnits"): GHCi 9.14 has interactive units to make again; an older
+-- one does not, takes its units at the start only, and the daemon restarts the repl with the new set.
 module GhsAddUnits (rememberInitial, addUnits, addTargets) where
 
 import Control.Monad (forM_)
@@ -32,10 +31,11 @@ import System.IO.Unsafe (unsafePerformIO)
 
 import qualified GHC
 import GHC (GhcMonad, getSession)
-import GHC.Driver.Env (hsc_HUG)
 import GHC.Driver.Session (DynFlags (..))
-import GHC.Unit.Env (HomeUnitEnv (..), unitEnv_elts)
 import GHC.Unit.Types (unitIdString)
+
+import GhsCompat (homeUnits)
+import GhsUnits (addUnitsLive)
 
 -- | The session's flags before any unit's were read (set once, by the front end, before @initMulti@).
 {-# NOINLINE initial #-}
@@ -45,9 +45,15 @@ initial = unsafePerformIO (newIORef Nothing)
 rememberInitial :: GhcMonad m => m ()
 rememberInitial = GHC.getSessionDynFlags >>= liftIO . writeIORef initial . Just
 
--- | Not on GHC 9.10: why, for the daemon (which then restarts the repl with the new units).
+-- | Add the units these files describe (each as cabal writes it: the flags, then the modules), parsed over the
+-- session's flags from before its units ('rememberInitial'). The unit ids added, or why nothing was (the graph
+-- is then as it was).
 addUnits :: GhcMonad m => [FilePath] -> m (Either String [String])
-addUnits _ = pure (Left "GHC 9.10's GHCi takes its units at the start only")
+addUnits files = do
+  mbase <- liftIO (readIORef initial)
+  case mbase of
+    Nothing -> pure (Left "the session's initial flags were not kept (not started with units)")
+    Just base -> addUnitsLive base files
 
 -- | __A module added to a unit that is running__ (a name listed in its @.cabal@ since the start). GHCi's own
 -- @:add FILE@ gives the file to the unit that is current at the prompt, and in a multi-unit session that is the
@@ -61,7 +67,7 @@ addTargets :: GhcMonad m => [FilePath] -> m (Either String [(FilePath, String)])
 addTargets files = do
   hsc <- getSession
   cwd <- liftIO getCurrentDirectory
-  let units = [ (uid, homeUnitEnv_dflags ue) | (uid, ue) <- unitEnv_elts (hsc_HUG hsc), not ("interactive" `isPrefixOf` unitIdString uid) ]
+  let units = [ (uid, d) | (uid, d, _) <- homeUnits hsc, not ("interactive" `isPrefixOf` unitIdString uid) ]
       roots d = [ normalise (wd </> p) | p <- importPaths d, let wd = maybe cwd (cwd </>) (workingDirectory d) ]
       under r f = not (isAbsolute (makeRelative r f))      -- (a path not under r comes back as it was: absolute)
       owner f = case [ uid | (uid, d) <- units, any (`under` normalise (cwd </> f)) (roots d) ] of

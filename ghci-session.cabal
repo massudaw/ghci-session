@@ -49,23 +49,24 @@ executable ghci-session
 -- compiler (vendor/fetch.sh), so it builds for exactly that version -- and a session needs it. For another
 -- GHC: `vendor/fetch.sh X.Y.Z` and a stanza here.
 executable ghci-session-engine
-  -- (the engine's own modules that reach into the compiler's internals are per version: engine/ghc-X.Y)
+  -- (what differs between compilers in the engine's own code is in engine/ghc-X.Y: GhsCompat, and GhsUnits -- one
+  --  for every compiler before 9.14, whose GHCi has no interactive units, in engine/ghc-before-9.14)
   if impl(ghc == 9.14.1)
     buildable: True
     hs-source-dirs: engine, engine/ghc-9.14, app, vendor/ghc-9.14.1, vendor/ghc-9.14.1/patched, hygiene/src
     other-modules:  GHC.Driver.Session.Lint, GHC.Driver.Session.Mode, GHCi.UI.Print, GHCi.UI.Exception
   elif impl(ghc == 9.10.3)
     buildable: True
-    hs-source-dirs: engine, engine/ghc-9.10, app, vendor/ghc-9.10.3, vendor/ghc-9.10.3/patched, hygiene/src
+    hs-source-dirs: engine, engine/ghc-9.10, engine/ghc-before-9.14, app, vendor/ghc-9.10.3, vendor/ghc-9.10.3/patched, hygiene/src
     other-modules:  GHCi.UI.Exception
   elif impl(ghc == 9.6.7)
     buildable: True
-    hs-source-dirs: engine, engine/ghc-9.6, app, vendor/ghc-9.6.7, vendor/ghc-9.6.7/patched, hygiene/src
+    hs-source-dirs: engine, engine/ghc-9.6, engine/ghc-before-9.14, app, vendor/ghc-9.6.7, vendor/ghc-9.6.7/patched, hygiene/src
     other-modules:  GHCi.UI.Tags
   else
     buildable: False
   main-is:          Main.hs
-  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhsCompat, GhcMain, GhciSession.Json
+  other-modules:    GhsEngine, GhsFastLoad, GhsAddUnits, GhsCompat, GhsUnits, GhcMain, GhciSession.Json
                     GHCi.Leak, GHCi.UI, GHCi.UI.Info, GHCi.UI.Monad, GHCi.Util
   -- the hygiene modules the engine itself runs are compiled INTO it (not the ghci-hygiene package): a session
   -- whose project depends on that package loads its own build of it, and two libraries of one unit name in

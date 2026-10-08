@@ -5,11 +5,22 @@
 --
 -- GHC 9.6: the graph is "GHC.Unit.Env"'s, its lookup is pure, a dependency has no import level, and the
 -- session's module graph is a plain field.
-module GhsCompat (homeUnits, mapUnitFlags, withModuleGraph, homeObject, promptUnit) where
+module GhsCompat
+  ( homeUnits, mapUnitFlags, withModuleGraph, homeObject, promptUnit
+  , Diag, noDiag, loadScan, depanalScan, loadGraph, mapSummaries, importKeys
+  , Messager, batchMsg, batchMultiMsg, summariseFile
+  ) where
 
 import qualified Data.Set as S
 
-import GHC (GhcMonad, getSession)
+import Control.Monad (forM)
+import GHC (GhcMonad, LoadHowMuch, ModSummary (..), SuccessFlag, getSession)
+import qualified GHC
+import GHC.Driver.Main (Messager, batchMsg, batchMultiMsg)
+import GHC.Driver.Make (ModIfaceCache, depanalE, load', summariseFile)
+import GHC.Types.SrcLoc (unLoc)
+import GHC.Unit.Module.Graph (ModuleGraphNode (..), mgModSummaries', mkModuleGraph)
+import GHC.Utils.Outputable (ppr, showSDocUnsafe)
 import GHC.Driver.Env (HscEnv (..), hscActiveUnitId, hscSetActiveUnitId, hscUpdateHUG, hsc_HUG)
 import GHC.Driver.Monad (modifySession)
 import GHC.Driver.Session (DynFlags)
@@ -65,3 +76,30 @@ promptUnit = do
       modifySession (hscSetActiveUnitId u)
       pure (Just (unitIdString u ++ " (" ++ show (sees (u, maybe [] id (lookup u units))) ++ " of " ++ show (S.size ids) ++ " units in scope)"))
     _ -> pure Nothing
+
+-- | How a load reports its diagnostics: the front end's wrapper (on 9.6 there is none, and it is @()@).
+-- What follows is the load "GhsFastLoad" makes: the scan of every module, the graph's own load, and a summary
+-- of each module mapped over a graph.
+type Diag = ()
+
+noDiag :: Diag
+noDiag = ()
+
+loadScan :: GhcMonad m => Maybe ModIfaceCache -> Diag -> LoadHowMuch -> m SuccessFlag
+loadScan cache () how = GHC.loadWithCache cache how
+
+depanalScan :: GhcMonad m => Diag -> Messager -> m ModuleGraph
+depanalScan _ _ = snd <$> depanalE [] False
+
+loadGraph :: GhcMonad m => Maybe ModIfaceCache -> LoadHowMuch -> Diag -> Messager -> ModuleGraph -> m SuccessFlag
+loadGraph cache how () msg = load' cache how (Just msg)
+
+mapSummaries :: (ModSummary -> IO ModSummary) -> ModuleGraph -> IO ModuleGraph
+mapSummaries f g = mkModuleGraph <$> forM (mgModSummaries' g) (\node -> case node of
+  ModuleNode deps s -> ModuleNode deps <$> f s
+  other -> pure other)
+
+-- | What a module imports, as the graph's edges see it.
+importKeys :: ModSummary -> ([String], [String])
+importKeys s = ( [ showSDocUnsafe (ppr q) ++ " " ++ showSDocUnsafe (ppr (unLoc m)) | (q, m) <- ms_textual_imps s ]
+               , [ showSDocUnsafe (ppr (unLoc m)) | (_, m) <- ms_srcimps s ] )

@@ -2170,7 +2170,7 @@ doLoad retain_context howmuch = do
               liftIO $ do hSetBuffering stdout NoBuffering
                           hSetBuffering stderr NoBuffering) $ \_ -> do
       hmis <- ifaceCache <$> getGHCiState
-      ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis) howmuch
+      ok <- trySuccess $ GhsFastLoad.loadWith (Just hmis) () howmuch
       afterLoad ok retain_context
       return ok
 

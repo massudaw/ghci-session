@@ -986,7 +986,9 @@ GHC 9.6.7 and 9.10.3 (Linux x86_64, cabal 3.18): both executables build and the 
 to differ (the tour reads the compiler and checks what it does instead), in 97 s and 104 s; 9.14.1 is 145 of 145
 there. The pruner holds the `leak` group flat (+0 MB over five reloads, against +242 MB without it) and `partial`
 passes; the census, servers, budget, hooks, idle stop and `gc` are as on 9.14. What differs before 9.14, all from
-its GHCi (9.10's engine modules, `engine/ghc-9.10`, are 9.6's with 9.14's load, which takes a diagnostic wrapper):
+its GHCi (the engine's own code is one for every compiler but `GhsCompat`, `engine/ghc-X.Y`, which holds what
+differs -- the load's arguments, the module graph's nodes, the home unit graph -- and `GhsUnits`, a package added
+live, which is 9.14's alone: `engine/ghc-before-9.14` refuses it):
 - **A composed session sees one unit at the prompt.** Before 9.14, GHCi has no interactive units: the prompt resolves
   a module through one home unit, which finds its own modules and its direct home dependencies'. The engine makes
   that unit the one that sees the most (`promptUnit`, `engine/ghc-9.6/GhsCompat.hs`), so a package and one that
