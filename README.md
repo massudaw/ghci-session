@@ -88,6 +88,9 @@ compose SESSION [MEMBERS...] [--add M] [--remove M]
 server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
 mem [--heap] | census | store | bench EXPR | profile
 history | view | zoom ID | date ID      # the session's log and its summaries
+top [SESSION]                   # a screen that follows a session: verdict, history, heap, a chat and a shell
+chat [-s SESSION] [--tui] [--once TEXT]   # an agent working on the session, with the history as its memory
+usage [SESSION] [--since DAYS] [--json]   # what the model calls cost
 mcp                             # the session and its memory as an agent's tools (MCP on stdin/stdout)
 gc [-n] [--days N] | autostop [--max-mem-mb N] [--idle-mins M] | log | list | init
 ```
@@ -151,6 +154,8 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
 | `load_timeout`, `eval_timeout` | seconds; a command past its timeout is interrupted, not abandoned |
 | `history`, `summarize_cmd` | keep the session history; the command that writes its summary lines |
+| `summarize_jobs`, `compact_prompt` | compactions run at once (8); `"shared"` gives them the turns' one system prompt |
+| `prices` | the model's rates per million tokens, so `usage` can say money |
 
 State lives in `.ghci-session/<session>/`: `status`, `status.json`, `load.log`, `reload.log`, `run.log`,
 `daemon.log`, `server-<member>.log`, the history, and `loaded_sources.tsv`, the signature the loaded code was built from.
@@ -218,14 +223,147 @@ path, never by name, so a sibling checkout's healthy session is not touched.
 ## History and agents
 
 The daemon sees everything done to a session: client requests and their answers, saves with the verdict they compiled
-to (and their diffs), commits, restarts. It writes each as a line of `.ghci-session/<session>/history/`, and keeps a
-binary tree of one-line summaries over the log (written by a model through `summarize_cmd`, or left for an outside
-compactor). `view` renders that tree as a bounded list of summaries, oldest first, and `zoom` opens any line into the
-messages it was made from.
+to (and their diffs), commits, restarts. It writes each as a line of `.ghci-session/<session>/history/main/YYYY-MM-DD.jsonl`
+and never edits one: `tool` (the request, as one line), `echo` (the answer: an evaluation's output cut to 30,000
+characters with its head and tail kept, a verdict with its failing lines, the `STALE` warning the client was given),
+and, from a harness, `user`, `talk`, `work` and `note`. A line is written with one write and an fsync, and a torn line
+is skipped at load. `status` and `info` are not logged: a tool polls them. A save's line carries the diff of each
+changed file against the copy taken when it was last seen, so the log says what was edited, not only that a file was.
 
-`ghci-session mcp` serves the session's operations and this memory as tools over the Model Context Protocol
-(`claude mcp add ghci -- ghci-session mcp`, from the project's directory). `ghci-session chat` is a turn loop over
-the same history for an OpenAI-compatible endpoint.
+```
+history                       # the log: every request and its answer, every save and its verdict
+view --wait 10                # the whole history as one-line summaries, oldest first
+zoom 2184 8                   # open line 2184+8 of the view into the two lines it was made from
+zoom 2187 1                   # message 2187 whole
+date 2187                     # when it was written
+```
+
+### The summary tree
+
+Over the log the daemon keeps a binary tree of one-line summaries, so that a model can start each turn from a bounded
+view of everything that happened instead of from nothing. Node `(l, i)` covers messages `[i*2^l, (i+1)*2^l)`; a line
+is at most 512 bytes; a parent is made from its two children; a message or a pair that already fits *is* its node with
+no model call, so a routine verdict (`OK -- CHECK-PASS (0.4s)`) costs nothing. The **view** is the list of nodes
+tiling the whole log, oldest first, one line each as `id+n|text`. It holds only summaries, never a message whole, and
+a line not summarized yet renders as `(not summarized yet: zoom it)`. Two rules decide it (`GhciSession.History`, both
+covered by self-tests):
+
+- **Which lines merge.** Detail fades in proportion to age: old lines stay put and new ones churn, like the carries
+  of a binary counter. For sibling lines at level `l`, with `T` messages in the log, `due = (T - last) / 2^l`, where
+  `last` is the pair's last message. The most due pair whose parent is built merges, the oldest of equal pairs first.
+- **When they merge.** In batches. A message appends its line and nothing else changes; once the view passes 128,000
+  bytes one batch merges it down to 64,000. So between two batches a call's view is the one before and a few lines
+  more, which is the prefix a provider caches. A batch merges only pairs whose parent is built.
+
+The view is saved at every message (`history/view.json`) and loaded at start, never rebuilt from the log: a rebuilt
+view differs from the live one and every cache entry would die. A history without one is folded once.
+
+### The compactor
+
+Summaries are written in *compactions*: a system prompt, the compaction's own view, then its task. The view is the
+chat's view merged further, to 16,000-32,000 bytes with the same sawtooth, with its ids, up to the node being built
+and to the first line not yet built, so no call sees a placeholder or half a message. The task says which message or
+which two lines, the size, and shows it as a ruler of 512 dashes (a model cannot count bytes); the input is in
+`<input>` tags. A line over 512 bytes is asked again, up to five times, and the shortest kept as it is (one over 1,024
+is cut at its last word); an answer that is no line (the task said back, a tag alone, a code fence) is not kept. A
+message's node starts once fewer than 8 messages before it are unbuilt, a merge once both halves are built,
+`summarize_jobs` (8) at once, from queues kept as the tree changes. A failed node is tried again after ten seconds.
+
+The daemon runs a compaction through `"summarize_cmd"`: a shell command given the system prompt, the view and the task
+on its standard input, answering one line on its standard output. `"summarize_cmd": "ghci-session summarize"` is the
+tool's own compactor, which sends them to an OpenAI-compatible chat endpoint over HTTPS (libcurl, found at run time by
+`cbits/ghs_http.c`, so nothing outside the boot packages is linked). It defaults to DeepSeek's flash model
+(`DEEPSEEK_API_KEY`; `DEEPSEEK_MODEL`, `DEEPSEEK_BASE_URL` or `OPENAI_*` override), without thinking, since a
+reasoning model spends a summary's whole budget on thoughts (`SUMMARIZE_EFFORT=low|high|max` turns it on). A cut-off
+answer is asked again with room for a line; a model that calls a tool is asked again without them. Any server that
+speaks `/chat/completions` works (`OPENAI_BASE_URL=http://localhost:11434/v1` for a local one, with `OPENAI_MODEL`)
+with a context of 20,000 tokens or more. Without a command the log and the free nodes are kept and the tree waits for
+an outside compactor: the `pending` operation answers the nodes ready to build and `tree_put` takes a line. The tree
+is stored in `history/tree/` and never recomputed. `"history": false` turns all of it off.
+
+The system prompt is split by default (`turnPrompt` for a turn, `compactPrompt` for a compaction, which says who is
+writing and goes without tools), because a small model given one prompt takes a compaction for a turn.
+`"compact_prompt": "shared"` makes it one prompt, with the turns' tools, so a compaction reads them from the turns'
+cache entry (`SUMMARIZE_TOOLS=0` for a model that takes no tools).
+
+### Two ways in for an agent
+
+- **`ghci-session mcp`** serves the session's operations and its memory as tools over the Model Context Protocol
+  (`claude mcp add ghci -- ghci-session mcp`, from the project's directory): `eval`, `status`, `typecheck`, `reload`,
+  `test`, `doc`, `census`, `bench`, `mem`, and the memory's `view`, `zoom`, `date`, `history` and `remember` (a finding
+  kept for later turns). Each call is a request to the daemon, so it is in the history like any other; the agent's
+  edits are seen as saves, with their diffs.
+- **`ghci-session chat`** is a turn loop over the same history: a fresh model call per message, whose input is the
+  system prompt, the view and the message, with the session's tools plus `read`, `write`, `edit`, `edits`, `ls` and
+  `sh`. Replies are logged as `talk`, thoughts shown and not logged, and a line typed while the agent works is
+  delivered between tool calls. `-s SESSION`, `--once 'what was tried on X?'`, `--instructions FILE`, `--usage`;
+  `--tui` puts it on a screen of its own (below). `--context view` builds every call from the log (the view up to a
+  boundary, then the log after it word for word) instead of carrying a turn's steps as a conversation.
+  `chat --restart` has a running chat run itself again as the executable on disk now, in the middle of a turn, with
+  the provider's cache intact.
+
+What the harness does for an agent that works on a session: every reply carries `stale`; a command past its timeout
+is interrupted, not abandoned; a check that hangs is interrupted at five times the median of its last passing runs
+(`CHECK-HANG`, with the last line it printed); a save answers once the code compiles, and the check's verdict rides
+on the next tool result; `typecheck` answers at once when nothing changed; a read of lines the context already holds
+answers with a pointer instead of the text; a session that is down is waited for (`GHS_CHAT_DOWN_WAIT`).
+
+**What the model calls cost** is kept: each call of the chat and the compactor appends a line to
+`<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds).
+`ghci-session usage [SESSION] [--since DAYS] [--json]` sums the ledger by who asked and by day, in money too when
+`"prices"` gives the model's rates per million tokens
+(`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
+
+## Watching a session, and working in it: `top`
+
+```
+ghci-session top [SESSION]
+```
+
+A screen that follows the session as it works. The header is its verdict, memory and servers, idle time, generation
+and stale and warning counts, half a second behind. Below, a tab at a time:
+
+| tab | shows |
+|---|---|
+| `1` history | every request and its answer, a save with its diff, the chat's words. `f` follows the end; `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has; `n`/`p` move the cursor, `Enter` opens or closes the message under it, `a` all of them |
+| `2` view | the view the model reads, with the memory's numbers: lines, built nodes, settled or not, the compactor's jobs |
+| `3` log | the daemon's log |
+| `4` verdict | the verdict with what is behind it: the compiler's diagnostics, the failing lines, the members and the servers |
+| `5` usage | what the model calls cost |
+| `6` heap | the repl's resident memory graphed, a column each half second (the axis starts near the lowest value so a change of a few per cent shows; the servers' below it), and a report of the heap taken on a key, since each is a major collection with the session paused: `M` figures, `C` CAFs and the heap by constructor, `S` strings, `K` kept values, `D` missed sharing |
+| `7` chat | `ghci-session chat --tui` on this session |
+| `8` shell | a shell in the project |
+
+`R` sends a reload, `T` the tests, `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes the next
+key the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a `Ctrl-a`). A session that is not running shows as such
+and is picked up when it starts.
+
+`ghci-session chat --tui` is the chat on a screen of its own: the transcript labelled by kind, a status line saying what
+the turn is doing now, the session's verdict in the header and a line to type on (Enter sends, Up recalls,
+PgUp/PgDn scroll, Ctrl-C leaves). The turn loop prints nothing itself: it tells a `Ui` what happened, and the streams
+or the screen show it. A screen that ends leaves the terminal as it found it.
+
+`top` and the chat's screen are built on two packages of this repository, usable without them:
+
+- **`ghostty-vt`** (`ghostty-vt/`) binds **libghostty-vt**, Ghostty's terminal emulation as a C library. `Ghostty.Vt`:
+  a `Terminal` of a size; `write` it the bytes a program prints and read its `screen` as a value (every cell's text,
+  colors and attributes, the cursor, what changed since the last read), its title and working directory, the
+  scrollback viewport; `onWrite` for what the terminal answers to the program; a `KeyEncoder` that writes a key as the
+  program in that terminal expects it, by the modes it set (application cursor keys, the kitty keyboard protocol,
+  modifyOtherKeys). `Ghostty.Vt.Pty`: a program on a pseudo-terminal. The library is found at run time
+  (`Ghostty.Vt.load`), so a program builds and runs without it and can say what is missing. The headers it is built
+  against are in `ghostty-vt/include` (MIT, at the commit in `COMMIT`). Boot packages only.
+- **`ghostty-tui`** (`tui/`) is a small terminal UI library on it. `Tui.Buffer`: a frame of styled cells and the bytes
+  that turn the last frame into the next, only the cells that changed, so nothing flickers; wide characters take two
+  columns. `Tui.Terminal`: raw mode, the size, keys decoded with their modifiers. `Tui.App`: the loop (draw, wait for a
+  key, a resize, a tick or a wake, handle, draw again). `Tui.Pane`: a program on a pseudo-terminal whose screen
+  libghostty-vt keeps, as a part of the frame, so a full-screen program in a pane and the UI around it do not fight.
+  A key typed into a pane is decoded and encoded again for the modes the program set, not forwarded as the outer
+  terminal sent it.
+
+Without libghostty-vt the other tabs work and the pane tabs say what is missing. `tools/libghostty-vt.sh` builds it
+into `.bin/` (a ghostty checkout at the headers' commit and zig 0.16, downloaded if absent); or put a
+`libghostty-vt.so`/`.dylib` beside the executable, or name one in `GHS_LIBGHOSTTY`.
 
 ## Install
 
@@ -236,7 +374,7 @@ cabal install exe:ghci-session        # or run from a checkout: bin/ghci-session
 
 The engine must sit beside `ghci-session` and must have been built with the compiler that is first on `PATH`
 (it says so if not). Search can use `libfff` when it can be loaded; that is off by default and built with
-`GHS_FFF=1 ./build.sh` or `cabal build -f+fff`. A project adds `ghci-hygiene` to its `build-depends` only to call the
+`GHS_FFF=1 ./build.sh` or `cabal build -f+fff`. `top`'s terminal panes need libghostty-vt, built by `tools/libghostty-vt.sh` (see `top`). A project adds `ghci-hygiene` to its `build-depends` only to call the
 library from its own code.
 
 ## Supported compilers and platforms
@@ -268,6 +406,8 @@ ghci-session.cabal      the package: the engine and the command (hygiene/ghci-hy
 app/GhciSession/        Json, Config, Sys (FFI), Repl (starting the engine, its protocol), Watch, Daemon, Gc, Cli, History, ...
 engine/, vendor/        the engine (GhsEngine.hs, Main.hs, per-compiler GhsCompat) and GHCi's sources per compiler
 cbits/                  sockets, file events, regex, hashing, processes; the executable's entry point
+ghostty-vt/, tui/       libghostty-vt bindings and a terminal UI library on them (`top`, `chat --tui`)
+tools/libghostty-vt.sh  builds libghostty-vt into .bin/
 hygiene/                c/*.c (the pruner and the census, compiled into the engine), src/ (the library), repro/
 bin/ghci-session        run from a checkout (builds if stale)
 bin/ghci-history        save a session's history to a git branch and load it back
