@@ -1,0 +1,23 @@
+ghci-session.cabal
+  s_ee2f22f51d8bdb::t_88c1e6de6acd42 18-23
+Setup.hs
+  s_ee2f22f51d8bdb::t_88c1e6de6acd42 1-126
+ghostty-vt/Setup.hs
+  s_ee2f22f51d8bdb::t_0ba17402e08b08 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5e0664c06e6edda4847f54b20b3310bb256528f",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
