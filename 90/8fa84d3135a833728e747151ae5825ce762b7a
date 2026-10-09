@@ -1,0 +1,32 @@
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_8814bc8de5d14f 2279-2291,2347-2351,2355-2357
+app/GhciSession/Repl.hs
+  s_ee2f22f51d8bdb::t_8814bc8de5d14f 15,226-232
+  s_ee2f22f51d8bdb::t_32768ad4aaabb6 233
+tools/check-tui.py
+  s_ee2f22f51d8bdb::t_a6162823624675 272
+  s_ee2f22f51d8bdb::t_429eed62ab7dfa 109,112,277
+  s_ee2f22f51d8bdb::t_0d1089a15d7e4f 13,92-97,99-101,104,110,243-246
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_8814bc8de5d14f 501-503,624,626-633
+app/GhciSession/Mcp.hs
+  s_ee2f22f51d8bdb::t_8814bc8de5d14f 189
+README.md
+  s_ee2f22f51d8bdb::t_c46dcea642ef18 498
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "908fa84d3135a833728e747151ae5825ce762b7a",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
