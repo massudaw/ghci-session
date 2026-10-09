@@ -1,0 +1,33 @@
+app/GhciSession/Anthropic.hs
+  s_ee2f22f51d8bdb::t_76aab97aa65b1d 1-217
+tools/fake-llm.py
+  s_ee2f22f51d8bdb::t_a9f63b858372bb 2-3,7,17-23,25,61-188,200-218
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_26cba2d7e7828d 412-413
+  s_ee2f22f51d8bdb::t_1373894746b01d 27,405-411,414-460
+app/GhciSession/Llm.hs
+  s_ee2f22f51d8bdb::t_05732ca2d74850 3-7,9-13,15,38,93-97,105-114,117-122,142-144,149-176,196
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_05732ca2d74850 1049,1121-1122
+ghci-session.cabal
+  s_ee2f22f51d8bdb::t_05732ca2d74850 39
+README.md
+  s_ee2f22f51d8bdb::t_f2ed2ad8068ac8 336,345-366
+  s_ee2f22f51d8bdb::t_134576ed3e659b 367
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9248ae1ab0da366b4e48d2fca26bffcbe4b0b840",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
