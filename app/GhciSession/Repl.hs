@@ -101,6 +101,33 @@ captureLaunch cmd cwd' extraEnv dir out secs logF = do
         Just x | code == ExitSuccess -> Right x
         _ -> Left (said ++ (if code == ExitSuccess then "\n[session] the repl command did not start the engine: it must run {engine} as its GHCi" else ""))
 
+-- | The engine's arguments with the units' own C objects where GHCi links them. With one unit the build tool
+-- names them on the command line and GHCi links them. With several (@-unit \@file@) it names each unit's in that
+-- unit's argument file, and GHCi links those of ONE unit only -- which one is its own business (of two it was the
+-- first, of four the third): the other units' Haskell loaded, and the first call into their C killed the repl
+-- (signal 11), while an object named again for the unit it did link is a duplicate symbol. So the engine is
+-- started on copies of the unit files without their objects (beside them, @.noobj@), and every object is named
+-- on the command line. A path that is not absolute is in the unit's @-working-dir@.
+hoistUnitObjects :: Launch -> IO ([String], [String])
+hoistUnitObjects l = do
+  rs <- mapM one (lArgs l)
+  pure (map fst rs, dedup (concatMap snd rs))
+  where
+    one ('@' : f) = do
+      r <- try (readFile f) :: IO (Either IOException String)
+      case r of
+        Left _ -> pure ('@' : f, [])
+        Right txt -> do
+          let as = lines txt
+              isObj a = drop (length a - 2) a == ".o" && take 1 a /= "-"
+              wd = case [ v | (a, v) <- zip as (drop 1 as), a == "-working-dir" ] of { (d : _) -> d; [] -> lCwd l }
+              objs = [ if take 1 a == "/" then a else wd </> a | a <- as, isObj a ]
+          if null objs then pure ('@' : f, []) else do
+            length txt `seq` writeFile (f ++ ".noobj") (unlines (filter (not . isObj) as))
+            pure ('@' : f ++ ".noobj", objs)
+    one a = pure (a, [])
+    dedup = foldr (\x acc -> if x `elem` acc then acc else x : acc) []
+
 -- | A start written down earlier, if there is one.
 readLaunch :: FilePath -> IO (Maybe Launch)
 readLaunch dir = do
@@ -120,8 +147,9 @@ startRepl exe pre l extraEnv out loadTimeout evalTimeout logF = do
       env' = [ kv | kv@(k, _) <- lEnv l, k `notElem` map fst mine ] ++ mine
   oh <- openFile out AppendMode       -- anything the engine says before it has taken its standard output over
   th <- fdToHandle theirs
-  logF ("start: " ++ exe ++ " (" ++ show (length (lArgs l)) ++ " arguments from the build) in " ++ lCwd l)
-  (_, _, _, ph) <- createProcess (proc exe (pre ++ lArgs l))
+  (args, objs) <- hoistUnitObjects l
+  logF ("start: " ++ exe ++ " (" ++ show (length (lArgs l)) ++ " arguments from the build" ++ (if null objs then "" else ", " ++ show (length objs) ++ " C object(s) of the units") ++ ") in " ++ lCwd l)
+  (_, _, _, ph) <- createProcess (proc exe (pre ++ args ++ objs))
     { cwd = Just (lCwd l), env = Just env', std_in = UseHandle th, std_out = UseHandle oh, std_err = UseHandle oh
     , close_fds = True, new_session = True }
   void (try (hClose th) :: IO (Either IOException ()))
