@@ -185,7 +185,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
 | `load_timeout`, `eval_timeout` | seconds; a command past its timeout is interrupted, not abandoned |
 | `history`, `summarize_cmd` | keep the session history; the command that writes its summary lines |
-| `summarize_jobs`, `compact_prompt` | compactions run at once (8); `"shared"` gives them the turns' one system prompt |
+| `summarize_jobs`, `compact_prompt` | compactions run at once (64; fewer for an endpoint with a low rate limit, or a model on this machine); `"shared"` gives them the turns' one system prompt |
 | `prices` | the model's rates per million tokens, so `usage` can say money |
 
 State lives in `.ghci-session/<session>/`: `status`, `status.json`, `load.log`, `reload.log`, `run.log`,
@@ -297,8 +297,8 @@ and to the first line not yet built, so no call sees a placeholder or half a mes
 which two lines, the size, and shows it as a ruler of 512 dashes (a model cannot count bytes); the input is in
 `<input>` tags. A line over 512 bytes is asked again, up to five times, and the shortest kept as it is (one over 1,024
 is cut at its last word); an answer that is no line (the task said back, a tag alone, a code fence) is not kept. A
-message's node starts once fewer than 8 messages before it are unbuilt, a merge once both halves are built,
-`summarize_jobs` (8) at once, from queues kept as the tree changes. A failed node is tried again after ten seconds.
+message's node starts once fewer than `summarize_jobs` (64) messages before it are unbuilt, a merge once both halves
+are built, that many at once, from queues kept as the tree changes. A command that fails or times out is tried again after ten seconds; one that answers no line five times leaves the node as its input, cut at the size, so the merges above it are not held up.
 
 The daemon runs a compaction through `"summarize_cmd"`: a shell command given the system prompt, the view and the task
 on its standard input, answering one line on its standard output. `"summarize_cmd": "ghci-session summarize"` is the

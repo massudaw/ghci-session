@@ -2115,31 +2115,40 @@ compactorLoop s m cmd = loop
       let p = (H.jL j, H.jI j)
           shared = gSharedPrompt (sCfg s)
           base = (if shared then H.systemPrompt else H.compactPrompt) (gAgent (sCfg s)) <> T.pack "\n" <> H.jobPrompt ps j
-          go :: Int -> [T.Text] -> T.Text -> IO [T.Text]
-          go n tries extra
+          go :: IORef Bool -> Int -> [T.Text] -> T.Text -> IO [T.Text]
+          go bad n tries extra
             | n >= (5 :: Int) = pure tries
             | otherwise = do
                 r <- runShell ((Llm.usageFileEnv, sDir s </> "usage.jsonl") : [ ("SUMMARIZE_TOOLS", "0") | not shared ]) cmd (base <> extra) 300
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
                     let line = T.strip (H.stripHead (T.takeWhile (/= '\n') (T.strip out)))
-                    if H.junkLine line then go (n + 1) tries extra
+                    if H.junkLine line then go bad (n + 1) tries extra
                       else if H.nodeFits ps line then pure (tries ++ [line])
-                      else go (n + 1) (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line)
+                      else go bad (n + 1) (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line)
                   Just (code, _, err) -> do
+                    bad =: True
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command failed (" ++ show code ++ "): " ++ take 300 (T.unpack (T.strip err))))
                     pure tries
                   Nothing -> do
+                    bad =: True
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command timed out"))
                     pure tries
-      tries <- go 0 [] T.empty
+      bad <- newIORef False
+      tries <- go bad 0 [] T.empty
+      ran <- not <$> rd bad
       case tries of
-        [] -> do
-          -- (nothing kept: a command that failed has said so; one that answered no line five times has not)
-          first <- H.failed m p 10
-          when first (logS s ("summarize " ++ show p ++ ": no line in the answers"))
+        -- the command ran and answered no line, five times: the node is its input cut at the size (what it
+        -- compresses, flat). A node that is never built holds up every merge above it, and the view's batch
+        -- with them; a cut line is a poor summary of one message and the tree goes on.
+        [] | ran -> do
+          let src = case H.jStep j of { H.Compress msg -> msg; H.Merge a b -> a <> T.pack " " <> b }
+          logS s ("summarize " ++ show p ++ ": no line in five answers; its input is kept, cut")
+          H.putNode m (H.jL j) (H.jI j) (H.cutBytes (H.pNode ps) (T.map (\c -> if c == '\n' || c == '\r' then ' ' else c) src))
+        -- (a command that failed or timed out has said so, and is tried again: the endpoint may come back)
+        [] -> pure ()
         _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries, not (T.null t) ])))
 
 -- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
@@ -2556,7 +2565,8 @@ runDaemon conf name bootCheck fastStart = do
   t <- now
   cfgV <- newIORef cfg
   hist <- if not (gHistory cfg) then pure Nothing else do
-    r <- try (H.openHistory H.defaultParams (dir </> "history")) :: IO (Either SomeException (H.Mem, Int))
+    -- (a message's node starts once fewer than this many before it are unbuilt: as many as run at once)
+    r <- try (H.openHistory H.defaultParams { H.pAhead = max 1 (gSummarizeJobs cfg) } (dir </> "history")) :: IO (Either SomeException (H.Mem, Int))
     case r of
       Right (m, torn) -> do
         when (torn > 0) (void (try (appendFileUtf8 (dir </> "daemon.log") ("history: " ++ show torn ++ " torn line(s) skipped\n")) :: IO (Either IOException ())))

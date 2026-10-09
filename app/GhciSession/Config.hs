@@ -86,7 +86,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 8), ("agent", JStr "Agent"), ("compact_prompt", JStr "own")
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own")
   ]
 
 reserved :: [String]
