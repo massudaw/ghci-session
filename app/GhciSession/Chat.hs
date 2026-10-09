@@ -49,7 +49,7 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
 import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getTemporaryDirectory, listDirectory, removeFile)
-import System.Environment (getArgs, getExecutablePath, lookupEnv, setEnv)
+import System.Environment (getArgs, getEnvironment, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (executeFile, getProcessID)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, signalProcess)
 import System.Exit (ExitCode (..))
@@ -70,6 +70,11 @@ import qualified GhciSession.History as H
 import GhciSession.Mcp (Tool (..), pick, tools)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now)
+import qualified GhciSession.Sys as Sys
+import qualified GhciSession.Anthropic as A
+import qualified GhciSession.ClaudeCli as C
+import qualified Data.ByteString.Char8 as B8
+import qualified System.Posix.IO as PIO
 
 -- | Characters of a tool result kept (head and tail), as the spec logs them.
 capChars :: Int
@@ -946,11 +951,161 @@ turn ch e o system texts pending = do
   ids <- forM texts (logId ch "user")
   tStart <- now
   let task = T.intercalate (T.pack "\n\n") texts
-  goOn ch e o pending (TurnState [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> task) ] 0 0 [] (Spent 0 0 0 0 0 False False) tStart
+  if eProvider e == ClaudeCli then turnCli ch e o system (v <> T.pack "\n\n" <> task) pending else
+   goOn ch e o pending (TurnState [ msg "system" (T.pack system), msg "user" (v <> T.pack "\n\n" <> task) ] 0 0 [] (Spent 0 0 0 0 0 False False) tStart
                                  (if oView o then Just (ViewCtx count (catMaybes ids) task) else Nothing))
 
 msg :: String -> T.Text -> Json
 msg role text = JObj [("role", JStr role), ("content", JText text)]
+
+-- a turn through the claude command -------------------------------------------------------------
+--
+-- A subscription is used through the @claude@ command ("GhciSession.ClaudeCli"), and that program runs the tools
+-- itself: there is no reply to take a tool call from and answer. So the turn is its, and the chat is what it
+-- calls. The chat listens on a socket for the length of the turn and serves its tools there, as a tool server
+-- (the protocol of @ghci-session mcp@, over these tools); the program is told to start @ghci-session mcp-relay@
+-- on that socket as its tool server, and has no tool of its own.
+--
+-- So a call is still run HERE, by the same code as in the other turn: shown, logged as the agent made it, its
+-- answer what a write's or an evaluation's is (the reload's verdict, the diff), and a line typed meanwhile is
+-- given to the program between two calls. The agent's words come from the program's output as each is
+-- finished, and are logged. At its end a turn that changed the files and stops with the verdict red is told so
+-- once, as the other is -- as a message more, the program still running.
+--
+-- What is not here is what belonged to a conversation the chat kept: a read is not checked against the reads
+-- before it, there is no step limit, and @--context view@ and a restart in the middle of a turn do not apply.
+turnCli :: Chat -> Endpoint -> Opts -> String -> T.Text -> TQueue (Maybe T.Text) -> IO ()
+turnCli ch e o system first pending = do
+  writeIORef (cInTurn ch) True
+  tStart <- now
+  spent <- newIORef (Spent 0 0 0 0 0 False False)
+  pid <- getProcessID
+  sockDir <- (\d -> takeDirectory d) <$> Sys.sockPath (cStateDir (cConf ch) </> cName ch)
+  let sock = sockDir </> ("chat-" ++ show pid ++ ".sock")
+      byName = [ (tName t, t) | t <- chatTools ]
+      effort = case oEffort o of { Just "none" -> Just "low"; other -> other }
+      web = maybe False (> 0) (oWeb o)
+      textBlock t = JObj [("type", JStr "text"), ("text", JText t)]
+  void (try (removeFile sock) :: IO (Either IOException ()))
+  ml <- Sys.unixListen sock
+  env0 <- getEnvironment
+  exe <- getExecutablePath
+  started <- case ml of
+    Nothing -> pure (Left ("cannot listen on " ++ sock))
+    Just _ -> either (\(x :: IOException) -> Left ("the claude command could not be run (is Claude Code installed, and on the PATH?): " ++ show x)) Right
+                <$> try (createProcess (proc "claude" (C.cliArgs (C.CliOpts (eModel e) effort (T.pack system) (Just (exe, sock)) web)))
+                           { cwd = Just (cDir ch), env = Just (C.cliEnv env0), std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe })
+  case (ml, started) of
+    (Just lfd, Right (Just i, Just out, Just err, ph)) -> do
+      mapM_ (`hSetBinaryMode` True) [i, out, err]
+      wlock <- newMVar ()
+      done <- newIORef False
+      errV <- newEmptyMVar
+      _ <- forkIO (B.hGetContents err >>= putMVar errV)
+      let put blocks = withMVar wlock $ \_ -> void (try (B.hPut i (C.userLine blocks) >> hFlush i) :: IO (Either IOException ()))
+          -- a tool, called by the program: run here, as a turn's call is
+          tool name args = do
+            modifyIORef' spent (\x -> x { sTools = sTools x + 1, sTouched = sTouched x || name `elem` ["write", "edit", "edits", "sh"] })
+            uiCall (cUi ch) name (take 300 (encode args))
+            unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode args)))
+            uiBusy (cUi ch) (Just ("running " ++ name))
+            t2 <- now
+            (ok, out0) <- case lookup name byName of
+              Just t -> runTool ch t args
+              Nothing -> pure (False, T.pack ("unknown tool " ++ show name))
+            late <- pendingNote ch
+            t3 <- now
+            let said = cap out0 <> late
+            when (oUsage o) (uiNote (cUi ch) (printf "[tool: %s %.1fs]" name (t3 - t2)))
+            unless (name == "remember") (logH ch "echo" ((if ok then T.empty else T.pack "ERROR: ") <> said))
+            uiAnswer (cUi ch) (T.take 600 said <> (if T.length said > 600 then T.pack "..." else T.empty))
+            -- (a line typed while it works reaches it here, between two calls)
+            mid <- drain pending
+            forM_ mid (logH ch "user")
+            unless (null mid) (put [textBlock (T.intercalate (T.pack "\n\n") mid)])
+            uiBusy (cUi ch) (Just "the model is working")
+            pure (ok, said)
+          serve = do
+            stop <- readIORef done
+            unless stop $ do
+              mc <- Sys.unixAccept lfd 300
+              forM_ mc $ \fd -> forkIO (PIO.fdToHandle fd >>= \h -> Mcp.serveOn h (Mcp.handleWith chatTools tool) >> void (try (hClose h) :: IO (Either IOException ())))
+              serve
+      _ <- forkIO (void (try serve :: IO (Either SomeException ())))
+      put (A.viewBlocks first)
+      seenR <- newIORef (0 :: Int, 0 :: Double)
+      limitR <- newIORef ""
+      let live ev = case snd (A.streamEvent ev A.emptyStream) of
+            Nothing -> pure ()
+            Just (kind, piece) -> do
+              (n, at) <- readIORef seenR
+              t <- now
+              let n' = n + T.length piece
+                  doing = case kind of { "mind" -> "thinking"; "tool" -> "calling a tool"; _ -> "writing" } :: String
+              if t - at < 0.25 then writeIORef seenR (n', at) else writeIORef seenR (n', t) >> uiBusy (cUi ch) (Just (printf "the model is %s (%s characters so far)" doing (human n')))
+          said b = case lookupStr "type" b of
+            Just "text" | Just t <- lookupText "text" b, not (T.null (T.strip t)) -> uiTalk (cUi ch) (T.strip t) >> logH ch "talk" (T.strip t)
+            Just "thinking" | Just t <- lookupText "thinking" b, not (T.null (T.strip t)) -> uiThought (cUi ch) (T.strip t)
+            -- (a tool of the program's own -- the web, when it was asked for: ours are shown where they are run)
+            Just "tool_use" | Just n <- lookupStr "name" b, not (("mcp__" ++ C.serverName ++ "__") `isPrefixOf` n) -> do
+              uiCall (cUi ch) (n ++ " (by claude)") (take 300 (encode (b .: "input")))
+              logH ch "tool" (T.pack (n ++ " " ++ encode (b .: "input")))
+            _ -> pure ()
+          loop t0 = do
+            eof <- hIsEOF out
+            if eof then pure Nothing else do
+              l <- B8.hGetLine out
+              case C.readEvent l of
+                C.EvStream ev -> live ev >> loop t0
+                C.EvAssistant blocks -> mapM_ said blocks >> loop t0
+                C.EvRate info -> do
+                  note <- C.limitNote info
+                  was <- readIORef limitR
+                  forM_ note $ \n -> when (n /= was) (writeIORef limitR n >> uiNote (cUi ch) ("[" ++ n ++ "]"))
+                  loop t0
+                C.EvResult j -> do
+                  let x = C.resultOf j
+                      u = Usage (C.xIn x) (C.xOut x) (Just (C.xCached x))
+                  t1 <- now
+                  modifyIORef' spent (\sp -> sp { sCalls = sCalls sp + C.xTurns x, sIn = sIn sp + C.xIn x, sCached = sCached sp + C.xCached x, sOut = sOut sp + C.xOut x })
+                  recordUsage (usageFile ch) "chat" e u (t1 - t0)
+                  when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d, cached %d, %d model call(s), %.1fs]" (C.xIn x) (C.xOut x) (C.xCached x) (C.xTurns x) (t1 - t0)))
+                  if not (C.xOk x) then pure (Just (T.unpack (C.xText x))) else do
+                    -- a turn that changed the files and ends with the verdict red is told so, once
+                    sp <- readIORef spent
+                    when (sTouched sp && not (sNudged sp)) (awaitPending ch)
+                    vd <- if sTouched sp && not (sNudged sp) then verdictAt ch else pure Nothing
+                    case vd of
+                      Just r | isRed (vLine r) -> do
+                        modifyIORef' spent (\y -> y { sNudged = True })
+                        uiNote (cUi ch) "[the turn would end with the verdict red; saying so once]"
+                        put [textBlock (T.pack ("[harness: you are ending the turn with the session's verdict red: " ++ vLine r ++ concatMap ("\n" ++) (take 8 (vBehind r))
+                                                 ++ "\nFix it, or end by saying plainly that it is red and why you are stopping.]"))]
+                        loop t1
+                      _ -> pure Nothing
+                _ -> loop t0
+      uiBusy (cUi ch) (Just "the model is working")
+      r <- try (loop tStart) :: IO (Either SomeException (Maybe String))
+      writeIORef done True
+      void (try (hClose i) :: IO (Either IOException ()))
+      void (timeout 3000000 (waitForProcess ph) >>= maybe (terminateProcess ph >> void (waitForProcess ph)) (const (pure ())))
+      PIO.closeFd lfd
+      void (try (removeFile sock) :: IO (Either IOException ()))
+      errText <- T.unpack . T.strip . decode <$> takeMVar errV
+      case r of
+        Left x -> uiNote (cUi ch) ("chat: the claude command: " ++ show x ++ "; the turn ends")
+        Right (Just why) -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
+        Right Nothing -> do
+          sp <- readIORef spent
+          -- (it ended and said nothing at all: what it wrote of itself is why)
+          when (sCalls sp == 0 && not (null errText)) (uiNote (cUi ch) ("chat: the claude command ended: " ++ unwords (take 40 (words errText))))
+    (_, Left why) -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
+    (Nothing, _) -> uiNote (cUi ch) ("chat: cannot listen on " ++ sock ++ "; the turn ends")
+    _ -> uiNote (cUi ch) "chat: the claude command could not be run; the turn ends"
+  writeIORef (cInTurn ch) False
+  tEnd <- now
+  s <- readIORef spent
+  uiSpent (cUi ch) s (tEnd - tStart)
 
 -- | Where a turn is, between two model calls: what a restarted harness needs to go on with it -- the
 -- conversation word for word (the provider's cache of it holds across the restart), the step and the
@@ -1518,7 +1673,11 @@ summarizeMain args = do
       noTools <- lookupEnv "SUMMARIZE_TOOLS"      -- 0: send no tools (a local model that takes none)
       case ep of
         Left why -> hPutStrLn stderr ("summarize: " ++ why) >> pure 2
-        Right e -> do
+        Right e0 -> do
+          -- (through the claude command a compaction may have a model of its own -- a small one: a subscription's
+          -- limits are spent by every call, and there are many of these)
+          small <- lookupEnv "GHS_CLAUDE_SUMMARIZE_MODEL"
+          let e = case small of { Just m | eProvider e0 == ClaudeCli, not (null m) -> e0 { eModel = m }; _ -> e0 }
           -- the turns' tools go with the call, never called: a compaction is a call like a turn, with the
           -- same tools and system prompt, so it reads them from the turns' cache entry. A model that calls
           -- one all the same, and writes no line, is asked again without them.
@@ -1527,7 +1686,7 @@ summarizeMain args = do
                 | otherwise = do
                     t0 <- now
                     r <- request e (Request ([ JObj [("role", JStr "system"), ("content", JText system)] | not (T.null system) ] ++ [ JObj [("role", JStr "user"), ("content", JText user)] ])
-                                            (if withTools then map toolJson chatTools else []) budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300 Nothing)
+                                            (if withTools then map toolJson chatTools else []) budget (Just 0.3) (if isDeepSeek e || eProvider e /= OpenAI then Just think else Nothing) (if think then Just effort else Nothing) 300 Nothing)
                     t1 <- now
                     forM_ ledger $ \f -> forM_ (either (const Nothing) pUsage r) $ \u -> recordUsage f "summarize" e u (t1 - t0)
                     case r of

@@ -25,6 +25,7 @@ import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified GhciSession.Anthropic as A
+import qualified GhciSession.ClaudeCli as C
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
@@ -512,6 +513,38 @@ run = do
   eq "anthropic: an error in the stream is the stream's end, and is kept"
      (let (st, _) = run (take 3 events ++ [evJ "error" [("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])]]) in (A.streamEnded st, fmap (\e -> lookupStr "type" (e .: "error")) (A.streamError st)))
      (True, Just (Just "overloaded_error"))
+  -- the claude command (a subscription)
+  let cli = C.cliArgs (C.CliOpts "claude-haiku-4-5" (Just "low") (T.pack "sys") (Just ("/bin/ghs", "/tmp/s.sock")) False)
+      after k xs = take 1 [ v | (a, v) <- zip xs (drop 1 xs), a == k ]
+  eq "claude: it is run without tools of its own, without the user's settings, with ours allowed by name"
+     (after "--tools" cli, after "--setting-sources" cli, after "--allowedTools" cli, after "--model" cli, after "--effort" cli, "--strict-mcp-config" `elem` cli, "bypassPermissions" `elem` cli)
+     ([""], [""], ["mcp__ghs"], ["claude-haiku-4-5"], ["low"], True, False)
+  eq "claude: its tool server is this executable, relaying to the chat's socket"
+     (fmap (\j -> (lookupStr "command" (j .: "mcpServers" .: "ghs"), lookupArr "args" (j .: "mcpServers" .: "ghs"))) (parseJson (concat (after "--mcp-config" cli))))
+     (Right (Just "/bin/ghs", [JStr "mcp-relay", JStr "/tmp/s.sock"]))
+  eq "claude: with no tools of ours there is no tool server, and the web is its own two tools when asked for"
+     (let a = C.cliArgs (C.CliOpts "m" Nothing (T.pack "s") Nothing True) in ("--mcp-config" `elem` a, after "--tools" a, "--effort" `elem` a)) (False, ["WebSearch,WebFetch"], False)
+  eq "claude: the environment is cleared of what would send it elsewhere, and where it keeps its sign-in is left"
+     (let e = C.cliEnv [("ANTHROPIC_BASE_URL", "https://other"), ("ANTHROPIC_AUTH_TOKEN", "t"), ("CLAUDECODE", "1"), ("CLAUDE_CODE_ENTRYPOINT", "cli"), ("CLAUDE_CONFIG_DIR", "/c"), ("PATH", "/bin"), ("DISABLE_TELEMETRY", "0")]
+      in ([ k | (k, _) <- e, k `elem` ["ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"] ], lookup "CLAUDE_CONFIG_DIR" e, lookup "PATH" e, lookup "DISABLE_TELEMETRY" e, lookup "CLAUDE_CODE_DISABLE_CLAUDE_MDS" e))
+     ([], Just "/c", Just "/bin", Just "1", Just "1")
+  eq "claude: a block marked for the cache is marked for an hour (it takes no shorter mark before its own)"
+     (fmap (\j -> [ b .: "cache_control" | b <- lookupArr "content" (j .: "message") ]) (parseJsonBS (C.userLine [JObj [("type", JStr "text"), ("text", JStr "a"), ("cache_control", JObj [("type", JStr "ephemeral")])], JObj [("type", JStr "text"), ("text", JStr "b")]])))
+     (Right [JObj [("type", JStr "ephemeral"), ("ttl", JStr "1h")], JNull])
+  eq "claude: its lines -- one of the API's events, a reply's finished blocks, its end; anything else is passed over"
+     ( C.readEvent (BC.pack "{\"type\":\"stream_event\",\"event\":{\"type\":\"message_stop\"}}")
+     , C.readEvent (BC.pack "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"hi\"}]}}")
+     , C.readEvent (BC.pack "{\"type\":\"system\",\"subtype\":\"status\"}"), C.readEvent (BC.pack "not json") )
+     (C.EvStream (JObj [("type", JStr "message_stop")]), C.EvAssistant [JObj [("type", JStr "text"), ("text", JStr "hi")]], C.EvOther, C.EvOther)
+  eq "claude: how a run ended -- its words, the prompts' tokens in all, the calls it made; a busy service is asked again"
+     ( C.resultOf (JObj [("type", JStr "result"), ("is_error", JBool False), ("result", JStr "pong"), ("num_turns", JNum 2), ("total_cost_usd", JNum 0.5), ("usage", JObj [("input_tokens", JNum 10), ("cache_read_input_tokens", JNum 900), ("cache_creation_input_tokens", JNum 90), ("output_tokens", JNum 7)])])
+     , (\x -> (C.xOk x, C.xBusy x)) (C.resultOf (JObj [("is_error", JBool True), ("api_error_status", JNum 529), ("subtype", JStr "error_during_execution")])) )
+     (C.Result True (T.pack "pong") False 1000 7 900 2 0.5, (False, True))
+  do room <- C.limitNote (JObj [("status", JStr "allowed"), ("rateLimitType", JStr "five_hour"), ("unifiedWindows", JObj [("five_hour", JObj [("utilization", JNum 0.49)])])])
+     full <- C.limitNote (JObj [("status", JStr "rejected"), ("rateLimitType", JStr "five_hour"), ("resetsAt", JNum 1791532800)])
+     near <- C.limitNote (JObj [("status", JStr "allowed"), ("rateLimitType", JStr "seven_day"), ("unifiedWindows", JObj [("seven_day", JObj [("utilization", JNum 0.93)])])])
+     eq "claude: the subscription's limits are said when they are reached or nearly, and not while there is room"
+        (room, fmap (take 49) full, fmap (take 39) near) (Nothing, Just "the subscription's five hour limit is reached: it", Just "the subscription's limits are 93% used ")
   eq "anthropic: a request declined is said, and an error is the API's words"
      ( fmap A.rText (A.parseReply (JObj [("type", JStr "message"), ("content", JArr []), ("stop_reason", JStr "refusal"), ("stop_details", JObj [("category", JStr "cyber")])]))
      , either id (const "") (A.parseReply (JObj [("type", JStr "error"), ("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])])) )

@@ -34,7 +34,7 @@ import GhciSession.Json
 import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Top (topMain)
 import GhciSession.Usage (usageRows, usageTable)
-import GhciSession.Mcp (mcpMain)
+import GhciSession.Mcp (mcpMain, relayMain)
 import GhciSession.Sys
 import qualified Data.Text.IO as TIO
 import qualified GhciSession.Search as Search
@@ -537,6 +537,7 @@ cliMain = do
     (c : _) | c `elem` ["-h", "--help", "help"] -> putStr usage >> pure 0
     ("init" : _) -> cmdInit
     ("summarize" : rest) -> summarizeMain rest          -- (no project needed: the daemon runs it from anywhere)
+    ("mcp-relay" : sock : _) -> relayMain sock        -- (a wire to a chat that is running: an agent program starts it)
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure

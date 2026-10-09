@@ -6,8 +6,10 @@
 -- are the memory. Nothing here touches the repl.
 --
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
-module GhciSession.Mcp (mcpMain, Tool (..), tools, call, callReach, Reach (..), pick, request) where
+module GhciSession.Mcp (mcpMain, Tool (..), tools, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
 
+import Control.Concurrent (forkIO)
+import Control.Concurrent.MVar (newEmptyMVar, putMVar, takeMVar)
 import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)
 import qualified Data.ByteString as B
@@ -42,6 +44,47 @@ mcpMain conf = do
   loop
   where send j = B.hPut stdout (encodeBS j) >> B.hPut stdout (BC.pack "\n") >> hFlush stdout
 
+-- | Serve one connection: a message a line in, a reply a line out, until it closes.
+serveOn :: Handle -> (Json -> IO (Maybe Json)) -> IO ()
+serveOn h answer = do
+  hSetBinaryMode h True
+  hSetBuffering h (BlockBuffering Nothing)
+  let send j = B.hPut h (encodeBS j) >> B.hPut h (BC.pack "\n") >> hFlush h
+      loop = do
+        eof <- hIsEOF h
+        unless eof $ do
+          line <- BC.hGetLine h
+          unless (B.null (BC.strip line)) $
+            case parseJsonBS line of
+              Left e -> send (errorReply JNull (-32700) ("parse error: " ++ e))
+              Right req -> answer req >>= mapM_ send
+          loop
+  r <- try loop :: IO (Either IOException ())
+  either (const (pure ())) pure r
+
+-- | @ghci-session mcp-relay SOCKET@: standard input and output joined to a unix socket, a line at a time each
+-- way, until either side ends. What an agent program is given to start as its tool server when the server is a
+-- process already running (the chat): it starts this, and this is a wire.
+relayMain :: FilePath -> IO Int
+relayMain path = do
+  m <- unixConnect path
+  case m of
+    Nothing -> hPutStrLn stderr ("mcp-relay: cannot connect to " ++ path) >> pure 1
+    Just fd -> do
+      h <- fdToHandle fd
+      mapM_ (`hSetBinaryMode` True) [h, stdin, stdout]
+      hSetBuffering h (BlockBuffering Nothing)
+      hSetBuffering stdout (BlockBuffering Nothing)
+      done <- newEmptyMVar
+      let pump from to = do
+            r <- try (let go = do { eof <- hIsEOF from; unless eof (BC.hGetLine from >>= \l -> B.hPut to l >> B.hPut to (BC.pack "\n") >> hFlush to >> go) } in go) :: IO (Either IOException ())
+            either (const (pure ())) pure r
+            putMVar done ()
+      _ <- forkIO (pump stdin h)
+      _ <- forkIO (pump h stdout)
+      takeMVar done
+      pure 0
+
 result :: Json -> Json -> Json
 result rid r = JObj [("jsonrpc", JStr "2.0"), ("id", rid), ("result", r)]
 
@@ -50,19 +93,24 @@ errorReply rid code msg = JObj [("jsonrpc", JStr "2.0"), ("id", rid), ("error", 
 
 -- | One message: a reply for a request, none for a notification.
 handle :: Conf -> Json -> IO (Maybe Json)
-handle conf req = case (lookupStr "method" req, req .: "id") of
+handle conf = handleWith tools (call conf)
+
+-- | The same server over other tools: the ones given, each run by the function given. (The chat serves its own
+-- this way, to an agent program that runs its tools itself -- "GhciSession.Chat".)
+handleWith :: [Tool] -> (String -> Json -> IO (Bool, T.Text)) -> Json -> IO (Maybe Json)
+handleWith served run req = case (lookupStr "method" req, req .: "id") of
   (Just "initialize", rid) -> pure (Just (result rid (JObj
     [ ("protocolVersion", JStr (fromMaybe "2025-06-18" (lookupStr "protocolVersion" (req .: "params"))))
     , ("capabilities", JObj [("tools", JObj [("listChanged", JBool False)])])
     , ("serverInfo", JObj [("name", JStr "ghci-session"), ("version", JStr "0.2.0")])
     , ("instructions", JStr instructions) ])))
   (Just "ping", rid) -> pure (Just (result rid (JObj [])))
-  (Just "tools/list", rid) -> pure (Just (result rid (JObj [("tools", JArr (map toolJson tools))])))
+  (Just "tools/list", rid) -> pure (Just (result rid (JObj [("tools", JArr (map toolJson served))])))
   (Just "tools/call", rid) -> do
     let ps = req .: "params"
         name = fromMaybe "" (lookupStr "name" ps)
         args = ps .: "arguments"
-    r <- try (call conf name args) :: IO (Either SomeException (Bool, T.Text))
+    r <- try (run name args) :: IO (Either SomeException (Bool, T.Text))
     let (ok, out) = either (\e -> (False, T.pack (show e))) id r
     pure (Just (result rid (JObj [("content", JArr [JObj [("type", JStr "text"), ("text", JText out)]]), ("isError", JBool (not ok))])))
   (Just m, JNull) | "notifications/" `isPrefixOfS` m -> pure Nothing      -- initialized, cancelled: nothing to say

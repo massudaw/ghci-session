@@ -377,6 +377,32 @@ daemon's environment. `tools/fake-llm.py` speaks this protocol too (`POST /v1/me
 the API would: roles that do not alternate, a result that is not at the head of its message, a thinking block
 sent back changed.
 
+**A subscription** is used through the `claude` command (Claude Code), which is where its sign-in is: there is
+no key, so no request to make, only that program to run (`GhciSession.ClaudeCli`). `GHS_PROVIDER=claude` asks for
+it -- it is never taken by default -- with `GHS_CLAUDE_MODEL` (default `claude-opus-5-5`) and, for the compactor,
+`GHS_CLAUDE_SUMMARIZE_MODEL` (a small one: every compaction spends the subscription's limits, and there are many).
+
+```
+claude --version                 # Claude Code, installed and signed in (`claude` once, to sign in)
+GHS_PROVIDER=claude GHS_CLAUDE_MODEL=claude-sonnet-5-5 ghci-session chat
+# the compactor too: "summarize_cmd": "ghci-session summarize", with these in the daemon's environment
+GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-4-5 ghci-session start
+```
+
+That program runs the tools itself, so a turn is its and the chat is what it calls: for the length of a turn the
+chat serves its tools on a socket, as `ghci-session mcp` serves the session's, and the program is told to start
+`ghci-session mcp-relay` on that socket as its tool server -- it has no tool of its own (`--tools ""`), reads none
+of the user's settings or tool servers, and ours are the only ones allowed (no permission is waived). So a call is
+run by the chat as in any turn: shown, logged, answered with the reload's verdict and the diff; a line typed
+meanwhile reaches it between two calls; a turn that ends red is told so once. What does not apply is what
+belonged to a conversation the chat kept: a read is not checked against earlier reads, there is no step limit,
+and `--context view` and `--restart` in the middle of a turn are for the other two. Its environment is cleared of
+`ANTHROPIC_*` and `CLAUDE_CODE_*` first -- a base URL and a token set for another tool would send it to another
+provider on another account -- and what it adds to a prompt (memory files, git instructions) is turned off. When
+the subscription's limits are reached, or nearly, the chat says so and until when. `--web 1` leaves it its own web
+tools. A compaction is the same program with no tools at all, one prompt and its answer, a process each: a few
+seconds and a few hundred megabytes, so `summarize_jobs` is better at 4 or 8 here than at 64.
+
 **What the model calls cost** is kept: each call of the chat and the compactor appends a line to
 `<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds).
 `ghci-session usage [SESSION] [--since DAYS] [--json]` sums the ledger by who asked and by day, in money too when

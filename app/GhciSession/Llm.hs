@@ -37,11 +37,13 @@ import Foreign.Ptr (Ptr, nullPtr)
 import Foreign.Storable (peek)
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import Data.Time.Clock.POSIX (getPOSIXTime)
+import System.Directory (getTemporaryDirectory)
 import System.Environment (lookupEnv)
 import System.IO (IOMode (..), hClose, hPutStrLn, hSetBinaryMode, openFile)
 import Text.Printf (printf)
 
 import qualified GhciSession.Anthropic as A
+import qualified GhciSession.ClaudeCli as C
 import GhciSession.Json
 
 foreign import ccall safe "ghs_https_post" c_post
@@ -159,7 +161,9 @@ human n | n >= 10000000 = printf "%.0fM" (fromIntegral n / 1e6 :: Double)
 -- the endpoint --------------------------------------------------------------------------------
 
 -- | Which protocol an endpoint speaks. 'Anthropic': whether its key is a bearer token (not an API key).
-data Provider = OpenAI | Anthropic Bool
+-- 'ClaudeCli': no endpoint at all but the @claude@ command, which is how a subscription is used
+-- ("GhciSession.ClaudeCli"); there is then no key and no base, only a model.
+data Provider = OpenAI | Anthropic Bool | ClaudeCli
   deriving (Eq, Show)
 
 data Endpoint = Endpoint { eKey :: String, eBase :: String, eModel :: String, eProvider :: Provider }
@@ -172,13 +176,16 @@ endpointFromEnv = do
   base <- fromMaybe "https://api.deepseek.com" <$> firstEnv ["DEEPSEEK_BASE_URL", "OPENAI_BASE_URL"]
   ant <- A.configFromEnv
   want <- firstEnv ["GHS_PROVIDER"]
+  cliModel <- firstEnv ["GHS_CLAUDE_MODEL"]
   let openai = (\k -> Endpoint k (reverse (dropWhile (== '/') (reverse base))) model OpenAI) <$> key
       anthropic = (\c -> Endpoint (A.aKey c) (A.aBase c) (A.aModel c) (Anthropic (A.aBearer c))) <$> ant
       none = "no DEEPSEEK_API_KEY (or OPENAI_API_KEY), and no ANTHROPIC_API_KEY (or ANTHROPIC_AUTH_TOKEN), in the environment"
   pure (case want of
     Just "anthropic" -> maybe (Left "GHS_PROVIDER=anthropic, and no ANTHROPIC_API_KEY (or ANTHROPIC_AUTH_TOKEN) in the environment") Right anthropic
     Just "openai" -> maybe (Left "GHS_PROVIDER=openai, and no DEEPSEEK_API_KEY (or OPENAI_API_KEY) in the environment") Right openai
-    Just other -> Left ("GHS_PROVIDER=" ++ other ++ ": anthropic or openai")
+    -- (asked for, never taken by default: it spends a subscription's limits, and runs a program)
+    Just w | w `elem` ["claude", "claude-cli", "subscription"] -> Right (Endpoint "" "claude" (fromMaybe A.defaultModel cliModel) ClaudeCli)
+    Just other -> Left ("GHS_PROVIDER=" ++ other ++ ": anthropic, openai or claude")
     Nothing -> maybe (maybe (Left none) Right anthropic) Right openai)
   where firstEnv names = (\vs -> case [ v | Just v <- vs, not (null v) ] of { (v : _) -> Just v; [] -> Nothing }) <$> mapM lookupEnv names
 
@@ -228,6 +235,21 @@ requestOnce :: Endpoint -> Request -> IO (Either Failure Reply)
 requestOnce e q = case eProvider e of
   OpenAI -> requestOpenAI e q
   Anthropic bearer -> requestAnthropic (A.Config (eKey e) bearer (eBase e) (eModel e)) q
+  ClaudeCli -> requestCli e q
+
+-- | A call that is one prompt and one answer, through the @claude@ command with no tools: what a compaction is.
+-- (A turn is not made of such calls there: the command runs the tools itself, and the chat runs it for a whole
+-- turn -- "GhciSession.Chat".) A call that wants no thinking is the lightest effort.
+requestCli :: Endpoint -> Request -> IO (Either Failure Reply)
+requestCli e q = do
+  let (sys, msgs) = A.toMessages (rMessages q)
+      blocks = concat [ lookupArr "content" m | m <- msgs, lookupStr "role" m == Just "user" ]
+      effort = case rEffort q of { Just ef | ef /= "none" -> Just ef; _ | rThinking q == Just False -> Just "low"; _ -> Nothing }
+  dir <- getTemporaryDirectory
+  r <- C.runOnce (C.CliOpts (eModel e) effort (T.intercalate (T.pack "\n\n") sys) Nothing False) dir blocks (rTimeout q)
+  pure $ case r of
+    Left (why, busy) -> Left (Failure why busy Nothing)
+    Right x -> Right (Reply (C.xText x) T.empty [] "stop" (Just (Usage (C.xIn x) (C.xOut x) (Just (C.xCached x)))) (JObj [("role", JStr "assistant"), ("content", JText (C.xText x))]) [] [])
 
 -- | A call, asked again while the service is busy: up to @tries@ times in all, after the seconds it asked for
 -- or else 2, 4, 8, ... (two minutes at most), @say@ told each time. What asking again cannot mend is answered
