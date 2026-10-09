@@ -1,0 +1,26 @@
+tools/vt-replay.c
+  s_ee2f22f51d8bdb::t_810a5fed275530 1-193
+tools/check-images.py
+  s_ee2f22f51d8bdb::t_73648e6eb24ad5 1-40,44-45,48-156
+  s_ee2f22f51d8bdb::t_b40b2bbbb03e70 41-43,46-47
+tools/tui-capture.py
+  s_ee2f22f51d8bdb::t_73648e6eb24ad5 1-105
+README.md
+  s_ee2f22f51d8bdb::t_4e6d2cec35898d 497-505
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4fc329be103e87aa60eb772cd63bb2c7148524fe",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
