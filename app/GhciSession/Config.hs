@@ -61,6 +61,8 @@ data Cfg = Cfg
   , gHeapAuto :: Bool      -- ^ keep the RTS's -H (allocation area up to the largest heap it has needed)
   , gPruneGc :: String   -- ^ "compact" (the RTS's own choice) or "copying": the collection after a reload's unlink
   , gHygiene :: Bool
+  , gOptimize :: Bool                -- ^ the session's code compiled and optimised (not interpreted): what it measures is what the built code does
+  , gRestartStuck :: Bool            -- ^ an evaluation that ran out of time and cannot be interrupted is ended by a restart
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
   , gWatcher :: String, gPollInterval :: Double, gDebounce :: Double
@@ -81,7 +83,7 @@ defaults =
   , ("load_timeout", JNum 900), ("eval_timeout", JNum 30), ("repl_budget_mb", JNum 6144)
   , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum (-1)), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
   , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
-  , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False)
+  , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False), ("optimize", JBool False), ("restart_stuck", JBool True)
   , ("auto_reload", JBool True), ("watch_check", JBool False), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
@@ -248,6 +250,7 @@ resolve conf session = do
         , gLoadTimeout = maxOf "load_timeout" ts, gEvalTimeout = maxOf "eval_timeout" ts, gBudgetMb = maxOf "repl_budget_mb" ts
         , gRtsFlags = jStr "rts_flags" t0, gPruneGc = jStr "prune_gc" t0, gHeapAuto = jBool "heap_auto" t0, gMemReturn = jBool "mem_return" t0, gGhcJobs = round (maxOf "ghc_jobs" ts), gCapabilities = round (maxOf "capabilities" ts)
         , gHygiene = any (jBool "hygiene") ts
+        , gOptimize = any (jBool "optimize") ts, gRestartStuck = all (jBool "restart_stuck") ts
         , gHandoverEnv = hand, gUnlinkAfter = jStr "unlink_after" t0, gPruneGcIdle = jNum "prune_gc_idle_s" t0
         , gAutoReload = null ts || any (jBool "auto_reload") ts
         , gWatchCheck = all (jBool "watch_check") ts, gWatchRefork = all (jBool "watch_refork") ts

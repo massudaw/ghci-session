@@ -291,9 +291,13 @@ replCommandLine s exe v = case gRepl cfg of
          -- too late. (A session of 87 modules whose engine has the pragma: its check 33 s -> 25 s, for 9 s
          -- more of cold compile.)
       ++ [ "--repl-options=-fno-ignore-interface-pragmas" | objects ]
+         -- ("optimize": the loaded code is what the built library is -- object code at -O1 -- so an evaluation
+         -- of it, and what `bench` measures, run at its real speed. Interpreted, a scan of a 19 MB file that
+         -- takes 0.3 s ran for minutes. A reload compiles more slowly for it.)
+      ++ [ "--repl-options=-O1" | gOptimize cfg ]
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
-        objects = gHygiene cfg || not (null (gServers cfg))
+        objects = gHygiene cfg || gOptimize cfg || not (null (gServers cfg))
 
 -- | The engine for this session -- our GHCi, beside this executable -- its compiler's version, and that
 -- compiler's library directory. It must have been built for exactly the compiler on PATH: it is that
@@ -452,7 +456,7 @@ afterLoad s (Reply facts out) doCheck t0 = do
   let took = (\t -> ("duration_s", JNum (r2 (t - t0)))) <$> now
   if v /= "OK" then took >>= \d -> setStatus s False v detail [d]
     else if not doCheck || null (gChecks (sCfg s))
-      then took >>= \d -> setStatus s False (prefix ++ " -- CHECK SKIPPED (" ++ (if doCheck then "no check configured" else "--no-check") ++ "): this is a COMPILE verdict only") [] [d]
+      then took >>= \d -> setStatus s False (prefix ++ " -- CHECK SKIPPED (" ++ (if null (gChecks (sCfg s)) then "no check configured" else "a load compiles; `test` runs the check, \"watch_check\": true runs it on every save") ++ "): this is a COMPILE verdict only") [] [d]
       else void (runCheck s (Just t0) Nothing)
 
 countSub :: String -> String -> Int
@@ -1303,6 +1307,60 @@ moduleDelta old new
   where mods = filter isModuleName
         isModuleName a = not (null a) && all part (splitOn '.' a) && take 1 a /= "." && not ("." `isSuffixOf` a) && not (".." `isInfixOf` a)
         part p = case p of { (c : cs) -> isUpper c && all (\x -> isDigit x || x `elem` ("_'" :: String) || x `elem` ['a' .. 'z'] || x `elem` ['A' .. 'Z']) cs; [] -> False }
+
+-- | The configuration read again from @ghci-session.json@, and taken if it is not the one the session has:
+-- what was taken, in words. (The session read it when it started and never again: a check set in it, a unit or
+-- a watched directory added, did nothing until the session was stopped and started.) What a restart of the repl
+-- reads is then the new one -- its units, its options, its checks. What only a new daemon takes -- the history
+-- and its compactor, the state's place -- stays as it was. A file that does not parse is said, and not taken.
+reconfigure :: S -> IO (Maybe String)
+reconfigure s = do
+  r <- try (loadConf (sRoot s)) :: IO (Either SomeException (Either String Conf))
+  case r of
+    Right (Right conf) -> do
+      rootFiles <- sort . filter (\f -> ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f) <$> getDirectoryContents (sRoot s)
+      new <- fmap (withRootFiles rootFiles) <$> resolve conf (sName s)
+      was <- readFileMaybe (sDir s </> "config.taken")
+      now' <- readFileMaybe (sRoot s </> "ghci-session.json")
+      case new of
+        Right cfg | now' /= was -> do
+          writeIORef (sCfgV s) cfg
+          forM_ now' (writeAtomic (sDir s </> "config.taken"))
+          logS s "the configuration was read again (ghci-session.json changed)"
+          pure (Just "[ghci-session.json changed: the session is on the configuration as it is now]")
+        Right _ -> pure Nothing
+        Left e -> logS s ("ghci-session.json: " ++ e ++ " -- the configuration is kept as it was") >> pure Nothing
+    Right (Left e) -> logS s ("ghci-session.json does not read: " ++ e ++ " -- the configuration is kept as it was") >> pure Nothing
+    Left e -> logS s ("ghci-session.json does not read: " ++ displayException e ++ " -- the configuration is kept as it was") >> pure Nothing
+
+-- | The sources watched are the configuration's as it is now: another watcher, and the one before ends.
+rewatch :: S -> IO ()
+rewatch s = do
+  modifyIORef' (vWatchGen s) (+ 1)
+  void (forkIO (void (try (watchLoop s) :: IO (Either SomeException ()))))
+
+-- | The configuration's file is looked at every second: changed (and the same a second later, so not in the
+-- middle of being written), the session takes it -- the repl is restarted on it, under the work lock as any
+-- request is.
+configLoop :: S -> IO ()
+configLoop s = do
+  let file = sRoot s </> "ghci-session.json"
+      stamp = either (\(_ :: IOException) -> Nothing) Just <$> try (getModificationTime file)
+      go was = do
+        threadDelay 1000000
+        t <- stamp
+        if t == was then go was else do
+          threadDelay 500000
+          t' <- stamp
+          if t' /= t then go was else do
+            r <- try (withMVar (vWork s) $ \_ -> do
+                        said <- reconfigure s
+                        when (isJust said) $ do
+                          histEvent s "save: ghci-session.json (the configuration: a restart on it)" (void (restart s (Just False)))
+                          rewatch s) :: IO (Either SomeException ())
+            either (\e -> logS s ("the configuration: " ++ displayException e)) pure r
+            go t
+  stamp >>= go
 
 -- | A fresh repl. The servers that were running come back on the new code (a plain session's children die
 -- with its repl; a composed session's are kept if their code did not change).
@@ -2353,8 +2411,18 @@ dispatch :: S -> String -> Json -> IO (Maybe T.Text)
 dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside the lock too: its answer must not straddle a reload
   "eval" -> do
     -- (who asked is kept while it runs, for `interrupt`: only an evaluation is ever interrupted, and only its asker's)
-    out <- bracket_ (evalNow =: Just (fromMaybe "" (lookupStr "from" req))) (evalNow =: Nothing)
-             (cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req)))
+    r <- try (bracket_ (evalNow =: Just (fromMaybe "" (lookupStr "from" req))) (evalNow =: Nothing)
+               (cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req))))
+    out <- case r of
+      Right o -> pure o
+      -- It ran out of time and did not stop when interrupted (a loop that does not allocate cannot be): the
+      -- session would run it to its end before answering anything -- minutes, for an agent that then asks
+      -- again and waits behind it. So it is ended the one way there is, a restart, and the answer says so.
+      Left (ReplTimeout t False _) | gRestartStuck (sCfg s) -> do
+        logS s "eval: it ran out of time and did not stop when interrupted: the repl is restarted to end it"
+        v <- restart s (Just True)
+        throwIO (ReplDied (printf "timed out after %ds, and it did not stop when interrupted (a loop that does not allocate cannot be). The session was restarted to end it and is ready again: %s\n[the code loaded is as it was; what was bound at the prompt is gone. Run it on less, or with a larger timeout -- and if it is the library's own loop, it is interpreted unless the session has \"optimize\": true]" (round t :: Int) (takeWhile (/= '\n') v)))
+      Left e -> throwIO e
     vEvaluated s =: True
     warmAsync s          -- the unlink and its GC, once this answer is out: they are not the caller's to wait for
     pure (Just out)
@@ -2422,7 +2490,11 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     out <- runCheck s Nothing (lookupStr "member" req)
     warmAsync s
     pure (Just out)
-  "restart" -> Just . T.pack <$> restart s (Just (fromMaybe False (lookupBool "fast" req)))      -- asked for by hand: through the build tool unless --fast
+  "restart" -> do      -- asked for by hand: through the build tool unless --fast, and on the configuration as it is now
+    said <- reconfigure s
+    v <- restart s (Just (fromMaybe False (lookupBool "fast" req) && isNothing said))
+    when (isJust said) (rewatch s)
+    pure (Just (T.pack (maybe "" (++ "\n") said ++ v)))
   _ | op `elem` ["server", "zygote"] -> do     -- "zygote" with fork/refork: the names an older client of this protocol used
     let action = case fromMaybe "status" (lookupStr "action" req) of { "fork" -> "start"; "refork" -> "restart"; a -> a }
     reforkJoin s
@@ -2694,6 +2766,9 @@ runDaemon conf name bootCheck fastStart = do
       now >>= (vLastUsed s =:)     -- idle is counted from the end of the boot, not from the daemon's start
       addDepWatch s
       void (forkIO (void (try (watchLoop s) :: IO (Either SomeException ()))))
+      -- (what the session was started on, to tell a later change of the file by; and the file watched for one)
+      readFileMaybe (root </> "ghci-session.json") >>= mapM_ (writeAtomic (dir </> "config.taken"))
+      void (forkIO (void (try (configLoop s) :: IO (Either SomeException ()))))
       typecheckAsync s
       serve s `finally` do
         reforkJoin s

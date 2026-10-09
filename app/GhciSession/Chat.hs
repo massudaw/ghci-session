@@ -42,14 +42,16 @@ import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isAlphaNum, isSpace)
-import Data.List (groupBy, intercalate, isInfixOf, isPrefixOf, isSuffixOf, partition, sort, tails)
+import Data.List (group, groupBy, intercalate, isInfixOf, isPrefixOf, isSuffixOf, partition, sort, tails)
+import Data.Time (UTCTime)
+import Data.Time.Clock.POSIX (utcTimeToPOSIXSeconds)
 import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
-import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getTemporaryDirectory, listDirectory, removeFile)
+import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getFileSize, getModificationTime, getTemporaryDirectory, listDirectory, removeFile)
 import System.Environment (getArgs, getEnvironment, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (executeFile, getProcessID)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, sigTERM, signalProcess, signalProcessGroup)
@@ -233,6 +235,8 @@ verdictAt ch = do
           diag d = fromMaybe "?" (lookupStr "file" d) ++ ":" ++ maybe "?" (show . (round :: Double -> Int)) (lookupNum "line" d) ++ ":" ++ maybe "?" (show . (round :: Double -> Int)) (lookupNum "col" d)
                    ++ ": " ++ fromMaybe "" (lookupStr "severity" d) ++ ": " ++ trim (fromMaybe "" (lookupStr "message" d))
           behind = case lookupStr "kind" j of
+            -- (a session that could not start: the build tool's last words are why)
+            Just k | k `elem` ["DEAD", "PREBUILD-ERROR", "CONFIG-ERROR"] -> detail
             Just "COMPILE-ERROR" -> (if null errs then detail else map diag (take 12 errs) ++ [ "[... " ++ show (length errs - 12) ++ " more]" | length errs > 12 ])
             Just "CHECK-FAIL" -> detail
             Just "CHECK-HANG" -> detail
@@ -251,6 +255,9 @@ verdictAfter ch written secs = do
         t <- now
         v <- verdictAt ch
         case v of
+          -- (a session that is starting -- a build file was saved -- has no verdict yet: the start's is waited
+          -- for, as long as a start takes; "STALE(5) starting" was given as a save's verdict, and said nothing)
+          Just r | starting r -> if t - t0 >= max secs startWait then pure Nothing else threadDelay 250000 >> go running
           Just r | vStart r >= written - 0.05, not (vRunning r) -> pure (Just r)
           Just r | vStart r >= written - 0.05 -> do
             let since = fromMaybe t running
@@ -258,6 +265,17 @@ verdictAfter ch written secs = do
           _ | t - t0 >= secs -> pure Nothing
             | otherwise -> go running
   go Nothing
+
+-- | Is this the session saying it is starting, and no verdict?
+starting :: Verdict -> Bool
+starting r = case words (vLine r) of
+  ("starting" : _) -> True
+  (w : "starting" : _) -> "STALE(" `isPrefixOf` w
+  _ -> False
+
+-- | Seconds a save waits for a session that is starting to have started.
+startWait :: Double
+startWait = 180
 
 -- | Seconds a save waits, once its code compiles, for a check that runs: a quick check's verdict comes with
 -- the save; a longer one is not waited for -- the agent goes on, and gets it with a later tool result.
@@ -587,6 +605,27 @@ staleNow ch = (\r -> strs (r .: "stale")) <$> ask ch "status" []
 -- newly among those that differ from the loaded code, or a verdict newer than before the command -- else
 -- Nothing. (Not "files differ": with a compile error on disk the session stays that way until it is fixed,
 -- and a read-only command then waited the whole wait for a verdict that was never due.)
+-- | The watched sources and the build files as they are now: each with when it was written and its size. What a
+-- command changed of them is told by the difference -- a walk of the watched directories, a few milliseconds.
+sourceStamp :: Chat -> IO [(FilePath, Integer, Integer)]
+sourceStamp ch = do
+  rootFiles <- either (\(_ :: IOException) -> []) id <$> try (listDirectory (cDir ch))
+  let builds = [ f | f <- rootFiles, ".cabal" `isSuffixOf` f || "cabal.project" `isPrefixOf` f || f == "ghci-session.json" ]
+  sort . concat <$> mapM walk (nubOrd (cWatched ch ++ builds))
+  where
+    exts = [".hs", ".hs-boot", ".hsc", ".lhs", ".c", ".h", ".cabal", ".project", ".json", ".x", ".y"]
+    walk rel = do
+      let p = cDir ch </> rel
+      isDir <- doesDirectoryExist p
+      if isDir
+        then do
+          names <- either (\(_ :: IOException) -> []) id <$> try (listDirectory p)
+          concat <$> mapM (\n -> walk (rel </> n)) [ n | n <- names, take 1 n /= ".", n /= "dist-newstyle" ]
+        else if not (any (`isSuffixOf` rel) exts) && not ("cabal.project" `isPrefixOf` takeFileName rel) then pure [] else do
+          r <- try ((,) <$> getModificationTime p <*> getFileSize p) :: IO (Either IOException (UTCTime, Integer))
+          pure [ (rel, round (utcTimeToPOSIXSeconds t * 1000), n) | Right (t, n) <- [r] ]
+    nubOrd = map head . group . sort
+
 shSaved :: Chat -> Maybe Double -> [String] -> IO (Maybe (Bool, T.Text))
 shSaved _ Nothing _ = pure Nothing
 shSaved ch (Just written) staleBefore = do
@@ -959,13 +998,16 @@ fileTool ch name a = case name of
     up <- isJust <$> verdictAt ch
     written <- if up then Just <$> now else pure Nothing
     staleBefore <- staleNow ch
+    before <- if up then sourceStamp ch else pure []
     let cmd = fromMaybe "" (lookupStr "cmd" a)
     t0 <- now
     (ok, out) <- shTool (cDir ch) cmd (fromMaybe 120 (lookupNum "timeout" a))
     secs <- subtract t0 <$> now
+    after <- if up then sourceStamp ch else pure []
     -- a command that edited a watched source (sed -i, a generator, git) is a save too: the session reloads
     -- it, and the answer waits for that verdict as write and edit do, else the agent reloads by hand
-    pending <- shSaved ch written staleBefore
+    -- (only when it did: every command waited two seconds for a reload that most never cause)
+    pending <- if after == before then pure Nothing else shSaved ch written staleBefore
     -- a GHCi of the agent's own loads the project cold, every time, what the session has loaded warm
     let own | up && ownGhci cmd = T.pack (printf "\n[note: this started a GHCi of its own, loading the project cold (%.1fs); the session has it loaded -- eval, test with expr (one group of tests alone), typecheck answer from it in about a second]" secs)
             | otherwise = T.empty

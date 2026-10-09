@@ -177,6 +177,8 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `prebuild`, `preload`, `warm` | a command before each boot; expressions run before the imports; expressions run in the background after a reload |
 | `test` / `tests` | the expression to run after a good load, with a `pass` pattern, a `fail` pattern and a `log` file |
 | `watch_check` | run the check on every save (default off: a save compiles) |
+| `optimize` | load the session's code compiled and optimised (`-fobject-code -O1`) instead of interpreted: an evaluation of it, and what `bench` measures, run at the speed of the built code (default off: a reload compiles faster) |
+| `restart_stuck` | an evaluation that ran out of time and cannot be interrupted (a loop that does not allocate) is ended by restarting the repl, and its answer says so (default on; off: the session runs it to its end before answering anything) |
 | `watch_typecheck`, `watch_refork` | typecheck a save before reloading it (on); re-fork servers on a save (on) |
 | `reload_on_commit` | a new git HEAD is a full reload, with checks and re-fork |
 | `server` | `action`, optional `port`, `prefork`, `env`, `serve_on_load`, `verify_timeout` |
@@ -193,6 +195,11 @@ State lives in `.ghci-session/<session>/`: `status`, `status.json`, `load.log`, 
 `daemon.log`, `server-<member>.log`, the history, and `loaded_sources.tsv`, the signature the loaded code was built from.
 A failing check in a state directory where none has ever passed is marked `[NEVER-PASSED]`: suspect the target as
 much as the edit.
+
+`ghci-session.json` is read again while the session runs: a second after it is saved the session restarts its repl on
+it (a check set, a unit or a watched directory added, an option changed), and so does `restart`. What only a new
+daemon takes -- the history and its compactor -- needs `stop` and `start`. A file that does not parse is said in
+the log, and the configuration is kept as it was.
 
 ## Composed sessions
 
