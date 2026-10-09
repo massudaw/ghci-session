@@ -20,7 +20,7 @@ import System.Posix.Process (getProcessID)
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
-import GhciSession.Daemon (countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Daemon (ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
@@ -395,6 +395,10 @@ run = do
     else check "search: built without the fff flag, so never loaded" (not avail)
   grepRes <- Search.grep "." "cmdSearch" 10
   check "search: grep finds occurrences with line numbers" (case grepRes of { Right j -> fromMaybe 0 (lookupNum "count" j >>= Just . round) >= (1 :: Int); Left _ -> False })
+  eq "C: the build tool's command, from its response-file line" (ccWords "GHC response file arguments: '-package-env=-' -c -fPIC -odir /b/build -I/b/build/autogen -optc-O2 '-optc-DA B' cbits/tui.c -Wall")
+     ["-package-env=-", "-c", "-fPIC", "-odir", "/b/build", "-I/b/build/autogen", "-optc-O2", "-optc-DA B", "cbits/tui.c", "-Wall"]
+  eq "C: the build tool's command, from a line that runs the compiler" (ccWords "Running: /usr/bin/ghc -c -odir /b cbits/x.c") ["-c", "-odir", "/b", "cbits/x.c"]
+  eq "C: another line of the build tool's is no command" (ccWords "Preprocessing library for ghostty-tui-0.1.0.0...") []
   eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
   eq "chat: a lone write is not a batch" (writeRuns ["write", "read", "edit", "sh", "write"]) []
   eq "chat: writes to distinct files are separate groups, those sharing one stay together in order"

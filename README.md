@@ -73,11 +73,22 @@ What a save does depends on where it is:
 | a save in | does |
 |---|---|
 | a loaded package, `.hs` | a reload |
-| a loaded package, `.c` / `.h` | a restart through the build tool (a loaded C object cannot be replaced) |
+| a loaded package, `.c` / `.h` | the C is compiled and taken by the running repl, no restart (GHC 9.14; a restart where that cannot be done) |
 | a `.cabal` or `cabal.project` | the build tool is asked what it changes; a restart if it is a new package set |
 | a local package the repl uses without loading (a library the executable depends on), `.hs` / `.c` / `.h` | that package is built and the repl restarted: it is object code, so it cannot be reloaded |
 
 The sources of those packages are found from the build tool's plan and watched without being listed in `watch`.
+
+A loaded C object cannot be replaced, but it can be superseded, as a reloaded module is. The changed source is
+compiled with the build tool's own command, the object linked as the newest, and the modules that call into it
+(its unit's, and whatever imports them) linked again when next needed, bound to the new C. A header is every C
+source of its unit. The command is learned from the build tool the first time a unit's C changes (it is asked to
+build that unit once, which takes what a build takes) and kept with the start it belongs to; after that a C save
+is a few tenths of a second. C that does not compile is a `COMPILE-ERROR` with the compiler's words, and the
+session goes on running what it had. Two things to know: the library with the old C stays mapped, so a pointer
+into it stays good, and **what the C keeps in its own variables starts again from nothing** in the new object --
+a handle it opened, a table it filled. A restart is what it was: a source of no loaded unit, a build file changed
+with it, a session with a `repl` command of its own.
 
 To make an edit to such a package a reload instead, load it: name it in `units` beside the others
 (`"units": ["lib:app", "lib:its-library"]`). The build tool's multi-unit repl takes libraries, not executables, so a

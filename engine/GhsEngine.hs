@@ -66,11 +66,15 @@ import GHC.Driver.Backend (noBackend)
 import GHC.Driver.Session (DynFlags (..), GeneralFlag (..), GhcLink (..), gopt_set, xopt)
 import GHC.LanguageExtensions (Extension (QuasiQuotes, TemplateHaskell))
 import GHC.Driver.Env (hscInterp, hsc_mod_graph)
+import GHC.Settings.Config (cProjectVersionInt)
+import GHC.Linker.Loader (loadCmdLineLibs)
+import GHC.Runtime.Interpreter (purgeLookupSymbolCache)
+import GHC.Utils.CliOption (Option (..))
 import GHC.Types.Basic (SuccessFlag (..))
 import GHC.Linker.Types (Linkable, Loader (..), LoaderState (..), linkableObjs)
 import GHC.Runtime.Interpreter.Types (interpLoader)
-import GHC.Unit.Module.Env (extendModuleEnv, moduleEnvToList)
-import GHC.Unit.Types (Module, isInteractiveModule)
+import GHC.Unit.Module.Env (delModuleEnvList, extendModuleEnv, moduleEnvToList)
+import GHC.Unit.Types (Module, isInteractiveModule, moduleUnitId)
 import GHC.Driver.Session (thisPackageName, workingDirectory)
 import GHC.Tc.Module (TcRnExprMode (..))
 import GHC.Types.Error (MessageClass (..), Severity (..))
@@ -393,6 +397,44 @@ keepLinked = do
         liftIO $ modifyMVar_ v $ \st -> pure (fmap (\pls -> pls { objs_loaded = foldl (\env (m, l) -> extendModuleEnv env m l) (objs_loaded pls) back }) st)
         pure (length back, length lost - length back, [ GHC.moduleNameString (GHC.moduleName m) | (m, _) <- infos, not (S.member m stands) ])
 
+-- | C objects compiled again, in place of the ones the session has: no restart.
+--
+-- Nothing is unloaded. The objects are linked as GHCi links the ones on its command line -- a new temporary
+-- library, the newest -- and the modules that call into them are forgotten as linked, so that a command that
+-- needs one links it again: a temporary library is linked against the others newest first, so the module's
+-- calls are bound to the new C (seen in the libraries: the relinked one imports the name from the new one).
+-- The library with the old C stays mapped, as a superseded module's does, so a pointer into it -- a signal
+-- handler, a callback -- stays good; and what the new C keeps in its own variables starts again from nothing.
+--
+-- Forgotten: the modules of @units@ (the units whose C it is) and every module that imports one of them,
+-- however far. Two things an unload does are done here by hand: every unit's own inputs are loaded already, so
+-- only the new objects are given to the loader, in one unit (given in all, each was loaded once a unit, the
+-- OLD objects after the new one); and a name's address is remembered once looked up, so those are forgotten
+-- (without it the next command called the code linked before).
+loadObjects :: [FilePath] -> [String] -> GHCi Json
+loadObjects objs units
+  | cProjectVersionInt < "914" = pure (failed "a GHCi before 9.14 takes its C objects at the start only (not tried there)")
+  | otherwise = do
+      hsc <- GHC.getSession
+      let one = take 1 [ uid | (uid, _, _) <- homeUnits hsc ]
+          hsc' = mapUnitFlags (\uid d -> d { ldInputs = if [uid] == one then map (FileOption "") objs else [] }) hsc
+      r <- liftIO (try (loadCmdLineLibs (hscInterp hsc) hsc') :: IO (Either SomeException ()))
+      case r of
+        Left x -> pure (failed (takeWhile (/= '\n') (show x)))
+        Right () -> do
+          v <- loaderVar
+          loaded <- liftIO (maybe [] (map fst . moduleEnvToList . objs_loaded) <$> readMVar v)
+          deps <- liftIO $ forM [ m | m <- loaded, not (isInteractiveModule m) ] $ \m -> (,) m . maybe [] snd <$> homeObject hsc m
+          let mine m = unitIdString (moduleUnitId m) `elem` units
+              grow gone = let gone' = S.union gone (S.fromList [ m | (m, ds) <- deps, any (`S.member` gone) ds ])
+                          in if S.size gone' == S.size gone then gone else grow gone'
+              gone = S.toList (grow (S.fromList [ m | (m, _) <- deps, mine m ]))
+          liftIO $ modifyMVar_ v (pure . fmap (\pls -> pls { objs_loaded = delModuleEnvList (objs_loaded pls) gone }))
+          liftIO (purgeLookupSymbolCache (hscInterp hsc))
+          links <- liftIO (maybe 0 (length . temp_sos) <$> readMVar v)
+          pure (JObj [ ("relink", JNum (fromIntegral (length gone))), ("relink_modules", JArr [ JStr (GHC.moduleNameString (GHC.moduleName m)) | m <- take 12 gone ])
+                     , ("kept_linked", JNum (fromIntegral (length deps - length gone))), ("links", JNum (fromIntegral links)) ])
+
 undefinedLinkable :: Linkable
 undefinedLinkable = error "a module that is not loaded has no linkable"      -- (never put back: its entry says so)
 
@@ -497,6 +539,8 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
     liftIO ((if lookupBool "live" q == Just True then benchOf else benchQuick) (arg "expr") (unsafeCoerce hv :: IO ()))
     pure (JObj [])
   "heap_auto" -> liftIO (heapAuto (if lookupBool "on" q == Just True then 1 else 0)) >> pure (JObj [])
+  -- C objects compiled again, taken by the running engine in place of the ones it has ('loadObjects')
+  "load_objects" -> loadObjects [ f | JStr f <- lookupArr "files" q ] [ u | JStr u <- lookupArr "units" q ]
   "capabilities" -> liftIO (setNumCapabilities (max 1 (round (fromMaybe 1 (lookupNum "n" q)))) >> pure (JObj []))
   other -> pure (failed ("unknown query " ++ show other))
   where

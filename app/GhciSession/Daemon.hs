@@ -6,7 +6,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)
@@ -18,7 +18,7 @@ import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isDigit, isSpace, isUpper, toLower)
 import Data.IORef
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, partition, sort, sortOn, (\\))
+import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, nubBy, partition, sort, sortOn, (\\))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -30,7 +30,7 @@ import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import System.Directory
 import System.Environment (getEnvironment, getExecutablePath, lookupEnv)
 import System.Exit (ExitCode (..))
-import System.FilePath (addTrailingPathSeparator, isAbsolute, makeRelative, replaceExtension, takeDirectory, takeExtension, takeFileName, (</>))
+import System.FilePath (addTrailingPathSeparator, isAbsolute, makeRelative, normalise, replaceExtension, takeDirectory, takeExtension, takeFileName, (</>))
 import System.IO
 import System.Info (os)
 import Data.Word (Word64)
@@ -39,7 +39,7 @@ import System.Posix.IO (closeFd, fdToHandle)
 import System.Posix.Process (getProcessID)
 import System.Posix.Signals (sigKILL, sigTERM, signalProcess)
 import System.Posix.Types (CPid (..))
-import System.Process (CreateProcess (..), StdStream (..), createProcess, readCreateProcessWithExitCode, shell, terminateProcess, waitForProcess)
+import System.Process (CreateProcess (..), StdStream (..), createProcess, proc, readCreateProcessWithExitCode, shell, terminateProcess, waitForProcess)
 import System.Timeout (timeout)
 import Text.Printf (printf)
 
@@ -1193,6 +1193,8 @@ boot s how = do
       writeAtomic outF ""
       pure l
     Nothing -> do
+      -- (the build tool is asked again: how it compiles each unit's C is asked again too -- 'learnC')
+      void (try (removeDirectoryRecursive (launchDir </> "cc")) :: IO (Either IOException ()))
       r <- phase s "build" (captureLaunch line (sRoot s) env' launchDir outF (gLoadTimeout cfg) (logS s))
       case r of
         Right l -> do
@@ -1690,10 +1692,12 @@ applyChanges s run cur2 = do
     let inDep p = let a = sRoot s </> p in any (\d -> a == d || addTrailingPathSeparator d `isPrefixOf` a) deps
         (depCh, ownCh) = partition inDep changed
     saved <- saveLine s changed
-    if any cSrc ownCh
+    if any cSrc ownCh && (any buildFile ownCh || not (null depCh))
       then do
-        logS s "a .c/.h changed: restarting the repl (a loaded C object cannot be replaced)"
+        logS s "a .c/.h changed, and a build file or a dependency with it: restarting the repl"
         histEvent s (saved ++ " (a restart)") (run (void (restart s (Just False))))      -- (through the build tool: it is what compiles a package's C)
+    else if any cSrc ownCh
+      then histEvent s (saved ++ " (C)") (run (cChanged s (filter cSrc ownCh)))
     else if not (null depCh)
       then do
         logS s ("a local dependency's source changed (" ++ unwords (take 3 depCh) ++ "): building it and restarting the repl (it is object code, not reloadable)")
@@ -1703,6 +1707,155 @@ applyChanges s run cur2 = do
     else do
       logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
       histEvent s saved (run (watchReload s))
+
+-- the C of the loaded units, compiled again and taken by the running repl ------------------------
+--
+-- A loaded C object cannot be replaced, so a saved @.c@ was a restart: the build tool, and every module loaded
+-- again. It can be SUPERSEDED, as a reloaded module is (the engine's @load_objects@): the source compiled here,
+-- the object linked as the newest, and the modules that call into it linked again when next needed.
+--
+-- Compiled here with the build tool's own command, which nothing writes down: the unit's flags say where its
+-- headers are but not its C options. So the first time a unit's C changes the build tool is asked to build that
+-- unit, verbosely, and the command it ran is kept beside the start it belongs to (@launch/<hash>/cc/@, so a
+-- changed build file, which is another start, asks again); from then on the compiler is run directly, in the
+-- unit's directory, into the session's own directory (@cobj/@ -- the build tool's objects are left as it built
+-- them). A header is every C source of its unit. What cannot be done this way -- a source of no loaded unit, a
+-- session with a repl command of its own, an engine that does not take objects -- is a restart, as before; and C
+-- that does not compile is a COMPILE-ERROR with the compiler's words, the session running what it had.
+
+-- | A loaded unit's C: where it is compiled, where its objects go, and each source with its object.
+data CUnit = CUnit { cuId :: String, cuWd :: FilePath, cuOdir :: FilePath, cuC :: [(FilePath, FilePath)] }
+
+-- | The units of a start and their C (the unit files as the build tool wrote them; one unit: the arguments).
+cUnits :: Launch -> IO [CUnit]
+cUnits l = do
+  let files = [ f | ('@' : f) <- lArgs l ]
+  argss <- if null files then pure [lArgs l] else mapM (fmap (maybe [] lines) . readFileMaybe) files
+  fmap catMaybes $ forM argss $ \as -> do
+    let after k = listToMaybe [ v | (a, v) <- zip as (drop 1 as), a == k ]
+        wd = fromMaybe (lCwd l) (after "-working-dir")
+        absIn q = normalise (if isAbsolute q then q else wd </> q)
+    case (after "-this-unit-id", after "-odir") of
+      (Just uid, Just od) -> do
+        let odir = absIn od
+        cs <- fmap catMaybes $ forM [ absIn a | a <- as, ".o" `isSuffixOf` a, take 1 a /= "-" ] $ \o -> do
+          let rel = makeRelative odir o
+              src = normalise (wd </> replaceExtension rel "c")
+          ok <- if isAbsolute rel then pure False else doesFileExist src
+          pure (if ok then Just (src, o) else Nothing)
+        pure (Just (CUnit uid wd odir cs))
+      _ -> pure Nothing
+
+data COutcome = CDone Int [String] Double | CError FilePath [String] | CCannot String
+
+-- | A saved @.c@ or @.h@ of a loaded unit: its C compiled and taken, then what a save does (a reload, the check).
+cChanged :: S -> [FilePath] -> IO ()
+cChanged s changed = do
+  r <- try (reloadC s changed) :: IO (Either SomeException COutcome)
+  case r of
+    Right (CDone n names secs) -> do
+      logS s ("C: " ++ unwords (map takeFileName changed) ++ " compiled and taken in " ++ showG (r2 secs) ++ "s; " ++ show n ++ " module(s) to link again"
+              ++ (if null names then "" else " (" ++ unwords names ++ ")"))
+      watchReload s
+    Right (CError f out) -> do
+      logS s ("C: " ++ f ++ " does not compile")
+      setStatus s False ("COMPILE-ERROR: " ++ takeFileName f ++ " (C)  [NOT taken -- the session still runs the last code that compiled]") (lastN 30 out) []
+    Right (CCannot why) -> restartFor why
+    Left e -> restartFor (takeWhile (/= '\n') (displayException e))
+  where restartFor why = do
+          logS s ("a .c/.h changed: restarting the repl (" ++ why ++ ")")
+          void (restart s (Just False))
+
+reloadC :: S -> [FilePath] -> IO COutcome
+reloadC s changed = do
+  t0 <- now
+  mb <- rd (vBoot s)
+  case mb of
+    Nothing -> pure (CCannot "no start is recorded")
+    Just b -> do
+      units <- cUnits (bLaunch b)
+      let absP q = normalise (sRoot s </> q)
+          ofSource c = [ (u, sc) | u <- units, sc@(src, _) <- cuC u, src == c ]
+          -- (a header is its unit's: the unit whose directory holds it, the innermost when one is inside another)
+          ofHeader h = let holds = [ u | u <- units, addTrailingPathSeparator (cuWd u) `isPrefixOf` h, not (null (cuC u)) ]
+                           deep = maximum (0 : map (length . cuWd) holds)
+                       in [ (u, sc) | u <- holds, length (cuWd u) == deep, sc <- cuC u ]
+          found = [ (q, if ".h" `isSuffixOf` q then ofHeader (absP q) else ofSource (absP q)) | q <- changed ]
+          work = nubBy (\(_, a) (_, c) -> snd a == snd c) (concatMap snd found)
+      case [ q | (q, []) <- found ] of
+        (q : _) -> pure (CCannot (q ++ " is not the C of a loaded unit"))
+        [] -> do
+          let us = nubBy (\a c -> cuId a == cuId c) (map fst work)
+          have <- mapM (cTemplate b) us
+          tmpls <- if all isJust have then pure have else do
+            learned <- learnC s b units us
+            if learned then mapM (cTemplate b) us else pure have
+          case sequence tmpls of
+            Nothing -> pure (CCannot "how the build tool compiles this unit's C is not known")
+            Just ts -> do
+              built <- forM work $ \(u, (src, _)) -> do
+                let tmpl = fromMaybe [] (lookup (cuId u) (zip (map cuId us) ts))
+                    out = sDir s </> "cobj" </> cuId u
+                    rel = makeRelative (cuWd u) src
+                    args = setOdir out tmpl ++ [rel]
+                createDirectoryIfMissing True out
+                (ec, o, e) <- readCreateProcessWithExitCode (proc "ghc" args) { cwd = Just (cuWd u) } ""
+                pure (if ec == ExitSuccess then Right (out </> replaceExtension rel "o") else Left (src, lines (o ++ e)))
+              case [ x | Left x <- built ] of
+                ((src, said) : _) -> pure (CError (makeRelative (sRoot s) src) said)
+                [] -> do
+                  Reply j _ <- theRepl s >>= \rp -> replQueryOut rp (Just 120) "load_objects"
+                                 [("files", JArr [ JStr o | Right o <- built ]), ("units", JArr (map (JStr . cuId) us))]
+                  t1 <- now
+                  pure $ case lookupStr "error" j of
+                    Just why -> CCannot why
+                    Nothing -> CDone (maybe 0 round (lookupNum "relink" j)) [ m | JStr m <- lookupArr "relink_modules" j ] (t1 - t0)
+  where
+    setOdir out as = case as of
+      ("-odir" : _ : rest) -> "-odir" : out : rest
+      (a : rest) -> a : setOdir out rest
+      [] -> []
+
+-- | The build tool's command for a unit's C, as it was last seen (the arguments, without the source).
+cTemplate :: Boot -> CUnit -> IO (Maybe [String])
+cTemplate b u = fmap (filter (not . null) . lines) <$> readFileMaybe (bLaunchDir b </> "cc" </> cuId u)
+
+-- | Have the build tool build these units, verbosely, and keep the command it compiles each unit's C with.
+-- Did any command turn up?
+learnC :: S -> Boot -> [CUnit] -> [CUnit] -> IO Bool
+learnC s b units us = case gRepl cfg of
+  Just _ -> pure False        -- (a repl command of its own: how to ask for a build is not known)
+  Nothing -> do
+    -- the targets that are these units, by name (a unit id starts with its package's); all of them when none is
+    let named = [ t | t <- gUnits cfg, any (\u -> drop 1 (dropWhile (/= ':') t) `isPrefixOf` cuId u) us ]
+        line = unwords (filter (not . null) ["cabal build -v2", gCabalArgs cfg, unwords (if null named then gUnits cfg else named)])
+    logS s ("C: asking the build tool how it compiles it, once: " ++ line)
+    (_, o, e) <- readCreateProcessWithExitCode (shell line) { cwd = Just (sRoot s) } ""
+    let cmds = [ ws | l <- lines (o ++ e), let ws = ccWords l, "-c" `elem` ws, "-odir" `elem` ws, "-dynamic" `notElem` ws
+                    , any (".c" `isSuffixOf`) ws ]
+        odirOf ws = listToMaybe [ v | (a, v) <- zip ws (drop 1 ws), a == "-odir" ]
+    kept <- forM units $ \u -> case [ ws | ws <- cmds, fmap normalise (odirOf ws) == Just (cuOdir u) ] of
+      (ws : _) -> do
+        createDirectoryIfMissing True (bLaunchDir b </> "cc")
+        writeAtomic (bLaunchDir b </> "cc" </> cuId u) (unlines [ w | w <- ws, not (".c" `isSuffixOf` w) ])
+        pure True
+      [] -> pure False
+    pure (or kept)
+  where cfg = sCfg s
+
+-- | A line of the build tool's verbose output as a command's words, if it is one: after @Running: PROGRAM@ or
+-- @GHC response file arguments:@, split at spaces, a word in single quotes whole.
+ccWords :: String -> [String]
+ccWords l
+  | Just r <- strip "GHC response file arguments: " = go r
+  | Just r <- strip "Running: " = drop 1 (go r)
+  | otherwise = []
+  where
+    strip pre = if pre `isPrefixOf` l then Just (drop (length pre) l) else Nothing
+    go str = case dropWhile (== ' ') str of
+      [] -> []
+      ('\'' : r) -> let (w, r') = break (== '\'') r in w : go (drop 1 r')
+      r -> let (w, r') = break (== ' ') r in w : go r'
 
 showG :: Double -> String
 showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
