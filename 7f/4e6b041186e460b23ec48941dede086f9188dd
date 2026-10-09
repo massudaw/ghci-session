@@ -1,0 +1,27 @@
+tools/fake-llm.py
+  s_ee2f22f51d8bdb::t_79e6f7ee50f134 23-24,190-191,203-210
+cbits/ghs_http.c
+  s_ee2f22f51d8bdb::t_bc0c805d8774de 12-13,30-33,83-115,128-131,133,140,154-158
+  s_ee2f22f51d8bdb::t_1d560f05fc52c5 159
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_be25fbb07c8c5c 1033-1034
+  s_ee2f22f51d8bdb::t_79e6f7ee50f134 1018
+app/GhciSession/Llm.hs
+  s_ee2f22f51d8bdb::t_be25fbb07c8c5c 16,21,44-45,48-66,168-175,178-179,183-202,206,209,211-214,216-217,225,232,234-239,247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7f4e6b041186e460b23ec48941dede086f9188dd",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
