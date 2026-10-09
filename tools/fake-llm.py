@@ -25,7 +25,7 @@ imitation of the prompt cache (usage then reports nothing read from it). FAKE_BU
 requests 429 with a Retry-After of one second, on either side.
 """
 import hashlib, os
-import json, re, sys, time
+import base64, json, re, sys, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 def text_of(m):
@@ -75,6 +75,34 @@ def a_text(content):
         return content
     return "".join(b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text")
 
+MAGIC = {"image/png": b"\x89PNG", "image/jpeg": b"\xff\xd8\xff", "image/gif": b"GIF8", "image/webp": b"RIFF"}
+
+def a_image(b, k):
+    """An image block as the API takes it: base64, a media type it knows, bytes that are of that type, 5 MB."""
+    src = b.get("source") or {}
+    if src.get("type") != "base64" or src.get("media_type") not in MAGIC:
+        raise Bad("messages.%d: image.source: base64, with media_type one of %s" % (k, sorted(MAGIC)))
+    data = src.get("data") or ""
+    if len(data) > 5 * 1024 * 1024:
+        raise Bad("messages.%d: image exceeds 5 MB maximum" % k)
+    try:
+        raw = base64.b64decode(data, validate=True)
+    except Exception:
+        raise Bad("messages.%d: image.source.data: invalid base64" % k)
+    if not raw.startswith(MAGIC[src["media_type"]]):
+        raise Bad("messages.%d: image does not match the provided media type %s" % (k, src["media_type"]))
+    return src["media_type"], len(raw)
+
+def a_images(blocks):
+    """The images of a message's blocks, a tool result's with them."""
+    out = []
+    for b in blocks:
+        if b.get("type") == "image":
+            out.append(a_image(b, 0))
+        elif b.get("type") == "tool_result" and isinstance(b.get("content"), list):
+            out += a_images(b["content"])
+    return out
+
 def a_check(body):
     """What the real API would refuse, refused."""
     msgs = body.get("messages")
@@ -113,6 +141,17 @@ def a_check(body):
                 if b.get("tool_use_id") not in prev_uses:
                     raise Bad("messages.%d: tool_result for %r, which is no tool_use of the previous message" % (k, b.get("tool_use_id")))
                 results.add(b.get("tool_use_id"))
+                if isinstance(b.get("content"), list):
+                    for c in b["content"]:
+                        if c.get("type") == "image":
+                            a_image(c, k)
+                        elif c.get("type") != "text":
+                            raise Bad("messages.%d: tool_result content takes text and image blocks" % k)
+            elif t == "image":
+                if role != "user":
+                    raise Bad("messages.%d: image blocks belong in a user message" % k)
+                a_image(b, k)
+                seen_other = True
             elif t == "tool_use":
                 if role != "assistant":
                     raise Bad("messages.%d: tool_use blocks belong in an assistant message" % k)
@@ -187,6 +226,10 @@ def a_reply(body):
     if not tools:
         m = re.search(r"<input>(.*?)</input>", said, re.S)
         return [thought, {"type": "text", "text": "fake summary: " + re.sub(r"\s+", " ", (m.group(1) if m else said).strip())[:120]}], "end_turn"
+    # an image in the last message is said back: how many, of what type and size
+    pics = a_images(blocks)
+    if pics:
+        return [thought, {"type": "text", "text": "I see %d image(s): %s" % (len(pics), ", ".join("%s of %d bytes" % p for p in pics))}], "end_turn"
     if results and not said:
         c = results[-1].get("content")
         return [thought, {"type": "text", "text": "The tool answered: " + (c if isinstance(c, str) else a_text(c))[:300]}], "end_turn"

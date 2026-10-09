@@ -145,23 +145,26 @@ toMessages msgs = ( [ t | m <- msgs, role m == "system", Just t <- [lookupText "
     role m = fromMaybe "" (lookupStr "role" m)
     text m = fromMaybe T.empty (lookupText "content" m)
     one m = case role m of
-      "user" -> [("user", [textBlock (text m)])]
+      "user" -> [("user", textBlock (text m) : images m)]
       "assistant" -> case m .: "anthropic_content" of
         -- (the reply's own blocks, as they came: its thinking has to go back unchanged)
         JArr bs | not (null bs) -> [("assistant", bs)]
         _ -> case [ textBlock (text m) | not (T.null (T.strip (text m))) ] ++ map toolUse (lookupArr "tool_calls" m) of
           [] -> []          -- (a reply with nothing in it is no turn: the API takes no empty one)
           bs -> [("assistant", bs)]
-      "tool" -> [("user", [JObj ([ ("type", JStr "tool_result"), ("tool_use_id", JStr (fromMaybe "" (lookupStr "tool_call_id" m))), ("content", JText (orSay "(no output)" (text m))) ]
+      "tool" -> [("user", [JObj ([ ("type", JStr "tool_result"), ("tool_use_id", JStr (fromMaybe "" (lookupStr "tool_call_id" m))), ("content", result m) ]
                                  ++ [ ("is_error", JBool True) | T.pack "ERROR: " `T.isPrefixOf` text m ])])]
       _ -> []
+    -- (the images a message names, put there by 'GhciSession.Image.attach': after its text)
+    images m = lookupArr "images" m
+    result m = let t = orSay "(no output)" (text m) in if null (images m) then JText t else JArr (textBlock t : images m)
     toolUse tc = let f = tc .: "function" in JObj
       [ ("type", JStr "tool_use"), ("id", JStr (fromMaybe "" (lookupStr "id" tc))), ("name", JStr (fromMaybe "" (lookupStr "name" f)))
       , ("input", case parseJson (fromMaybe "{}" (lookupStr "arguments" f)) of { Right j@(JObj _) -> j; _ -> JObj [] }) ]
     textBlock t = JObj [("type", JStr "text"), ("text", JText (orSay "(nothing)" t))]
     orSay d t = if T.null (T.strip t) then T.pack d else t
     -- the first user message is the turn's: its view goes as blocks
-    firstView ((("user", [b])) : rest) | Just t <- lookupText "text" b = ("user", viewBlocks t) : rest
+    firstView ((("user", b : more)) : rest) | Just t <- lookupText "text" b = ("user", viewBlocks t ++ more) : rest
     firstView ms = ms
     merge ((r, a) : (r', b) : rest) | r == r' = merge ((r, a ++ b) : rest)
     merge (m : rest) = m : merge rest

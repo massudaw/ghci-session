@@ -93,12 +93,13 @@ errorReply rid code msg = JObj [("jsonrpc", JStr "2.0"), ("id", rid), ("error", 
 
 -- | One message: a reply for a request, none for a notification.
 handle :: Conf -> Json -> IO (Maybe Json)
-handle conf = handleWith tools (call conf)
+handle conf = handleWith tools (call conf) (\_ -> pure [])
 
--- | The same server over other tools: the ones given, each run by the function given. (The chat serves its own
+-- | The same server over other tools: the ones given, each run by the function given. The last argument: blocks to
+-- send after an answer's text. (The chat serves its own
 -- this way, to an agent program that runs its tools itself -- "GhciSession.Chat".)
-handleWith :: [Tool] -> (String -> Json -> IO (Bool, T.Text)) -> Json -> IO (Maybe Json)
-handleWith served run req = case (lookupStr "method" req, req .: "id") of
+handleWith :: [Tool] -> (String -> Json -> IO (Bool, T.Text)) -> (T.Text -> IO [Json]) -> Json -> IO (Maybe Json)
+handleWith served run more req = case (lookupStr "method" req, req .: "id") of
   (Just "initialize", rid) -> pure (Just (result rid (JObj
     [ ("protocolVersion", JStr (fromMaybe "2025-06-18" (lookupStr "protocolVersion" (req .: "params"))))
     , ("capabilities", JObj [("tools", JObj [("listChanged", JBool False)])])
@@ -112,7 +113,9 @@ handleWith served run req = case (lookupStr "method" req, req .: "id") of
         args = ps .: "arguments"
     r <- try (run name args) :: IO (Either SomeException (Bool, T.Text))
     let (ok, out) = either (\e -> (False, T.pack (show e))) id r
-    pure (Just (result rid (JObj [("content", JArr [JObj [("type", JStr "text"), ("text", JText out)]]), ("isError", JBool (not ok))])))
+    -- (what goes with the answer's text: the images it names, for the chat's tools)
+    extra <- either (\(_ :: SomeException) -> []) id <$> try (more out)
+    pure (Just (result rid (JObj [("content", JArr (JObj [("type", JStr "text"), ("text", JText out)] : extra)), ("isError", JBool (not ok))])))
   (Just m, JNull) | "notifications/" `isPrefixOfS` m -> pure Nothing      -- initialized, cancelled: nothing to say
   (Just m, rid) -> pure (Just (errorReply rid (-32601) ("unknown method " ++ show m)))
   (Nothing, rid) -> pure (Just (errorReply rid (-32600) "no method"))

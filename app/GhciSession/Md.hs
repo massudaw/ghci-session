@@ -16,6 +16,9 @@ module GhciSession.Md
 import Data.Char (isDigit, isSpace)
 import Data.List (intercalate, isPrefixOf)
 
+import qualified Data.Text as T
+
+import qualified GhciSession.Image as Img
 import Tui
 
 type Span = (Style, String)
@@ -34,6 +37,7 @@ mdLines w = go . lines . filter (/= '\r')
   where
     go [] = []
     go (l : rest)
+      | Just n <- Img.isMarker (T.pack l) = imageLine n : go rest
       | Just lang <- fence l =
           let (body, after) = break (\x -> fence x /= Nothing) rest
               shown = if lang == "diff" || looksDiff body then map diffLine body else map (\x -> [(dim plain, "│ "), (yellow plain, x)]) body
@@ -80,6 +84,10 @@ mdLines w = go . lines . filter (/= '\r')
                 (h : body) -> row h : line : map row body
                 [] -> []
     visible = sum . map (putWidth . snd)
+
+-- | The line that stands for an image ("GhciSession.Image"): the screen is cells, so its name is what is shown.
+imageLine :: String -> [Span]
+imageLine n = [(withFg (Ansi 5) plain, "▣ image "), (dim plain, n)]
 
 trim :: String -> String
 trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
@@ -129,6 +137,7 @@ outputLines = go False . lines . filter (/= '\r')
     go _ [] = []
     go False (a : b : rest) | "--- " `isPrefixOf` a, "+++ " `isPrefixOf` b = diffLine a : diffLine b : go True rest
     go False (l : rest) | "diff --git " `isPrefixOf` l = diffLine l : go True rest
+    go False (l : rest) | Just n <- Img.isMarker (T.pack l) = imageLine n : go False rest
     go False (l : rest) = [(plain, l)] : go False rest
     go True (l : rest) | inDiff l = diffLine l : go True rest
                        | otherwise = go False (l : rest)

@@ -59,6 +59,7 @@ import System.Process
 import System.Timeout (timeout)
 import Text.Printf (printf)
 import qualified GhciSession.Search as Search
+import qualified GhciSession.Image as Img
 import qualified GhciSession.Vfs as Vfs
 
 import GhciSession.ChatTui (chatTui)
@@ -156,6 +157,14 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
 usageFile ch = cStateDir (cConf ch) </> cName ch </> "usage.jsonl"
+
+-- | Where the session's images are kept ("GhciSession.Image").
+imagesDir :: Chat -> FilePath
+imagesDir ch = cStateDir (cConf ch) </> cName ch </> "images"
+
+-- | Lines typed, with the images they name.
+typedLines :: Chat -> [T.Text] -> IO [T.Text]
+typedLines ch = mapM (Img.typed (imagesDir ch) (cDir ch))
 
 -- | Is this path one the daemon watches (its targets' directories), or a build file? A save of one has a verdict.
 watches :: Chat -> FilePath -> Bool
@@ -388,7 +397,7 @@ sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "cen
 chatTools :: [Tool]
 chatTools =
   [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
-  ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
+  ++ [ Tool "read" "A file of the project, with line numbers. An image (png, jpeg, gif, webp) is shown to you as an image." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
      , Tool "grep" "Search file contents across the project for an identifier, function, or pattern using the high-speed FFF SIMD engine. Returns line numbers, content, and git status. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
      , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the write changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
@@ -577,19 +586,24 @@ shSaved ch (Just written) staleBefore = do
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
 fileTool ch name a = case name of
   "read" -> withPath $ \p -> do
-    t <- decode <$> B.readFile p
-    let start = max 1 (maybe 1 round (lookupNum "start" a))
-        n = maybe 200 round (lookupNum "lines" a) :: Int
-        allLines = if T.null t then [] else T.splitOn (T.pack "\n") t
-        totalLines = length allLines
-        ls = zip [1 :: Int ..] allLines
-        shown = [ T.pack (printf "%5d  " i) <> l | (i, l) <- ls, i >= start, i < start + n ]
-        endLine = if null shown then 0 else start + length shown - 1
-        budgetStr = Vfs.formatLineBudget totalLines 250
-        remaining = 250 - totalLines
-        remStr = (if remaining >= 0 then printf "(%d lines remaining)" remaining else printf "(%d lines OVER BUDGET!)" (abs remaining)) :: String
-        header = T.pack (printf "[%s: lines %d-%d of %d | %s %s]\n" rel (if null shown then 0 else start) endLine totalLines budgetStr remStr)
-    pure (True, header <> if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
+    bytes <- B.readFile p
+    case Img.kindOf bytes of
+      -- (an image: kept, and named in the answer by the line that stands for it)
+      Just _ -> either (\why -> (False, T.pack (rel ++ ": " ++ why))) (\(n, said) -> (True, T.pack (printf "[%s: %s]\n" rel said) <> Img.marker n)) <$> Img.keep (imagesDir ch) bytes
+      Nothing -> do
+        let t = decode bytes
+        let start = max 1 (maybe 1 round (lookupNum "start" a))
+            n = maybe 200 round (lookupNum "lines" a) :: Int
+            allLines = if T.null t then [] else T.splitOn (T.pack "\n") t
+            totalLines = length allLines
+            ls = zip [1 :: Int ..] allLines
+            shown = [ T.pack (printf "%5d  " i) <> l | (i, l) <- ls, i >= start, i < start + n ]
+            endLine = if null shown then 0 else start + length shown - 1
+            budgetStr = Vfs.formatLineBudget totalLines 250
+            remaining = 250 - totalLines
+            remStr = (if remaining >= 0 then printf "(%d lines remaining)" remaining else printf "(%d lines OVER BUDGET!)" (abs remaining)) :: String
+            header = T.pack (printf "[%s: lines %d-%d of %d | %s %s]\n" rel (if null shown then 0 else start) endLine totalLines budgetStr remStr)
+        pure (True, header <> if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
   "write" -> withPath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
     written <- writtenAt ch rel
@@ -921,6 +935,11 @@ master = unlines
   , "- sh is for what none of these does: not grep or find (use the tools), not"
   , "  ghci or cabal (the session is already warm)."
   , ""
+  , "A line \"[image NAME]\" in a message stands for an image: one you read, or"
+  , "one the user gave by naming its file. You are shown it where the message is"
+  , "given to you whole -- when it is new, or when you zoom(id, 1) on it; a"
+  , "summary only names it."
+  , ""
   , "The view holds what was done to the code by hand too: a save of a file is"
   , "a tool line, its verdict an echo. What you learned that will matter later"
   , "can also be kept with remember: a finding, a decision, what is left undone." ]
@@ -986,6 +1005,8 @@ turnCli ch e o system first pending = do
       effort = case oEffort o of { Just "none" -> Just "low"; other -> other }
       web = maybe False (> 0) (oWeb o)
       textBlock t = JObj [("type", JStr "text"), ("text", JText t)]
+      -- (a message's blocks, and the images its text names after them)
+      withImages blocks t = (blocks ++) . map Img.apiBlock . catMaybes <$> mapM (Img.load (imagesDir ch)) (Img.namesIn t)
   void (try (removeFile sock) :: IO (Either IOException ()))
   ml <- Sys.unixListen sock
   env0 <- getEnvironment
@@ -1020,19 +1041,19 @@ turnCli ch e o system first pending = do
             unless (name == "remember") (logH ch "echo" ((if ok then T.empty else T.pack "ERROR: ") <> said))
             uiAnswer (cUi ch) (T.take 600 said <> (if T.length said > 600 then T.pack "..." else T.empty))
             -- (a line typed while it works reaches it here, between two calls)
-            mid <- drain pending
+            mid <- drain pending >>= typedLines ch
             forM_ mid (logH ch "user")
-            unless (null mid) (put [textBlock (T.intercalate (T.pack "\n\n") mid)])
+            unless (null mid) (withImages [textBlock (T.intercalate (T.pack "\n\n") mid)] (T.unlines mid) >>= put)
             uiBusy (cUi ch) (Just "the model is working")
             pure (ok, said)
           serve = do
             stop <- readIORef done
             unless stop $ do
               mc <- Sys.unixAccept lfd 300
-              forM_ mc $ \fd -> forkIO (PIO.fdToHandle fd >>= \h -> Mcp.serveOn h (Mcp.handleWith chatTools tool) >> void (try (hClose h) :: IO (Either IOException ())))
+              forM_ mc $ \fd -> forkIO (PIO.fdToHandle fd >>= \h -> Mcp.serveOn h (Mcp.handleWith chatTools tool (Img.toolBlocks (imagesDir ch))) >> void (try (hClose h) :: IO (Either IOException ())))
               serve
       _ <- forkIO (void (try serve :: IO (Either SomeException ())))
-      put (A.viewBlocks first)
+      withImages (A.viewBlocks first) first >>= put
       seenR <- newIORef (0 :: Int, 0 :: Double)
       limitR <- newIORef ""
       let live ev = case snd (A.streamEvent ev A.emptyStream) of
@@ -1236,7 +1257,9 @@ goOn ch e o pending ts = do
                 if t - at < 0.25 then writeIORef seenR (n', at) else do
                   writeIORef seenR (n', t)
                   uiBusy (cUi ch) (Just (printf "model call %d of the turn (step %d): %s, %s characters so far" (sCalls sp0 + 1) (step + 1) doing (human n')))
-          r <- requestWith (\w -> uiNote (cUi ch) ("[" ++ w ++ "]")) 8 e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900 (Just live))
+          -- (the images the messages name go with them, to a model that takes them)
+          sent <- if eProvider e == OpenAI then pure callMsgs else Img.attach (imagesDir ch) callMsgs
+          r <- requestWith (\w -> uiNote (cUi ch) ("[" ++ w ++ "]")) 8 e (Request sent toolsJson (oMaxTokens o) Nothing think effort 900 (Just live))
           t1 <- now
           case r of
             Left why -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
@@ -1318,7 +1341,7 @@ goOn ch e o pending ts = do
                     unless (name == "remember") (logH ch "echo" tagged)
                     uiAnswer (cUi ch) (T.take 600 out <> (if T.length out > 600 then T.pack "..." else T.empty))
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
-                  mid <- drain pending
+                  mid <- drain pending >>= typedLines ch
                   forM_ mid (logH ch "user")
                   let next = if viewMode then msgs' else msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
                   -- the superseded reads, rewritten as stubs once there is enough of them
@@ -1508,14 +1531,17 @@ readAgainst recs p (lo, hi) t =
     [] -> Right [ rrNum r | r <- recs, whole r, rrPath r == p, rrLo r >= lo, rrHi r <= hi ]
   where whole r = isNothing (rrBy r) && not (rrTrimmed r) && not (T.null (rrText r))
 
--- | The lines typed since last asked.
+-- | The lines typed since last asked. (Taking the end of the input with them left a chat fed from a pipe
+-- waiting for ever after its last turn.)
 drain :: TQueue (Maybe T.Text) -> IO [T.Text]
 drain q = atomically go
   where go = do
           m <- tryReadTQueue q
           case m of
             Just (Just l) -> (l :) <$> go
-            _ -> pure []
+            -- (the end of the input is not a line: it is left for the one who waits for it)
+            Just Nothing -> unGetTQueue q Nothing >> pure []
+            Nothing -> pure []
 
 -- | @ghci-session chat ARGS@.
 chatMain :: Conf -> [String] -> IO Int
@@ -1581,7 +1607,7 @@ chatMain conf args = case parseOpts args of
                         Nothing -> pure ()
                       case (oOnce o, resumed) of
                         (Just _, Just _) -> pure 0
-                        (Just m, Nothing) -> turn ch e o system [T.pack m] pending >> pure 0
+                        (Just m, Nothing) -> typedLines ch [T.pack m] >>= \ls -> turn ch e o system ls pending >> pure 0
                         (Nothing, _) -> do
                           let loop = do
                                 uiBusy ui Nothing
@@ -1590,7 +1616,7 @@ chatMain conf args = case parseOpts args of
                                   Nothing -> pure 0
                                   Just l -> do
                                     more <- drain pending
-                                    let texts = filter (not . T.null . T.strip) (l : more)
+                                    texts <- typedLines ch (filter (not . T.null . T.strip) (l : more))
                                     unless (null texts) (writeIORef inTurn True >> turn ch e o system texts pending >> writeIORef inTurn False)
                                     loop
                           loop

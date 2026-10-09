@@ -394,6 +394,14 @@ provider's endpoint that speaks the protocol works, and is sent only the convers
   a call: the API's own tool, run by the API and charged by it for each search, so never on unless asked. A search
   and what it found are shown and logged as a tool's call and answer are; a turn the API stops in the middle of
   one (`pause_turn`) is sent back as it is and goes on.
+- **Images.** `read` on an image (png, jpeg, gif, webp) shows it to the model, and so does a line typed that
+  names an image's file (in the project or anywhere; a path dragged onto the terminal will do). The image is kept
+  once in the session's state (`images/`, under a name made of its bytes) and what stands for it in the text is a
+  line `[image NAME]`: the history and its summaries hold only the name, and the image goes with the text
+  wherever a message is given whole -- when it is new, or when the agent opens it again (`zoom(id, 1)`). One
+  larger than a model makes use of (a side over 1568 pixels, or over a megabyte) is sent as a smaller copy made
+  by `sips` or ImageMagick. This is for the two backends here and the subscription's; an OpenAI-compatible
+  endpoint is sent the line only. The screens show the line (`▣ image NAME`), not the picture.
 - **A request declined** (`stop_reason: refusal`) is said as such, and on Anthropic's API another model is asked
   in the same call (`fallbacks: default`).
 

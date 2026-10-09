@@ -28,6 +28,7 @@ import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
 import qualified GhciSession.Import as I
 import qualified GhciSession.Md as Md
+import qualified GhciSession.Image as Img
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
@@ -548,6 +549,37 @@ run = do
      [ (txtOf l, [ sFg st | (st, _) <- take 1 l ]) | l <- Md.outputLines "edited f (2 lines)\n--- a/f\n+++ b/f\n@@ -1,2 +1,2 @@\n one\n-two\n+2\n\n[exit 0 in 0.1 s]\n- not a diff line" ]
      [ ("edited f (2 lines)", [Default]), ("--- a/f", [Default]), ("+++ b/f", [Default]), ("@@ -1,2 +1,2 @@", [Ansi 6]), (" one", [Default]), ("-two", [Ansi 1]), ("+2", [Ansi 2])
      , ("", [Default]), ("[exit 0 in 0.1 s]", [Default]), ("- not a diff line", [Default]) ]
+  -- images: kept by name, a line standing for each, sent where the line is
+  let png w h = B.pack ([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 13] ++ map (fromIntegral . fromEnum) "IHDR" ++ map fromIntegral [0, 0, w `div` 256, w `mod` 256, 0, 0, h `div` 256, h `mod` 256 :: Int] ++ [8, 6, 0, 0, 0])
+      gif = BC.pack "GIF89a" <> B.pack [0x20, 0x03, 0x58, 0x02, 0]
+  eq "image: base64, with its padding" (map (BC.unpack . Img.base64 . BC.pack) ["", "f", "fo", "foo", "foob", "fooba", "foobar"]) ["", "Zg==", "Zm8=", "Zm9v", "Zm9vYg==", "Zm9vYmE=", "Zm9vYmFy"]
+  eq "image: what bytes are, by how they begin, and their sides" (map Img.kindOf [png 800 600, gif, BC.pack "module Main where"], map Img.sizeOf [png 800 600, gif]) ([Just "image/png", Just "image/gif", Nothing], [Just (800, 600), Just (800, 600)])
+  imgDir <- (</> ("ghci-session-selftest-img-" ++ show pid)) <$> getTemporaryDirectory
+  kept <- Img.keep imgDir (png 4 2)
+  again <- Img.keep imgDir (png 4 2)
+  notOne <- Img.keep imgDir (BC.pack "words")
+  let nm = either (const "") fst kept
+      line = Img.marker nm
+  eq "image: kept under a name of its bytes (the same bytes, the same name), said in words; what is no image is not kept"
+     (fmap snd kept, kept == again, length nm, either (const True) (const False) notOne) (Right "image/png, 4x2, 1 KB", True, 20, True)
+  eq "image: a line of its own stands for it -- not words that hold one, not a name that is none; each once"
+     (Img.namesIn (T.unlines [T.pack "see", line, T.pack "and " <> line, T.pack "12+1|" <> line, T.pack "  " <> line, T.pack "[image ../../etc/passwd]", T.pack "[image photo.png]"])) [nm]
+  sentTo <- Img.attach imgDir [um "x", JObj [("role", JStr "tool"), ("tool_call_id", JStr "a"), ("content", JText (T.pack "[f.png: image/png, 4x2, 1 KB]\n" <> line))], JObj [("role", JStr "user"), ("content", JText (T.pack "look\n" <> line))], um "[image 0000000000000000.png]"]
+  eq "image: a message that names one is sent with it after its text -- a tool's answer in the answer, a typed line beside it; a name nothing is kept under is words"
+     [ [ (lookupStr "type" b, [ lookupStr "type" c | c <- lookupArr "content" b ]) | b <- lookupArr "content" m ] | m <- snd (A.toMessages ([um "q", am "" [callJ "a" "read" "{}"]] ++ drop 1 sentTo)) ]
+     [ [(Just "text", [])], [(Just "tool_use", [])], [(Just "tool_result", [Just "text", Just "image"]), (Just "text", []), (Just "image", []), (Just "text", [])] ]
+  eq "image: as it is sent -- its type, and its bytes in base64"
+     [ (lookupStr "media_type" (b .: "source"), lookupStr "data" (b .: "source") == Just (BC.unpack (Img.base64 (png 4 2)))) | m <- sentTo, b <- lookupArr "images" m ] [(Just "image/png", True), (Just "image/png", True)]
+  eq "image: a turn's first message keeps its view in blocks with an image after it"
+     (map (lookupStr "type") (concatMap (lookupArr "content") (snd (A.toMessages [set "images" (JArr [JObj [("type", JStr "image")]]) (um (viewOf 10 ++ "do it"))]))))
+     (map (lookupStr "type") (A.viewBlocks (T.pack (viewOf 10 ++ "do it"))) ++ [Just "image"])
+  B.writeFile (imgDir </> "my shot.png") (png 4 2)
+  typedL <- mapM (Img.typed imgDir imgDir . T.pack) ["what is in my\\ shot.png here?", "and '" ++ (imgDir </> "my shot.png") ++ "'", "no such.png", "a .png in words"]
+  eq "image: a line typed names one by its file -- a space escaped, or in quotes, in the project or by its whole path -- and gets its line; a file that is not there is words"
+     (map (drop 1 . T.lines) typedL) [[line], [line], [], []]
+  eq "md: the line that stands for an image is shown as one, in a reply and in a tool's answer"
+     (map txtOf (Md.mdLines 40 (T.unpack (T.pack "seen:\n" <> line))), map txtOf (Md.outputLines (T.unpack line))) (["seen:", "\9635 image " ++ nm], ["\9635 image " ++ nm])
+  removeDirectoryRecursive imgDir
   -- chats had elsewhere, read into messages
   let s0 = I.Session "Claude Code" "" "" "/f.jsonl" []
       cl ty content extra = JObj ([("type", JStr ty), ("cwd", JStr "/proj"), ("entrypoint", JStr "cli"), ("message", JObj [("role", JStr ty), ("content", content)])] ++ extra)
