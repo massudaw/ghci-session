@@ -32,7 +32,8 @@ usageTable conf rows =
   ++ [ line d js | (d, js) <- grouped (\_ j -> take 10 (fromMaybe "" (lookupStr "date" j))) ]
   ++ [ "\n  no prices for " ++ unwordsC unpriced ++ ": \"prices\": {\"" ++ head unpriced ++ "\": {\"input\": .., \"input_cached\": .., \"output\": ..}} in ghci-session.json, in money per million tokens" | not (null unpriced) ]
   where
-    price j = lookup (fromMaybe "" (lookupStr "model" j)) (cPrices conf)
+    -- (the configuration's price for a model, else the list price known here)
+    price j = let m = fromMaybe "" (lookupStr "model" j) in case lookup m (cPrices conf) of { Just p -> Just p; Nothing -> lookup m listPrices }
     cost j = do
       p <- price j
       i <- lookupNum "input" p
@@ -48,3 +49,18 @@ usageTable conf rows =
     grouped key = M.toList (M.fromListWith (flip (++)) [ (key n j, [j]) | (n, j) <- rows ])
     unpriced = nub [ m | (_, j) <- rows, Just m <- [lookupStr "model" j], isNothing (price j) ]
     unwordsC = foldr1 (\a b -> a ++ ", " ++ b)
+
+-- | List prices known here, in dollars per million tokens: what a model is priced at when the configuration
+-- does not say (@"prices"@ there comes first). Input read from the cache is a tenth of input. A ledger line
+-- does not tell what was WRITTEN to the cache from what was plain input, so a cost is a little under the bill
+-- where much was written (a write is 1.25 or 2 times input).
+--
+-- Sonnet and Opus: as published. Haiku 5.5: worked out from what the @claude@ command itself says a call
+-- cost at list price (2 tokens in, 3,720 written to the one-hour cache, 8,920 read from it, 4 out: $0.0008354
+-- -- which is input at $0.10, written at twice that, read at a tenth, output at five times, to the last digit).
+listPrices :: [(String, Json)]
+listPrices =
+  [ ("claude-haiku-5-5", p 0.10 0.01 0.50)
+  , ("claude-sonnet-5-5", p 2 0.20 10), ("claude-sonnet-5", p 2 0.20 10)
+  , ("claude-opus-5-5", p 4 0.20 20) ]
+  where p i c o = JObj [("input", JNum i), ("input_cached", JNum c), ("output", JNum o)]
