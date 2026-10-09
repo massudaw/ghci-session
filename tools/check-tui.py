@@ -10,7 +10,7 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
 
   chat  the header and the line to type on; the line's keys (Left, Ctrl-A/E/W/U, recall with Up and Down); a
         line sent and its answer, labelled; markdown as what it marks up; a write's diff in its colors and a
-        source's edit with the session's verdict; scrolling back and following; a turn stopped with Esc, in a model call and in a tool; subagents started,
+        source's edit with the session's verdict; scrolling back and following; a turn stopped with Esc, in a model call, in a command and in an evaluation; subagents started,
         one's report answered, the other stopped; a resize; leaving.
   top   the header and the tabs, each one's content; the history's cursor, a message opened and closed; the
         chat in a pane, of the pane's size, typed at through the monitor, and what it did in the history; a
@@ -89,17 +89,27 @@ until running sh
 mark running
 key esc
 until waiting for a line
-type say after the stop\r
+type tool eval {"expr":"Control.Concurrent.threadDelay 40000000"}\r
+until running eval
+mark evaluating
+key esc
+until waiting for a line
+type tool eval {"expr":"6 * 7"}\r
 until 7 turns;
+mark evaluated
+type say after the stop\r
+until 8 turns;
 mark after
 type tool spawn {"tasks":["say the first is done","wait 33"]}\r
-until 9 turns;
+until 10 turns;
 mark spawned
 key esc
 until subagent(s) stopped
 mark substopped
+type tool edit {"path":"notes.txt","old":"one","new":"1"}\r
+until 11 turns;
 type say the end\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
-until 10 turns;
+until 12 turns;
 resize 80x24
 wait 1
 mark resized
@@ -230,6 +240,10 @@ def check_chat(check, rec):
     s, w = at["after"], at["running"]
     check("chat: a turn stopped while a tool runs takes the command with it, and the chat goes on: the next line is answered",
           "running sh" in w.lines[w.rows - 2] and s.has(" talk:  after the stop") and not sleeping(), (w.lines[w.rows - 2], sleeping()))
+    s, w = at["evaluated"], at["evaluating"]
+    e = s.find(' tool:  eval {"expr": "6 * 7"}')
+    check("chat: a turn stopped while the session evaluates interrupts the evaluation: the session answers the next one at once",
+          "running eval" in w.lines[w.rows - 2] and e is not None and s.has(" echo:  42", e[0]), e)
     s = at["spawned"]
     check("chat: spawn starts a subagent a task and answers at once with their names; what each does is noted as it does it",
           s.has("Started Sub-1, Sub-2.") and s.has("Sub-1: started") and s.has("Sub-2: started"), [l for l in s.lines if "Sub-" in l][:6])
@@ -255,12 +269,12 @@ def check_top(check, rec):
           s.lines[0].startswith(" ghci-session top demo") and "OK" in s.lines[0] and "repl " in s.lines[1] and " MB" in s.lines[1] and "gen " in s.lines[1]
           and all(t in tabs(s) for t in ["1 history", "2 view", "3 log", "4 verdict", "5 usage", "6 heap", "7 chat", "8 shell"]), s.lines[:3])
     check("top: it opens on the history, at its end: what the chat did, numbered, with its time and kind",
-          lit(s, "1 history") and not lit(s, "2 view") and s.has(" talk: The tool answered: edited src/Demo.hs") and any(l.startswith("#") and " user: " in l for l in s.lines), tabs(s))
+          lit(s, "1 history") and not lit(s, "2 view") and s.has(" talk: The tool answered: edited notes.txt") and any(l.startswith("#") and " user: " in l for l in s.lines), tabs(s))
     w = s.find(" work: [Sub-1] report")
     check("top: a subagent's report is in the history as work, in its color, and its own doings are not",
           w is not None and "fg3" in s.style(w[0], w[1] + 1) and not s.has("Sub-1: started"), w)
     check("top: a diff in the history is in its colors, and a long message is cut and says so",
-          {"fg1"} in s.styles_of('-greeting = "hello"') and {"fg6"} in s.styles_of("@@ -1,7 +1,7 @@") and s.has("more lines; Enter opens"), s.styles_of('-greeting = "hello"'))
+          {"fg1"} in s.styles_of("-one") and {"fg6"} in s.styles_of("@@ -1,2 +1,2 @@") and s.has("more lines; Enter opens"), s.styles_of("-one"))
     s = at["view"]
     check("top: 2 is the view the model reads, with the memory's numbers at its head", lit(s, "2 view") and not lit(s, "1 history") and s.has(" memory  messages ") and s.has("0+1|tool: start demo") and s.has("<chat>"), s.lines[2:5])
     s = at["log"]

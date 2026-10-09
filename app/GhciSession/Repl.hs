@@ -12,7 +12,7 @@
 -- that changes nothing the build tool decides can skip the build tool.
 module GhciSession.Repl
   ( Repl, ReplError (..), Launch (..), Reply (..)
-  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replQueryOut, replAlive, replPid
+  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replQueryOut, replAlive, replPid, replInterrupt
   , decode
   ) where
 
@@ -222,6 +222,14 @@ replAlive r = (== Nothing) <$> getProcessExitCode (rProc r)
 
 replPid :: Repl -> IO (Maybe Int)
 replPid r = fmap fromIntegral <$> getPid (rProc r)
+
+-- | Interrupt what the repl is running: GHCi turns the signal into @UserInterrupt@ in the running command, says
+-- "Interrupted." and is back at its prompt -- the command's own round-trip then ends as it would have, with
+-- what was printed so far. Only for when a command is known to be running: an idle GHCi is not to be sent it.
+replInterrupt :: Repl -> IO ()
+replInterrupt r = do
+  mp <- getPid (rProc r)
+  forM_ mp $ \p -> try (signalProcess sigINT (CPid (fromIntegral p))) :: IO (Either IOException ())
 
 roundTrip :: Repl -> Maybe Double -> B.ByteString -> IO Reply
 roundTrip r mt payload = withMVar (rIO r) $ \_ -> do

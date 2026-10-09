@@ -498,7 +498,9 @@ downWait = (\v -> fromMaybe 120 (v >>= \x -> case reads x of { [(n, "")] -> Just
 -- is back; one it went away during is not (what it did is not known), and the answer says so.
 sessionCall :: Chat -> String -> Json -> IO (Bool, T.Text)
 sessionCall ch name args0 = do
-  let args = set "quiet" (JBool True) args0
+  pid <- getProcessID
+  -- (who asks goes with it: an evaluation of this chat's is what a stopped turn interrupts)
+  let args = set "from" (JStr ("chat-" ++ show pid)) (set "quiet" (JBool True) args0)
   (ok, out, reach) <- Mcp.callReach (cConf ch) name args
   if reach == Mcp.Reached then writeIORef (cDown ch) False >> pure (ok, out) else do
     wasDown <- readIORef (cDown ch)
@@ -619,9 +621,16 @@ stopTurn ch = do
     -- (no turn of the agent's own: the subagents at work, if any, are what is stopped)
     Nothing -> do
       n <- stopAgents ch
-      when (n > 0) (cancelRequests >> uiNote (cUi ch) (printf "[%d subagent(s) stopped]" n))
+      when (n > 0) (cancelRequests >> interruptEval ch >> uiNote (cUi ch) (printf "[%d subagent(s) stopped]" n))
       pure (n > 0)
-    Just tid -> writeIORef (cStopped ch) True >> stopAgents ch >> cancelRequests >> throwTo tid StopTurn >> pure True
+    Just tid -> writeIORef (cStopped ch) True >> stopAgents ch >> cancelRequests >> throwTo tid StopTurn >> interruptEval ch >> pure True
+
+-- | The evaluation this chat has running in the session, if it has one, is interrupted: it would run on to its
+-- end or its time, holding the session, for a turn that is no longer there. (Asked apart, and not waited for.)
+interruptEval :: Chat -> IO ()
+interruptEval ch = do
+  pid <- getProcessID
+  void (forkIO (void (try (timeout 5000000 (ask ch "interrupt" [("from", JStr ("chat-" ++ show pid))])) :: IO (Either SomeException (Maybe Json)))))
 
 -- | Has the turn been asked to stop? Then it stops here.
 checkStop :: Chat -> IO ()

@@ -186,7 +186,7 @@ callReach conf name args = do
   case picked of
     Left e -> pure (False, T.pack e, Reached)
     Right session -> do
-      let go op extra = request conf session (JObj (("op", JStr op) : extra ++ [ ("quiet", JBool True) | lookupBool "quiet" args == Just True ]))
+      let go op extra = request conf session (JObj (("op", JStr op) : extra ++ [ ("quiet", JBool True) | lookupBool "quiet" args == Just True ] ++ [ ("from", JStr f) | Just f <- [s "from"] ]))
           say r = pure (lookupBool "ok" r == Just True, staleNote r <> fromMaybe T.empty (lookupText "out" r)
                        , case lookupStr "down" r of { Just "before" -> Unreached; Just _ -> Lost; Nothing -> Reached })
       case name of

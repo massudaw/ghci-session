@@ -2276,6 +2276,19 @@ handle s h = do
           st <- rd (vStatus s)
           replyS True ((if null stale then "" else "STALE(" ++ show (length stale) ++ ") ") ++ st)
         "info" -> info s >>= replyS True . encode
+        -- an evaluation under way is interrupted, as one that runs out of time is: it ends with what it printed
+        -- and "Interrupted.", and the session answers the next request. `from`: only if it is that asker's (a
+        -- chat whose turn was stopped does not end an evaluation someone else is waiting for). Not through the
+        -- work lock: the evaluation holds it.
+        "interrupt" -> do
+          running <- rd evalNow
+          case (running, lookupStr "from" req) of
+            (Nothing, _) -> replyS True "no evaluation is running"
+            (Just who, Just me) | who /= me -> replyS True "the evaluation running is another's"
+            _ -> do
+              theRepl s >>= replInterrupt
+              logS s "interrupt: the evaluation under way was interrupted (asked)"
+              replyS True "interrupted"
         -- a batch of edits: the watcher waits (it must not take the work lock: a reload may be running) ...
         "hold" -> do
           let secs = max 1 (min 600 (fromMaybe 30 (lookupNum "secs" req)))
@@ -2331,10 +2344,17 @@ handle s h = do
       hFlush h
     replyS' ok = reply' ok . T.pack
 
+-- | The evaluation under way, if one is: who asked for it (their tag; "" for none given).
+{-# NOINLINE evalNow #-}
+evalNow :: IORef (Maybe String)
+evalNow = unsafePerformIO (newIORef Nothing)
+
 dispatch :: S -> String -> Json -> IO (Maybe T.Text)
 dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside the lock too: its answer must not straddle a reload
   "eval" -> do
-    out <- cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req))
+    -- (who asked is kept while it runs, for `interrupt`: only an evaluation is ever interrupted, and only its asker's)
+    out <- bracket_ (evalNow =: Just (fromMaybe "" (lookupStr "from" req))) (evalNow =: Nothing)
+             (cmd s (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) (fromMaybe "" (lookupStr "expr" req)))
     vEvaluated s =: True
     warmAsync s          -- the unlink and its GC, once this answer is out: they are not the caller's to wait for
     pure (Just out)
