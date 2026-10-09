@@ -1071,7 +1071,17 @@ goOn ch e o pending ts = do
                 Just ef     -> (Just True, Just ef)
                 Nothing     -> (Nothing, Nothing)
           -- (asked again while the service is busy, the wait said; what asking again cannot mend ends the turn)
-          r <- requestWith (\w -> uiNote (cUi ch) ("[" ++ w ++ "]")) 8 e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900)
+          -- (where the reply comes in pieces, what it is doing is said as it comes -- four times a second at most)
+          seenR <- newIORef (0 :: Int, 0 :: Double)
+          let live kind piece = do
+                (n, at) <- readIORef seenR
+                t <- now
+                let n' = n + T.length piece
+                    doing = case kind of { "mind" -> "thinking"; "tool" -> "calling a tool"; _ -> "writing" } :: String
+                if t - at < 0.25 then writeIORef seenR (n', at) else do
+                  writeIORef seenR (n', t)
+                  uiBusy (cUi ch) (Just (printf "model call %d of the turn (step %d): %s, %s characters so far" (sCalls sp0 + 1) (step + 1) doing (human n')))
+          r <- requestWith (\w -> uiNote (cUi ch) ("[" ++ w ++ "]")) 8 e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900 (Just live))
           t1 <- now
           case r of
             Left why -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
@@ -1517,7 +1527,7 @@ summarizeMain args = do
                 | otherwise = do
                     t0 <- now
                     r <- request e (Request ([ JObj [("role", JStr "system"), ("content", JText system)] | not (T.null system) ] ++ [ JObj [("role", JStr "user"), ("content", JText user)] ])
-                                            (if withTools then map toolJson chatTools else []) budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300)
+                                            (if withTools then map toolJson chatTools else []) budget (Just 0.3) (if isDeepSeek e then Just think else Nothing) (if think then Just effort else Nothing) 300 Nothing)
                     t1 <- now
                     forM_ ledger $ \f -> forM_ (either (const Nothing) pUsage r) $ \u -> recordUsage f "summarize" e u (t1 - t0)
                     case r of

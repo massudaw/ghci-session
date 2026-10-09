@@ -18,9 +18,14 @@ module GhciSession.Llm
   , usageFileEnv, recordUsage, human
   ) where
 
-import Control.Concurrent (threadDelay)
+import Control.Concurrent (forkIO, threadDelay)
+import Control.Concurrent.MVar (newEmptyMVar, putMVar, takeMVar)
+import Data.IORef (modifyIORef', newIORef, readIORef, writeIORef)
+import qualified System.Posix.IO as PIO
+import System.Posix.Types (Fd (..))
 import Control.Exception (SomeException, try)
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BC
 import qualified Data.ByteString.Unsafe as BU
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Text as T
@@ -33,7 +38,7 @@ import Foreign.Storable (peek)
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import System.Environment (lookupEnv)
-import System.IO (IOMode (..), hClose, hPutStrLn, openFile)
+import System.IO (IOMode (..), hClose, hPutStrLn, hSetBinaryMode, openFile)
 import Text.Printf (printf)
 
 import qualified GhciSession.Anthropic as A
@@ -80,6 +85,47 @@ httpsPost url headers body timeout = do
           bs <- B.packCStringLen (out, fromIntegral len)
           c_free out
           pure (Right (fromIntegral status, bs))
+  pure (either (\(e :: SomeException) -> Left (show e)) id r)
+  where firstJust xs = case [ x | Just x <- xs, not (null x) ] of { (x : _) -> Just x; [] -> Nothing }
+
+-- | POST, the reply read as it comes: each line of it is handed over while the next is still being sent. The
+-- call is held to how long the server may be SILENT (@idle@ seconds), not to how long it may take. The status,
+-- the seconds the server asked to be left alone, and all that was received (an error is not a stream: it is
+-- read whole, after).
+httpsStream :: String -> [String] -> B.ByteString -> Double -> (B.ByteString -> IO ()) -> IO (Either String (Int, Maybe Int, B.ByteString))
+httpsStream url headers body idle line = do
+  ca <- fromMaybe "" . firstJust <$> mapM lookupEnv ["CURL_CA_BUNDLE", "SSL_CERT_FILE"]
+  r <- try $ do
+    (rd, wr) <- PIO.createPipe
+    rh <- PIO.fdToHandle rd
+    hSetBinaryMode rh True
+    allV <- newIORef []
+    done <- newEmptyMVar
+    -- the reader: a line at a time, until the writer's end is closed
+    _ <- forkIO $ do
+      let loop = do
+            l <- try (BC.hGetLine rh) :: IO (Either SomeException B.ByteString)
+            case l of
+              Right x -> modifyIORef' allV (x :) >> (try (line x) :: IO (Either SomeException ())) >> loop
+              Left _ -> pure ()
+      loop
+      hClose rh
+      putMVar done ()
+    res <- withCString url $ \u -> withCString (unlines headers) $ \h -> withCString ca $ \c ->
+      BU.unsafeUseAsCStringLen body $ \(b, n) ->
+        with nullPtr $ \pout -> with 0 $ \plen -> with 0 $ \pstatus -> with 0 $ \pafter -> allocaBytes 512 $ \err -> do
+          let Fd w = wr
+          rc <- c_request u h b (fromIntegral n) 0 (round idle) c w pout plen pstatus pafter err 512
+          if rc /= 0 then Left <$> peekCString err else do
+            out <- peek pout
+            c_free out
+            status <- peek pstatus
+            after <- peek pafter
+            pure (Right (fromIntegral status :: Int, if after > 0 then Just (fromIntegral after :: Int) else Nothing))
+    PIO.closeFd wr
+    takeMVar done
+    got <- B.intercalate (B.singleton 10) . reverse <$> readIORef allV
+    pure (fmap (\(st, after) -> (st, after, got)) res)
   pure (either (\(e :: SomeException) -> Left (show e)) id r)
   where firstJust xs = case [ x | Just x <- xs, not (null x) ] of { (x : _) -> Just x; [] -> Nothing }
 
@@ -155,7 +201,8 @@ data Request = Request
   , rTemperature :: Maybe Double
   , rThinking :: Maybe Bool         -- ^ DeepSeek: thinking on or off (Nothing: the model's default)
   , rEffort :: Maybe String         -- ^ @reasoning_effort@ (low | high | max), when thinking
-  , rTimeout :: Double }
+  , rTimeout :: Double
+  , rLive :: Maybe (String -> T.Text -> IO ()) }   -- ^ told what a reply adds as it comes, where it comes in pieces: (@mind@ | @talk@ | @tool@, the piece)
 
 data ToolCall = ToolCall { tcId :: String, tcName :: String, tcArgs :: Json, tcRaw :: Json }
 data Usage = Usage { uIn :: Int, uOut :: Int, uCached :: Maybe Int }
@@ -210,11 +257,18 @@ requestAnthropic c q = do
   -- (GHS_WEB_SEARCH=N: the model may search the web, N times a call at most. A turn's calls only -- the ones with
   -- tools; each search is charged by the API, so it is asked for, never assumed)
   web <- (\v -> case v >>= \x -> case reads x of { [(n, "")] -> Just n; _ -> Nothing } of { Just n | not (null (rTools q)) -> max 0 n; _ -> 0 }) <$> lookupEnv "GHS_WEB_SEARCH"
-  let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q) web) (rMessages q) (rTools q)
-  r <- httpsRequest (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
-  pure $ case r of
+  -- (GHS_STREAM=0: the reply whole, in one piece, as it was before replies were read as they come)
+  streamed <- (/= Just "0") <$> lookupEnv "GHS_STREAM"
+  let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q) web streamed) (rMessages q) (rTools q)
+  if streamed then requestStream c q (encodeBS body) else do
+   r <- httpsRequest (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
+   pure $ case r of
     Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
-    Right (status, after, bs) -> let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
+    Right (status, after, bs) -> anthropicReply status after bs
+
+-- | A reply to Anthropic's API read from what it sent whole: the reply, or the failure and its kind.
+anthropicReply :: Int -> Maybe Int -> B.ByteString -> Either Failure Reply
+anthropicReply status after bs = let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
       Left _ | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
       Left err -> failed ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
       Right j -> case A.parseReply j of
@@ -226,6 +280,32 @@ requestAnthropic c q = do
               finish = case A.rStop p of { "end_turn" -> "stop"; "stop_sequence" -> "stop"; "tool_use" -> "tool_calls"; "max_tokens" -> "length"; other -> other }
           in Right (Reply (A.rText p) (A.rThinking p) (map call (A.rCalls p)) finish (Just (Usage (A.rIn p) (A.rOut p) (Just (A.rCached p))))
                           (JObj [("role", JStr "assistant"), ("content", JArr (A.rBlocks p))]) [("anthropic_content", JArr (A.rBlocks p))] (A.rServer p))
+
+-- | The same call with its reply read as it comes ('httpsStream', "GhciSession.Anthropic"'s events): what it adds
+-- is told to whoever watches, and the call is held to five minutes of silence, not to a time in all. The events
+-- make the message the API would have sent whole, which is read as that one is. A stream that ends before its
+-- end, or says the service is overloaded, is the kind of failure that is asked again.
+requestStream :: A.Config -> Request -> B.ByteString -> IO (Either Failure Reply)
+requestStream c q body = do
+  stV <- newIORef A.emptyStream
+  let onLine l = case B.stripPrefix (BC.pack "data:") l of
+        Just d | Right ev <- parseJsonBS d -> do
+          st <- readIORef stV
+          let (st', live) = A.streamEvent ev st
+          writeIORef stV st'
+          case (live, rLive q) of { (Just (k, t), Just f) -> f k t; _ -> pure () }
+        _ -> pure ()
+  r <- httpsStream (A.url c) (A.headers c) body 300 onLine
+  st <- readIORef stV
+  pure $ case r of
+    Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
+    Right (status, after, got)
+      | status /= 200 -> anthropicReply status after got
+      | Just e <- A.streamError st ->
+          let kind = fromMaybe "" (lookupStr "type" (e .: "error"))
+          in Left (Failure ("the model endpoint: " ++ kind ++ ": " ++ fromMaybe "(no message)" (lookupStr "message" (e .: "error"))) (kind `elem` ["overloaded_error", "rate_limit_error", "api_error", "timeout_error"]) after)
+      | not (A.streamEnded st) -> Left (Failure "the model endpoint: the reply's stream ended before its end" True after)
+      | otherwise -> anthropicReply 200 after (encodeBS (A.streamMessage st))
 
 requestOpenAI :: Endpoint -> Request -> IO (Either Failure Reply)
 requestOpenAI e q = do

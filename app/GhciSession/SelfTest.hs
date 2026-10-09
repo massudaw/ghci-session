@@ -453,14 +453,14 @@ run = do
         (let a = texts (A.viewBlocks (T.pack (viewOf 10))); b = texts (A.viewBlocks (T.pack (viewOf 13))) in take 3 a == take 3 b && length b > length a)
   eq "anthropic: a view shorter than a block has no mark, and a text with no view is one block" (marksOf (A.viewBlocks (T.pack (viewOf 3))), length (A.viewBlocks (T.pack "just words"))) ([], 1)
   eq "anthropic: the request -- thinking, an effort said, the cache asked for, another model if it declines; no temperature"
-     (let b = bodyOf opus (A.Opts 100 Nothing Nothing 0) in (lookupStr "type" (b .: "thinking"), lookupStr "effort" (b .: "output_config"), has "cache_control" b, lookupStr "fallbacks" b, has "temperature" b, lookupNum "max_tokens" b, has "cache_control" (head (lookupArr "system" b))))
+     (let b = bodyOf opus (A.Opts 100 Nothing Nothing 0 False) in (lookupStr "type" (b .: "thinking"), lookupStr "effort" (b .: "output_config"), has "cache_control" b, lookupStr "fallbacks" b, has "temperature" b, lookupNum "max_tokens" b, has "cache_control" (head (lookupArr "system" b))))
      (Just "adaptive", Just "high", True, Just "default", False, Just 4000, True)
   eq "anthropic: a compaction is the lightest effort (thinking cannot be turned off, and is not asked to be)"
-     (let b = bodyOf opus (A.Opts 400 (Just False) Nothing 0) in (has "thinking" b, lookupStr "effort" (b .: "output_config")))
+     (let b = bodyOf opus (A.Opts 400 (Just False) Nothing 0 False) in (has "thinking" b, lookupStr "effort" (b .: "output_config")))
      (False, Just "low")
   eq "anthropic: a model that takes neither is sent neither, and another provider's endpoint only the conversation"
-     ( let b = bodyOf opus { A.aModel = "claude-haiku-4-5" } (A.Opts 100 Nothing Nothing 0) in (has "thinking" b, has "output_config" b, has "fallbacks" b, lookupNum "max_tokens" b)
-     , let b = bodyOf (A.Config "k" True "https://api.deepseek.com/anthropic" "deepseek-v4-pro") (A.Opts 100 Nothing Nothing 0) in (has "thinking" b, has "output_config" b, has "fallbacks" b, has "cache_control" b) )
+     ( let b = bodyOf opus { A.aModel = "claude-haiku-4-5" } (A.Opts 100 Nothing Nothing 0 False) in (has "thinking" b, has "output_config" b, has "fallbacks" b, lookupNum "max_tokens" b)
+     , let b = bodyOf (A.Config "k" True "https://api.deepseek.com/anthropic" "deepseek-v4-pro") (A.Opts 100 Nothing Nothing 0 False) in (has "thinking" b, has "output_config" b, has "fallbacks" b, has "cache_control" b) )
      ((False, False, False, Just 100), (False, False, False, False))
   eq "anthropic: the headers -- a key, or a token as a bearer; the beta a fallback needs, where there is one"
      (A.headers opus, A.headers (A.Config "t" True "http://localhost:1" "m"), A.url (A.Config "t" True "http://localhost:1" "m"))
@@ -478,14 +478,40 @@ run = do
                                                                                         , JObj [("type", JStr "tool_use"), ("id", JStr "t"), ("name", JStr "n"), ("input", JObj [])] ] [])))
      (Right ["thinking", "tool_use"])
   eq "anthropic: a web search is asked for only where it was, and then as the API's own tool beside ours"
-     ( [ lookupStr "type" t | t <- lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 3) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]]) ]
-     , length (lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 0) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]])) )
+     ( [ lookupStr "type" t | t <- lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 3 False) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]]) ]
+     , length (lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 0 False) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]])) )
      ([Nothing, Just "web_search_20260209"], 1)
   eq "anthropic: what the API's own tool did is said as a tool's doing, and its blocks are kept to send back"
      (fmap (\p -> (A.rServer p, length (A.rBlocks p), A.rCalls p, A.rStop p))
         (A.parseReply (replyJ "pause_turn" [ JObj [("type", JStr "server_tool_use"), ("id", JStr "s1"), ("name", JStr "web_search"), ("input", JObj [("query", JStr "ghc 9.14")])]
                                          , JObj [("type", JStr "web_search_tool_result"), ("tool_use_id", JStr "s1"), ("content", JArr [JObj [("type", JStr "web_search_result"), ("title", JStr "GHC"), ("url", JStr "https://x")]])] ] [])))
      (Right ([("tool", T.pack "web_search {\"query\": \"ghc 9.14\"}"), ("echo", T.pack "GHC https://x")], 2, [], "pause_turn"))
+  let evJ ty kvs = JObj (("type", JStr ty) : kvs)
+      deltaJ i ty k v = evJ "content_block_delta" [("index", JNum i), ("delta", JObj [("type", JStr ty), (k, JStr v)])]
+      startJ i b = evJ "content_block_start" [("index", JNum i), ("content_block", JObj b)]
+      events =
+        [ evJ "message_start" [("message", JObj [("usage", JObj [("input_tokens", JNum 10), ("cache_read_input_tokens", JNum 900), ("output_tokens", JNum 1)])])]
+        , evJ "ping" []
+        , startJ 0 [("type", JStr "thinking"), ("thinking", JStr ""), ("signature", JStr "")], deltaJ 0 "thinking_delta" "thinking" "h", deltaJ 0 "thinking_delta" "thinking" "m", deltaJ 0 "signature_delta" "signature" "s"
+        , startJ 1 [("type", JStr "text"), ("text", JStr "")], deltaJ 1 "text_delta" "text" "o", deltaJ 1 "text_delta" "text" "k"
+        , startJ 2 [("type", JStr "tool_use"), ("id", JStr "t1"), ("name", JStr "eval"), ("input", JObj [])], deltaJ 2 "input_json_delta" "partial_json" "{\"expr\":", deltaJ 2 "input_json_delta" "partial_json" "\"1\"}"
+        , evJ "content_block_stop" [("index", JNum 2)]
+        , evJ "message_delta" [("delta", JObj [("stop_reason", JStr "tool_use")]), ("usage", JObj [("output_tokens", JNum 7)])]
+        , evJ "message_stop" [] ]
+      run evs = foldl (\(st, seen) ev -> let (st', l) = A.streamEvent ev st in (st', seen ++ maybe [] pure l)) (A.emptyStream, []) evs
+      (whole, lives) = run events
+  eq "anthropic: a reply that came as events is the reply that would have come whole"
+     (parsed (A.streamMessage whole)) (Right (T.pack "ok", T.pack "hm", [("t1", "eval", JObj [("expr", JStr "1")])], "tool_use", (910, 7, 900), 3))
+  eq "anthropic: what the events add is told as it comes: thinking, words, a call's name and its arguments"
+     (lives, A.streamEnded whole) ([("mind", T.pack "h"), ("mind", T.pack "m"), ("talk", T.pack "o"), ("talk", T.pack "k"), ("tool", T.pack "eval "), ("tool", T.pack "{\"expr\":"), ("tool", T.pack "\"1\"}")], True)
+  eq "anthropic: its thinking block is the one that was sent, to send back (its text and its signature)"
+     (take 1 (lookupArr "content" (A.streamMessage whole))) [JObj [("type", JStr "thinking"), ("thinking", JStr "hm"), ("signature", JStr "s")]]
+  eq "anthropic: a stream that stops before its end has not ended, and a call cut off inside its arguments is no call"
+     (let (cut, _) = run (take 10 events ++ [evJ "message_delta" [("delta", JObj [("stop_reason", JStr "max_tokens")])], evJ "message_stop" []]) in (A.streamEnded (fst (run (take 10 events))), fmap (\p -> (A.rCalls p, A.rStop p)) (A.parseReply (A.streamMessage cut))))
+     (False, Right ([], "max_tokens"))
+  eq "anthropic: an error in the stream is the stream's end, and is kept"
+     (let (st, _) = run (take 3 events ++ [evJ "error" [("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])]]) in (A.streamEnded st, fmap (\e -> lookupStr "type" (e .: "error")) (A.streamError st)))
+     (True, Just (Just "overloaded_error"))
   eq "anthropic: a request declined is said, and an error is the API's words"
      ( fmap A.rText (A.parseReply (JObj [("type", JStr "message"), ("content", JArr []), ("stop_reason", JStr "refusal"), ("stop_details", JObj [("category", JStr "cyber")])]))
      , either id (const "") (A.parseReply (JObj [("type", JStr "error"), ("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])])) )

@@ -29,9 +29,11 @@ module GhciSession.Anthropic
   ( Config (..), configFromEnv, defaultModel, firstParty
   , Opts (..), url, headers, requestBody, toMessages, viewBlock, viewBlocks
   , Parsed (..), parseReply
+  , Stream, emptyStream, streamEvent, streamMessage, streamEnded, streamError
   ) where
 
 import Data.List (isInfixOf, isPrefixOf)
+import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import System.Environment (lookupEnv)
@@ -98,8 +100,9 @@ fallsBack c = firstParty c && aModel c `elem` ["claude-fable-5-1", "claude-opus-
 -- | What a call asks beyond its conversation. @oThink@: @Just False@ is a call that wants no thinking (a
 -- compaction) -- which here is the lightest effort, thinking being the model's to do. @oEffort@: low, medium,
 -- high, xhigh or max. @oSearches@: how many web searches the model may make in the call (0: none) -- the
--- API's own tool, run by it: the search and its results come back in the reply, as blocks to keep.
-data Opts = Opts { oMaxTokens :: Int, oThink :: Maybe Bool, oEffort :: Maybe String, oSearches :: Int }
+-- API's own tool, run by it: the search and its results come back in the reply, as blocks to keep. @oStream@:
+-- the reply is asked for as a stream of events ('streamEvent').
+data Opts = Opts { oMaxTokens :: Int, oThink :: Maybe Bool, oEffort :: Maybe String, oSearches :: Int, oStream :: Bool }
 
 -- | The request's body, from the conversation and the tools as the chat keeps them (the OpenAI shape).
 requestBody :: Config -> Opts -> [Json] -> [Json] -> Json
@@ -115,6 +118,7 @@ requestBody c o msgs tools = JObj $
   ++ [ ("output_config", JObj [("effort", JStr e)]) | Just e <- [effort] ]
   ++ [ ("cache_control", ephemeral) | firstParty c ]
   ++ [ ("fallbacks", JStr "default") | fallsBack c ]
+  ++ [ ("stream", JBool True) | oStream o ]
   where
     (sys, body) = toMessages msgs
     -- (asked for, so sent, whoever the endpoint is: one that has no such tool says so. The version of the tool
@@ -233,3 +237,83 @@ parseReply j
               other -> T.pack ("ERROR: " ++ fromMaybe (encode other) (lookupStr "error_code" other)))]
       _ -> []
     isSuffixOf' x y = reverse x `isPrefixOf` reverse y
+
+-- the reply, as it comes ------------------------------------------------------------------------
+--
+-- Asked to stream, the API sends the reply as events: the message's start (with what the prompt cost), each
+-- block's start, its text or thinking or a tool call's arguments a piece at a time, its end, the message's end
+-- (why it stopped, what the reply cost). So a reply that takes ten minutes says so all along, and the call is
+-- held to how long the API may be SILENT, not to how long it may take.
+--
+-- The events are put together into the message the API would have sent whole, and that is read as any reply is
+-- ('parseReply'): one reading of a reply, however it came.
+
+-- | A reply being received: its blocks by position, a tool call's arguments as the text they arrive as, why it
+-- stopped, its usage as last said, an error the stream carried, whether its end was seen.
+data Stream = Stream
+  { sBlocks :: M.Map Int Json, sArgs :: M.Map Int T.Text, sClosed :: [Int], sStop :: Json, sDetails :: Json, sUsage :: [(String, Json)]
+  , sErr :: Maybe Json, sEnd :: Bool }
+
+emptyStream :: Stream
+emptyStream = Stream M.empty M.empty [] JNull JNull [] Nothing False
+
+streamEnded :: Stream -> Bool
+streamEnded = sEnd
+
+-- | The error a stream carried, as the API's error object (an overloaded service says so here, after a 200).
+streamError :: Stream -> Maybe Json
+streamError = sErr
+
+-- | One event taken: the reply so far, and what it added for whoever is watching -- (@mind@, thinking),
+-- (@talk@, text), (@tool@, a call's name or a piece of its arguments).
+streamEvent :: Json -> Stream -> (Stream, Maybe (String, T.Text))
+streamEvent ev st = case fromMaybe "" (lookupStr "type" ev) of
+  "message_start" -> (st { sUsage = merge (lookupObj "usage" (ev .: "message")) }, Nothing)
+  "content_block_start" ->
+    let b = ev .: "content_block"
+        named = case lookupStr "type" b of
+          Just ty | "tool_use" `isSuffixOf'` ty -> Just ("tool", T.pack (fromMaybe "" (lookupStr "name" b) ++ " "))
+          _ -> Nothing
+    in (st { sBlocks = M.insert ix b (sBlocks st) }, named)
+  "content_block_delta" ->
+    let d = ev .: "delta"
+        add k t = st { sBlocks = M.adjust (\b -> set k (JText (fromMaybe T.empty (lookupText k b) <> t)) b) ix (sBlocks st) }
+        piece k = fromMaybe T.empty (lookupText k d)
+    in case fromMaybe "" (lookupStr "type" d) of
+         "text_delta" -> (add "text" (piece "text"), Just ("talk", piece "text"))
+         "thinking_delta" -> (add "thinking" (piece "thinking"), Just ("mind", piece "thinking"))
+         "signature_delta" -> (st { sBlocks = M.adjust (set "signature" (JText (piece "signature"))) ix (sBlocks st) }, Nothing)
+         "input_json_delta" -> (st { sArgs = M.insertWith (flip (<>)) ix (piece "partial_json") (sArgs st) }, Just ("tool", piece "partial_json"))
+         "citations_delta" -> (st { sBlocks = M.adjust (\b -> set "citations" (JArr (lookupArr "citations" b ++ [d .: "citation"])) b) ix (sBlocks st) }, Nothing)
+         _ -> (st, Nothing)
+  "message_delta" ->
+    let d = ev .: "delta"
+        keep new old = case new of { JNull -> old; _ -> new }
+    in (st { sStop = keep (d .: "stop_reason") (sStop st), sDetails = keep (d .: "stop_details") (sDetails st), sUsage = merge (lookupObj "usage" ev) }, Nothing)
+  "content_block_stop" -> (st { sClosed = ix : sClosed st }, Nothing)
+  "message_stop" -> (st { sEnd = True }, Nothing)
+  "error" -> (st { sErr = Just ev, sEnd = True }, Nothing)
+  _ -> (st, Nothing)
+  where
+    ix = maybe 0 round (lookupNum "index" ev) :: Int
+    -- (a count said again is the count now; one not said stands)
+    merge new = [ (k, v) | (k, v) <- sUsage st, k `notElem` map fst said ] ++ said where said = [ kv | kv@(_, v) <- new, v /= JNull ]
+    isSuffixOf' x y = reverse x `isPrefixOf` reverse y
+
+-- | The message the events made, as the API sends one whole. A call's arguments are the object their pieces
+-- spell; a call whose pieces spell none -- the reply was cut off inside it -- is left out, since half a call
+-- is no call (the reply is then one cut off at the limit, which is what it is).
+streamMessage :: Stream -> Json
+streamMessage st = JObj
+  [ ("type", JStr "message"), ("role", JStr "assistant"), ("content", JArr (concatMap block (M.toAscList (sBlocks st))))
+  , ("stop_reason", sStop st), ("stop_details", sDetails st), ("usage", JObj (sUsage st)) ]
+  where
+    isCall b = maybe False (\ty -> reverse "tool_use" `isPrefixOf` reverse ty) (lookupStr "type" b)
+    block (ix, b)
+      | isCall b && ix `notElem` sClosed st = []          -- (its end never came)
+      | otherwise = case M.lookup ix (sArgs st) of
+          Nothing -> [b]
+          Just t | T.null (T.strip t) -> [set "input" (JObj []) b]
+                 | otherwise -> case parseJson (T.unpack t) of
+                     Right j@(JObj _) -> [set "input" j b]
+                     _ -> []

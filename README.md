@@ -366,8 +366,13 @@ provider's endpoint that speaks the protocol works, and is sent only the convers
 - **A request declined** (`stop_reason: refusal`) is said as such, and on Anthropic's API another model is asked
   in the same call (`fallbacks: default`).
 
-Replies are not streamed (the transport is one request, one reply), so a call's `max_tokens` is what one reply may
-be. The compactor uses the model the environment names, like a turn: a smaller one is `ANTHROPIC_MODEL` in the
+A reply is read as it comes (the API's stream of events): the call is held to five minutes of silence, not to a
+time in all, and the chat's status line says what the reply is doing -- thinking, writing, calling a tool -- and how
+much of it has come. The events make the message the API would have sent whole, which is read as that one is; a
+stream that breaks off is asked again. `GHS_STREAM=0` asks for the reply in one piece. (The other protocol's
+replies are still one piece.) A call to either is asked again while the service is busy -- 408, 409, 429, 5xx, a
+lost connection -- up to eight times in a turn, after the seconds the server asks for or else 2, 4, 8, ...; what
+asking again cannot mend, a request refused, ends the call at once. The compactor uses the model the environment names, like a turn: a smaller one is `ANTHROPIC_MODEL` in the
 daemon's environment. `tools/fake-llm.py` speaks this protocol too (`POST /v1/messages`), and answers 400 where
 the API would: roles that do not alternate, a result that is not at the head of its message, a thinking block
 sent back changed.

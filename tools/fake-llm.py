@@ -213,6 +213,38 @@ class H(BaseHTTPRequestHandler):
         self.send_response(code); self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
 
+    def _stream(self, msg):
+        """The message as the API streams one: its start, each block a piece at a time, its end. FAKE_STREAM_CUT=1
+        stops before the end (a stream that breaks); FAKE_STREAM_SLOW=S waits S seconds between pieces."""
+        self.send_response(200); self.send_header("Content-Type", "text/event-stream"); self.end_headers()
+        slow = float(os.environ.get("FAKE_STREAM_SLOW", "0"))
+        def ev(kind, data):
+            self.wfile.write(("event: %s\ndata: %s\n\n" % (kind, json.dumps({"type": kind, **data}))).encode()); self.wfile.flush()
+            if slow: time.sleep(slow)
+        u = msg["usage"]
+        ev("message_start", {"message": {**{k: v for k, v in msg.items() if k not in ("content", "stop_reason", "stop_details")}, "content": [], "stop_reason": None, "usage": {**u, "output_tokens": 1}}})
+        ev("ping", {})
+        halves = lambda t: [t[:len(t) // 2], t[len(t) // 2:]] if len(t) > 1 else [t]
+        for i, b in enumerate(msg["content"]):
+            t = b["type"]
+            if t == "text":
+                ev("content_block_start", {"index": i, "content_block": {"type": "text", "text": ""}})
+                for piece in halves(b["text"]): ev("content_block_delta", {"index": i, "delta": {"type": "text_delta", "text": piece}})
+            elif t == "thinking":
+                ev("content_block_start", {"index": i, "content_block": {"type": "thinking", "thinking": "", "signature": ""}})
+                for piece in halves(b["thinking"]): ev("content_block_delta", {"index": i, "delta": {"type": "thinking_delta", "thinking": piece}})
+                ev("content_block_delta", {"index": i, "delta": {"type": "signature_delta", "signature": b["signature"]}})
+            elif t in ("tool_use", "server_tool_use"):
+                ev("content_block_start", {"index": i, "content_block": {**b, "input": {}}})
+                for piece in halves(json.dumps(b["input"])): ev("content_block_delta", {"index": i, "delta": {"type": "input_json_delta", "partial_json": piece}})
+            else:
+                ev("content_block_start", {"index": i, "content_block": b})
+            if os.environ.get("FAKE_STREAM_CUT") == "1" and i == len(msg["content"]) - 1:
+                return
+            ev("content_block_stop", {"index": i})
+        ev("message_delta", {"delta": {"stop_reason": msg["stop_reason"], "stop_sequence": None, **({"stop_details": msg["stop_details"]} if "stop_details" in msg else {})}, "usage": {"output_tokens": u["output_tokens"]}})
+        ev("message_stop", {})
+
     def do_GET(self):
         self._send(200, {"ok": True, "fake": "llm"})
 
@@ -243,7 +275,9 @@ class H(BaseHTTPRequestHandler):
             if stop == "refusal":
                 out["stop_details"] = {"type": "refusal", "category": "fake", "explanation": "asked to"}
             marks = sum(1 for m in body["messages"] if not isinstance(m["content"], str) for b in m["content"] if b.get("cache_control"))
-            sys.stderr.write("%s -> %s; %d message(s), %d mark(s) in them, %d of %d tokens from the cache\n" % (self.path, stop, len(body["messages"]), marks, read, total)); sys.stderr.flush()
+            sys.stderr.write("%s -> %s%s; %d message(s), %d mark(s) in them, %d of %d tokens from the cache\n" % (self.path, stop, " (streamed)" if body.get("stream") else "", len(body["messages"]), marks, read, total)); sys.stderr.flush()
+            if body.get("stream"):
+                return self._stream(out)
             return self._send(200, out)
         if not self.path.rstrip("/").endswith("/chat/completions"):
             return self._send(404, {"error": {"message": "no such route: " + self.path}})
