@@ -2,7 +2,7 @@
 # ghci-session from a checkout: the built executable, built first if it is not there or older than its sources.
 HERE=$(cd "$(dirname "$0")/.." && pwd)
 B="$HERE/.bin/ghci-session"
-if [ ! -x "$B" ] || [ -n "$(find "$HERE/app" "$HERE/cbits" "$HERE/engine" "$HERE/hygiene" "$HERE/ghci-session.cabal" -newer "$B" -print -quit 2>/dev/null)" ]; then
+if [ ! -x "$B" ] || [ -n "$(find "$HERE/app" "$HERE/exe" "$HERE/cbits" "$HERE/engine" "$HERE/hygiene" "$HERE/ghostty-vt" "$HERE/tui" "$HERE/Setup.hs" "$HERE/ghci-session.cabal" -newer "$B" -print -quit 2>/dev/null)" ]; then
   "$HERE/build.sh" >&2 || exit 1
 fi
 exec "$B" "$@"

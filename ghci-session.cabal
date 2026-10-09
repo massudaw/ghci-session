@@ -30,25 +30,38 @@ flag fff
   default:     False
   manual:      True
 
-executable ghci-session
+-- The command and the daemon, as a library: so a session can LOAD it beside the libraries it uses (the build
+-- tool's multi-unit repl takes libraries, not executables), and an edit to any of them is a reload.
+library
   hs-source-dirs:   app
-  main-is:          Main.hs
-  other-modules:    GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
+  exposed-modules:  GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Chat, GhciSession.ChatUi, GhciSession.ChatProfile, GhciSession.ChatTui,
                     GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Top
-  c-sources:        cbits/ghs_sys.c, cbits/ghs_main.c, cbits/ghs_fast.c, cbits/ghs_http.c
+  c-sources:        cbits/ghs_sys.c, cbits/ghs_http.c
   if flag(fff)
     c-sources:      cbits/ghs_fff.c
     cpp-options:    -DHAVE_FFF
   include-dirs:     cbits
-  -- (the library: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
+  -- (ghci-hygiene: so a session ON this package -- ghci-session.json here -- has GHC.Hygiene in scope)
   build-depends:    base >=4.18 && <5, bytestring, containers, directory, filepath, process, stm, text, time, unix, ghci-hygiene, ghostty-vt, ghostty-tui
   default-language: Haskell2010
   default-extensions: ScopedTypeVariables
-  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-unused-imports -threaded -no-hs-main
+  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-unused-imports
   if impl(ghc >= 9.8)
     ghc-options:    -Wno-x-partial
+
+-- The executable: its `main` is C (cbits/ghs_main.c picks the runtime's options per command; cbits/ghs_fast.c is
+-- `eval` without the runtime), and exe/Main.hs is what it calls into the library with.
+executable ghci-session
+  hs-source-dirs:   exe
+  main-is:          Main.hs
+  c-sources:        cbits/ghs_main.c, cbits/ghs_fast.c
+  include-dirs:     cbits
+  build-depends:    base >=4.18 && <5, ghci-session
+  default-language: Haskell2010
+  default-extensions: ScopedTypeVariables
+  ghc-options:      -Wall -Wno-name-shadowing -Wno-unused-do-bind -Wno-unused-imports -threaded -no-hs-main
 
 -- GHCi itself (engine/GhsEngine.hs): the `ghc` executable's interactive front end, vendored unchanged for one
 -- compiler (vendor/fetch.sh), so it builds for exactly that version -- and a session needs it. For another

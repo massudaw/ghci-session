@@ -79,6 +79,13 @@ What a save does depends on where it is:
 
 The sources of those packages are found from the build tool's plan and watched without being listed in `watch`.
 
+To make an edit to such a package a reload instead, load it: name it in `units` beside the others
+(`"units": ["lib:app", "lib:its-library"]`). The build tool's multi-unit repl takes libraries, not executables, so a
+package that is only an executable has to be a library with a thin executable over it first -- as this one is
+(`ghci-session.json` here loads `lib:ghci-session` with the three libraries it uses, and a save in any of them
+reloads in a few tenths of a second). Units with C work: the engine is given every unit's C objects itself, since
+GHCi links only one unit's.
+
 The engine's per-compiler parts are small. GHCi's own sources are vendored per version (`vendor/ghc-X.Y.Z`, fetched
 with `vendor/fetch.sh VERSION`); the modules that reach into the compiler's session are shared in `engine/`, and what
 differs between compilers lives in `engine/ghc-X.Y/GhsCompat.hs`.
@@ -421,7 +428,8 @@ the previous graph, which costs on the order of a quarter of a millisecond per m
 
 ```
 ghci-session.cabal      the package: the engine and the command (hygiene/ghci-hygiene.cabal: the library)
-app/GhciSession/        Json, Config, Sys (FFI), Repl (starting the engine, its protocol), Watch, Daemon, Gc, Cli, History, ...
+app/GhciSession/        the command and the daemon, as a library: Json, Config, Sys (FFI), Repl (starting the engine, its protocol), Watch, Daemon, Gc, Cli, History, ...
+exe/Main.hs             the executable's Haskell side (its `main` is C: cbits/ghs_main.c)
 engine/, vendor/        the engine (GhsEngine.hs, Main.hs, per-compiler GhsCompat) and GHCi's sources per compiler
 cbits/                  sockets, file events, regex, hashing, processes; the executable's entry point
 ghostty-vt/, tui/       libghostty-vt bindings and a terminal UI library on them (`top`, `chat --tui`)

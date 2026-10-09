@@ -6,12 +6,20 @@
   "targets": {
     "tool": {
       "units": [
-        "exe:ghci-session"
+        "lib:ghci-session",
+        "lib:ghostty-tui",
+        "lib:ghostty-vt",
+        "lib:ghci-hygiene"
       ],
       "watch": [
         "app",
         "cbits",
-        "hygiene/src"
+        "hygiene/src",
+        "tui/src",
+        "tui/cbits",
+        "ghostty-vt/src",
+        "ghostty-vt/cbits",
+        "ghostty-vt/include"
       ],
       "modules": [
         "GhciSession.SelfTest",
