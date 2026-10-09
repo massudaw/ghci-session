@@ -1,0 +1,36 @@
+app/GhciSession/ChatTui.hs
+  s_ee2f22f51d8bdb::t_24627156aec613 11-12,191,200,213,231-232,276-277,309
+tools/check-tui.py
+  s_ee2f22f51d8bdb::t_5412466a92d108 13,21,79-89,91-92,172-176,215-220
+  s_ee2f22f51d8bdb::t_67205409d70bac 105,243,259,261
+  s_ee2f22f51d8bdb::t_9df49184ce99ee 90,106,128,221,225,258,260,262
+app/GhciSession/ChatUi.hs
+  s_ee2f22f51d8bdb::t_24627156aec613 10,12,47,64-65
+app/GhciSession/Llm.hs
+  s_ee2f22f51d8bdb::t_24627156aec613 17,56-60,242,246-252
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_1a40bdb50636f9 40,1620-1621,1675-1677
+  s_ee2f22f51d8bdb::t_91ac5696c87d61 55,888-890,895-899,901
+  s_ee2f22f51d8bdb::t_24627156aec613 39,153-154,593-631,1165-1166,1171,1291,1371
+  s_ee2f22f51d8bdb::t_c490ad89a9d25e 1628,1644,1666-1667,1671,1683
+cbits/ghs_http.c
+  s_ee2f22f51d8bdb::t_24627156aec613 32-34,111-120,147-150
+README.md
+  s_ee2f22f51d8bdb::t_3999bb335e48ba 481-483
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "51a3db5aacb91c64960723b91b23aecd23ab0d70",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
