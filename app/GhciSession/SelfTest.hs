@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (toolJson, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -416,10 +416,23 @@ run = do
       args n kvs = arguments (toolNamed n) (JObj kvs)
   eq "chat: an argument called by another name is taken by its name" (args "sh" [("command", JStr "ls")]) (JObj [("cmd", JStr "ls")], [])
   eq "chat: an alias of an argument the tool does not take is left alone (zoom keeps its n)" (args "zoom" [("id", JNum 1), ("n", JNum 2)]) (JObj [("id", JNum 1), ("n", JNum 2)], [])
-  eq "chat: a missing argument is named" (snd (args "edit" [("path", JStr "a"), ("new", JStr "b")])) ["old"]
+  eq "chat: a missing argument is named (an edit's old is not one: it has other forms)" (snd (args "edit" [("path", JStr "a")]), snd (args "edit" [("path", JStr "a"), ("new", JStr "b")])) (["new"], [])
   eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
   check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
   check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
+  let doc5 = T.pack "one\nf :: Int\nf = 1\ng :: Int\ng = 2\n"
+      ed kvs = either (Left . T.unpack) (Right . T.unpack . fst) (applyEdit doc5 (JObj kvs))
+  eq "edit: put at the end (a line end added where there is none), and a file that was not there is the text"
+     (ed [("append", JBool True), ("new", JStr "h = 3")], fmap fst (applyEdit T.empty (JObj [("append", JBool True), ("new", JStr "x")])), fmap fst (applyEdit (T.pack "a") (JObj [("append", JBool True), ("new", JStr "b\n")])))
+     (Right "one\nf :: Int\nf = 1\ng :: Int\ng = 2\nh = 3\n", Right (T.pack "x\n"), Right (T.pack "a\nb\n"))
+  eq "edit: from one line up to another -- a definition replaced whole, the line after it kept"
+     (ed [("first", JStr "f ::"), ("until", JStr "g ::"), ("new", JStr "f :: Integer\nf = 10\n")]) (Right "one\nf :: Integer\nf = 10\ng :: Int\ng = 2\n")
+  eq "edit: lines by their numbers; with nothing, they are gone"
+     (ed [("start", JNum 2), ("end", JNum 3), ("new", JStr "x")], ed [("start", JNum 1), ("new", JStr "")]) (Right "one\nx\ng :: Int\ng = 2\n", Right "f :: Int\nf = 1\ng :: Int\ng = 2\n")
+  eq "edit: what cannot be is said -- a first that two lines hold, an until that none after it holds, lines that are not there, nothing asked"
+     ( map (either (take 22) (const "done")) [ed [("first", JStr "Int"), ("until", JStr "g"), ("new", JStr "")], ed [("first", JStr "g ::"), ("until", JStr "f ::"), ("new", JStr "")], ed [("start", JNum 9), ("new", JStr "")], ed [("new", JStr "z")], ed [("first", JStr "f ::"), ("new", JStr "")]] )
+     ["first: 2 lines hold \"I", "until: no line after l", "lines 9-9: the file ha", "what to change is not ", "first, and no until: g"]
+  eq "edit: the first form is as it was -- one exact, unique occurrence" (ed [("old", JStr "f = 1"), ("new", JStr "f = 7")]) (Right "one\nf :: Int\nf = 7\ng :: Int\ng = 2\n")
   check "chat: spawn and tell are chat tools, and a task list is a list of strings"
         (all (`elem` map tName chatTools) ["spawn", "tell"] && lookupStr "type" (toolJson (toolNamed "spawn") .: "function" .: "parameters" .: "properties" .: "tasks" .: "items") == Just "string")
   eq "chat: a subagent's word to the agent is told from the user's by how it begins"

@@ -102,7 +102,7 @@ handleWith :: [Tool] -> (String -> Json -> IO (Bool, T.Text)) -> (T.Text -> IO [
 handleWith served run more req = case (lookupStr "method" req, req .: "id") of
   (Just "initialize", rid) -> pure (Just (result rid (JObj
     [ ("protocolVersion", JStr (fromMaybe "2025-06-18" (lookupStr "protocolVersion" (req .: "params"))))
-    , ("capabilities", JObj [("tools", JObj [("listChanged", JBool False)])])
+    , ("capabilities", JObj [("tools", JObj [("listChanged", JBool True)])])
     , ("serverInfo", JObj [("name", JStr "ghci-session"), ("version", JStr "0.2.0")])
     , ("instructions", JStr instructions) ])))
   (Just "ping", rid) -> pure (Just (result rid (JObj [])))

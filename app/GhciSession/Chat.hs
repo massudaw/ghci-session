@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, toolJson, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
+  , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
   , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
@@ -431,13 +431,14 @@ sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "cen
 -- | The session's tools (as the MCP server defines them, the chat being one session) and the agent's hands on the files.
 chatTools :: [Tool]
 chatTools =
-  [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ], tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
-  ++ [ Tool "read" "A file of the project, with line numbers. An image (png, jpeg, gif, webp) is shown to you as an image." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
-     , Tool "grep" "Search file contents across the project for an identifier, function, or pattern using the high-speed FFF SIMD engine. Returns line numbers, content, and git status. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
+  [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ] ++ [ ("wait", ("number", "seconds to wait for a verdict, while the session is starting or its check is running (default: none, the state as it is now)")) | tName t == "status" ]
+      , tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
+  ++ [ Tool "read" "A file of the project, with line numbers: from a line (start), or from the first line that holds a text (around) -- which is how to read a definition, a section of a reference or of a data file, without knowing its line. An image (png, jpeg, gif, webp) is shown to you as an image." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("around", ("string", "a text: reading starts a few lines before the first line that holds it, and the other lines that hold it are named")), ("before", ("number", "with around: lines shown before the match (default 3)")), ("lines", ("number", "how many (default 200; 60 with around)"))] ["path"]
+     , Tool "grep" "Search file contents: across the project for an identifier, function, or pattern (the high-speed FFF engine; line numbers, content, git status) -- or, with path, in ONE file of any kind or size, each match with the lines after it (context). Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for (with path: a text, as it is)")), ("path", ("string", "one file to search, relative to the project")), ("context", ("number", "with path: lines shown after each match (default 0)")), ("lines", ("number", "max matches (default 30)"))] ["query"]
      , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the write changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
-     , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the edit changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
-     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit, with a diff of each file. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
+     , Tool "edit" "Change a file of the project, in one of four ways: old and new (one exact, unique occurrence of a text replaced); append: true and new (put at the file's end; the file is made if it is not there); first, until and new (the lines from the one that holds the text `first` up to, not including, the next that holds the text `until` are replaced -- a whole definition, without writing the old one out); start, end and new (those lines, by number). A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the edit changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "the replacement, or what is appended")), ("append", ("boolean", "put new at the end of the file")), ("first", ("string", "a text only the first line to replace holds")), ("until", ("string", "a text of the first line after them: it is kept")), ("start", ("number", "the first line to replace")), ("end", ("number", "the last (default: start)"))] ["path", "new"]
+     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit, with a diff of each file. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file) -- or, instead of old, any of edit's other forms (append, first and until, start and end); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path. Extremely fast (<1ms in-memory). Always use this instead of running wc -l or du via sh." [("path", ("string", "optional path or pattern filter (e.g. 'src', 'Gba/Cpu', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)"))] []
      , Tool "sh" "Run a shell command in the project's directory: its output, then how it ended and how long it took, as [exit 0 in 0.4 s]. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"]
@@ -466,7 +467,7 @@ toolJson t = JObj [ ("type", JStr "function"), ("function", JObj
                         , ("required", JArr (map JStr (tReq t))) ]) ]) ]
   where replacement = JObj [ ("type", JStr "object")
                            , ("properties", JObj [ (k, JObj [("type", JStr "string")]) | k <- ["path", "old", "new"] ])
-                           , ("required", JArr (map JStr ["path", "old", "new"])) ]
+                           , ("required", JArr (map JStr ["new"])) ]
 
 -- | What a model calls an argument when it does not call it by its name.
 aliases :: [(String, [String])]
@@ -493,6 +494,19 @@ runTool ch t a0
       let emptyHint = if null (obj a0) then " [hint: tool arguments were empty {}; if this was near the 8k token limit, output likely ran out of tokens before writing arguments -- please call the tool directly with less reasoning]" else ""
       in pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t) ++ emptyHint))
   | tName t == "eval" = evalTool ch a
+  -- (status with a wait: until the session has a verdict -- not starting, no check running -- or the seconds are
+  -- up; a `sleep 14; tail daemon.log` through the shell was how that was waited for)
+  | tName t == "status", Just secs <- lookupNum "wait" a = do
+      t0 <- now
+      let settle = do
+            v <- verdictAt ch
+            tn <- now
+            let busy = maybe True (\r -> starting r || vRunning r) v
+            when (busy && tn - t0 < min 900 secs) (threadDelay 300000 >> settle)
+      settle
+      waited <- subtract t0 <$> now
+      (ok, out) <- sessionCall ch "status" (set "session" (JStr (cName ch)) a)
+      pure (ok, out <> (if waited >= 1 then T.pack (printf "\n[waited %.0fs for it]" waited) else T.empty))
   | tName t == "spawn" = spawnTool ch a
   | tName t == "tell" = tellTool ch a
   | tName t `elem` sessionToolNames = sessionCall ch (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
@@ -885,6 +899,41 @@ subRunner ch e o instr toAgent s label = go
             uiNote (cUi ch) (T.unpack line)
             atomically (writeTQueue toAgent (Just line))
 
+-- | One change to a text, in one of four forms -- the text with the change, and how it was made (for the
+-- answer), or why it cannot be:
+--
+-- * @old@, @new@: one exact, unique occurrence replaced ('replaceOnce');
+-- * @append: true@, @new@: put at the end;
+-- * @first@, @until@, @new@: the lines from the one that holds @first@ (the only one) up to, not including, the
+--   next that holds @until@ -- a whole definition replaced without writing the old one out;
+-- * @start@, @end@, @new@: those lines, by their numbers as @read@ shows them.
+--
+-- The last three are what a script run through the shell was written for, twenty times in a first long turn.
+applyEdit :: T.Text -> Json -> Either T.Text (T.Text, String)
+applyEdit t e
+  | lookupBool "append" e == Just True =
+      Right (t <> (if T.null t || T.pack "\n" `T.isSuffixOf` t then T.empty else T.pack "\n") <> new <> (if T.pack "\n" `T.isSuffixOf` new then T.empty else T.pack "\n"), " (appended)")
+  | Just a <- num' "start" = let b = fromMaybe a (num' "end") in
+      if a < 1 || b < a || b > n then Left (T.pack (printf "lines %d-%d: the file has %d lines" a b n)) else Right (between a (b + 1), printf " (lines %d-%d replaced)" a b)
+  | Just f <- text' "first" = case [ i | (i, l) <- zip [1 :: Int ..] ls, f `T.isInfixOf` l ] of
+      [a] -> case text' "until" of
+        Nothing -> Left (T.pack "first, and no until: give until -- a text of the first line that is NOT to be replaced (the next definition's first line)")
+        Just w -> case [ i | (i, l) <- zip [1 :: Int ..] ls, i > a, w `T.isInfixOf` l ] of
+          (b : _) -> Right (between a b, printf " (lines %d-%d replaced)" a (b - 1))
+          [] -> Left (T.pack (printf "until: no line after line %d holds %s" a (show (T.unpack w))))
+      [] -> Left (T.pack ("first: no line holds " ++ show (T.unpack f)))
+      is -> Left (T.pack (printf "first: %d lines hold %s (lines %s): give a text only the first line to replace holds" (length is) (show (T.unpack f)) (intercalate ", " (map show (take 8 is)))))
+  | Just old <- text' "old" = replaceOnce t old new
+  | otherwise = Left (T.pack "what to change is not said: give old (the text to replace), or append: true, or first and until (texts of the first line to replace and of the first line after it), or start and end (line numbers)")
+  where
+    new = fromMaybe T.empty (lookupText "new" e)
+    ls = T.splitOn (T.pack "\n") t
+    n = length ls
+    num' k = round <$> lookupNum k e :: Maybe Int
+    text' k = case lookupText k e of { Just w | not (T.null w) -> Just w; _ -> Nothing }
+    -- (lines a .. b-1 are the new text's)
+    between a b = T.intercalate (T.pack "\n") (take (a - 1) ls ++ [ fromMaybe new (T.stripSuffix (T.pack "\n") new) | not (T.null new) ] ++ drop (b - 1) ls)
+
 -- | The agent's hands on the files, inside the project only.
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
 fileTool ch name a = case name of
@@ -895,9 +944,18 @@ fileTool ch name a = case name of
       Just _ -> either (\why -> (False, T.pack (rel ++ ": " ++ why))) (\(n, said) -> (True, T.pack (printf "[%s: %s]\n" rel said) <> Img.marker n)) <$> Img.keep (imagesDir ch) bytes
       Nothing -> do
         let t = decode bytes
-        let start = max 1 (maybe 1 round (lookupNum "start" a))
-            n = maybe 200 round (lookupNum "lines" a) :: Int
-            allLines = if T.null t then [] else T.splitOn (T.pack "\n") t
+        let allLines = if T.null t then [] else T.splitOn (T.pack "\n") t
+            -- (`around`: from a few lines before the first line that holds the text -- what `grep -n -A40 TEXT
+            -- file` was run through the shell for; where else it is, is said)
+            around = lookupText "around" a
+            hits = [ i | Just w <- [around], not (T.null w), (i, l) <- zip [1 :: Int ..] allLines, w `T.isInfixOf` l ]
+            start = case hits of
+              (i : _) -> max 1 (i - maybe 3 round (lookupNum "before" a))
+              [] -> max 1 (maybe 1 round (lookupNum "start" a))
+            n = maybe (if null hits then 200 else 60) round (lookupNum "lines" a) :: Int
+            more = case hits of
+              (_ : rest@(_ : _)) -> T.pack (printf "\n[%d more line(s) hold it: %s%s -- start: N reads from one]" (length rest) (intercalate ", " (map show (take 12 rest))) (if length rest > 12 then ", ..." else "" :: String))
+              _ -> T.empty
             totalLines = length allLines
             ls = zip [1 :: Int ..] allLines
             shown = [ T.pack (printf "%5d  " i) <> l | (i, l) <- ls, i >= start, i < start + n ]
@@ -906,7 +964,8 @@ fileTool ch name a = case name of
             remaining = 250 - totalLines
             remStr = (if remaining >= 0 then printf "(%d lines remaining)" remaining else printf "(%d lines OVER BUDGET!)" (abs remaining)) :: String
             header = T.pack (printf "[%s: lines %d-%d of %d | %s %s]\n" rel (if null shown then 0 else start) endLine totalLines budgetStr remStr)
-        pure (True, header <> if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown)
+        if isJust around && null hits then pure (False, T.pack (printf "%s: no line holds %s (%d lines; the text is looked for as it is, in one line)" rel (show (maybe "" T.unpack around)) totalLines))
+          else pure (True, header <> (if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown) <> more)
   "write" -> withPath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
     written <- writtenAt ch rel
@@ -919,10 +978,9 @@ fileTool ch name a = case name of
     d <- maybe (pure (T.pack "\n[a new file]")) (\old -> changeOf rel old content) was
     withDiff d <$> saved ch (printf "wrote %s (%d characters, %s)" rel (T.length content) budget) written
   "edit" -> withPath $ \p -> do
-    t <- decode <$> B.readFile p
-    let old = fromMaybe T.empty (lookupText "old" a)
-        new = fromMaybe T.empty (lookupText "new" a)
-    case replaceOnce t old new of
+    -- (appending makes the file if it is not there)
+    t <- if lookupBool "append" a == Just True then either (\(_ :: IOException) -> T.empty) decode <$> try (B.readFile p) else decode <$> B.readFile p
+    case applyEdit t a of
       Right (t', how) -> do
         written <- writtenAt ch rel
         B.writeFile p (TE.encodeUtf8 t')
@@ -934,7 +992,11 @@ fileTool ch name a = case name of
   -- several replacements, in one or more files: all checked against the files (as the ones before them
   -- leave them) before any is written, then written together -- one reload, one verdict
   "edits" -> do
-    let items = editPaths (lookupStr "path" a) [ fst (arguments editTool e) | e <- lookupArr "edits" a ]
+    -- (the list, or the list written out as a text: a model sends that now and then, and was refused)
+    let given = case lookupArr "edits" a of
+          [] | Just w <- lookupText "edits" a, Right (JArr es) <- parseJsonBS (TE.encodeUtf8 w) -> es
+          es -> es
+        items = editPaths (lookupStr "path" a) [ fst (arguments editTool e) | e <- given ]
         apply files [] = pure (Right files)
         apply _ ((i, (Nothing, _)) : _) =
           pure (Left (T.pack (printf "replacement %d: no path (each replacement is {path, old, new}; one without a path is in the file of the one before it)" (i :: Int))))
@@ -942,7 +1004,7 @@ fileTool ch name a = case name of
           Left why -> pure (Left (T.pack (printf "replacement %d: %s" i why)))
           Right p -> do
             t <- maybe (decode <$> B.readFile p) pure (lookup p files)
-            case replaceOnce t (fromMaybe T.empty (lookupText "old" e)) (fromMaybe T.empty (lookupText "new" e)) of
+            case applyEdit t e of
               Left why -> pure (Left (T.pack (printf "replacement %d, %s: " i rp) <> why))
               Right (t', _) -> apply ((p, t') : filter ((/= p) . fst) files) rest
     if null items then pure (False, T.pack "edits: no replacements given (edits: [{path, old, new}, ...])") else do
@@ -975,6 +1037,24 @@ fileTool ch name a = case name of
         budget = maybe 250 round (lookupNum "budget" a) :: Int
     files <- Vfs.inspectLoaded (cConf ch) (cName ch) budget mPath
     pure (True, Vfs.formatVfsTable files budget)
+  -- (in one file, with lines after each match: read here, a file of any size or kind -- a sample, a reference's source)
+  "grep" | Just rp <- lookupStr "path" a -> case inside ch rp of
+    Left why -> pure (False, T.pack why)
+    Right p -> do
+      r <- try (B.readFile p) :: IO (Either IOException B.ByteString)
+      case r of
+        Left err -> pure (False, T.pack ("grep: " ++ show err))
+        Right bytes -> do
+          let q = fromMaybe T.empty (lookupText "query" a)
+              maxN = maybe 30 round (lookupNum "lines" a) :: Int
+              ctx = max 0 (maybe 0 round (lookupNum "context" a)) :: Int
+              ls = zip [1 :: Int ..] (T.splitOn (T.pack "\n") (decode bytes))
+              hits = [ i | (i, l) <- ls, q `T.isInfixOf` l ]
+              shownHits = take maxN hits
+              wanted = concat [ [i .. i + ctx] | i <- shownHits ]
+              out = [ T.pack (printf "%6d%s " i (if i `elem` shownHits then ":" else " " :: String)) <> T.take 400 (T.filter (/= '\r') l) | (i, l) <- ls, i `elem` wanted ]
+          pure (if T.null q then (False, T.pack "grep: no query") else
+                (True, T.pack (printf "[%s: %d line(s) hold %s%s]\n" rp (length hits) (show (T.unpack q)) (if length hits > maxN then printf "; the first %d shown" maxN else "" :: String)) <> T.intercalate (T.pack "\n") out))
   "grep" -> do
     let q = fromMaybe "" (lookupStr "query" a)
         maxN = maybe 30 round (lookupNum "lines" a) :: Int
@@ -1252,6 +1332,17 @@ master = unlines
   , "given to you whole -- when it is new, or when you zoom(id, 1) on it; a"
   , "summary only names it."
   , ""
+  , "- The session's own settings are in ghci-session.json, and a change to it is"
+  , "  taken a second after it is saved (the repl restarts on it). Under"
+  , "  \"targets\", the session's entry: \"units\" (the build tool's components"
+  , "  loaded: lib:NAME, test:NAME, exe:NAME), \"watch\" (directories whose saves"
+  , "  reload), \"modules\" (in scope at the prompt), \"test\": {\"expr\": an IO"
+  , "  action, \"pass\": a pattern its output has when it passed, \"fail\": one it"
+  , "  has when it did not} -- what the test tool runs. At the top: \"optimize\":"
+  , "  true (the code loaded compiled and optimised: evaluations and bench at the"
+  , "  built code's speed), \"watch_check\": true (the test on every save),"
+  , "  \"eval_timeout\". status with wait: N waits for the verdict of a restart"
+  , "  or of a check that is running, instead of sleeping."
   , "- Many hands: spawn starts a subagent a task, all at once, each with your"
   , "  tools on this same session and these same files; you go on, and each one's"
   , "  last reply reaches you as a message \"[Name] report\" -- while you work, between"
@@ -1473,6 +1564,9 @@ runCli ch e o pending run = do
             forM_ mc (\fd -> serveConn (fd, B.empty))
             accept
   mapM_ serveConn (crConns run)
+  -- (a turn taken up by a newer chat: its tools may be other than the program was told at its start -- it is told
+  -- to ask again)
+  forM_ (crConns run) $ \(fd, _) -> void (try (Wire.fdPut fd (encodeBS (JObj [("jsonrpc", JStr "2.0"), ("method", JStr "notifications/tools/list_changed")]) <> B8.pack "\n")) :: IO (Either IOException ()))
   _ <- forkIO ((void (try accept :: IO (Either SomeException ()))) `finally` atomically (modifyTVar' readers (subtract 1)))
   seenR <- newIORef (0 :: Int, 0 :: Double)
   limitR <- newIORef ""
