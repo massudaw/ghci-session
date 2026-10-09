@@ -304,9 +304,9 @@ run = do
   ids <- mapM (H.appendMsg hm (T.pack "tool")) (map T.pack ["eval 1 + 1", "eval 2 * 3", T.unpack (T.replicate 40 (T.pack "long ")), "reload"])
   eq "history: ids are the position" ids [0, 1, 2, 3]
   sn1 <- H.snapshot hm
-  check "history: a short message is its own node, free" (M.member (0, 0) (H.sTree sn1) && M.member (0, 1) (H.sTree sn1))
-  check "history: a long one is not" (not (M.member (0, 2) (H.sTree sn1)))
-  check "history: two short lines that fit together merge free" (not (M.member (1, 0) (H.sTree sn1)))   -- 16+1+16 > 24: they do not
+  check "history: a short message is its own node, free" (M.member (0, 0) (H.sSizes sn1) && M.member (0, 1) (H.sSizes sn1))
+  check "history: a long one is not" (not (M.member (0, 2) (H.sSizes sn1)))
+  check "history: two short lines that fit together merge free" (not (M.member (1, 0) (H.sSizes sn1)))   -- 16+1+16 > 24: they do not
   eq "history: ... and two that do not are a merge ready for the compactor" (H.sReady sn1) (Set.fromList [(1, 0)])
   eq "history: a message that needs a call is queued" (H.sUnbuilt sn1) (Set.fromList [2])
   eq "history: the view tiles the log, one part a message while nothing can merge" (H.sView sn1) [(0, 0), (0, 1), (0, 2), (0, 3)]
@@ -358,8 +358,14 @@ run = do
   (hm2, torn1) <- H.openHistory hp hdir
   sn4 <- H.snapshot hm2
   eq "history: reopened: no torn lines" torn1 0
-  eq "history: reopened: the same messages" (fmap H.mText (H.sRoot sn4)) (fmap H.mText (H.sRoot sn3))
-  eq "history: reopened: the same tree" (H.sTree sn4) (H.sTree sn3)
+  texts3 <- map H.mText <$> H.messages hm 0 1000
+  texts4 <- map H.mText <$> H.messages hm2 0 1000
+  eq "history: reopened: the same messages (read from the log, each)" (H.sCount sn4, texts4) (H.sCount sn3, texts3)
+  tree3 <- H.treeTexts hm
+  tree4 <- H.treeTexts hm2
+  eq "history: reopened: the same tree (its lines read from the files, or made of what they are)" tree4 tree3
+  check "history: a node's line is there for every node that is built" (M.keysSet tree3 == M.keysSet (H.sSizes sn3) && not (M.null tree3))
+  eq "history: a line's bytes are what was counted for it" (M.map H.byteLength tree3) (H.sSizes sn3)
   eq "history: reopened: the same queues" (H.sReady sn4, H.sUnbuilt sn4) (H.sReady sn3, H.sUnbuilt sn3)
   eq "history: reopened: the view as it was saved, not rebuilt" (H.sView sn4, H.sCView sn4) (H.sView sn3, H.sCView sn3)
   -- a saved view is taken as it is, even one the fold would not make: that is what "never rebuilt" means

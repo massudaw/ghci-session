@@ -2063,7 +2063,7 @@ histOp s op req = case sHist s of
       sn <- go
       let r = H.renderView sn
       pure (Right (if lookupBool "json" req == Just True
-        then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (Seq.length (H.sRoot sn)))) ]))
+        then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (H.sCount sn))) ]))
         else r))
     -- the memory's numbers, for a monitor: messages, lines of the view, is it settled, nodes built, the
     -- compactor's jobs running and waiting on a retry, and whether one is configured
@@ -2071,9 +2071,9 @@ histOp s op req = case sHist s of
       sn <- H.snapshot m
       busy <- H.busyCount m
       fails <- H.failedCount m
-      pure (Right (T.pack (encode (JObj [ ("messages", JNum (fromIntegral (Seq.length (H.sRoot sn)))), ("parts", JNum (fromIntegral (length (H.sView sn))))
-                                        , ("settled", JBool (H.settled sn)), ("built", JNum (fromIntegral (M.size (H.sTree sn))))
-                                        , ("unbuilt", JNum (fromIntegral (length [ () | p <- H.sView sn, not (M.member p (H.sTree sn)) ])))
+      pure (Right (T.pack (encode (JObj [ ("messages", JNum (fromIntegral (H.sCount sn))), ("parts", JNum (fromIntegral (length (H.sView sn))))
+                                        , ("settled", JBool (H.settled sn)), ("built", JNum (fromIntegral (M.size (H.sSizes sn))))
+                                        , ("unbuilt", JNum (fromIntegral (length [ () | p <- H.sView sn, not (M.member p (H.sSizes sn)) ])))
                                         , ("busy", JNum (fromIntegral busy)), ("failed", JNum (fromIntegral fails))
                                         , ("compactor", JBool (isJust (gSummarizeCmd (sCfg s)))) ]))))
     -- for a compactor outside the daemon: the nodes ready to build, with their prompts; and one built

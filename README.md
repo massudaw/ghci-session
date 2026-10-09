@@ -258,7 +258,9 @@ to (and their diffs), commits, restarts. It writes each as a line of `.ghci-sess
 and never edits one: `tool` (the request, as one line), `echo` (the answer: an evaluation's output whole, a verdict with its failing lines, the `STALE` warning the client
 was given),
 and, from a harness, `user`, `talk`, `work` and `note`. A line is written with one write and an fsync, and a torn line
-is skipped at load. `status` and `info` are not logged: a tool polls them. A text over 30,000 characters is
+is skipped at load. `status` and `info` are not logged: a tool polls them. The daemon keeps of each line where it is on
+disk, its kind and its size -- not its text, which is read when a `zoom`, a compaction or the view asks for it: a
+history of 60,000 messages, 112 MB of files, is 35 MB of the daemon's memory. A text over 30,000 characters is
 several messages in a row, cut at a line's end, each saying which part it is (`[part 2 of 7 of message 461]`) and
 where it goes on: nothing is dropped, and the middle of a long test run is a `zoom` away like the rest. (Past a
 million characters the head and tail are kept.) A save's line carries the diff of each

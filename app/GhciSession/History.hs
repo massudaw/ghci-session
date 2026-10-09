@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 -- | __The session's history as the memory__: every request and its reply, every save and its verdict, and
 -- whatever a harness says on the user's and the agent's behalf, in one append-only log that is never
@@ -38,6 +39,7 @@
 -- message and how many it covers, so the agent reads @2184+8@ in the view and asks @zoom 2184 8@.
 module GhciSession.History
   ( Params (..), defaultParams, Msg (..), Mem, Job (..), Step (..)
+  , Loc (..), Src (..), treeTexts
   , openHistory, appendMsg, pageText, partTexts, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
@@ -47,15 +49,15 @@ module GhciSession.History
 
 import Control.Concurrent.MVar
 import Control.Concurrent.STM
-import Control.Exception (IOException, try)
-import Control.Monad (forM, unless, void, when)
+import Control.Exception (IOException, evaluate, try)
+import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.IORef
 import Data.Char (isAlphaNum, isDigit)
 import Data.List (foldl', isSuffixOf, maximumBy, sort)
 import qualified Data.Map.Strict as M
-import Data.Maybe (fromMaybe)
+import Data.Maybe (catMaybes, fromMaybe)
 import Data.Ord (comparing)
 import Data.Sequence (Seq, (|>))
 import qualified Data.Sequence as Seq
@@ -66,8 +68,9 @@ import qualified Data.Text.Encoding.Error as TE
 import Data.Time (defaultTimeLocale, formatTime, getZonedTime)
 import System.Directory (createDirectoryIfMissing, doesDirectoryExist, listDirectory, renameFile)
 import System.FilePath ((</>))
-import System.IO (BufferMode (..), hClose, hFlush, hSetBinaryMode, hSetBuffering)
-import System.Posix.IO (OpenFileFlags (..), OpenMode (..), defaultFileFlags, fdToHandle, openFd)
+import System.IO (BufferMode (..), IOMode (..), SeekMode (..), hClose, hFlush, hSeek, hSetBinaryMode, hSetBuffering, withBinaryFile)
+import System.IO.Unsafe (unsafePerformIO)
+import System.Posix.IO (OpenFileFlags (..), OpenMode (..), defaultFileFlags, fdSeek, fdToHandle, openFd)
 import System.Posix.Unistd (fileSynchronise)
 
 import GhciSession.Json
@@ -101,18 +104,33 @@ msgLine m = mKind m <> T.pack ": " <> mText m
 byteLength :: T.Text -> Int
 byteLength = B.length . TE.encodeUtf8
 
+-- | Where a line of the history is on disk: its file, where it starts, its length (without its newline).
+data Loc = Loc { lPath :: FilePath, lOff :: !Int, lLen :: !Int }
+  deriving (Eq, Show)
+
+-- | A message, as memory has it: its kind, its date, the bytes of its line, and where it is. NOT its text: a
+-- long chat's text is megabytes that a turn reads a hundredth of, and it is read from the log when it is
+-- wanted ('readMsg').
+data Ref = Ref { rKind :: !T.Text, rDate :: !Double, rSize :: !Int, rLoc :: !Loc }
+
+-- | Where a node's line is: in the tree's files; or nowhere, being its message (a short message is its own
+-- line), or its two halves joined (two lines that fit together are their parent).
+data Src = Stored !Loc | Own | Joined
+  deriving (Eq, Show)
+
 -- | The tree, and its two queues of work: the merges whose two halves are built ('nReady') and the
 -- messages that need a model call and have not had one ('nUnbuilt'). Kept as the tree changes ('addNode'),
 -- so the compactor never scans the tree for work (over a long chat, that is O(N^2)).
--- 'nSizes' is each node's bytes, counted once: a view is measured at every message.
-data Nodes = Nodes { nTree :: !(M.Map (Int, Int) T.Text), nSizes :: !(M.Map (Int, Int) Int), nReady :: !(S.Set (Int, Int)), nUnbuilt :: !(S.Set Int) }
+-- A node here is where its line is ('nSrc') and its bytes ('nSizes', what a view is measured by at every
+-- message) -- not the line: a view shows a few hundred of the tree's lines, and those are read ('nodeText').
+data Nodes = Nodes { nSrc :: !(M.Map (Int, Int) Src), nSizes :: !(M.Map (Int, Int) Int), nReady :: !(S.Set (Int, Int)), nUnbuilt :: !(S.Set Int) }
   deriving (Eq, Show)
 
 -- | The in-memory state. Everything that reads or changes it goes through 'mLock'; 'mWake' counts changes,
 -- for whoever waits on one (the compactor, a turn waiting for the view to settle).
 data Mem = Mem
   { mParams :: Params, mDir :: FilePath
-  , mRoot :: IORef (Seq Msg)
+  , mRoot :: IORef (Seq Ref)
   , mNodes :: IORef Nodes                       -- ^ built nodes (free ones included) and the work queues
   , mView :: IORef [(Int, Int)]                 -- ^ the parts tiling @[0, T)@, oldest first
   , mCView :: IORef [(Int, Int)]                -- ^ the compactions' view: the view merged further
@@ -121,18 +139,23 @@ data Mem = Mem
   , mFail :: IORef (M.Map (Int, Int) Double)     -- ^ nodes that failed, and when they may be tried again
   , mLock :: MVar ()
   , mWake :: TVar Int
+  , mCache :: IORef (M.Map (Int, Int) T.Text)    -- ^ lines read lately (the views' are read at every call): emptied when it is large
+  , mFile :: IORef FilePath                      -- ^ the file last written: the same path is the same value in every 'Loc'
   }
 
--- | A pure picture of the state: what the tests and the pump work on.
-data Snap = Snap { sRoot :: Seq Msg, sTree :: M.Map (Int, Int) T.Text, sSizes :: M.Map (Int, Int) Int, sView :: [(Int, Int)]
+-- | A picture of the state: what the tests and the pump work on. The texts are not in it but are read through
+-- it -- 'sNode' a node's line, 'sMsg' a message whole -- from files whose lines are never changed once
+-- written, so what is read is what would have been there.
+data Snap = Snap { sCount :: Int, sNode :: (Int, Int) -> Maybe T.Text, sMsg :: Int -> Maybe Msg, sSizes :: M.Map (Int, Int) Int, sView :: [(Int, Int)]
                  , sCView :: [(Int, Int)], sReady :: S.Set (Int, Int), sUnbuilt :: S.Set Int }
 
 -- storage -----------------------------------------------------------------------
 
--- | One line, written and fsync'd before this returns.
-appendLine :: FilePath -> B.ByteString -> IO ()
+-- | One line, written and fsync'd before this returns: where in the file it starts.
+appendLine :: FilePath -> B.ByteString -> IO Int
 appendLine path b = do
   fd <- openFd path WriteOnly defaultFileFlags { append = True, creat = Just 0o644 }
+  at <- fromIntegral <$> fdSeek fd SeekFromEnd 0
   h <- fdToHandle fd
   hSetBinaryMode h True
   hSetBuffering h (BlockBuffering Nothing)
@@ -140,6 +163,43 @@ appendLine path b = do
   hFlush h
   fileSynchronise fd
   hClose h
+  pure at
+
+-- | The line at a place, as JSON; 'Nothing' if it cannot be read (the file gone, the line torn).
+readLoc :: Loc -> IO (Maybe Json)
+readLoc (Loc path off len) = do
+  r <- try (withBinaryFile path ReadMode (\h -> hSeek h AbsoluteSeek (fromIntegral off) >> B.hGet h len)) :: IO (Either IOException B.ByteString)
+  pure (either (const Nothing) (either (const Nothing) Just . parseJsonBS) r)
+
+-- | A message whole, read from the log.
+readMsg :: Seq Ref -> Int -> IO (Maybe Msg)
+readMsg root i = case Seq.lookup i root of
+  Nothing -> pure Nothing
+  Just r -> fmap (\j -> Msg i (rKind r) (fromMaybe T.empty (lookupText "text" j)) (rDate r)) <$> readLoc (rLoc r)
+
+-- | A node's line: read from the tree's files, or made of what it is (its message, its two halves). The
+-- lines read are kept a while -- a view's are asked for at every call -- and dropped all at once when they
+-- are many: the next call reads its view again, a few hundred short reads.
+nodeText :: IORef (M.Map (Int, Int) T.Text) -> Nodes -> Seq Ref -> (Int, Int) -> IO (Maybe T.Text)
+nodeText cache ns root = go
+  where
+    go p@(l, i) = case M.lookup p (nSrc ns) of
+      Nothing -> pure Nothing
+      Just src -> do
+        hit <- M.lookup p <$> readIORef cache
+        case hit of
+          Just t -> pure (Just t)
+          Nothing -> do
+            t <- case src of
+              Stored loc -> (>>= lookupText "text") <$> readLoc loc
+              Own -> fmap msgLine <$> readMsg root i
+              Joined -> (\a b -> (\x y -> x <> T.pack "\n" <> y) <$> a <*> b) <$> go (l - 1, 2 * i) <*> go (l - 1, 2 * i + 1)
+            forM_ t (\x -> atomicModifyIORef' cache (\m -> (M.insert p x (if M.size m >= cacheMax then M.empty else m), ())))
+            pure t
+
+-- | How many lines are kept read at most.
+cacheMax :: Int
+cacheMax = 8192
 
 dayFile :: FilePath -> IO FilePath
 dayFile dir = do
@@ -147,18 +207,31 @@ dayFile dir = do
   createDirectoryIfMissing True dir
   pure (dir </> (d ++ ".jsonl"))
 
--- | Every line of every day file, in order, torn lines skipped (how many), a missing final newline added.
-readLines :: FilePath -> IO ([Json], Int)
-readLines dir = do
+-- | Every line of every day file, in order, as what is kept of it -- @keep@ of where it is and what it says,
+-- made at once, so that a line's text is not held past its reading -- torn lines skipped (how many), a
+-- missing final newline added.
+readLines :: FilePath -> (Loc -> Json -> Maybe a) -> IO ([a], Int)
+readLines dir keep = do
   there <- doesDirectoryExist dir
   files <- if there then sort . filter (".jsonl" `isSuffixOf`) <$> listDirectory dir else pure []
   rs <- forM files $ \f -> do
-    b <- either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile (dir </> f))
-    when (not (B.null b) && BC.last b /= '\n') (appendLine (dir </> f) (BC.pack "\n"))
-    let ls = filter (not . B.null) (BC.lines b)
-        parsed = map parseJsonBS ls
-    pure ([ j | Right j <- parsed ], length [ () | Left _ <- parsed ])
-  pure (concatMap fst rs, sum (map snd rs))
+    let path = dir </> f
+    b <- either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile path)
+    when (not (B.null b) && BC.last b /= '\n') (void (appendLine path (BC.pack "\n")))
+    let go !off !torn acc bs
+          | B.null bs = (reverse acc, torn)
+          | otherwise =
+              let (l, rest) = BC.break (== '\n') bs
+                  next = off + B.length l + 1
+              in if B.null l then go next torn acc (B.drop 1 rest) else case parseJsonBS l of
+                   Left _ -> go next (torn + 1) acc (B.drop 1 rest)
+                   Right j -> let !loc = Loc path off (B.length l) in case keep loc j of
+                     Just !x -> go next torn (x : acc) (B.drop 1 rest)
+                     Nothing -> go next torn acc (B.drop 1 rest)
+        (xs, torn) = go 0 (0 :: Int) [] b
+    length xs `seq` pure (xs, torn)
+  let !torn = sum (map snd rs)
+  pure (concatMap fst rs, torn)
 
 -- | Open (or create) a session's history: the log and the tree read back, the free nodes made, the views
 -- LOADED as they were saved. A view is folded again from message 0 only when there is none to load (a
@@ -167,29 +240,44 @@ readLines dir = do
 openHistory :: Params -> FilePath -> IO (Mem, Int)
 openHistory ps dir = do
   createDirectoryIfMissing True dir
-  (ms, tornM) <- readLines (dir </> "main")
-  (ns, tornT) <- readLines (dir </> "tree")
-  let msgs0 = [ Msg (round i) (T.pack k) (fromMaybe T.empty (lookupText "text" j)) (fromMaybe 0 (lookupNum "date" j))
-              | j <- ms, Just i <- [lookupNum "i" j], Just k <- [lookupStr "kind" j] ]
-      -- ids are the position: a line out of order (never written, but a merged backup could) is dropped
-      msgs = inOrder 0 msgs0
+  let sizeOr j t = maybe (byteLength t) round (lookupNum "size" j)
+      aMsg loc j = case (lookupNum "i" j, lookupStr "kind" j) of
+        (Just i, Just k) -> let kind = T.pack k
+                                !size = sizeOr j (kind <> T.pack ": " <> fromMaybe T.empty (lookupText "text" j))
+                                !n = round i :: Int
+                                !r = Ref kind (fromMaybe 0 (lookupNum "date" j)) size loc
+                            in Just (n, r)
+        _ -> Nothing
+      aNode loc j = case (lookupNum "l" j, lookupNum "i" j) of
+        (Just l, Just i) -> let !size = sizeOr j (fromMaybe T.empty (lookupText "text" j))
+                                !l' = round l :: Int
+                                !i' = round i :: Int
+                            in Just ((l', i'), loc, size)
+        _ -> Nothing
+  (ms, tornM) <- readLines (dir </> "main") aMsg
+  (stored, tornT) <- readLines (dir </> "tree") aNode
+  let -- ids are the position: a line out of order (never written, but a merged backup could) is dropped
       inOrder _ [] = []
-      inOrder n (m : r) | mId m == n = m : inOrder (n + 1) r
-                        | otherwise = inOrder n r
-      root = Seq.fromList msgs
+      inOrder n ((i, r) : rest) | i == n = r : inOrder (n + 1) rest
+                                | otherwise = inOrder n rest
+      refs = inOrder 0 ms
+      root = Seq.fromList refs
       tot = Seq.length root
-      stored = [ ((round l, round i), fromMaybe T.empty (lookupText "text" j)) | j <- ns, Just l <- [lookupNum "l" j], Just i <- [lookupNum "i" j] ]
-      nodes0 = Nodes M.empty M.empty S.empty (S.fromList [ mId m | m <- msgs, not (msgFits ps m) ])
-      nodes1 = foldl' (\n m -> if msgFits ps m then addNode ps (0, mId m) (msgLine m) n else n) nodes0 msgs
-      nodes = foldl' (\n (k@(l, i), t) -> if (i + 1) * 2 ^ l <= tot then addNode ps k t n else n) nodes1 stored
+      fits r = rSize r <= pNode ps
+      nodes0 = Nodes M.empty M.empty S.empty (S.fromList [ i | (i, r) <- zip [0 ..] refs, not (fits r) ])
+      nodes1 = foldl' (\n (i, r) -> if fits r then addNode ps (0, i) Own (rSize r) n else n) nodes0 (zip [0 ..] refs)
+      nodes = foldl' (\n (k@(l, i), loc, size) -> if (i + 1) * 2 ^ l <= tot then addNode ps k (Stored loc) size n else n) nodes1 stored
       sizes = nSizes nodes
       folded = snd (foldl' (\(sh, v) i -> stepView ps (i + 1) sizes (sh, v ++ [(0, i)])) (False, []) [0 .. tot - 1])
   mv <- loadView (dir </> "view.json") tot
   let view = fromMaybe folded mv
   mc <- loadView (dir </> "view-compact.json") tot
   let cview = fromMaybe (shrinkView (pCtxMin ps) tot sizes view) mc
+  -- (made now, all of it: left to be made when first asked for, the index is a promise that holds every line it
+  -- was read from, text and all -- 220 MB of a history of 112, measured, until the first message came)
+  _ <- evaluate (M.size (nSrc nodes) + M.size (nSizes nodes) + S.size (nReady nodes) + S.size (nUnbuilt nodes) + Seq.length root + length view + length cview)
   mem <- Mem ps dir <$> newIORef root <*> newIORef nodes <*> newIORef view <*> newIORef cview <*> newIORef False
-                    <*> newIORef S.empty <*> newIORef M.empty <*> newMVar () <*> newTVarIO 0
+                    <*> newIORef S.empty <*> newIORef M.empty <*> newMVar () <*> newTVarIO 0 <*> newIORef M.empty <*> newIORef ""
   when (tot > 0 && (mv == Nothing || mc == Nothing)) (saveViews mem)
   pure (mem, tornM + tornT)
 
@@ -256,6 +344,12 @@ pageText cap t
                     upto = case T.breakOnEnd (T.pack "\n") a of { (h, _) | not (T.null h) -> h; _ -> a }
                 in upto : pageText cap (T.drop (T.length upto) t)
 
+-- | A path as the value last used for it, so that the lines of one file name one path between them.
+sameFile :: Mem -> FilePath -> IO FilePath
+sameFile mem f = do
+  was <- readIORef (mFile mem)
+  if was == f then pure was else writeIORef (mFile mem) f >> pure f
+
 appendOne :: Mem -> T.Text -> T.Text -> IO Int
 appendOne mem kind text = do
   root <- readIORef (mRoot mem)
@@ -265,10 +359,12 @@ appendOne mem kind text = do
       m = Msg i kind text t
       line = JObj [ ("i", JNum (fromIntegral i)), ("kind", JStr (T.unpack kind)), ("text", JText text)
                   , ("size", JNum (fromIntegral (byteLength (msgLine m)))), ("date", JNum t) ]
-  f <- dayFile (mDir mem </> "main")
-  appendLine f (encodeBS line <> BC.pack "\n")
-  writeIORef (mRoot mem) (root |> m)
-  modifyIORef' (mNodes mem) (\n -> if msgFits ps m then addNode ps (0, i) (msgLine m) n else n { nUnbuilt = S.insert i (nUnbuilt n) })
+      bytes = encodeBS line
+      size = byteLength (msgLine m)
+  f <- dayFile (mDir mem </> "main") >>= sameFile mem
+  at <- appendLine f (bytes <> BC.pack "\n")
+  writeIORef (mRoot mem) (root |> Ref kind t size (Loc f at (B.length bytes)))
+  modifyIORef' (mNodes mem) (\n -> if size <= pNode ps then addNode ps (0, i) Own size n else n { nUnbuilt = S.insert i (nUnbuilt n) })
   sizes <- nSizes <$> readIORef (mNodes mem)
   v <- readIORef (mView mem)
   sh <- readIORef (mShrink mem)
@@ -295,9 +391,10 @@ appendOne mem kind text = do
 putNode :: Mem -> Int -> Int -> T.Text -> IO ()
 putNode mem l i text = withMVar (mLock mem) $ \_ -> do
   let line = JObj [ ("l", JNum (fromIntegral l)), ("i", JNum (fromIntegral i)), ("text", JText text), ("size", JNum (fromIntegral (byteLength text))) ]
-  f <- dayFile (mDir mem </> "tree")
-  appendLine f (encodeBS line <> BC.pack "\n")
-  modifyIORef' (mNodes mem) (addNode (mParams mem) (l, i) text)
+  let bytes = encodeBS line
+  f <- dayFile (mDir mem </> "tree") >>= sameFile mem
+  at <- appendLine f (bytes <> BC.pack "\n")
+  modifyIORef' (mNodes mem) (addNode (mParams mem) (l, i) (Stored (Loc f at (B.length bytes))) (byteLength text))
   modifyIORef' (mBusy mem) (S.delete (l, i))
   modifyIORef' (mFail mem) (M.delete (l, i))
   bump mem
@@ -318,17 +415,31 @@ snapshot mem = withMVar (mLock mem) $ \_ -> snap mem
 snap :: Mem -> IO Snap
 snap mem = do
   n <- readIORef (mNodes mem)
-  Snap <$> readIORef (mRoot mem) <*> pure (nTree n) <*> pure (nSizes n) <*> readIORef (mView mem) <*> readIORef (mCView mem) <*> pure (nReady n) <*> pure (nUnbuilt n)
+  root <- readIORef (mRoot mem)
+  v <- readIORef (mView mem)
+  cv <- readIORef (mCView mem)
+  pure Snap { sCount = Seq.length root
+            , sNode = \p -> unsafePerformIO (nodeText (mCache mem) n root p)
+            , sMsg = \i -> unsafePerformIO (readMsg root i)
+            , sSizes = nSizes n, sView = v, sCView = cv, sReady = nReady n, sUnbuilt = nUnbuilt n }
 
 count :: Mem -> IO Int
 count mem = Seq.length <$> readIORef (mRoot mem)
 
--- | Messages from an id on, at most @n@.
+-- | Messages from an id on, at most @n@ (read from the log).
 messages :: Mem -> Int -> Int -> IO [Msg]
-messages mem from n = (\r -> take n (drop from (foldr (:) [] r))) <$> readIORef (mRoot mem)
+messages mem from n = do
+  root <- readIORef (mRoot mem)
+  catMaybes <$> mapM (readMsg root) [max 0 from .. min (Seq.length root) (max 0 from + n) - 1]
 
 dateOf :: Mem -> Int -> IO (Maybe Double)
-dateOf mem i = (\r -> mDate <$> Seq.lookup i r) <$> readIORef (mRoot mem)
+dateOf mem i = (\r -> rDate <$> Seq.lookup i r) <$> readIORef (mRoot mem)
+
+-- | Every built node's line (read, all of them: for a test, or a dump).
+treeTexts :: Mem -> IO (M.Map (Int, Int) T.Text)
+treeTexts mem = do
+  sn <- snapshot mem
+  pure (M.fromList [ (p, t) | p <- M.keys (sSizes sn), Just t <- [sNode sn p] ])
 
 -- the tree ---------------------------------------------------------------------
 
@@ -336,17 +447,18 @@ dateOf mem i = (\r -> mDate <$> Seq.lookup i r) <$> readIORef (mRoot mem)
 -- its sibling built too, the parent is either FREE -- two lines that fit together in one ARE their parent,
 -- joined by a newline, with no model call, and so on upward -- or ready to be merged by the compactor.
 -- (Level 0: a short message is its own line; the caller adds it.)
-addNode :: Params -> (Int, Int) -> T.Text -> Nodes -> Nodes
-addNode ps (l, i) text ns
-  | M.member (l, i) (nTree ns) = ns
-  | M.member parent tree = ns'
-  | otherwise = case (M.lookup (l, i0) tree, M.lookup (l, i0 + 1) tree) of
-      (Just a, Just b) | byteLength a + 1 + byteLength b <= pNode ps -> addNode ps parent (a <> T.pack "\n" <> b) ns'
+addNode :: Params -> (Int, Int) -> Src -> Int -> Nodes -> Nodes
+addNode ps (l, i) src size ns
+  | M.member (l, i) (nSrc ns) = ns
+  | M.member parent srcs = ns'
+  | otherwise = case (M.lookup (l, i0) sizes, M.lookup (l, i0 + 1) sizes) of
+      (Just a, Just b) | a + 1 + b <= pNode ps -> addNode ps parent Joined (a + 1 + b) ns'
                        | otherwise -> ns' { nReady = S.insert parent (nReady ns') }
       _ -> ns'
   where
-    tree = M.insert (l, i) text (nTree ns)
-    ns' = Nodes tree (M.insert (l, i) (byteLength text) (nSizes ns)) (S.delete (l, i) (nReady ns)) (if l == 0 then S.delete i (nUnbuilt ns) else nUnbuilt ns)
+    srcs = M.insert (l, i) src (nSrc ns)
+    sizes = M.insert (l, i) size (nSizes ns)
+    ns' = Nodes srcs sizes (S.delete (l, i) (nReady ns)) (if l == 0 then S.delete i (nUnbuilt ns) else nUnbuilt ns)
     i0 = i - i `mod` 2
     parent = (l + 1, i `div` 2)
 
@@ -413,23 +525,23 @@ partName :: (Int, Int) -> T.Text
 partName (l, i) = T.pack (show (i * 2 ^ l) ++ "+" ++ show (2 ^ l :: Int))
 
 partText :: Snap -> (Int, Int) -> T.Text
-partText sn p = fromMaybe placeholder (M.lookup p (sTree sn))
+partText sn p = fromMaybe placeholder (sNode sn p)
 
 oneLine :: T.Text -> T.Text
 oneLine = T.map (\c -> if c == '\n' || c == '\r' then ' ' else c)
 
 -- | Is every line of the view a summary? A turn waits for this before it starts.
 settled :: Snap -> Bool
-settled sn = all (`M.member` sTree sn) (sView sn)
+settled sn = all (`M.member` sSizes sn) (sView sn)
 
 -- | @zoom id n@: the two lines of @n/2@ under line @id+n@; @n = 1@ gives the message whole.
 zoom :: Mem -> Int -> Int -> IO (Either String T.Text)
 zoom mem i n = do
   sn <- snapshot mem
-  let t = Seq.length (sRoot sn)
+  let t = sCount sn
       lg = length (takeWhile (< n) (iterate (* 2) 1))
   pure $ if n < 1 || 2 ^ lg /= n || i `mod` n /= 0 || i + n > t then Left ("No line " ++ show i ++ "+" ++ show n ++ ".")
-    else if n == 1 then maybe (Left "No such message.") (\m -> Right (T.pack (show i ++ "+0|") <> msgLine m)) (Seq.lookup i (sRoot sn))
+    else if n == 1 then maybe (Left "No such message.") (\m -> Right (T.pack (show i ++ "+0|") <> msgLine m)) (sMsg sn i)
     else let l = lg - 1; a = (l, 2 * i `div` n); b = (l, 2 * i `div` n + 1)
          in Right (T.unlines [ partName a <> T.pack "|" <> oneLine (partText sn a), partName b <> T.pack "|" <> oneLine (partText sn b) ])
 
@@ -456,10 +568,10 @@ pendingOf ps sn busy fails t =
       , not (S.member p busy), maybe True (<= t) (M.lookup p fails), Just j <- [job p] ]
   where
     context upto = go (sCView sn)
-      where go (p@(l, i) : r) | (i + 1) * 2 ^ l <= upto, Just x <- M.lookup p (sTree sn) = (partName p <> T.pack "|" <> oneLine x) : go r
+      where go (p@(l, i) : r) | (i + 1) * 2 ^ l <= upto, Just x <- sNode sn p = (partName p <> T.pack "|" <> oneLine x) : go r
             go _ = []
-    job (0, i) = (\m -> Job 0 i (context i) (Compress (msgLine m))) <$> Seq.lookup i (sRoot sn)
-    job (l, i) = case (M.lookup (l - 1, 2 * i) (sTree sn), M.lookup (l - 1, 2 * i + 1) (sTree sn)) of
+    job (0, i) = (\m -> Job 0 i (context i) (Compress (msgLine m))) <$> sMsg sn i
+    job (l, i) = case (sNode sn (l - 1, 2 * i), sNode sn (l - 1, 2 * i + 1)) of
       (Just a, Just b) -> Just (Job l i (context ((i + 1) * 2 ^ l)) (Merge (oneLine a) (oneLine b)))
       _ -> Nothing
 
