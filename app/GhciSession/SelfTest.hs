@@ -24,6 +24,7 @@ import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
+import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
@@ -401,6 +402,62 @@ run = do
   eq "C: a .cabal's options for C, under a condition or not, a comment left out"
      (cabalField "cc-options" "library\n  c-sources: a.c\n  cc-options: -DA\n  if flag(x)\n    cc-options:     -DB -DC\n    -- cc-options: -DNO\n  ghc-options: -Wall\n") ["-DA", "-DB", "-DC"]
   eq "C: another line of the build tool's is no command" (ccWords "Preprocessing library for ghostty-tui-0.1.0.0...") []
+  -- the conversation as Anthropic's Messages API takes it
+  let um t = JObj [("role", JStr "user"), ("content", JStr t)]
+      tm i t = JObj [("role", JStr "tool"), ("tool_call_id", JStr i), ("content", JStr t)]
+      callJ i n a = JObj [("id", JStr i), ("type", JStr "function"), ("function", JObj [("name", JStr n), ("arguments", JStr a)])]
+      am t cs = JObj ([("role", JStr "assistant"), ("content", JStr t)] ++ [ ("tool_calls", JArr cs) | not (null cs) ])
+      kinds m = [ fromMaybe "?" (lookupStr "type" b) | b <- lookupArr "content" m ]
+      shape = map (\m -> (fromMaybe "?" (lookupStr "role" m), kinds m)) . snd . A.toMessages
+      has0 j = case j of { JNull -> False; _ -> True }
+      marksOf bs = [ k | (k, b) <- zip [0 :: Int ..] bs, has0 (b .: "cache_control") ]
+      viewOf n = unlines (["before", "<chat>"] ++ [ show i ++ "+1|line" | i <- [1 .. n :: Int] ] ++ ["</chat>", "", "the message"])
+      texts = map (fromMaybe T.empty . lookupText "text")
+      opus = A.Config "k" False "https://api.anthropic.com" "claude-opus-5-5"
+      has k b = case b .: k of { JNull -> False; _ -> True }
+      bodyOf c o = A.requestBody c o [JObj [("role", JStr "system"), ("content", JStr "sys")], um "hi"] []
+  eq "anthropic: the system text is apart, and a step's results are one user message, results first"
+     (shape [ JObj [("role", JStr "system"), ("content", JStr "sys")], um "do it", am "ok" [callJ "a" "eval" "{\"expr\":\"1\"}", callJ "b" "status" "{}"]
+            , tm "a" "1", tm "b" "OK", um "and then?" ])
+     [("user", ["text"]), ("assistant", ["text", "tool_use", "tool_use"]), ("user", ["tool_result", "tool_result", "text"])]
+  eq "anthropic: the system text" (fst (A.toMessages [JObj [("role", JStr "system"), ("content", JStr "sys")], um "x"])) [T.pack "sys"]
+  eq "anthropic: a call's arguments are an object, an error result is said to be one, an empty one says so"
+     [ (b .: "input", lookupBool "is_error" b, lookupStr "content" b) | m <- snd (A.toMessages [um "x", am "" [callJ "a" "eval" "{\"expr\":\"1\"}"], tm "a" "ERROR: no", um "y", am "" [callJ "b" "s" "not json"], tm "b" ""]), b <- lookupArr "content" m, lookupStr "type" b /= Just "text" ]
+     [ (JObj [("expr", JStr "1")], Nothing, Nothing), (JNull, Just True, Just "ERROR: no"), (JObj [], Nothing, Nothing), (JNull, Nothing, Just "(no output)") ]
+  eq "anthropic: a reply's own blocks go back as they came, and a reply with nothing in it is no turn"
+     (map (lookupArr "content") (snd (A.toMessages [um "x", JObj [("role", JStr "assistant"), ("content", JStr "ignored"), ("anthropic_content", JArr [JObj [("type", JStr "thinking"), ("signature", JStr "s")], JObj [("type", JStr "text"), ("text", JStr "t")]])], um "y", am "" [], um "z"])))
+     [ [JObj [("type", JStr "text"), ("text", JStr "x")]], [JObj [("type", JStr "thinking"), ("signature", JStr "s")], JObj [("type", JStr "text"), ("text", JStr "t")]]
+     , [JObj [("type", JStr "text"), ("text", JStr "y")], JObj [("type", JStr "text"), ("text", JStr "z")]] ]
+  eq "anthropic: the view goes as blocks of four lines, the last whole one marked" (marksOf (A.viewBlocks (T.pack (viewOf 10)))) [2]
+  eq "anthropic: the view's blocks put together are the text" (T.concat (texts (A.viewBlocks (T.pack (viewOf 10))))) (T.pack (viewOf 10))
+  check "anthropic: a view with lines added keeps the blocks it had, up to the one that was marked"
+        (let a = texts (A.viewBlocks (T.pack (viewOf 10))); b = texts (A.viewBlocks (T.pack (viewOf 13))) in take 3 a == take 3 b && length b > length a)
+  eq "anthropic: a view shorter than a block has no mark, and a text with no view is one block" (marksOf (A.viewBlocks (T.pack (viewOf 3))), length (A.viewBlocks (T.pack "just words"))) ([], 1)
+  eq "anthropic: the request -- thinking, an effort said, the cache asked for, another model if it declines; no temperature"
+     (let b = bodyOf opus (A.Opts 100 Nothing Nothing) in (lookupStr "type" (b .: "thinking"), lookupStr "effort" (b .: "output_config"), has "cache_control" b, lookupStr "fallbacks" b, has "temperature" b, lookupNum "max_tokens" b, has "cache_control" (head (lookupArr "system" b))))
+     (Just "adaptive", Just "high", True, Just "default", False, Just 4000, True)
+  eq "anthropic: a compaction is the lightest effort (thinking cannot be turned off, and is not asked to be)"
+     (let b = bodyOf opus (A.Opts 400 (Just False) Nothing) in (has "thinking" b, lookupStr "effort" (b .: "output_config")))
+     (False, Just "low")
+  eq "anthropic: a model that takes neither is sent neither, and another provider's endpoint only the conversation"
+     ( let b = bodyOf opus { A.aModel = "claude-haiku-4-5" } (A.Opts 100 Nothing Nothing) in (has "thinking" b, has "output_config" b, has "fallbacks" b, lookupNum "max_tokens" b)
+     , let b = bodyOf (A.Config "k" True "https://api.deepseek.com/anthropic" "deepseek-v4-pro") (A.Opts 100 Nothing Nothing) in (has "thinking" b, has "output_config" b, has "fallbacks" b, has "cache_control" b) )
+     ((False, False, False, Just 100), (False, False, False, False))
+  eq "anthropic: the headers -- a key, or a token as a bearer; the beta a fallback needs, where there is one"
+     (A.headers opus, A.headers (A.Config "t" True "http://localhost:1" "m"), A.url (A.Config "t" True "http://localhost:1" "m"))
+     ( ["Content-Type: application/json", "anthropic-version: 2023-06-01", "x-api-key: k", "anthropic-beta: server-side-fallback-2026-07-01"]
+     , ["Content-Type: application/json", "anthropic-version: 2023-06-01", "Authorization: Bearer t"], "http://localhost:1/v1/messages" )
+  let replyJ stop content usage = JObj ([("type", JStr "message"), ("content", JArr content), ("stop_reason", JStr stop), ("usage", JObj usage)])
+      parsed = fmap (\p -> (A.rText p, A.rThinking p, A.rCalls p, A.rStop p, (A.rIn p, A.rOut p, A.rCached p), length (A.rBlocks p))) . A.parseReply
+  eq "anthropic: a reply -- its text, its thinking, its calls; the prompt's tokens are the three counts together"
+     (parsed (replyJ "tool_use" [ JObj [("type", JStr "thinking"), ("thinking", JStr "hm"), ("signature", JStr "s")], JObj [("type", JStr "text"), ("text", JStr "ok")]
+                                , JObj [("type", JStr "tool_use"), ("id", JStr "t1"), ("name", JStr "eval"), ("input", JObj [("expr", JStr "1")])] ]
+                     [("input_tokens", JNum 10), ("cache_read_input_tokens", JNum 900), ("cache_creation_input_tokens", JNum 90), ("output_tokens", JNum 7)]))
+     (Right (T.pack "ok", T.pack "hm", [("t1", "eval", JObj [("expr", JStr "1")])], "tool_use", (1000, 7, 900), 3))
+  eq "anthropic: a request declined is said, and an error is the API's words"
+     ( fmap A.rText (A.parseReply (JObj [("type", JStr "message"), ("content", JArr []), ("stop_reason", JStr "refusal"), ("stop_details", JObj [("category", JStr "cyber")])]))
+     , either id (const "") (A.parseReply (JObj [("type", JStr "error"), ("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])])) )
+     (Right (T.pack "[the model declined this request (cyber)]"), "overloaded_error: Overloaded")
   eq "chat: writes that follow one another in a reply are a batch" (writeRuns ["read", "write", "edit", "edits", "eval", "write", "write", "write"]) [[1, 2, 3], [5, 6, 7]]
   eq "chat: a lone write is not a batch" (writeRuns ["write", "read", "edit", "sh", "write"]) []
   eq "chat: writes to distinct files are separate groups, those sharing one stay together in order"

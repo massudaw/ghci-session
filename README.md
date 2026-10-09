@@ -333,7 +333,7 @@ cache entry (`SUMMARIZE_TOOLS=0` for a model that takes no tools).
   `chat --restart` has a running chat run itself again as the executable on disk now, in the middle of a turn, with
   the provider's cache intact.
   `tools/fake-llm.py` is a stand-in endpoint for trying it without a key (`OPENAI_API_KEY=fake
-  OPENAI_BASE_URL=http://127.0.0.1:8799`): `eval EXPR` and `tool NAME [JSON]` make it call a tool, anything else is
+  OPENAI_BASE_URL=http://127.0.0.1:8799`, or `GHS_PROVIDER=anthropic ANTHROPIC_API_KEY=fake ANTHROPIC_BASE_URL=...`): `eval EXPR` and `tool NAME [JSON]` make it call a tool, anything else is
   echoed, and a request without tools (a compaction) gets a one-line summary.
 
 What the harness does for an agent that works on a session: every reply carries `stale`; a command past its timeout
@@ -341,6 +341,29 @@ is interrupted, not abandoned; a check that hangs is interrupted at five times t
 (`CHECK-HANG`, with the last line it printed); a save answers once the code compiles, and the check's verdict rides
 on the next tool result; `typecheck` answers at once when nothing changed; a read of lines the context already holds
 answers with a pointer instead of the text; a session that is down is waited for (`GHS_CHAT_DOWN_WAIT`).
+
+**Anthropic's API** is spoken too (`GhciSession.Anthropic`: the Messages API, natively, not through a compatible
+endpoint). With `ANTHROPIC_API_KEY` (or `ANTHROPIC_AUTH_TOKEN`, sent as a bearer token) and no key for the other
+protocol -- or `GHS_PROVIDER=anthropic` with both -- the chat and `ghci-session summarize` use it:
+`ANTHROPIC_MODEL` (default `claude-opus-5-5`), `ANTHROPIC_BASE_URL` (default `https://api.anthropic.com`; another
+provider's endpoint that speaks the protocol works, and is sent only the conversation). What is its own:
+
+- **The cache is asked for**, where the other protocol's endpoints cache a prefix by themselves. The system prompt
+  is one marked block, with the tools before it; the view is sent as blocks of four lines with the last whole one
+  marked, so a turn reads the view of the turn before from the cache as far as that block; the conversation after
+  it is cached by the request's own mark, which the API moves along. Three of the four marks a request may have.
+- **Thinking is the model's.** On the current models it cannot be turned off: a turn runs at effort `high` (or
+  `--effort`), a compaction at `low`, both said in the request since the default differs between models. A reply's
+  blocks are sent back as they came, its thinking with them, so the conversation is only appended to: superseded
+  reads are not rewritten as stubs here.
+- **A request declined** (`stop_reason: refusal`) is said as such, and on Anthropic's API another model is asked
+  in the same call (`fallbacks: default`).
+
+Replies are not streamed (the transport is one request, one reply), so a call's `max_tokens` is what one reply may
+be. The compactor uses the model the environment names, like a turn: a smaller one is `ANTHROPIC_MODEL` in the
+daemon's environment. `tools/fake-llm.py` speaks this protocol too (`POST /v1/messages`), and answers 400 where
+the API would: roles that do not alternate, a result that is not at the head of its message, a thinking block
+sent back changed.
 
 **What the model calls cost** is kept: each call of the chat and the compactor appends a line to
 `<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds).

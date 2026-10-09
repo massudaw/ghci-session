@@ -1,13 +1,18 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables #-}
--- | __The model, as an OpenAI-compatible chat endpoint__ (DeepSeek's by default): one request, one reply,
--- over HTTPS through libcurl ('cbits/ghs_http.c', loaded at run time). What the chat and the compactor
--- ('GhciSession.Chat') share: the endpoint from the environment, the request's shape, the reply's parts.
+-- | __The model, as a chat endpoint__: one request, one reply, over HTTPS through libcurl
+-- ('cbits/ghs_http.c', loaded at run time). What the chat and the compactor ('GhciSession.Chat') share: the
+-- endpoint from the environment, the request's shape, the reply's parts. Two protocols, one conversation: an
+-- OpenAI-compatible endpoint (DeepSeek's by default) is spoken to here, Anthropic's Messages API through
+-- "GhciSession.Anthropic", which turns the same request into its own.
 --
--- The environment: @DEEPSEEK_API_KEY@ (or @OPENAI_API_KEY@); @DEEPSEEK_MODEL@ / @DEEPSEEK_BASE_URL@, or
--- @OPENAI_MODEL@ / @OPENAI_BASE_URL@, override the flash model at @https://api.deepseek.com@.
+-- The environment. An OpenAI-compatible endpoint: @DEEPSEEK_API_KEY@ (or @OPENAI_API_KEY@); @DEEPSEEK_MODEL@ /
+-- @DEEPSEEK_BASE_URL@, or @OPENAI_MODEL@ / @OPENAI_BASE_URL@, override the flash model at
+-- @https://api.deepseek.com@. Anthropic's: @ANTHROPIC_API_KEY@ (or @ANTHROPIC_AUTH_TOKEN@), @ANTHROPIC_MODEL@,
+-- @ANTHROPIC_BASE_URL@. With keys for both, the first is used -- as it was before there were two -- unless
+-- @GHS_PROVIDER@ says @anthropic@ (or @openai@).
 module GhciSession.Llm
-  ( Endpoint (..), endpointFromEnv, isDeepSeek
+  ( Endpoint (..), Provider (..), endpointFromEnv, isDeepSeek, appendOnly
   , Request (..), request, Reply (..), Usage (..), ToolCall (..)
   , httpsPost
   , usageFileEnv, recordUsage, human
@@ -30,6 +35,7 @@ import System.Environment (lookupEnv)
 import System.IO (IOMode (..), hClose, hPutStrLn, openFile)
 import Text.Printf (printf)
 
+import qualified GhciSession.Anthropic as A
 import GhciSession.Json
 
 foreign import ccall safe "ghs_https_post" c_post
@@ -84,7 +90,11 @@ human n | n >= 10000000 = printf "%.0fM" (fromIntegral n / 1e6 :: Double)
 
 -- the endpoint --------------------------------------------------------------------------------
 
-data Endpoint = Endpoint { eKey :: String, eBase :: String, eModel :: String }
+-- | Which protocol an endpoint speaks. 'Anthropic': whether its key is a bearer token (not an API key).
+data Provider = OpenAI | Anthropic Bool
+  deriving (Eq, Show)
+
+data Endpoint = Endpoint { eKey :: String, eBase :: String, eModel :: String, eProvider :: Provider }
 
 -- | The endpoint the environment names, or why there is none (no key).
 endpointFromEnv :: IO (Either String Endpoint)
@@ -92,10 +102,23 @@ endpointFromEnv = do
   key <- firstEnv ["DEEPSEEK_API_KEY", "OPENAI_API_KEY"]
   model <- fromMaybe "deepseek-v4-flash" <$> firstEnv ["DEEPSEEK_MODEL", "OPENAI_MODEL"]
   base <- fromMaybe "https://api.deepseek.com" <$> firstEnv ["DEEPSEEK_BASE_URL", "OPENAI_BASE_URL"]
-  pure (case key of
-    Nothing -> Left "no DEEPSEEK_API_KEY (or OPENAI_API_KEY) in the environment"
-    Just k -> Right (Endpoint k (reverse (dropWhile (== '/') (reverse base))) model))
+  ant <- A.configFromEnv
+  want <- firstEnv ["GHS_PROVIDER"]
+  let openai = (\k -> Endpoint k (reverse (dropWhile (== '/') (reverse base))) model OpenAI) <$> key
+      anthropic = (\c -> Endpoint (A.aKey c) (A.aBase c) (A.aModel c) (Anthropic (A.aBearer c))) <$> ant
+      none = "no DEEPSEEK_API_KEY (or OPENAI_API_KEY), and no ANTHROPIC_API_KEY (or ANTHROPIC_AUTH_TOKEN), in the environment"
+  pure (case want of
+    Just "anthropic" -> maybe (Left "GHS_PROVIDER=anthropic, and no ANTHROPIC_API_KEY (or ANTHROPIC_AUTH_TOKEN) in the environment") Right anthropic
+    Just "openai" -> maybe (Left "GHS_PROVIDER=openai, and no DEEPSEEK_API_KEY (or OPENAI_API_KEY) in the environment") Right openai
+    Just other -> Left ("GHS_PROVIDER=" ++ other ++ ": anthropic or openai")
+    Nothing -> maybe (maybe (Left none) Right anthropic) Right openai)
   where firstEnv names = (\vs -> case [ v | Just v <- vs, not (null v) ] of { (v : _) -> Just v; [] -> Nothing }) <$> mapM lookupEnv names
+
+-- | Is a conversation with this endpoint only ever to be appended to? Anthropic's is: a reply's thinking is
+-- sent back as it came, and stands only in the conversation that made it -- an earlier message rewritten (the
+-- chat's stubs for superseded reads) makes the thinking after it invalid, and on some accounts the request.
+appendOnly :: Endpoint -> Bool
+appendOnly e = eProvider e /= OpenAI
 
 -- | DeepSeek's endpoint takes its own @thinking@ field; another provider's may reject it.
 isDeepSeek :: Endpoint -> Bool
@@ -116,12 +139,41 @@ data ToolCall = ToolCall { tcId :: String, tcName :: String, tcArgs :: Json, tcR
 data Usage = Usage { uIn :: Int, uOut :: Int, uCached :: Maybe Int }
 data Reply = Reply
   { pContent :: T.Text, pReasoning :: T.Text, pToolCalls :: [ToolCall], pFinish :: String, pUsage :: Maybe Usage
-  , pMessage :: Json }              -- ^ the assistant message as received, to append to the conversation
+  , pMessage :: Json                -- ^ the assistant message as received, to append to the conversation
+  , pKeep :: [(String, Json)] }     -- ^ what the assistant message has to carry besides its text and its calls, for
+                                    --   the conversation to go on (Anthropic: the reply's blocks, its thinking with them)
 
 -- | One call: the reply, or why none (the transport, a status other than 200, an error object, a shape
 -- that is not a chat completion).
 request :: Endpoint -> Request -> IO (Either String Reply)
-request e q = do
+request e q = case eProvider e of
+  OpenAI -> requestOpenAI e q
+  Anthropic bearer -> requestAnthropic (A.Config (eKey e) bearer (eBase e) (eModel e)) q
+
+-- | The same request to Anthropic's Messages API ("GhciSession.Anthropic" says what is sent and what comes
+-- back). The reply is given in the terms the chat reads: a finish reason as the other protocol names it, a tool
+-- call in that protocol's shape (it is what the conversation keeps), the prompt's tokens whole.
+requestAnthropic :: A.Config -> Request -> IO (Either String Reply)
+requestAnthropic c q = do
+  let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q)) (rMessages q) (rTools q)
+  r <- httpsPost (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
+  pure $ case r of
+    Left why -> Left ("the model endpoint: " ++ why)
+    Right (status, bs) -> case parseJsonBS bs of
+      Left _ | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
+      Left err -> Left ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
+      Right j -> case A.parseReply j of
+        Left why -> Left ("the model endpoint: " ++ why ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))
+        Right _ | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (encode j))
+        Right p ->
+          let call (i, name, input) = ToolCall i name input (JObj [ ("id", JStr i), ("type", JStr "function")
+                                                                  , ("function", JObj [("name", JStr name), ("arguments", JStr (encode input))]) ])
+              finish = case A.rStop p of { "end_turn" -> "stop"; "stop_sequence" -> "stop"; "tool_use" -> "tool_calls"; "max_tokens" -> "length"; other -> other }
+          in Right (Reply (A.rText p) (A.rThinking p) (map call (A.rCalls p)) finish (Just (Usage (A.rIn p) (A.rOut p) (Just (A.rCached p))))
+                          (JObj [("role", JStr "assistant"), ("content", JArr (A.rBlocks p))]) [("anthropic_content", JArr (A.rBlocks p))])
+
+requestOpenAI :: Endpoint -> Request -> IO (Either String Reply)
+requestOpenAI e q = do
   let body = JObj (  [ ("model", JStr (eModel e)), ("messages", JArr (rMessages q)), ("max_tokens", JNum (fromIntegral (rMaxTokens q))) ]
                   ++ [ ("tools", JArr (rTools q)) | not (null (rTools q)) ] ++ [ ("tool_choice", JStr "auto") | not (null (rTools q)) ]
                   ++ [ ("temperature", JNum t) | Just t <- [rTemperature q] ]
@@ -141,5 +193,5 @@ request e q = do
               calls = [ ToolCall (fromMaybe "" (lookupStr "id" tc)) (fromMaybe "" (lookupStr "name" fn)) (either (const (JObj [])) id (parseJson (fromMaybe "{}" (lookupStr "arguments" fn)))) tc
                       | tc <- lookupArr "tool_calls" m, let fn = tc .: "function" ]
               usage = (\u -> Usage (maybe 0 round (lookupNum "prompt_tokens" u)) (maybe 0 round (lookupNum "completion_tokens" u)) (round <$> lookupNum "prompt_cache_hit_tokens" u)) <$> (const (j .: "usage") <$> obj (j .: "usage"))
-          in Right (Reply (fromMaybe T.empty (lookupText "content" m)) (fromMaybe T.empty (lookupText "reasoning_content" m)) calls (fromMaybe "" (lookupStr "finish_reason" ch)) usage m)
+          in Right (Reply (fromMaybe T.empty (lookupText "content" m)) (fromMaybe T.empty (lookupText "reasoning_content" m)) calls (fromMaybe "" (lookupStr "finish_reason" ch)) usage m [])
         [] -> Left ("the model endpoint's reply has no choices: " ++ take 400 (encode j))

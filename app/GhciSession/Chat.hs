@@ -1046,7 +1046,7 @@ goOn ch e o pending ts = do
               unless (T.null (T.strip (pReasoning p))) (uiThought (cUi ch) (T.strip (pReasoning p)))
               let content = T.strip (pContent p)
               unless (T.null content) (uiTalk (cUi ch) content >> logH ch "talk" content)
-              let assistant = JObj ([("role", JStr "assistant"), ("content", JText (pContent p))] ++ [ ("tool_calls", JArr (map tcRaw (pToolCalls p))) | not (null (pToolCalls p)) ])
+              let assistant = JObj ([("role", JStr "assistant"), ("content", JText (pContent p))] ++ [ ("tool_calls", JArr (map tcRaw (pToolCalls p))) | not (null (pToolCalls p)) ] ++ pKeep p)
                   msgs' = if viewMode then msgs else msgs ++ [assistant]
               if null (pToolCalls p)
                 then if pFinish p == "length" && cut < 3
@@ -1118,7 +1118,8 @@ goOn ch e o pending ts = do
                   let due = [ r | r <- recs, isJust (rrBy r), not (rrTrimmed r) ]
                       dueChars = sum (map (T.length . rrText) due)
                   limit <- trimAtNow
-                  next' <- if viewMode || null due || dueChars < limit then pure next else do
+                  -- (never where the conversation is only to be appended to: 'appendOnly')
+                  next' <- if viewMode || null due || dueChars < limit || appendOnly e then pure next else do
                     let stubs = M.fromList [ (rrIdx r, T.pack (printf "[read #%d: %s lines %d-%d -- superseded by read #%d, which shows these lines as they are now]" (rrNum r) (rrPath r) (rrLo r) (rrHi r) (fromMaybe 0 (rrBy r)))) | r <- due ]
                     writeIORef readsR [ if rrNum r `elem` map rrNum due then r { rrTrimmed = True, rrText = T.empty } else r | r <- recs ]
                     uiNote (cUi ch) (printf "[context: %d superseded read(s) trimmed, %d characters]" (length due) dueChars)
