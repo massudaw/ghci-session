@@ -86,10 +86,12 @@ import GhciSession.Sys (now)
 -- @pAhead@: a message's node starts once fewer than this many messages before it are still unbuilt.
 data Params = Params
   { pNode :: !Int, pNodeMax :: !Int, pView :: !Int, pViewMin :: !Int, pCap :: !Int, pCapMax :: !Int
-  , pCtxMax :: !Int, pCtxMin :: !Int, pAhead :: !Int }
+  , pCtxMax :: !Int, pCtxMin :: !Int, pAhead :: !Int
+  , pAsk :: !Int      -- ^ the size a line is ASKED for: under 'pNode', which is what is taken (a model asked for 512 bytes wrote 900, and was asked again: most of its lines, 1.7 calls each)
+  }
 
 defaultParams :: Params
-defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCapMax = 1000000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8 }
+defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCapMax = 1000000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8, pAsk = 360 }
 
 -- | One message of the log. @mKind@: @user@ (the user's words), @talk@ (the agent's replies), @tool@ (a
 -- request: a command of this tool, an agent's tool call), @echo@ (its result), @work@ (a subagent's
@@ -659,12 +661,18 @@ fitNode ps t
 -- | The ruler: 'pNode' dashes. Models cannot count bytes, so the task shows the length. (A real sample
 -- line as the ruler got its content copied.)
 ruler :: Params -> T.Text
-ruler ps = T.replicate (pNode ps) (T.pack "-")
+ruler ps = T.replicate (asked ps) (T.pack "-")
+
+-- | The size a line is asked for: 'pAsk', and never over what is taken.
+asked :: Params -> Int
+asked ps = min (pAsk ps) (pNode ps)
 
 -- | An answer without the @id+n|@ head a model copies from the view.
 stripHead :: T.Text -> T.Text
 stripHead t = case T.span isDigit t of
   (a, r) | not (T.null a), Just r1 <- T.stripPrefix (T.pack "+") r, (b, r2) <- T.span isDigit r1, not (T.null b), Just r3 <- T.stripPrefix (T.pack "|") r2 -> T.stripStart r3
+  -- (or the message's number alone, before its kind: "214: echo: ...")
+  (a, r) | not (T.null a), Just r1 <- T.stripPrefix (T.pack ": ") r, any (\k -> T.pack (k ++ ":") `T.isPrefixOf` r1) ["user", "talk", "tool", "echo", "work", "note", "ai"] -> r1
   _ -> t
 
 -- | The system prompt, in its parts (UniiChat's, with the agent's name, its reply kind @talk@, and without
@@ -817,8 +825,8 @@ jobPrompt ps j = T.unlines $ [ T.pack "<chat>" ] ++ jContext j ++ [ T.pack "</ch
       , T.pack "of them from there too."
       , T.pack "<input>", na <> T.pack "|" <> a, nb <> T.pack "|" <> b, T.pack "</input>" ]
   where
-    size = show (pNode ps) ++ " bytes"
-    wordsN = show (max 1 (pNode ps * 70 `div` 512))
+    size = show (asked ps) ++ " bytes"
+    wordsN = show (max 1 (asked ps * 70 `div` 512))
     first = jI j * 2 ^ jL j
     na = partName (jL j - 1, 2 * jI j)
     nb = partName (jL j - 1, 2 * jI j + 1)

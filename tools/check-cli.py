@@ -13,7 +13,10 @@ In a project made for it, with a session of its own:
   a turn gone   the chat is killed in the middle of a turn; `chat --continue` goes on with it from the history:
   on with       the new program is given the turn's log, and what it did before is in it.
 
-Exit status 0 when all hold. About half a minute.
+  a rollover    a turn whose context grows past `--rollover` tokens ends its run after a tool call and goes on in a
+                fresh one, from its log.
+
+Exit status 0 when all hold. About a minute.
 """
 import json, os, shutil, signal, subprocess, sys, tempfile, time
 
@@ -96,11 +99,34 @@ def main():
               ok and "going on with the turn of message" in t2 and "1 tool call(s)" in t2 and "step-one" in t2 and "never said" not in t2.split("resumed from the log")[-1], t2[-700:])
         send("say and a line after it")
         check("and the chat goes on taking lines after it", wait_for(out2, "and a line after it", 20, count=1) and p2.poll() is None, open(out2, errors="replace").read()[-300:])
-        p2.send_signal(signal.SIGTERM)
+        wait_for(out2, "[turn: ", 20, count=2)
+        time.sleep(0.5)                                       # (the turn's end is noted just after its cost is said)
+        p2.send_signal(signal.SIGTERM); p2.wait()
+        # --continue, and the last turn ended: there is nothing to go on with
+        out3 = os.path.join(d, "chat3.out")
+        p3 = subprocess.Popen(chat("--continue"), cwd=proj, env=env, stdin=keep, stdout=open(out3, "w"), stderr=subprocess.STDOUT)
+        check("`chat --continue` when the last turn ended starts none", wait_for(out3, "nothing to go on with: the last turn ended", 20) and "going on with the turn" not in open(out3).read(), open(out3).read()[-300:])
+        p3.send_signal(signal.SIGTERM); p3.wait()
+        # a turn whose context grows past the rollover's tokens goes on in a fresh call, from its log
+        out4 = os.path.join(d, "chat4.out")
+        started = open(log).read().count("pid ")
+        p4 = subprocess.Popen(chat("--rollover", "2000"), cwd=proj, env=dict(env, FAKE_CLAUDE_CTX="1000,500"), stdin=keep, stdout=open(out4, "w"), stderr=subprocess.STDOUT)
+        send("first of all ;; " + " ;; ".join('tool sh {"cmd":"echo roll-%d"}' % k for k in range(1, 7)) + " ;; say said by the first run")
+        ok = wait_for(out4, "resumed from the log", 40)
+        wait_for(out4, "[turn: ", 20)
+        t4 = open(out4, errors="replace").read()
+        rolled_at = [k for k in range(1, 7) if ("roll-%d" % k) in t4.split("the turn's context is at")[0]] if "the turn's context is at" in t4 else []
+        check("a turn whose context passes the rollover's tokens ends its run after a tool call and goes on in a fresh one, from its log -- what it did is in it, and no call is made twice",
+              ok and rolled_at and max(rolled_at) < 6 and "said by the first run" not in t4 and ("%d tool call(s)" % len(rolled_at)) in t4
+              and open(log).read().count("pid ") == started + 2 and t4.count("[turn: ") == 1, (rolled_at, t4[-600:]))
+        check("the turn's message is still the one it began with (what was typed first), and its cost is the whole turn's",
+              "first of all" in t4.split("the turn's context is at")[0] and ("%d tool call" % len(rolled_at)) in t4.split("[turn: ")[-1]
+              and ("%d model calls" % (len(rolled_at) + 1)) in t4.split("[turn: ")[-1], t4.split("[turn: ")[-1][:200])
+        p4.send_signal(signal.SIGTERM)
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:
-        for q in ("p", "p2"):
+        for q in ("p", "p2", "p3", "p4"):
             if q in locals() and locals()[q].poll() is None:
                 locals()[q].kill()
         tuicheck.stop(proj, session)

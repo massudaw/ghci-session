@@ -243,7 +243,10 @@ run = do
   eq "history: ... and the shortest try is kept as it is when a little over (the view measures real sizes)" (H.fitNode lp (T.replicate 600 (T.pack "x"))) (T.replicate 600 (T.pack "x"))
   check "history: ... but one over the guard is cut at the last word that fits"
         (let c = H.fitNode lp long in H.byteLength c <= 1024 && H.byteLength c > 1000 && T.isSuffixOf (T.pack "word") c)
-  eq "history: the ruler is NODE dashes" (H.ruler H.defaultParams) (T.replicate 512 (T.pack "-"))
+  eq "history: the ruler is the size a line is asked for -- under the size that is taken, and never over it"
+     (H.ruler H.defaultParams, T.length (H.ruler H.defaultParams { H.pNode = 24 }), H.pAsk H.defaultParams < H.pNode H.defaultParams) (T.replicate 360 (T.pack "-"), 24, True)
+  eq "history: an answer's head is taken off -- the view's id+n|, or a message's number before its kind; a line that begins with a number is left"
+     (map (H.stripHead . T.pack) ["12+4|tool: x", "214: echo: ls /tmp", "2026: a year in which", "7: nothing of a kind"]) (map T.pack ["tool: x", "echo: ls /tmp", "2026: a year in which", "7: nothing of a kind"])
   eq "history: an answer's id+n| head comes off" (H.stripHead (T.pack "40+8|user: do it")) (T.pack "user: do it")
   eq "history: ... and only a head" (H.stripHead (T.pack "user: 3+4|x")) (T.pack "user: 3+4|x")
   check "history: a line too long is told its size, the limit and where the cut falls"

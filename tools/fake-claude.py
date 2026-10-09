@@ -12,7 +12,8 @@ What it does is in the last line of the message it is given, steps separated by 
 
 and then it ends the turn, saying what the last step gave. A message that holds a <recent> block (a turn gone
 on with from its log) is answered with what it found there. FAKE_CLAUDE_LOG: a file it notes its process id and
-each message in.
+each message in. FAKE_CLAUDE_CTX=BASE,STEP: the context it says each model call has -- BASE tokens and STEP more
+with every call (default 1000,0), 90% of it read from the cache: a context that grows, to see a turn roll over.
 """
 import json, os, re, subprocess, sys, time
 
@@ -49,6 +50,7 @@ def main():
     note("pid %d" % os.getpid())
     out({"type": "system", "subtype": "init", "model": arg("--model"), "tools": tools.names if tools else []})
     calls = 0
+    base, grow = (int(x) for x in os.environ.get("FAKE_CLAUDE_CTX", "1000,0").split(","))
     for raw in sys.stdin:
         try:
             m = json.loads(raw)
@@ -68,7 +70,8 @@ def main():
         last = ""
         for step in steps:
             calls += 1
-            out({"type": "stream_event", "event": {"type": "message_start", "message": {"usage": {"input_tokens": 100, "cache_read_input_tokens": 900, "cache_creation_input_tokens": 0}}}})
+            ctx = base + grow * calls
+            out({"type": "stream_event", "event": {"type": "message_start", "message": {"usage": {"input_tokens": ctx - ctx * 9 // 10, "cache_read_input_tokens": ctx * 9 // 10, "cache_creation_input_tokens": 0}}}})
             mt = re.match(r"tool\s+(\w+)\s*(\{.*\})?$", step)
             if mt and tools:
                 out({"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t%d" % calls, "name": "mcp__ghs__" + mt.group(1), "input": json.loads(mt.group(2) or "{}")}]}})

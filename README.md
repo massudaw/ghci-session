@@ -479,7 +479,14 @@ and its last messages word for word, as far as `--tail` bytes go (what is betwee
 is told to go on from where it stops. The agent has every call it made and what came of it; what it had in mind
 between the steps it has not. On any backend, and from one to another.
 
-`tools/check-cli.py` checks both without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
+A turn through the `claude` command also ROLLS OVER by itself: the conversation is the program's, it only grows, and
+every model call reads all of it -- a turn of a few hundred tool calls was at 210,000 tokens a call and rising. So
+once a call's context is past `--rollover` tokens (150,000; `0`: never) the run is ended after the tool call under
+way -- its answer in the log, not given to the program -- and a fresh one goes on with the turn from the view as it
+is now and the turn's log, as `--continue` does. The turn's first message and what the user said during it are kept
+whole; its cost is counted across the runs.
+
+`tools/check-cli.py` checks these without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
 same arguments and stream, the chat's tools called through its tool server, no model). On the subscription path
 each model call is now in the usage ledger as it ends, with what it read from the cache -- a turn of hours was one
 line, at its end.
