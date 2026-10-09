@@ -13,11 +13,12 @@
 -- @GHS_PROVIDER@ says @anthropic@ (or @openai@).
 module GhciSession.Llm
   ( Endpoint (..), Provider (..), endpointFromEnv, isDeepSeek, appendOnly
-  , Request (..), request, Reply (..), Usage (..), ToolCall (..)
+  , Request (..), request, requestWith, Reply (..), Usage (..), ToolCall (..)
   , httpsPost
   , usageFileEnv, recordUsage, human
   ) where
 
+import Control.Concurrent (threadDelay)
 import Control.Exception (SomeException, try)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Unsafe as BU
@@ -40,7 +41,28 @@ import GhciSession.Json
 
 foreign import ccall safe "ghs_https_post" c_post
   :: CString -> CString -> Ptr CChar -> CSize -> CLong -> CString -> Ptr CString -> Ptr CSize -> Ptr CLong -> CString -> CSize -> IO CInt
+foreign import ccall safe "ghs_https_request" c_request
+  :: CString -> CString -> Ptr CChar -> CSize -> CLong -> CLong -> CString -> CInt -> Ptr CString -> Ptr CSize -> Ptr CLong -> Ptr CLong -> CString -> CSize -> IO CInt
 foreign import ccall unsafe "ghs_https_free" c_free :: CString -> IO ()
+
+-- | 'httpsPost', and how long the server asked to be left alone (its @Retry-After@, in seconds), if it did.
+httpsRequest :: String -> [String] -> B.ByteString -> Double -> IO (Either String (Int, Maybe Int, B.ByteString))
+httpsRequest url headers body timeout = do
+  ca <- fromMaybe "" . firstJust <$> mapM lookupEnv ["CURL_CA_BUNDLE", "SSL_CERT_FILE"]
+  r <- try $ withCString url $ \u -> withCString (unlines headers) $ \h -> withCString ca $ \c ->
+    BU.unsafeUseAsCStringLen body $ \(b, n) ->
+      with nullPtr $ \pout -> with 0 $ \plen -> with 0 $ \pstatus -> with 0 $ \pafter -> allocaBytes 512 $ \err -> do
+        rc <- c_request u h b (fromIntegral n) (round timeout) 0 c (-1) pout plen pstatus pafter err 512
+        if rc /= 0 then Left <$> peekCString err else do
+          out <- peek pout
+          len <- peek plen
+          status <- peek pstatus
+          after <- peek pafter
+          bs <- B.packCStringLen (out, fromIntegral len)
+          c_free out
+          pure (Right (fromIntegral status, if after > 0 then Just (fromIntegral after) else Nothing, bs))
+  pure (either (\(e :: SomeException) -> Left (show e)) id r)
+  where firstJust xs = case [ x | Just x <- xs, not (null x) ] of { (x : _) -> Just x; [] -> Nothing }
 
 -- | POST a body with headers (@"Name: value"@ each), within the timeout: the status and the body, or why not.
 -- The CA bundle is the one the environment names for curl, when it names one.
@@ -143,28 +165,56 @@ data Reply = Reply
   , pKeep :: [(String, Json)] }     -- ^ what the assistant message has to carry besides its text and its calls, for
                                     --   the conversation to go on (Anthropic: the reply's blocks, its thinking with them)
 
+-- | Why a call gave no reply. @fBusy@: the kind that asking again can mend -- the service busy or limiting
+-- (408, 409, 429, 5xx), the connection lost -- as against a request it will never take (400, a key refused).
+-- @fAfter@: the seconds it asked to be left alone.
+data Failure = Failure { fWhy :: String, fBusy :: Bool, fAfter :: Maybe Int }
+
+busyStatus :: Int -> Bool
+busyStatus st = st `elem` [408, 409, 429] || st >= 500
+
 -- | One call: the reply, or why none (the transport, a status other than 200, an error object, a shape
 -- that is not a chat completion).
-request :: Endpoint -> Request -> IO (Either String Reply)
-request e q = case eProvider e of
+requestOnce :: Endpoint -> Request -> IO (Either Failure Reply)
+requestOnce e q = case eProvider e of
   OpenAI -> requestOpenAI e q
   Anthropic bearer -> requestAnthropic (A.Config (eKey e) bearer (eBase e) (eModel e)) q
+
+-- | A call, asked again while the service is busy: up to @tries@ times in all, after the seconds it asked for
+-- or else 2, 4, 8, ... (two minutes at most), @say@ told each time. What asking again cannot mend is answered
+-- at once: a request refused was asked three times, five seconds apart, and refused three times.
+requestWith :: (String -> IO ()) -> Int -> Endpoint -> Request -> IO (Either String Reply)
+requestWith say tries e q = go 1
+  where
+    go k = do
+      r <- requestOnce e q
+      case r of
+        Right p -> pure (Right p)
+        Left f | fBusy f && k < tries -> do
+          let wait = min 120 (fromMaybe (2 ^ k) (fAfter f)) :: Int
+          say (fWhy f ++ "; asking again in " ++ show wait ++ " s (" ++ show k ++ " of " ++ show (tries - 1) ++ ")")
+          threadDelay (wait * 1000000)
+          go (k + 1)
+        Left f -> pure (Left (fWhy f))
+
+request :: Endpoint -> Request -> IO (Either String Reply)
+request = requestWith (const (pure ())) 4
 
 -- | The same request to Anthropic's Messages API ("GhciSession.Anthropic" says what is sent and what comes
 -- back). The reply is given in the terms the chat reads: a finish reason as the other protocol names it, a tool
 -- call in that protocol's shape (it is what the conversation keeps), the prompt's tokens whole.
-requestAnthropic :: A.Config -> Request -> IO (Either String Reply)
+requestAnthropic :: A.Config -> Request -> IO (Either Failure Reply)
 requestAnthropic c q = do
   let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q)) (rMessages q) (rTools q)
-  r <- httpsPost (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
+  r <- httpsRequest (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
   pure $ case r of
-    Left why -> Left ("the model endpoint: " ++ why)
-    Right (status, bs) -> case parseJsonBS bs of
-      Left _ | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
-      Left err -> Left ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
+    Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
+    Right (status, after, bs) -> let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
+      Left _ | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
+      Left err -> failed ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
       Right j -> case A.parseReply j of
-        Left why -> Left ("the model endpoint: " ++ why ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))
-        Right _ | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (encode j))
+        Left why -> failed ("the model endpoint: " ++ why ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))
+        Right _ | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (encode j))
         Right p ->
           let call (i, name, input) = ToolCall i name input (JObj [ ("id", JStr i), ("type", JStr "function")
                                                                   , ("function", JObj [("name", JStr name), ("arguments", JStr (encode input))]) ])
@@ -172,21 +222,21 @@ requestAnthropic c q = do
           in Right (Reply (A.rText p) (A.rThinking p) (map call (A.rCalls p)) finish (Just (Usage (A.rIn p) (A.rOut p) (Just (A.rCached p))))
                           (JObj [("role", JStr "assistant"), ("content", JArr (A.rBlocks p))]) [("anthropic_content", JArr (A.rBlocks p))])
 
-requestOpenAI :: Endpoint -> Request -> IO (Either String Reply)
+requestOpenAI :: Endpoint -> Request -> IO (Either Failure Reply)
 requestOpenAI e q = do
   let body = JObj (  [ ("model", JStr (eModel e)), ("messages", JArr (rMessages q)), ("max_tokens", JNum (fromIntegral (rMaxTokens q))) ]
                   ++ [ ("tools", JArr (rTools q)) | not (null (rTools q)) ] ++ [ ("tool_choice", JStr "auto") | not (null (rTools q)) ]
                   ++ [ ("temperature", JNum t) | Just t <- [rTemperature q] ]
                   ++ [ ("thinking", JObj [("type", JStr (if on then "enabled" else "disabled"))]) | isDeepSeek e, Just on <- [rThinking q] ]
                   ++ [ ("reasoning_effort", JStr ef) | rThinking q /= Just False, Just ef <- [rEffort q] ])
-  r <- httpsPost (eBase e ++ "/chat/completions") ["Content-Type: application/json", "Authorization: Bearer " ++ eKey e] (encodeBS body) (rTimeout q)
+  r <- httpsRequest (eBase e ++ "/chat/completions") ["Content-Type: application/json", "Authorization: Bearer " ++ eKey e] (encodeBS body) (rTimeout q)
   pure $ case r of
-    Left why -> Left ("the model endpoint: " ++ why)
-    Right (status, bs) -> case parseJsonBS bs of
-      Left _ | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
-      Left err -> Left ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
-      Right j | isJust (lookupStr "message" (j .: "error")) -> Left ("the model endpoint: " ++ fromMaybe "" (lookupStr "message" (j .: "error")) ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))
-      Right j | status /= 200 -> Left ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (encode j))
+    Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
+    Right (status, after, bs) -> let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
+      Left _ | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
+      Left err -> failed ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
+      Right j | isJust (lookupStr "message" (j .: "error")) -> failed ("the model endpoint: " ++ fromMaybe "" (lookupStr "message" (j .: "error")) ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))
+      Right j | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (encode j))
       Right j -> case lookupArr "choices" j of
         (ch : _) ->
           let m = ch .: "message"
@@ -194,4 +244,4 @@ requestOpenAI e q = do
                       | tc <- lookupArr "tool_calls" m, let fn = tc .: "function" ]
               usage = (\u -> Usage (maybe 0 round (lookupNum "prompt_tokens" u)) (maybe 0 round (lookupNum "completion_tokens" u)) (round <$> lookupNum "prompt_cache_hit_tokens" u)) <$> (const (j .: "usage") <$> obj (j .: "usage"))
           in Right (Reply (fromMaybe T.empty (lookupText "content" m)) (fromMaybe T.empty (lookupText "reasoning_content" m)) calls (fromMaybe "" (lookupStr "finish_reason" ch)) usage m [])
-        [] -> Left ("the model endpoint's reply has no choices: " ++ take 400 (encode j))
+        [] -> failed ("the model endpoint's reply has no choices: " ++ take 400 (encode j))

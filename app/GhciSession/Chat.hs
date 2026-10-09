@@ -1015,7 +1015,7 @@ goOn ch e o pending ts = do
     nudge msgs' text
       | viewMode = logH ch "echo" (T.pack "harness: " <> text) >> pure msgs'
       | otherwise = pure (msgs' ++ [msg "user" (T.pack "[harness: " <> text <> T.pack "]")])
-    stepWith loop vcR readsR spent msgs callMsgs step cut failures = do
+    stepWith loop vcR readsR spent msgs callMsgs step cut _failures = do
           -- a restart asked for: here, between two model calls, nothing is half done
           asked <- readIORef (cRestart ch)
           when asked $ do
@@ -1030,13 +1030,10 @@ goOn ch e o pending ts = do
                 Just "none" -> (Just False, Nothing)
                 Just ef     -> (Just True, Just ef)
                 Nothing     -> (Nothing, Nothing)
-          r <- request e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900)
+          -- (asked again while the service is busy, the wait said; what asking again cannot mend ends the turn)
+          r <- requestWith (\w -> uiNote (cUi ch) ("[" ++ w ++ "]")) 8 e (Request callMsgs toolsJson (oMaxTokens o) Nothing think effort 900)
           t1 <- now
           case r of
-            Left why | failures < 2 -> do
-              uiNote (cUi ch) ("[" ++ why ++ "; asking again in 5s]")
-              threadDelay 5000000
-              loop readsR spent msgs step cut (failures + 1)
             Left why -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
             Right p -> do
               forM_ (pUsage p) $ \u -> do

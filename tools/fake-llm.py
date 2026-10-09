@@ -20,7 +20,8 @@ first, then `text` or `tool_use`). It is strict where the real API is -- a reque
 answered 400 here, in the API's own error shape: roles that do not alternate, an empty text block, a tool_result
 that is not at the head of its message or answers no tool_use of the turn before, more than four cache_control
 marks, and a thinking block sent back changed (it remembers the ones it gave). FAKE_PREFIX_CACHE=0 turns off its
-imitation of the prompt cache (usage then reports nothing read from it).
+imitation of the prompt cache (usage then reports nothing read from it). FAKE_BUSY=N answers the first N
+requests 429 with a Retry-After of one second, on either side.
 """
 import hashlib, os
 import json, re, sys, time
@@ -186,6 +187,8 @@ def a_reply(body):
         return [], "refusal"
     return [thought, {"type": "text", "text": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}], "end_turn"
 
+BUSY = int(os.environ.get("FAKE_BUSY", "0"))
+
 class H(BaseHTTPRequestHandler):
     def _send(self, code, obj):
         b = json.dumps(obj).encode()
@@ -197,6 +200,14 @@ class H(BaseHTTPRequestHandler):
 
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+        global BUSY
+        if BUSY > 0:        # FAKE_BUSY=N: the first N requests are answered 429, with a Retry-After of a second
+            BUSY -= 1
+            sys.stderr.write("%s -> 429 (busy: %d more)\n" % (self.path, BUSY)); sys.stderr.flush()
+            b = json.dumps({"type": "error", "error": {"type": "rate_limit_error", "message": "busy (fake)"}}).encode()
+            self.send_response(429); self.send_header("Content-Type", "application/json"); self.send_header("Retry-After", "1")
+            self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
+            return
         if self.path.rstrip("/").endswith("/v1/messages"):
             if not (self.headers.get("x-api-key") or self.headers.get("Authorization")) or self.headers.get("anthropic-version") != "2023-06-01":
                 return self._send(401, {"type": "error", "error": {"type": "authentication_error", "message": "x-api-key (or a bearer token) and anthropic-version: 2023-06-01 are required"}})
