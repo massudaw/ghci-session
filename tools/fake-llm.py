@@ -116,6 +116,9 @@ def a_check(body):
                 if not isinstance(b.get("input"), dict):
                     raise Bad("messages.%d: tool_use.input must be an object" % k)
                 uses.add(b.get("id"))
+            elif t in ("server_tool_use", "web_search_tool_result"):
+                if role != "assistant":
+                    raise Bad("messages.%d: %s blocks belong in an assistant message" % (k, t))
             elif t == "thinking":
                 was = GIVEN.get(b.get("signature"))
                 if was is None or was != b:
@@ -128,6 +131,8 @@ def a_check(body):
     if marks > 4:
         raise Bad("a maximum of 4 blocks with cache_control may be provided (%d)" % marks)
     for t in body.get("tools") or []:
+        if t.get("type"):      # one of the API's own tools: a type and a name, no schema
+            continue
         if not t.get("name") or not isinstance(t.get("input_schema"), dict):
             raise Bad("tools: each needs a name and an input_schema")
     if body.get("temperature") is not None and str(body.get("model", "")).startswith("claude-opus"):
@@ -167,6 +172,13 @@ def a_reply(body):
     thought = {"type": "thinking", "thinking": "fake thinking about %d message(s)" % len(msgs), "signature": sig}
     GIVEN[sig] = thought
     names = [t.get("name") for t in tools]
+    # the API's own tool, when it was asked for: `search WORDS` is a search and its result in one reply;
+    # `search-pause WORDS` stops after the search (pause_turn) and gives the result when the reply comes back
+    web = any(str(t.get("type", "")).startswith("web_search") for t in tools)
+    found = lambda q: {"type": "web_search_tool_result", "tool_use_id": "srvtoolu_1", "content": [{"type": "web_search_result", "title": "A page about " + q, "url": "https://example.com/" + q.replace(" ", "-"), "encrypted_content": "x"}]}
+    if last["role"] == "assistant":
+        q = next((b["input"].get("query", "") for b in blocks if b.get("type") == "server_tool_use"), "")
+        return [found(q), {"type": "text", "text": "I searched for %r and found a page." % q}], "end_turn"
     results = [b for b in blocks if b.get("type") == "tool_result"]
     said = a_text(last["content"]).strip()
     if not tools:
@@ -183,6 +195,12 @@ def a_reply(body):
     m = re.match(r"tool\s+(\w+)\s*(\{.*\})?$", line)
     if m and m.group(1) in names:
         return use(m.group(1), json.loads(m.group(2) or "{}"))
+    m = re.match(r"search(-pause)?\s+(.+)", line)
+    if m and web:
+        searched = {"type": "server_tool_use", "id": "srvtoolu_1", "name": "web_search", "input": {"query": m.group(2)}}
+        if m.group(1):
+            return [thought, searched], "pause_turn"
+        return [thought, searched, found(m.group(2)), {"type": "text", "text": "I searched for %r and found a page." % m.group(2)}], "end_turn"
     if line == "refuse":
         return [], "refusal"
     return [thought, {"type": "text", "text": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}], "end_turn"

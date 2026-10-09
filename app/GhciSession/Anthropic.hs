@@ -97,8 +97,9 @@ fallsBack c = firstParty c && aModel c `elem` ["claude-fable-5-1", "claude-opus-
 
 -- | What a call asks beyond its conversation. @oThink@: @Just False@ is a call that wants no thinking (a
 -- compaction) -- which here is the lightest effort, thinking being the model's to do. @oEffort@: low, medium,
--- high, xhigh or max.
-data Opts = Opts { oMaxTokens :: Int, oThink :: Maybe Bool, oEffort :: Maybe String }
+-- high, xhigh or max. @oSearches@: how many web searches the model may make in the call (0: none) -- the
+-- API's own tool, run by it: the search and its results come back in the reply, as blocks to keep.
+data Opts = Opts { oMaxTokens :: Int, oThink :: Maybe Bool, oEffort :: Maybe String, oSearches :: Int }
 
 -- | The request's body, from the conversation and the tools as the chat keeps them (the OpenAI shape).
 requestBody :: Config -> Opts -> [Json] -> [Json] -> Json
@@ -108,7 +109,7 @@ requestBody c o msgs tools = JObj $
   -- cut off inside its thoughts. It is a ceiling, and costs nothing unused)
   , ("max_tokens", JNum (fromIntegral (if adaptive c then max 4000 (oMaxTokens o) else oMaxTokens o))) ]
   ++ [ ("system", JArr [ JObj [("type", JStr "text"), ("text", JText (T.intercalate (T.pack "\n\n") sys)), ("cache_control", ephemeral)] ]) | not (null sys) ]
-  ++ [ ("tools", JArr (map tool tools)) | not (null tools) ]
+  ++ [ ("tools", JArr (map tool tools ++ web)) | not (null tools) ]
   ++ [ ("messages", JArr body) ]
   ++ [ ("thinking", JObj [("type", JStr "adaptive"), ("display", JStr "summarized")]) | adaptive c, oThink o /= Just False ]
   ++ [ ("output_config", JObj [("effort", JStr e)]) | Just e <- [effort] ]
@@ -116,6 +117,10 @@ requestBody c o msgs tools = JObj $
   ++ [ ("fallbacks", JStr "default") | fallsBack c ]
   where
     (sys, body) = toMessages msgs
+    -- (asked for, so sent, whoever the endpoint is: one that has no such tool says so. The version of the tool
+    -- is the one the model takes)
+    web = [ JObj [("type", JStr (if adaptive c then "web_search_20260209" else "web_search_20250305")), ("name", JStr "web_search"), ("max_uses", JNum (fromIntegral (oSearches o)))]
+          | oSearches o > 0 ]
     effort = case oEffort o of
       Just e | e /= "none" -> Just e
       -- (said, not left to the model's default, which is not the same from one model to the next)
@@ -186,11 +191,13 @@ viewBlocks t = case break ((== T.pack "<chat>") . T.strip) (T.lines t) of
 
 -- | A reply's parts. @rIn@ is the whole prompt (what was read from the cache and what was written to it are
 -- counted apart by the API, and @input_tokens@ is only what was neither); @rCached@ what of it was read from
--- the cache. @rStop@: @end_turn@, @tool_use@, @max_tokens@, @refusal@, ... as the API says it. @rBlocks@: the
+-- the cache. @rStop@: @end_turn@, @tool_use@, @max_tokens@, @refusal@, @pause_turn@ (the API stopped in the middle
+-- of its own tools' work: the reply is sent back as it is and it goes on), ... as the API says it. @rBlocks@: the
 -- content as it came, to send back.
 data Parsed = Parsed
   { rText :: T.Text, rThinking :: T.Text, rCalls :: [(String, String, Json)], rStop :: String
-  , rIn :: Int, rOut :: Int, rCached :: Int, rBlocks :: [Json] }
+  , rIn :: Int, rOut :: Int, rCached :: Int, rBlocks :: [Json]
+  , rServer :: [(String, T.Text)] }   -- ^ what the API's own tools did, as the log has a tool's doing: (@tool@, the call), (@echo@, its result)
 
 -- | A reply, or what the API said instead (@type: error@, with its kind and message).
 parseReply :: Json -> Either String Parsed
@@ -215,4 +222,14 @@ parseReply j
            , rIn = n "input_tokens" + n "cache_creation_input_tokens" + n "cache_read_input_tokens"
            , rOut = n "output_tokens", rCached = n "cache_read_input_tokens"
            -- (as they came, but for a text block with nothing in it: the API gives one at times and takes none back)
-           , rBlocks = [ b | b <- blocks, lookupStr "type" b /= Just "text" || maybe False (not . T.null . T.strip) (lookupText "text" b) ] }
+           , rBlocks = [ b | b <- blocks, lookupStr "type" b /= Just "text" || maybe False (not . T.null . T.strip) (lookupText "text" b) ]
+           , rServer = concatMap served blocks }
+  where
+    served b = case fromMaybe "" (lookupStr "type" b) of
+      "server_tool_use" -> [("tool", T.pack (fromMaybe "?" (lookupStr "name" b) ++ " " ++ encode (b .: "input")))]
+      ty | "_tool_result" `isSuffixOf'` ty, ty /= "tool_result" -> [("echo", case b .: "content" of
+              -- a search's results are a list (their pages are not readable here); anything else is an error, an object
+              JArr rs -> T.intercalate (T.pack "\n") [ T.pack (fromMaybe "" (lookupStr "title" r) ++ " " ++ fromMaybe "" (lookupStr "url" r)) | r <- rs ]
+              other -> T.pack ("ERROR: " ++ fromMaybe (encode other) (lookupStr "error_code" other)))]
+      _ -> []
+    isSuffixOf' x y = reverse x `isPrefixOf` reverse y

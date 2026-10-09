@@ -162,8 +162,10 @@ data Usage = Usage { uIn :: Int, uOut :: Int, uCached :: Maybe Int }
 data Reply = Reply
   { pContent :: T.Text, pReasoning :: T.Text, pToolCalls :: [ToolCall], pFinish :: String, pUsage :: Maybe Usage
   , pMessage :: Json                -- ^ the assistant message as received, to append to the conversation
-  , pKeep :: [(String, Json)] }     -- ^ what the assistant message has to carry besides its text and its calls, for
+  , pKeep :: [(String, Json)]       -- ^ what the assistant message has to carry besides its text and its calls, for
                                     --   the conversation to go on (Anthropic: the reply's blocks, its thinking with them)
+  , pServed :: [(String, T.Text)] } -- ^ what the endpoint's own tools did in the call (a web search): (@tool@, the
+                                    --   call) and (@echo@, its result), for the log -- no answer is owed them
 
 -- | Why a call gave no reply. @fBusy@: the kind that asking again can mend -- the service busy or limiting
 -- (408, 409, 429, 5xx), the connection lost -- as against a request it will never take (400, a key refused).
@@ -205,7 +207,10 @@ request = requestWith (const (pure ())) 4
 -- call in that protocol's shape (it is what the conversation keeps), the prompt's tokens whole.
 requestAnthropic :: A.Config -> Request -> IO (Either Failure Reply)
 requestAnthropic c q = do
-  let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q)) (rMessages q) (rTools q)
+  -- (GHS_WEB_SEARCH=N: the model may search the web, N times a call at most. A turn's calls only -- the ones with
+  -- tools; each search is charged by the API, so it is asked for, never assumed)
+  web <- (\v -> case v >>= \x -> case reads x of { [(n, "")] -> Just n; _ -> Nothing } of { Just n | not (null (rTools q)) -> max 0 n; _ -> 0 }) <$> lookupEnv "GHS_WEB_SEARCH"
+  let body = A.requestBody c (A.Opts (rMaxTokens q) (rThinking q) (rEffort q) web) (rMessages q) (rTools q)
   r <- httpsRequest (A.url c) (A.headers c) (encodeBS body) (rTimeout q)
   pure $ case r of
     Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
@@ -220,7 +225,7 @@ requestAnthropic c q = do
                                                                   , ("function", JObj [("name", JStr name), ("arguments", JStr (encode input))]) ])
               finish = case A.rStop p of { "end_turn" -> "stop"; "stop_sequence" -> "stop"; "tool_use" -> "tool_calls"; "max_tokens" -> "length"; other -> other }
           in Right (Reply (A.rText p) (A.rThinking p) (map call (A.rCalls p)) finish (Just (Usage (A.rIn p) (A.rOut p) (Just (A.rCached p))))
-                          (JObj [("role", JStr "assistant"), ("content", JArr (A.rBlocks p))]) [("anthropic_content", JArr (A.rBlocks p))])
+                          (JObj [("role", JStr "assistant"), ("content", JArr (A.rBlocks p))]) [("anthropic_content", JArr (A.rBlocks p))] (A.rServer p))
 
 requestOpenAI :: Endpoint -> Request -> IO (Either Failure Reply)
 requestOpenAI e q = do
@@ -243,5 +248,5 @@ requestOpenAI e q = do
               calls = [ ToolCall (fromMaybe "" (lookupStr "id" tc)) (fromMaybe "" (lookupStr "name" fn)) (either (const (JObj [])) id (parseJson (fromMaybe "{}" (lookupStr "arguments" fn)))) tc
                       | tc <- lookupArr "tool_calls" m, let fn = tc .: "function" ]
               usage = (\u -> Usage (maybe 0 round (lookupNum "prompt_tokens" u)) (maybe 0 round (lookupNum "completion_tokens" u)) (round <$> lookupNum "prompt_cache_hit_tokens" u)) <$> (const (j .: "usage") <$> obj (j .: "usage"))
-          in Right (Reply (fromMaybe T.empty (lookupText "content" m)) (fromMaybe T.empty (lookupText "reasoning_content" m)) calls (fromMaybe "" (lookupStr "finish_reason" ch)) usage m [])
+          in Right (Reply (fromMaybe T.empty (lookupText "content" m)) (fromMaybe T.empty (lookupText "reasoning_content" m)) calls (fromMaybe "" (lookupStr "finish_reason" ch)) usage m [] [])
         [] -> failed ("the model endpoint's reply has no choices: " ++ take 400 (encode j))

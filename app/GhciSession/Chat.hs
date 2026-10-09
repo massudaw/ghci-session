@@ -49,7 +49,7 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
 import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getTemporaryDirectory, listDirectory, removeFile)
-import System.Environment (getArgs, getExecutablePath, lookupEnv)
+import System.Environment (getArgs, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (executeFile, getProcessID)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, signalProcess)
 import System.Exit (ExitCode (..))
@@ -88,7 +88,7 @@ data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oResume :: Maybe FilePath
-  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool }
+  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int }
 
 chatUsage :: String
 chatUsage = unlines
@@ -112,7 +112,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax False)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax False Nothing)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -127,6 +127,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--context", v `elem` ["turn", "view"] = go o { oView = v == "view" } r
                      | k == "--tail", [(n, "")] <- reads v = go o { oTail = n } r
                      | k == "--effort", v `elem` ["none", "low", "high", "max"] = go o { oEffort = Just v } r
+                     | k == "--web", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oWeb = Just n } r
                      | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
@@ -1080,12 +1081,18 @@ goOn ch e o pending ts = do
                 recordUsage (usageFile ch) "chat" e u (t1 - t0)
                 when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0)))
               unless (T.null (T.strip (pReasoning p))) (uiThought (cUi ch) (T.strip (pReasoning p)))
+              -- (what the endpoint's own tools did -- a web search -- is shown and logged as a tool's doing is)
+              forM_ (pServed p) $ \(kind, text) -> do
+                if kind == "tool" then uiCall (cUi ch) "(by the API)" (T.unpack text) else uiAnswer (cUi ch) (T.take 600 text)
+                logH ch kind text
               let content = T.strip (pContent p)
               unless (T.null content) (uiTalk (cUi ch) content >> logH ch "talk" content)
               let assistant = JObj ([("role", JStr "assistant"), ("content", JText (pContent p))] ++ [ ("tool_calls", JArr (map tcRaw (pToolCalls p))) | not (null (pToolCalls p)) ] ++ pKeep p)
                   msgs' = if viewMode then msgs else msgs ++ [assistant]
               if null (pToolCalls p)
-                then if pFinish p == "length" && cut < 3
+                -- (the API stopped in the middle of its own tools' work: the reply goes back as it is, and it goes on)
+                then if pFinish p == "pause_turn" && not viewMode && cut < 8 then loop readsR spent msgs' (step + 1) (cut + 1) 0
+                else if pFinish p == "length" && cut < 3
                   then do
                     -- cut off at the output limit (most often: the thinking ran on) is not the end of the turn
                     uiNote (cUi ch) (printf "[the reply was cut off at %d tokens; asking it to go on in smaller steps]" (oMaxTokens o))
@@ -1369,6 +1376,8 @@ chatMain conf args = case parseOpts args of
             chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
                                longest pendingCheck down restartR inTurn (stripDeleted exe) argv batchR ui
         if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
+          -- (--web N: the model may search the web, where the endpoint has it -- "GhciSession.Llm" reads this)
+          forM_ (oWeb o) (setEnv "GHS_WEB_SEARCH" . show)
           ep <- endpointFromEnv
           case ep of
             Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 2

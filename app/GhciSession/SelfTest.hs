@@ -453,14 +453,14 @@ run = do
         (let a = texts (A.viewBlocks (T.pack (viewOf 10))); b = texts (A.viewBlocks (T.pack (viewOf 13))) in take 3 a == take 3 b && length b > length a)
   eq "anthropic: a view shorter than a block has no mark, and a text with no view is one block" (marksOf (A.viewBlocks (T.pack (viewOf 3))), length (A.viewBlocks (T.pack "just words"))) ([], 1)
   eq "anthropic: the request -- thinking, an effort said, the cache asked for, another model if it declines; no temperature"
-     (let b = bodyOf opus (A.Opts 100 Nothing Nothing) in (lookupStr "type" (b .: "thinking"), lookupStr "effort" (b .: "output_config"), has "cache_control" b, lookupStr "fallbacks" b, has "temperature" b, lookupNum "max_tokens" b, has "cache_control" (head (lookupArr "system" b))))
+     (let b = bodyOf opus (A.Opts 100 Nothing Nothing 0) in (lookupStr "type" (b .: "thinking"), lookupStr "effort" (b .: "output_config"), has "cache_control" b, lookupStr "fallbacks" b, has "temperature" b, lookupNum "max_tokens" b, has "cache_control" (head (lookupArr "system" b))))
      (Just "adaptive", Just "high", True, Just "default", False, Just 4000, True)
   eq "anthropic: a compaction is the lightest effort (thinking cannot be turned off, and is not asked to be)"
-     (let b = bodyOf opus (A.Opts 400 (Just False) Nothing) in (has "thinking" b, lookupStr "effort" (b .: "output_config")))
+     (let b = bodyOf opus (A.Opts 400 (Just False) Nothing 0) in (has "thinking" b, lookupStr "effort" (b .: "output_config")))
      (False, Just "low")
   eq "anthropic: a model that takes neither is sent neither, and another provider's endpoint only the conversation"
-     ( let b = bodyOf opus { A.aModel = "claude-haiku-4-5" } (A.Opts 100 Nothing Nothing) in (has "thinking" b, has "output_config" b, has "fallbacks" b, lookupNum "max_tokens" b)
-     , let b = bodyOf (A.Config "k" True "https://api.deepseek.com/anthropic" "deepseek-v4-pro") (A.Opts 100 Nothing Nothing) in (has "thinking" b, has "output_config" b, has "fallbacks" b, has "cache_control" b) )
+     ( let b = bodyOf opus { A.aModel = "claude-haiku-4-5" } (A.Opts 100 Nothing Nothing 0) in (has "thinking" b, has "output_config" b, has "fallbacks" b, lookupNum "max_tokens" b)
+     , let b = bodyOf (A.Config "k" True "https://api.deepseek.com/anthropic" "deepseek-v4-pro") (A.Opts 100 Nothing Nothing 0) in (has "thinking" b, has "output_config" b, has "fallbacks" b, has "cache_control" b) )
      ((False, False, False, Just 100), (False, False, False, False))
   eq "anthropic: the headers -- a key, or a token as a bearer; the beta a fallback needs, where there is one"
      (A.headers opus, A.headers (A.Config "t" True "http://localhost:1" "m"), A.url (A.Config "t" True "http://localhost:1" "m"))
@@ -477,6 +477,15 @@ run = do
      (fmap (map (fromMaybe "?" . lookupStr "type") . A.rBlocks) (A.parseReply (replyJ "tool_use" [ JObj [("type", JStr "thinking"), ("thinking", JStr ""), ("signature", JStr "s")], JObj [("type", JStr "text"), ("text", JStr "")]
                                                                                         , JObj [("type", JStr "tool_use"), ("id", JStr "t"), ("name", JStr "n"), ("input", JObj [])] ] [])))
      (Right ["thinking", "tool_use"])
+  eq "anthropic: a web search is asked for only where it was, and then as the API's own tool beside ours"
+     ( [ lookupStr "type" t | t <- lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 3) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]]) ]
+     , length (lookupArr "tools" (A.requestBody opus (A.Opts 100 Nothing Nothing 0) [um "hi"] [JObj [("function", JObj [("name", JStr "eval")])]])) )
+     ([Nothing, Just "web_search_20260209"], 1)
+  eq "anthropic: what the API's own tool did is said as a tool's doing, and its blocks are kept to send back"
+     (fmap (\p -> (A.rServer p, length (A.rBlocks p), A.rCalls p, A.rStop p))
+        (A.parseReply (replyJ "pause_turn" [ JObj [("type", JStr "server_tool_use"), ("id", JStr "s1"), ("name", JStr "web_search"), ("input", JObj [("query", JStr "ghc 9.14")])]
+                                         , JObj [("type", JStr "web_search_tool_result"), ("tool_use_id", JStr "s1"), ("content", JArr [JObj [("type", JStr "web_search_result"), ("title", JStr "GHC"), ("url", JStr "https://x")]])] ] [])))
+     (Right ([("tool", T.pack "web_search {\"query\": \"ghc 9.14\"}"), ("echo", T.pack "GHC https://x")], 2, [], "pause_turn"))
   eq "anthropic: a request declined is said, and an error is the API's words"
      ( fmap A.rText (A.parseReply (JObj [("type", JStr "message"), ("content", JArr []), ("stop_reason", JStr "refusal"), ("stop_details", JObj [("category", JStr "cyber")])]))
      , either id (const "") (A.parseReply (JObj [("type", JStr "error"), ("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])])) )

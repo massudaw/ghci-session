@@ -359,6 +359,10 @@ provider's endpoint that speaks the protocol works, and is sent only the convers
   `--effort`), a compaction at `low`, both said in the request since the default differs between models. A reply's
   blocks are sent back as they came, its thinking with them, so the conversation is only appended to: superseded
   reads are not rewritten as stubs here.
+- **The web, when asked for.** `chat --web N` (or `GHS_WEB_SEARCH=N`) lets the model search it, at most N times
+  a call: the API's own tool, run by the API and charged by it for each search, so never on unless asked. A search
+  and what it found are shown and logged as a tool's call and answer are; a turn the API stops in the middle of
+  one (`pause_turn`) is sent back as it is and goes on.
 - **A request declined** (`stop_reason: refusal`) is said as such, and on Anthropic's API another model is asked
   in the same call (`fallbacks: default`).
 
