@@ -15,8 +15,12 @@ author:             Wesley Massuda
 maintainer:         wesley.massuda@gmail.com
 homepage:           https://github.com/massudaw/ghci-session
 category:           Development
-build-type:         Simple
-extra-source-files: README.md hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
+-- Custom, not Simple: cabal does not recompile C when a header or the C options (the fff flag) change; Setup.hs does
+build-type:         Custom
+extra-source-files: README.md cbits/*.h hygiene/c/rts_syms.h hygiene/c/caf_common.h hygiene/c/caf_modules.h
+
+custom-setup
+  setup-depends:    base >=4 && <5, Cabal >=3.10, bytestring, directory, filepath
 
 -- libfff (https://github.com/dmtrKovalenko/fff), a file finder for `grep` / `find`. Off by default: search is a
 -- plain scan, and nothing is fetched. On (-f+fff, or GHS_FFF=1 ./build.sh, which fetches the library): the C that
