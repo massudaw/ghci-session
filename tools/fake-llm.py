@@ -11,6 +11,7 @@ Chat turns (a request that carries tools):
   - a line starting `eval EXPR` is answered with a call to the eval tool on EXPR;
   - a line starting `tool NAME [JSON]` calls any tool the request offers (`tool status`, `tool doc {"query": "grep"}`);
   - after a tool's result, it says what the tool answered;
+  - a line starting `say TEXT` is answered with TEXT itself, `\\n` in it a line's end (to see how a reply is shown);
   - anything else is echoed.
 Compactions (a request without tools): one line, the head of the <input>. Every reply carries `usage`, so the
 ledger (`ghci-session usage`) has something to sum. POST /chat/completions or /v1/chat/completions; GET / says it is up.
@@ -53,6 +54,8 @@ def reply(body):
         if m.group(1) not in names:
             return {"content": "fake: no tool %r (offered: %s)" % (m.group(1), ", ".join(n for n in names if n))}
         return call(m.group(1), json.loads(m.group(2) or "{}"))
+    if line.startswith("say "):
+        return {"content": line[4:].replace("\\n", "\n")}
     return {"content": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}
 
 def call(name, args):
@@ -201,6 +204,8 @@ def a_reply(body):
         if m.group(1):
             return [thought, searched], "pause_turn"
         return [thought, searched, found(m.group(2)), {"type": "text", "text": "I searched for %r and found a page." % m.group(2)}], "end_turn"
+    if line.startswith("say "):
+        return [thought, {"type": "text", "text": line[4:].replace("\\n", "\n")}], "end_turn"
     if line == "refuse":
         return [], "refusal"
     return [thought, {"type": "text", "text": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}], "end_turn"

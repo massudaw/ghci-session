@@ -27,6 +27,7 @@ import qualified GhciSession.History as H
 import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
 import qualified GhciSession.Import as I
+import qualified GhciSession.Md as Md
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
@@ -522,6 +523,31 @@ run = do
   eq "anthropic: an error in the stream is the stream's end, and is kept"
      (let (st, _) = run (take 3 events ++ [evJ "error" [("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])]]) in (A.streamEnded st, fmap (\e -> lookupStr "type" (e .: "error")) (A.streamError st)))
      (True, Just (Just "overloaded_error"))
+  -- markdown and diffs, as a screen shows them
+  let txtOf = concatMap snd
+      marks l = [ (t, (sBold st, sItalic st, sUnderline st, sStrike st, sFg st)) | (st, t) <- l, st /= plain ]
+  eq "md: a line's marks are styles, and the marks are gone"
+     (let l = Md.inline plain "a **b** and *c* and `d` ~~e~~" in (txtOf l, marks l))
+     ("a b and c and d e", [("b", (True, False, False, False, Default)), ("c", (False, True, False, False, Default)), ("d", (False, False, False, False, Ansi 3)), ("e", (False, False, False, True, Default))])
+  eq "md: a name with underscores, a product of two numbers and an escaped mark are left as they are"
+     (map (txtOf . Md.inline plain) ["snake_case_name and __init__", "2 * 3 * 4", "\\*not italic\\*"], [ marks (Md.inline plain x) | x <- ["snake_case_name and __init__", "2 * 3 * 4"] ])
+     (["snake_case_name and __init__", "2 * 3 * 4", "*not italic*"], [[], []])
+  eq "md: a link is its text underlined and its address; a bare address is underlined, without the sentence's full stop"
+     (let a = Md.inline plain "see [the docs](https://x.org/d)."; b = Md.inline plain "at https://example.org/page." in (txtOf a, [ t | (st, t) <- a, sUnderline st ], [ t | (st, t) <- b, sUnderline st ]))
+     ("see the docs (https://x.org/d).", ["the docs"], ["https://example.org/page"])
+  eq "md: a heading is bold without its hashes, a list has bullets, a quote a bar, a rule is a line"
+     (map txtOf (Md.mdLines 20 "# Title\n- one\n  * two\n3. three\n> said\n---"), [ sBold st | (st, _) <- take 1 (head (Md.mdLines 20 "## T")) ])
+     (["Title", "\8226 one", "  \8226 two", "3. three", "\9612 said", replicate 20 '\9472'], [True])
+  eq "md: fenced code is shown as written, nothing in it marked; a fenced diff is a diff"
+     ( map txtOf (Md.mdLines 40 "```haskell\nf **x** = 1\n```\nafter"), [ sFg st | l <- Md.mdLines 40 "```diff\n--- a/f\n+++ b/f\n+new\n-old\n```", (st, _) <- take 1 l ] )
+     (["\9474 f **x** = 1", "after"], [Default, Default, Ansi 2, Ansi 1])
+  eq "md: a table is laid out when it fits, its head bold; one too wide is shown as it was written"
+     ( map txtOf (Md.mdLines 40 "| a | bb |\n|---|---|\n| ccc | d |"), take 1 (map txtOf (Md.mdLines 8 "| a | bb |\n|---|---|\n| ccc | d |")) )
+     (["\9474 a   \9474 bb \9474", "\9500\9472\9472\9472\9472\9472\9532\9472\9472\9472\9472\9508", "\9474 ccc \9474 d  \9474"], ["| a | bb |"])
+  eq "md: a tool's answer -- its words, then the change: added green, removed red, the hunk's head apart; and what follows is not the diff's"
+     [ (txtOf l, [ sFg st | (st, _) <- take 1 l ]) | l <- Md.outputLines "edited f (2 lines)\n--- a/f\n+++ b/f\n@@ -1,2 +1,2 @@\n one\n-two\n+2\n\n[exit 0 in 0.1 s]\n- not a diff line" ]
+     [ ("edited f (2 lines)", [Default]), ("--- a/f", [Default]), ("+++ b/f", [Default]), ("@@ -1,2 +1,2 @@", [Ansi 6]), (" one", [Default]), ("-two", [Ansi 1]), ("+2", [Ansi 2])
+     , ("", [Default]), ("[exit 0 in 0.1 s]", [Default]), ("- not a diff line", [Default]) ]
   -- chats had elsewhere, read into messages
   let s0 = I.Session "Claude Code" "" "" "/f.jsonl" []
       cl ty content extra = JObj ([("type", JStr ty), ("cwd", JStr "/proj"), ("entrypoint", JStr "cli"), ("message", JObj [("role", JStr ty), ("content", content)])] ++ extra)

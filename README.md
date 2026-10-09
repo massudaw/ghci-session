@@ -472,6 +472,11 @@ the turn is doing now, the session's verdict in the header and a line to type on
 PgUp/PgDn scroll, Ctrl-C leaves). The turn loop prints nothing itself: it tells a `Ui` what happened, and the streams
 or the screen show it. A screen that ends leaves the terminal as it found it.
 
+Both screens show what the agent writes as markdown -- headings, lists, quotes, rules, fenced code, a table laid out
+when it fits, and in a line bold, italic, code, struck text and links -- and a unified diff in a tool's answer in its
+colors (so a `write` or an `edit` is its words, then the change in green and red). Nothing is re-flowed, and what does
+not parse is shown as it was written.
+
 `top` and the chat's screen are built on two packages of this repository, usable without them:
 
 - **`ghostty-vt`** (`ghostty-vt/`) binds **libghostty-vt**, Ghostty's terminal emulation as a C library. `Ghostty.Vt`:

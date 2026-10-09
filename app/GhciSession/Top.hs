@@ -43,6 +43,7 @@ import qualified Ghostty.Vt as Vt
 import Tui
 import GhciSession.Config
 import GhciSession.Json
+import GhciSession.Md (mdLines, outputLines)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now, readFileMaybe)
 import GhciSession.Usage (usageRows, usageTable)
@@ -428,17 +429,21 @@ cutAt = 6
 historyLines :: Int -> St -> Msg -> [[Span]]
 historyLines w st m = concatMap (wrapSpans w 4) (first : rest ++ more)
   where
-    ls = lines (mText m)
+    -- (the agent's words as the markdown they are, a tool's answer with its diff in colors: "GhciSession.Md")
+    ls = case mKind m of
+      k | k `elem` ["talk", "ai"] -> mdLines (w - 4) (mText m)
+      "echo" -> outputLines (mText m)
+      _ -> [ [(plain, l)] | l <- lines (mText m) ]
     open = sAllOpen st /= S.member (mId m) (sOpen st)
     shown = if open then ls else take cutAt ls
     current = case sCur st of { Just i -> i == mId m; Nothing -> case sHist st of { [] -> False; ms -> mId (last ms) == mId m } }
-    first = [ (if current then stHi else stDim, "#" ++ show (mId m)), (stDim, " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " " ++ head' shown) ]
-    rest = [ [(plain, "    " ++ l)] | l <- drop 1 shown ]
+    first = [ (if current then stHi else stDim, "#" ++ show (mId m)), (stDim, " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " ") ] ++ head' shown
+    rest = [ (plain, "    ") : l | l <- drop 1 shown ]
     more = [ [(stDim, "    (" ++ show (length ls - cutAt) ++ " more lines; Enter opens)")] | not open, length ls > cutAt ]
-    head' xs = case xs of { (x : _) -> x; [] -> "" }
+    head' xs = case xs of { (x : _) -> x; [] -> [] }
 
 kindStyle :: String -> Style
-kindStyle k = case k of { "user" -> stCyan; "talk" -> stGreen; "tool" -> stBlue; "echo" -> plain; "work" -> stYellow; "note" -> stMagenta; _ -> stBold }
+kindStyle k = case k of { "user" -> stCyan; "talk" -> stGreen; "ai" -> stGreen; "tool" -> stBlue; "echo" -> plain; "work" -> stYellow; "note" -> stMagenta; _ -> stBold }
 
 viewLines :: Int -> St -> [[Span]]
 viewLines w st = [ [ (stBold, " memory  "), (plain, stats) ], [] ] ++ concatMap (wrapSpans w 6 . viewLine) (sView st)

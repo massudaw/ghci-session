@@ -38,6 +38,7 @@ import Text.Printf (printf)
 import Tui
 import GhciSession.ChatUi
 import GhciSession.Json
+import GhciSession.Md (mdLines, outputLines)
 import GhciSession.Sys (now, readFileMaybe)
 import GhciSession.Top (Span, spansLine, wrapSpans, kindStyle, verdictStyle, stBold, stDim, stYellow, stHi)
 
@@ -51,10 +52,15 @@ data Entry = Entry { enKind :: String, enText :: T.Text }
 -- | An entry as lines of at most @w@ columns: the kind as a label on the first, the text's lines each
 -- wrapped under it, and a blank line after what was said.
 entryLines :: Int -> Entry -> [[Span]]
-entryLines w (Entry kind text) = concat [ wrapSpans w 7 (lbl i ++ [(style, l)]) | (i, l) <- zip [0 :: Int ..] body ] ++ [ [] | kind `elem` ["user", "talk"] ]
+entryLines w (Entry kind text) = concat [ wrapSpans w 7 (lbl i ++ l) | (i, l) <- zip [0 :: Int ..] body ] ++ [ [] | kind `elem` ["user", "talk"] ]
   where
-    ls = map T.unpack (T.lines text)
-    body = if null ls then [""] else ls
+    -- what the agent said is markdown, and is shown as what it marks up; what a tool answered may hold a diff,
+    -- shown in its colors; the rest is its lines as they are
+    ls = case kind of
+      "talk" -> mdLines (w - 7) (T.unpack text)
+      "echo" -> outputLines (T.unpack text)
+      _ -> [ [(style, l)] | l <- map T.unpack (T.lines text) ]
+    body = if null ls then [[(style, "")]] else ls
     lbl i = [ (kindStyle kind, if i == 0 then take 7 (kind ++ ":      ") else "       ") ]
     style = case kind of { "think" -> stDim; "view" -> stDim; "note" -> stDim; _ -> plain }
 
