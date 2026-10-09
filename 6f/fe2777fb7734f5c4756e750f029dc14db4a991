@@ -1,0 +1,28 @@
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_fd288e4423ead4 434-437,470,497-509,902-906,909-917,921-922,926,928-936,947-958,967-968,981-983,995-999,1007,1040-1057,1335-1345
+  s_ee2f22f51d8bdb::t_9a615722ac8087 31
+  s_ee2f22f51d8bdb::t_d51f350cc6244a 1567-1569
+  s_ee2f22f51d8bdb::t_9d56326fb8ad6a 440-441,907-908,918-920,923-925,927
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_9a615722ac8087 22,423-428,430-431,435
+  s_ee2f22f51d8bdb::t_d37495cfe8b237 419
+  s_ee2f22f51d8bdb::t_9d56326fb8ad6a 429,432-434
+app/GhciSession/Mcp.hs
+  s_ee2f22f51d8bdb::t_d51f350cc6244a 105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6ffe2777fb7734f5c4756e750f029dc14db4a991",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
