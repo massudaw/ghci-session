@@ -308,9 +308,6 @@ saveViews mem = do
       B.writeFile (path ++ ".new") (encodeBS (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- v ]) <> BC.pack "\n")
       renameFile (path ++ ".new") path
 
-msgFits :: Params -> Msg -> Bool
-msgFits ps m = byteLength (msgLine m) <= pNode ps
-
 -- | Append a message: its id. A text longer than a message may be ('pCap') is several messages in a row, of
 -- the same kind, each saying which part it is and of which message; the id is the first's. Nothing is dropped
 -- (a cut, as it was, kept a long result's head and tail and lost what a model most often went back for: the
