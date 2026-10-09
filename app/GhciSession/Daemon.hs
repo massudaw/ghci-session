@@ -2215,14 +2215,35 @@ compactorLoop s m cmd = do
 
 -- | One node built by the command: did the command RUN (whatever it answered)? A failed or timed-out one has
 -- been marked to be tried again.
+-- | What has been seen of the compactor's answers, by kind of line (False: a message compressed; True: two
+-- lines merged) -- what the next is asked by ('H.Ask').
+{-# NOINLINE askSeenV #-}
+askSeenV :: IORef (M.Map Bool H.Ask)
+askSeenV = unsafePerformIO (newIORef M.empty)
+
 runJob :: S -> H.Mem -> String -> H.Job -> IO Bool
 runJob s m cmd j = go0
   where
-    ps = H.params m
+    ps0 = H.params m
+    merge = H.jL j > 0
     go0 = do
+      seen <- M.findWithDefault (H.askStart ps0) merge <$> rd askSeenV
       let p = (H.jL j, H.jI j)
           shared = gSharedPrompt (sCfg s)
+          -- (asked for as the answers have been coming: so many bytes, so strongly)
+          (bytes, urge) = H.askFor ps0 seen
+          ps = ps0 { H.pAsk = bytes, H.pUrge = urge }
           base = (if shared then H.systemPrompt else H.compactPrompt) (gAgent (sCfg s)) <> T.pack "\n" <> H.jobPrompt ps j
+          -- a first answer is what the next line is asked by
+          note line = do
+            (was, new) <- atomicModifyIORef' askSeenV (\mp ->
+              let { a0 = M.findWithDefault (H.askStart ps0) merge mp; a1 = H.askSeen ps0 bytes (H.byteLength line) a0 } in (M.insert merge a1 mp, (a0, a1)))
+            let (b0, u0) = H.askFor ps0 was
+                (b1, u1) = H.askFor ps0 new
+            when (b0 /= b1 || u0 /= u1) $
+              logS s (printf "compactor: a %s is now asked for in %d bytes%s (answers come at %.2f of what is asked, give or take %.2f; %d%% over the %d taken; %d seen)"
+                        (if merge then "merge" else "message's line" :: String) b1 (case u1 of { 0 -> ""; 1 -> ", more strongly"; _ -> ", most strongly" } :: String)
+                        (H.aMean new) (H.aSpread new) (round (100 * H.aMiss new) :: Int) (H.pNode ps0) (H.aSeen new))
           go :: IORef Bool -> Int -> [T.Text] -> T.Text -> IO [T.Text]
           go bad n tries extra
             | n >= (5 :: Int) = pure tries
@@ -2231,6 +2252,7 @@ runJob s m cmd j = go0
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
                     let line = T.strip (H.stripHead (T.takeWhile (/= '\n') (T.strip out)))
+                    when (n == 0 && not (H.junkLine line)) (note line)
                     if H.junkLine line then pure tries        -- (no line: not asked again -- the tries so far, or the input cut)
                       else if H.nodeFits ps line then pure (tries ++ [line])
                       else go bad (n + 1) (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line)

@@ -358,6 +358,14 @@ writing and goes without tools), because a small model given one prompt takes a 
 `"compact_prompt": "shared"` makes it one prompt, with the turns' tools, so a compaction reads them from the turns'
 cache entry (`SUMMARIZE_TOOLS=0` for a model that takes no tools).
 
+How long a line is ASKED to be is steered by how the lines come back. A line is taken up to 512 bytes, and one over
+that is asked for again -- a second call for the same line; a model asked for 512 wrote 900, most times, 1.7 calls a
+line. So of each first answer the compactor keeps its length over what was asked (a moving mean and spread) and
+whether it was over the limit, and asks the next at the limit divided by that ratio with room to spare -- within a
+third of the limit and the limit itself -- and in stronger words the more of them miss. A model that writes long is
+asked for less; one that writes short is given the room back. Compressing a message and merging two lines are
+steered apart. The daemon's log says each time what is asked changes.
+
 ### Two ways in for an agent
 
 - **`ghci-session mcp`** serves the session's operations and its memory as tools over the Model Context Protocol

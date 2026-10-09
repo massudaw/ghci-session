@@ -44,6 +44,7 @@ module GhciSession.History
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
   , capText, msgLine, cutBytes, cutNode, cutMark, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, viewPrompt, compactPrompt, jobPrompt, retryNote
+  , Ask (..), askStart, askSeen, askFor
   , Snap (..), snapshot, Nodes (..), addNode, shrink, stepView, viewSize, pendingOf, placeholder, partName
   ) where
 
@@ -87,11 +88,12 @@ import GhciSession.Sys (now)
 data Params = Params
   { pNode :: !Int, pNodeMax :: !Int, pView :: !Int, pViewMin :: !Int, pCap :: !Int, pCapMax :: !Int
   , pCtxMax :: !Int, pCtxMin :: !Int, pAhead :: !Int
+  , pUrge :: !Int     -- ^ how hard a line is asked to be short: 0 as written, 1 and 2 said more strongly ('Ask' sets it, from how the answers come)
   , pAsk :: !Int      -- ^ the size a line is ASKED for: under 'pNode', which is what is taken (a model asked for 512 bytes wrote 900, and was asked again: most of its lines, 1.7 calls each)
   }
 
 defaultParams :: Params
-defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCapMax = 1000000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8, pAsk = 360 }
+defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCapMax = 1000000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8, pUrge = 0, pAsk = 360 }
 
 -- | One message of the log. @mKind@: @user@ (the user's words), @talk@ (the agent's replies), @tool@ (a
 -- request: a command of this tool, an agent's tool call), @echo@ (its result), @work@ (a subagent's
@@ -816,20 +818,68 @@ jobPrompt :: Params -> Job -> T.Text
 jobPrompt ps j = T.unlines $ [ T.pack "<chat>" ] ++ jContext j ++ [ T.pack "</chat>", T.empty ] ++ case jStep j of
     Compress m ->
       [ T.pack ("Compaction: compress message " ++ show (jI j) ++ " into one line of at most " ++ size)
-      , T.pack ("(about " ++ wordsN ++ " words), the length of this ruler:"), ruler ps
-      , T.pack "<input>", m, T.pack "</input>" ]
+      , T.pack ("(about " ++ wordsN ++ " words), the length of this ruler:"), ruler ps ]
+      ++ urge ++
+      [ T.pack "<input>", m, T.pack "</input>" ]
     Merge a b ->
       [ T.pack "Compaction: merge lines " <> na <> T.pack " and " <> nb <> T.pack ", adjacent, into one line of at most"
       , T.pack (size ++ " (about " ++ wordsN ++ " words), the length of this ruler:"), ruler ps
       , T.pack ("<chat> may hold their messages, " ++ show first ++ " to " ++ show (first + 2 ^ jL j - 1) ++ ", in more detail: take details")
-      , T.pack "of them from there too."
-      , T.pack "<input>", na <> T.pack "|" <> a, nb <> T.pack "|" <> b, T.pack "</input>" ]
+      , T.pack "of them from there too." ]
+      ++ urge ++
+      [ T.pack "<input>", na <> T.pack "|" <> a, nb <> T.pack "|" <> b, T.pack "</input>" ]
   where
+    -- (said more strongly as the answers come back too long: 'Ask')
+    urge = case pUrge ps of
+      0 -> []
+      1 -> [ T.pack "A line that ends before the ruler does is better than one that reaches it: leave out the least needed." ]
+      _ -> [ T.pack ("Lines written for this have come back too long, and were thrown away. Stop at " ++ wordsN ++ " words -- count them --")
+           , T.pack "well before the ruler's end: fewer items, each whole, not all of them cut short." ]
     size = show (asked ps) ++ " bytes"
     wordsN = show (max 1 (asked ps * 70 `div` 512))
     first = jI j * 2 ^ jL j
     na = partName (jL j - 1, 2 * jI j)
     nb = partName (jL j - 1, 2 * jI j + 1)
+
+-- how a line is asked for, by how the lines come ---------------------------------------------------
+--
+-- A line is taken up to 'pNode' bytes, and one over it is asked for again -- a second call for the same line.
+-- How long a model writes when asked for N bytes is the model's: one asked for 512 wrote 900, most times. So
+-- what is asked is steered by what comes back. Of each first answer: its length over what was asked (the
+-- model's ratio -- its mean and its spread, each a moving average), and whether it was over the limit (the
+-- share that are). The next line is asked at the limit divided by the ratio somewhat above its mean (mean
+-- plus twice the spread: all but the longest answers fit), within a third of the limit and the limit itself -- so a model
+-- that writes long is asked for less, and one that writes short is given the room back. And it is asked the
+-- more strongly ('pUrge') the more of them miss. Compressing a message and merging two lines are steered apart:
+-- they come back differently.
+
+-- | What has been seen of one kind of line: the ratio of an answer's length to what was asked (mean, spread),
+-- the share of answers over the limit, and how many were seen.
+data Ask = Ask { aMean :: !Double, aSpread :: !Double, aMiss :: !Double, aSeen :: !Int }
+  deriving (Eq, Show)
+
+-- | Before any answer: the ratio the first size asked for supposes.
+askStart :: Params -> Ask
+askStart ps = Ask (fromIntegral (pNode ps) / fromIntegral (max 1 (asked ps))) 0 0 0
+
+-- | An answer seen: asked for so many bytes, it came back so long.
+askSeen :: Params -> Int -> Int -> Ask -> Ask
+askSeen ps wanted got a =
+  let x = fromIntegral got / fromIntegral (max 1 wanted) :: Double
+      -- (quick at first, then steady: the first answers count for much)
+      k = max 0.08 (1 / fromIntegral (aSeen a + 2))
+      mean = aMean a + k * (x - aMean a)
+      spread = aSpread a + k * (abs (x - mean) - aSpread a)
+      miss = aMiss a + k * ((if got > pNode ps then 1 else 0) - aMiss a)
+  in Ask mean spread miss (aSeen a + 1)
+
+-- | What to ask for now: the bytes (a multiple of twenty: it does not move for every answer), and how strongly.
+askFor :: Params -> Ask -> (Int, Int)
+askFor ps a =
+  let limit = fromIntegral (pNode ps) :: Double
+      want = limit / max 0.5 (aMean a + 2 * aSpread a)
+      bytes = max (pNode ps `div` 3) (min (pNode ps) (20 * (round want `div` 20)))
+  in (bytes, if aMiss a > 0.3 then 2 else if aMiss a > 0.1 then 1 else 0)
 
 -- | What a line that is too long is told, with the line cut where the limit falls.
 retryNote :: Params -> T.Text -> T.Text

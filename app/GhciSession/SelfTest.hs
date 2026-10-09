@@ -245,6 +245,23 @@ run = do
         (let c = H.fitNode lp long in H.byteLength c <= 1024 && H.byteLength c > 1000 && T.isSuffixOf (T.pack "word") c)
   eq "history: the ruler is the size a line is asked for -- under the size that is taken, and never over it"
      (H.ruler H.defaultParams, T.length (H.ruler H.defaultParams { H.pNode = 24 }), H.pAsk H.defaultParams < H.pNode H.defaultParams) (T.replicate 360 (T.pack "-"), 24, True)
+  -- how a line is asked for, by how the lines come
+  let dp = H.defaultParams
+      -- (a model that writes so many times what it is asked, a little more or less each time)
+      writes r k wanted = round (fromIntegral wanted * (r + 0.12 * fromIntegral ((k * 7) `mod` 5 - 2) / 2) :: Double) :: Int
+      steer r n = foldl (\(a, fits) k -> let (b, _) = H.askFor dp a; got = writes r k b in (H.askSeen dp b got a, fits ++ [got <= H.pNode dp])) (H.askStart dp, []) [1 .. n :: Int]
+      fitShare xs = (100 * length (filter id xs)) `div` max 1 (length xs)
+      (longA, longFits) = steer 1.9 60
+      (shortA, _) = steer 0.7 60
+  check "ask: a model that writes nearly twice what it is asked is soon asked for less, and then its lines fit"
+        (fst (H.askFor dp longA) < 280 && fitShare (drop 10 longFits) >= 85)
+  eq "ask: and one that writes short is given the room back, and not urged" (H.askFor dp shortA) (H.pNode dp, 0)
+  eq "ask: before any answer, what is asked is the size set; it is never over what is taken, nor under a third of it"
+     (H.askFor dp (H.askStart dp), fst (H.askFor dp (H.Ask 9 1 1 50)), fst (H.askFor dp (H.Ask 0.1 0 0 50))) ((360, 0), H.pNode dp `div` 3, H.pNode dp)
+  eq "ask: it is asked the more strongly the more answers are over" (map (snd . H.askFor dp) [H.Ask 1.4 0.1 0.05 20, H.Ask 1.4 0.1 0.2 20, H.Ask 1.4 0.1 0.6 20]) [0, 1, 2]
+  check "ask: the task says it more strongly then, and as written otherwise"
+        (let j = H.Job 0 3 [] (H.Compress (T.pack "user: x")); pr u = H.jobPrompt dp { H.pUrge = u } j
+         in not (T.pack "count them" `T.isInfixOf` pr 0) && T.pack "better than one that reaches it" `T.isInfixOf` pr 1 && T.pack "count them" `T.isInfixOf` pr 2)
   eq "history: an answer's head is taken off -- the view's id+n|, or a message's number before its kind; a line that begins with a number is left"
      (map (H.stripHead . T.pack) ["12+4|tool: x", "214: echo: ls /tmp", "2026: a year in which", "7: nothing of a kind"]) (map T.pack ["tool: x", "echo: ls /tmp", "2026: a year in which", "7: nothing of a kind"])
   eq "history: an answer's id+n| head comes off" (H.stripHead (T.pack "40+8|user: do it")) (T.pack "user: do it")
