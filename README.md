@@ -301,7 +301,7 @@ which two lines, the size, and shows it as a ruler of 512 dashes (a model cannot
 `<input>` tags. A line over 512 bytes is asked again, up to five times, and the shortest kept as it is (one over 1,024
 is cut at its last word); an answer that is no line (the task said back, a tag alone, a code fence, nothing) is not kept and not asked for again. A
 message's node starts once fewer than `summarize_jobs` (64) messages before it are unbuilt, a merge once both halves
-are built, that many at once, from queues kept as the tree changes. A command that fails or times out is tried again after ten seconds; one whose answer is no line leaves the node as its input, cut at the size, so the merges above it are not held up.
+are built, that many at once, from queues kept as the tree changes. When no compaction has been answered in four minutes, or the view was merged since, one call goes first and the rest wait for its answer: they then read the prompt from the provider's cache instead of each paying for it. A command that fails or times out is tried again after ten seconds, and while it fails no call is started for 5 s, then 10, 20, ... up to five minutes; one whose answer is no line leaves the node as its input, cut at the size, so the merges above it are not held up.
 
 The daemon runs a compaction through `"summarize_cmd"`: a shell command given the system prompt, the view and the task
 on its standard input, answering one line on its standard output. `"summarize_cmd": "ghci-session summarize"` is the

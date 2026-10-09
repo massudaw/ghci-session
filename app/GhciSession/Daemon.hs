@@ -2095,23 +2095,71 @@ histOp s op req = case sHist s of
 -- failure is logged. (UniiChat's retry goes on in the same conversation; a command has none, so the
 -- earlier answer and the note are appended to the prompt instead -- at its end, so the prefix a provider
 -- caches is the same.)
+--
+-- Many at once ask one endpoint, so two things are decided here for all of them and not by each.
+--
+-- * __One goes first when the prompt's cache is cold.__ Every compaction starts with the same prompt and nearly
+--   the same view, which a provider caches once a call with it has been answered. Sixty-four started together
+--   find no entry and each pays for the whole prompt (and where a cache write is charged, for writing it). So
+--   when no compaction has been answered in four minutes -- an entry lives five -- or the view is not the one
+--   the last was answered with (it was merged), ONE call is made and the rest wait for its answer.
+-- * __None is started while the endpoint is failing.__ A node whose command failed is tried again ten seconds
+--   later, by itself: all of them did, together, every ten seconds, at a service that had just said it was
+--   busy. After a failure no call is started for 5 s, then 10, 20, ... up to five minutes, until one succeeds.
 compactorLoop :: S -> H.Mem -> String -> IO ()
-compactorLoop s m cmd = loop
+compactorLoop s m cmd = do
+  pauseV <- newIORef (0 :: Double, 0 :: Int)                       -- no call before this time; the failures in a row
+  warmV <- newIORef (Nothing :: Maybe (Double, [T.Text]))          -- when a compaction was last answered, and its view
+  leadV <- newIORef False                                          -- the one call that goes first is out
+  let loop = do
+        stopping <- rd (vStopping s)
+        unless stopping $ do
+          n <- H.changes m
+          busy <- H.busyCount m
+          jobs <- H.pending m
+          t <- now
+          (until, _) <- rd pauseV
+          leading <- rd leadV
+          warm <- rd warmV
+          let room = take (max 0 (gSummarizeJobs (sCfg s) - busy)) jobs
+              cold j = case warm of
+                Nothing -> True
+                Just (at, ctx) -> t - at > 240 || not (sameView ctx (H.jContext j))
+              (chosen, lead) | t < until || leading = ([], False)
+                             | otherwise = case room of
+                                 (j : _) | cold j -> ([j], True)
+                                 js -> (js, False)
+          when lead (leadV =: True)
+          when (lead && length jobs > 1) (logS s ("summarize: the prompt's cache is cold: one call first, " ++ show (length jobs - 1) ++ " after its answer"))
+          forM_ chosen $ \j -> do
+            H.claim m (H.jL j, H.jI j)
+            void $ forkIO $ do
+              r <- try (runJob s m cmd j) :: IO (Either SomeException Bool)
+              t1 <- now
+              when lead (leadV =: False)
+              case r of
+                Right True -> pauseV =: (0, 0) >> warmV =: Just (t1, H.jContext j)
+                Right False -> do
+                  (_, k) <- rd pauseV
+                  let wait = min 300 (5 * 2 ^ min 8 k) :: Double
+                  pauseV =: (t1 + wait, k + 1)
+                  when (k == 0 || wait >= 300) (logS s ("summarize: the command failed: no call for " ++ showG wait ++ " s"))
+                Left e -> H.release m (H.jL j, H.jI j) >> logS s ("summarize: " ++ displayException e)
+          tv <- registerDelay (if lead || t < until then 1000000 else 10000000)
+          atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
+          loop
+  loop
+  where
+    -- the same view, but for where each ends (a node's view stops at the node): all but their last lines agree
+    sameView a b = let k = min (length a) (length b) - 80 in k <= 0 || take k a == take k b
+
+-- | One node built by the command: did the command RUN (whatever it answered)? A failed or timed-out one has
+-- been marked to be tried again.
+runJob :: S -> H.Mem -> String -> H.Job -> IO Bool
+runJob s m cmd j = go0
   where
     ps = H.params m
-    loop = do
-      stopping <- rd (vStopping s)
-      unless stopping $ do
-        n <- H.changes m
-        busy <- H.busyCount m
-        jobs <- H.pending m
-        forM_ (take (max 0 (gSummarizeJobs (sCfg s) - busy)) jobs) $ \j -> do
-          H.claim m (H.jL j, H.jI j)
-          void (forkIO (try (runJob j) >>= either (\(e :: SomeException) -> H.release m (H.jL j, H.jI j) >> logS s ("summarize: " ++ displayException e)) pure))
-        tv <- registerDelay 10000000
-        atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
-        loop
-    runJob j = do
+    go0 = do
       let p = (H.jL j, H.jI j)
           shared = gSharedPrompt (sCfg s)
           base = (if shared then H.systemPrompt else H.compactPrompt) (gAgent (sCfg s)) <> T.pack "\n" <> H.jobPrompt ps j
@@ -2152,6 +2200,7 @@ compactorLoop s m cmd = loop
         -- (a command that failed or timed out has said so, and is tried again: the endpoint may come back)
         [] -> pure ()
         _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries, not (T.null t) ])))
+      pure ran
 
 -- | A shell command with text on its standard input: its exit status, output and errors (UTF-8), or
 -- 'Nothing' when it ran past the timeout (it is then stopped).
