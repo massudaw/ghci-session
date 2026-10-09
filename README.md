@@ -82,9 +82,11 @@ The sources of those packages are found from the build tool's plan and watched w
 A loaded C object cannot be replaced, but it can be superseded, as a reloaded module is. The changed source is
 compiled with the build tool's own command, the object linked as the newest, and the modules that call into it
 (its unit's, and whatever imports them) linked again when next needed, bound to the new C. A header is every C
-source of its unit. The command is learned from the build tool the first time a unit's C changes (it is asked to
-build that unit once, which takes what a build takes) and kept with the start it belongs to; after that a C save
-is a few tenths of a second. C that does not compile is a `COMPILE-ERROR` with the compiler's words, and the
+source of its unit. The command is found at each start, without the build tool: put together from the unit's
+flags and the `.cabal`'s options for C, and kept only if compiling an unchanged source with it makes the build
+tool's own object, byte for byte. Where no candidate does, the build tool is asked once, at the unit's first
+change (which takes what a build takes). Either way it is kept with the start it belongs to, and a C save is a
+few tenths of a second. C that does not compile is a `COMPILE-ERROR` with the compiler's words, and the
 session goes on running what it had. Two things to know: the library with the old C stays mapped, so a pointer
 into it stays good, and **what the C keeps in its own variables starts again from nothing** in the new object --
 a handle it opened, a table it filled. A restart is what it was: a source of no loaded unit, a build file changed

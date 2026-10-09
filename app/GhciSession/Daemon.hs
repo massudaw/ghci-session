@@ -6,7 +6,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords) where
+module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords, cabalField) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)
@@ -1222,6 +1222,7 @@ boot s how = do
       vLastLoad s =: Nothing       -- (another engine: nothing it said is known yet)
       vTcLast s =: Nothing
       phase s "post_load" (postLoad s repl)
+      guessC s
       afterLoad s (Reply facts (T.pack built <> out)) (sBootCheck s) t0
       compiled s >>= (vContextOk s =:)      -- a load that failed dropped the imports: the next good reload re-issues them
 
@@ -1724,7 +1725,7 @@ applyChanges s run cur2 = do
 -- that does not compile is a COMPILE-ERROR with the compiler's words, the session running what it had.
 
 -- | A loaded unit's C: where it is compiled, where its objects go, and each source with its object.
-data CUnit = CUnit { cuId :: String, cuWd :: FilePath, cuOdir :: FilePath, cuC :: [(FilePath, FilePath)] }
+data CUnit = CUnit { cuId :: String, cuWd :: FilePath, cuOdir :: FilePath, cuC :: [(FilePath, FilePath)], cuArgs :: [String] }
 
 -- | The units of a start and their C (the unit files as the build tool wrote them; one unit: the arguments).
 cUnits :: Launch -> IO [CUnit]
@@ -1743,7 +1744,7 @@ cUnits l = do
               src = normalise (wd </> replaceExtension rel "c")
           ok <- if isAbsolute rel then pure False else doesFileExist src
           pure (if ok then Just (src, o) else Nothing)
-        pure (Just (CUnit uid wd odir cs))
+        pure (Just (CUnit uid wd odir cs as))
       _ -> pure Nothing
 
 data COutcome = CDone Int [String] Double | CError FilePath [String] | CCannot String
@@ -1797,7 +1798,7 @@ reloadC s changed = do
                 let tmpl = fromMaybe [] (lookup (cuId u) (zip (map cuId us) ts))
                     out = sDir s </> "cobj" </> cuId u
                     rel = makeRelative (cuWd u) src
-                    args = setOdir out tmpl ++ [rel]
+                    args = setOdirTo out tmpl ++ [rel]
                 createDirectoryIfMissing True out
                 (ec, o, e) <- readCreateProcessWithExitCode (proc "ghc" args) { cwd = Just (cuWd u) } ""
                 pure (if ec == ExitSuccess then Right (out </> replaceExtension rel "o") else Left (src, lines (o ++ e)))
@@ -1810,11 +1811,6 @@ reloadC s changed = do
                   pure $ case lookupStr "error" j of
                     Just why -> CCannot why
                     Nothing -> CDone (maybe 0 round (lookupNum "relink" j)) [ m | JStr m <- lookupArr "relink_modules" j ] (t1 - t0)
-  where
-    setOdir out as = case as of
-      ("-odir" : _ : rest) -> "-odir" : out : rest
-      (a : rest) -> a : setOdir out rest
-      [] -> []
 
 -- | The build tool's command for a unit's C, as it was last seen (the arguments, without the source).
 cTemplate :: Boot -> CUnit -> IO (Maybe [String])
@@ -1842,6 +1838,75 @@ learnC s b units us = case gRepl cfg of
       [] -> pure False
     pure (or kept)
   where cfg = sCfg s
+
+-- | The same, found at a start without asking the build tool -- which says how it compiles C only when it
+-- compiles some, and at a start it has none to compile. The command is put together from what is on record: the
+-- unit's own flags (where its headers are, its packages), the options the package's @.cabal@ names for C, and
+-- the optimisation the build tool gives C by default. Whether that IS the build tool's command is not assumed: a
+-- source that has not changed is compiled with it, and the object compared, byte for byte, with the one the build
+-- tool made. The first candidate whose objects are the same is kept; when none is (an option given under a
+-- condition that does not hold, a compiler flag from elsewhere, objects older than their sources) nothing is,
+-- and the build tool is asked at the unit's first change as before. On a thread: it is a few compiles.
+guessC :: S -> IO ()
+guessC s = void $ forkIO $ void $ (try :: IO () -> IO (Either SomeException ())) $ do
+  mb <- rd (vBoot s)
+  forM_ mb $ \b -> do
+    units <- cUnits (bLaunch b)
+    forM_ [ u | u <- units, not (null (cuC u)) ] $ \u -> do
+      known <- cTemplate b u
+      when (isNothing known) $ do
+        names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents (cuWd u))
+        texts <- catMaybes <$> mapM (\n -> readFileMaybe (cuWd u </> n)) [ n | n <- names, ".cabal" `isSuffixOf` n ]
+        let ccAll = nub (concatMap (cabalField "cc-options") texts)
+            base = ["-package-env=-", "-c", "-fPIC", "-odir", cuOdir u] ++ keep (cuArgs u)
+            candidates = nub [ base ++ o ++ map ("-optc" ++) cc | o <- [["-optc-O2"], []], cc <- [[], ccAll] ]
+            probe = sDir s </> "cobj" </> ".probe" </> cuId u
+            same tmpl (src, obj) = do
+              let rel = makeRelative (cuWd u) src
+              void (try (removeDirectoryRecursive probe) :: IO (Either IOException ()))
+              createDirectoryIfMissing True probe
+              (ec, _, _) <- readCreateProcessWithExitCode (proc "ghc" (setOdirTo probe tmpl ++ [rel])) { cwd = Just (cuWd u) } ""
+              if ec /= ExitSuccess then pure False else do
+                a <- try (B.readFile (probe </> replaceExtension rel "o")) :: IO (Either IOException B.ByteString)
+                c <- try (B.readFile obj) :: IO (Either IOException B.ByteString)
+                pure (case (a, c) of { (Right x, Right y) -> x == y; _ -> False })
+            firstThat [] = pure Nothing
+            firstThat (t : ts) = do
+              ok <- and <$> mapM (same t) (take 2 (cuC u))
+              if ok then pure (Just t) else firstThat ts
+        found <- firstThat candidates
+        void (try (removeDirectoryRecursive probe) :: IO (Either IOException ()))
+        case found of
+          Just t -> do
+            createDirectoryIfMissing True (bLaunchDir b </> "cc")
+            writeAtomic (bLaunchDir b </> "cc" </> cuId u) (unlines t)
+            logS s ("C: " ++ cuId u ++ ": how its C is compiled is known (checked: it makes the build tool's own object)")
+          Nothing -> logS s ("C: " ++ cuId u ++ ": how its C is compiled was not found by trying; the build tool is asked at its first change")
+  where
+    -- of a unit's flags, what a C compile reads: where the headers are, and the packages (theirs too)
+    keep as = case as of
+      (a : v : rest) | a `elem` ["-package-db", "-package-id"] -> a : v : keep rest
+      (a : rest) | "-I" `isPrefixOf` a || a `elem` ["-hide-all-packages", "-no-user-package-db"] -> a : keep rest
+                 | otherwise -> keep rest
+      [] -> []
+
+-- | The values of a field in a @.cabal@ file's text, wherever it is given (under a condition or not).
+cabalField :: String -> String -> [String]
+cabalField name text =
+  concat [ vals (drop (length name + 1) (dropWhile (== ' ') l)) ++ concatMap vals (takeWhile (\c -> indent c > indent l || null (trim c)) rest)
+         | (l : rest) <- tailsOf (lines text), (name ++ ":") `isPrefixOf` map toLower (dropWhile (== ' ') l) ]
+  where
+    indent = length . takeWhile (== ' ')
+    vals x = if "--" `isPrefixOf` dropWhile (== ' ') x then [] else words x
+    tailsOf [] = []
+    tailsOf x@(_ : r) = x : tailsOf r
+
+-- | A compile's arguments with its object directory another.
+setOdirTo :: FilePath -> [String] -> [String]
+setOdirTo out as = case as of
+  ("-odir" : _ : rest) -> "-odir" : out : rest
+  (a : rest) -> a : setOdirTo out rest
+  [] -> []
 
 -- | A line of the build tool's verbose output as a command's words, if it is one: after @Running: PROGRAM@ or
 -- @GHC response file arguments:@, split at spaces, a word in single quotes whole.
