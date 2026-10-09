@@ -40,7 +40,7 @@
 module GhciSession.History
   ( Params (..), defaultParams, Msg (..), Mem, Job (..), Step (..)
   , Loc (..), Src (..), treeTexts
-  , openHistory, appendMsg, pageText, partTexts, putNode, zoom, dateOf, messages, count
+  , openHistory, appendMsg, appendMsgAt, pageText, partTexts, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
   , capText, msgLine, cutBytes, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, compactPrompt, jobPrompt, retryNote
@@ -315,10 +315,14 @@ saveViews mem = do
 -- the view and nothing else in it changes -- unless the view has passed its budget, and then one batch merges
 -- it ('stepView').
 appendMsg :: Mem -> T.Text -> T.Text -> IO Int
-appendMsg mem kind text0 = withMVar (mLock mem) $ \_ -> do
+appendMsg mem kind text0 = appendMsgAt mem kind text0 Nothing
+
+-- | 'appendMsg', the message dated: one said elsewhere before now, brought in ('Nothing': now).
+appendMsgAt :: Mem -> T.Text -> T.Text -> Maybe Double -> IO Int
+appendMsgAt mem kind text0 date = withMVar (mLock mem) $ \_ -> do
   let ps = mParams mem
   first <- Seq.length <$> readIORef (mRoot mem)
-  ids <- mapM (appendOne mem kind) (partTexts first (pageText (pCap ps) (capText (pCapMax ps) text0)))
+  ids <- mapM (appendOne mem kind date) (partTexts first (pageText (pCap ps) (capText (pCapMax ps) text0)))
   pure (case ids of { (i : _) -> i; [] -> first })
 
 -- | The parts of a long text as messages: each says which part it is, and all but the last that the next
@@ -347,10 +351,10 @@ sameFile mem f = do
   was <- readIORef (mFile mem)
   if was == f then pure was else writeIORef (mFile mem) f >> pure f
 
-appendOne :: Mem -> T.Text -> T.Text -> IO Int
-appendOne mem kind text = do
+appendOne :: Mem -> T.Text -> Maybe Double -> T.Text -> IO Int
+appendOne mem kind date text = do
   root <- readIORef (mRoot mem)
-  t <- now
+  t <- maybe now pure date
   let ps = mParams mem
       i = Seq.length root
       m = Msg i kind text t
@@ -561,9 +565,15 @@ data Job = Job { jL :: !Int, jI :: !Int, jContext :: [T.Text], jStep :: Step }
 -- built, so no call ever sees a placeholder or half a message.
 pendingOf :: Params -> Snap -> S.Set (Int, Int) -> M.Map (Int, Int) Double -> Double -> [Job]
 pendingOf ps sn busy fails t =
-  [ j | p <- [ (0, i) | i <- take (pAhead ps) (S.toAscList (sUnbuilt sn)) ] ++ S.toAscList (sReady sn)
+  [ j | p <- [ (0, i) | i <- leaves ] ++ S.toAscList (sReady sn)
       , not (S.member p busy), maybe True (<= t) (M.lookup p fails), Just j <- [job p] ]
   where
+    -- the oldest messages not built, and the NEWEST: with a backlog -- a chat imported is thousands of them --
+    -- what was said just now would wait behind all of it, and a turn would read its own last lines as "not
+    -- summarized yet". The few of each end are the same few while there is no backlog.
+    leaves = let old = take (pAhead ps) (S.toAscList (sUnbuilt sn))
+                 new = take (max 1 (pAhead ps `div` 2)) (S.toDescList (sUnbuilt sn))
+             in old ++ [ i | i <- reverse new, i `notElem` old ]
     context upto = go (sCView sn)
       where go (p@(l, i) : r) | (i + 1) * 2 ^ l <= upto, Just x <- sNode sn p = (partName p <> T.pack "|" <> oneLine x) : go r
             go _ = []
@@ -695,7 +705,8 @@ viewPart who withTools =
   , "- tool: " ++ who ++ "'s tool calls, and what was done to the session by hand"
   , "- echo: tool results"
   , "- work: an agent's report, starting \"[Name]\""
-  , "- note: memories from before this chat"
+  , "- ai: another AI's replies, from a chat imported from another program; not " ++ who ++ "'s"
+  , "- note: memories from before this chat, and what an imported chat is"
   , ""
   , "The summaries form a binary tree: each message is compressed into a line (a"
   , "short message is its own line), then adjacent lines are merged in pairs, again"

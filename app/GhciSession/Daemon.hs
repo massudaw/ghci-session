@@ -2025,8 +2025,9 @@ histOp s op req = case sHist s of
   Just m -> case op of
     "log" -> do
       let kind = fromMaybe "" (lookupStr "kind" req)
-      if kind `notElem` ["user", "talk", "tool", "echo", "work", "note"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, work, note; not " ++ show kind)) else do
-        i <- H.appendMsg m (T.pack kind) (fromMaybe T.empty (lookupText "text" req))
+      if kind `notElem` ["user", "talk", "tool", "echo", "work", "note", "ai"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, work, note, ai; not " ++ show kind)) else do
+        -- (a date: a message said elsewhere before now, brought in -- `ghci-session import`)
+        i <- H.appendMsgAt m (T.pack kind) (fromMaybe T.empty (lookupText "text" req)) (lookupNum "date" req)
         pure (Right (T.pack ("#" ++ show i)))
     "history" -> do
       n <- H.count m

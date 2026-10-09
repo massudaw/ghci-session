@@ -39,6 +39,8 @@ import GhciSession.Sys
 import qualified Data.Text.IO as TIO
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
+import qualified GhciSession.Import as I
+import qualified GhciSession.History as H
 
 -- arguments --------------------------------------------------------------------
 
@@ -68,6 +70,52 @@ pos a i = case drop i (aPos a) of { (x : _) -> Just x; [] -> Nothing }
 
 die' :: String -> IO a
 die' msg = hPutStrLn stderr msg >> exitWith (ExitFailure 2)
+
+-- | @import [SESSION] [--tools] [--all] [--since YYYY-MM-DD] [--claude DIR] [--codex DIR] [--go]@: the chats had
+-- on this project in Claude Code and Codex, into the session's history ("GhciSession.Import"). The plan is
+-- shown; @--go@ writes it, through the daemon (it is the one that writes the history), a session at a time, and
+-- what was taken of each is written down as it is done -- an import stopped half way goes on where it was.
+cmdImport :: Conf -> Args -> IO Int
+cmdImport conf a = do
+  name <- pick conf (opt a ["-s", "-t", "--session"] <|> pos a 0)
+  home <- getHomeDirectory
+  let root = cRoot conf
+      claude = fromMaybe (I.claudeDir home root) (opt a ["--claude"])
+      codex = maybe [home </> ".codex" </> "sessions", home </> ".codex" </> "archived_sessions"] pure (opt a ["--codex"])
+      doneFile = stateOf conf name </> "history" </> "imported.json"
+  since <- case opt a ["--since"] of
+    Nothing -> pure 0
+    Just d -> maybe (die' ("--since " ++ d ++ ": a date is YYYY-MM-DD")) pure (I.isoSeconds (d ++ "T00:00:00Z"))
+  files <- (++) <$> I.sessionFiles claude <*> (concat <$> mapM I.sessionFiles codex)
+  sessions <- catMaybes <$> mapM I.readSession files
+  done0 <- (\b -> either (const M.empty) (\j -> M.fromList [ (k, d) | (k, JNum d) <- fromMaybe [] (obj j) ]) (parseJsonBS b))
+             . either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile doneFile)
+  let want s = I.Want (flag a ["--tools"]) (flag a ["--all"]) since (if I.sApp s == "Codex" then root else "")      -- (Codex keeps every project's sessions together)
+      picked = sortOn (map I.eDate . take 1 . I.sEntries) [ x | s <- sessions, Just x <- [I.wanted (want s) done0 s] ]
+  putStrLn (name ++ ": " ++ show (length sessions) ++ " session file(s) with messages under " ++ claude ++ (if any ((== "Codex") . I.sApp) sessions then " and ~/.codex" else "")
+            ++ "; " ++ show (length sessions - length picked) ++ " passed over (another project's, a program's own calls through the SDK, a single exchange, or imported already"
+            ++ (if flag a ["--all"] then "" else "; --all takes the programs' and the single ones too") ++ ")")
+  if null picked then putStrLn "  nothing to import" >> pure 0 else do
+    I.plan (H.pNode H.defaultParams) picked >>= mapM_ putStrLn
+    if not (flag a ["--go"]) then putStrLn ("\n  nothing was written: `ghci-session import" ++ concat [ " " ++ f | f <- ["--tools", "--all"], flag a [f] ] ++ " --go` imports them") >> pure 0 else do
+      doneV <- pure done0
+      let logOne kind text date = do
+            r <- request conf name (JObj [("op", JStr "log"), ("kind", JStr kind), ("text", JText text), ("date", JNum date)])
+            unless (lookupBool "ok" r == Just True) (die' ("import: " ++ T.unpack (fromMaybe T.empty (lookupText "out" r))))
+          go _ [] = pure ()
+          go done (s : rest) = do
+            note <- I.sessionNote s
+            let start = maybe 0 I.eDate (listToMaybe (I.sEntries s))
+            logOne "note" note start
+            forM_ (I.sEntries s) (\e -> logOne (I.eKind e) (I.eText e) (I.eDate e))
+            let done' = M.insert (I.sessionKey s) (maximum (map I.eDate (I.sEntries s))) done
+            createDirectoryIfMissing True (stateOf conf name </> "history")
+            B.writeFile (doneFile ++ ".new") (encodeBS (JObj [ (k, JNum d) | (k, d) <- M.toList done' ]))
+            renameFile (doneFile ++ ".new") doneFile
+            putStrLn ("  imported: " ++ T.unpack note)
+            go done' rest
+      go doneV picked
+      pure 0
 
 -- plumbing -----------------------------------------------------------------------
 
@@ -541,7 +589,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--claude", "--codex"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -640,6 +688,7 @@ cliMain = do
             name <- pick conf (case opt a ["-s", "-t", "--session"] of { Just s -> Just s; Nothing -> pos a 1 })
             request conf name (JObj [ ("op", JStr "date"), ("id", JNum (read i)) ]) >>= say
           _ -> die' "date ID: when message ID was written"
+        "import" -> cmdImport conf a
         "mcp" -> mcpMain conf >> pure 0
         c' | c' `elem` ["top", "tui", "monitor"] -> topMain conf (opt a ["-s", "-t", "--session"] <|> pos a 0) >> pure 0
         "chat" -> chatMain conf rest

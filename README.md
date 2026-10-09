@@ -119,6 +119,7 @@ compose SESSION [MEMBERS...] [--add M] [--remove M]
 server [status|start|stop|restart] [-m MEMBER] [-s SESSION] [--resume]
 mem [--heap] | census | store | bench EXPR | profile
 history | view | zoom ID | date ID      # the session's log and its summaries
+import [--tools] [--all] [--since DATE] [--go]   # chats had in Claude Code and Codex, into the history
 top [SESSION]                   # a screen that follows a session: verdict, history, heap, a chat and a shell
 chat [-s SESSION] [--tui] [--once TEXT]   # an agent working on the session, with the history as its memory
 usage [SESSION] [--since DAYS] [--json]   # what the model calls cost
@@ -273,6 +274,34 @@ zoom 2184 8                   # open line 2184+8 of the view into the two lines 
 zoom 2187 1                   # message 2187 whole
 date 2187                     # when it was written
 ```
+
+### Chats had elsewhere: `import`
+
+```
+ghci-session import                       # the plan: what would be imported, and what its summaries cost
+ghci-session import --go                  # do it
+ghci-session import --tools --since 2026-09-01 --go
+```
+
+What was done to this project in Claude Code (`~/.claude/projects/<the project's path>`) and in Codex
+(`~/.codex/sessions`, the ones of this directory) is read from their session files into the history: a `note`
+saying what each session is and when it began, then the user's words as `user` and the other agent's as `ai` --
+not `talk`, which is this agent's own -- with their dates; `--tools` takes its tool calls and their results too
+(`tool`, `echo`: several times the messages, and mostly long). What a program put into a chat and nobody said is
+left out: a command's echo, a reminder, its own bookkeeping lines.
+
+Two things decide what is taken. Whose session it is: a program that drives the model through the SDK leaves a
+file for every call -- of this repository's own 1,135, all but three were a compactor's, a prompt and a line each
+-- so a session an SDK started, or one of a single exchange, is passed over (`--all` takes those too). And what
+was taken before: each session's last imported message is written down (`history/imported.json`), so a second
+import takes what is newer and an import stopped half way goes on. (A session imported without its tools does
+not get them later.)
+
+Nothing is written without `--go`: the plan lists the sessions and says how many messages are over a line's size
+-- each of those is a model call when there is a `summarize_cmd`, and about as many again for the merges above.
+The messages go at the end of the log, where their summaries are made like any others; while that backlog
+stands, the compactor also takes the newest messages, so a turn's own last lines are not left waiting behind it.
+`--claude DIR` and `--codex DIR` read sessions from somewhere else.
 
 ### The summary tree
 

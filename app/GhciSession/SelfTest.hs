@@ -26,6 +26,7 @@ import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
+import qualified GhciSession.Import as I
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
 import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
@@ -318,8 +319,10 @@ run = do
   check "history: a merge job carries its two lines" (case jobs1 of { [_, j] -> H.jStep j == H.Merge (T.pack "tool: eval 1 + 1") (T.pack "tool: eval 2 * 3"); _ -> False })
   eq "history: a busy node is not offered again" (map (\j -> (H.jL j, H.jI j)) (H.pendingOf hp sn1 (Set.fromList [(0, 2)]) M.empty 0)) [(1, 0)]
   eq "history: a failed node waits out its retry" (map (\j -> (H.jL j, H.jI j)) (H.pendingOf hp sn1 Set.empty (M.fromList [((0, 2), 100)]) 50)) [(1, 0)]
-  eq "history: a message's node starts once fewer than AHEAD before it are unbuilt"
-     (map (\j -> (H.jL j, H.jI j)) (H.pendingOf hp { H.pAhead = 1 } sn1 { H.sUnbuilt = Set.fromList [2, 3], H.sReady = Set.empty } Set.empty M.empty 0)) [(0, 2)]
+  eq "history: the oldest messages not built start, AHEAD of them, and the newest (a backlog does not hold back what was just said)"
+     (map (\j -> (H.jL j, H.jI j)) (H.pendingOf hp { H.pAhead = 1 } sn1 { H.sUnbuilt = Set.fromList [2, 3], H.sReady = Set.empty } Set.empty M.empty 0)) [(0, 2), (0, 3)]
+  eq "history: ... and with no backlog they are the same few, once each"
+     (map (\j -> (H.jL j, H.jI j)) (H.pendingOf hp { H.pAhead = 8 } sn1 { H.sUnbuilt = Set.fromList [2, 3], H.sReady = Set.empty } Set.empty M.empty 0)) [(0, 2), (0, 3)]
   check "history: a compression's task: the message's id, the size, the ruler, the input in tags"
         (case jobs1 of { (j : _) -> let pr = H.jobPrompt hp j in all (`T.isInfixOf` pr) [ T.pack "<chat>\n0+1|tool: eval 1 + 1\n1+1|tool: eval 2 * 3\n</chat>\n"
                                                           , T.pack "Compaction: compress message 2 into one line of at most 24 bytes\n", T.pack ("\n" ++ replicate 24 '-' ++ "\n<input>\ntool: long "), T.pack "\n</input>\n" ]; _ -> False })
@@ -519,6 +522,46 @@ run = do
   eq "anthropic: an error in the stream is the stream's end, and is kept"
      (let (st, _) = run (take 3 events ++ [evJ "error" [("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])]]) in (A.streamEnded st, fmap (\e -> lookupStr "type" (e .: "error")) (A.streamError st)))
      (True, Just (Just "overloaded_error"))
+  -- chats had elsewhere, read into messages
+  let s0 = I.Session "Claude Code" "" "" "/f.jsonl" []
+      cl ty content extra = JObj ([("type", JStr ty), ("cwd", JStr "/proj"), ("entrypoint", JStr "cli"), ("message", JObj [("role", JStr ty), ("content", content)])] ++ extra)
+      txt t = JObj [("type", JStr "text"), ("text", JStr t)]
+      kinds (_, es) = [ (I.eKind e, T.unpack (I.eText e)) | e <- es ]
+  eq "import: a user's words and the other agent's, its calls and their results; where the session is, how it was started"
+     ( kinds (I.claudeLine s0 (cl "user" (JStr "fix it") []) 5)
+     , kinds (I.claudeLine s0 (cl "assistant" (JArr [txt "looking", JObj [("type", JStr "tool_use"), ("name", JStr "Read"), ("input", JObj [("path", JStr "a.hs")])]]) []) 5)
+     , kinds (I.claudeLine s0 (cl "user" (JArr [JObj [("type", JStr "tool_result"), ("content", JArr [txt "the file", JObj [("type", JStr "image")]])]]) []) 5)
+     , (\(s, _) -> (I.sWhere s, I.sEntry s)) (I.claudeLine s0 (cl "user" (JStr "x") []) 5) )
+     ([("user", "fix it")], [("ai", "looking"), ("tool", "Read {\"path\": \"a.hs\"}")], [("echo", "the file\n[image]")], ("/proj", "cli"))
+  eq "import: what a program put in the chat is not taken: its own lines, a subagent's, a command's echo, a reminder"
+     [ kinds (I.claudeLine s0 l 5) | l <- [ cl "user" (JStr "meta") [("isMeta", JBool True)], cl "assistant" (JStr "side") [("isSidechain", JBool True)]
+                                          , cl "user" (JStr "<command-name>/model</command-name>") [], cl "user" (JArr [txt "<system-reminder>x</system-reminder>", txt "the real words"]) []
+                                          , cl "attachment" (JStr "x") [] ] ]
+     [[], [], [], [("user", "the real words")], []]
+  let cx ty payload = JObj [("type", JStr ty), ("payload", JObj payload)]
+      (sx, _) = I.codexLine (I.Session "Codex" "" "" "/c.jsonl" []) (cx "session_meta" [("cwd", JStr "/proj"), ("originator", JStr "codex_cli")]) 1
+  eq "import: a Codex session -- where it is, a message, a call and its result; what it was given as its setting is not a message"
+     ( I.sWhere sx
+     , kinds (I.codexLine sx (cx "response_item" [("type", JStr "message"), ("role", JStr "user"), ("content", JArr [txt "<environment_context>cwd</environment_context>", txt "do it"])]) 2)
+     , kinds (I.codexLine sx (cx "response_item" [("type", JStr "function_call"), ("name", JStr "shell"), ("arguments", JStr "{\"cmd\":\"ls\"}")]) 2)
+     , kinds (I.codexLine sx (cx "response_item" [("type", JStr "function_call_output"), ("output", JStr "a b")]) 2)
+     , kinds (I.codexLine (fst (I.codexLine sx (cx "session_meta" [("cwd", JStr "/p"), ("source", JObj [("subagent", JStr "x")])]) 1)) (cx "response_item" [("type", JStr "message"), ("role", JStr "user"), ("content", JArr [txt "sub"])]) 2) )
+     ("/proj", [("user", "do it")], [("tool", "shell {\"cmd\":\"ls\"}")], [("echo", "a b")], [])
+  eq "import: a date as the files have it" (I.isoSeconds "2026-10-08T09:08:23.523Z", I.isoSeconds "yesterday") (Just 1791450503.523, Nothing)
+  let sess entry es = I.Session "Claude Code" entry "/proj" "/f.jsonl" [ I.Entry k (T.pack "t") d | (k, d) <- es ]
+      talkS = sess "cli" [("user", 10), ("ai", 11), ("tool", 12), ("echo", 13), ("user", 20), ("ai", 21)]
+      taken w done s = fmap (map (\e -> (I.eKind e, I.eDate e)) . I.sEntries) (I.wanted w done s)
+      wantPlain = I.Want False False 0 ""
+  eq "import: a person's session is taken, its words; its tool calls when asked for"
+     (taken wantPlain M.empty talkS, fmap length (taken wantPlain { I.wTools = True } M.empty talkS)) (Just [("user", 10), ("ai", 11), ("user", 20), ("ai", 21)], Just 6)
+  eq "import: a program's calls through the SDK, and a single exchange, are passed over unless asked for"
+     ( taken wantPlain M.empty (sess "sdk-ts" [("user", 1), ("ai", 2), ("user", 3), ("ai", 4)]), taken wantPlain M.empty (sess "cli" [("user", 1), ("ai", 2)])
+     , fmap length (taken wantPlain { I.wAll = True } M.empty (sess "sdk-ts" [("user", 1), ("ai", 2)])) )
+     (Nothing, Nothing, Just 2)
+  eq "import: only what is newer than what was taken of it before, and than the date asked for; another project's is not this one's"
+     ( taken wantPlain (M.fromList [("/f.jsonl", 11)]) talkS, taken wantPlain (M.fromList [("/f.jsonl", 21)]) talkS, taken wantPlain { I.wSince = 15 } M.empty talkS, taken wantPlain { I.wRoot = "/other" } M.empty talkS )
+     (Just [("user", 20), ("ai", 21)], Nothing, Just [("user", 20), ("ai", 21)], Nothing)
+  eq "import: where Claude Code keeps a project's sessions" (I.claudeDir "/Users/me" "/Users/me/code/ghci-session") "/Users/me/.claude/projects/-Users-me-code-ghci-session"
   -- the claude command (a subscription)
   let cli = C.cliArgs (C.CliOpts "claude-haiku-4-5" (Just "low") (T.pack "sys") (Just ("/bin/ghs", "/tmp/s.sock")) False)
       after k xs = take 1 [ v | (a, v) <- zip xs (drop 1 xs), a == k ]
