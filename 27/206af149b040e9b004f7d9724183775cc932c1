@@ -1,0 +1,23 @@
+ghostty-vt/Setup.hs
+  s_ee2f22f51d8bdb::t_547b8f68d37387 36,38-39,52,89,91,109
+  s_ee2f22f51d8bdb::t_fb4afed77308b8 1-35,37,40-51,53-88,90,92-108,110-124
+ghostty-vt/ghostty-vt.cabal
+  s_ee2f22f51d8bdb::t_fb4afed77308b8 17-18,21-22
+  s_ee2f22f51d8bdb::t_26015180d6581b 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "27206af149b040e9b004f7d9724183775cc932c1",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
