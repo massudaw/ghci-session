@@ -2,15 +2,18 @@
  *
  * The bytes (a recording: tools/tui-capture.py makes one) are fed to libghostty-vt -- Ghostty's own terminal,
  * as a library -- and at each offset asked for, a line of JSON says what it holds then: the screen's text, the
+ * cursor, each row's styles (the runs of cells that are not plain: `b` bold, `d` faint, `i` italic, `u` underlined,
+ * `s` struck, `r` reversed, `fgN`/`bgN` a palette color, `fg#RRGGBB`/`bg#RRGGBB`), the
  * images it was sent by the kitty graphics protocol (stored, and decoded: a PNG it could not read is not
  * there), their placements, and the cells that are picture placeholders, by image, with the rows and columns
  * their marks say. So a screen that draws pictures is checked without a window: by the terminal that would
  * draw them, short of the drawing.
  *
  *   cc -o .bin/vt-replay tools/vt-replay.c -Ighostty-vt/include -L.bin -lghostty-vt -lz -Wl,-rpath,$PWD/.bin
- *   .bin/vt-replay RECORDING COLS ROWS [CELLW CELLH] [--at OFFSET]...      (no --at: at the end)
+ *   .bin/vt-replay RECORDING COLS ROWS [CELLW CELLH] [--at OFFSET | --resize OFFSET COLSxROWS]...
  *
- * tools/check-images.py builds and runs it.
+ * in the order of their offsets; --resize: the terminal changed size there. No --at: one line, at the end.
+ * tools/tuicheck.py builds and runs it (for tools/check-tui.py and tools/check-images.py).
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,8 +101,30 @@ static void put_json_cp(uint32_t c) {
   else printf("%c%c%c%c", 0xF0 | (c >> 18), 0x80 | ((c >> 12) & 63), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
 }
 
+static void style_text(const GhosttyStyle *st, char *out, size_t cap) {
+  size_t n = 0; out[0] = 0;
+#define ADD(...) do { if (n < cap) n += (size_t)snprintf(out + n, cap - n, "%s", n ? " " : ""); if (n < cap) n += (size_t)snprintf(out + n, cap - n, __VA_ARGS__); } while (0)
+  if (st->bold) ADD("b");
+  if (st->faint) ADD("d");
+  if (st->italic) ADD("i");
+  if (st->underline) ADD("u");
+  if (st->strikethrough) ADD("s");
+  if (st->inverse) ADD("r");
+  if (st->fg_color.tag == GHOSTTY_STYLE_COLOR_PALETTE) ADD("fg%d", (int)st->fg_color.value.palette);
+  if (st->fg_color.tag == GHOSTTY_STYLE_COLOR_RGB) ADD("fg#%02x%02x%02x", st->fg_color.value.rgb.r, st->fg_color.value.rgb.g, st->fg_color.value.rgb.b);
+  if (st->bg_color.tag == GHOSTTY_STYLE_COLOR_PALETTE) ADD("bg%d", (int)st->bg_color.value.palette);
+  if (st->bg_color.tag == GHOSTTY_STYLE_COLOR_RGB) ADD("bg#%02x%02x%02x", st->bg_color.value.rgb.r, st->bg_color.value.rgb.g, st->bg_color.value.rgb.b);
+#undef ADD
+}
+
 static void report(GhosttyTerminal t, long at, int cols, int rows) {
-  printf("{\"at\": %ld, \"images\": [", at);
+  uint16_t cx = 0, cy = 0; bool cvis = false; GhosttyTerminalScreen scr = 0;
+  ghostty_terminal_get(t, GHOSTTY_TERMINAL_DATA_CURSOR_X, &cx);
+  ghostty_terminal_get(t, GHOSTTY_TERMINAL_DATA_CURSOR_Y, &cy);
+  ghostty_terminal_get(t, GHOSTTY_TERMINAL_DATA_CURSOR_VISIBLE, &cvis);
+  ghostty_terminal_get(t, GHOSTTY_TERMINAL_DATA_ACTIVE_SCREEN, &scr);
+  printf("{\"at\": %ld, \"cols\": %d, \"rows\": %d, \"cursor\": [%d, %d], \"cursor_visible\": %s, \"alternate\": %s, \"images\": [",
+         at, cols, rows, (int)cx, (int)cy, cvis ? "true" : "false", scr == GHOSTTY_TERMINAL_SCREEN_ALTERNATE ? "true" : "false");
   GhosttyKittyGraphics g = NULL;
   if (ghostty_terminal_get(t, GHOSTTY_TERMINAL_DATA_KITTY_GRAPHICS, &g) == GHOSTTY_SUCCESS && g) {
     GhosttyKittyGraphicsPlacementIterator it;
@@ -124,15 +149,17 @@ static void report(GhosttyTerminal t, long at, int cols, int rows) {
   static int cells[256], bad[256], top[256], bottom[256], left[256], right[256], r0[256], r1[256], c0[256], c1[256];
   memset(cells, 0, sizeof cells); memset(bad, 0, sizeof bad);
   uint32_t *text = calloc((size_t)cols * rows, sizeof *text);
+  char (*styles)[40] = calloc((size_t)cols * rows, 40);
   for (int y = 0; y < rows; y++) for (int x = 0; x < cols; x++) {
     GhosttyPoint p; memset(&p, 0, sizeof p); p.tag = GHOSTTY_POINT_TAG_ACTIVE; p.value.coordinate.x = (uint16_t)x; p.value.coordinate.y = (uint32_t)y;
     GhosttyGridRef ref; memset(&ref, 0, sizeof ref); ref.size = sizeof ref;
     uint32_t cps[8]; size_t k = 0;
     if (ghostty_terminal_grid_ref(t, p, &ref) != GHOSTTY_SUCCESS || ghostty_grid_ref_graphemes(&ref, cps, 8, &k) != GHOSTTY_SUCCESS || k == 0) continue;
     text[y * cols + x] = cps[0];
-    if (cps[0] != 0x10EEEE) continue;
     GhosttyStyle st; memset(&st, 0, sizeof st); st.size = sizeof st;
     ghostty_grid_ref_style(&ref, &st);
+    style_text(&st, styles[y * cols + x], 40);
+    if (cps[0] != 0x10EEEE) continue;
     int id = st.fg_color.tag == GHOSTTY_STYLE_COLOR_PALETTE ? st.fg_color.value.palette : 0;
     int r = k > 1 ? mark_of(cps[1]) : -1, c = k > 2 ? mark_of(cps[2]) : -1;
     if (!cells[id]++) { top[id] = bottom[id] = y; left[id] = right[id] = x; r0[id] = r1[id] = r; c0[id] = c1[id] = c; }
@@ -156,12 +183,24 @@ static void report(GhosttyTerminal t, long at, int cols, int rows) {
     for (int x = 0; x < end; x++) { uint32_t c = text[y * cols + x]; put_json_cp(c == 0 ? ' ' : c == 0x10EEEE ? 0x2592 : c); }   /* (a placeholder: shown as a shade) */
     printf("\"");
   }
+  /* the styles: a row's runs of cells of one style that is not plain, [first column, cells, style] */
+  printf("], \"styles\": [");
+  for (int y = 0; y < rows; y++) {
+    printf("%s[", y ? ", " : "");
+    for (int x = 0, k = 0; x < cols;) {
+      const char *st = styles[y * cols + x]; int e = x + 1;
+      while (e < cols && !strcmp(styles[y * cols + e], st)) e++;
+      if (st[0]) printf("%s[%d, %d, \"%s\"]", k++ ? ", " : "", x, e - x, st);
+      x = e;
+    }
+    printf("]");
+  }
   printf("]}\n");
-  free(text);
+  free(text); free(styles);
 }
 
 int main(int argc, char **argv) {
-  if (argc < 4) { fprintf(stderr, "usage: vt-replay RECORDING COLS ROWS [CELLW CELLH] [--at OFFSET]...\n"); return 2; }
+  if (argc < 4) { fprintf(stderr, "usage: vt-replay RECORDING COLS ROWS [CELLW CELLH] [--at OFFSET | --resize OFFSET COLSxROWS]...\n"); return 2; }
   int cols = atoi(argv[2]), rows = atoi(argv[3]), cw = 9, chh = 18, a = 4;
   if (argc > 5 && argv[4][0] != '-') { cw = atoi(argv[4]); chh = atoi(argv[5]); a = 6; }
   FILE *f = fopen(argv[1], "rb");
@@ -178,13 +217,17 @@ int main(int argc, char **argv) {
   ghostty_terminal_set(t, GHOSTTY_TERMINAL_OPT_KITTY_IMAGE_STORAGE_LIMIT, &limit);
   ghostty_terminal_resize(t, (uint16_t)cols, (uint16_t)rows, (uint32_t)cw, (uint32_t)chh);
   long done = 0; int asked = 0;
-  for (; a + 1 < argc; a += 2) {
-    if (strcmp(argv[a], "--at") != 0) continue;
+  while (a + 1 < argc) {
+    bool resize = !strcmp(argv[a], "--resize");
+    if (!resize && strcmp(argv[a], "--at") != 0) { fprintf(stderr, "vt-replay: what is %s?\n", argv[a]); return 2; }
     long upto = atol(argv[a + 1]);
     if (upto > n) upto = n;
     if (upto > done) { ghostty_terminal_vt_write(t, bytes + done, (size_t)(upto - done)); done = upto; }
-    report(t, done, cols, rows);
-    asked++;
+    if (resize) {
+      if (a + 2 >= argc || sscanf(argv[a + 2], "%dx%d", &cols, &rows) != 2) { fprintf(stderr, "vt-replay: --resize OFFSET COLSxROWS\n"); return 2; }
+      ghostty_terminal_resize(t, (uint16_t)cols, (uint16_t)rows, (uint32_t)cw, (uint32_t)chh);
+      a += 3;
+    } else { report(t, done, cols, rows); asked++; a += 2; }
   }
   if (!asked) { ghostty_terminal_vt_write(t, bytes, (size_t)n); report(t, n, cols, rows); }
   ghostty_terminal_free(t);

@@ -600,6 +600,8 @@ run = do
   shown <- Img.viewPng imgDir nm
   eq "picture: what a screen is given of a small PNG is itself" (fmap snd shown, fmap fst shown == Just (Img.base64 (png 4 2))) (Just (4, 2), True)
   removeDirectoryRecursive imgDir
+  eq "md: a save's change -- hunks with no file's head -- is a diff too"
+     [ [ sFg st | (st, _) <- take 1 l ] | l <- Md.outputLines "save: src/A.hs\n@@ -1,2 +1,2 @@\n one\n-two\n+2" ] [[Default], [Ansi 6], [Default], [Ansi 1], [Ansi 2]]
   -- chats had elsewhere, read into messages
   let s0 = I.Session "Claude Code" "" "" "/f.jsonl" []
       cl ty content extra = JObj ([("type", JStr ty), ("cwd", JStr "/proj"), ("entrypoint", JStr "cli"), ("message", JObj [("role", JStr ty), ("content", content)])] ++ extra)

@@ -7,7 +7,7 @@
 -- forms: a reply about code is full of names with underscores). A line is a line:
 -- nothing is re-flowed (the caller wraps what is too wide), and what does not parse is shown as it was written.
 --
--- A diff is recognised by its head -- a @---@ line and then a @+++@ line -- and lasts while lines look like
+-- A diff is recognised by its head -- a @---@ line and then a @+++@ line, or a hunk's @\@\@ -@ -- and lasts while lines look like
 -- one; so the answer of a tool that wrote a file is its words, then the change in green and red.
 module GhciSession.Md
   ( Span, mdLines, outputLines, inline, diffLine, imageLine, imageOf
@@ -143,6 +143,8 @@ outputLines = go False . lines . filter (/= '\r')
     go _ [] = []
     go False (a : b : rest) | "--- " `isPrefixOf` a, "+++ " `isPrefixOf` b = diffLine a : diffLine b : go True rest
     go False (l : rest) | "diff --git " `isPrefixOf` l = diffLine l : go True rest
+    -- (a hunk with no file's head before it: what a save is logged with)
+    go False (l : rest) | "@@ -" `isPrefixOf` l = diffLine l : go True rest
     go False (l : rest) | Just n <- Img.isMarker (T.pack l) = imageLine n : go False rest
     go False (l : rest) = [(plain, l)] : go False rest
     go True (l : rest) | inDiff l = diffLine l : go True rest

@@ -169,7 +169,8 @@ key env kp@(KeyPress k _ bytes) st
   | sPrefix st || not (isPane (sTab st)) = case k of
       _ | sPrefix st && ctrlA -> withPane (\p -> paneInput p (BC.pack "\SOH")) >> pure (Just (st', False))
       KChar 'q' -> pure Nothing
-      KChar '\ETX' | not (isPane (sTab st)) -> pure Nothing
+      -- (Ctrl-C comes as the letter with the modifier: as the character it never matched, and did nothing)
+      KChar 'c' | Ctrl `elem` kMods kp, not (isPane (sTab st)) -> pure Nothing
       KEsc | not (isPane (sTab st)) -> pure Nothing
       KChar c | Just t <- lookup c tabKeys -> pure (Just (st' { sTab = t }, True))
       KChar 'j' -> scrollBy 1
@@ -433,6 +434,8 @@ historyLines w st m = concatMap (wrapSpans w 4) (first : rest ++ more)
     ls = case mKind m of
       k | k `elem` ["talk", "ai"] -> mdLines (w - 4) (mText m)
       "echo" -> outputLines (mText m)
+      -- (a save is logged with what it changed)
+      "tool" | "save: " `isPrefixOf` mText m -> outputLines (mText m)
       _ -> [ [(plain, l)] | l <- lines (mText m) ]
     open = sAllOpen st /= S.member (mId m) (sOpen st)
     shown = if open then ls else take cutAt ls

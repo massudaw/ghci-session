@@ -2050,8 +2050,9 @@ histOp s op req = case sHist s of
         Nothing -> pure (Left ("no message " ++ maybe "?" (show . (round :: Double -> Int)) (lookupNum "id" req)))
         Just t -> Right . T.pack <$> (formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S %Z" <$> utcToLocalZonedTime (posixSecondsToUTCTime (realToFrac t)))
     "view" -> do
-      -- `wait`: until every line is a summary (a turn starts on a settled view), at most that many seconds
-      let secs = fromMaybe 0 (lookupNum "wait" req)
+      -- `wait`: until every line is a summary (a turn starts on a settled view), at most that many seconds --
+      -- and not at all where nothing summarizes (no compactor: a turn waited two minutes for what could not come)
+      let secs = if isJust (gSummarizeCmd (sCfg s)) then fromMaybe 0 (lookupNum "wait" req) else 0
       t0 <- now
       let go = do
             sn <- H.snapshot m

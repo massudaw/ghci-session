@@ -1,0 +1,296 @@
+#!/usr/bin/env python3
+"""The screens, run and typed at: `chat --tui` and `top`, checked by what a terminal shows of them.
+
+    tools/check-tui.py [-v] [--keep] [chat] [top]
+
+A project is made for it with a session of its own (a package of one module; cabal builds it, a few seconds),
+and tools/fake-llm.py answers as the model. Each screen is run on a pseudo-terminal and typed at from a script
+(tools/tui-capture.py); what it wrote is replayed into Ghostty's terminal (tools/vt-replay.c) and the screen
+that terminal holds is checked at each step -- its text, where the cursor is, the styles of cells.
+
+  chat  the header and the line to type on; the line's keys (Left, Ctrl-A/E/W/U, recall with Up and Down); a
+        line sent and its answer, labelled; markdown as what it marks up; a write's diff in its colors and a
+        source's edit with the session's verdict; scrolling back and following; a resize; leaving.
+  top   the header and the tabs, each one's content; the history's cursor, a message opened and closed; the
+        chat in a pane, of the pane's size, typed at through the monitor, and what it did in the history; a
+        shell in a pane; a test asked for; a resize, of a pane too; leaving.
+
+About a minute and a quarter. -v: every screen (they are kept in a file when a check fails); --keep: the project
+is left (its path is said). Exit status 0 when all hold. tools/check-images.py is the same for the pictures a chat draws.
+"""
+import os, shutil, sys, tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import tuicheck
+
+PORT = 8796
+FILLER = "\\\\n".join("line %d of what was said before" % i for i in range(1, 61))
+
+CHAT = r"""
+wait 3
+mark start
+type hello wrld
+wait 0.3
+mark typed
+key left
+key left
+key left
+type o
+wait 0.3
+mark fixed
+key ctrl-a
+wait 0.3
+mark home
+key ctrl-e
+key ctrl-w
+wait 0.3
+mark word
+key ctrl-u
+wait 0.3
+mark cleared
+type first line\r
+wait 4
+mark sent
+key up
+wait 0.3
+mark recalled
+key down
+wait 0.3
+mark back
+type say FILLER\r
+wait 4
+type say # Title\\n**bold** and *it* and `code`\\n- item\\n| a | b |\\n|---|---|\\n| 1 | 2 |\r
+wait 4
+mark markdown
+type tool write {"path":"notes.txt","content":"one\\ntwo\\n"}\r
+wait 5
+type tool edit {"path":"notes.txt","old":"two","new":"2"}\r
+wait 5
+mark diff
+type tool edit {"path":"src/Demo.hs","old":"hello","new":"howdy"}\r
+wait 8
+mark source
+key pgup
+wait 0.5
+mark scrolled
+key end
+wait 0.5
+mark followed
+resize 80x24
+wait 1.5
+mark resized
+key ctrl-c
+wait 1.5
+mark left
+""".replace("FILLER", FILLER)
+
+TOP = r"""
+wait 3
+mark start
+type 2
+wait 1
+mark view
+type 3
+wait 1
+mark log
+type 4
+wait 1
+mark verdict
+type 5
+wait 1
+mark usage
+type 6
+wait 1.5
+mark heap
+type 1
+type g
+wait 1
+mark first
+type G
+type p
+wait 0.5
+mark cursor
+key enter
+wait 0.5
+mark opened
+key enter
+wait 0.5
+mark closed
+type T
+wait 4
+mark tested
+type 7
+wait 4
+mark pane
+type pane line\r
+wait 4
+mark panesent
+resize 100x30
+wait 2
+mark paneresized
+key ctrl-a
+type 8
+wait 2
+type echo tui-$((6*7))\r
+wait 1.5
+mark shell
+key ctrl-a
+type 1
+type G
+wait 1.5
+mark history
+key ctrl-c
+wait 1.5
+mark left
+"""
+
+
+def screens(name, rec):
+    out = []
+    for label, s in rec.at.items():
+        out.append("---- %s: %s  cursor=%s %dx%d" % (name, label, s.cursor, s.cols, s.rows))
+        out += [l for l in s.show().splitlines() if l[3:].strip()]
+    return "\n".join(out) + "\n"
+
+
+def check_chat(check, rec):
+    at = rec.at
+    s = at["start"]
+    check("chat: the header names the screen, the session and the model, with the session's verdict in its color",
+          "ghci-session chat demo" in s.lines[0] and "CHECK-PASS" in s.lines[0] and s.style(0, 1) == {"b"} and "fg2" in s.style_of("OK -- CHECK-PASS"), s.lines[0])
+    check("chat: it is on the alternate screen, the view it read above, a line to type on at the bottom with the cursor on it",
+          s.alternate and s.has("0+1|tool: start demo") and s.lines[s.rows - 1].startswith(">") and "b" in s.style(s.rows - 1, 0) and "waiting for a line" in s.lines[s.rows - 2] and s.cursor == (2, s.rows - 1), (s.cursor, s.lines[-2:]))
+    last = lambda s: s.lines[s.rows - 1]
+    check("chat: what is typed is on the line, the cursor after it", last(at["typed"]) == "> hello wrld" and at["typed"].cursor[0] == 12, (last(at["typed"]), at["typed"].cursor))
+    check("chat: Left moves in the line and a letter goes in where the cursor is", last(at["fixed"]) == "> hello world" and at["fixed"].cursor[0] == 10, (last(at["fixed"]), at["fixed"].cursor))
+    check("chat: Ctrl-A is the line's start", at["home"].cursor[0] == 2 and last(at["home"]) == "> hello world", at["home"].cursor)
+    check("chat: Ctrl-E the end and Ctrl-W takes the word before", last(at["word"]).rstrip() == "> hello" and at["word"].cursor[0] == 8, (last(at["word"]), at["word"].cursor))
+    check("chat: Ctrl-U empties it", last(at["cleared"]).rstrip() == ">" and at["cleared"].cursor[0] == 2, last(at["cleared"]))
+    s = at["sent"]
+    u, t = s.find(" user:  first line"), s.find(" talk:  fake: you said 'first line'")
+    check("chat: a line sent is in the transcript with the answer under it, each labelled in its color; the line is empty again",
+          u is not None and t is not None and u[0] < t[0] and s.style(u[0], 1) == {"b", "fg6"} and s.style(t[0], 1) == {"b", "fg2"} and last(s).rstrip() == ">", (u, t))
+    check("chat: the header counts the turn and says what it cost", s.lines[1].strip().startswith("1 turn; the last: turn: 1 model call"), s.lines[1])
+    check("chat: Up recalls the line sent, Down gives back the one being typed", last(at["recalled"]) == "> first line" and last(at["back"]).rstrip() == ">", (last(at["recalled"]), last(at["back"])))
+    s = at["markdown"]
+    top = s.row(" talk:  Title") or 0
+    check("chat: markdown is shown as what it marks up -- a heading, bold, italic, code, an item, a table",
+          s.style_of("Title", top) == {"b", "u"} and s.style_of("bold and", top) == {"b"} and s.style_of("it and code", top) == {"i"} and s.style_of("code", top + 1) == {"fg3"}
+          and s.has("• item") and s.has("│ a │ b │") and s.has("├───┼───┤") and s.has("│ 1 │ 2 │") and not s.has("**bold**", top), s.lines[top:top + 6])
+    s = at["diff"]
+    e = s.row(" echo:  edited notes.txt") or 0
+    check("chat: a tool's call and its answer are shown, and an edit's diff in its colors",
+          s.has(' tool:  edit {"path": "notes.txt"') and s.style_of("--- a/notes.txt", e) == {"b"} and s.style_of("@@ -1,2 +1,2 @@", e) == {"fg6"}
+          and s.style_of("-two", e) == {"fg1"} and s.style_of("+2", e) == {"fg2"} and s.style_of("tool:  edit") == {"b", "fg4"}, s.lines[e:e + 7])
+    s = at["source"]
+    check("chat: an edit of a source is answered with the session's verdict on it, and its diff",
+          s.has("echo:  edited src/Demo.hs") and s.has("verdict: OK") and s.style_of('-greeting = "hello"') == {"fg1"} and s.style_of('+greeting = "howdy"') == {"fg2"}, [l for l in s.lines if "verdict" in l])
+    s, f = at["scrolled"], at["source"]
+    check("chat: PgUp scrolls the transcript back (the status line says how far), the header and the line staying",
+          "lines back; End follows" in s.lines[s.rows - 2] and s.lines[2:s.rows - 2] != f.lines[2:f.rows - 2] and s.lines[0] == f.lines[0] and last(s).startswith(">")
+          and f.has('+greeting = "howdy"') and not s.has('+greeting = "howdy"'), s.lines[s.rows - 2])
+    s = at["followed"]
+    check("chat: End follows the end again", "lines back" not in s.lines[s.rows - 2] and s.lines[2:s.rows - 2] == f.lines[2:f.rows - 2], s.lines[s.rows - 2])
+    s = at["resized"]
+    check("chat: a smaller terminal is drawn for its size -- the header at its top, the line at its bottom, the end of the transcript between",
+          (s.cols, s.rows) == (80, 24) and s.lines[0].startswith(" ghci-session chat demo") and s.lines[23].startswith(">") and "waiting for a line" in s.lines[22]
+          and s.has('+greeting = "howdy"') and s.cursor == (2, 23) and all(len(l) <= 80 for l in s.lines), (s.cursor, s.lines[0], s.lines[-2:]))
+    s = at["left"]
+    check("chat: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
+
+
+def check_top(check, rec):
+    at = rec.at
+    tabs = lambda s: s.lines[2]
+    lit = lambda s, name: "r" in s.style(2, tabs(s).find(name))
+    s = at["start"]
+    check("top: the header names the screen and the session, with its verdict; under it what the session uses, and the tabs",
+          s.lines[0].startswith(" ghci-session top demo") and "OK" in s.lines[0] and "repl " in s.lines[1] and " MB" in s.lines[1] and "gen " in s.lines[1]
+          and all(t in tabs(s) for t in ["1 history", "2 view", "3 log", "4 verdict", "5 usage", "6 heap", "7 chat", "8 shell"]), s.lines[:3])
+    check("top: it opens on the history, at its end: what the chat did, numbered, with its time and kind",
+          lit(s, "1 history") and not lit(s, "2 view") and s.has(" talk: The tool answered: edited src/Demo.hs") and any(l.startswith("#") and " user: " in l for l in s.lines), tabs(s))
+    check("top: a diff in the history is in its colors, and a long message is cut and says so",
+          {"fg1"} in s.styles_of('-greeting = "hello"') and {"fg6"} in s.styles_of("@@ -1,7 +1,7 @@") and s.has("more lines; Enter opens"), s.styles_of('-greeting = "hello"'))
+    s = at["view"]
+    check("top: 2 is the view the model reads, with the memory's numbers", lit(s, "2 view") and not lit(s, "1 history") and s.lines[3].strip().startswith("memory  messages ") and s.has("0+1|tool: start demo") and s.has("<chat>"), s.lines[2:5])
+    s = at["log"]
+    check("top: 3 is the daemon's log", lit(s, "3 log") and s.has("build: cabal repl") and s.has("[time] boot"), s.lines[3:6])
+    s = at["verdict"]
+    check("top: 4 is the verdict and what is behind it", lit(s, "4 verdict") and s.lines[3].startswith("OK -- ") and s.has("generation ") and s.has("members"), s.lines[3:5])
+    s = at["usage"]
+    check("top: 5 is what the model calls cost", lit(s, "5 usage") and s.has("calls") and s.has("demo chat") and s.has("total"), s.lines[3:6])
+    s = at["heap"]
+    check("top: 6 is the memory over time", lit(s, "6 heap") and s.lines[3].strip().startswith("resident memory  repl ") and s.has("█"), s.lines[3:5])
+    s = at["first"]
+    check("top: g goes to the history's start, and the tabs' line says it no longer follows", s.lines[3].startswith("#0 ") and "tool: start demo" in s.lines[3] and "scrolled" in tabs(s), (s.lines[3], tabs(s)))
+    s = at["cursor"]
+    cur = [y for y in range(3, s.rows - 1) if s.lines[y].startswith("#") and "r" in s.style(y, 0)]
+    check("top: G follows the end again, and p moves the cursor to a message before (one is marked, not the last)",
+          len(cur) == 1 and any(s.lines[y].startswith("#") for y in range(cur[0] + 1, s.rows - 1)), cur)
+    y = cur[0] if cur else 3
+    cut = lambda s, y: next((l for l in s.lines[y + 1:] if l.startswith("#") or "more lines; Enter opens" in l), "#")
+    o = at["opened"]
+    oy = next((r for r in range(3, o.rows - 1) if o.lines[r].startswith("#") and "r" in o.style(r, 0)), 3)
+    check("top: Enter opens the message under the cursor (it was cut), and Enter again closes it",
+          "more lines" in cut(s, y) and cut(o, oy).startswith("#") and "more lines" in cut(at["closed"], next((r for r in range(3, o.rows - 1) if at["closed"].lines[r].startswith("#") and "r" in at["closed"].style(r, 0)), 3)),
+          (cut(s, y), cut(o, oy)))
+    s = at["tested"]
+    check("top: T asks the session for its test, and the verdict in the header is the test's", "CHECK-PASS" in s.lines[0] and "fg2" in s.style_of("OK -- CHECK-PASS"), s.lines[0])
+    s = at["pane"]
+    check("top: 7 is the chat, running in a pane of the pane's size -- its header under the tabs, its line at the bottom, the monitor's keys said",
+          lit(s, "7 chat") and s.lines[3].startswith(" ghci-session chat demo") and s.lines[s.rows - 2].startswith(">") and "waiting for a line" in s.lines[s.rows - 3]
+          and "Ctrl-a" in s.lines[s.rows - 1] and s.cursor == (2, s.rows - 2), (s.cursor, s.lines[3], s.lines[-3:]))
+    s = at["panesent"]
+    check("top: keys go to the program in the pane: a line typed there is sent, and answered", s.has(" user:  pane line") and s.has(" talk:  fake: you said 'pane line'"), None)
+    s = at["paneresized"]
+    check("top: a smaller terminal: the monitor is drawn for it and the pane's program for the pane -- its line at the new bottom",
+          (s.cols, s.rows) == (100, 30) and s.lines[0].startswith(" ghci-session top demo") and s.lines[3].startswith(" ghci-session chat demo") and s.lines[28].startswith(">")
+          and "waiting for a line" in s.lines[27] and s.cursor == (2, 28) and all(len(l) <= 100 for l in s.lines), (s.cursor, s.lines[26:]))
+    s = at["shell"]
+    check("top: Ctrl-a then 8 is a shell in a pane: a command typed is run", lit(s, "8 shell") and any(l.strip() == "tui-42" for l in s.lines), s.lines[3:7])
+    s = at["history"]
+    check("top: Ctrl-a then 1 is the history again, with what the chat in the pane did", lit(s, "1 history") and s.has(" user: pane line") and s.has(" talk: fake: you said 'pane line'"), s.lines[-4:])
+    s = at["left"]
+    check("top: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
+
+
+def main():
+    args = sys.argv[1:]
+    verbose, keep = "-v" in args, "--keep" in args
+    which = [a for a in args if not a.startswith("-")] or ["chat", "top"]
+    tuicheck.build()
+    d = tempfile.mkdtemp(prefix="ghs-tui-")
+    proj, session = tuicheck.project(d, session=True)
+    fake, env, unset = tuicheck.fake_llm(PORT)
+    env = dict(env, TERM="xterm-256color", SHELL="/bin/sh", PS1="$ ")
+    checks = tuicheck.Checks("check-tui")
+    seen = ""
+    try:
+        # (the monitor shows what the chat did: the chat is run first either way)
+        rec = tuicheck.run([tuicheck.CLI, "chat", "--tui", "-s", session, "--settle", "0"], CHAT, proj, env, unset)
+        if "chat" in which:
+            seen += screens("chat", rec)
+            check_chat(checks.check, rec)
+        if "top" in which:
+            rec = tuicheck.run([tuicheck.CLI, "top", session], TOP, proj, env, unset)
+            seen += screens("top", rec)
+            check_top(checks.check, rec)
+    finally:
+        fake.terminate()
+        tuicheck.stop(proj, session)
+        if keep:
+            print("kept: " + d)
+        else:
+            shutil.rmtree(d, ignore_errors=True)
+    if verbose:
+        print(seen, end="")
+    elif checks.failed:
+        # (what was on the screens, kept: a check that fails once in many runs is looked at there)
+        with tempfile.NamedTemporaryFile("w", prefix="check-tui-screens-", suffix=".txt", delete=False) as f:
+            f.write(seen)
+        print("the screens at each step: " + f.name)
+    return checks.done()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

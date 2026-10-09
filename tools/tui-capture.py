@@ -12,8 +12,11 @@ step:
     type TEXT           send TEXT (\\r Enter, \\e Escape, \\t, \\xHH, \\\\ as written)
     key NAME            enter up down left right pgup pgdn home end esc tab backspace ctrl-up ctrl-down ctrl-X
     mark LABEL          note how many bytes it has written so far
+    resize COLSxROWS    the terminal changes size (the program is told, as a window's would tell it)
 
-Every byte written is in RECORDING; the marks are printed, a line each: OFFSET<TAB>LABEL (and at the end, `end`).
+Every byte written is in RECORDING; the marks are printed, a line each: OFFSET<TAB>LABEL -- and with them
+OFFSET<TAB>@resize COLSxROWS where the size changed, `end` at the end, and last @exit STATUS (or @exit running:
+the program had not ended, and was stopped).
 tools/vt-replay.c says what a terminal holds at an offset of a recording.
 """
 import fcntl, os, pty, select, struct, sys, termios, time
@@ -92,13 +95,23 @@ def main(argv):
         elif op == "type": send(text(arg)); pump(0.05)
         elif op == "key": send(key(arg.strip())); pump(0.05)
         elif op == "mark": print("%d\t%s" % (len(raw), arg.strip())); sys.stdout.flush()
+        elif op == "resize":
+            cols, rows = (int(x) for x in arg.strip().split("x"))
+            print("%d\t@resize %dx%d" % (len(raw), cols, rows))
+            fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, cols * cell[0], rows * cell[1]))
+            pump(0.05)
         else: sys.exit("tui-capture: no step %r" % op)
     pump(0.2)
     print("%d\tend" % len(raw))
-    try:
-        os.kill(pid, 15)
-    except OSError:
-        pass
+    done, status = os.waitpid(pid, os.WNOHANG)
+    if done == 0:
+        try:
+            os.kill(pid, 15)
+        except OSError:
+            pass
+        print("%d\t@exit running" % len(raw))
+    else:
+        print("%d\t@exit %d" % (len(raw), os.waitstatus_to_exitcode(status)))
     open(out, "wb").write(bytes(raw))
 
 if __name__ == "__main__":

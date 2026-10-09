@@ -494,14 +494,20 @@ a PNG over 1200 pixels a side, is shown from a PNG copy made by `sips` or ImageM
 alone). In a pane of `top` the line is what is shown: a pane's cells are drawn again by `top`, and a picture is not
 among them.
 
-`tools/check-images.py` asks Ghostty's own terminal whether this works, without a window: it runs the chat's
-screen on a pseudo-terminal against `tools/fake-llm.py`, replays what the screen wrote into libghostty-vt, and
-checks what that terminal then holds -- each image stored and decoded, placed in the cells it should take, every
-placeholder cell saying its row and column, a picture cut at the edge when scrolled, nothing left when the screen
-is left; and that a terminal which shows no pictures is sent none. About twenty seconds. Its two parts are of use
-alone: `tools/tui-capture.py` runs any program on a terminal of a given size, types at it from a script and records
-what it writes; `tools/vt-replay.c` says, as JSON, what Ghostty's terminal holds at an offset of such a recording
-(the screen's text, the images, the placeholders). What they do not see is the drawing itself.
+The screens have checks that run them: a screen is run on a pseudo-terminal and typed at from a script, what it
+wrote is replayed into libghostty-vt -- Ghostty's own terminal, without a window -- and what that terminal then
+shows is checked: its text, where the cursor is, the styles of cells, the images it holds.
+
+| | |
+|---|---|
+| `tools/check-tui.py` | `chat --tui` and `top`, in a project made for it with a session of its own: the line's keys, a line sent and answered, markdown and a diff's colors, a source's edit and its verdict, scrolling, a resize, leaving; every tab of `top`, the history's cursor and a message opened, the chat and a shell in panes of the pane's size, a test asked for. A minute and a half; needs cabal |
+| `tools/check-images.py` | the pictures of `chat --tui`: each image stored and decoded by the terminal, in the cells it should take, every placeholder saying its row and column, a picture cut at the edge when scrolled, nothing left when the screen is left -- and none sent to a terminal that shows none. Twenty seconds; no session |
+
+Both answer as the model with `tools/fake-llm.py` and exit 0 when all holds (`-v`: every screen). Their parts are
+of use alone: `tools/tui-capture.py` runs any program on a terminal of a given size, types at it from a script
+(`wait`, `type`, `key`, `mark`, `resize`) and records what it writes; `tools/vt-replay.c` says, as JSON, what
+Ghostty's terminal holds at an offset of such a recording; `tools/tuicheck.py` is the two put together for a check
+to ask a screen things. What they do not see is the drawing itself.
 
 `top` and the chat's screen are built on two packages of this repository, usable without them:
 

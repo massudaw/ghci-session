@@ -30,6 +30,9 @@ int gvt_pty_spawn(const char *cmd, const char *cwd, const char *term, int cols, 
     int s = open(slave, O_RDWR);
     if (s < 0) _exit(127);
     ioctl(s, TIOCSCTTY, 0);
+    /* (the size again, here: set on the master before this side is open, macOS does not keep it -- the program
+     * then found no size at all and took 80 x 24, in a pane of any size) */
+    ioctl(s, TIOCSWINSZ, &ws);
     dup2(s, 0); dup2(s, 1); dup2(s, 2);
     if (s > 2) close(s);
     close(m);
