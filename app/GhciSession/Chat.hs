@@ -1532,7 +1532,8 @@ runCli ch e o pending run = do
   readers <- newTVarIO (1 :: Int)      -- the readers there are: who waits for connections, and one a connection
   again <- newTVarIO (0 :: Int)        -- moved when a hand-over did not happen: the readers go on
   connsV <- newIORef (M.empty :: M.Map Fd Wire.Wire)
-  firstIn <- newIORef (0 :: Int)       -- the context of this run's first model call
+  -- (a run taken up from a chat before this one began long ago: what it began with is not known, and is not what holds a rollover back)
+  firstIn <- newIORef (if null (crConns run) && sCalls (crSpent run) == 0 then 0 else 1 :: Int)       -- the context of this run's first model call
   rollDue <- newIORef (0 :: Int)       -- the context that is over the rollover's tokens (0: it is not)
   rollNow <- newIORef False            -- a tool call has been answered into the log and not to the program: the run ends here
   let byName = [ (tName t, t) | t <- toolsFor ch ]
