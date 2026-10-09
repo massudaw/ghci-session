@@ -518,12 +518,12 @@ shows is checked: its text, where the cursor is, the styles of cells, the images
 
 | | |
 |---|---|
-| `tools/check-tui.py` | `chat --tui` and `top`, in a project made for it with a session of its own: the line's keys, a line sent and answered, markdown and a diff's colors, a source's edit and its verdict, scrolling, a resize, leaving; every tab of `top`, the history's cursor and a message opened, the chat and a shell in panes of the pane's size, a test asked for. A minute and a half; needs cabal |
-| `tools/check-images.py` | the pictures of `chat --tui`: each image stored and decoded by the terminal, in the cells it should take, every placeholder saying its row and column, a picture cut at the edge when scrolled, nothing left when the screen is left -- and none sent to a terminal that shows none. Twenty seconds; no session |
+| `tools/check-tui.py` | `chat --tui` and `top`, in a project made for it with a session of its own: the line's keys, a line sent and answered, markdown and a diff's colors, a source's edit and its verdict, scrolling, a resize, leaving; every tab of `top`, the history's cursor and a message opened, the chat and a shell in panes of the pane's size, a test asked for. Twenty seconds; needs cabal |
+| `tools/check-images.py` | the pictures of `chat --tui`: each image stored and decoded by the terminal, in the cells it should take, every placeholder saying its row and column, a picture cut at the edge when scrolled, nothing left when the screen is left -- and none sent to a terminal that shows none. Seven seconds; no session |
 
 Both answer as the model with `tools/fake-llm.py` and exit 0 when all holds (`-v`: every screen). Their parts are
 of use alone: `tools/tui-capture.py` runs any program on a terminal of a given size, types at it from a script
-(`wait`, `type`, `key`, `mark`, `resize`) and records what it writes; `tools/vt-replay.c` says, as JSON, what
+(`type`, `key`, `until` the screen shows a text, `mark`, `resize`) and records what it writes; `tools/vt-replay.c` says, as JSON, what
 Ghostty's terminal holds at an offset of such a recording; `tools/tuicheck.py` is the two put together for a check
 to ask a screen things. What they do not see is the drawing itself.
 

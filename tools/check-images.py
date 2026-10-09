@@ -27,14 +27,14 @@ PORT = 8797
 FILLER = "\\\\n".join("line %d of what was said before" % i for i in range(1, 61))
 
 SCRIPT = """
-wait 3
+until waiting for a line
 type say """ + FILLER + """\\r
-wait 4
+until 1 turn;
 type tool read {"path":"small.png"}\\r
-wait 5
+until 2 turns;
 mark small
 type what is in big\\\\ shot.png ?\\r
-wait 6
+until 3 turns;
 mark both
 key ctrl-up
 key ctrl-up
@@ -42,13 +42,13 @@ key ctrl-up
 key ctrl-up
 key ctrl-up
 key ctrl-up
-wait 1.5
+until 6 lines back
 mark scrolled
 key pgup
-wait 1.5
+wait 0.6
 mark paged
 key ctrl-c
-wait 1.5
+wait 1
 mark left
 """
 

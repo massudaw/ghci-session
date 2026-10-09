@@ -16,7 +16,7 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
         chat in a pane, of the pane's size, typed at through the monitor, and what it did in the history; a
         shell in a pane; a test asked for; a resize, of a pane too; leaving.
 
-About a minute and a quarter. -v: every screen (they are kept in a file when a check fails); --keep: the project
+About twenty seconds (the scripts wait for what a screen shows, not for a time). -v: every screen (they are kept in a file when a check fails); --keep: the project
 is left (its path is said). Exit status 0 when all hold. tools/check-images.py is the same for the pictures a chat draws.
 """
 import os, shutil, subprocess, sys, tempfile
@@ -28,144 +28,146 @@ PORT = 8796
 FILLER = "\\\\n".join("line %d of what was said before" % i for i in range(1, 61))
 
 CHAT = r"""
-wait 3
+until waiting for a line
+gone no session running
 mark start
 type hello wrld
-wait 0.3
+wait 0.2
 mark typed
 key left
 key left
 key left
 type o
-wait 0.3
+wait 0.2
 mark fixed
 key ctrl-a
-wait 0.3
+wait 0.2
 mark home
 key ctrl-e
 key ctrl-w
-wait 0.3
+wait 0.2
 mark word
 key ctrl-u
-wait 0.3
+wait 0.2
 mark cleared
 type first line\r
-wait 4
+until 1 turn;
 mark sent
 key up
-wait 0.3
+wait 0.2
 mark recalled
 key down
-wait 0.3
+wait 0.2
 mark back
 type say FILLER\r
-wait 4
+until 2 turns;
 type say # Title\\n**bold** and *it* and `code`\\n- item\\n| a | b |\\n|---|---|\\n| 1 | 2 |\r
-wait 4
+until 3 turns;
 mark markdown
 type tool write {"path":"notes.txt","content":"one\\ntwo\\n"}\r
-wait 5
+until 4 turns;
 type tool edit {"path":"notes.txt","old":"two","new":"2"}\r
-wait 5
+until 5 turns;
 mark diff
 type tool edit {"path":"src/Demo.hs","old":"hello","new":"howdy"}\r
-wait 8
+until:30 6 turns;
 mark source
 key pgup
-wait 0.5
+until lines back
 mark scrolled
 key end
-wait 0.5
+gone lines back
 mark followed
 type wait 30\r
-wait 2
+until model call 1 of the turn
 mark working
 key esc
-wait 2
+until waiting for a line
 mark stopped
 type tool sh {"command":"sleep 31"}\r
-wait 3
+until running sh
 mark running
 key esc
-wait 2
+until waiting for a line
 type say after the stop\r
-wait 4
+until 7 turns;
 mark after
 type tool spawn {"tasks":["say the first is done","wait 33"]}\r
-wait 7
+until 9 turns;
 mark spawned
 key esc
-wait 2
+until subagent(s) stopped
 mark substopped
 type say the end\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
-wait 4
+until 10 turns;
 resize 80x24
-wait 1.5
+wait 1
 mark resized
 key ctrl-c
-wait 1.5
+wait 1
 mark left
 """.replace("FILLER", FILLER)
 
 TOP = r"""
-wait 3
+until  user:
+wait 0.6
 mark start
 type 2
 type g
-wait 2
+until memory  messages
 mark view
 type 3
-wait 1
+until [time] boot
 mark log
 type 4
-wait 1
+until generation
 mark verdict
 type 5
-wait 1
+until demo chat
 mark usage
 type 6
-wait 1.5
+until resident memory
 mark heap
 type 1
 type g
-wait 1
+until scrolled: f to follow
 mark first
 type G
 type p
-wait 0.5
+wait 0.3
 mark cursor
 type n
 key enter
-wait 0.5
+wait 0.3
 mark opened
 key enter
-wait 0.5
+wait 0.3
 mark closed
 type T
-wait 4
+until CHECK-PASS
 mark tested
 type 7
-wait 4
+until waiting for a line
 mark pane
 type pane line\r
-wait 4
+until fake: you said 'pane line'
 mark panesent
 resize 100x30
-wait 2
+wait 1.5
 mark paneresized
 key ctrl-a
 type 8
-wait 2
+wait 1
 type echo tui-$((6*7))\r
-wait 1.5
+until tui-42
 mark shell
 key ctrl-a
 type 1
 type G
-wait 1.5
+until  user: pane line
 mark history
 key ctrl-c
-wait 1.5
+wait 1
 mark left
 """
 

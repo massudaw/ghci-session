@@ -2,7 +2,7 @@
 """Run a program on a terminal of its own, type at it from a script, and record what it writes.
 
     tools/tui-capture.py [--size 120x45] [--cell 9x18] [--env K=V]... [--unset K]... [--cwd DIR]
-                         --out RECORDING [--script FILE] -- COMMAND ARG...
+                         [--replay VT-REPLAY] --out RECORDING [--script FILE] -- COMMAND ARG...
 
 The program gets a pseudo-terminal of that size (columns x rows; the cell's pixels are what a terminal says a
 cell measures, which a program that draws pictures asks). The script -- FILE, or standard input -- is a line a
@@ -11,15 +11,21 @@ step:
     wait SECONDS        let it run, recording
     type TEXT           send TEXT (\\r Enter, \\e Escape, \\t, \\xHH, \\\\ as written)
     key NAME            enter up down left right pgup pgdn home end esc tab backspace ctrl-up ctrl-down ctrl-X
+    until TEXT          let it run until the screen shows TEXT (20 seconds at most; until:SECS TEXT for another limit)
+    gone TEXT           ... until the screen no longer shows it (gone:SECS TEXT)
     mark LABEL          note how many bytes it has written so far
     resize COLSxROWS    the terminal changes size (the program is told, as a window's would tell it)
+
+`until` and `gone` look at the screen a terminal would show of what was written so far -- .bin/vt-replay
+(--replay), asked ten times a second -- so a script waits for what it is waiting for, and no longer. One that
+is not met in its time is said on standard error, and the script goes on.
 
 Every byte written is in RECORDING; the marks are printed, a line each: OFFSET<TAB>LABEL -- and with them
 OFFSET<TAB>@resize COLSxROWS where the size changed, `end` at the end, and last @exit STATUS (or @exit running:
 the program had not ended, and was stopped).
 tools/vt-replay.c says what a terminal holds at an offset of a recording.
 """
-import fcntl, os, pty, select, struct, sys, termios, time
+import fcntl, json, os, pty, select, struct, subprocess, sys, tempfile, termios, time
 
 KEYS = {"enter": b"\r", "up": b"\x1b[A", "down": b"\x1b[B", "right": b"\x1b[C", "left": b"\x1b[D", "pgup": b"\x1b[5~", "pgdn": b"\x1b[6~",
         "home": b"\x1b[H", "end": b"\x1b[F", "esc": b"\x1b", "tab": b"\t", "backspace": b"\x7f", "ctrl-up": b"\x1b[1;5A", "ctrl-down": b"\x1b[1;5B"}
@@ -44,7 +50,7 @@ def text(s):
     return bytes(out)
 
 def main(argv):
-    size, cell, env, unset, cwd, out, script, cmd = (120, 45), (9, 18), {}, [], None, None, None, []
+    size, cell, env, unset, cwd, out, script, cmd, replay = (120, 45), (9, 18), {}, [], None, None, None, [], None
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -58,12 +64,14 @@ def main(argv):
         elif a == "--cwd": cwd = v
         elif a == "--out": out = v
         elif a == "--script": script = v
+        elif a == "--replay": replay = v
         else: sys.exit(__doc__)
         i += 2
     if not cmd or not out:
         sys.exit(__doc__)
     steps = [l.strip() for l in (open(script) if script else sys.stdin) if l.strip() and not l.lstrip().startswith("#")]
     cols, rows = size
+    size0, resizes = size, []
     pid, fd = pty.fork()
     if pid == 0:
         for k in unset: os.environ.pop(k, None)
@@ -89,19 +97,50 @@ def main(argv):
             os.write(fd, b)
         except OSError:
             alive[0] = False
+    scratch = tempfile.NamedTemporaryFile(suffix=".bin", delete=False)
+    scratch.close()
+    def screen():
+        """The rows a terminal shows of what was written so far."""
+        if replay is None:
+            sys.exit("tui-capture: until and gone need --replay .bin/vt-replay")
+        with open(scratch.name, "wb") as f:
+            f.write(bytes(raw))
+        args = [replay, scratch.name, str(size0[0]), str(size0[1]), str(cell[0]), str(cell[1])]
+        for o, c, r in resizes:
+            args += ["--resize", str(o), "%dx%d" % (c, r)]
+        p = subprocess.run(args + ["--at", str(len(raw))], capture_output=True, text=True)
+        try:
+            return json.loads(p.stdout.splitlines()[-1])["screen"]
+        except (ValueError, IndexError):
+            return []
+    def await_(secs, text_, want):
+        end, seen = time.time() + secs, -1
+        while alive[0] or seen != len(raw):
+            if seen != len(raw):                 # (asked again only when something was written)
+                seen = len(raw)
+                if any(text_ in l for l in screen()) == want:
+                    return
+            if time.time() >= end:
+                break
+            pump(0.1)
+        sys.stderr.write("tui-capture: %s %r: not in %g s\n" % ("until" if want else "gone", text_, secs))
     for step in steps:
         op, _, arg = step.partition(" ")
         if op == "wait": pump(float(arg))
         elif op == "type": send(text(arg)); pump(0.05)
         elif op == "key": send(key(arg.strip())); pump(0.05)
+        elif op.split(":")[0] in ("until", "gone"):
+            await_(float(op.split(":")[1]) if ":" in op else 20.0, arg, op.startswith("until"))
         elif op == "mark": print("%d\t%s" % (len(raw), arg.strip())); sys.stdout.flush()
         elif op == "resize":
             cols, rows = (int(x) for x in arg.strip().split("x"))
             print("%d\t@resize %dx%d" % (len(raw), cols, rows))
+            resizes.append((len(raw), cols, rows))
             fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, cols * cell[0], rows * cell[1]))
             pump(0.05)
         else: sys.exit("tui-capture: no step %r" % op)
     pump(0.2)
+    os.unlink(scratch.name)
     print("%d\tend" % len(raw))
     done, status = os.waitpid(pid, os.WNOHANG)
     if done == 0:

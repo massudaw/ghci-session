@@ -79,7 +79,7 @@ def run(cmd, script, cwd, env=None, unset=(), size=(120, 45), cell=(9, 18), out=
         tmp = tempfile.NamedTemporaryFile(suffix=".bin", delete=False)
         tmp.close()
         out = tmp.name
-    args = [sys.executable, os.path.join(HERE, "tools", "tui-capture.py"), "--size", "%dx%d" % size, "--cell", "%dx%d" % cell, "--cwd", cwd, "--out", out]
+    args = [sys.executable, os.path.join(HERE, "tools", "tui-capture.py"), "--size", "%dx%d" % size, "--cell", "%dx%d" % cell, "--cwd", cwd, "--out", out, "--replay", exe]
     for k, v in (env or {}).items():
         args += ["--env", "%s=%s" % (k, v)]
     for k in unset:
@@ -87,6 +87,8 @@ def run(cmd, script, cwd, env=None, unset=(), size=(120, 45), cell=(9, 18), out=
     r = subprocess.run(args + ["--"] + list(cmd), input=script, capture_output=True, text=True)
     if r.returncode != 0:
         sys.exit("the recording failed:\n" + r.stdout + r.stderr)
+    if r.stderr.strip():        # (a wait that was not met: said, and the checks after it say the rest)
+        sys.stderr.write(r.stderr)
     marks = [(int(o), label) for o, label in (l.split("\t", 1) for l in r.stdout.splitlines())]
     status = next((label.split(" ", 1)[1] for _, label in marks if label.startswith("@exit ")), "running")
     replay = [exe, out, str(size[0]), str(size[1]), str(cell[0]), str(cell[1])]
