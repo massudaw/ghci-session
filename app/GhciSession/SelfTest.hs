@@ -31,7 +31,7 @@ import qualified GhciSession.Md as Md
 import qualified GhciSession.Image as Img
 import qualified GhciSession.ChatTui as ChatTui
 import qualified GhciSession.Top as Top
-import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, decodeKey, decodeKeyPress, diff, frame, keyEventFor, sgr, textLine)
+import Tui (Cell (..), Put (..), Key (..), KeyPress (..), Mod (..), cellAt, cellsFor, decodeKey, decodeKeyPress, diff, forget, frame, keyEventFor, maxCells, placeholderRow, placeholderStyle, sgr, textLine, transmit)
 import qualified Ghostty.Vt as Vt
 import Tui.Types
 import qualified Data.Sequence as Seq
@@ -579,6 +579,26 @@ run = do
      (map (drop 1 . T.lines) typedL) [[line], [line], [], []]
   eq "md: the line that stands for an image is shown as one, in a reply and in a tool's answer"
      (map txtOf (Md.mdLines 40 (T.unpack (T.pack "seen:\n" <> line))), map txtOf (Md.outputLines (T.unpack line))) (["seen:", "\9635 image " ++ nm], ["\9635 image " ++ nm])
+  -- a picture among the cells
+  eq "picture: the cells for an image -- its own size where it fits (never larger), else the largest of its shape that does"
+     [ cellsFor (8, 16) (64, 48) (80, 24), cellsFor (8, 16) (2400, 1200) (80, 24), cellsFor (8, 16) (400, 4000) (80, 24), cellsFor (0, 0) (10, 10) (5, 5), cellsFor (8, 16) (9000, 16) (500, 24) ]
+     [ (8, 3), (80, 20), (5, 24), (5, 5), (maxCells, 1) ]
+  eq "picture: a row is a placeholder a column, each with the marks of its row and its column -- and a cell of the frame each, the marks kept"
+     ( map fromEnum (placeholderRow 1 2), [ (T.length (cText (cellAt f x 0)), cStyle (cellAt f x 0) == placeholderStyle 9) | let f = frame (6, 1) (textLine 0 0 6 [(plain, "ab"), (placeholderStyle 9, placeholderRow 0 3)]), x <- [0 .. 5] ] )
+     ( [0x10EEEE, 0x030D, 0x0305, 0x10EEEE, 0x030D, 0x030D], [(1, False), (1, False), (3, True), (3, True), (3, True), (1, False)] )
+  eq "picture: what turns one frame into the next writes a picture's cell as one column (the cell after it is where it thinks)"
+     (diff (Just (frame (4, 1) [])) (frame (4, 1) [PutText 0 0 (placeholderStyle 9) (placeholderRow 0 2), PutText 2 0 (placeholderStyle 9) "x"]))
+     ("\ESC[1;1H" ++ sgr (placeholderStyle 9) ++ placeholderRow 0 2 ++ "x")
+  eq "picture: a mark that combines stays with its letter in a cell (it was dropped)" (T.unpack (cText (cellAt (frame (3, 1) [PutText 0 0 plain "e\769x"]) 0 0)), T.unpack (cText (cellAt (frame (3, 1) [PutText 0 0 plain "e\769x"]) 1 0))) ("e\769", "x")
+  eq "picture: sent once in pieces, numbered, as a placement of cells, and no answer asked; forgotten by its number"
+     ( let t = transmit 7 (10, 4) (BC.replicate 5000 'A') in (take 44 t, length (filter (== '\ESC') t) `div` 2, "\ESC_Gm=0;" `isInfixOf` t), forget 7 )
+     ( ("\ESC_Ga=T,U=1,q=2,f=100,i=7,c=10,r=4,m=1;AAAAAA", 2, True), "\ESC_Ga=d,d=I,q=2,i=7\ESC\\" )
+  eq "picture: in the chat's screen an image's line has its rows under it where there is one and it fits; else the line alone"
+     ( [ map (take 1 . snd) l | l <- ChatTui.entryLinesWith (\n -> if n == nm then Just (9, 4, 2) else Nothing) 40 (ChatTui.Entry "echo" (T.pack "[f: image/png]\n" <> line)) ]
+     , length (ChatTui.entryLinesWith (const (Just (9, 40, 2))) 40 (ChatTui.Entry "echo" line)), length (ChatTui.entryLines 40 (ChatTui.Entry "note" line)) )
+     ( [["e", "["], [" ", "\9635", take 1 nm], [" ", "\1109742"], [" ", "\1109742"]], 1, 1 )
+  shown <- Img.viewPng imgDir nm
+  eq "picture: what a screen is given of a small PNG is itself" (fmap snd shown, fmap fst shown == Just (Img.base64 (png 4 2))) (Just (4, 2), True)
   removeDirectoryRecursive imgDir
   -- chats had elsewhere, read into messages
   let s0 = I.Session "Claude Code" "" "" "/f.jsonl" []

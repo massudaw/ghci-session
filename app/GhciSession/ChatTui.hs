@@ -12,18 +12,27 @@
 -- Ctrl-C leaves (Ctrl-D on an empty line too), in the middle of a turn as well -- what the turn did is
 -- in the history already.
 --
+-- An image a message names (@[image NAME]@, "GhciSession.Image") is drawn under its line where the terminal
+-- shows pictures among its cells ("Tui.Graphics": Ghostty, kitty; @GHS_IMAGES=0@ for never, @1@ for anyway) --
+-- sent to it once, when it first comes onto the screen, and scrolling with the lines around it. Elsewhere, and
+-- in a pane of @top@, the line is what is shown.
+--
 -- The chat runs on a thread of its own and tells the screen what happens through a 'Ui'; the screen is
 -- the 'Tui.App' loop on the main thread, woken for each thing to show.
 module GhciSession.ChatTui
   ( chatTui
   -- (the pure parts, for the self-tests)
-  , Editor (..), editor, editText, editKey, Entry (..), entryLines, scrollLines
+  , Editor (..), editor, editText, editKey, Entry (..), entryLines, entryLinesWith, scrollLines
   ) where
 
 import Control.Concurrent (forkIO, killThread, newEmptyMVar, putMVar, tryReadMVar)
 import Control.Concurrent.STM
 import Control.Exception (SomeException, try)
-import Control.Monad (forM_, when)
+import Control.Monad (foldM, forM_, unless, when)
+import qualified Data.ByteString.Char8 as BC
+import qualified Data.Map.Strict as M
+import qualified Data.Set as Set
+import System.Environment (lookupEnv)
 import Data.Char (isSpace)
 import Data.IORef
 import Data.List (dropWhileEnd)
@@ -38,7 +47,8 @@ import Text.Printf (printf)
 import Tui
 import GhciSession.ChatUi
 import GhciSession.Json
-import GhciSession.Md (mdLines, outputLines)
+import qualified GhciSession.Image as Img
+import GhciSession.Md (imageLine, imageOf, mdLines, outputLines)
 import GhciSession.Sys (now, readFileMaybe)
 import GhciSession.Top (Span, spansLine, wrapSpans, kindStyle, verdictStyle, stBold, stDim, stYellow, stHi)
 
@@ -52,14 +62,22 @@ data Entry = Entry { enKind :: String, enText :: T.Text }
 -- | An entry as lines of at most @w@ columns: the kind as a label on the first, the text's lines each
 -- wrapped under it, and a blank line after what was said.
 entryLines :: Int -> Entry -> [[Span]]
-entryLines w (Entry kind text) = concat [ wrapSpans w 7 (lbl i ++ l) | (i, l) <- zip [0 :: Int ..] body ] ++ [ [] | kind `elem` ["user", "talk"] ]
+entryLines = entryLinesWith (const Nothing)
+
+-- | The same, with the pictures there are: the line that stands for an image is followed by its rows (the
+-- image's number at the terminal, its columns and rows), where they fit the width.
+entryLinesWith :: (String -> Maybe (Int, Int, Int)) -> Int -> Entry -> [[Span]]
+entryLinesWith pic w (Entry kind text) = concat [ wrapSpans w 7 (lbl i ++ l) | (i, l) <- zip [0 :: Int ..] (concatMap pictured body) ] ++ [ [] | kind `elem` ["user", "talk"] ]
   where
+    pictured l = case imageOf l >>= pic of
+      Just (n, cols, rows) | 7 + cols <= w -> l : [ [(placeholderStyle n, placeholderRow r cols)] | r <- [0 .. rows - 1] ]
+      _ -> [l]
     -- what the agent said is markdown, and is shown as what it marks up; what a tool answered may hold a diff,
     -- shown in its colors; the rest is its lines as they are
     ls = case kind of
       "talk" -> mdLines (w - 7) (T.unpack text)
       "echo" -> outputLines (T.unpack text)
-      _ -> [ [(style, l)] | l <- map T.unpack (T.lines text) ]
+      _ -> [ maybe [(style, T.unpack l)] imageLine (Img.isMarker l) | l <- T.lines text ]
     body = if null ls then [[(style, "")]] else ls
     lbl i = [ (kindStyle kind, if i == 0 then take 7 (kind ++ ":      ") else "       ") ]
     style = case kind of { "think" -> stDim; "view" -> stDim; "note" -> stDim; _ -> plain }
@@ -67,11 +85,14 @@ entryLines w (Entry kind text) = concat [ wrapSpans w 7 (lbl i ++ l) | (i, l) <-
 -- | The lines of the transcript to show on @rows@ rows, @back@ lines before the end (as many as there are:
 -- the number actually scrolled back is returned); the entries newest first, only as many as it takes.
 scrollLines :: Int -> Int -> Int -> [Entry] -> (Int, [[Span]])
-scrollLines w rows back entries = (back', drop (length gathered - back' - rows) (take (length gathered - back') gathered))
+scrollLines = scrollLinesWith (const Nothing)
+
+scrollLinesWith :: (String -> Maybe (Int, Int, Int)) -> Int -> Int -> Int -> [Entry] -> (Int, [[Span]])
+scrollLinesWith pic w rows back entries = (back', drop (length gathered - back' - rows) (take (length gathered - back') gathered))
   where
     wanted = back + rows
     gathered = gather 0 entries []
-    gather n (e : es) acc | n < wanted = let ls = entryLines w e in gather (n + length ls) es (ls ++ acc)
+    gather n (e : es) acc | n < wanted = let ls = entryLinesWith pic w e in gather (n + length ls) es (ls ++ acc)
     gather _ _ acc = acc
     back' = max 0 (min back (length gathered - rows))
 
@@ -116,8 +137,35 @@ editKey (KeyPress k mods _) (Editor b a) = case (k, mods) of
 -- | What the chat's thread tells the screen.
 data Msg = MEntry Entry | MBusy (Maybe String) | MSpent Spent Double | MDone
 
+-- | A picture as the terminal has it, or will: its number there, its columns and rows, and its bytes (a PNG in
+-- base64) to send.
+data Pic = Pic { pcId, pcCols, pcRows :: !Int, pcData :: !BC.ByteString }
+
+-- | What of the pictures is not the screen's state: whether the terminal shows any, where the images are kept,
+-- which it has been sent (forgotten at a resize: they are sent again as they are shown), and all it was sent.
+data Gfx = Gfx { gOn :: Bool, gDir :: FilePath, gSent :: IORef (Set.Set Int), gAll :: IORef (Set.Set Int) }
+
+picOf :: St -> String -> Maybe (Int, Int, Int)
+picOf st n = (\p -> (pcId p, pcCols p, pcRows p)) <$> (M.lookup n (sPics st) >>= id)
+
+-- | The pictures of an entry made ready: each image it names read, sized for the screen as it is now and
+-- numbered -- once (one that could not be is not tried again), and only while there are numbers.
+picture :: Gfx -> St -> Entry -> IO St
+picture g st e
+  | not (gOn g) = pure st
+  | otherwise = foldM one st [ n | n <- Img.namesIn (enText e), not (M.member n (sPics st)) ]
+  where
+    one s n = do
+      (w, h) <- fromMaybe (80, 24) <$> termSize
+      cell <- fromMaybe (8, 17) <$> cellPixels
+      let next = 1 + length [ () | Just _ <- M.elems (sPics s) ]
+          room = (min 80 (w - 10), min 24 (h - 8))
+      r <- if next > 255 || fst room < 2 || snd room < 1 then pure Nothing else Img.viewPng (gDir g) n
+      pure s { sPics = M.insert n (fmap (\(dat, size) -> let (c, rows) = cellsFor cell size room in Pic next c rows dat) r) (sPics s) }
+
 data St = St
   { sEntries :: [Entry]                 -- ^ newest first
+  , sPics :: M.Map String (Maybe Pic)   -- ^ the images named so far: a picture, or none to show
   , sBack :: Int                        -- ^ lines scrolled back from the end (0: following)
   , sEdit :: Editor
   , sSent :: [String], sRecall :: Maybe (Int, String)   -- ^ lines sent, newest first; which is recalled, and the line it replaced
@@ -139,12 +187,15 @@ chatTui name model dir chat = do
   codeR <- newIORef Nothing
   old <- getTerminalAttributes stdInput
   chatTidVar <- newEmptyMVar
+  wanted <- lookupEnv "GHS_IMAGES"
+  byName <- graphicsTerm
+  gfx <- Gfx (case wanted of { Just "0" -> False; Just "1" -> True; _ -> byName }) (dir </> "images") <$> newIORef Set.empty <*> newIORef Set.empty
   let post m = atomically (writeTQueue inbox m) >> (readIORef wakeR >>= id)
       entry k t = post (MEntry (Entry k t))
       ui = Ui { uiView = entry "view", uiTalk = entry "talk", uiThought = entry "think"
               , uiCall = \n args -> entry "tool" (T.pack (n ++ " " ++ args)), uiAnswer = entry "echo"
               , uiNote = entry "note" . T.pack . unbracket, uiBusy = post . MBusy, uiSpent = \s secs -> post (MSpent s secs)
-              , uiDone = post MDone, uiLeave = leave old }
+              , uiDone = post MDone, uiLeave = forgetAll gfx >> leave old }
       start ev = do
         writeIORef wakeR (wake ev)
         tid <- forkIO $ do
@@ -155,33 +206,38 @@ chatTui name model dir chat = do
           post MDone
         putMVar chatTidVar tid
         t <- now
-        pure St { sEntries = [], sBack = 0, sEdit = editor, sSent = [], sRecall = Nothing, sBusy = Nothing, sSpent = Nothing, sTurns = 0
+        pure St { sEntries = [], sPics = M.empty, sBack = 0, sEdit = editor, sSent = [], sRecall = Nothing, sBusy = Nothing, sSpent = Nothing, sTurns = 0
                 , sStatus = JObj [], sStatusAt = t - 10, sDone = False, sTicks = 0 }
-  _ <- runApp App { appTick = 0.5, appDraw = draw name model, appEvent = event dir pending inbox } start
+  _ <- runApp App { appTick = 0.5, appDraw = draw gfx name model, appEvent = \ev st -> event gfx dir pending inbox ev st >>= maybe (forgetAll gfx >> pure Nothing) (pure . Just) } start
   atomically (writeTQueue pending Nothing)
   chatTid <- tryReadMVar chatTidVar
   maybe (pure ()) killThread chatTid
   fromMaybe 0 <$> readIORef codeR
   where
-    unbracket s = case (s, reverse s) of { ('[' : r, ']' : _) -> init r; _ -> s }
+    unbracket s = case (s, reverse s) of { ('[' : r, ']' : _) | '\n' `notElem` s -> init r; _ -> s }
+    -- (the terminal is not left holding what it was sent)
+    forgetAll g = do
+      ids <- readIORef (gAll g)
+      unless (Set.null ids) (hPutStr stdout (concatMap forget (Set.toList ids)) >> hFlush stdout)
+      writeIORef (gAll g) Set.empty >> writeIORef (gSent g) Set.empty
     leave :: TerminalAttributes -> IO ()
     leave old = do
       hPutStr stdout "\ESC[0m\ESC[?25h\ESC[?1049l"
       hFlush stdout
       setTerminalAttributes stdInput old Immediately
 
-event :: FilePath -> TQueue (Maybe T.Text) -> TQueue Msg -> Event -> St -> IO (Maybe St)
-event dir pending inbox ev st = case ev of
+event :: Gfx -> FilePath -> TQueue (Maybe T.Text) -> TQueue Msg -> Event -> St -> IO (Maybe St)
+event gfx dir pending inbox ev st = case ev of
   EvWake -> do
     ms <- atomically (flush inbox)
-    pure (Just (foldl apply st ms))
+    Just <$> foldM (picture gfx) (foldl apply st ms) [ e | MEntry e <- ms ]
   EvTick -> do
     t <- now
     st' <- if t - sStatusAt st < 2 then pure st else do
       status <- maybe (JObj []) (either (const (JObj [])) id . parseJson) <$> readFileMaybe (dir </> "status.json")
       pure st { sStatus = status, sStatusAt = t }
     pure (Just st' { sTicks = sTicks st + 1 })
-  EvResize -> pure (Just st)
+  EvResize -> writeIORef (gSent gfx) Set.empty >> pure (Just st)
   EvKey kp -> key kp
   where
     flush q = do
@@ -195,7 +251,7 @@ event dir pending inbox ev st = case ev of
     -- scrolled by @d@ lines, no further back than the transcript goes on this screen
     scroll d = do
       (w, h) <- fromMaybe (80, 24) <$> termSize
-      let (back, _) = scrollLines (w - 1) (max 1 (h - 4)) (max 0 (sBack st + d)) (sEntries st)
+      let (back, _) = scrollLinesWith (picOf st) (w - 1) (max 1 (h - 4)) (max 0 (sBack st + d)) (sEntries st)
       pure (Just st { sBack = back })
     page = do
       (_, h) <- fromMaybe (80, 24) <$> termSize
@@ -224,8 +280,15 @@ event dir pending inbox ev st = case ev of
                       | i + d < length (sSent st) -> st { sEdit = fromText (sSent st !! (i + d)), sRecall = Just (i + d, typed) }
       _ -> st
 
-draw :: String -> String -> (Int, Int) -> St -> IO ([Put], Maybe (Int, Int))
-draw name model (w, h) st = pure (top ++ body ++ bottom, Just (cx, h - 1))
+draw :: Gfx -> String -> String -> (Int, Int) -> St -> IO ([Put], Maybe (Int, Int))
+draw gfx name model (w, h) st = do
+  -- a picture that comes onto the screen is sent to the terminal first, if it has not been
+  sent <- readIORef (gSent gfx)
+  let onScreen = Set.fromList [ n | l <- shown, (Style { sFg = Ansi n }, t) <- l, isPlaceholder t ]
+  forM_ [ p | Just p <- M.elems (sPics st), pcId p `Set.member` onScreen, not (pcId p `Set.member` sent) ] $ \p -> do
+    hPutStr stdout (transmit (pcId p) (pcCols p, pcRows p) (pcData p))
+    modifyIORef' (gSent gfx) (Set.insert (pcId p)) >> modifyIORef' (gAll gfx) (Set.insert (pcId p))
+  pure (top ++ body ++ bottom, Just (cx, h - 1))
   where
     verdict = fromMaybe "no session running (ghci-session start)" (lookupStr "text" (sStatus st))
     facts = case sSpent st of
@@ -234,7 +297,7 @@ draw name model (w, h) st = pure (top ++ body ++ bottom, Just (cx, h - 1))
     top = spansLine w 0 [ (stBold, " ghci-session chat "), (plain, name ++ "  "), (stDim, model ++ "  "), (verdictStyle verdict, verdict) ]
        ++ spansLine w 1 [ (stDim, " " ++ facts) ]
     rows = max 1 (h - 4)
-    (_, shown) = scrollLines (w - 1) rows (sBack st) (sEntries st)
+    (_, shown) = scrollLinesWith (picOf st) (w - 1) rows (sBack st) (sEntries st)
     body = concat [ spansLine w (2 + i) ((plain, " ") : l) | (i, l) <- zip [0 ..] shown ]
     spin = "-\\|/" !! (sTicks st `mod` 4)
     status

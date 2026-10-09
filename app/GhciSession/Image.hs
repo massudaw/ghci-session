@@ -10,7 +10,7 @@
 -- machine has; with neither the image goes as it is, unless it is over what the API takes at all.
 module GhciSession.Image
   ( kindOf, sizeOf, keep, marker, namesIn, isMarker
-  , load, attach, apiBlock, toolBlocks, typed
+  , load, attach, apiBlock, toolBlocks, typed, viewPng
   , base64, perMessage
   ) where
 
@@ -120,25 +120,56 @@ keep dir bytes = case kindOf bytes of
 
 -- | A copy of an image no larger than is of use, as a JPEG. False when no program here makes one.
 shrink :: FilePath -> FilePath -> IO Bool
-shrink from to = do
+shrink = convertTo "jpeg" fitSide
+
+-- | A copy of an image in a format (@jpeg@, @png@), its long side no more than so many pixels: made by @sips@
+-- or ImageMagick, whichever is here. False when neither is, or neither could.
+convertTo :: String -> Int -> FilePath -> FilePath -> IO Bool
+convertTo fmt px from to = do
   have <- doesFileExist to
   if have then pure True else do
     sips <- findExecutable "sips"
     magick <- findExecutable "magick"
     convert <- findExecutable "convert"
-    let side = show fitSide
+    let side = show px
         box = side ++ "x" ++ side ++ ">"
-        tries = [ (p, ["-Z", side, "-s", "format", "jpeg", "-s", "formatOptions", "85", from, "--out", to]) | Just p <- [sips] ]
-             ++ [ (p, [from ++ "[0]", "-resize", box, "-quality", "85", "jpeg:" ++ to]) | Just p <- [magick, convert] ]
+        tries = [ (p, ["-Z", side, "-s", "format", fmt] ++ (if fmt == "jpeg" then ["-s", "formatOptions", "85"] else []) ++ [from, "--out", to]) | Just p <- [sips] ]
+             ++ [ (p, [from ++ "[0]", "-resize", box, "-quality", "85", fmt ++ ":" ++ to]) | Just p <- [magick, convert] ]
         go [] = pure False
         go ((p, args) : rest) = do
           r <- try (readProcessWithExitCode p args "") :: IO (Either IOException (ExitCode, String, String))
           ok <- doesFileExist to
-          made <- if ok then (\b -> kindOf b == Just "image/jpeg" && B.length b <= maxBytes) <$> B.readFile to else pure False
+          made <- if ok then (\b -> kindOf b == Just ("image/" ++ fmt) && B.length b <= maxBytes) <$> B.readFile to else pure False
           case r of
             Right (ExitSuccess, _, _) | made -> pure True
             _ -> when ok (removeFile to) >> go rest
     go tries
+
+-- | An image of the directory as a screen shows it: a PNG (what a terminal takes) of no more than 'viewSide'
+-- pixels a side, in base64, and its width and height. An image that is a small PNG already is itself; another
+-- gets a copy beside it (@NAME.view.png@), where a program here makes one.
+viewPng :: FilePath -> String -> IO (Maybe (B.ByteString, (Int, Int)))
+viewPng dir name
+  | not (isName name) = pure Nothing
+  | otherwise = do
+      let file = dir </> name
+          view = file ++ ".view.png"
+          got f = do
+            r <- try (B.readFile f) :: IO (Either IOException B.ByteString)
+            pure (case r of
+              Right b | kindOf b == Just "image/png", Just s <- sizeOf b -> Just (base64 b, s)
+              _ -> Nothing)
+      own <- try (B.readFile file) :: IO (Either IOException B.ByteString)
+      case own of
+        Left _ -> pure Nothing
+        Right b | kindOf b == Just "image/png", maybe False (\(w, h) -> max w h <= viewSide) (sizeOf b), B.length b <= fitBytes -> got file
+                | otherwise -> do
+                    ok <- convertTo "png" viewSide file view
+                    if ok then got view else pure Nothing
+
+-- | The long side of what a screen is given.
+viewSide :: Int
+viewSide = 1200
 
 -- | The line that stands for an image in a text.
 marker :: String -> T.Text
@@ -223,7 +254,8 @@ typed dir project line
         case r of
           Right b -> either (const Nothing) (Just . fst) <$> keep dir b
           Left _ -> pure Nothing) $ files
-      pure (if null names then line else T.intercalate (T.pack "\n") (T.stripEnd line : map marker (nub names)))
+      let new = [ n | n <- nub names, n `notElem` namesIn line ]
+      pure (if null new then line else T.intercalate (T.pack "\n") (T.stripEnd line : map marker new))
   where exts = [".png", ".jpg", ".jpeg", ".gif", ".webp"]
 
 -- | A line's words as a shell would take them, roughly: a backslash keeps the next character, quotes keep spaces.

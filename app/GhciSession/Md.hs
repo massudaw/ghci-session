@@ -10,7 +10,7 @@
 -- A diff is recognised by its head -- a @---@ line and then a @+++@ line -- and lasts while lines look like
 -- one; so the answer of a tool that wrote a file is its words, then the change in green and red.
 module GhciSession.Md
-  ( Span, mdLines, outputLines, inline, diffLine
+  ( Span, mdLines, outputLines, inline, diffLine, imageLine, imageOf
   ) where
 
 import Data.Char (isDigit, isSpace)
@@ -88,6 +88,12 @@ mdLines w = go . lines . filter (/= '\r')
 -- | The line that stands for an image ("GhciSession.Image"): the screen is cells, so its name is what is shown.
 imageLine :: String -> [Span]
 imageLine n = [(withFg (Ansi 5) plain, "▣ image "), (dim plain, n)]
+
+-- | Is this line the one that stands for an image? Its name.
+imageOf :: [Span] -> Maybe String
+imageOf l = case l of
+  [(_, "\9635 image "), (_, n)] -> Just n
+  _ -> Nothing
 
 trim :: String -> String
 trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace

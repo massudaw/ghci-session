@@ -164,7 +164,12 @@ imagesDir ch = cStateDir (cConf ch) </> cName ch </> "images"
 
 -- | Lines typed, with the images they name.
 typedLines :: Chat -> [T.Text] -> IO [T.Text]
-typedLines ch = mapM (Img.typed (imagesDir ch) (cDir ch))
+typedLines ch ls = do
+  out <- mapM (Img.typed (imagesDir ch) (cDir ch)) ls
+  -- (said, so that it is seen what went with the line: a screen that shows pictures shows them here)
+  let new = [ n | (a, b) <- zip ls out, n <- Img.namesIn b, n `notElem` Img.namesIn a ]
+  unless (null new) (uiNote (cUi ch) (T.unpack (T.intercalate (T.pack "\n") (T.pack "with the line:" : map Img.marker new))))
+  pure out
 
 -- | Is this path one the daemon watches (its targets' directories), or a build file? A save of one has a verdict.
 watches :: Chat -> FilePath -> Bool

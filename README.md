@@ -401,7 +401,8 @@ provider's endpoint that speaks the protocol works, and is sent only the convers
   wherever a message is given whole -- when it is new, or when the agent opens it again (`zoom(id, 1)`). One
   larger than a model makes use of (a side over 1568 pixels, or over a megabyte) is sent as a smaller copy made
   by `sips` or ImageMagick. This is for the two backends here and the subscription's; an OpenAI-compatible
-  endpoint is sent the line only. The screens show the line (`▣ image NAME`), not the picture.
+  endpoint is sent the line only. `chat --tui` draws the picture under the line in a terminal that shows them
+  (below); `top` shows the line (`▣ image NAME`).
 - **A request declined** (`stop_reason: refusal`) is said as such, and on Anthropic's API another model is asked
   in the same call (`fallbacks: default`).
 
@@ -484,6 +485,14 @@ Both screens show what the agent writes as markdown -- headings, lists, quotes, 
 when it fits, and in a line bold, italic, code, struck text and links -- and a unified diff in a tool's answer in its
 colors (so a `write` or an `edit` is its words, then the change in green and red). Nothing is re-flowed, and what does
 not parse is shown as it was written.
+
+An image a message names is drawn in `chat --tui`, under its line, where the terminal shows pictures among its
+cells: Ghostty and kitty, by the graphics protocol's placeholders (`GHS_IMAGES=0` for never, `1` for a terminal not
+known by its name). It is sent to the terminal once, when it first comes onto the screen, at its own size or the
+largest of its shape that fits 80 columns and 24 rows, and scrolls with the lines around it; a JPEG, GIF or WebP, or
+a PNG over 1200 pixels a side, is shown from a PNG copy made by `sips` or ImageMagick (with neither, the line
+alone). In a pane of `top` the line is what is shown: a pane's cells are drawn again by `top`, and a picture is not
+among them.
 
 `top` and the chat's screen are built on two packages of this repository, usable without them:
 

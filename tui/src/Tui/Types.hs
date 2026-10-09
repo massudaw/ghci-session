@@ -42,6 +42,7 @@ charWidth :: Char -> Int
 charWidth c
   | n < 0x300 = 1
   | n >= 0x300 && n <= 0x36F = 0
+  | n < 0x1100 = if n >= 0x483 && marksOther n then 0 else 1
   | n >= 0x200B && n <= 0x200F = 0
   | n == 0xFE0F || (n >= 0xFE00 && n <= 0xFE0E) = 0
   | n >= 0x1100 && n <= 0x115F = 2
@@ -56,3 +57,7 @@ charWidth c
   | n >= 0x20000 && n <= 0x3FFFD = 2
   | otherwise = 1
   where n = fromEnum c
+        -- (the marks of the Cyrillic, Hebrew, Arabic, Syriac, N'Ko and Samaritan blocks)
+        marksOther k = (k >= 0x483 && k <= 0x487) || (k >= 0x591 && k <= 0x5BD) || k `elem` [0x5BF, 0x5C1, 0x5C2, 0x5C4, 0x5C5, 0x5C7]
+          || (k >= 0x610 && k <= 0x61A) || (k >= 0x64B && k <= 0x65F) || (k >= 0x6D6 && k <= 0x6DC) || (k >= 0x6DF && k <= 0x6E4)
+          || k `elem` [0x6E7, 0x6E8] || (k >= 0x6EA && k <= 0x6ED) || (k >= 0x730 && k <= 0x74A) || (k >= 0x7EB && k <= 0x7F3) || (k >= 0x816 && k <= 0x82D)

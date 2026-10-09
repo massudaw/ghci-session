@@ -3,7 +3,7 @@
 -- | The real terminal: raw mode for the life of an action, its size, keys as they are typed, and the events
 -- a loop waits on.
 module Tui.Terminal
-  ( withRawTerminal, termSize
+  ( withRawTerminal, termSize, cellPixels
   , Key (..), Mod (..), KeyPress (..), decodeKey, decodeKeyPress, Event (..), Events (..), startEvents, stopEvents, wake
   ) where
 
@@ -21,6 +21,7 @@ import System.Posix.Signals (Handler (..), installHandler)
 import System.Posix.Terminal
 
 foreign import ccall unsafe "tui_term_size" c_term_size :: Ptr CInt -> Ptr CInt -> IO CInt
+foreign import ccall unsafe "tui_cell_pixels" c_cell_pixels :: Ptr CInt -> Ptr CInt -> IO CInt
 foreign import ccall unsafe "tui_sigwinch" c_sigwinch :: IO CInt
 
 -- | Columns and rows of the terminal on standard output, if it is one.
@@ -28,6 +29,12 @@ termSize :: IO (Maybe (Int, Int))
 termSize = alloca $ \pr -> alloca $ \pc -> do
   rc <- c_term_size pr pc
   if rc /= 0 then pure Nothing else (\r c -> Just (fromIntegral c, fromIntegral r)) <$> peek pr <*> peek pc
+
+-- | The width and height of a cell in pixels, if the terminal says.
+cellPixels :: IO (Maybe (Int, Int))
+cellPixels = alloca $ \pw -> alloca $ \ph -> do
+  rc <- c_cell_pixels pw ph
+  if rc /= 0 then pure Nothing else (\w h -> Just (fromIntegral w, fromIntegral h)) <$> peek pw <*> peek ph
 
 -- | Raw mode (no echo, no line discipline, no ^C), the alternate screen, the cursor hidden; everything put
 -- back when the action ends, however it ends.

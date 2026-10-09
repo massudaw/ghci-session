@@ -16,7 +16,7 @@ build-type:         Simple
 
 library
   hs-source-dirs:   src
-  exposed-modules:  Tui, Tui.Types, Tui.Buffer, Tui.Terminal, Tui.Pane, Tui.App
+  exposed-modules:  Tui, Tui.Types, Tui.Buffer, Tui.Terminal, Tui.Pane, Tui.App, Tui.Graphics
   c-sources:        cbits/tui.c
   build-depends:    base >=4.18 && <5, array, bytestring, containers, stm, text, unix, ghostty-vt
   default-language: Haskell2010

@@ -43,7 +43,7 @@ putWidth = sum . map charWidth
 frame :: (Int, Int) -> [Put] -> Frame
 frame (w, h) puts = accumArray (\_ c -> c) blank ((0, 0), (max 0 (h - 1), max 0 (w - 1))) (concatMap cells puts)
   where
-    cells (PutText x y st s) = place x y [ (Cell st (T.singleton c) False, charWidth c) | c <- s ]
+    cells (PutText x y st s) = place x y [ (Cell st (T.pack g) False, gw) | (g, gw) <- clusters s ]
     cells (PutCells x y cs) = place x y cs
     place x y cs = go x cs
       where
@@ -55,6 +55,13 @@ frame (w, h) puts = accumArray (\_ c -> c) blank ((0, 0), (max 0 (h - 1), max 0 
           | cx < 0 = go (cx + cw) r
           | cw == 2 = ((y, cx), c) : ((y, cx + 1), Cell (cStyle c) T.empty True) : go (cx + 2) r
           | otherwise = ((y, cx), c) : go (cx + 1) r
+
+-- | A text as what each cell holds: a character with the marks that combine with it, and its columns. (A mark
+-- with nothing before it is left out.)
+clusters :: String -> [(String, Int)]
+clusters [] = []
+clusters (c : r) | charWidth c == 0 = clusters r
+                 | otherwise = let (ms, rest) = span ((== 0) . charWidth) r in (c : ms, charWidth c) : clusters rest
 
 -- | A line of styled runs at a row and column, cut to @width@ columns and padded with blanks to it.
 textLine :: Int -> Int -> Int -> [(Style, String)] -> [Put]
@@ -99,7 +106,8 @@ diff old new = concat (go Nothing Nothing [ (y, x) | y <- [0 .. h - 1], x <- [0 
           let move = if at == Just (y, x) then "" else "\ESC[" ++ show (y + 1) ++ ";" ++ show (x + 1) ++ "H"
               style = if st == Just (cStyle c) then "" else sgr (cStyle c)
               txt = if T.null (cText c) then " " else T.unpack (cText c)
-              width = if T.null (cText c) then 1 else max 1 (sum (map charWidth (T.unpack (cText c))))
+              -- (the columns it takes are the frame's: a wide cell is followed by its second column)
+              width = if x + 1 < w && cCont (new ! (y, x + 1)) then 2 else 1
           in (move ++ style ++ txt) : go (Just (y, x + width)) (Just (cStyle c)) rest
       where c = new ! (y, x)
     nextChanged y x = x + 1 < w && cCont (new ! (y, x + 1)) && not (same y (x + 1))
