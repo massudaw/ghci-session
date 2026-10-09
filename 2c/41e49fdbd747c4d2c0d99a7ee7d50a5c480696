@@ -1,0 +1,32 @@
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_9eea65fc987b6c 566,575,580-583
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_9eea65fc987b6c 996
+app/GhciSession/ClaudeCli.hs
+  s_ee2f22f51d8bdb::t_9eea65fc987b6c 22,33,47-48,85-92,159
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_84e5c6ffff175d 2664-2668
+  s_ee2f22f51d8bdb::t_09d029ebc13070 19
+ghci-session.json
+  s_ee2f22f51d8bdb::t_84e5c6ffff175d 4-5
+app/GhciSession/Llm.hs
+  s_ee2f22f51d8bdb::t_9eea65fc987b6c 249
+README.md
+  s_ee2f22f51d8bdb::t_1798fa14f2af44 419-420,435-438
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2c41e49fdbd747c4d2c0d99a7ee7d50a5c480696",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
