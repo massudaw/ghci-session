@@ -38,9 +38,11 @@ runApp app start = withRawTerminal $ bracket startEvents stopEvents $ \ev -> do
         hFlush stdout
         writeIORef lastFrame (Just new)
       loop s = do
+        -- (the wakes seen are counted BEFORE the draw: a wake that comes in while the frame is drawn -- a key's echo,
+        -- ~100 us after the key -- would otherwise be counted as seen, and shown only at the next tick)
+        seen <- readTVarIO (evWakes ev)
         draw s
         tv <- if appTick app > 0 then registerDelay (round (appTick app * 1e6)) else newTVarIO False
-        seen <- readTVarIO (evWakes ev)
         e <- atomically $ readTQueue (evQueue ev)
                `orElse` (readTVar (evWakes ev) >>= \n -> check (n /= seen) >> pure EvWake)
                `orElse` (readTVar tv >>= check >> pure EvTick)
