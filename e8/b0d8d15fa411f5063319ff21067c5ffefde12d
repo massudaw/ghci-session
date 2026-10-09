@@ -1,0 +1,21 @@
+app/GhciSession/Anthropic.hs
+  s_ee2f22f51d8bdb::t_6f64d5d8201e89 217-218
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_e2897f01caa9a0 476-479
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e8b0d8d15fa411f5063319ff21067c5ffefde12d",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
