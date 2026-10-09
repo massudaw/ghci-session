@@ -2123,9 +2123,10 @@ compactorLoop s m cmd = loop
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
                     let line = T.strip (H.stripHead (T.takeWhile (/= '\n') (T.strip out)))
-                    if H.junkLine line then go bad (n + 1) tries extra
+                    if H.junkLine line then pure tries        -- (no line: not asked again -- the tries so far, or the input cut)
                       else if H.nodeFits ps line then pure (tries ++ [line])
                       else go bad (n + 1) (tries ++ [line]) (T.pack "\n\nYour earlier answer:\n" <> line <> T.pack "\n\n" <> H.retryNote ps line)
+                  Just (ExitSuccess, _, _) -> pure tries     -- (it ran and said nothing: the same)
                   Just (code, _, err) -> do
                     bad =: True
                     first <- H.failed m p 10
@@ -2140,12 +2141,13 @@ compactorLoop s m cmd = loop
       tries <- go bad 0 [] T.empty
       ran <- not <$> rd bad
       case tries of
-        -- the command ran and answered no line, five times: the node is its input cut at the size (what it
-        -- compresses, flat). A node that is never built holds up every merge above it, and the view's batch
-        -- with them; a cut line is a poor summary of one message and the tree goes on.
+        -- the command ran and its answer was no line (the task said back, a tag alone, nothing): the node is its
+        -- input cut at the size (what it compresses, flat), at once -- a model that answers so once answers so
+        -- again, and asking five times was five calls for the same cut. A node that is never built holds up every
+        -- merge above it, and the view's batch with them; a cut line is a poor summary and the tree goes on.
         [] | ran -> do
           let src = case H.jStep j of { H.Compress msg -> msg; H.Merge a b -> a <> T.pack " " <> b }
-          logS s ("summarize " ++ show p ++ ": no line in five answers; its input is kept, cut")
+          logS s ("summarize " ++ show p ++ ": no line in the answer; its input is kept, cut")
           H.putNode m (H.jL j) (H.jI j) (H.cutBytes (H.pNode ps) (T.map (\c -> if c == '\n' || c == '\r' then ' ' else c) src))
         -- (a command that failed or timed out has said so, and is tried again: the endpoint may come back)
         [] -> pure ()

@@ -296,9 +296,9 @@ chat's view merged further, to 16,000-32,000 bytes with the same sawtooth, with 
 and to the first line not yet built, so no call sees a placeholder or half a message. The task says which message or
 which two lines, the size, and shows it as a ruler of 512 dashes (a model cannot count bytes); the input is in
 `<input>` tags. A line over 512 bytes is asked again, up to five times, and the shortest kept as it is (one over 1,024
-is cut at its last word); an answer that is no line (the task said back, a tag alone, a code fence) is not kept. A
+is cut at its last word); an answer that is no line (the task said back, a tag alone, a code fence, nothing) is not kept and not asked for again. A
 message's node starts once fewer than `summarize_jobs` (64) messages before it are unbuilt, a merge once both halves
-are built, that many at once, from queues kept as the tree changes. A command that fails or times out is tried again after ten seconds; one that answers no line five times leaves the node as its input, cut at the size, so the merges above it are not held up.
+are built, that many at once, from queues kept as the tree changes. A command that fails or times out is tried again after ten seconds; one whose answer is no line leaves the node as its input, cut at the size, so the merges above it are not held up.
 
 The daemon runs a compaction through `"summarize_cmd"`: a shell command given the system prompt, the view and the task
 on its standard input, answering one line on its standard output. `"summarize_cmd": "ghci-session summarize"` is the
