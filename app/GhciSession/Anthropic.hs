@@ -214,4 +214,5 @@ parseReply j
            , rStop = stop
            , rIn = n "input_tokens" + n "cache_creation_input_tokens" + n "cache_read_input_tokens"
            , rOut = n "output_tokens", rCached = n "cache_read_input_tokens"
-           , rBlocks = blocks }
+           -- (as they came, but for a text block with nothing in it: the API gives one at times and takes none back)
+           , rBlocks = [ b | b <- blocks, lookupStr "type" b /= Just "text" || maybe False (not . T.null . T.strip) (lookupText "text" b) ] }

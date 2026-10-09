@@ -473,6 +473,10 @@ run = do
                                 , JObj [("type", JStr "tool_use"), ("id", JStr "t1"), ("name", JStr "eval"), ("input", JObj [("expr", JStr "1")])] ]
                      [("input_tokens", JNum 10), ("cache_read_input_tokens", JNum 900), ("cache_creation_input_tokens", JNum 90), ("output_tokens", JNum 7)]))
      (Right (T.pack "ok", T.pack "hm", [("t1", "eval", JObj [("expr", JStr "1")])], "tool_use", (1000, 7, 900), 3))
+  eq "anthropic: a reply's empty text block is not kept to send back (its thinking and its call are)"
+     (fmap (map (fromMaybe "?" . lookupStr "type") . A.rBlocks) (A.parseReply (replyJ "tool_use" [ JObj [("type", JStr "thinking"), ("thinking", JStr ""), ("signature", JStr "s")], JObj [("type", JStr "text"), ("text", JStr "")]
+                                                                                        , JObj [("type", JStr "tool_use"), ("id", JStr "t"), ("name", JStr "n"), ("input", JObj [])] ] [])))
+     (Right ["thinking", "tool_use"])
   eq "anthropic: a request declined is said, and an error is the API's words"
      ( fmap A.rText (A.parseReply (JObj [("type", JStr "message"), ("content", JArr []), ("stop_reason", JStr "refusal"), ("stop_details", JObj [("category", JStr "cyber")])]))
      , either id (const "") (A.parseReply (JObj [("type", JStr "error"), ("error", JObj [("type", JStr "overloaded_error"), ("message", JStr "Overloaded")])])) )
