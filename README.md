@@ -459,6 +459,31 @@ off and are asked for the lightest effort.
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
 
+### A chat restarted, and a turn gone on with
+
+`ghci-session chat --restart` makes the session's running chat the executable now on disk (build it first), in the
+middle of its turn, which goes on:
+
+- with a turn the chat keeps itself (the two API backends), it writes the conversation out before its next model call
+  and reads it back;
+- with a turn through the `claude` command (a subscription), the turn is that program's -- so the chat hands the
+  PROGRAM over: it waits for the tool call under way to be answered, keeps open the pipes to the program and the
+  socket its tools are served on, writes down what it had read from them and not yet used, and becomes the new
+  executable, which takes them up. It is the same process still, the program is its child still, and the model sees
+  nothing happen: a call it makes meanwhile waits in the socket. (Not while subagents are at work: they are threads of
+  the chat, and would end with it.)
+
+`ghci-session chat --continue` is for a turn whose chat is gone -- stopped, killed, a machine that went down: it goes
+on with the last turn of the history from its LOG. The new turn reads the view, then `<recent>`: the turn's message
+and its last messages word for word, as far as `--tail` bytes go (what is between is in the view, as summaries), and
+is told to go on from where it stops. The agent has every call it made and what came of it; what it had in mind
+between the steps it has not. On any backend, and from one to another.
+
+`tools/check-cli.py` checks both without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
+same arguments and stream, the chat's tools called through its tool server, no model). On the subscription path
+each model call is now in the usage ledger as it ends, with what it read from the cache -- a turn of hours was one
+line, at its end.
+
 ### Subagents
 
 The chat's agent can give work away. `spawn` starts a subagent a task, all at once -- each a turn of its own with the
