@@ -10,3 +10,10 @@ lib/*.so
 scratch/
 # the engine is built from these: the root ignores vendor/, this package tracks its own
 !vendor/
+# compiler output left beside the sources (a ghc run outside cabal)
+*.o
+*.hi
+*.dyn_o
+*.dyn_hi
+# a key kept in the checkout
+.deepseek
