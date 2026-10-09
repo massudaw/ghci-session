@@ -56,6 +56,10 @@ def reply(body):
         return call(m.group(1), json.loads(m.group(2) or "{}"))
     if line.startswith("say "):
         return {"content": line[4:].replace("\\n", "\n")}
+    m = re.match(r"wait\s+([0-9.]+)$", line)
+    if m:           # a reply that takes its time (to stop a turn in the middle of)
+        time.sleep(float(m.group(1)))
+        return {"content": "waited %s seconds" % m.group(1)}
     return {"content": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}
 
 def call(name, args):
@@ -249,6 +253,10 @@ def a_reply(body):
         return [thought, searched, found(m.group(2)), {"type": "text", "text": "I searched for %r and found a page." % m.group(2)}], "end_turn"
     if line.startswith("say "):
         return [thought, {"type": "text", "text": line[4:].replace("\\n", "\n")}], "end_turn"
+    m = re.match(r"wait\s+([0-9.]+)$", line)
+    if m:
+        time.sleep(float(m.group(1)))
+        return [thought, {"type": "text", "text": "waited %s seconds" % m.group(1)}], "end_turn"
     if line == "refuse":
         return [], "refusal"
     return [thought, {"type": "text", "text": "fake: you said %r (try `eval 1 + 1` or `tool status`)" % line[:200]}], "end_turn"
@@ -335,8 +343,35 @@ class H(BaseHTTPRequestHandler):
         out = {"id": "fake-%d" % int(time.time() * 1000), "object": "chat.completion", "model": body.get("model", "fake"),
                "choices": [{"index": 0, "message": msg, "finish_reason": "tool_calls" if m.get("tool_calls") else "stop"}],
                "usage": {"prompt_tokens": n_in, "completion_tokens": len(json.dumps(m)) // 4, "prompt_cache_hit_tokens": n_in // 2}}
-        sys.stderr.write("%s -> %s\n" % (self.path, "tool call" if m.get("tool_calls") else m["content"][:70])); sys.stderr.flush()
+        sys.stderr.write("%s -> %s%s\n" % (self.path, "tool call" if m.get("tool_calls") else m["content"][:70], " (streamed)" if body.get("stream") else "")); sys.stderr.flush()
+        if body.get("stream"):
+            return self._chunks(out, (body.get("stream_options") or {}).get("include_usage"))
         self._send(200, out)
+
+    def _chunks(self, out, usage):
+        """The completion as the other protocol streams one: pieces of its text (or of a call's arguments), how it
+        finished, what it used if that was asked for, and [DONE]. FAKE_STREAM_CUT and FAKE_STREAM_SLOW as above."""
+        self.send_response(200); self.send_header("Content-Type", "text/event-stream"); self.end_headers()
+        slow = float(os.environ.get("FAKE_STREAM_SLOW", "0"))
+        def ev(obj):
+            self.wfile.write(("data: %s\n\n" % (obj if isinstance(obj, str) else json.dumps({"id": out["id"], "object": "chat.completion.chunk", "model": out["model"], **obj}))).encode()); self.wfile.flush()
+            if slow: time.sleep(slow)
+        delta = lambda d, fin=None: ev({"choices": [{"index": 0, "delta": d, "finish_reason": fin}]})
+        pieces = lambda t: [t[i:i + 9] for i in range(0, len(t), 9)] or [""]
+        ch = out["choices"][0]; m = ch["message"]
+        delta({"role": "assistant", "content": ""})
+        for piece in pieces(m.get("content") or ""):
+            if piece: delta({"content": piece})
+        for i, tc in enumerate(m.get("tool_calls") or []):
+            delta({"tool_calls": [{"index": i, "id": tc["id"], "type": "function", "function": {"name": tc["function"]["name"], "arguments": ""}}]})
+            for piece in pieces(tc["function"]["arguments"]):
+                delta({"tool_calls": [{"index": i, "function": {"arguments": piece}}]})
+        if os.environ.get("FAKE_STREAM_CUT") == "1":
+            return
+        delta({}, ch["finish_reason"])
+        if usage:
+            ev({"choices": [], "usage": out["usage"]})
+        ev("[DONE]")
 
     def log_message(self, *a): pass
 

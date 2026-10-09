@@ -15,6 +15,7 @@ module GhciSession.Llm
   ( Endpoint (..), Provider (..), endpointFromEnv, isDeepSeek, appendOnly
   , Request (..), request, requestWith, Reply (..), Usage (..), ToolCall (..)
   , httpsPost
+  , Chunks (..), emptyChunks, chunkEvent, chunksMessage
   , usageFileEnv, recordUsage, human
   ) where
 
@@ -27,6 +28,7 @@ import Control.Exception (SomeException, try)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.ByteString.Unsafe as BU
+import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Text as T
 import Foreign.C.String (CString, peekCString, withCString)
@@ -331,15 +333,81 @@ requestStream c q body = do
 
 requestOpenAI :: Endpoint -> Request -> IO (Either Failure Reply)
 requestOpenAI e q = do
+  -- (GHS_STREAM=0: the reply whole, in one piece -- for an endpoint that does not send it as it comes)
+  streamed <- (/= Just "0") <$> lookupEnv "GHS_STREAM"
   let body = JObj (  [ ("model", JStr (eModel e)), ("messages", JArr (rMessages q)), ("max_tokens", JNum (fromIntegral (rMaxTokens q))) ]
                   ++ [ ("tools", JArr (rTools q)) | not (null (rTools q)) ] ++ [ ("tool_choice", JStr "auto") | not (null (rTools q)) ]
                   ++ [ ("temperature", JNum t) | Just t <- [rTemperature q] ]
                   ++ [ ("thinking", JObj [("type", JStr (if on then "enabled" else "disabled"))]) | isDeepSeek e, Just on <- [rThinking q] ]
-                  ++ [ ("reasoning_effort", JStr ef) | rThinking q /= Just False, Just ef <- [rEffort q] ])
-  r <- httpsRequest (eBase e ++ "/chat/completions") ["Content-Type: application/json", "Authorization: Bearer " ++ eKey e] (encodeBS body) (rTimeout q)
-  pure $ case r of
-    Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
-    Right (status, after, bs) -> let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
+                  ++ [ ("reasoning_effort", JStr ef) | rThinking q /= Just False, Just ef <- [rEffort q] ]
+                  ++ concat [ [("stream", JBool True), ("stream_options", JObj [("include_usage", JBool True)])] | streamed ])
+      url = eBase e ++ "/chat/completions"
+      headers = ["Content-Type: application/json", "Authorization: Bearer " ++ eKey e]
+  if not streamed
+    then either (\why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)) (\(status, after, bs) -> openaiReply status after bs) <$> httpsRequest url headers (encodeBS body) (rTimeout q)
+    else do
+      -- the reply read as it comes: what it adds is told to whoever watches, and the call is held to five minutes of
+      -- silence, not to a time in all. The pieces make the completion the endpoint would have sent whole
+      stV <- newIORef emptyChunks
+      let onLine l = case B.stripPrefix (BC.pack "data:") l of
+            Just d | Right ev <- parseJsonBS d -> do
+              st <- readIORef stV
+              let (st', live) = chunkEvent ev st
+              writeIORef stV st'
+              case rLive q of { Just f -> mapM_ (uncurry f) live; Nothing -> pure () }
+            Just d | BC.strip d == BC.pack "[DONE]" -> modifyIORef' stV (\st -> st { ckDone = True })
+            _ -> pure ()
+      r <- httpsStream url headers (encodeBS body) 300 onLine
+      st <- readIORef stV
+      pure $ case r of
+        Left why -> Left (Failure ("the model endpoint: " ++ why) True Nothing)
+        Right (status, after, got)
+          | status /= 200 -> openaiReply status after got
+          | Just err <- ckError st -> Left (Failure ("the model endpoint: " ++ fromMaybe (encode err) (lookupStr "message" err)) True after)
+          | not (ckDone st) && null (ckFinish st) -> Left (Failure "the model endpoint: the reply's stream ended before its end" True after)
+          | otherwise -> openaiReply 200 after (encodeBS (chunksMessage st))
+
+-- | A reply that comes in pieces, so far: its text and its reasoning (newest first), its tool calls by their
+-- place (each: id, name, the pieces of its arguments newest first), how it finished, what it used.
+data Chunks = Chunks { ckText, ckMind :: [T.Text], ckCalls :: M.Map Int (String, String, [T.Text]), ckFinish :: String, ckUsage :: Json, ckError :: Maybe Json, ckDone :: Bool }
+
+emptyChunks :: Chunks
+emptyChunks = Chunks [] [] M.empty "" JNull Nothing False
+
+-- | A piece taken in, and what it adds for whoever watches: (@talk@ | @mind@ | @tool@, the text).
+chunkEvent :: Json -> Chunks -> (Chunks, [(String, T.Text)])
+chunkEvent ev st0
+  | Just _ <- obj (ev .: "error") = (st0 { ckError = Just (ev .: "error") }, [])
+  | otherwise = foldl choice (st0 { ckUsage = case obj (ev .: "usage") of { Just _ -> ev .: "usage"; Nothing -> ckUsage st0 } }, []) (take 1 (lookupArr "choices" ev))
+  where
+    choice (st, live) ch =
+      let d = ch .: "delta"
+          text = fromMaybe T.empty (lookupText "content" d)
+          mind = fromMaybe T.empty (lookupText "reasoning_content" d)
+          (calls, told) = foldl call (ckCalls st, []) (lookupArr "tool_calls" d)
+      in ( st { ckText = [ text | not (T.null text) ] ++ ckText st, ckMind = [ mind | not (T.null mind) ] ++ ckMind st, ckCalls = calls
+              , ckFinish = fromMaybe (ckFinish st) (lookupStr "finish_reason" ch) }
+         , live ++ [ ("mind", mind) | not (T.null mind) ] ++ [ ("talk", text) | not (T.null text) ] ++ told )
+    call (m, told) tc =
+      let i = maybe (M.size m) round (lookupNum "index" tc)
+          fn = tc .: "function"
+          args = fromMaybe T.empty (lookupText "arguments" fn)
+          (i0, n0, as) = M.findWithDefault ("", "", []) i m
+          pick old new = case new of { Just x | not (null x) -> x; _ -> old }
+      in (M.insert i (pick i0 (lookupStr "id" tc), pick n0 (lookupStr "name" fn), [ args | not (T.null args) ] ++ as) m, told ++ [ ("tool", args) | not (T.null args) ])
+
+-- | The completion the pieces make, in the shape it has when sent whole.
+chunksMessage :: Chunks -> Json
+chunksMessage st = JObj
+  [ ("choices", JArr [ JObj [ ("index", JNum 0), ("finish_reason", JStr (ckFinish st)), ("message", JObj (
+      [ ("role", JStr "assistant"), ("content", JText (T.concat (reverse (ckText st)))) ]
+      ++ [ ("reasoning_content", JText (T.concat (reverse (ckMind st)))) | not (null (ckMind st)) ]
+      ++ [ ("tool_calls", JArr [ JObj [ ("id", JStr i), ("type", JStr "function"), ("function", JObj [("name", JStr n), ("arguments", JText (T.concat (reverse as)))]) ] | (i, n, as) <- M.elems (ckCalls st) ]) | not (M.null (ckCalls st)) ])) ] ])
+  , ("usage", ckUsage st) ]
+
+-- | A completion read from what the endpoint sent whole: the reply, or the failure and its kind.
+openaiReply :: Int -> Maybe Int -> B.ByteString -> Either Failure Reply
+openaiReply status after bs = let failed why = Left (Failure why (busyStatus status) after) in case parseJsonBS bs of
       Left _ | status /= 200 -> failed ("the model endpoint answered " ++ show status ++ ": " ++ take 400 (show bs))
       Left err -> failed ("the model endpoint's reply is not JSON (" ++ err ++ "): " ++ take 400 (show bs))
       Right j | isJust (lookupStr "message" (j .: "error")) -> failed ("the model endpoint: " ++ fromMaybe "" (lookupStr "message" (j .: "error")) ++ (if status /= 200 then " (" ++ show status ++ ")" else ""))

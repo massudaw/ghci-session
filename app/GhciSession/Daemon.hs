@@ -2198,7 +2198,7 @@ runJob s m cmd j = go0
         [] | ran -> do
           let src = case H.jStep j of { H.Compress msg -> msg; H.Merge a b -> a <> T.pack " " <> b }
           logS s ("summarize " ++ show p ++ ": no line in the answer; its input is kept, cut")
-          H.putNode m (H.jL j) (H.jI j) (H.cutBytes (H.pNode ps) (T.map (\c -> if c == '\n' || c == '\r' then ' ' else c) src))
+          H.putNode m (H.jL j) (H.jI j) (H.cutNode ps src)
         -- (a command that failed or timed out has said so, and is tried again: the endpoint may come back)
         [] -> pure ()
         _ -> H.putNode m (H.jL j) (H.jI j) (H.fitNode ps (snd (minimum [ (H.byteLength t, t) | t <- tries, not (T.null t) ])))

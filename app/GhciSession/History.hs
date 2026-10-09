@@ -43,7 +43,7 @@ module GhciSession.History
   , openHistory, appendMsg, appendMsgAt, pageText, partTexts, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
-  , capText, msgLine, cutBytes, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, compactPrompt, jobPrompt, retryNote
+  , capText, msgLine, cutBytes, cutNode, cutMark, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, compactPrompt, jobPrompt, retryNote
   , Snap (..), snapshot, Nodes (..), addNode, shrink, stepView, viewSize, pendingOf, placeholder, partName
   ) where
 
@@ -631,6 +631,18 @@ capText cap t
 cutBytes :: Int -> T.Text -> T.Text
 cutBytes n = T.dropWhileEnd (== '\xFFFD') . TE.decodeUtf8With TE.lenientDecode . B.take n . TE.encodeUtf8
 
+-- | What ends a line that is no summary but its input, cut at the size (the compactor's answer was no line):
+-- said, so that the line is opened and not taken for all there was.
+cutMark :: T.Text
+cutMark = T.pack " (cut: zoom it)"
+
+-- | A node's input as the node, cut: flat, the size less the mark, and the mark -- or whole, when it fits.
+cutNode :: Params -> T.Text -> T.Text
+cutNode ps src
+  | byteLength flat <= pNode ps = flat
+  | otherwise = T.stripEnd (cutBytes (pNode ps - byteLength cutMark) flat) <> cutMark
+  where flat = T.map (\c -> if c == '\n' || c == '\r' then ' ' else c) src
+
 -- | Is the line within the size it was asked in?
 nodeFits :: Params -> T.Text -> Bool
 nodeFits ps t = byteLength t <= pNode ps
@@ -711,7 +723,8 @@ viewPart who withTools =
   , "The summaries form a binary tree: each message is compressed into a line (a"
   , "short message is its own line), then adjacent lines are merged in pairs, again"
   , "and again. So recent lines cover one message each, and older lines cover more. A"
-  , "message not summarized yet shows as \"(not summarized yet: zoom it)\". A text too"
+  , "message not summarized yet shows as \"(not summarized yet: zoom it)\", and a line"
+  , "ending \"(cut: zoom it)\" is no summary: it is the text itself, cut short. A text too"
   , "long for one message is split over several in a row, each saying which part it is." ] ++
   (if not withTools then [] else
   [ ""

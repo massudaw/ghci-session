@@ -40,6 +40,7 @@ import Data.Maybe (fromMaybe)
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
+import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
 import GHC.Hygiene.Census (readSymbol, zdecode)
@@ -261,6 +262,8 @@ run = do
   eq "history: an answer that is no line is not kept: the task said back, a tag alone, a tool call written out"
      (map (H.junkLine . T.pack) ["<input>", "<tool_call>tool", "Compaction: compress message 4370 into one line", "  ", "</chat>", "```", "user: fix <input> parsing; echo: ok", "talk: a < b"])
      [True, True, True, True, True, True, False, False]
+  eq "history: an input kept as its node, cut, says that it is cut; one that fits is itself, flat"
+     (let c = H.cutNode lp (T.replicate 300 (T.pack "ab\ncd ")) in (H.byteLength c <= H.pNode lp, T.isSuffixOf H.cutMark c, T.any (== '\n') c), H.cutNode lp (T.pack "a\nb")) ((True, True, False), T.pack "a b")
   eq "history: a cut never splits a character" (H.cutBytes 2 (T.pack "a\233b")) (T.pack "a")
   eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")
   check "history: a capped result keeps head and tail and says so" (let c = H.capText 10 (T.pack (replicate 40 'x')) in T.isInfixOf (T.pack "30 characters cut") c && T.isPrefixOf (T.pack "xxxxx\n") c && T.isSuffixOf (T.pack "xxxxx") c)
@@ -600,6 +603,22 @@ run = do
   shown <- Img.viewPng imgDir nm
   eq "picture: what a screen is given of a small PNG is itself" (fmap snd shown, fmap fst shown == Just (Img.base64 (png 4 2))) (Just (4, 2), True)
   removeDirectoryRecursive imgDir
+  -- a completion that comes in pieces
+  let dl d = JObj [("choices", JArr [JObj [("index", JNum 0), ("delta", JObj d)]])]
+      tcd i extra f = dl [("tool_calls", JArr [JObj ([("index", JNum i)] ++ extra ++ [("function", JObj f)])])]
+      evs = [ dl [("role", JStr "assistant"), ("content", JStr "")], dl [("reasoning_content", JStr "hm")], dl [("content", JStr "Hel")], dl [("content", JStr "lo")]
+            , tcd 0 [("id", JStr "c1")] [("name", JStr "eval"), ("arguments", JStr "")], tcd 0 [] [("arguments", JStr "{\"expr\":")], tcd 0 [] [("arguments", JStr "\"1\"}")]
+            , tcd 1 [("id", JStr "c2")] [("name", JStr "status"), ("arguments", JStr "{}")]
+            , JObj [("choices", JArr [JObj [("index", JNum 0), ("delta", JObj []), ("finish_reason", JStr "tool_calls")]])], JObj [("choices", JArr []), ("usage", JObj [("prompt_tokens", JNum 7)])] ]
+      (ckEnd, ckLive) = foldl (\(st, ls) ev -> let (st', l) = chunkEvent ev st in (st', ls ++ l)) (emptyChunks, []) evs
+      whole = chunksMessage ckEnd
+      wm = case lookupArr "choices" whole of { (c : _) -> c .: "message"; [] -> JNull }
+  eq "llm: a completion in pieces is the completion whole -- its text, its reasoning, each call with its arguments put together, how it ended, what it used"
+     ( lookupStr "content" wm, lookupStr "reasoning_content" wm, [ (lookupStr "id" c, lookupStr "name" (c .: "function"), lookupStr "arguments" (c .: "function")) | c <- lookupArr "tool_calls" wm ]
+     , [ lookupStr "finish_reason" c | c <- lookupArr "choices" whole ], lookupNum "prompt_tokens" (whole .: "usage") )
+     ( Just "Hello", Just "hm", [(Just "c1", Just "eval", Just "{\"expr\":\"1\"}"), (Just "c2", Just "status", Just "{}")], [Just "tool_calls"], Just 7 )
+  eq "llm: and what each piece adds is told as it comes" (map fst ckLive, T.concat [ t | ("talk", t) <- ckLive ]) (["mind", "talk", "talk", "tool", "tool", "tool"], T.pack "Hello")
+  eq "llm: an error in the middle of the pieces is kept" (fmap (lookupStr "message") (ckError (fst (chunkEvent (JObj [("error", JObj [("message", JStr "overloaded")])]) emptyChunks)))) (Just (Just "overloaded"))
   eq "md: a save's change -- hunks with no file's head -- is a diff too"
      [ [ sFg st | (st, _) <- take 1 l ] | l <- Md.outputLines "save: src/A.hs\n@@ -1,2 +1,2 @@\n one\n-two\n+2" ] [[Default], [Ansi 6], [Default], [Ansi 1], [Ansi 2]]
   -- chats had elsewhere, read into messages
