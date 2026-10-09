@@ -1844,7 +1844,7 @@ learnC s b units us = case gRepl cfg of
 -- unit's own flags (where its headers are, its packages), the options the package's @.cabal@ names for C, and
 -- the optimisation the build tool gives C by default. Whether that IS the build tool's command is not assumed: a
 -- source that has not changed is compiled with it, and the object compared, byte for byte, with the one the build
--- tool made. The first candidate whose objects are the same is kept; when none is (an option given under a
+-- tool made, for every source of the unit. The first candidate whose objects are all the same is kept; when none is (an option given under a
 -- condition that does not hold, a compiler flag from elsewhere, objects older than their sources) nothing is,
 -- and the build tool is asked at the unit's first change as before. On a thread: it is a few compiles.
 guessC :: S -> IO ()
@@ -1870,9 +1870,13 @@ guessC s = void $ forkIO $ void $ (try :: IO () -> IO (Either SomeException ()))
                 a <- try (B.readFile (probe </> replaceExtension rel "o")) :: IO (Either IOException B.ByteString)
                 c <- try (B.readFile obj) :: IO (Either IOException B.ByteString)
                 pure (case (a, c) of { (Right x, Right y) -> x == y; _ -> False })
+            allM _ [] = pure True
+            allM f (x : xs) = f x >>= \b -> if b then allM f xs else pure False
             firstThat [] = pure Nothing
             firstThat (t : ts) = do
-              ok <- and <$> mapM (same t) (take 2 (cuC u))
+              -- (EVERY source: one that does not read an option compiles the same with it and without, and a
+              -- command right for that one alone would be kept -- gvt_pty.c against -DGVT_STATIC, tried)
+              ok <- allM (same t) (cuC u)
               if ok then pure (Just t) else firstThat ts
         found <- firstThat candidates
         void (try (removeDirectoryRecursive probe) :: IO (Either IOException ()))

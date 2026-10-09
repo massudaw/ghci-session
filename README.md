@@ -84,7 +84,7 @@ compiled with the build tool's own command, the object linked as the newest, and
 (its unit's, and whatever imports them) linked again when next needed, bound to the new C. A header is every C
 source of its unit. The command is found at each start, without the build tool: put together from the unit's
 flags and the `.cabal`'s options for C, and kept only if compiling an unchanged source with it makes the build
-tool's own object, byte for byte. Where no candidate does, the build tool is asked once, at the unit's first
+tool's own object, byte for byte, for every source of the unit. Where no candidate does, the build tool is asked once, at the unit's first
 change (which takes what a build takes). Either way it is kept with the start it belongs to, and a C save is a
 few tenths of a second. C that does not compile is a `COMPILE-ERROR` with the compiler's words, and the
 session goes on running what it had. Two things to know: the library with the old C stays mapped, so a pointer
