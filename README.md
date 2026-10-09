@@ -68,6 +68,17 @@ arguments, directory and environment the repl would have had, and the daemon the
 is no `cabal repl` between the daemon and GHCi for the life of the session, stopping it is closing its socket, and
 a restart that changes nothing cabal decides does not run cabal again.
 
+What a save does depends on where it is:
+
+| a save in | does |
+|---|---|
+| a loaded package, `.hs` | a reload |
+| a loaded package, `.c` / `.h` | a restart through the build tool (a loaded C object cannot be replaced) |
+| a `.cabal` or `cabal.project` | the build tool is asked what it changes; a restart if it is a new package set |
+| a local package the repl uses without loading (a library the executable depends on), `.hs` / `.c` / `.h` | that package is built and the repl restarted: it is object code, so it cannot be reloaded |
+
+The sources of those packages are found from the build tool's plan and watched without being listed in `watch`.
+
 The engine's per-compiler parts are small. GHCi's own sources are vendored per version (`vendor/ghc-X.Y.Z`, fetched
 with `vendor/fetch.sh VERSION`); the modules that reach into the compiler's session are shared in `engine/`, and what
 differs between compilers lives in `engine/ghc-X.Y/GhsCompat.hs`.

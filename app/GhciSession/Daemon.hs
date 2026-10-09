@@ -18,7 +18,7 @@ import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isDigit, isSpace, isUpper, toLower)
 import Data.IORef
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, sort, sortOn, (\\))
+import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, partition, sort, sortOn, (\\))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.Map.Strict as M
@@ -30,7 +30,7 @@ import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import System.Directory
 import System.Environment (getEnvironment, getExecutablePath, lookupEnv)
 import System.Exit (ExitCode (..))
-import System.FilePath (isAbsolute, makeRelative, replaceExtension, takeDirectory, takeExtension, takeFileName, (</>))
+import System.FilePath (addTrailingPathSeparator, isAbsolute, makeRelative, replaceExtension, takeDirectory, takeExtension, takeFileName, (</>))
 import System.IO
 import System.Info (os)
 import Data.Word (Word64)
@@ -1041,6 +1041,19 @@ depsBuildLine s = case gRepl cfg of
 -- one edited while the session was down).
 localPackages :: S -> Launch -> IO (Maybe ([FilePath], [FilePath]))
 localPackages s l = do
+  r <- planDirs s l
+  case r of
+    Nothing -> pure Nothing
+    Just (mineDirs, outDirs) -> do
+      own <- concat <$> forM mineDirs (\d -> do
+               names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents d)
+               pure [ d </> n | n <- names, ".cabal" `isSuffixOf` n ])
+      (\ds -> Just (nub (concat ds), own)) <$> mapM packageSources outDirs
+
+-- | Where the packages are, as the build tool's plan says: the directories of the packages the repl LOADS, and of
+-- the local packages it uses without loading. 'Nothing' when it cannot be said of one of them.
+planDirs :: S -> Launch -> IO (Maybe ([FilePath], [FilePath]))
+planDirs s l = do
   files <- forM [ f | ('@' : f) <- lArgs l ] (fmap (maybe [] lines) . readFileMaybe)
   let args = lArgs l ++ concat files
       after k = [ v | (a, v) <- zip args (drop 1 args), a == k ]
@@ -1050,12 +1063,39 @@ localPackages s l = do
     plan <- (>>= either (const Nothing) Just . parseJson) <$> readFileMaybe (sRoot s </> "dist-newstyle" </> "cache" </> "plan.json")
     let dirOf u = listToMaybe [ d | e <- maybe [] (lookupArr "install-plan") plan, lookupStr "id" e == Just u
                                   , Just d <- [lookupStr "path" (e .: "pkg-src")] ]
-    own <- concat <$> forM (nub (mapMaybe dirOf mine)) (\d -> do
-             names <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents d)
-             pure [ d </> n | n <- names, ".cabal" `isSuffixOf` n ])
-    case mapM dirOf outside of
-      Nothing -> pure Nothing
-      Just dirs -> (\ds -> Just (nub (concat ds), own)) <$> mapM packageSources (nub dirs)
+    pure (fmap (\o -> (nub (mapMaybe dirOf mine), nub o)) (mapM dirOf outside))
+
+-- | The sources of the local packages the repl uses WITHOUT loading them (a library the executable depends on): what
+-- they are built from, minus anything a loaded package also lists. They are object code from the build tool, so
+-- an edit there cannot be reloaded, only built and the repl started again ('applyChanges').
+depSourceDirs :: S -> Launch -> IO [FilePath]
+depSourceDirs s l = do
+  r <- planDirs s l
+  case r of
+    Nothing -> pure []
+    Just (mineDirs, outDirs) -> do
+      loaded <- concat <$> mapM packageSources mineDirs
+      deps <- concat <$> mapM packageSources outDirs
+      pure [ d | d <- deps, not (any (`covers` d) loaded) ]
+  where covers a b = a == b || addTrailingPathSeparator a `isPrefixOf` b
+
+-- | Watch those sources too: a save in one of them is a dependency to build and the repl to start again.
+addDepWatch :: S -> IO ()
+addDepWatch s = do
+  mb <- rd (vBoot s)
+  ds <- maybe (pure []) (depSourceDirs s . bLaunch) mb
+  -- (the list now, read once: 'sCfg' reads the reference when it is evaluated, and a lazy 'fresh' evaluated after the
+  -- write below would ask the configuration that has it in it -- a loop)
+  cur <- gWatch <$> rd (sCfgV s)
+  let new = [ makeRelative (sRoot s) d | d <- ds ]
+      fresh = [ d | d <- nub new, d `notElem` cur ]
+  unless (null fresh) $ do
+    modifyIORef' (sCfgV s) (\c -> c { gWatch = gWatch c ++ fresh })
+    -- (they were built at this boot: their sources as they are are what is loaded, or the first look would find them all new)
+    sig <- scan (sRoot s) fresh (gWatchExt (sCfg s))
+    modifyIORef' (vLoadedSig s) (M.union sig)
+    modifyIORef' (vPendingSig s) (\p -> if M.null p then p else M.union sig p)
+    logS s ("watch: also the sources of the packages the repl uses without loading: " ++ unwords fresh)
 
 -- | What a package is built from, as far as its @.cabal@ file says: the file, its @hs-source-dirs@, and its C
 -- sources and include directories, for every component (more than a dependency needs, never less). A package
@@ -1645,16 +1685,24 @@ applyChanges s run cur2 = do
   when (cur2 /= loaded) $ do
     let changed = [ fromRaw p | p <- M.keys (M.union cur2 loaded), M.lookup p cur2 /= M.lookup p loaded ]
     let buildFile p = ".cabal" `isSuffixOf` p || "cabal.project" `isPrefixOf` takeFileName p
+        cSrc p = any (`isSuffixOf` p) [".c", ".h"]
+    deps <- rd (vBoot s) >>= maybe (pure []) (depSourceDirs s . bLaunch)
+    let inDep p = let a = sRoot s </> p in any (\d -> a == d || addTrailingPathSeparator d `isPrefixOf` a) deps
+        (depCh, ownCh) = partition inDep changed
     saved <- saveLine s changed
-    if any buildFile changed && not (any (\p -> any (`isSuffixOf` p) [".c", ".h"]) changed)
-      then histEvent s (saved ++ " (a build file)") (run (buildFileChanged s))
-    else if any (\p -> any (`isSuffixOf` p) [".c", ".h"] || buildFile p) changed
+    if any cSrc ownCh
       then do
-        logS s "a .c/.h/.cabal changed: restarting the repl (a loaded C object, or a package set, cannot be replaced)"
+        logS s "a .c/.h changed: restarting the repl (a loaded C object cannot be replaced)"
         histEvent s (saved ++ " (a restart)") (run (void (restart s (Just False))))      -- (through the build tool: it is what compiles a package's C)
-      else do
-        logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
-        histEvent s saved (run (watchReload s))
+    else if not (null depCh)
+      then do
+        logS s ("a local dependency's source changed (" ++ unwords (take 3 depCh) ++ "): building it and restarting the repl (it is object code, not reloadable)")
+        histEvent s (saved ++ " (a dependency: rebuilt, restart)") (run (void (restart s Nothing)))      -- (the build tool is asked for the dependency alone, and the answer it gave is reused)
+    else if any buildFile ownCh
+      then histEvent s (saved ++ " (a build file)") (run (buildFileChanged s))
+    else do
+      logS s ("watch: " ++ show (length changed) ++ " file(s) changed -- reload")
+      histEvent s saved (run (watchReload s))
 
 showG :: Double -> String
 showG x = if x == fromIntegral (round x :: Integer) then show (round x :: Integer) else show x
@@ -2336,6 +2384,7 @@ runDaemon conf name bootCheck fastStart = do
       vMem s =: Nothing
       memSampleAsync s
       now >>= (vLastUsed s =:)     -- idle is counted from the end of the boot, not from the daemon's start
+      addDepWatch s
       void (forkIO (void (try (watchLoop s) :: IO (Either SomeException ()))))
       typecheckAsync s
       serve s `finally` do
