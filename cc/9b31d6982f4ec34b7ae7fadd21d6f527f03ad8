@@ -1,0 +1,20 @@
+app/GhciSession/Repl.hs
+  s_ee2f22f51d8bdb::t_76dfd1a658624a 104-114,116-128,150,152
+  s_ee2f22f51d8bdb::t_15f4b93c69c878 115,129-130,151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cc9b31d6982f4ec34b7ae7fadd21d6f527f03ad8",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
