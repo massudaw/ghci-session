@@ -15,5 +15,3 @@ scratch/
 *.hi
 *.dyn_o
 *.dyn_hi
-# a key kept in the checkout
-.deepseek
