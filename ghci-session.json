@@ -1,7 +1,7 @@
 {
   "default": "tool",
   "hygiene": true,
-  "summarize_cmd": "GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-4-5 ghci-session summarize",
+  "summarize_cmd": "GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-5-5 ghci-session summarize",
   "summarize_jobs": 4,
   "targets": {
     "tool": {

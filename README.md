@@ -417,7 +417,7 @@ it -- it is never taken by default -- with `GHS_CLAUDE_MODEL` (default `claude-o
 claude --version                 # Claude Code, installed and signed in (`claude` once, to sign in)
 GHS_PROVIDER=claude GHS_CLAUDE_MODEL=claude-sonnet-5-5 ghci-session chat
 # the compactor too, in ghci-session.json (settings before the command are taken as a shell takes them):
-#   "summarize_cmd": "GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-4-5 ghci-session summarize"
+#   "summarize_cmd": "GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-5-5 ghci-session summarize"
 ```
 
 That program runs the tools itself, so a turn is its and the chat is what it calls: for the length of a turn the
