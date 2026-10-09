@@ -14,7 +14,7 @@
 module GhciSession.Llm
   ( Endpoint (..), Provider (..), endpointFromEnv, isDeepSeek, appendOnly
   , Request (..), request, requestWith, Reply (..), Usage (..), ToolCall (..)
-  , httpsPost
+  , httpsPost, cancelRequests
   , Chunks (..), emptyChunks, chunkEvent, chunksMessage
   , usageFileEnv, recordUsage, human
   ) where
@@ -53,6 +53,11 @@ foreign import ccall safe "ghs_https_post" c_post
 foreign import ccall safe "ghs_https_request" c_request
   :: CString -> CString -> Ptr CChar -> CSize -> CLong -> CLong -> CString -> CInt -> Ptr CString -> Ptr CSize -> Ptr CLong -> Ptr CLong -> CString -> CSize -> IO CInt
 foreign import ccall unsafe "ghs_https_free" c_free :: CString -> IO ()
+foreign import ccall unsafe "ghs_https_cancel" c_cancel :: IO ()
+
+-- | Give up the exchanges under way in this process: each ends itself within a second, as a failure.
+cancelRequests :: IO ()
+cancelRequests = c_cancel
 
 -- | 'httpsPost', and how long the server asked to be left alone (its @Retry-After@, in seconds), if it did.
 httpsRequest :: String -> [String] -> B.ByteString -> Double -> IO (Either String (Int, Maybe Int, B.ByteString))
@@ -234,10 +239,17 @@ busyStatus st = st `elem` [408, 409, 429] || st >= 500
 -- | One call: the reply, or why none (the transport, a status other than 200, an error object, a shape
 -- that is not a chat completion).
 requestOnce :: Endpoint -> Request -> IO (Either Failure Reply)
-requestOnce e q = case eProvider e of
+requestOnce e q = apart $ case eProvider e of
   OpenAI -> requestOpenAI e q
   Anthropic bearer -> requestAnthropic (A.Config (eKey e) bearer (eBase e) (eModel e)) q
   ClaudeCli -> requestCli e q
+  where
+    -- (on a thread of its own, waited for: the exchange is a foreign call, which nothing can interrupt -- so
+    -- whoever asked can be, and a turn that is stopped leaves at once; 'cancelRequests' then ends the exchange)
+    apart act = do
+      v <- newEmptyMVar
+      _ <- forkIO ((try act :: IO (Either SomeException (Either Failure Reply))) >>= putMVar v)
+      takeMVar v >>= either (\x -> pure (Left (Failure ("the model endpoint: " ++ show x) False Nothing))) pure
 
 -- | A call that is one prompt and one answer, through the @claude@ command with no tools: what a compaction is.
 -- (A turn is not made of such calls there: the command runs the tools itself, and the chat runs it for a whole

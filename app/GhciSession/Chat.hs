@@ -36,7 +36,8 @@ module GhciSession.Chat
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar
 import Control.Concurrent.STM
-import Control.Exception (IOException, SomeException, finally, try)
+import Control.Concurrent (ThreadId, myThreadId, throwTo)
+import Control.Exception (Exception, IOException, SomeException, catch, finally, fromException, onException, throwIO, try)
 import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
@@ -51,7 +52,7 @@ import qualified Data.Text.IO as TIO
 import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getTemporaryDirectory, listDirectory, removeFile)
 import System.Environment (getArgs, getEnvironment, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (executeFile, getProcessID)
-import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, signalProcess)
+import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, sigTERM, signalProcess, signalProcessGroup)
 import System.Exit (ExitCode (..))
 import System.FilePath (makeRelative, normalise, splitDirectories, takeDirectory, takeFileName, (</>))
 import System.IO
@@ -149,6 +150,8 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cDown :: IORef Bool                  -- ^ the last wait for the session to come back ended with it still down
                  , cRestart :: IORef Bool               -- ^ a restart was asked (SIGHUP): at the next model call
                  , cInTurn :: IORef Bool                -- ^ a turn is running (else a restart is at once)
+                 , cTurn :: IORef (Maybe ThreadId)      -- ^ the thread of the turn under way, for stopping it
+                 , cStopped :: IORef Bool               -- ^ the turn under way was asked to stop
                  , cExe :: FilePath, cArgv :: [String]   -- ^ the executable and the arguments to run again as
                  , cBatch :: IORef (Maybe [Double])      -- ^ file writes of one reply are being made together: when each was written (they are not waited on one by one)
                  , cUi :: Ui                             -- ^ where what happens is shown
@@ -587,6 +590,45 @@ shSaved ch (Just written) staleBefore = do
     (good, text) <- saved ch "" (Just written)
     pure (Just (good, text))
 
+-- stopping a turn -------------------------------------------------------------------------------
+--
+-- A turn is stopped from outside it (Esc on the chat's screen, Ctrl-C on the streams): its thread is thrown
+-- 'StopTurn', wherever it is -- waiting for the model, for a tool, for a verdict -- and the exchanges with the
+-- model under way are given up, so no reply goes on being written for nobody. What the turn did so far is in
+-- the history, as it is for a turn that ends; the conversation it carried is dropped, and the next turn starts
+-- from the view. (What swallows the exception -- a tool's call that turns every failure into an answer -- only
+-- delays it: the turn looks at 'cStopped' at each step.)
+
+data StopTurn = StopTurn deriving Show
+instance Exception StopTurn
+
+-- | Ask the turn under way to stop. False when there is none.
+stopTurn :: Chat -> IO Bool
+stopTurn ch = do
+  t <- readIORef (cTurn ch)
+  case t of
+    Nothing -> pure False
+    Just tid -> writeIORef (cStopped ch) True >> cancelRequests >> throwTo tid StopTurn >> pure True
+
+-- | Has the turn been asked to stop? Then it stops here.
+checkStop :: Chat -> IO ()
+checkStop ch = readIORef (cStopped ch) >>= \s -> when s (throwIO StopTurn)
+
+-- | A turn, as something that can be stopped: said and logged when it was.
+stoppable :: Chat -> IO () -> IO ()
+stoppable ch act = do
+  tid <- myThreadId
+  writeIORef (cStopped ch) False
+  writeIORef (cTurn ch) (Just tid)
+  r <- try (act `finally` writeIORef (cTurn ch) Nothing)
+  case r of
+    Right () -> pure ()
+    Left StopTurn -> do
+      writeIORef (cInTurn ch) False
+      writeIORef (cBatch ch) Nothing
+      logH ch "echo" (T.pack "harness: the turn was stopped by the user before it ended")
+      uiNote (cUi ch) "[the turn was stopped; what it did so far is in the history]"
+
 -- | The agent's hands on the files, inside the project only.
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
 fileTool ch name a = case name of
@@ -843,14 +885,20 @@ diffMax = 60
 
 shTool :: FilePath -> String -> Double -> IO (Bool, T.Text)
 shTool dir cmd secs = do
-  (_, Just o, Just e, ph) <- createProcess (shell cmd) { cwd = Just dir, std_in = NoStream, std_out = CreatePipe, std_err = CreatePipe }
+  -- (in a group of its own, so that what the shell started ends with it: the shell alone was ended, and a
+  -- command that ran out of time, or whose turn was stopped, went on behind it)
+  (_, Just o, Just e, ph) <- createProcess (shell cmd) { cwd = Just dir, std_in = NoStream, std_out = CreatePipe, std_err = CreatePipe, create_group = True }
   mo <- newEmptyMVar
   me <- newEmptyMVar
   void (forkIO (B.hGetContents o >>= putMVar mo))
   void (forkIO (B.hGetContents e >>= putMVar me))
-  r <- timeout (round (secs * 1e6)) (waitForProcess ph)
+  let end = do
+        pid <- getPid ph
+        forM_ pid (\p -> void (try (signalProcessGroup sigTERM p) :: IO (Either IOException ())))
+        terminateProcess ph
+  r <- timeout (round (secs * 1e6)) (waitForProcess ph) `onException` end
   case r of
-    Nothing -> terminateProcess ph >> void (waitForProcess ph) >> pure (False, T.pack "timed out")
+    Nothing -> end >> void (waitForProcess ph) >> pure (False, T.pack "timed out")
     Just code -> do
       out <- decode <$> takeMVar mo
       err <- decode <$> takeMVar me
@@ -1114,10 +1162,13 @@ turnCli ch e o system first pending = do
       r <- try (loop tStart) :: IO (Either SomeException (Maybe String))
       writeIORef done True
       void (try (hClose i) :: IO (Either IOException ()))
+      let stopped = case r of { Left x | Just StopTurn <- fromException x -> True; _ -> False }
+      when stopped (terminateProcess ph)
       void (timeout 3000000 (waitForProcess ph) >>= maybe (terminateProcess ph >> void (waitForProcess ph)) (const (pure ())))
       PIO.closeFd lfd
       void (try (removeFile sock) :: IO (Either IOException ()))
       errText <- T.unpack . T.strip . decode <$> takeMVar errV
+      when stopped (throwIO StopTurn)
       case r of
         Left x -> uiNote (cUi ch) ("chat: the claude command: " ++ show x ++ "; the turn ends")
         Right (Just why) -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
@@ -1237,6 +1288,7 @@ goOn ch e o pending ts = do
       | viewMode = logH ch "echo" (T.pack "harness: " <> text) >> pure msgs'
       | otherwise = pure (msgs' ++ [msg "user" (T.pack "[harness: " <> text <> T.pack "]")])
     stepWith loop vcR readsR spent msgs callMsgs step cut _failures = do
+          checkStop ch
           -- a restart asked for: here, between two model calls, nothing is half done
           asked <- readIORef (cRestart ch)
           when asked $ do
@@ -1316,6 +1368,7 @@ goOn ch e o pending ts = do
                     unless (M.member i pre) $ do      -- (a batched call was shown and logged when the batch began)
                       uiCall (cUi ch) name shownArgs
                       unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
+                    checkStop ch
                     uiBusy (cUi ch) (Just ("running " ++ name ++ (if length (pToolCalls p) > 1 then printf " (%d of %d)" (i + 1) (length (pToolCalls p)) else "")))
                     t2 <- now
                     (ok, out0) <- case (M.lookup i pre, lookup name byName) of
@@ -1564,13 +1617,15 @@ chatMain conf args = case parseOpts args of
         pendingCheck <- newIORef Nothing
         down <- newIORef False
         restartR <- newIORef False
+        turnR <- newIORef Nothing
+        stoppedR <- newIORef False
         inTurn <- newIORef False
         batchR <- newIORef Nothing
         exe <- getExecutablePath
         argv <- getArgs
         let ms = if null members then [name] else members
             chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                               longest pendingCheck down restartR inTurn (stripDeleted exe) argv batchR ui
+                               longest pendingCheck down restartR inTurn turnR stoppedR (stripDeleted exe) argv batchR ui
         if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           -- (--web N: the model may search the web, where the endpoint has it -- "GhciSession.Llm" reads this)
           forM_ (oWeb o) (setEnv "GHS_WEB_SEARCH" . show)
@@ -1586,6 +1641,7 @@ chatMain conf args = case parseOpts args of
                   -- the chat on a Ui: the lines to take come on the queue (standard input's, or the screen's)
                   run ui pending = do
                     let ch = chatWith ui
+                    uiOnStop ui (stopTurn ch)
                     -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
                     getProcessID >>= writeFile (chatPidFile conf name) . show
                     void $ installHandler sigHUP (Catch $ do
@@ -1607,22 +1663,24 @@ chatMain conf args = case parseOpts args of
                           forM_ mts $ \ts -> do
                             uiNote ui (printf "[harness: the turn goes on at step %d]" (tsStep ts))
                             forM_ typed (logH ch "user")
-                            goOn ch e o pending ts { tsMsgs = tsMsgs ts ++ [ msg "user" (T.intercalate (T.pack "\n\n") typed) | not (null typed) ] }
-                          when (isNothing mts && not (null typed)) (turn ch e o system typed pending)
+                            stoppable ch (goOn ch e o pending ts { tsMsgs = tsMsgs ts ++ [ msg "user" (T.intercalate (T.pack "\n\n") typed) | not (null typed) ] })
+                          when (isNothing mts && not (null typed)) (stoppable ch (turn ch e o system typed pending))
                         Nothing -> pure ()
                       case (oOnce o, resumed) of
                         (Just _, Just _) -> pure 0
-                        (Just m, Nothing) -> typedLines ch [T.pack m] >>= \ls -> turn ch e o system ls pending >> pure 0
+                        (Just m, Nothing) -> typedLines ch [T.pack m] >>= \ls -> stoppable ch (turn ch e o system ls pending) >> pure 0
                         (Nothing, _) -> do
                           let loop = do
                                 uiBusy ui Nothing
-                                first <- atomically (readTQueue pending)
+                                -- (a stop that comes as its turn ends finds no turn: it is nothing, here)
+                                let waitLine = atomically (readTQueue pending) `catch` \StopTurn -> waitLine
+                                first <- waitLine
                                 case first of
                                   Nothing -> pure 0
                                   Just l -> do
                                     more <- drain pending
                                     texts <- typedLines ch (filter (not . T.null . T.strip) (l : more))
-                                    unless (null texts) (writeIORef inTurn True >> turn ch e o system texts pending >> writeIORef inTurn False)
+                                    unless (null texts) (writeIORef inTurn True >> stoppable ch (turn ch e o system texts pending) >> writeIORef inTurn False)
                                     loop
                           loop
               if oTui o

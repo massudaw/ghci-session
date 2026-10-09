@@ -8,7 +8,8 @@
 --
 -- Keys: Enter sends the line; Up and Down recall lines sent before; PgUp and PgDn scroll the transcript,
 -- Ctrl-Up and Ctrl-Down by a line, End comes back to the end (which the screen follows until scrolled);
--- the line is edited with Left, Right, Home, End, Backspace, Delete, Ctrl-A/E/U/K/W; Esc clears it;
+-- the line is edited with Left, Right, Home, End, Backspace, Delete, Ctrl-A/E/U/K/W; Esc clears it, or while
+-- the agent works stops the turn (the chat goes on: what the turn did is in the history);
 -- Ctrl-C leaves (Ctrl-D on an empty line too), in the middle of a turn as well -- what the turn did is
 -- in the history already.
 --
@@ -187,6 +188,7 @@ chatTui name model dir chat = do
   codeR <- newIORef Nothing
   old <- getTerminalAttributes stdInput
   chatTidVar <- newEmptyMVar
+  stopR <- newIORef (pure False)
   wanted <- lookupEnv "GHS_IMAGES"
   byName <- graphicsTerm
   gfx <- Gfx (case wanted of { Just "0" -> False; Just "1" -> True; _ -> byName }) (dir </> "images") <$> newIORef Set.empty <*> newIORef Set.empty
@@ -195,7 +197,7 @@ chatTui name model dir chat = do
       ui = Ui { uiView = entry "view", uiTalk = entry "talk", uiThought = entry "think"
               , uiCall = \n args -> entry "tool" (T.pack (n ++ " " ++ args)), uiAnswer = entry "echo"
               , uiNote = entry "note" . T.pack . unbracket, uiBusy = post . MBusy, uiSpent = \s secs -> post (MSpent s secs)
-              , uiDone = post MDone, uiLeave = forgetAll gfx >> leave old }
+              , uiDone = post MDone, uiLeave = forgetAll gfx >> leave old, uiOnStop = writeIORef stopR }
       start ev = do
         writeIORef wakeR (wake ev)
         tid <- forkIO $ do
@@ -208,7 +210,7 @@ chatTui name model dir chat = do
         t <- now
         pure St { sEntries = [], sPics = M.empty, sBack = 0, sEdit = editor, sSent = [], sRecall = Nothing, sBusy = Nothing, sSpent = Nothing, sTurns = 0
                 , sStatus = JObj [], sStatusAt = t - 10, sDone = False, sTicks = 0 }
-  _ <- runApp App { appTick = 0.5, appDraw = draw gfx name model, appEvent = \ev st -> event gfx dir pending inbox ev st >>= maybe (forgetAll gfx >> pure Nothing) (pure . Just) } start
+  _ <- runApp App { appTick = 0.5, appDraw = draw gfx name model, appEvent = \ev st -> event gfx (readIORef stopR >>= id) dir pending inbox ev st >>= maybe (forgetAll gfx >> pure Nothing) (pure . Just) } start
   atomically (writeTQueue pending Nothing)
   chatTid <- tryReadMVar chatTidVar
   maybe (pure ()) killThread chatTid
@@ -226,8 +228,8 @@ chatTui name model dir chat = do
       hFlush stdout
       setTerminalAttributes stdInput old Immediately
 
-event :: Gfx -> FilePath -> TQueue (Maybe T.Text) -> TQueue Msg -> Event -> St -> IO (Maybe St)
-event gfx dir pending inbox ev st = case ev of
+event :: Gfx -> IO Bool -> FilePath -> TQueue (Maybe T.Text) -> TQueue Msg -> Event -> St -> IO (Maybe St)
+event gfx stop dir pending inbox ev st = case ev of
   EvWake -> do
     ms <- atomically (flush inbox)
     Just <$> foldM (picture gfx) (foldl apply st ms) [ e | MEntry e <- ms ]
@@ -271,6 +273,8 @@ event gfx dir pending inbox ev st = case ev of
       (KUp, [Ctrl]) -> scroll 1
       (KDown, [Ctrl]) -> scroll (-1)
       (KEnd, _) | null (editText (sEdit st)) -> pure (Just st { sBack = 0 })
+      -- (Esc: while the agent works, the turn is stopped; else the line is cleared)
+      (KEsc, _) | Just _ <- sBusy st -> stop >> pure (Just st)
       (KEsc, _) -> pure (Just st { sEdit = editor, sRecall = Nothing })
       _ -> pure (Just (maybe st (\e -> st { sEdit = e, sRecall = Nothing }) (editKey kp (sEdit st))))
     -- a line sent before, in place of the one being typed (which comes back below the oldest)
@@ -302,7 +306,7 @@ draw gfx name model (w, h) st = do
     spin = "-\\|/" !! (sTicks st `mod` 4)
     status
       | sDone st = [ (stYellow, " the chat ended; Ctrl-C leaves") ]
-      | Just b <- sBusy st = [ (stYellow, ' ' : spin : ' ' : b), (stDim, "  (a line typed now reaches the agent between tool calls)") ]
+      | Just b <- sBusy st = [ (stYellow, ' ' : spin : ' ' : b), (stDim, "  (Esc stops the turn; a line typed now reaches the agent between tool calls)") ]
       | otherwise = [ (stDim, " waiting for a line; Enter sends, Up recalls, PgUp/PgDn scroll, Ctrl-C leaves") ]
     scrolled = if sBack st > 0 then [ (stHi, printf " %d lines back; End follows " (sBack st)) ] else []
     bottom = spansLine w (h - 2) (scrolled ++ status) ++ spansLine w (h - 1) [ (stBold, "> "), (plain, window) ]

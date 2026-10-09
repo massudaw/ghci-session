@@ -29,6 +29,9 @@ struct curl_slist;
 #define CURLOPT_ACCEPT_ENCODING  10102
 #define CURLOPT_HEADERFUNCTION   20079
 #define CURLOPT_HEADERDATA       10029
+#define CURLOPT_NOPROGRESS       43
+#define CURLOPT_XFERINFOFUNCTION 20219
+#define CURLOPT_XFERINFODATA     10057
 #define CURLOPT_LOW_SPEED_LIMIT  19
 #define CURLOPT_LOW_SPEED_TIME   20
 #define CURLINFO_RESPONSE_CODE   0x200002
@@ -105,6 +108,16 @@ static size_t on_header(char *d, size_t s, size_t n, void *u) {
   return k;
 }
 
+/* Giving up the exchanges under way: each notes the count when it begins, and ends itself (at its next look,
+ * within a second) once the count has moved. So a turn that is stopped does not leave a reply being read --
+ * and paid for -- behind it. */
+static volatile long cancels = 0;
+void ghs_https_cancel(void) { __sync_fetch_and_add(&cancels, 1); }
+static int on_progress(void *u, long long dt, long long dn, long long ut, long long un) {
+  (void)dt; (void)dn; (void)ut; (void)un;
+  return *(long *)u != cancels;
+}
+
 /* POST body to url with the headers (one per line in `headers`). 0 and the reply with its status, or 1 and why
  * in err (errlen >= 256). The reply's body: with fd < 0, all of it (malloc'd: ghs_https_free); else written to
  * fd as it arrives, *out empty. timeout_s: the whole exchange (0: no limit). idle_s: this long with nothing
@@ -131,6 +144,10 @@ int ghs_https_request(const char *url, const char *headers, const char *body, si
   f_setopt(c, CURLOPT_HEADERDATA, retry_after);
   f_setopt(c, CURLOPT_TIMEOUT, timeout_s);
   if (idle_s > 0) { f_setopt(c, CURLOPT_LOW_SPEED_LIMIT, 1L); f_setopt(c, CURLOPT_LOW_SPEED_TIME, idle_s); }
+  long began = cancels;
+  f_setopt(c, CURLOPT_XFERINFOFUNCTION, on_progress);
+  f_setopt(c, CURLOPT_XFERINFODATA, &began);
+  f_setopt(c, CURLOPT_NOPROGRESS, 0L);
   f_setopt(c, CURLOPT_NOSIGNAL, 1L);
   f_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
   f_setopt(c, CURLOPT_ACCEPT_ENCODING, "");

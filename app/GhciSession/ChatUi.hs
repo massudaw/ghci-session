@@ -7,7 +7,9 @@ module GhciSession.ChatUi
   , Spent (..), spend, spentLine
   ) where
 
+import Control.Monad (unless, void)
 import Data.IORef
+import System.Posix.Signals (Handler (..), installHandler, raiseSignal, sigINT)
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
@@ -42,6 +44,7 @@ data Ui = Ui
   , uiSpent :: Spent -> Double -> IO ()   -- ^ a turn's end: what it cost, in how many seconds
   , uiDone :: IO ()                       -- ^ the chat's end: no more lines will be taken
   , uiLeave :: IO ()                      -- ^ just before the process runs itself again: the terminal is put back
+  , uiOnStop :: IO Bool -> IO ()          -- ^ given, once, the action that stops the turn under way (False: none was): the Ui calls it when asked to
   }
 
 -- | The streams: the agent's words, its tool calls and their answers on standard output, the thoughts and
@@ -58,4 +61,6 @@ stdoutUi = Ui
   , uiSpent = \s secs -> hPutStrLn stderr (spentLine s secs)
   , uiDone = pure ()
   , uiLeave = hFlush stdout >> hFlush stderr
+  -- (Ctrl-C stops the turn under way; with none, it ends the chat as it always did)
+  , uiOnStop = \stop -> void (installHandler sigINT (Catch (stop >>= \was -> unless was (installHandler sigINT Default Nothing >> raiseSignal sigINT))) Nothing)
   }

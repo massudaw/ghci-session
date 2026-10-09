@@ -478,7 +478,9 @@ and is picked up when it starts.
 
 `ghci-session chat --tui` is the chat on a screen of its own: the transcript labelled by kind, a status line saying what
 the turn is doing now, the session's verdict in the header and a line to type on (Enter sends, Up recalls,
-PgUp/PgDn scroll, Ctrl-C leaves). The turn loop prints nothing itself: it tells a `Ui` what happened, and the streams
+PgUp/PgDn scroll, Ctrl-C leaves). Esc stops the turn the agent is in -- in the middle of a model call, which is
+given up, or of a command, which ends with it -- and the chat goes on: what the turn did is in the history, and the
+next line starts from there (on the standard streams, Ctrl-C during a turn does the same; with none, it leaves). The turn loop prints nothing itself: it tells a `Ui` what happened, and the streams
 or the screen show it. A screen that ends leaves the terminal as it found it.
 
 Both screens show what the agent writes as markdown -- headings, lists, quotes, rules, fenced code, a table laid out

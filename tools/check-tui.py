@@ -10,7 +10,7 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
 
   chat  the header and the line to type on; the line's keys (Left, Ctrl-A/E/W/U, recall with Up and Down); a
         line sent and its answer, labelled; markdown as what it marks up; a write's diff in its colors and a
-        source's edit with the session's verdict; scrolling back and following; a resize; leaving.
+        source's edit with the session's verdict; scrolling back and following; a turn stopped with Esc, in a model call and in a tool; a resize; leaving.
   top   the header and the tabs, each one's content; the history's cursor, a message opened and closed; the
         chat in a pane, of the pane's size, typed at through the monitor, and what it did in the history; a
         shell in a pane; a test asked for; a resize, of a pane too; leaving.
@@ -18,7 +18,7 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
 About a minute and a quarter. -v: every screen (they are kept in a file when a check fails); --keep: the project
 is left (its path is said). Exit status 0 when all hold. tools/check-images.py is the same for the pictures a chat draws.
 """
-import os, shutil, sys, tempfile
+import os, shutil, subprocess, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tuicheck
@@ -76,6 +76,20 @@ mark scrolled
 key end
 wait 0.5
 mark followed
+type wait 30\r
+wait 2
+mark working
+key esc
+wait 2
+mark stopped
+type tool sh {"command":"sleep 31"}\r
+wait 3
+mark running
+key esc
+wait 2
+type say after the stop\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
+wait 4
+mark after
 resize 80x24
 wait 1.5
 mark resized
@@ -88,7 +102,8 @@ TOP = r"""
 wait 3
 mark start
 type 2
-wait 1
+type g
+wait 2
 mark view
 type 3
 wait 1
@@ -110,6 +125,7 @@ type G
 type p
 wait 0.5
 mark cursor
+type n
 key enter
 wait 0.5
 mark opened
@@ -153,6 +169,11 @@ def screens(name, rec):
     return "\n".join(out) + "\n"
 
 
+def sleeping():
+    """Is the command a stopped turn was running still there?"""
+    return subprocess.run(["pgrep", "-f", "sleep 31"], capture_output=True).returncode == 0
+
+
 def check_chat(check, rec):
     at = rec.at
     s = at["start"]
@@ -191,10 +212,17 @@ def check_chat(check, rec):
           and f.has('+greeting = "howdy"') and not s.has('+greeting = "howdy"'), s.lines[s.rows - 2])
     s = at["followed"]
     check("chat: End follows the end again", "lines back" not in s.lines[s.rows - 2] and s.lines[2:s.rows - 2] == f.lines[2:f.rows - 2], s.lines[s.rows - 2])
+    s, w = at["stopped"], at["working"]
+    check("chat: while the model is asked, the status line says so and that Esc stops the turn; Esc does -- said, and a line is waited for again",
+          "Esc stops the turn" in w.lines[w.rows - 2] and "model call" in w.lines[w.rows - 2] and s.has("the turn was stopped") and "waiting for a line" in s.lines[s.rows - 2]
+          and not s.has("waited 30 seconds"), (w.lines[w.rows - 2], s.lines[s.rows - 2]))
+    s, w = at["after"], at["running"]
+    check("chat: a turn stopped while a tool runs takes the command with it, and the chat goes on: the next line is answered",
+          "running sh" in w.lines[w.rows - 2] and s.has(" talk:  after the stop") and s.has("last of it") and not sleeping(), (w.lines[w.rows - 2], sleeping()))
     s = at["resized"]
     check("chat: a smaller terminal is drawn for its size -- the header at its top, the line at its bottom, the end of the transcript between",
           (s.cols, s.rows) == (80, 24) and s.lines[0].startswith(" ghci-session chat demo") and s.lines[23].startswith(">") and "waiting for a line" in s.lines[22]
-          and s.has('+greeting = "howdy"') and s.cursor == (2, 23) and all(len(l) <= 80 for l in s.lines), (s.cursor, s.lines[0], s.lines[-2:]))
+          and s.has("last of it") and s.cursor == (2, 23) and all(len(l) <= 80 for l in s.lines), (s.cursor, s.lines[0], s.lines[-2:]))
     s = at["left"]
     check("chat: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
 
@@ -212,7 +240,7 @@ def check_top(check, rec):
     check("top: a diff in the history is in its colors, and a long message is cut and says so",
           {"fg1"} in s.styles_of('-greeting = "hello"') and {"fg6"} in s.styles_of("@@ -1,7 +1,7 @@") and s.has("more lines; Enter opens"), s.styles_of('-greeting = "hello"'))
     s = at["view"]
-    check("top: 2 is the view the model reads, with the memory's numbers", lit(s, "2 view") and not lit(s, "1 history") and s.lines[3].strip().startswith("memory  messages ") and s.has("0+1|tool: start demo") and s.has("<chat>"), s.lines[2:5])
+    check("top: 2 is the view the model reads, with the memory's numbers at its head", lit(s, "2 view") and not lit(s, "1 history") and s.has(" memory  messages ") and s.has("0+1|tool: start demo") and s.has("<chat>"), s.lines[2:5])
     s = at["log"]
     check("top: 3 is the daemon's log", lit(s, "3 log") and s.has("build: cabal repl") and s.has("[time] boot"), s.lines[3:6])
     s = at["verdict"]
@@ -227,13 +255,11 @@ def check_top(check, rec):
     cur = [y for y in range(3, s.rows - 1) if s.lines[y].startswith("#") and "r" in s.style(y, 0)]
     check("top: G follows the end again, and p moves the cursor to a message before (one is marked, not the last)",
           len(cur) == 1 and any(s.lines[y].startswith("#") for y in range(cur[0] + 1, s.rows - 1)), cur)
-    y = cur[0] if cur else 3
-    cut = lambda s, y: next((l for l in s.lines[y + 1:] if l.startswith("#") or "more lines; Enter opens" in l), "#")
-    o = at["opened"]
-    oy = next((r for r in range(3, o.rows - 1) if o.lines[r].startswith("#") and "r" in o.style(r, 0)), 3)
-    check("top: Enter opens the message under the cursor (it was cut), and Enter again closes it",
-          "more lines" in cut(s, y) and cut(o, oy).startswith("#") and "more lines" in cut(at["closed"], next((r for r in range(3, o.rows - 1) if at["closed"].lines[r].startswith("#") and "r" in at["closed"].style(r, 0)), 3)),
-          (cut(s, y), cut(o, oy)))
+    o, c = at["opened"], at["closed"]
+    whole = lambda s: any(l.strip() == "last of it" for l in s.lines)
+    check("top: n is the next message, and Enter opens the one under the cursor (it was cut: its last line is shown), Enter again closes it",
+          s.has("more lines; Enter opens") and not whole(s) and whole(o) and not whole(c) and c.has("more lines; Enter opens"),
+          [l for l in o.lines if "more lines" in l or "last of it" in l])
     s = at["tested"]
     check("top: T asks the session for its test, and the verdict in the header is the test's", "CHECK-PASS" in s.lines[0] and "fg2" in s.style_of("OK -- CHECK-PASS"), s.lines[0])
     s = at["pane"]
