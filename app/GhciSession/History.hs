@@ -38,7 +38,7 @@
 -- message and how many it covers, so the agent reads @2184+8@ in the view and asks @zoom 2184 8@.
 module GhciSession.History
   ( Params (..), defaultParams, Msg (..), Mem, Job (..), Step (..)
-  , openHistory, appendMsg, putNode, zoom, dateOf, messages, count
+  , openHistory, appendMsg, pageText, partTexts, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
   , capText, msgLine, cutBytes, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, compactPrompt, jobPrompt, retryNote
@@ -77,15 +77,16 @@ import GhciSession.Sys (now)
 -- at. @pNodeMax@: a guard, not a budget -- the shortest of the tries is kept even when it is a little over
 -- @pNode@ (the view measures real sizes), but one still over this is cut. @pView@, @pViewMin@: the view
 -- grows to the first and is then merged down to the second, in one batch. @pCtxMax@, @pCtxMin@: the same
--- for the view a compaction reads. @pCap@: a tool result is cut to this many characters (head and tail
--- kept) before it is logged. @pAhead@: a message's node starts once fewer than this many messages before
--- it are still unbuilt.
+-- for the view a compaction reads. @pCap@: a message is at most this many characters, and a longer text is
+-- several messages in a row ('pageText'): nothing of it is dropped. @pCapMax@: a guard -- a text past this is
+-- cut to it first (head and tail kept), so that an output of fifty megabytes is not two thousand messages.
+-- @pAhead@: a message's node starts once fewer than this many messages before it are still unbuilt.
 data Params = Params
-  { pNode :: !Int, pNodeMax :: !Int, pView :: !Int, pViewMin :: !Int, pCap :: !Int
+  { pNode :: !Int, pNodeMax :: !Int, pView :: !Int, pViewMin :: !Int, pCap :: !Int, pCapMax :: !Int
   , pCtxMax :: !Int, pCtxMin :: !Int, pAhead :: !Int }
 
 defaultParams :: Params
-defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8 }
+defaultParams = Params { pNode = 512, pNodeMax = 1024, pView = 128000, pViewMin = 64000, pCap = 30000, pCapMax = 1000000, pCtxMax = 32000, pCtxMin = 16000, pAhead = 8 }
 
 -- | One message of the log. @mKind@: @user@ (the user's words), @talk@ (the agent's replies), @tool@ (a
 -- request: a command of this tool, an agent's tool call), @echo@ (its result), @work@ (a subagent's
@@ -222,11 +223,41 @@ saveViews mem = do
 msgFits :: Params -> Msg -> Bool
 msgFits ps m = byteLength (msgLine m) <= pNode ps
 
--- | Append a message: its id. The text is capped ('capText') by the CALLER where that is wanted (tool
--- results); a user's words go whole. The message's line is appended to the view and nothing else in it
--- changes -- unless the view has passed its budget, and then one batch merges it ('stepView').
+-- | Append a message: its id. A text longer than a message may be ('pCap') is several messages in a row, of
+-- the same kind, each saying which part it is and of which message; the id is the first's. Nothing is dropped
+-- (a cut, as it was, kept a long result's head and tail and lost what a model most often went back for: the
+-- one failure in the middle of a test run) -- short of the guard 'pCapMax'. Each message's line is appended to
+-- the view and nothing else in it changes -- unless the view has passed its budget, and then one batch merges
+-- it ('stepView').
 appendMsg :: Mem -> T.Text -> T.Text -> IO Int
-appendMsg mem kind text = withMVar (mLock mem) $ \_ -> do
+appendMsg mem kind text0 = withMVar (mLock mem) $ \_ -> do
+  let ps = mParams mem
+  first <- Seq.length <$> readIORef (mRoot mem)
+  ids <- mapM (appendOne mem kind) (partTexts first (pageText (pCap ps) (capText (pCapMax ps) text0)))
+  pure (case ids of { (i : _) -> i; [] -> first })
+
+-- | The parts of a long text as messages: each says which part it is, and all but the last that the next
+-- message goes on. One part is the text.
+partTexts :: Int -> [T.Text] -> [T.Text]
+partTexts first pages = case pages of
+  [one] -> [one]
+  _ -> [ (if k == 1 then T.empty else T.pack ("[part " ++ show k ++ " of " ++ show n ++ " of message " ++ show first ++ "]\n"))
+         <> page
+         <> (if k == n then T.empty else T.pack ((if T.pack "\n" `T.isSuffixOf` page then "" else "\n") ++ "[part " ++ show k ++ " of " ++ show n ++ ": message " ++ show (first + k) ++ " goes on]"))
+       | (k, page) <- zip [1 :: Int ..] pages ]
+  where n = length pages
+
+-- | A text as pieces of at most @cap@ characters, cut after a line's end where there is one in reach (else at
+-- the limit). Put together they are the text.
+pageText :: Int -> T.Text -> [T.Text]
+pageText cap t
+  | cap <= 0 || T.length t <= cap = [t]
+  | otherwise = let (a, _) = T.splitAt cap t
+                    upto = case T.breakOnEnd (T.pack "\n") a of { (h, _) | not (T.null h) -> h; _ -> a }
+                in upto : pageText cap (T.drop (T.length upto) t)
+
+appendOne :: Mem -> T.Text -> T.Text -> IO Int
+appendOne mem kind text = do
   root <- readIORef (mRoot mem)
   t <- now
   let ps = mParams mem
@@ -469,7 +500,8 @@ failed mem p after = do
 
 -- text sizes --------------------------------------------------------------------------
 
--- | A tool result cut for the log: head and tail kept, with a note of what was cut. In CHARACTERS.
+-- | A text cut to a size: head and tail kept, with a note of what was cut. In CHARACTERS. (The guard
+-- 'pCapMax'; a text over a message's size is not cut but split, 'pageText'.)
 capText :: Int -> T.Text -> T.Text
 capText cap t
   | T.length t <= cap = t
@@ -559,7 +591,8 @@ viewPart who withTools =
   , "The summaries form a binary tree: each message is compressed into a line (a"
   , "short message is its own line), then adjacent lines are merged in pairs, again"
   , "and again. So recent lines cover one message each, and older lines cover more. A"
-  , "message not summarized yet shows as \"(not summarized yet: zoom it)\"." ] ++
+  , "message not summarized yet shows as \"(not summarized yet: zoom it)\". A text too"
+  , "long for one message is split over several in a row, each saying which part it is." ] ++
   (if not withTools then [] else
   [ ""
   , "Tools:"

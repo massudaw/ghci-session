@@ -261,6 +261,25 @@ run = do
   eq "history: a cut at a boundary keeps the character" (H.cutBytes 3 (T.pack "a\233b")) (T.pack "a\233")
   check "history: a capped result keeps head and tail and says so" (let c = H.capText 10 (T.pack (replicate 40 'x')) in T.isInfixOf (T.pack "30 characters cut") c && T.isPrefixOf (T.pack "xxxxx\n") c && T.isSuffixOf (T.pack "xxxxx") c)
   eq "history: a short result is not touched" (H.capText 10 (T.pack "short")) (T.pack "short")
+  let long = T.pack (unlines [ "line " ++ show i | i <- [1 .. 40 :: Int] ])
+  eq "history: a long text is pieces that put together are the text" (T.concat (H.pageText 50 long)) long
+  check "history: a piece is no longer than a message may be, and ends at a line's end where there is one"
+        (all (\q -> T.length q <= 50 && T.pack "\n" `T.isSuffixOf` q) (H.pageText 50 long))
+  eq "history: a line longer than a message is cut at the limit; a short text is one piece"
+     (H.pageText 4 (T.pack "abcdefghij"), H.pageText 50 (T.pack "short")) (map T.pack ["abcd", "efgh", "ij"], [T.pack "short"])
+  eq "history: the parts of a long text say which they are, of which message, and where it goes on"
+     (H.partTexts 7 (map T.pack ["a\n", "b\n", "c"]))
+     (map T.pack ["a\n[part 1 of 3: message 8 goes on]", "[part 2 of 3 of message 7]\nb\n[part 2 of 3: message 9 goes on]", "[part 3 of 3 of message 7]\nc"])
+  eq "history: one part is the text, with nothing said" (H.partTexts 7 [T.pack "all of it"]) [T.pack "all of it"]
+  do (hl, _) <- H.openHistory hp { H.pCap = 60 } (tmp </> "history-long")
+     i0 <- H.appendMsg hl (T.pack "echo") (T.pack "before")
+     i1 <- H.appendMsg hl (T.pack "echo") long
+     i2 <- H.appendMsg hl (T.pack "echo") (T.pack "after")
+     n <- H.count hl
+     whole <- mapM (\i -> either (const T.empty) id <$> H.zoom hl i 1) [i1 .. i2 - 1]
+     let body = T.concat [ T.unlines [ l | l <- T.lines (T.drop 1 (T.dropWhile (/= ':') w)), not (T.pack "[part " `T.isPrefixOf` T.stripStart l) ] | w <- whole ]
+     eq "history: a long message is several in a row, its id the first's" (i0, i1, i2 > i1 + 1, n == i2 + 1) (0, 1, True, True)
+     eq "history: nothing of a long message is dropped (its parts, zoomed, are its lines)" (map T.strip (T.lines body)) (map T.strip (T.lines long))
 
   -- which lines merge: the order of Taelin's rollback push. His list, newest first, as (keep, tick): a
   -- push sets the newest entry's bit, or (the bit set) becomes the newest entry and pushes the old one on.

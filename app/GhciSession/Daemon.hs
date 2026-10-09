@@ -1955,12 +1955,12 @@ describeReq op req = T.pack (unwords (op' : args))
         ++ [ e | Just e <- [lookupStr "expr" req], not (null e) ]
         ++ [ f | JStr f <- lookupArr "files" req ]
 
--- | A reply, capped, with the stale warning the client was given.
+-- | A reply, whole (a long one is several messages: 'H.appendMsg'), with the stale warning the client was given.
 histEcho :: S -> [FilePath] -> T.Text -> IO ()
-histEcho s stale out = forM_ (sHist s) $ \m -> do
+histEcho s stale out = forM_ (sHist s) $ \_ -> do
   let warn = if null stale then T.empty else T.pack ("[STALE: " ++ show (length stale) ++ " watched file(s) differ from the loaded code: " ++ intercalate ", " (map (rel s) (take 4 stale)) ++ "]\n")
       body = T.strip out
-  histAdd s "echo" (warn <> H.capText (H.pCap (H.params m)) (if T.null body then T.pack "(no output)" else body))
+  histAdd s "echo" (warn <> (if T.null body then T.pack "(no output)" else body))
 
 -- | The verdict as the log has it: the status line (with its STALE prefix) and the failing lines.
 verdictLine :: S -> IO T.Text
