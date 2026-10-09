@@ -10,7 +10,8 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
 
   chat  the header and the line to type on; the line's keys (Left, Ctrl-A/E/W/U, recall with Up and Down); a
         line sent and its answer, labelled; markdown as what it marks up; a write's diff in its colors and a
-        source's edit with the session's verdict; scrolling back and following; a turn stopped with Esc, in a model call and in a tool; a resize; leaving.
+        source's edit with the session's verdict; scrolling back and following; a turn stopped with Esc, in a model call and in a tool; subagents started,
+        one's report answered, the other stopped; a resize; leaving.
   top   the header and the tabs, each one's content; the history's cursor, a message opened and closed; the
         chat in a pane, of the pane's size, typed at through the monitor, and what it did in the history; a
         shell in a pane; a test asked for; a resize, of a pane too; leaving.
@@ -87,9 +88,17 @@ wait 3
 mark running
 key esc
 wait 2
-type say after the stop\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
+type say after the stop\r
 wait 4
 mark after
+type tool spawn {"tasks":["say the first is done","wait 33"]}\r
+wait 7
+mark spawned
+key esc
+wait 2
+mark substopped
+type say the end\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
+wait 4
 resize 80x24
 wait 1.5
 mark resized
@@ -218,7 +227,15 @@ def check_chat(check, rec):
           and not s.has("waited 30 seconds"), (w.lines[w.rows - 2], s.lines[s.rows - 2]))
     s, w = at["after"], at["running"]
     check("chat: a turn stopped while a tool runs takes the command with it, and the chat goes on: the next line is answered",
-          "running sh" in w.lines[w.rows - 2] and s.has(" talk:  after the stop") and s.has("last of it") and not sleeping(), (w.lines[w.rows - 2], sleeping()))
+          "running sh" in w.lines[w.rows - 2] and s.has(" talk:  after the stop") and not sleeping(), (w.lines[w.rows - 2], sleeping()))
+    s = at["spawned"]
+    check("chat: spawn starts a subagent a task and answers at once with their names; what each does is noted as it does it",
+          s.has("Started Sub-1, Sub-2.") and s.has("Sub-1: started") and s.has("Sub-2: started"), [l for l in s.lines if "Sub-" in l][:6])
+    r = s.find("[Sub-1] report")
+    check("chat: a subagent's last reply reaches the agent as a message of its own, and the agent answers it; the other is still at work",
+          r is not None and s.has("the first is done", r[0]) and s.has(" talk:  fake: you said 'the first is done'", r[0]) and not s.has("[Sub-2] report"), r)
+    s = at["substopped"]
+    check("chat: Esc with the agent waiting stops the subagents still at work", s.has("1 subagent(s) stopped") and not s.has("[Sub-2] report"), [l for l in s.lines if "stopped" in l])
     s = at["resized"]
     check("chat: a smaller terminal is drawn for its size -- the header at its top, the line at its bottom, the end of the transcript between",
           (s.cols, s.rows) == (80, 24) and s.lines[0].startswith(" ghci-session chat demo") and s.lines[23].startswith(">") and "waiting for a line" in s.lines[22]
@@ -237,6 +254,9 @@ def check_top(check, rec):
           and all(t in tabs(s) for t in ["1 history", "2 view", "3 log", "4 verdict", "5 usage", "6 heap", "7 chat", "8 shell"]), s.lines[:3])
     check("top: it opens on the history, at its end: what the chat did, numbered, with its time and kind",
           lit(s, "1 history") and not lit(s, "2 view") and s.has(" talk: The tool answered: edited src/Demo.hs") and any(l.startswith("#") and " user: " in l for l in s.lines), tabs(s))
+    w = s.find(" work: [Sub-1] report")
+    check("top: a subagent's report is in the history as work, in its color, and its own doings are not",
+          w is not None and "fg3" in s.style(w[0], w[1] + 1) and not s.has("Sub-1: started"), w)
     check("top: a diff in the history is in its colors, and a long message is cut and says so",
           {"fg1"} in s.styles_of('-greeting = "hello"') and {"fg6"} in s.styles_of("@@ -1,7 +1,7 @@") and s.has("more lines; Enter opens"), s.styles_of('-greeting = "hello"'))
     s = at["view"]

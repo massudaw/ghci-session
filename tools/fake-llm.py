@@ -32,6 +32,15 @@ def text_of(m):
     c = m.get("content") or ""
     return c if isinstance(c, str) else " ".join(p.get("text", "") for p in c if isinstance(p, dict))
 
+def last_line(t):
+    """What a message asks: its last line -- or, for a subagent, whose message ends with its own chat
+    (<agent> ... </agent>, lines "i|kind: text"), the last thing it was told there."""
+    if "<agent " in t:
+        told = re.findall(r"^\d+\|user: (.*)$", t[t.rindex("<agent "):], re.M)
+        if told:
+            return told[-1].strip()
+    return next((l.strip() for l in reversed(t.splitlines()) if l.strip()), "")
+
 def reply(body):
     msgs, tools = body.get("messages", []), body.get("tools") or []
     last = msgs[-1] if msgs else {}
@@ -44,7 +53,7 @@ def reply(body):
         return {"content": "The tool answered: " + text_of(last)[:300]}
     t = text_of(last).strip()
     # the user's line is the last line of a turn's message, after the view the first turn carries
-    line = next((l.strip() for l in reversed(t.splitlines()) if l.strip()), "")
+    line = last_line(t)
     names = [x.get("function", {}).get("name") for x in tools]
     m = re.match(r"eval\s+(.+)", line)
     if m and "eval" in names:
@@ -237,7 +246,7 @@ def a_reply(body):
     if results and not said:
         c = results[-1].get("content")
         return [thought, {"type": "text", "text": "The tool answered: " + (c if isinstance(c, str) else a_text(c))[:300]}], "end_turn"
-    line = next((l.strip() for l in reversed(said.splitlines()) if l.strip()), "")
+    line = last_line(said)
     use = lambda name, args: ([thought, {"type": "tool_use", "id": "toolu_%d" % int(time.time() * 1000000), "name": name, "input": args}], "tool_use")
     m = re.match(r"eval\s+(.+)", line)
     if m and "eval" in names:

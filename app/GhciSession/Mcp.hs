@@ -164,7 +164,7 @@ toolJson :: Tool -> Json
 toolJson t = JObj
   [ ("name", JStr (tName t)), ("description", JStr (tDesc t))
   , ("inputSchema", JObj [ ("type", JStr "object")
-                         , ("properties", JObj [ (k, JObj [("type", JStr ty), ("description", JStr d)]) | (k, (ty, d)) <- tProps t ])
+                         , ("properties", JObj [ (k, JObj (if ty == "strings" then [("type", JStr "array"), ("items", JObj [("type", JStr "string")]), ("description", JStr d)] else [("type", JStr ty), ("description", JStr d)])) | (k, (ty, d)) <- tProps t ])
                          , ("required", JArr (map JStr (tReq t))) ]) ]
 
 -- | A tool, as a request to the daemon: ok, and the text.

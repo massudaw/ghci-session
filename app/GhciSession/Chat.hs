@@ -28,7 +28,7 @@
 module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
-  , arguments, chatTools, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
+  , arguments, chatTools, toolJson, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
   , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
@@ -41,7 +41,7 @@ import Control.Exception (Exception, IOException, SomeException, catch, finally,
 import Data.IORef
 import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
-import Data.Char (isSpace)
+import Data.Char (isAlphaNum, isSpace)
 import Data.List (groupBy, intercalate, isInfixOf, isPrefixOf, isSuffixOf, partition, sort, tails)
 import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
 import qualified Data.Map.Strict as M
@@ -150,6 +150,9 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cDown :: IORef Bool                  -- ^ the last wait for the session to come back ended with it still down
                  , cRestart :: IORef Bool               -- ^ a restart was asked (SIGHUP): at the next model call
                  , cInTurn :: IORef Bool                -- ^ a turn is running (else a restart is at once)
+                 , cSub :: Maybe (String, FilePath)     -- ^ a subagent's: its name and the file its chat is kept in (the agent's own: Nothing)
+                 , cAgents :: IORef (M.Map String Sub)   -- ^ the subagents there are, at work or done
+                 , cStart :: IORef (Maybe (Sub -> String -> IO ()))   -- ^ how one is run (a turn of its own, to its report), once the chat knows its endpoint
                  , cTurn :: IORef (Maybe ThreadId)      -- ^ the thread of the turn under way, for stopping it
                  , cStopped :: IORef Bool               -- ^ the turn under way was asked to stop
                  , cExe :: FilePath, cArgv :: [String]   -- ^ the executable and the arguments to run again as
@@ -189,6 +192,7 @@ logH ch kind text = void (logId ch kind text)
 
 -- | A line of the history, and its id.
 logId :: Chat -> String -> T.Text -> IO (Maybe Int)
+logId ch kind text | Just (_, file) <- cSub ch = agentAppend file kind text >> pure Nothing
 logId ch kind text = do
   r <- try (ask ch "log" [("kind", JStr kind), ("text", JText text)]) :: IO (Either SomeException Json)
   pure $ case r of
@@ -413,7 +417,9 @@ chatTools =
      , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit, with a diff of each file. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path. Extremely fast (<1ms in-memory). Always use this instead of running wc -l or du via sh." [("path", ("string", "optional path or pattern filter (e.g. 'src', 'Gba/Cpu', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)"))] []
-     , Tool "sh" "Run a shell command in the project's directory: its output, then how it ended and how long it took, as [exit 0 in 0.4 s]. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
+     , Tool "sh" "Run a shell command in the project's directory: its output, then how it ended and how long it took, as [exit 0 in 0.4 s]. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"]
+     , Tool "spawn" "Start one subagent per task, in parallel, and return their names at once. Each one's report reaches you as a message \"[Name] report\" when it finishes. A subagent sees the view and has your tools on the same session and files, but knows what you want only from its task: say in it what to do, where, and what to report." [("tasks", ("strings", "a task each, in full")), ("effort", ("string", "how hard they think (low | high | max); by default, as hard as you"))] ["tasks"]
+     , Tool "tell" "Send a message to a subagent, by name. One at work reads it between its tool calls, and its report answers it; one that has finished goes on from its chat, and its reply reaches you as a message \"[Name] reply\"." [("name", ("string", "the subagent's name")), ("message", ("string", "what to tell it"))] ["name", "message"] ]
   where timeoutDesc = "seconds before it is interrupted (default 30): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. Multi-line expressions are automatically wrapped in a GHCi block by the session (do NOT write :{ or :}). ONE expression, command or declaration group per call: make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
@@ -432,7 +438,8 @@ toolJson :: Tool -> Json
 toolJson t = JObj [ ("type", JStr "function"), ("function", JObj
   [ ("name", JStr (tName t)), ("description", JStr (tDesc t))
   , ("parameters", JObj [ ("type", JStr "object")
-                        , ("properties", JObj [ (k, JObj ([("type", JStr ty), ("description", JStr d)] ++ [ ("items", replacement) | ty == "array" ])) | (k, (ty, d)) <- tProps t ])
+                        , ("properties", JObj [ (k, JObj (if ty == "strings" then [("type", JStr "array"), ("items", JObj [("type", JStr "string")]), ("description", JStr d)]
+                                                                 else [("type", JStr ty), ("description", JStr d)] ++ [ ("items", replacement) | ty == "array" ])) | (k, (ty, d)) <- tProps t ])
                         , ("required", JArr (map JStr (tReq t))) ]) ]) ]
   where replacement = JObj [ ("type", JStr "object")
                            , ("properties", JObj [ (k, JObj [("type", JStr "string")]) | k <- ["path", "old", "new"] ])
@@ -463,6 +470,8 @@ runTool ch t a0
       let emptyHint = if null (obj a0) then " [hint: tool arguments were empty {}; if this was near the 8k token limit, output likely ran out of tokens before writing arguments -- please call the tool directly with less reasoning]" else ""
       in pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t) ++ emptyHint))
   | tName t == "eval" = evalTool ch a
+  | tName t == "spawn" = spawnTool ch a
+  | tName t == "tell" = tellTool ch a
   | tName t `elem` sessionToolNames = sessionCall ch (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
   | otherwise = do
       r <- try (fileTool ch (tName t) a) :: IO (Either IOException (Bool, T.Text))
@@ -607,8 +616,12 @@ stopTurn :: Chat -> IO Bool
 stopTurn ch = do
   t <- readIORef (cTurn ch)
   case t of
-    Nothing -> pure False
-    Just tid -> writeIORef (cStopped ch) True >> cancelRequests >> throwTo tid StopTurn >> pure True
+    -- (no turn of the agent's own: the subagents at work, if any, are what is stopped)
+    Nothing -> do
+      n <- stopAgents ch
+      when (n > 0) (cancelRequests >> uiNote (cUi ch) (printf "[%d subagent(s) stopped]" n))
+      pure (n > 0)
+    Just tid -> writeIORef (cStopped ch) True >> stopAgents ch >> cancelRequests >> throwTo tid StopTurn >> pure True
 
 -- | Has the turn been asked to stop? Then it stops here.
 checkStop :: Chat -> IO ()
@@ -628,6 +641,196 @@ stoppable ch act = do
       writeIORef (cBatch ch) Nothing
       logH ch "echo" (T.pack "harness: the turn was stopped by the user before it ended")
       uiNote (cUi ch) "[the turn was stopped; what it did so far is in the history]"
+
+-- subagents ------------------------------------------------------------------------------------
+--
+-- The agent can give work away: @spawn@ starts a subagent a task, each a turn of its own on a thread of its
+-- own, with the agent's tools (less these two) on the same session and files, and answers at once with their
+-- names. A subagent's chat is its own -- a file, @agents\/NAME.jsonl@ in the session's state: what it is, its
+-- task, every call it makes and what it is told -- and is what its turn reads after the view, so one that has
+-- finished and is told more ('tellTool') goes on from there. What reaches the agent is its last reply: a line
+-- on the chat's queue, @[NAME] report@ and the text, which is a turn's message if the agent is waiting and
+-- reaches it between two tool calls if it is at work -- logged as @work@, the kind the view has for it.
+-- A turn that is stopped takes its subagents with it.
+
+-- | A subagent: its name, where its chat is kept, the lines told to it and not yet read, the thread of its
+-- turn while it is at work, how hard it thinks, and whether it was asked to stop.
+data Sub = Sub { suName :: String, suFile :: FilePath, suQueue :: TQueue (Maybe T.Text), suThread :: Maybe ThreadId, suEffort :: Maybe String, suStop :: IORef Bool }
+
+-- | The tools of whoever asks: a subagent has all but the two that make and tell subagents.
+toolsFor :: Chat -> [Tool]
+toolsFor ch = [ t | t <- chatTools, isNothing (cSub ch) || tName t `notElem` ["spawn", "tell"] ]
+
+agentsDir :: Chat -> FilePath
+agentsDir ch = cStateDir (cConf ch) </> cName ch </> "agents"
+
+-- | A line of a subagent's chat.
+agentAppend :: FilePath -> String -> T.Text -> IO ()
+agentAppend file kind text = do
+  t <- now
+  createDirectoryIfMissing True (takeDirectory file)
+  B.appendFile file (encodeBS (JObj [("date", JNum t), ("kind", JStr kind), ("text", JText text)]) <> B8.pack "\n")
+
+-- | A subagent's chat as its turn reads it: a line a message, @i|kind: text@, a long one cut (it was the
+-- subagent's own doing, and it can do it again), and of a long chat its first lines -- what it is, its task --
+-- and its last.
+agentShow :: [(String, T.Text)] -> T.Text
+agentShow ls = T.unlines (if length shown <= 60 then shown else take 4 shown ++ [T.pack (printf "(%d lines left out)" (length shown - 44))] ++ drop (length shown - 40) shown)
+  where shown = [ T.pack (show i ++ "|" ++ kind ++ ": ") <> flat (if T.length t > 3000 then T.take 3000 t <> T.pack " [...]" else t) | (i, (kind, t)) <- zip [0 :: Int ..] ls ]
+        flat = T.replace (T.pack "\n") (T.pack "\n  ")
+
+agentLines :: FilePath -> IO [(String, T.Text)]
+agentLines file = do
+  r <- try (B.readFile file) :: IO (Either IOException B.ByteString)
+  pure [ (fromMaybe "?" (lookupStr "kind" j), fromMaybe T.empty (lookupText "text" j)) | Right b <- [r], l <- B8.lines b, Right j <- [parseJsonBS l] ]
+
+-- | Is this line a subagent's word to the agent (@[NAME] report@, @[NAME] reply@, and its text)? It is logged
+-- as @work@, not as the user's.
+isWork :: T.Text -> Bool
+isWork t = case T.words (T.takeWhile (/= '\n') t) of
+  [n, w] -> T.pack "[Sub-" `T.isPrefixOf` n && T.pack "]" `T.isSuffixOf` n && w `elem` map T.pack ["report", "reply"]
+  _ -> False
+
+-- | A line that came on the queue, logged as what it is: the user's, or a subagent's report.
+logTyped :: Chat -> T.Text -> IO (Maybe Int)
+logTyped ch t = logId ch (if isWork t then "work" else "user") t
+
+-- | What a subagent is told it is, before the view and the tools are described to it.
+subHead :: String -> String
+subHead who = unlines
+  [ "You are a subagent of " ++ who ++ ", an AI agent that works for one user in a single chat"
+  , "that never ends. " ++ who ++ " gave you a task. Do it yourself, with your tools, following"
+  , "the user's instructions at the end of this prompt."
+  , ""
+  , "Your first message holds the view below, then your chat with " ++ who ++ " so far"
+  , "inside <agent> tags, its lines as \"i|kind: text\": what you are (note), your task"
+  , "(user), and later all you did and were told. The view shows you what " ++ who
+  , "knows: what the user wants, decided and taught. Use it as context only, and do"
+  , "what your task says, not what the user's last message says: " ++ who ++ " may have"
+  , "given you just part of the work. Other subagents may be working on the same"
+  , "files and the same session at the same time: keep to what your task names."
+  , ""
+  , "Your final reply is your report to " ++ who ++ ": what you did, what you found that"
+  , "the task asks for, what failed. No one else sees your work. " ++ who ++ " may send"
+  , "you more messages, even while you work: answer the last." ]
+
+-- | Start a subagent a task.
+spawnTool :: Chat -> Json -> IO (Bool, T.Text)
+spawnTool ch a = do
+  start <- readIORef (cStart ch)
+  agents <- readIORef (cAgents ch)
+  let tasks = [ T.strip t | j <- lookupArr "tasks" a, Just t <- [lookupText "t" (JObj [("t", j)])], not (T.null (T.strip t)) ]
+      atWork = length [ () | s <- M.elems agents, isJust (suThread s) ]
+      effort = case lookupStr "effort" a of { Just ef | ef `elem` ["low", "high", "max"] -> Just ef; _ -> Nothing }
+  case (cSub ch, start) of
+    (Just _, _) -> pure (False, T.pack "spawn: a subagent starts none of its own")
+    (_, Nothing) -> pure (False, T.pack "spawn: not in this chat")
+    _ | null tasks -> pure (False, T.pack "spawn: no tasks")
+      | length tasks + atWork > maxAgents -> pure (False, T.pack (printf "spawn: %d task(s), and %d subagent(s) at work already: %d at a time at most. Give fewer, or wait for a report." (length tasks) atWork maxAgents))
+    (_, Just run) -> do
+      createDirectoryIfMissing True (agentsDir ch)
+      names <- forM tasks $ \task -> do
+        had <- length . filter (".jsonl" `isSuffixOf`) <$> listDirectory (agentsDir ch)
+        let name = "Sub-" ++ show (had + 1)
+            file = agentsDir ch </> (name ++ ".jsonl")
+        agentAppend file "note" (T.pack ("subagent" ++ maybe "" (" at effort " ++) effort))
+        agentAppend file "user" task
+        launch ch run name file effort "report"
+        pure name
+      pure (True, T.pack ("Started " ++ intercalate ", " names ++ ". Each one's report will reach you as a message when it finishes."))
+
+maxAgents :: Int
+maxAgents = 8
+
+-- | A subagent's turn, on a thread of its own, known to the chat while it runs.
+launch :: Chat -> (Sub -> String -> IO ()) -> String -> FilePath -> Maybe String -> String -> IO ()
+launch ch run name file effort label = do
+  q <- newTQueueIO
+  stop <- newIORef False
+  let s0 = Sub name file q Nothing effort stop
+  gate <- newEmptyMVar
+  tid <- forkIO $ do
+    takeMVar gate
+    void (try (run s0 label) :: IO (Either SomeException ()))
+    atomicModifyIORef' (cAgents ch) (\m -> (M.adjust (\s -> s { suThread = Nothing }) name m, ()))
+  atomicModifyIORef' (cAgents ch) (\m -> (M.insert name s0 { suThread = Just tid } m, ()))
+  putMVar gate ()
+
+-- | Tell a subagent something: one at work reads it between two tool calls; one that has finished goes on.
+tellTool :: Chat -> Json -> IO (Bool, T.Text)
+tellTool ch a = do
+  start <- readIORef (cStart ch)
+  agents <- readIORef (cAgents ch)
+  let name = fromMaybe "" (lookupStr "name" a)
+      message = fromMaybe T.empty (lookupText "message" a)
+      file = agentsDir ch </> (name ++ ".jsonl")
+      known = not (null name) && all (\c -> isAlphaNum c || c == '-') name
+  there <- if known then doesFileExist file else pure False
+  case (M.lookup name agents, start) of
+    _ | isJust (cSub ch) -> pure (False, T.pack "tell: a subagent tells none")
+      | T.null (T.strip message) -> pure (False, T.pack "tell: no message")
+    (Just s, _) | isJust (suThread s) -> do
+      atomically (writeTQueue (suQueue s) (Just message))
+      pure (True, T.pack ("Sent. " ++ name ++ " reads it between its tool calls, and its report answers it."))
+    (_, Just run) | there -> do
+      agentAppend file "user" message
+      launch ch run name file (M.lookup name agents >>= suEffort) "reply"
+      pure (True, T.pack ("Sent. " ++ name ++ "'s reply will reach you as a message."))
+    _ -> pure (False, T.pack ("No agent " ++ name ++ " to tell." ++ (if M.null agents then "" else " There are: " ++ intercalate ", " (M.keys agents) ++ ".")))
+
+-- | The subagents at work, stopped: how many there were.
+stopAgents :: Chat -> IO Int
+stopAgents ch = do
+  agents <- readIORef (cAgents ch)
+  let working = [ (s, tid) | s <- M.elems agents, Just tid <- [suThread s] ]
+  forM_ working $ \(s, tid) -> writeIORef (suStop s) True >> throwTo tid StopTurn
+  pure (length working)
+
+-- | How a subagent is run, for a chat that knows its endpoint: its turn -- the view, then its chat -- to its
+-- end, again while it was told more meanwhile, and its last reply put on the agent's queue as its report.
+subRunner :: Chat -> Endpoint -> Opts -> String -> TQueue (Maybe T.Text) -> Sub -> String -> IO ()
+subRunner ch e o instr toAgent s label = go
+  where
+    name = suName s
+    go = do
+      (v, _, _, _) <- view ch 0
+      mine <- agentLines (suFile s)
+      replies <- newIORef []
+      failure <- newIORef ""
+      batch <- newIORef Nothing
+      pend <- newIORef Nothing
+      down <- newIORef False
+      never <- newIORef False
+      inTurn <- newIORef False
+      turnR <- newIORef Nothing
+      tStart <- now
+      let said x = uiNote (cUi ch) ("[" ++ name ++ ": " ++ x ++ "]")
+          ui = Ui { uiView = \_ -> pure (), uiTalk = \t -> modifyIORef' replies (t :), uiThought = \_ -> pure ()
+                  , uiCall = \n args -> said (n ++ " " ++ take 100 args), uiAnswer = \_ -> pure ()
+                  , uiNote = \x -> when ("chat: " `isPrefixOf` x) (writeIORef failure (drop 6 x) >> said (drop 6 x))
+                  , uiBusy = \_ -> pure (), uiSpent = \sp secs -> said (drop 1 (init (spentLine sp secs))), uiDone = pure (), uiLeave = pure (), uiOnStop = \_ -> pure () }
+          ch' = ch { cUi = ui, cSub = Just (name, suFile s), cBatch = batch, cPending = pend, cDown = down, cRestart = never, cInTurn = inTurn, cTurn = turnR, cStopped = suStop s }
+          o' = o { oView = False, oEffort = case suEffort s of { Just ef -> Just ef; Nothing -> oEffort o } }
+          system = subHead (cAgent ch) ++ "\n" ++ T.unpack (H.viewPrompt (cAgent ch)) ++ "\n" ++ master ++ (if null instr then "" else "\n" ++ instr)
+          first = v <> T.pack ("\n\n<agent name=\"" ++ name ++ "\">\n") <> agentShow mine <> T.pack "</agent>"
+      said (if label == "report" then "started" else "goes on")
+      r <- try (if eProvider e == ClaudeCli then turnCli ch' e o' system first (suQueue s)
+                else goOn ch' e o' (suQueue s) (TurnState [ msg "system" (T.pack system), msg "user" first ] 0 0 [] (Spent 0 0 0 0 0 False False) tStart Nothing))
+      rs <- readIORef replies
+      why <- readIORef failure
+      case r of
+        Left x | Just StopTurn <- fromException x -> agentAppend (suFile s) "note" (T.pack "stopped by the user before the end")
+        _ -> do
+          -- (told more as it ended: it goes on, and what it then says is the report)
+          left <- drain (suQueue s)
+          if not (null left) then mapM_ (agentAppend (suFile s) "user") left >> go else do
+            let text = case (r, rs) of
+                  (Left x, _) -> T.pack ("failed: " ++ show (x :: SomeException))
+                  (_, t : _) -> t
+                  _ -> T.pack ("failed: it ended without a reply" ++ (if null why then "" else " (" ++ why ++ ")"))
+                line = T.pack ("[" ++ name ++ "] " ++ label ++ "\n") <> text
+            uiNote (cUi ch) (T.unpack line)
+            atomically (writeTQueue toAgent (Just line))
 
 -- | The agent's hands on the files, inside the project only.
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
@@ -993,6 +1196,14 @@ master = unlines
   , "given to you whole -- when it is new, or when you zoom(id, 1) on it; a"
   , "summary only names it."
   , ""
+  , "- Many hands: spawn starts a subagent a task, all at once, each with your"
+  , "  tools on this same session and these same files; you go on, and each one's"
+  , "  last reply reaches you as a message \"[Name] report\" -- while you work, between"
+  , "  two of your calls, or as a turn of its own. Give away what is apart from the"
+  , "  rest (a search, a file of its own, a question to answer) and say in the task"
+  , "  all that it needs: a subagent knows the view, not what you have in mind. Two"
+  , "  that write the same file undo each other. tell sends one a message."
+  , ""
   , "The view holds what was done to the code by hand too: a save of a file is"
   , "a tool line, its verdict an echo. What you learned that will matter later"
   , "can also be kept with remember: a finding, a decision, what is left undone." ]
@@ -1020,7 +1231,7 @@ turn :: Chat -> Endpoint -> Opts -> String -> [T.Text] -> TQueue (Maybe T.Text) 
 turn ch e o system texts pending = do
   (v, settled, parts, count) <- view ch (oSettle o)
   unless settled (uiNote (cUi ch) (printf "[view: %d lines, not all summarized yet; going on]" parts))
-  ids <- forM texts (logId ch "user")
+  ids <- forM texts (logTyped ch)
   tStart <- now
   let task = T.intercalate (T.pack "\n\n") texts
   if eProvider e == ClaudeCli then turnCli ch e o system (v <> T.pack "\n\n" <> task) pending else
@@ -1053,8 +1264,8 @@ turnCli ch e o system first pending = do
   spent <- newIORef (Spent 0 0 0 0 0 False False)
   pid <- getProcessID
   sockDir <- (\d -> takeDirectory d) <$> Sys.sockPath (cStateDir (cConf ch) </> cName ch)
-  let sock = sockDir </> ("chat-" ++ show pid ++ ".sock")
-      byName = [ (tName t, t) | t <- chatTools ]
+  let sock = sockDir </> ("chat-" ++ show pid ++ maybe "" (("-" ++) . fst) (cSub ch) ++ ".sock")
+      byName = [ (tName t, t) | t <- toolsFor ch ]
       effort = case oEffort o of { Just "none" -> Just "low"; other -> other }
       web = maybe False (> 0) (oWeb o)
       textBlock t = JObj [("type", JStr "text"), ("text", JText t)]
@@ -1095,7 +1306,7 @@ turnCli ch e o system first pending = do
             uiAnswer (cUi ch) (T.take 600 said <> (if T.length said > 600 then T.pack "..." else T.empty))
             -- (a line typed while it works reaches it here, between two calls)
             mid <- drain pending >>= typedLines ch
-            forM_ mid (logH ch "user")
+            forM_ mid (logTyped ch)
             unless (null mid) (withImages [textBlock (T.intercalate (T.pack "\n\n") mid)] (T.unlines mid) >>= put)
             uiBusy (cUi ch) (Just "the model is working")
             pure (ok, said)
@@ -1103,7 +1314,7 @@ turnCli ch e o system first pending = do
             stop <- readIORef done
             unless stop $ do
               mc <- Sys.unixAccept lfd 300
-              forM_ mc $ \fd -> forkIO (PIO.fdToHandle fd >>= \h -> Mcp.serveOn h (Mcp.handleWith chatTools tool (Img.toolBlocks (imagesDir ch))) >> void (try (hClose h) :: IO (Either IOException ())))
+              forM_ mc $ \fd -> forkIO (PIO.fdToHandle fd >>= \h -> Mcp.serveOn h (Mcp.handleWith (toolsFor ch) tool (Img.toolBlocks (imagesDir ch))) >> void (try (hClose h) :: IO (Either IOException ())))
               serve
       _ <- forkIO (void (try serve :: IO (Either SomeException ())))
       withImages (A.viewBlocks first) first >>= put
@@ -1142,7 +1353,7 @@ turnCli ch e o system first pending = do
                       u = Usage (C.xIn x) (C.xOut x) (Just (C.xCached x))
                   t1 <- now
                   modifyIORef' spent (\sp -> sp { sCalls = sCalls sp + C.xTurns x, sIn = sIn sp + C.xIn x, sCached = sCached sp + C.xCached x, sOut = sOut sp + C.xOut x })
-                  recordUsage (usageFile ch) "chat" e u (t1 - t0)
+                  recordUsage (usageFile ch) (maybe "chat" (const "agent") (cSub ch)) e u (t1 - t0)
                   when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d, cached %d, %d model call(s), %.1fs]" (C.xIn x) (C.xOut x) (C.xCached x) (C.xTurns x) (t1 - t0)))
                   if not (C.xOk x) then pure (Just (T.unpack (C.xText x))) else do
                     -- a turn that changed the files and ends with the verdict red is told so, once
@@ -1280,8 +1491,8 @@ goOn ch e o pending ts = do
   s <- readIORef spent
   uiSpent (cUi ch) s (tEnd - tsStart ts)
   where
-    byName = [ (tName t, t) | t <- chatTools ]
-    toolsJson = map toolJson chatTools
+    byName = [ (tName t, t) | t <- toolsFor ch ]
+    toolsJson = map toolJson (toolsFor ch)
     viewMode = isJust (tsView ts)
     -- a harness note: a message of the conversation, or in --context view a line of the log
     nudge msgs' text
@@ -1323,7 +1534,7 @@ goOn ch e o pending ts = do
             Right p -> do
               forM_ (pUsage p) $ \u -> do
                 spend spent u
-                recordUsage (usageFile ch) "chat" e u (t1 - t0)
+                recordUsage (usageFile ch) (maybe "chat" (const "agent") (cSub ch)) e u (t1 - t0)
                 when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d%s, %.1fs]" (uIn u) (uOut u) (maybe "" (\c -> ", cached " ++ show c) (uCached u)) (t1 - t0)))
               unless (T.null (T.strip (pReasoning p))) (uiThought (cUi ch) (T.strip (pReasoning p)))
               -- (what the endpoint's own tools did -- a web search -- is shown and logged as a tool's doing is)
@@ -1400,7 +1611,7 @@ goOn ch e o pending ts = do
                     uiAnswer (cUi ch) (T.take 600 out <> (if T.length out > 600 then T.pack "..." else T.empty))
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending >>= typedLines ch
-                  forM_ mid (logH ch "user")
+                  forM_ mid (logTyped ch)
                   let next = if viewMode then msgs' else msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
                   -- the superseded reads, rewritten as stubs once there is enough of them
                   recs <- readIORef readsR
@@ -1618,6 +1829,8 @@ chatMain conf args = case parseOpts args of
         down <- newIORef False
         restartR <- newIORef False
         turnR <- newIORef Nothing
+        agentsR <- newIORef M.empty
+        startR <- newIORef Nothing
         stoppedR <- newIORef False
         inTurn <- newIORef False
         batchR <- newIORef Nothing
@@ -1625,7 +1838,7 @@ chatMain conf args = case parseOpts args of
         argv <- getArgs
         let ms = if null members then [name] else members
             chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                               longest pendingCheck down restartR inTurn turnR stoppedR (stripDeleted exe) argv batchR ui
+                               longest pendingCheck down restartR inTurn Nothing agentsR startR turnR stoppedR (stripDeleted exe) argv batchR ui
         if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           -- (--web N: the model may search the web, where the endpoint has it -- "GhciSession.Llm" reads this)
           forM_ (oWeb o) (setEnv "GHS_WEB_SEARCH" . show)
@@ -1642,6 +1855,7 @@ chatMain conf args = case parseOpts args of
                   run ui pending = do
                     let ch = chatWith ui
                     uiOnStop ui (stopTurn ch)
+                    writeIORef startR (Just (subRunner ch e o instr pending))
                     -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
                     getProcessID >>= writeFile (chatPidFile conf name) . show
                     void $ installHandler sigHUP (Catch $ do
@@ -1662,7 +1876,7 @@ chatMain conf args = case parseOpts args of
                         Just (mts, typed) -> do
                           forM_ mts $ \ts -> do
                             uiNote ui (printf "[harness: the turn goes on at step %d]" (tsStep ts))
-                            forM_ typed (logH ch "user")
+                            forM_ typed (logTyped ch)
                             stoppable ch (goOn ch e o pending ts { tsMsgs = tsMsgs ts ++ [ msg "user" (T.intercalate (T.pack "\n\n") typed) | not (null typed) ] })
                           when (isNothing mts && not (null typed)) (stoppable ch (turn ch e o system typed pending))
                         Nothing -> pure ()

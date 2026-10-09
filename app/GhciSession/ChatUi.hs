@@ -7,7 +7,9 @@ module GhciSession.ChatUi
   , Spent (..), spend, spentLine
   ) where
 
+import Control.Concurrent.MVar (MVar, newMVar, withMVar)
 import Control.Monad (unless, void)
+import System.IO.Unsafe (unsafePerformIO)
 import Data.IORef
 import System.Posix.Signals (Handler (..), installHandler, raiseSignal, sigINT)
 import Data.Maybe (fromMaybe)
@@ -51,16 +53,22 @@ data Ui = Ui
 -- the harness's notes on standard error, a @> @ prompt when a line is waited for.
 stdoutUi :: Ui
 stdoutUi = Ui
-  { uiView = \v -> TIO.putStrLn v >> hFlush stdout
-  , uiTalk = \t -> TIO.putStrLn t >> putStrLn "" >> hFlush stdout
-  , uiThought = \t -> hPutStrLn stderr ("\n[thinking] " ++ T.unpack t ++ "\n")
-  , uiCall = \name args -> putStrLn ("> " ++ name ++ " " ++ args) >> hFlush stdout
-  , uiAnswer = \out -> TIO.putStrLn (T.pack "  " <> T.replace (T.pack "\n") (T.pack "\n  ") out) >> hFlush stdout
-  , uiNote = hPutStrLn stderr
-  , uiBusy = \b -> case b of { Nothing -> putStr "> " >> hFlush stdout; Just _ -> pure () }
-  , uiSpent = \s secs -> hPutStrLn stderr (spentLine s secs)
+  { uiView = \v -> one (TIO.putStrLn v >> hFlush stdout)
+  , uiTalk = \t -> one (TIO.putStrLn t >> putStrLn "" >> hFlush stdout)
+  , uiThought = \t -> one (hPutStrLn stderr ("\n[thinking] " ++ T.unpack t ++ "\n"))
+  , uiCall = \name args -> one (putStrLn ("> " ++ name ++ " " ++ args) >> hFlush stdout)
+  , uiAnswer = \out -> one (TIO.putStrLn (T.pack "  " <> T.replace (T.pack "\n") (T.pack "\n  ") out) >> hFlush stdout)
+  , uiNote = one . hPutStrLn stderr
+  , uiBusy = \b -> case b of { Nothing -> one (putStr "> " >> hFlush stdout); Just _ -> pure () }
+  , uiSpent = \s secs -> one (hPutStrLn stderr (spentLine s secs))
   , uiDone = pure ()
   , uiLeave = hFlush stdout >> hFlush stderr
   -- (Ctrl-C stops the turn under way; with none, it ends the chat as it always did)
   , uiOnStop = \stop -> void (installHandler sigINT (Catch (stop >>= \was -> unless was (installHandler sigINT Default Nothing >> raiseSignal sigINT))) Nothing)
   }
+  -- (one thing at a time: the subagents' notes come from their own threads, and came letter by letter into the agent's)
+  where one = withMVar outLock . const
+
+{-# NOINLINE outLock #-}
+outLock :: MVar ()
+outLock = unsafePerformIO (newMVar ())

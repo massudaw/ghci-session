@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ReadRec (..), arguments, chatTools, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (toolJson, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -420,6 +420,14 @@ run = do
   eq "chat: file is path" (args "read" [("file", JStr "src/A.hs")]) (JObj [("path", JStr "src/A.hs")], [])
   check "chat: remember is a tool, and no tool takes a session" ("remember" `elem` map tName chatTools && all (\t -> "session" `notElem` map fst (tProps t)) chatTools)
   check "chat: grep and find are chat tools" ("grep" `elem` map tName chatTools && "find" `elem` map tName chatTools)
+  check "chat: spawn and tell are chat tools, and a task list is a list of strings"
+        (all (`elem` map tName chatTools) ["spawn", "tell"] && lookupStr "type" (toolJson (toolNamed "spawn") .: "function" .: "parameters" .: "properties" .: "tasks" .: "items") == Just "string")
+  eq "chat: a subagent's word to the agent is told from the user's by how it begins"
+     (map (isWork . T.pack) ["[Sub-3] report\nall done", "[Sub-12] reply\nyes", "[Sub-3] report and more\nx", "report\n[Sub-3]", "[Bob] report\nx", "please read [Sub-3] report"]) [True, True, False, False, False, False]
+  eq "chat: a subagent's chat as its turn reads it -- numbered, by kind, a later line of a message set in; of a long one its head and its end"
+     ( agentShow [("note", T.pack "subagent"), ("user", T.pack "do this\nand that"), ("tool", T.pack "ls {}")]
+     , let ls = T.lines (agentShow [ ("echo", T.pack (show i)) | i <- [0 .. 99 :: Int] ]) in (length ls, take 1 ls, ls !! 4, last ls) )
+     ( T.pack "0|note: subagent\n1|user: do this\n  and that\n2|tool: ls {}\n", (45, [T.pack "0|echo: 0"], T.pack "(56 lines left out)", T.pack "99|echo: 99") )
   check "chat: restart is a chat tool" ("restart" `elem` map tName chatTools)
   avail <- Search.isAvailable
   -- (libfff is optional -- build.sh fetches it when it can, and search falls back to a scan without it -- so it

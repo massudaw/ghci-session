@@ -43,7 +43,7 @@ module GhciSession.History
   , openHistory, appendMsg, appendMsgAt, pageText, partTexts, putNode, zoom, dateOf, messages, count
   , viewParts, renderView, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
-  , capText, msgLine, cutBytes, cutNode, cutMark, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, compactPrompt, jobPrompt, retryNote
+  , capText, msgLine, cutBytes, cutNode, cutMark, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, viewPrompt, compactPrompt, jobPrompt, retryNote
   , Snap (..), snapshot, Nodes (..), addNode, shrink, stepView, viewSize, pendingOf, placeholder, partName
   ) where
 
@@ -691,6 +691,10 @@ turnPrompt who = T.pack $ unlines $
   , "ends. Each call to you is a turn: the view below is followed by the user's new"
   , "message."
   , "" ] ++ viewPart who True ++ [""] ++ turnsPart
+
+-- | What the view is and what its tools are, alone: for who reads it without being the agent (a subagent).
+viewPrompt :: String -> T.Text
+viewPrompt who = T.pack (unlines (viewPart who True))
 
 -- | A compaction's prompt, when it has its own: who is writing (not the agent, and not in a turn), what
 -- the view is, and how a line is written.

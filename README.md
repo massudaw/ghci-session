@@ -452,6 +452,22 @@ off and are asked for the lightest effort.
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
 
+### Subagents
+
+The chat's agent can give work away. `spawn` starts a subagent a task, all at once -- each a turn of its own with the
+agent's tools on the same session and the same files -- and answers at once with their names (`Sub-1`, `Sub-2`, ...;
+eight at work at most). The agent goes on, and each subagent's last reply reaches it as a message, `[Sub-1] report`
+and the text: between two of its tool calls if it is at work, or as a turn of its own if it is waiting for a line.
+`tell` sends a subagent a message: one at work reads it between its tool calls; one that has finished goes on from
+where it was, and its answer comes as `[Sub-1] reply`.
+
+A subagent reads the view, then its own chat: what it is, its task, every call it made and what it was told, kept in
+`<state>/<session>/agents/Sub-N.jsonl`. So the history holds a subagent's report -- as `work`, the kind the view has
+for it -- and not its doings, which the chat shows as notes while they happen (`[Sub-1: read {...}]`). Stopping a
+turn stops its subagents; with the agent waiting, Esc (Ctrl-C on the streams) stops the ones still at work. They
+are threads of the chat: one that is restarted or left takes them with it, and their files stay for `tell`. On every
+backend, the subscription's too.
+
 ## Watching a session, and working in it: `top`
 
 ```

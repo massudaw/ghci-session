@@ -235,9 +235,12 @@ event gfx stop dir pending inbox ev st = case ev of
     Just <$> foldM (picture gfx) (foldl apply st ms) [ e | MEntry e <- ms ]
   EvTick -> do
     t <- now
-    st' <- if t - sStatusAt st < 2 then pure st else do
+    -- (what was said from this thread itself -- a key's own doing, as a stop's note is -- woke nobody: it is taken here)
+    ms <- atomically (flush inbox)
+    st0 <- foldM (picture gfx) (foldl apply st ms) [ e | MEntry e <- ms ]
+    st' <- if t - sStatusAt st < 2 then pure st0 else do
       status <- maybe (JObj []) (either (const (JObj [])) id . parseJson) <$> readFileMaybe (dir </> "status.json")
-      pure st { sStatus = status, sStatusAt = t }
+      pure st0 { sStatus = status, sStatusAt = t }
     pure (Just st' { sTicks = sTicks st + 1 })
   EvResize -> writeIORef (gSent gfx) Set.empty >> pure (Just st)
   EvKey kp -> key kp
@@ -275,6 +278,8 @@ event gfx stop dir pending inbox ev st = case ev of
       (KEnd, _) | null (editText (sEdit st)) -> pure (Just st { sBack = 0 })
       -- (Esc: while the agent works, the turn is stopped; else the line is cleared)
       (KEsc, _) | Just _ <- sBusy st -> stop >> pure (Just st)
+      -- (with nothing typed, the subagents still at work when the agent is not are what it stops)
+      (KEsc, _) | null (editText (sEdit st)) -> stop >> pure (Just st)
       (KEsc, _) -> pure (Just st { sEdit = editor, sRecall = Nothing })
       _ -> pure (Just (maybe st (\e -> st { sEdit = e, sRecall = Nothing }) (editKey kp (sEdit st))))
     -- a line sent before, in place of the one being typed (which comes back below the oldest)
