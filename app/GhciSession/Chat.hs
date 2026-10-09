@@ -48,7 +48,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
-import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, listDirectory, removeFile)
+import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getTemporaryDirectory, listDirectory, removeFile)
 import System.Environment (getArgs, getExecutablePath, lookupEnv)
 import System.Posix.Process (executeFile, getProcessID)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, signalProcess)
@@ -385,12 +385,12 @@ chatTools =
   ++ [ Tool "read" "A file of the project, with line numbers." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("lines", ("number", "how many (default 200)"))] ["path"]
      , Tool "grep" "Search file contents across the project for an identifier, function, or pattern using the high-speed FFF SIMD engine. Returns line numbers, content, and git status. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for")), ("lines", ("number", "max matches (default 30)"))] ["query"]
      , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
-     , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
-     , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
-     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
+     , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the write changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
+     , Tool "edit" "Replace one exact, unique occurrence of a text in a file of the project. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the edit changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "its replacement"))] ["path", "old", "new"]
+     , Tool "edits" "Several replacements at once, in one file or several: each is checked against the file (as the replacements before it leave it) before anything is written, then all are written together -- ONE reload and ONE verdict instead of one per edit, with a diff of each file. Use it for any change that touches more than one spot." [("edits", ("array", "the replacements, in order: each {\"path\", \"old\", \"new\"}, the old text exactly as it is (unique in its file); one without a path is in the file of the one before it")), ("path", ("string", "the file of the replacements that name none (optional)"))] ["edits"]
      , Tool "ls" "List a directory of the project." [("path", ("string", "relative to the project (default: the root)"))] []
      , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path. Extremely fast (<1ms in-memory). Always use this instead of running wc -l or du via sh." [("path", ("string", "optional path or pattern filter (e.g. 'src', 'Gba/Cpu', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)"))] []
-     , Tool "sh" "Run a shell command in the project's directory: its output and status. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
+     , Tool "sh" "Run a shell command in the project's directory: its output, then how it ended and how long it took, as [exit 0 in 0.4 s]. Do NOT run cabal build, ghci, or grep here: the session is already warm and grep/find tools are built-in." [("cmd", ("string", "the command")), ("timeout", ("number", "seconds (default 120)"))] ["cmd"] ]
   where timeoutDesc = "seconds before it is interrupted (default 30): give more for a whole test run or a long benchmark, less to probe for a hang. An evaluation that does not stop when interrupted (a loop that does not allocate, a blocking foreign call) is said so; the session finishes it before its next answer"
         evalDesc = "Evaluate a Haskell expression, or run a GHCi command (:t, :i, :browse, import M), against the LOADED code. The answer is what GHCi printed. Multi-line expressions are automatically wrapped in a GHCi block by the session (do NOT write :{ or :}). ONE expression, command or declaration group per call: make a separate call for an import, and write `let a = 1; b = 2 in ...` on one line."
 
@@ -587,11 +587,14 @@ fileTool ch name a = case name of
   "write" -> withPath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
     written <- writtenAt ch rel
+    was <- either (\(_ :: IOException) -> Nothing) (Just . decode) <$> try (B.readFile p)
     createDirectoryIfMissing True (takeDirectory p)
     B.writeFile p (TE.encodeUtf8 content)
     let nLines = if T.null content then 0 else T.count (T.pack "\n") content + (if T.last content == '\n' then 0 else 1)
         budget = Vfs.formatLineBudget nLines 250
-    saved ch (printf "wrote %s (%d characters, %s)" rel (T.length content) budget) written
+    -- (a file written over is answered with what changed in it: a whole file sent again loses lines unseen)
+    d <- maybe (pure (T.pack "\n[a new file]")) (\old -> changeOf rel old content) was
+    withDiff d <$> saved ch (printf "wrote %s (%d characters, %s)" rel (T.length content) budget) written
   "edit" -> withPath $ \p -> do
     t <- decode <$> B.readFile p
     let old = fromMaybe T.empty (lookupText "old" a)
@@ -602,7 +605,8 @@ fileTool ch name a = case name of
         B.writeFile p (TE.encodeUtf8 t')
         let nLines = if T.null t' then 0 else T.count (T.pack "\n") t' + (if T.last t' == '\n' then 0 else 1)
             budget = Vfs.formatLineBudget nLines 250
-        saved ch (printf "edited %s%s (%s)" rel how budget) written
+        d <- changeOf rel t t'
+        withDiff d <$> saved ch (printf "edited %s%s (%s)" rel how budget) written
       Left why -> pure (False, T.pack (rel ++ ": ") <> why)
   -- several replacements, in one or more files: all checked against the files (as the ones before them
   -- leave them) before any is written, then written together -- one reload, one verdict
@@ -626,11 +630,13 @@ fileTool ch name a = case name of
         Right (Right files) -> do
           let rels = [ makeRelative (cDir ch) f | (f, _) <- files ]
           written <- fmap (listToMaybe . catMaybes) (mapM (writtenAt ch) rels)
+          olds <- forM files (\(f, _) -> decode <$> B.readFile f)
           forM_ files (\(f, t) -> B.writeFile f (TE.encodeUtf8 t))
+          ds <- forM (reverse (zip files olds)) (\((f, t), old) -> changeOf (makeRelative (cDir ch) f) old t)
           let summaries = [ let n = if T.null t then 0 else T.count (T.pack "\n") t + (if T.last t == '\n' then 0 else 1)
                             in printf "%s (%s)" (makeRelative (cDir ch) f) (Vfs.formatLineBudget n 250)
                           | (f, t) <- files ]
-          saved ch (printf "edited %s (%d replacement(s))\n[line budgets: %s]" (intercalate ", " (reverse rels)) (length items) (intercalate "; " summaries)) written
+          withDiff (T.concat ds) <$> saved ch (printf "edited %s (%d replacement(s))\n[line budgets: %s]" (intercalate ", " (reverse rels)) (length items) (intercalate "; " summaries)) written
   "vfs" -> do
     let mPath = lookupStr "path" a
         budget = maybe 250 round (lookupNum "budget" a) :: Int
@@ -684,7 +690,9 @@ fileTool ch name a = case name of
     -- a GHCi of the agent's own loads the project cold, every time, what the session has loaded warm
     let own | up && ownGhci cmd = T.pack (printf "\n[note: this started a GHCi of its own, loading the project cold (%.1fs); the session has it loaded -- eval, test with expr (one group of tests alone), typecheck answer from it in about a second]" secs)
             | otherwise = T.empty
-    pure (ok && maybe True fst pending, capWith shCap shHint out <> own <> maybe T.empty snd pending)
+    -- (how it ended and how long it took, always: a command that printed nothing and one that hung for a minute
+    -- answered alike)
+    pure (ok && maybe True fst pending, capWith shCap shHint out <> T.pack (printf "\n[%s in %.1f s]" (if ok then "exit 0" else "failed") secs) <> own <> maybe T.empty snd pending)
   _ -> pure (False, T.pack ("unknown tool " ++ name))
 
   where
@@ -777,6 +785,37 @@ inside ch p =
   in if ".." `elem` splitDirectories r || "/" `isPrefixOf` r then Left (p ++ ": outside the project") else Right full
 
 -- | A shell command in the project, within the seconds: its output (standard error after it) and status.
+-- | A tool's answer with what the write changed after it.
+withDiff :: T.Text -> (Bool, T.Text) -> (Bool, T.Text)
+withDiff d (ok, out) = (ok, out <> d)
+
+-- | What a write changed in a file, as a unified diff (the system's @diff@), at most 'diffMax' lines of it: for
+-- the answer of the tool that wrote. Nothing when nothing changed, or there is no @diff@ to ask.
+changeOf :: FilePath -> T.Text -> T.Text -> IO T.Text
+changeOf rel old new
+  | old == new = pure (T.pack "\n[nothing changed]")
+  | otherwise = do
+      tmp <- getTemporaryDirectory
+      pid <- getProcessID
+      t <- now
+      let base = tmp </> ("ghs-diff-" ++ show pid ++ "-" ++ show (round (t * 1000) :: Integer))
+          (a, b) = (base ++ ".a", base ++ ".b")
+      r <- try (do
+        B.writeFile a (TE.encodeUtf8 old)
+        B.writeFile b (TE.encodeUtf8 new)
+        (_, out, _) <- readProcessWithExitCode "diff" ["-u", "--label", "a/" ++ rel, "--label", "b/" ++ rel, a, b] ""
+        pure out) :: IO (Either SomeException String)
+      mapM_ (\f -> try (removeFile f) :: IO (Either IOException ())) [a, b]
+      pure $ case r of
+        Right out | not (null out) ->
+          let ls = lines out
+              (shown, rest) = splitAt diffMax ls
+          in T.pack ("\n" ++ unlines shown ++ (if null rest then "" else "[the diff goes on: " ++ show (length rest) ++ " more lines]\n"))
+        _ -> T.empty
+
+diffMax :: Int
+diffMax = 60
+
 shTool :: FilePath -> String -> Double -> IO (Bool, T.Text)
 shTool dir cmd secs = do
   (_, Just o, Just e, ph) <- createProcess (shell cmd) { cwd = Just dir, std_in = NoStream, std_out = CreatePipe, std_err = CreatePipe }
