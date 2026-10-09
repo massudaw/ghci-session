@@ -416,8 +416,8 @@ it -- it is never taken by default -- with `GHS_CLAUDE_MODEL` (default `claude-o
 ```
 claude --version                 # Claude Code, installed and signed in (`claude` once, to sign in)
 GHS_PROVIDER=claude GHS_CLAUDE_MODEL=claude-sonnet-5-5 ghci-session chat
-# the compactor too: "summarize_cmd": "ghci-session summarize", with these in the daemon's environment
-GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-4-5 ghci-session start
+# the compactor too, in ghci-session.json (settings before the command are taken as a shell takes them):
+#   "summarize_cmd": "GHS_PROVIDER=claude GHS_CLAUDE_SUMMARIZE_MODEL=claude-haiku-4-5 ghci-session summarize"
 ```
 
 That program runs the tools itself, so a turn is its and the chat is what it calls: for the length of a turn the
@@ -432,7 +432,10 @@ and `--context view` and `--restart` in the middle of a turn are for the other t
 provider on another account -- and what it adds to a prompt (memory files, git instructions) is turned off. When
 the subscription's limits are reached, or nearly, the chat says so and until when. `--web 1` leaves it its own web
 tools. A compaction is the same program with no tools at all, one prompt and its answer, a process each: a few
-seconds and a few hundred megabytes, so `summarize_jobs` is better at 4 or 8 here than at 64.
+seconds and a few hundred megabytes, so `summarize_jobs` is better at 4 or 8 here than at 64. On a Haiku it runs
+with thinking off (`MAX_THINKING_TOKENS=0`): left on, a line of seventy words was four thousand tokens of thought
+and half a minute; off it is under two hundred tokens and three seconds. The larger current models cannot have it
+off and are asked for the lightest effort.
 
 **What the model calls cost** is kept: each call of the chat and the compactor appends a line to
 `<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds).

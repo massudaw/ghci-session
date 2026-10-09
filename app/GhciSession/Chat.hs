@@ -993,7 +993,7 @@ turnCli ch e o system first pending = do
   started <- case ml of
     Nothing -> pure (Left ("cannot listen on " ++ sock))
     Just _ -> either (\(x :: IOException) -> Left ("the claude command could not be run (is Claude Code installed, and on the PATH?): " ++ show x)) Right
-                <$> try (createProcess (proc "claude" (C.cliArgs (C.CliOpts (eModel e) effort (T.pack system) (Just (exe, sock)) web)))
+                <$> try (createProcess (proc "claude" (C.cliArgs (C.CliOpts (eModel e) effort (T.pack system) (Just (exe, sock)) web False)))
                            { cwd = Just (cDir ch), env = Just (C.cliEnv env0), std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe })
   case (ml, started) of
     (Just lfd, Right (Just i, Just out, Just err, ph)) -> do

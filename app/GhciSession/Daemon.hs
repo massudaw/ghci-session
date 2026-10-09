@@ -16,7 +16,7 @@ import qualified Data.Sequence as Seq
 import Control.Exception (IOException, SomeException, bracket_, displayException, finally, throwIO, try)
 import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
-import Data.Char (isDigit, isSpace, isUpper, toLower)
+import Data.Char (isAlphaNum, isDigit, isSpace, isUpper, toLower)
 import Data.IORef
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, nubBy, partition, sort, sortOn, (\\))
 import qualified Data.ByteString as B
@@ -2661,8 +2661,11 @@ runDaemon conf name bootCheck fastStart = do
     Right () -> do
       verdictLine s >>= histAdd s "echo"
       exe <- getExecutablePath
-      -- ("ghci-session summarize" is this executable's own compactor, wherever the binary is)
-      let self c = case words c of { ("ghci-session" : rest) -> unwords (show exe : rest); _ -> c }
+      -- ("ghci-session summarize" is this executable's own compactor, wherever the binary is -- also after
+      -- settings for it, as a shell takes them: "GHS_PROVIDER=claude ghci-session summarize")
+      let self c = let (sets, rest) = span isSetting (words c)
+                       isSetting w = case break (== '=') w of { (k@(_ : _), '=' : _) -> all (\x -> isAlphaNum x || x == '_') k; _ -> False }
+                   in case rest of { ("ghci-session" : more) -> unwords (sets ++ show exe : more); _ -> c }
       forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
       void (forkIO (seedLoaded s))
       vMem s =: Nothing

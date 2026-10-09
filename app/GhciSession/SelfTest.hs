@@ -563,7 +563,7 @@ run = do
      (Just [("user", 20), ("ai", 21)], Nothing, Just [("user", 20), ("ai", 21)], Nothing)
   eq "import: where Claude Code keeps a project's sessions" (I.claudeDir "/Users/me" "/Users/me/code/ghci-session") "/Users/me/.claude/projects/-Users-me-code-ghci-session"
   -- the claude command (a subscription)
-  let cli = C.cliArgs (C.CliOpts "claude-haiku-4-5" (Just "low") (T.pack "sys") (Just ("/bin/ghs", "/tmp/s.sock")) False)
+  let cli = C.cliArgs (C.CliOpts "claude-haiku-4-5" (Just "low") (T.pack "sys") (Just ("/bin/ghs", "/tmp/s.sock")) False False)
       after k xs = take 1 [ v | (a, v) <- zip xs (drop 1 xs), a == k ]
   eq "claude: it is run without tools of its own, without the user's settings, with ours allowed by name"
      (after "--tools" cli, after "--setting-sources" cli, after "--allowedTools" cli, after "--model" cli, after "--effort" cli, "--strict-mcp-config" `elem` cli, "bypassPermissions" `elem` cli)
@@ -572,11 +572,15 @@ run = do
      (fmap (\j -> (lookupStr "command" (j .: "mcpServers" .: "ghs"), lookupArr "args" (j .: "mcpServers" .: "ghs"))) (parseJson (concat (after "--mcp-config" cli))))
      (Right (Just "/bin/ghs", [JStr "mcp-relay", JStr "/tmp/s.sock"]))
   eq "claude: with no tools of ours there is no tool server, and the web is its own two tools when asked for"
-     (let a = C.cliArgs (C.CliOpts "m" Nothing (T.pack "s") Nothing True) in ("--mcp-config" `elem` a, after "--tools" a, "--effort" `elem` a)) (False, ["WebSearch,WebFetch"], False)
+     (let a = C.cliArgs (C.CliOpts "m" Nothing (T.pack "s") Nothing True False) in ("--mcp-config" `elem` a, after "--tools" a, "--effort" `elem` a)) (False, ["WebSearch,WebFetch"], False)
   eq "claude: the environment is cleared of what would send it elsewhere, and where it keeps its sign-in is left"
      (let e = C.cliEnv [("ANTHROPIC_BASE_URL", "https://other"), ("ANTHROPIC_AUTH_TOKEN", "t"), ("CLAUDECODE", "1"), ("CLAUDE_CODE_ENTRYPOINT", "cli"), ("CLAUDE_CONFIG_DIR", "/c"), ("PATH", "/bin"), ("DISABLE_TELEMETRY", "0")]
       in ([ k | (k, _) <- e, k `elem` ["ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"] ], lookup "CLAUDE_CONFIG_DIR" e, lookup "PATH" e, lookup "DISABLE_TELEMETRY" e, lookup "CLAUDE_CODE_DISABLE_CLAUDE_MDS" e))
      ([], Just "/c", Just "/bin", Just "1", Just "1")
+  eq "claude: a call that wants no thinking has it off where the model lets it be, and nowhere else"
+     ( C.noThinking (C.CliOpts "claude-haiku-4-5" Nothing T.empty Nothing False True), C.noThinking (C.CliOpts "claude-opus-5-5" Nothing T.empty Nothing False True)
+     , C.noThinking (C.CliOpts "claude-haiku-4-5" Nothing T.empty Nothing False False) )
+     ([("MAX_THINKING_TOKENS", "0")], [], [])
   eq "claude: a block marked for the cache is marked for an hour (it takes no shorter mark before its own)"
      (fmap (\j -> [ b .: "cache_control" | b <- lookupArr "content" (j .: "message") ]) (parseJsonBS (C.userLine [JObj [("type", JStr "text"), ("text", JStr "a"), ("cache_control", JObj [("type", JStr "ephemeral")])], JObj [("type", JStr "text"), ("text", JStr "b")]])))
      (Right [JObj [("type", JStr "ephemeral"), ("ttl", JStr "1h")], JNull])

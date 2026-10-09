@@ -246,7 +246,7 @@ requestCli e q = do
       blocks = concat [ lookupArr "content" m | m <- msgs, lookupStr "role" m == Just "user" ]
       effort = case rEffort q of { Just ef | ef /= "none" -> Just ef; _ | rThinking q == Just False -> Just "low"; _ -> Nothing }
   dir <- getTemporaryDirectory
-  r <- C.runOnce (C.CliOpts (eModel e) effort (T.intercalate (T.pack "\n\n") sys) Nothing False) dir blocks (rTimeout q)
+  r <- C.runOnce (C.CliOpts (eModel e) effort (T.intercalate (T.pack "\n\n") sys) Nothing False (rThinking q == Just False)) dir blocks (rTimeout q)
   pure $ case r of
     Left (why, busy) -> Left (Failure why busy Nothing)
     Right x -> Right (Reply (C.xText x) T.empty [] "stop" (Just (Usage (C.xIn x) (C.xOut x) (Just (C.xCached x)))) (JObj [("role", JStr "assistant"), ("content", JText (C.xText x))]) [] [])

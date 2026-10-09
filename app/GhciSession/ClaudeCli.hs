@@ -19,7 +19,7 @@
 -- reads), each finished block of a reply (@assistant@), what the subscription's limits say
 -- (@rate_limit_event@), and a @result@ when it has no more to do.
 module GhciSession.ClaudeCli
-  ( CliOpts (..), cliArgs, cliEnv, mcpConfig, serverName, userLine
+  ( CliOpts (..), cliArgs, cliEnv, noThinking, mcpConfig, serverName, userLine
   , Event (..), readEvent, Result (..), resultOf, limitNote
   , runOnce
   ) where
@@ -30,7 +30,7 @@ import Control.Exception (IOException, SomeException, try)
 import Control.Monad (void)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-import Data.List (isPrefixOf)
+import Data.List (isInfixOf, isPrefixOf)
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -44,8 +44,8 @@ import System.Timeout (timeout)
 import GhciSession.Json
 
 -- | A run of the program. @cMcp@: our executable and the socket the chat's tools are at, when there are tools.
--- @cWeb@: its own web tools are left to it.
-data CliOpts = CliOpts { cModel :: String, cEffort :: Maybe String, cSystem :: T.Text, cMcp :: Maybe (FilePath, FilePath), cWeb :: Bool }
+-- @cWeb@: its own web tools are left to it. @cNoThink@: a call that wants no thinking at all ('noThinking').
+data CliOpts = CliOpts { cModel :: String, cEffort :: Maybe String, cSystem :: T.Text, cMcp :: Maybe (FilePath, FilePath), cWeb :: Bool, cNoThink :: Bool }
 
 -- | The name our tools are served under: the program calls them @mcp__\<name\>__\<tool\>@.
 serverName :: String
@@ -81,6 +81,14 @@ cliEnv env0 = [ kv | kv@(k, _) <- env0, not (ours k), k `notElem` map fst quiet 
       , ("CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS", "1"), ("CLAUDE_CODE_DISABLE_ATTACHMENTS", "1"), ("CLAUDE_CODE_DISABLE_TERMINAL_TITLE", "1")
       , ("ENABLE_CLAUDEAI_MCP_SERVERS", "false"), ("DISABLE_TELEMETRY", "1"), ("DISABLE_ERROR_REPORTING", "1"), ("DISABLE_AUTOUPDATER", "1")
       , ("MCP_TOOL_TIMEOUT", "86400000") ]      -- (a tool of ours may be a test run: the program's own limit is a minute)
+
+-- | The setting that turns the program's thinking off, where the model lets it be: a compaction is a line of
+-- seventy words, and left to think about it a small model wrote four thousand tokens of thought for each, half
+-- a minute a line (measured on one prompt: 496 tokens and 4.9 s, against 46 and 1.4 with this -- the same
+-- line). Only for a model that takes it: the larger current ones cannot have thinking off, and are asked for
+-- the lightest effort instead.
+noThinking :: CliOpts -> [(String, String)]
+noThinking o = [ ("MAX_THINKING_TOKENS", "0") | cNoThink o, "haiku" `isInfixOf` cModel o ]
 
 -- | A message for the program: a line of its input, the content as the API's blocks. A block marked for the
 -- cache is marked for an hour: the program marks what it adds for an hour, and the API takes no shorter mark
@@ -148,7 +156,7 @@ limitNote info = do
 runOnce :: CliOpts -> FilePath -> [Json] -> Double -> IO (Either (String, Bool) Result)
 runOnce o dir blocks secs = do
   env0 <- getEnvironment
-  r <- try (createProcess (proc "claude" (cliArgs o)) { cwd = Just dir, env = Just (cliEnv env0), std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe })
+  r <- try (createProcess (proc "claude" (cliArgs o)) { cwd = Just dir, env = Just ([ kv | kv@(k, _) <- cliEnv env0, k `notElem` map fst (noThinking o) ] ++ noThinking o), std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe })
   case r of
     Left (e :: IOException) -> pure (Left ("the claude command could not be run (is Claude Code installed, and on the PATH?): " ++ show e, False))
     Right (Just i, Just out, Just err, ph) -> do
