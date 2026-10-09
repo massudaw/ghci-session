@@ -17,21 +17,8 @@ fff_flag=; [ "${GHS_FFF:-0}" = 1 ] && fff_flag=--flags=+fff
 # GHS_STATIC_VT=1: libghostty-vt linked in (.bin/libghostty-vt-static.a, left by tools/libghostty-vt.sh) instead of
 # found at run time
 vt_flag=; [ "${GHS_STATIC_VT:-0}" = 1 ] && vt_flag="--constraint=ghostty-vt+static --extra-lib-dirs=$PWD/.bin"
-# ghostty-vt's C is built by cabal, which does not recompile it when what changed is the mode it is built in
-# (-DGVT_STATIC, from the flag above) or a header it includes: the file is unchanged, and a stale object is
-# linked (undefined _ghostty_* symbols, or a library that looks for the dlopen'd one it was not built for).
-# So its staleness is decided here, as build_clib.sh does for a C of its own -- by content, not by mtime
-# (a build that died leaves an object newer than its source): a stamp of the mode and of the contents of its C
-# and headers, and when it differs the package's build is dropped and cabal builds that package again.
-mkdir -p .bin
-vt_stamp=$( { echo "$vt_flag"; find ghostty-vt/cbits ghostty-vt/include -type f \( -name '*.c' -o -name '*.h' \) | sort | xargs cat; } | shasum | cut -d' ' -f1)
-if [ "$(cat .bin/.vt-stamp 2>/dev/null)" != "$vt_stamp" ]; then
-  rm -rf dist-newstyle/build/*/ghc-*/ghostty-vt-[0-9]*
-  # (stamped only once the build below has gone through: a failed one is dropped again next time)
-fi
 cabal build -v0 $fff_flag $vt_flag exe:ghci-session exe:ghci-session-engine
 mkdir -p .bin
-printf '%s\n' "$vt_stamp" > .bin/.vt-stamp
 for x in ghci-session ghci-session-engine; do
   cp "$(cabal list-bin -v0 $fff_flag $vt_flag exe:$x)" .bin/$x.new
   mv .bin/$x.new .bin/$x
