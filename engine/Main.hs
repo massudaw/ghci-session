@@ -4,7 +4,8 @@ module Main (main) where
 import Prelude
 
 import qualified GhcMain
-import GhsEngine (engineInit, libdirArgs)
+import Control.Exception (finally)
+import GhsEngine (engineInit, engineLastWords, libdirArgs)
 import System.Environment (getArgs, withArgs)
 
 main :: IO ()
@@ -12,4 +13,4 @@ main = do
   engineInit
   args <- getArgs
   extra <- libdirArgs args
-  withArgs (extra ++ args) GhcMain.main
+  withArgs (extra ++ args) GhcMain.main `finally` engineLastWords

@@ -22,7 +22,7 @@
 --   cabal does not stay as a process between them, and a restart need not ask cabal again;
 -- * with @GHS_CONTROL=stdin@: standard input is the daemon's socket;
 -- * with neither: an ordinary GHCi.
-module GhsEngine (engineInit, libdirArgs, engineSettings, engineHook) where
+module GhsEngine (engineInit, engineLastWords, libdirArgs, engineSettings, engineHook) where
 
 import Prelude
 
@@ -109,11 +109,34 @@ data Engine = Engine
   , eStdin :: Fd            -- ^ the write end of the pipe GHCi reads its commands from
   , eCapture :: Fd          -- ^ the read end of the pipe standard output and error are
   , eOut :: MVar [B.ByteString]   -- ^ what has been read from it since the last turn, newest first
+  , eErr :: Fd              -- ^ standard error as it was at the start: where the daemon reads a start that failed
   }
 
 {-# NOINLINE engine #-}
 engine :: IORef (Maybe Engine)
 engine = unsafePerformIO (newIORef Nothing)
+
+{-# NOINLINE replied #-}
+replied :: IORef Bool
+replied = unsafePerformIO (newIORef False)
+
+-- | What the engine wrote and never sent, when it ends before its first reply: GHCi refusing its arguments (a
+-- library it cannot load, a unit it cannot read) says why on standard output, which is the pipe this process
+-- reads -- and it died with the words in the pipe, the daemon knowing only "the repl exited with status 1". They
+-- go to standard error as it was at the start, which the daemon reads when a start fails.
+engineLastWords :: IO ()
+engineLastWords = do
+  me <- readIORef engine
+  sent <- readIORef replied
+  case me of
+    Just e | not sent -> void (try (do
+      hFlush stdout
+      hFlush stderr
+      out <- modifyMVar (eOut e) (\acc -> do { more <- drainNow e; pure ([], B.concat (reverse (more ++ acc))) })
+      h <- fdToHandle (eErr e)
+      B.hPut h out
+      hFlush h) :: IO (Either SomeException ()))
+    _ -> pure ()
 
 -- | The compiler's diagnostics since the last reply, newest first, and how many there were (the list is capped).
 {-# NOINLINE diagnostics #-}
@@ -216,11 +239,13 @@ takeControl = do
   cw <- above2 cw0
   setFdOption cr NonBlockingRead True
   setFdOption cr CloseOnExec True
+  err0 <- dup stdError >>= above2
+  setFdOption err0 CloseOnExec True
   _ <- dupTo cw stdOutput
   _ <- dupTo cw stdError
   closeFd cw
   out <- newMVar []
-  let e = Engine h c w cr out
+  let e = Engine h c w cr out err0
   _ <- forkIO (drainLoop e)
   _ <- c_exports          -- (keeps the C that loaded code looks up by name in this executable)
   writeIORef engine (Just e)
@@ -444,6 +469,7 @@ failed why = JObj [ ("error", JStr why) ]
 -- | A reply: the facts as JSON, then everything written to standard output and error since the last one.
 reply :: Engine -> Json -> IO ()
 reply e facts = do
+  writeIORef replied True
   hFlush stdout
   hFlush stderr
   out <- modifyMVar (eOut e) (\acc -> do { more <- drainNow e; pure ([], B.concat (reverse (more ++ acc))) })
