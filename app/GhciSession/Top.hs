@@ -493,7 +493,7 @@ layMsg w open m = concatMap (wrapSpans w 4) (first : rest ++ more)
     head' xs = case xs of { (x : _) -> x; [] -> [] }
 
 kindStyle :: String -> Style
-kindStyle k = case k of { "user" -> stCyan; "talk" -> stGreen; "ai" -> stGreen; "tool" -> stBlue; "echo" -> plain; "work" -> stYellow; "note" -> stMagenta; _ -> stBold }
+kindStyle k = case k of { "user" -> stCyan; "talk" -> stGreen; "ai" -> stGreen; "tool" -> stBlue; "echo" -> plain; "work" -> stYellow; "note" -> stMagenta; "known" -> stMagenta; _ -> stBold }
 
 viewLines :: Int -> St -> [[Span]]
 viewLines w st = [ [ (stBold, " memory  "), (plain, stats) ], [] ] ++ concatMap (wrapSpans w 6 . viewLine) (sView st)

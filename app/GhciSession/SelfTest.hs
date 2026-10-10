@@ -24,6 +24,7 @@ import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
+import qualified GhciSession.Know as K
 import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
 import qualified GhciSession.Import as I
@@ -329,6 +330,62 @@ run = do
      (H.shrink 3 (const 1) 10 (const True) [(2, 0), (2, 1), (0, 8), (0, 9)]) [(2, 0), (2, 1), (1, 4)]
   eq "history: of pairs equally due, the oldest goes"
      (H.shrink 3 (const 1) 4 (const True) [(0, 0), (0, 1), (0, 2), (0, 3)]) [(1, 0), (0, 2), (0, 3)]
+
+  -- what is known by subject ("GhciSession.Know")
+  let kNew sub topic text = K.New (T.pack sub) (T.pack topic) (T.pack text) 1000 "p/s:1+1"
+      kFact i sub topic text first lst = K.Fact i (T.pack sub) (T.pack topic) (T.pack text) first lst "p/s:1+1" [] Nothing
+      answer = T.pack "```json\n{\"facts\": [{\"scope\": \"tool\", \"subject\": \"dxf/architecture\", \"topic\": \"t\", \"fact\": \"A.\"}, {\"scope\": \"user\", \"subject\": \"x\", \"topic\": \"t\", \"fact\": \"B.\"}, {\"scope\": \"project\", \"subject\": \"tool/usage\", \"topic\": \"t\", \"fact\": \"C.\"}, {\"scope\": \"project\", \"subject\": \"PROJECT/performance\", \"topic\": \"t\", \"fact\": \"D.\"}]}\n```"
+  eq "know: an answer's facts are filed where their scope allows, whatever subject it gave; three at most; a fence around the JSON is passed over"
+     [ (T.unpack (K.nSubject n), T.unpack (K.nText n)) | n <- K.parseNew "dxf" 1000 "s" answer ]
+     [("tool/usage", "A."), ("user/rules", "B."), ("dxf/status", "C.")]
+  eq "know: an answer that is not JSON holds no fact" (K.parseNew "dxf" 1000 "s" (T.pack "nothing durable here")) []
+  eq "know: a tool call as the chat logs it gives the tool and its arguments; a command line does not"
+     (K.callArgs (T.pack "bench {\"expr\": \"f x\", \"opt\": 2}"), K.callArgs (T.pack "bench --top 5 f x"), K.callArgs (T.pack "save: src/A.hs"))
+     (Just ("bench", ["expr", "opt"]), Nothing, Nothing)
+  eq "know: the fact of a call's argument is known again by its topic"
+     (K.isCall (K.nTopic (K.callFact "census" "sites" 1 "s" (T.pack "census {\"sites\": true}"))), K.isCall (T.pack "routine check command")) (Just ("census", "sites"), Nothing)
+  let held = [ kFact "a" "user/rules" "routine check command" "The routine check is run with cabal test through sh." 1 1
+             , kFact "b" "dxf/performance" "f001 parse time" "Parsing f001.dxf takes 468 ms." 2 2
+             , kFact "c" "tool/config" "optimised loading setting" "Optimised loading is the setting optimize: true." 3 3 ]
+  eq "know: the facts a new one is set against are the ones that share its words, the nearest first; none when nothing is near"
+     (map K.fId (K.candidates held (kNew "user/rules" "routine check command" "The routine check is run with the session's test tool.")), map K.fId (K.candidates held (kNew "nes/status" "mapper support" "Mappers 0 to 4 load.")))
+     (["a"], [])
+  eq "know: a decision for each new fact -- one the answer leaves out is added, one that names nothing to replace is added, a number out of range is not taken"
+     (K.parseDecisions 4 2 (T.pack "{\"decisions\": [{\"n\": 1, \"action\": \"replace\", \"ids\": [\"#2\", 7]}, {\"n\": \"N2\", \"action\": \"same\", \"ids\": []}, {\"n\": 4, \"action\": \"drop\"}]}"))
+     [K.Replace [2], K.Add, K.Add, K.Drop]
+  let block = K.render 4000 "dxf" (held ++ [ kFact "d" "nes/status" "mapper support" "Mappers 0, 1, 2 and 4 load." 4 4
+                                           , (kFact "e" "user/rules" "old" "A rule since replaced." 5 5) { K.fBy = Just "a" }
+                                           , kFact "f" "tool/usage" "bench call argument expr" "The bench tool is called with the argument \"expr\", e.g. bench {\"expr\": \"1\"}" 1 1
+                                           , kFact "g" "tool/usage" "bench call argument opt" "The bench tool is called with the argument \"opt\", e.g. bench {\"expr\": \"1\", \"opt\": 2}" 90000 90000 ])
+      heads = [ T.unpack (T.takeWhile (/= ' ') (T.drop 3 l)) | l <- T.lines block, T.pack "## " `T.isPrefixOf` l ]
+  eq "know: the block has the tool's and the user's subjects first, then the project's, then the others'; what was replaced is not in it"
+     (sort (take 3 heads), drop 3 heads, T.pack "since replaced" `T.isInfixOf` block) (["tool/config", "tool/usage", "user/rules"], ["dxf/performance", "nes/status"], False)
+  eq "know: what a tool is called with is one line, the newest argument first, with the newest call"
+     [ T.unpack l | l <- T.lines block, T.pack "bench is called with" `T.isInfixOf` l ]
+     ["- [1970-01-02] bench is called with: \"opt\" (since 1970-01-02), \"expr\" (since 1970-01-01). Newest, e.g. bench {\"expr\": \"1\", \"opt\": 2}"]
+  let many = [ kFact (show k) "tool/usage" "t" (replicate 100 'x' ++ show k) (fromIntegral k) (fromIntegral k) | k <- [1 .. 60 :: Int] ]
+      cutBlock = K.render 2000 "dxf" many
+  eq "know: a subject is cut at its share, the most recently confirmed kept, and says there is more"
+     (T.pack (replicate 100 'x' ++ "60") `T.isInfixOf` cutBlock, T.pack (replicate 100 'x' ++ "1\n") `T.isInfixOf` cutBlock, T.pack "(more: ghci-session knowledge --subject tool/usage)" `T.isInfixOf` cutBlock, T.length cutBlock < 1400)
+     (True, False, True, True)
+  eq "know: nothing known, no block" (K.render 4000 "dxf" []) T.empty
+  eq "know: a line of the history says what a new fact replaces"
+     (T.unpack (K.knownLine (kNew "user/rules" "t" "Use the test tool.") [head held]))
+     "user/rules: Use the test tool. (THIS REPLACES: The routine check is run with cabal test through sh.)"
+  kdir <- (</> ("ghci-session-selftest-know-" ++ show pid)) <$> getTemporaryDirectory
+  K.addFact kdir (head held)
+  K.addFact kdir (held !! 1)
+  K.addFact kdir (kFact "z" "user/rules" "routine check command" "Use the test tool." 9 9) { K.fReplaces = ["a"] }
+  K.markBy kdir "a" "z"
+  K.markSeen kdir "b" 50
+  B.appendFile (kdir </> "facts.jsonl") (BC.pack "{torn")
+  stored <- K.loadFacts kdir
+  K.withLock kdir (K.forget kdir "b")
+  after <- K.loadFacts kdir
+  removePathForcibly kdir
+  eq "know: the facts are read back with their marks -- replaced by, said again, forgotten -- and a torn line is passed over"
+     ([ (K.fId f, K.fBy f, K.fLast f) | f <- stored ], map K.fId (K.current stored), map K.fId after)
+     ([("a", Just "z", 1), ("b", Nothing, 50), ("z", Nothing, 9)], ["b", "z"], ["a", "z"])
 
   let hdir = tmp </> "history"
   (hm, torn0) <- H.openHistory hp hdir

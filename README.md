@@ -122,6 +122,7 @@ history | view | zoom ID | date ID      # the session's log and its summaries
 import [--tools] [--all] [--since DATE] [--go]   # chats had in Claude Code and Codex, into the history
 top [SESSION]                   # a screen that follows a session: verdict, history, heap, a chat and a shell
 chat [-s SESSION] [--tui] [--once TEXT]   # an agent working on the session, with the history as its memory
+knowledge [--subject S] [--all]           # what the sessions established, by subject
 usage [SESSION] [--since DAYS] [--json]   # what the model calls cost
 mcp                             # the session and its memory as an agent's tools (MCP on stdin/stdout)
 gc [-n] [--days N] | autostop [--max-mem-mb N] [--idle-mins M] | log | list | init
@@ -388,6 +389,54 @@ whether it was over the limit, and asks the next at the limit divided by that ra
 third of the limit and the limit itself -- and in stronger words the more of them miss. A model that writes long is
 asked for less; one that writes short is given the room back. Compressing a message and merging two lines are
 steered apart. The daemon's log says each time what is asked changes.
+
+### What is known, by subject, across sessions
+
+A history is a chain in time: its newest lines are fine, its old ones coarse, and a rule the user gave once is
+summarized away with the lines around it. Asked "what holds now", a model reading two real histories joined in
+time order answered with the outdated way as often as with the current one (13 and 13 of 42); in the wrong order
+it mostly did not know. So what the sessions ESTABLISH is kept apart from any one of them, for the person:
+
+```json
+"knowledge": true
+```
+
+(in `ghci-session.json`, with a `summarize_cmd`: the compactor's command is the one asked.) A fact is a record --
+a subject, a topic, one sentence, when it was first learned and last confirmed, the message it came from -- and is
+never rewritten. The subjects are `tool/usage` and `tool/config` (true of this tool on any project), `user/rules`
+(how the user wants work done anywhere) and the project's own: `P/architecture`, `P/performance`, `P/testing`,
+`P/status`, `P/rules`, where P is the project directory's name.
+
+- **Extracted** by the daemon as the log grows: a message of the user's, the agent's or a note is asked for its
+  facts (three at most, usually none); the tools' traffic is asked 128 messages at a time, as the lines the
+  compactor made of it. An argument a tool is called with for the first time is a fact with no model asked: a
+  way of working that changed without anyone saying so.
+- **Reconciled**: a new fact is set against the nearest that hold (by the words they share), and the model says
+  only whether it is new, restates one (which is then confirmed), replaces one (which is kept, marked), or is
+  not worth keeping. With nothing near, it is stored unasked.
+- **Read** as a block before the view (`<subjects>`, 16 KB, taken from the view's budget): the tool's and the
+  user's subjects first (45%), the project's (40%), the others' by last use (15%); in a subject the facts most
+  recently confirmed first, cut where its share ends.
+- **Appended, not rewritten**: the block is written when the view is rewritten (a batch merged its lines, so the
+  provider's cache of the prompt is lost from there anyway) and is the same text in between. What is learned
+  meanwhile is a `known` line in the session's history -- `known: user/rules: ... (THIS REPLACES: ...)` -- which a
+  turn reads at the view's end.
+
+```
+ghci-session knowledge                        # the subjects, and how many facts each holds
+ghci-session knowledge --subject user/rules   # its facts, newest confirmed first, with their ids and sources
+ghci-session knowledge --subject S --all      # the replaced ones too
+ghci-session knowledge --block PROJECT        # the block a session of that project would read
+ghci-session knowledge forget ID
+```
+
+They are in `$GHS_KNOWLEDGE`, or `$XDG_STATE_HOME/ghci-session/knowledge` (`~/.local/state/...`): one
+`facts.jsonl`, only appended to, shared by every session of every project. Measured on the same two histories
+with this in place (40 KB of view and the block): 30 of 42 answers current and none outdated, whichever order
+the sessions came in; about one model call more in 26 messages. Not there yet: a subject that outgrows its share
+only cuts its oldest-confirmed facts (they are not folded into summaries), other projects' facts are found by
+`knowledge --subject`, not by a search, and two facts worded with no word in common are not seen as the same.
+`tools/check-knowledge.py` runs it end to end with a stand-in for the model.
 
 ### Two ways in for an agent
 

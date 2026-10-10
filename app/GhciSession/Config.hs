@@ -73,6 +73,7 @@ data Cfg = Cfg
   , gHistory :: Bool             -- ^ keep the session's history (every request and verdict) and its summary tree
   , gSummarizeCmd :: Maybe String   -- ^ the command that compresses a message, or merges two lines, into one line (the compactor)
   , gSummarizeJobs :: Int, gAgent :: String
+  , gKnowledge :: Bool           -- ^ keep what the sessions establish, by subject, for the person ("GhciSession.Know")
   , gSharedPrompt :: Bool        -- ^ @"compact_prompt": "shared"@: one system prompt (and the turns' tools) for turns and compactions; else each its own
   }
 
@@ -91,7 +92,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own")
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False)
   ]
 
 reserved :: [String]
@@ -257,7 +258,7 @@ resolve conf session
   -- stops by itself when it has not been asked for half an hour.
   | Just (base, level, units) <- benchOf conf session = fmap (\c -> c
       { gOptimize = level > 0, gOptLevel = level, gSites = benchSites session, gUnits = gUnits c ++ [ u | u <- units, u `notElem` gUnits c ]
-      , gChecks = [], gServers = [], gHistory = False, gSummarizeCmd = Nothing, gAutoReload = False, gWatchTypecheck = False
+      , gChecks = [], gServers = [], gHistory = False, gKnowledge = False, gSummarizeCmd = Nothing, gAutoReload = False, gWatchTypecheck = False
       , gIdleStopMins = 30, gHygiene = False }) <$> resolve conf base
 resolve conf session = do
   let composed = isJust (lookup session (cSessions conf))
@@ -307,7 +308,7 @@ resolve conf session = do
         , gWatchTypecheck = all (jBool "watch_typecheck") ts
         , gProfile = [ exJ st | t <- ts, st <- lookupArr "profile" t ]
         , gHistory = all (jBool "history") ts, gSummarizeCmd = ex <$> jMaybeStr "summarize_cmd" t0
-        , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0
+        , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0, gKnowledge = jBool "knowledge" t0
         , gSharedPrompt = jStr "compact_prompt" t0 == "shared"
         }
     exJ j = case j of { JObj kvs -> JObj [ (k, case v of { JStr x -> JStr (expand vals0 x); _ -> v }) | (k, v) <- kvs ]; _ -> j }

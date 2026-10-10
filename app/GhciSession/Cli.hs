@@ -42,6 +42,7 @@ import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import qualified GhciSession.Import as I
 import qualified GhciSession.History as H
+import qualified GhciSession.Know as K
 
 -- arguments --------------------------------------------------------------------
 
@@ -349,6 +350,32 @@ cmdCompose conf a = case aPos a of
 -- seconds) summed by who asked and by day, and in money when @"prices"@ in the config prices the model
 -- (@{"MODEL": {"input": .., "input_cached": .., "output": ..}}@, per million tokens). Every session's, when
 -- none is named.
+-- | @knowledge@: what is known, by subject ("GhciSession.Know") -- the subjects and how much each holds; one
+-- subject's facts, with where each came from (@--all@: the replaced ones too); the block a session of a
+-- project reads; a fact forgotten.
+cmdKnowledge :: Args -> IO Int
+cmdKnowledge a = do
+  dir <- K.knowDir
+  facts <- K.loadFacts dir
+  case (pos a 0, pos a 1) of
+    (Just "forget", Just i)
+      | any ((== i) . K.fId) facts -> K.withLock dir (K.forget dir i) >> putStrLn ("forgotten: " ++ i) >> pure 0
+      | otherwise -> hPutStrLn stderr ("knowledge: no fact " ++ i) >> pure 1
+    _ | Just p <- opt a ["--block"] -> TIO.putStr (K.render K.budget p facts) >> pure 0
+      | Just sub <- opt a ["--subject"] -> do
+          let shown = [ f | f <- (if flag a ["--all"] then id else K.current) facts, K.fSubject f == T.pack sub ]
+          forM_ (sortOn (negate . K.fLast) shown) $ \f ->
+            TIO.putStrLn (T.pack (K.fId f ++ "  [" ++ K.day (K.fFirst f) ++ (if K.day (K.fLast f) /= K.day (K.fFirst f) then ", confirmed " ++ K.day (K.fLast f) else "") ++ "] ")
+                          <> K.fText f <> T.pack ("  (" ++ K.fSrc f ++ maybe "" (" -- replaced by " ++) (K.fBy f) ++ ")"))
+          when (null shown) (putStrLn ("nothing under " ++ sub))
+          pure 0
+      | otherwise -> do
+          let cur = K.current facts
+              subjects = M.toList (M.fromListWith (+) [ (K.fSubject f, 1 :: Int) | f <- cur ])
+          putStrLn (dir ++ ": " ++ show (length cur) ++ " fact(s) that hold, " ++ show (length facts - length cur) ++ " replaced")
+          forM_ subjects $ \(sub, n) -> putStrLn (printf "  %-28s %4d" (T.unpack sub) n)
+          pure 0
+
 cmdUsage :: Conf -> Args -> IO Int
 cmdUsage conf a = do
   names <- case pos a 0 of
@@ -558,6 +585,7 @@ usage = unlines
   , "  top [SESSION]                      watch the session: its verdict, memory and servers, the history as it is written, the view, the daemon's log, the model calls' cost"
   , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
   , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
+  , "  knowledge [--subject S] [--all] [--block PROJECT] | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
   , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
@@ -590,7 +618,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--claude", "--codex", "--opt", "--unit", "--runs"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--subject", "--block", "--claude", "--codex", "--opt", "--unit", "--runs"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -704,6 +732,7 @@ cliMain = do
         c' | c' `elem` ["top", "tui", "monitor"] -> topMain conf (opt a ["-s", "-t", "--session"] <|> pos a 0) >> pure 0
         "chat" -> chatMain conf rest
         "usage" -> cmdUsage conf a
+        "knowledge" -> cmdKnowledge a
         "list" -> cmdList conf
         "search" -> cmdSearch conf a
         "find" -> cmdSearch conf a

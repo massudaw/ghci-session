@@ -2474,7 +2474,8 @@ summarizeMain args = do
           r <- go 0 think0 budget0 (noTools `notElem` map Just ["0", "no", "off"])
           case r of
             Left why -> hPutStrLn stderr ("summarize: " ++ why) >> pure 1
-            Right p -> case filter (not . T.null) (map T.strip (T.lines (pContent p))) of
+            -- (a code fence is not the line: an answer that is JSON -- "GhciSession.Know" -- may come inside one)
+            Right p -> case filter (\l -> not (T.null l) && not (T.pack "```" `T.isPrefixOf` l)) (map T.strip (T.lines (pContent p))) of
               (l : _) -> TIO.putStrLn l >> pure 0
               [] -> hPutStrLn stderr ("summarize: the model answered nothing (finish_reason " ++ pFinish p ++ ")") >> pure 1
   where

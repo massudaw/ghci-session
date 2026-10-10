@@ -50,6 +50,7 @@ import GhciSession.Repl
 import GhciSession.Sys
 import GhciSession.Watch
 import qualified GhciSession.History as H
+import qualified GhciSession.Know as K
 import qualified GhciSession.Llm as Llm
 
 data S = S
@@ -2096,7 +2097,7 @@ histOp s op req = case sHist s of
   Just m -> case op of
     "log" -> do
       let kind = fromMaybe "" (lookupStr "kind" req)
-      if kind `notElem` ["user", "talk", "tool", "echo", "work", "note", "ai"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, work, note, ai; not " ++ show kind)) else do
+      if kind `notElem` ["user", "talk", "tool", "echo", "work", "note", "ai", "known"] then pure (Left ("log: the kind must be one of user, talk, tool, echo, work, note, ai, known; not " ++ show kind)) else do
         -- (a date: a message said elsewhere before now, brought in -- `ghci-session import`)
         i <- H.appendMsgAt m (T.pack kind) (fromMaybe T.empty (lookupText "text" req)) (lookupNum "date" req)
         pure (Right (T.pack ("#" ++ show i)))
@@ -2134,7 +2135,9 @@ histOp s op req = case sHist s of
               atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
               go
       sn <- go
-      let r = H.renderView sn
+      -- (what is known by subject goes before the view: "GhciSession.Know")
+      subjects <- if gKnowledge (sCfg s) then subjectsFor s sn else pure T.empty
+      let r = subjects <> H.renderView sn
       pure (Right (if lookupBool "json" req == Just True
         then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (H.sCount sn))) ]))
         else r))
@@ -2158,6 +2161,134 @@ histOp s op req = case sHist s of
       (Just l, Just i, Just t) | not (T.null (T.strip t)) -> H.putNode m (round l) (round i) (T.strip t) >> pure (Right (T.pack "ok"))
       _ -> pure (Left "tree_put: l, i and a text are needed")
     _ -> pure (Left ("unknown op " ++ show op))
+
+-- | The project a session's facts are filed under: its directory's name (the sessions of one checkout are one project).
+projectOf :: S -> String
+projectOf s = takeFileName (dropTrailing (sRoot s))
+  where dropTrailing p = if length p > 1 && last p == '/' then init p else p
+
+-- | The subjects' block of a view ("GhciSession.Know"). It is written when the view is REWRITTEN -- a batch
+-- merged its lines, so the prompt a provider cached is lost from there anyway -- and read as it was written
+-- while the view only grows: what is learned meanwhile is in the view's own lines (@known@).
+subjectsFor :: S -> H.Snap -> IO T.Text
+subjectsFor s sn = do
+  let file = sDir s </> "history" </> "subjects.txt"
+      partsFile = sDir s </> "history" </> "subjects-view.json"
+      parts = H.sView sn
+  was <- readFileMaybe partsFile
+  let before = [ (round l, round i) | Just t <- [was], Right (JArr ps) <- [parseJson t], JArr [JNum l, JNum i] <- ps ] :: [(Int, Int)]
+  old <- if isJust was && before `isPrefixOf` parts then fmap T.pack <$> readFileMaybe file else pure Nothing
+  case old of
+    -- (one written when nothing was known is not kept: the first facts are worth a prompt read again)
+    Just t | not (T.null t) -> pure t
+    _ -> do
+      dir <- K.knowDir
+      facts <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
+      let t = K.render K.budget (projectOf s) facts
+      void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ]))) :: IO (Either IOException ()))
+      pure t
+
+-- | What the session establishes, kept by subject ("GhciSession.Know"), through the compactor's command. The
+-- log is read once, in order, from where it was left (@history\/know.json@): a message of the user's, the
+-- agent's or a note is asked for its facts as it is; the tools' traffic is asked a hundred and twenty-eight
+-- messages at a time, as the lines the compactor made of them (thirty-two messages late, so that they are
+-- made); and an argument a tool is called with for the first time is a fact with no model asked. New facts
+-- are set against the nearest that hold -- new, said again, or replacing one -- and one that is new or
+-- replaces is appended to the history as a @known@ line: the view's block of subjects is not rewritten for it.
+knowLoop :: S -> H.Mem -> String -> IO ()
+knowLoop s m cmd = do
+  dir <- K.knowDir
+  let stateFile = sDir s </> "history" </> "know.json"
+      project = projectOf s
+      src i n = project ++ "/" ++ sName s ++ ":" ++ show i ++ "+" ++ show n
+  st <- readFileMaybe stateFile
+  let upto0 = case st of { Just t | Right j <- parseJson t, Just n <- lookupNum "upto" j -> round n; _ -> 0 } :: Int
+  seenArgs <- do
+    fs <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
+    newIORef [ a | f <- fs, Just a <- [K.isCall (K.fTopic f)] ]
+  failing <- newIORef False
+  let ask prompt = do
+        r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl"), ("SUMMARIZE_TOOLS", "0")] cmd prompt 300
+        case r of
+          Just (ExitSuccess, out, _) -> failing =: False >> pure (Just out)
+          _ -> do
+            was <- rd failing
+            unless was (logS s "knowledge: the command failed; asked again in a minute")
+            failing =: True
+            pure Nothing
+      -- new facts into the store; True when it was done (False: the model could not be asked -- again later)
+      settle :: [K.New] -> IO Bool
+      settle [] = pure True
+      settle news = do
+        held <- K.current <$> K.loadFacts dir
+        let cands = nubBy (\a b -> K.fId a == K.fId b) (concatMap (K.candidates held) news)
+        answer <- if null cands then pure (Just T.empty) else ask (K.reconPrompt cands news)
+        case answer of
+          Nothing -> pure False
+          Just out -> do
+            let decs = if null cands then map (const K.Add) news else K.parseDecisions (length news) (length cands) out
+                at ks = [ cands !! (k - 1) | k <- ks ]
+            forM_ (zip news decs) $ \(n, d) -> case d of
+              K.Drop -> pure ()
+              K.Same ks -> K.withLock dir (forM_ (at ks) (\f -> K.markSeen dir (K.fId f) (K.nDate n)))
+              _ -> do
+                let replaced = case d of { K.Replace ks -> at ks; _ -> [] }
+                i <- K.newId
+                K.withLock dir $ do
+                  K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing)
+                  forM_ replaced (\f -> K.markBy dir (K.fId f) i)
+                histAdd s "known" (K.knownLine n replaced)
+            logS s (printf "knowledge: %d fact(s): %s" (length news) (unwords [ case d of { K.Add -> "new"; K.Same _ -> "said-again"; K.Replace _ -> "replaces"; K.Drop -> "dropped" } | d <- decs ]))
+            pure True
+      piece date sr body = do
+        out <- ask (K.extractPrompt project date body)
+        case out of
+          Nothing -> pure False
+          Just o -> settle (K.parseNew project date sr o)
+      -- the lines the compactor made of a stretch of messages, from level four down to what is built
+      stretch from to = do
+        texts <- H.treeTexts m
+        let line l i | Just t <- M.lookup (l, i) texts = [T.pack (show (i * 2 ^ l) ++ "+" ++ show (2 ^ l :: Int) ++ "|") <> T.map (\c -> if c == '\n' then ' ' else c) t]
+                     | l == 0 = []
+                     | otherwise = line (l - 1) (2 * i) ++ line (l - 1) (2 * i + 1)
+        pure (T.unlines (concat [ line 4 i | i <- [from `div` 16 .. (to - 1) `div` 16] ]))
+      step i = do
+        ms <- H.messages m i 1
+        ok1 <- case ms of
+          (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note"], T.length (H.mText x) > 80 ->
+                      piece (H.mDate x) (src i 1) (H.mKind x <> T.pack ": " <> T.take 6000 (H.mText x))
+                  | H.mKind x == T.pack "tool", Just (tool, keys) <- K.callArgs (H.mText x) -> do
+                      known <- rd seenArgs
+                      let fresh = [ k | k <- keys, (tool, k) `notElem` known ]
+                      seenArgs =: (map ((,) tool) fresh ++ known)
+                      forM_ fresh $ \k -> do
+                        let n = K.callFact tool k (H.mDate x) (src i 1) (H.mText x)
+                        fid <- K.newId
+                        K.withLock dir (K.addFact dir (K.Fact (fid ++ "-" ++ k) (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) [] Nothing))
+                      pure True
+          _ -> pure True
+        -- a stretch of 128 messages that ended 32 ago
+        let end = i + 1 - 32
+        ok2 <- if not ok1 || end <= 0 || end `mod` 128 /= 0 then pure ok1 else do
+          body <- stretch (end - 128) end
+          d <- H.dateOf m (end - 1)
+          if T.null (T.strip body) then pure True else piece (fromMaybe 0 d) (src (end - 128) 128) body
+        pure ok2
+      loop upto = do
+        stopping <- rd (vStopping s)
+        unless stopping $ do
+          n <- H.changes m
+          count <- H.count m
+          if upto < count
+            then do
+              ok <- either (\e -> logS s ("knowledge: " ++ displayException (e :: SomeException)) >> pure True) pure =<< try (step upto)
+              if ok then void (try (writeFileUtf8 stateFile (encode (JObj [("upto", JNum (fromIntegral (upto + 1)))]))) :: IO (Either IOException ())) >> loop (upto + 1)
+                    else threadDelay 60000000 >> loop upto
+            else do
+              tv <- registerDelay 10000000
+              atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
+              loop upto
+  loop upto0
 
 -- | The compactor, through the configured command (@summarize_cmd@): it reads the system prompt (its own,
 -- 'H.compactPrompt'; or with @"compact_prompt": "shared"@ the one a turn has, 'H.systemPrompt', and then
@@ -2769,7 +2900,9 @@ runDaemon conf name bootCheck fastStart = do
   cfgV <- newIORef cfg
   hist <- if not (gHistory cfg) then pure Nothing else do
     -- (a message's node starts once fewer than this many before it are unbuilt: as many as run at once)
-    r <- try (H.openHistory H.defaultParams { H.pAhead = max 1 (gSummarizeJobs cfg) } (dir </> "history")) :: IO (Either SomeException (H.Mem, Int))
+    -- (the view is given less by what the subjects' block takes: a turn reads both)
+    let room = if gKnowledge cfg then K.budget else 0
+    r <- try (H.openHistory H.defaultParams { H.pAhead = max 1 (gSummarizeJobs cfg), H.pView = H.pView H.defaultParams - room, H.pViewMin = H.pViewMin H.defaultParams - room } (dir </> "history")) :: IO (Either SomeException (H.Mem, Int))
     case r of
       Right (m, torn) -> do
         when (torn > 0) (void (try (appendFileUtf8 (dir </> "daemon.log") ("history: " ++ show torn ++ " torn line(s) skipped\n")) :: IO (Either IOException ())))
@@ -2822,6 +2955,7 @@ runDaemon conf name bootCheck fastStart = do
                        isSetting w = case break (== '=') w of { (k@(_ : _), '=' : _) -> all (\x -> isAlphaNum x || x == '_') k; _ -> False }
                    in case rest of { ("ghci-session" : more) -> unwords (sets ++ show exe : more); _ -> c }
       forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
+      when (gKnowledge cfg) $ forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (knowLoop s m (self c)) :: IO (Either SomeException ())))
       void (forkIO (seedLoaded s))
       vMem s =: Nothing
       memSampleAsync s
