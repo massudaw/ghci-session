@@ -129,11 +129,27 @@ among the files "with messages" when `--tools` is not given.
 
 Self-tests: 357 pass.
 
+### 4. `import`: a file as it was at the last import is not read (`ImportStamp`, `imported-files.json`)
+
+What was left of an `import` was the parse of every line of 26 MB, nearly all of it of files that had not changed.
+Now the size and the modification time (to the microsecond, a whole number, so that it is written and read back as it
+was) of each file that was decided on -- taken, or passed over as nobody's, or with nothing new -- are kept beside
+`imported.json`, and a file whose two numbers are the same is not opened. A file that is picked but not yet imported
+(a plan without `--go`) keeps its old stamp, so is read again. Only the plain import uses and writes them (`--tools`,
+`--all`, `--since` ask another question of the same file); with no `imported.json` nothing is skipped. The stamp is
+taken before the file is read, so a line added while it is read is read the next time.
+
+| call | before | after |
+|---|---|---|
+| `.bin/ghci-session import` (10 runs, built at -O1, nothing new; 32 files) | 274.3 ms median | 12.6 ms median (13.4 on a second set) |
+
+The file of the turn itself has changed, so it is read whole: a session's file is 18 MB at the end of a long
+round and costs what it did (about 0.2 s) in the hook of that turn; reading only what was added (from a byte
+offset, with the session's state kept) would make it free too, and is not done. Self-tests: 359 pass (two new:
+the stamps' decision, and their file written and read back, a grown file, a missing one).
+
 ## Not done, and next
 
-- The rest of an `import` is the JSON parse of every line of 26 MB (147 ms of it in the session at 70 MB/s): a file
-  whose size and modification time have not changed since its last import could be passed over without being read
-  (it would need the sizes written beside `imported.json`), which makes the hook near zero.
 - `Json.parseJsonBS` at 70 MB/s is the one hot path under everything (facts, history, import, replies): 12 ms for an
   862 KB reply. A faster number reader and string unescaper there would help each of them.
 - The fallback `grep` still reads every file's bytes (29 ms for a tree of 2,262 files); a build with libfff

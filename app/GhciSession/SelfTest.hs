@@ -28,6 +28,7 @@ import qualified GhciSession.Know as K
 import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
 import qualified GhciSession.Import as I
+import qualified GhciSession.ImportStamp as IS
 import qualified GhciSession.Md as Md
 import qualified GhciSession.Image as Img
 import qualified GhciSession.ChatTui as ChatTui
@@ -780,6 +781,24 @@ run = do
      ( taken wantPlain (M.fromList [("/f.jsonl", 11)]) talkS, taken wantPlain (M.fromList [("/f.jsonl", 21)]) talkS, taken wantPlain { I.wSince = 15 } M.empty talkS, taken wantPlain { I.wRoot = "/other" } M.empty talkS )
      (Just [("user", 20), ("ai", 21)], Nothing, Just [("user", 20), ("ai", 21)], Nothing)
   eq "import: where Claude Code keeps a project's sessions" (I.claudeDir "/Users/me" "/Users/me/code/ghci-session") "/Users/me/.claude/projects/-Users-me-code-ghci-session"
+  eq "import: a file as it was at the last import is not read again; a changed, a new, and an unreadable one are"
+     (IS.stampsIn (M.fromList [("/a", (10, 5)), ("/b", (10, 5)), ("/c", (10, 5))]) [("/a", Just (10, 5)), ("/b", Just (11, 5)), ("/d", Just (1, 1)), ("/c", Nothing)])
+     (["/a"], [("/b", (11, 5)), ("/d", (1, 1))])
+  do tmp <- getTemporaryDirectory
+     let kf = tmp </> "ghs-selftest-imported-files.json"
+         sf = tmp </> "ghs-selftest-session.jsonl"
+     writeFile sf "{}\n"
+     s1 <- IS.fileStamp sf
+     IS.saveStamps kf (M.fromList [(sf, maybe (0, 0) id s1)])
+     kept <- IS.loadStamps kf
+     s2 <- IS.fileStamp sf
+     appendFile sf "{}\n"
+     s3 <- IS.fileStamp sf
+     gone <- IS.fileStamp (tmp </> "ghs-selftest-nothing-here")
+     none <- IS.loadStamps (tmp </> "ghs-selftest-nothing-here")
+     eq "import: the stamps are kept as they were (size, mtime to the microsecond), a file that grew has another, a missing one none"
+        (M.lookup sf kept == s1, s1 == s2, s1 == s3, gone, M.null none) (True, True, False, Nothing, True)
+     mapM_ removeFile [kf, sf]
   -- the claude command (a subscription)
   let cli = C.cliArgs (C.CliOpts "claude-haiku-4-5" (Just "low") (T.pack "sys") (Just ("/bin/ghs", "/tmp/s.sock")) False False)
       after k xs = take 1 [ v | (a, v) <- zip xs (drop 1 xs), a == k ]

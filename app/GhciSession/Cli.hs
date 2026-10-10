@@ -41,6 +41,7 @@ import qualified Data.Text.IO as TIO
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import qualified GhciSession.Import as I
+import qualified GhciSession.ImportStamp as IS
 import qualified GhciSession.History as H
 import qualified GhciSession.Know as K
 
@@ -89,14 +90,27 @@ cmdImport conf a = do
     Nothing -> pure 0
     Just d -> maybe (die' ("--since " ++ d ++ ": a date is YYYY-MM-DD")) pure (I.isoSeconds (d ++ "T00:00:00Z"))
   files <- (++) <$> I.sessionFiles claude <*> (concat <$> mapM I.sessionFiles codex)
-  sessions <- catMaybes <$> mapM (I.readSession (flag a ["--tools"])) files
   done0 <- (\b -> either (const M.empty) (\j -> M.fromList [ (k, d) | (k, JNum d) <- fromMaybe [] (obj j) ]) (parseJsonBS b))
              . either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile doneFile)
+  -- (a file as it was at the last import is not read again: its decision stands. Only for the plain import: what
+  -- --tools, --all and --since take is another decision. Without imported.json, nothing is skipped)
+  let plain = not (flag a ["--tools", "--all"] || isJust (opt a ["--since"]))
+      stampFile = stateOf conf name </> "history" </> "imported-files.json"
+  kept <- if plain && not (M.null done0) then IS.loadStamps stampFile else pure M.empty
+  now <- mapM (\f -> (,) f <$> IS.fileStamp f) files
+  let (still, changed) = IS.stampsIn kept now
+      stamps = M.fromList changed
+  sessions <- catMaybes <$> mapM (I.readSession (flag a ["--tools"])) [ f | (f, _) <- now, f `notElem` still ]
   let want s = I.Want (flag a ["--tools"]) (flag a ["--all"]) since (if I.sApp s == "Codex" then root else "")      -- (Codex keeps every project's sessions together)
       picked = sortOn (map I.eDate . take 1 . I.sEntries) [ x | s <- sessions, Just x <- [I.wanted (want s) done0 s] ]
   putStrLn (name ++ ": " ++ show (length sessions) ++ " session file(s) with messages under " ++ claude ++ (if any ((== "Codex") . I.sApp) sessions then " and ~/.codex" else "")
+            ++ (if null still then "" else "; " ++ show (length still) ++ " more as they were at the last import, not read")
             ++ "; " ++ show (length sessions - length picked) ++ " passed over (another project's, a program's own calls through the SDK, a single exchange, or imported already"
             ++ (if flag a ["--all"] then "" else "; --all takes the programs' and the single ones too") ++ ")")
+  -- (what has nothing to take is written down now; what is taken, as it is taken)
+  let taken = map I.sessionKey picked
+      settled = M.union (M.filterWithKey (\f _ -> f `notElem` taken) stamps) kept
+  when (plain && settled /= kept) (IS.saveStamps stampFile settled)
   if null picked then putStrLn "  nothing to import" >> pure 0 else do
     I.plan (H.pNode H.defaultParams) picked >>= mapM_ putStrLn
     if not (flag a ["--go"]) then putStrLn ("\n  nothing was written: `ghci-session import" ++ concat [ " " ++ f | f <- ["--tools", "--all"], flag a [f] ] ++ " --go` imports them") >> pure 0 else do
@@ -104,8 +118,8 @@ cmdImport conf a = do
       let logOne kind text date = do
             r <- request conf name (JObj [("op", JStr "log"), ("kind", JStr kind), ("text", JText text), ("date", JNum date)])
             unless (lookupBool "ok" r == Just True) (die' ("import: " ++ T.unpack (fromMaybe T.empty (lookupText "out" r))))
-          go _ [] = pure ()
-          go done (s : rest) = do
+          go _ _ [] = pure ()
+          go done st (s : rest) = do
             note <- I.sessionNote s
             let start = maybe 0 I.eDate (listToMaybe (I.sEntries s))
             logOne "note" note start
@@ -114,9 +128,11 @@ cmdImport conf a = do
             createDirectoryIfMissing True (stateOf conf name </> "history")
             B.writeFile (doneFile ++ ".new") (encodeBS (JObj [ (k, JNum d) | (k, d) <- M.toList done' ]))
             renameFile (doneFile ++ ".new") doneFile
+            let st' = maybe st (\x -> M.insert (I.sessionKey s) x st) (M.lookup (I.sessionKey s) stamps)
+            when plain (IS.saveStamps stampFile st')
             putStrLn ("  imported: " ++ T.unpack note)
-            go done' rest
-      go doneV picked
+            go done' st' rest
+      go doneV settled picked
       pure 0
 
 -- plumbing -----------------------------------------------------------------------
