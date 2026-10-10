@@ -3,14 +3,17 @@
 -- input, read from the cache, written to it, output. The weights are said relative to an uncached input token.
 -- The docs do not publish them; this is an estimate from this machine's own calls, and says how good it is.
 --
--- How the pairs are made. The calls of ONE session that have windows, in time order; two neighbours make a pair when
--- both saw the window with the same reset (one period), its use did not fall, and no call of ANOTHER session's ledger
--- ended between the start of the earlier call and the end of the later one (that call's tokens would be in the rise
--- and not in the pair). A chat of another machine, or Claude Code itself, shows in no ledger here: its calls cannot be
--- told apart, and only add noise (the fit's quality says so). The event of a call is seen at its start, so the rise
--- between two calls may be the earlier call's tokens (lag 1) or the later's (lag 0): both are fitted, and the better kept.
+-- How the pairs are made. The calls of ONE session that have windows, in time order; a SPAN of them is a pair when
+-- they all saw the window with the same reset (one period), its use did not fall, and no call of ANOTHER session's
+-- ledger ended between the start of the span's first call and the end of its last (that call's tokens would be in the
+-- rise and not in the pair). A chat of another machine, or Claude Code itself, shows in no ledger here: its calls cannot
+-- be told apart, and only add noise (the fit's quality says so). The span is as short as will do: the plan's use comes
+-- in steps (a hundredth), and a call raises it by a tenth of a step, so two neighbouring calls differ by a step or by
+-- nothing, which is noise, not a rise; a span is as many calls as make the use rise by a few steps on the average
+-- ('spanCalls', 'spanSteps'), and the tokens are those of all its calls. The event of a call is seen at its start, so the rise over a span may be the
+-- tokens of all its calls but the last (lag 1) or all but the first (lag 0): both are fitted, and the better kept.
 module GhciSession.QuotaFit
-  ( Obs (..), obsOf, Pair (..), pairsOf, Fit (..), fitOf, solve, trusted, impliedRatio, quotaLines, minPairs
+  ( Obs (..), obsOf, Pair (..), pairsOf, quantumOf, spanSteps, spanCalls, Fit (..), fitOf, solve, trusted, impliedRatio, quotaLines, minPairs
   ) where
 
 import Data.List (sortOn, nub, transpose)
@@ -32,17 +35,69 @@ obsOf (s, r)
   where ws = windowsFrom r
         n k = fromMaybe 0 (lookupNum k r)
 
--- | Two calls seen in one period of one window: the rise of its use, and the tokens of the earlier and the later call.
+-- | A span of calls seen in one period of one window: the rise of its use from its first call to its last, and the
+-- tokens of its calls but the last (@pPrev@: the use is read at a call's start) and but the first (@pNext@: at its end).
+-- Two neighbouring calls are a span of two: @pPrev@ the earlier's tokens, @pNext@ the later's.
 data Pair = Pair { pWin :: String, pRise :: Double, pPrev :: [Double], pNext :: [Double] }
 
-pairsOf :: [Obs] -> [Pair]
-pairsOf obs =
-  [ Pair (wName wa) (wUsed wb - wUsed wa) (oTok a) (oTok b)
-  | s <- nub (map oSess obs), let sq = sortOn oT [ o | o <- obs, oSess o == s ], (a, b) <- zip sq (drop 1 sq)
-  , not (crossed a b), wa <- oWins a, wb <- oWins b, wName wa == wName wb, wUsed wb >= wUsed wa, period wa == period wb ]
+-- | How many steps of a window's use a span should rise over, as a rule, to be worth a fit. Reading a use to a step is
+-- a noise of a third of a step at each end, whatever the span: the tokens' own spread over a span must stand out of it
+-- for R squared to reach 0.8, and it grows with the square root of the calls and so of the rise (measured on made-up
+-- calls: 6 steps, R squared 0.4; 10, 0.64; 20, 0.83).
+spanSteps :: Double
+spanSteps = 20
+
+-- | The step a window's use comes in (0.01 for the plan's: two decimals): the smallest rise between calls that is over
+-- a millionth, when every use seen is a whole number of such steps; 0 where none is seen, or the use is continuous.
+quantumOf :: String -> [Obs] -> Double
+quantumOf name obs = case [ d | (a, b) <- zip us (drop 1 us), let d = b - a, d > 1e-6 ] of
+  [] -> 0
+  ds -> let q = minimum ds in if all (onGrid q) us then q else 0
   where
-    crossed a b = any (\o -> oSess o /= oSess a && oT o > oT a - oSecs a && oT o <= oT b) obs
+    us = [ wUsed w | o <- sortOn oT obs, w <- oWins o, wName w == name ]
+    onGrid q x = let k = x / q in abs (k - fromIntegral (round k :: Integer)) < 1e-4
+
+-- | The runs of one window: calls of a session that saw it with one reset, its use not falling, in time order.
+windowRuns :: String -> [Obs] -> [[(Obs, Window)]]
+windowRuns name obs = [ run | s <- nub (map oSess obs), run <- runsOf [ (o, w) | o <- sortOn oT [ o | o <- obs, oSess o == s ], w <- oWins o, wName w == name ] ]
+  where
     period w = fmap (\t -> round (t / 60) :: Int) (wReset w)
+    runsOf [] = []
+    runsOf (x : xs) = let (a, b) = more x xs in (x : a) : runsOf b
+    more p (y : ys) | wUsed (snd y) >= wUsed (snd p) && period (snd y) == period (snd p) = let (a, b) = more y ys in (y : a, b)
+    more _ ys = ([], ys)
+
+-- | How many calls a span of this window runs over, so that its rise is 'spanSteps' steps of the use on the average
+-- (at least 1: the neighbours). The length is a function of the window's use over the whole ledger, not of each span's
+-- own rise: a span cut where its rise reaches a number has that number for its rise, whatever the tokens were, and
+-- nothing is left to fit. A window whose use has no steps (continuous) is fitted by its neighbours: 1; one whose use
+-- has not risen has no span worth making: a number of calls that no run reaches.
+spanCalls :: Double -> String -> [Obs] -> Int
+spanCalls steps name obs
+  | q <= 0 = 1
+  | rises <= 0 = maxBound `div` 4
+  | otherwise = max 1 (ceiling (steps * q / (rises / fromIntegral calls)))
+  where
+    q = quantumOf name obs
+    runs = windowRuns name obs
+    rises = sum [ wUsed (snd (last r)) - wUsed (snd (head r)) | r <- runs ]
+    calls = max 1 (sum [ length r - 1 | r <- runs ]) :: Int
+
+-- | The spans of the calls, @pairsOf calls obs@, each window's runs cut into consecutive spans of @calls name@ calls
+-- (the next span starts where the last ended; what is left of a run, short of one, is dropped), those with no other
+-- session's call ending inside them.
+pairsOf :: (String -> Int) -> [Obs] -> [Pair]
+pairsOf calls obs =
+  [ Pair name (u (last sp) - u (head sp)) (toks (init sp)) (toks (drop 1 sp))
+  | name <- nub [ wName w | o <- obs, w <- oWins o ], run <- windowRuns name obs
+  , sp <- spans (max 1 (calls name)) run, not (crossed (fst (head sp)) (fst (last sp))) ]
+  where
+    u (_, w) = wUsed w
+    toks = foldr (zipWith (+) . oTok . fst) [0, 0, 0, 0]
+    crossed a b = any (\o -> oSess o /= oSess a && oT o > oT a - oSecs a && oT o <= oT b) obs
+    spans k run = case splitAt (k + 1) run of
+      (sp, _) | length sp == k + 1 -> sp : spans k (drop k run)
+      _ -> []
 
 -- | A fit: the weight of each class (Nothing: never seen in the pairs), the pairs, how much of the rise's variance
 -- it explains (R squared), and which lag it is.
@@ -93,26 +148,27 @@ impliedRatio f
   | trusted f, [_, Just r, Just w, _] <- fWeights f, r > 0 = Just (w / r)
   | otherwise = Nothing
 
--- | The report: per window, the weights relative to an uncached input token, the calls, the fit, and the ratio it
--- implies beside the one in use. Says plainly when there is too little data.
+-- | The report: per window, the weights relative to an uncached input token, the spans of calls, the fit, and the
+-- ratio it implies beside the one in use. Says plainly when there is too little data, and gives no figure of a window's
+-- size from a fit that is not to be trusted.
 quotaLines :: Double -> [(String, Json)] -> [String]
 quotaLines ratioInUse rows
   | null obs = [ "quota: no call in the ledger has the plan's windows yet (they come with the claude command's calls): nothing to fit" ]
   | otherwise = concatMap one (nub ([ pWin p | p <- ps ] ++ [ wName w | o <- obs, w <- oWins o ]))
   where
     obs = catMaybes (map obsOf rows)
-    ps = pairsOf obs
+    ps = pairsOf (\w -> spanCalls spanSteps w obs) obs
     one w =
       let mine = [ p | p <- ps, pWin p == w ]
           fits = catMaybes [ fitOf 1 [ (pRise p, pPrev p) | p <- mine ], fitOf 0 [ (pRise p, pNext p) | p <- mine ] ]
       in case sortOn (negate . fR2) fits of
-        [] -> [ printf "quota, window %s: %d usable pairs of calls: too little data to fit (at least %d, and the classes must vary)" w (length mine) (minPairs 4) ]
+        [] -> [ printf "quota, window %s: %d usable spans of %d calls: too little data to fit (at least %d, and the classes must vary)" w (length mine) (spanCalls spanSteps w obs) (minPairs 4) ]
         f : _ -> report w f
     report w f =
-      [ printf "quota, window %s: %d pairs of calls, R squared %.2f, the rise taken to be the %s call's tokens%s" w (fN f) (fR2 f) (if fLag f == 1 then "earlier" else "later" :: String)
-          (if trusted f then "" else " -- NOT to be trusted (needs 30 pairs, R squared 0.8, positive weights)" :: String)
+      [ printf "quota, window %s: %d spans of %d calls, R squared %.2f, the rise taken to be the tokens of the span's calls but the %s%s" w (fN f) (spanCalls spanSteps w obs) (fR2 f) (if fLag f == 1 then "last" else "first" :: String)
+          (if trusted f then "" else " -- NOT to be trusted (needs 30 spans, R squared 0.8, positive weights)" :: String)
       , "  weight of a token, uncached input = 1: " ++ unwords [ printf "%s %s" nm (maybe "(not seen)" (rel f) wt) | (nm, wt) <- zip ["uncached", "cache-read", "cache-written", "output"] (fWeights f) :: [(String, Maybe Double)] ] ]
-      ++ [ printf "  1%% of the window is about %s uncached input tokens" (human (round (0.01 / a))) | Just a <- [head (fWeights f)], a > 0 ]
+      ++ [ printf "  1%% of the window is about %s uncached input tokens" (human (round (0.01 / a))) | trusted f, Just a <- [head (fWeights f)], a > 0 ]
       ++ [ case impliedRatio f of
              Just r -> printf "  the write/read price ratio this implies: %.1f (the controller's: %.1f; not switched to by itself)" r ratioInUse
              Nothing -> printf "  no write/read ratio implied (the controller's: %.1f)" ratioInUse | True ]

@@ -84,15 +84,24 @@ checks =
         Just f -> fLag f == 1 && fN f == 59 && fR2 f > 0.999 && trusted f && near [1, 0.1, 2, 5] (relative f) && maybe False (\r -> abs (r - 20) < 0.5) (impliedRatio f)
         Nothing -> False)
   , ("quota fit: the same data with the rise seen a call late (the later call's tokens) is told by its lag"
-    , fmap fLag (fitOf 0 [ (pRise p, pNext p) | p <- pairsOf (obsFrom (series 1 60)) ]) == Just 0 && fmap fLag fit1 == Just 1)
+    , fmap fLag (fitOf 0 [ (pRise p, pNext p) | p <- pairsOf (const 1) (obsFrom (series 1 60)) ]) == Just 0 && fmap fLag fit1 == Just 1)
   , ("quota fit: with 5 calls the report says too little data; with none that has windows, that there is nothing to fit"
     , let ls = quotaLines 12.5 (series 1 5) in (any ("too little data" `isInfixOf`) ls, any ("nothing to fit" `isInfixOf`) (quotaLines 12.5 [("s", JObj [("t", JNum 1)])])) == (True, True))
   , ("quota fit: a call of another session's ledger that ended between two calls takes that pair out"
-    , length (pairsOf (obsFrom (series 1 60 ++ [("other", row 0 (10 * 10 + 0.5) 1 (0.5) [1, 1, 1, 1])])) ) == 58)
+    , length (pairsOf (const 1) (obsFrom (series 1 60 ++ [("other", row 0 (10 * 10 + 0.5) 1 (0.5) [1, 1, 1, 1])])) ) == 58)
   , ("quota fit: two calls in different periods of a window (another reset) make no pair"
-    , length (pairsOf (obsFrom (series 1 30 ++ [ (s, setReset 5e9 r) | (s, r) <- series 31 30 ]))) == 58)
+    , length (pairsOf (const 1) (obsFrom (series 1 30 ++ [ (s, setReset 5e9 r) | (s, r) <- series 31 30 ]))) == 58)
   , ("quota fit: a rise that has nothing to do with the tokens is not to be trusted, and the report says so"
     , let ls = quotaLines 12.5 (noise 60) in any ("NOT to be trusted" `isInfixOf`) ls)
+  , ("quota fit: the plan's use comes in steps of a hundredth: neighbouring calls then give no fit to trust, spans of calls over a rise of three steps do, and say a ratio near 20"
+    , let obs = obsFrom qseries
+          pairsWith r = [ (pRise p, pPrev p) | p <- pairsOf r obs ]
+          adj = fitOf 1 (pairsWith (const 1))
+          spn = fitOf 1 (pairsWith (\w -> spanCalls spanSteps w obs))
+      in abs (quantumOf "five_hour" obs - 0.01) < 1e-9 && maybe True (not . trusted) adj && maybe False trusted spn && maybe False (\r -> abs (r - 20) < 4) (spn >>= impliedRatio))
+  , ("quota fit: the report on such a ledger says the ratio the fit implies; one that is not to be trusted gives no size of the window"
+    , let ls = quotaLines 12.5 qseries; bad = quotaLines 12.5 (noise 60)
+      in any ("implies: " `isInfixOf`) ls && any ("1% of the window" `isInfixOf`) ls && any ("NOT to be trusted" `isInfixOf`) bad && not (any ("1% of the window" `isInfixOf`) bad))
   , ("quota fit: a fit that is not trusted implies no ratio; a trusted one says it beside the controller's"
     , let ls = quotaLines 12.5 (series 1 60) in (any ("implies: 20." `isInfixOf`) ls, any ("controller's: 12.5" `isInfixOf`) ls) == (True, True))
   ]
@@ -124,6 +133,9 @@ checks =
     objOf _ = []
     noise n = [ ("s", row (fromIntegral (floor (r * 1000 / 32768) :: Int) / 1000) (10 * fromIntegral k) 1 0 t) | (k, r, t) <- take n (zip3 [1 :: Int ..] (drop 400 rnd) (toks n)) ]
     obsFrom rs = [ o | Just o <- map obsOf rs ]
-    fit1 = fitOf 1 [ (pRise p, pPrev p) | p <- pairsOf (obsFrom (series 1 60)) ]
+    -- (the same calls, the use as the plan says it: to a hundredth, and a call raising it by about half a step)
+    tsQ = toks 2000
+    qseries = [ ("s", row u (10 * fromIntegral k) 1 0 t) | (k, u, t) <- zip3 [1 :: Int ..] (map (\x -> fromIntegral (round (x * 100) :: Int) / 100) (scanl (+) 0.01 (map ((* 2) . cost) tsQ))) tsQ ]
+    fit1 = fitOf 1 [ (pRise p, pPrev p) | p <- pairsOf (const 1) (obsFrom (series 1 60)) ]
     relative f = case fWeights f of { ws@(Just a : _) -> [ maybe 0 (/ a) w | w <- ws ]; _ -> [] }
     near xs ys = length xs == length ys && and (zipWith (\x y -> abs (x - y) < 0.02 * abs x + 1e-9) xs ys)

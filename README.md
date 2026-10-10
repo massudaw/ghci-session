@@ -587,11 +587,14 @@ used, `reset` when it resets) and `credits` (whether the event says the call was
 `usage` and the monitor's `5` tab end with the windows of the latest call that has them.
 `ghci-session usage --quota` fits, per window, by least squares, how much its use rose between two calls of a session
 against the call's uncached input, cache-read, cache-written and output tokens, and says the weights relative to an
-uncached input token, with the number of pairs and R². Pairs are two neighbouring calls of one session that saw the
-window with the same reset, the use not falling, and no call of another session's ledger ending between them (a call
-of another machine or of Claude Code itself shows in no ledger here, and only adds noise, which R² shows). It says
-plainly when there are too few pairs, and what write/read ratio a trusted fit implies beside the one in use; it
-never switches to it by itself.
+uncached input token, with the number of spans and R². The plan's use comes in steps of a hundredth and a call raises
+it by a tenth of a step, so two neighbouring calls tell nothing: a span is as many calls of one session as make the use
+rise by some twenty steps on the average (a window whose use has no steps is fitted by neighbours), all of which saw the
+window with the same reset, the use not falling, and no call of another session's ledger ending inside it (a call of
+another machine or of Claude Code itself shows in no ledger here, and only adds noise, which R² shows). It takes
+thirty spans and an R² of 0.8 to trust a fit -- days of use, for the five-hour window -- says plainly when there are too
+few, gives the size of a window in tokens and the write/read ratio the fit implies, beside the one in use, only for a fit
+worth trusting; it never switches to it by itself.
 `ghci-session usage [SESSION] [--since DAYS] [--json]` sums the ledger by who asked and by day, in money too when
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
