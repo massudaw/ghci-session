@@ -1,0 +1,20 @@
+README.md
+  h_fd5809635b36a3 474-477
+app/GhciSession/Chat.hs
+  h_fd5809635b36a3 32,310,334-357,378-379,381-385
+app/GhciSession/Daemon.hs
+  h_fd5809635b36a3 2603-2606
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 22,945
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8a243fc660da0907e4a7270c17c96a2c5a64235b",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
