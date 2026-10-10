@@ -166,7 +166,7 @@ def main():
         files = lambda *p: os.path.join(proj, *p)
         check("write: outside write_paths is refused (a directory not named, a `..` out, a symlink out), and says where writing is allowed",
               not os.path.exists(files("src", "x.txt")) and not os.path.exists(files("src", "z.txt")) and not os.path.exists(files("src2", "y.txt"))
-              and t.count("outside write_paths -- this project allows writing only in notes, plan.md") >= 3, t[-900:])
+              and t.count("outside write_paths -- write, edit and edits may write only in notes, plan.md") >= 3, t[-900:])
         check("write: inside, a directory or a file named, it writes", open(files("notes", "a.txt")).read() == "yes" and open(files("plan.md")).read() == "plan", None)
         check("edit and edits: outside is refused, and edits writes nothing when any one of its files is refused",
               "hello" in open(files("src", "Demo.hs")).read() and open(files("plan.md")).read() == "plan", open(files("plan.md")).read())

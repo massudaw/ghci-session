@@ -37,6 +37,6 @@ writeAllowed root (Just allowed) full = do
   real <- realPath full
   places <- mapM (realPath . (root </>)) allowed
   pure (if within places real then Right ()
-        else Left (makeRelative root full ++ ": outside write_paths -- this project allows writing only in "
+        else Left (makeRelative root full ++ ": outside write_paths -- write, edit and edits may write only in "
                    ++ (if null allowed then "nothing (write_paths is empty)" else intercalate ", " allowed)
                    ++ " (relative to the project; \"write_paths\" of its target in ghci-session.json)"))

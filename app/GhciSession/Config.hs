@@ -16,7 +16,7 @@ import Control.Monad (forM, unless, when)
 import Data.List (isPrefixOf, nub)
 import Data.Maybe (fromMaybe, isJust)
 import System.Directory (canonicalizePath, createDirectoryIfMissing, doesFileExist, getCurrentDirectory)
-import System.FilePath (takeDirectory, (</>))
+import System.FilePath (isAbsolute, splitDirectories, takeDirectory, (</>))
 import System.Info (os)
 
 import GhciSession.Declared (Declared, parseDeclared, validBuiltin, validWritePaths)
@@ -153,8 +153,9 @@ fence t = do
   _ <- validWritePaths (t .: "write_paths")
   case t .: "instructions" of
     JNull -> Right ()
-    JStr f | not (null f) -> Right ()
-    _ -> Left "\"instructions\" is a file, relative to the project"
+    -- (inside the project: a path that is absolute or climbs out of it would put any file of the machine in the prompt)
+    JStr f | not (null f), not (isAbsolute f), ".." `notElem` splitDirectories f -> Right ()
+    _ -> Left "\"instructions\" is a file inside the project, given relative to its root (not absolute, no ..)"
 
 -- | The value of a key the first member of the session that sets it (not null) gives.
 firstSet :: String -> Conf -> String -> Maybe Json
