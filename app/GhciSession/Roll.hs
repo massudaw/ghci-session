@@ -9,10 +9,11 @@
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
-  , seeGap, lifetime, coldDue
+  , seeGap, lifetime, coldDue, rollAt, boundaryTool
   ) where
 
 import Control.Exception (IOException, try)
+import Data.List (isInfixOf)
 import qualified Data.ByteString as B
 import System.Directory (renameFile)
 
@@ -62,6 +63,27 @@ limitOf n ro | n == 0 = Nothing
 -- | Has a threshold moved enough, from the one last said, to say it again (5k)?
 moved :: Int -> Int -> Bool
 moved said now' = abs (now' - said) > 5000
+
+-- the boundary -------------------------------------------------------------------------------
+
+-- | Does a context past the limit end the run now? A fixed limit: past it. The controller's: at 1.15 of it, whatever
+-- the agent is doing; from 0.85 of it at a natural boundary ('boundaryTool'), not in the middle of an edit.
+rollAt :: Bool -> Int -> Int -> Bool -> Bool
+rollAt auto lim ctx boundary
+  | not auto = ctx > lim
+  | otherwise = ctx * 100 >= lim * 115 || (boundary && ctx * 100 >= lim * 85)
+
+-- | Is a tool call that was answered a natural place to end a run: a commit that went through, or a test that is green?
+boundaryTool :: String -> Json -> Bool -> String -> Bool
+boundaryTool name args ok out = ok && case name of
+  "sh" -> "git commit" `isInfixOf` cmd
+          && "[exit 0 " `isInfixOf` out && not ("nothing to commit" `isInfixOf` out || "nothing added to commit" `isInfixOf` out)
+  "test" -> green
+  "reload" -> green
+  _ -> False
+  where cmd = maybe "" id (lookupStr "cmd" args)
+        green = not ("FAIL" `isInfixOf` out || "COMPILE-ERROR" `isInfixOf` out || "CHECK-HANG" `isInfixOf` out)
+                && ("CHECK-PASS" `isInfixOf` out || ("all " `isInfixOf` out && " passed" `isInfixOf` out))
 
 -- the cache ----------------------------------------------------------------------------------
 

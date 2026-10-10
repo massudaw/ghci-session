@@ -637,6 +637,10 @@ not: at most G; 3300 s to begin with, kept in `roll.json`), and when a tool call
 model call past that, and the context is over 1.3 times a fresh call's, the run ends after the tool's answer instead
 of paying for the whole context uncached (a bench of fifteen minutes can do this).
 
+With `auto` the run does not end in the middle of an edit: from 0.85 of the threshold it ends after a `git commit` that
+went through or a green `test` / `reload`; at 1.15 of it, after whatever tool call comes next. (A fixed number ends the
+run at the first call past it.)
+
 `tools/check-cli.py` checks these without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
 same arguments and stream, the chat's tools called through its tool server, no model). On the subscription path
 each model call is now in the usage ledger as it ends, with what it read from the cache -- a turn of hours was one

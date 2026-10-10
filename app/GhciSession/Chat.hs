@@ -1712,6 +1712,7 @@ runCli ch e o pending run = do
   -- (a run taken up from a chat before this one began long ago: what it began with is not known, and is not what holds a rollover back)
   firstIn <- newIORef (if null (crConns run) && sCalls (crSpent run) == 0 then 0 else 1 :: Int)       -- the context of this run's first model call
   rollDue <- newIORef (0 :: Int)       -- the context that is over the rollover's tokens (0: it is not)
+  rollSoft <- newIORef (0 :: Int)       -- the context that is near the controller's threshold: the run ends at the next natural boundary
   prevCtx <- newIORef (0 :: Int)        -- the context of this run's last call
   lastEnd <- newIORef (0 :: Double)     -- when this run's last model call ended (0: none yet)
   rollWhy <- newIORef ""                -- why the run rolls over, where it is not for the context's size
@@ -1752,6 +1753,9 @@ runCli ch e o pending run = do
           when (already == 0 && f > 0 && ended > 0 && coldDue ro (t3 - ended) ctxNow) $ do
             writeIORef rollWhy (printf "%d minutes passed since its last call, past what the provider keeps its cache for (%d), with %s tokens of context" (round ((t3 - ended) / 60) :: Int) (round (lifetime ro / 60) :: Int) (human ctxNow))
             writeIORef rollDue ctxNow
+        -- (near the threshold, a commit that went through or a green test is where to end: not in the middle of an edit)
+        soft <- readIORef rollSoft
+        when (soft > 0 && boundaryTool name args ok (T.unpack out0)) (writeIORef rollDue soft)
         due <- readIORef rollDue
         if due > 0
           then do
@@ -1830,7 +1834,11 @@ runCli ch e o pending run = do
             let ro' = if mv then ro { rSaid = thr } else ro
             writeIORef (cRoll ch) ro'
             saveRoll (rollFile (cConf ch) (cName ch)) ro'
-            when (maybe False (ctx >) (limitOf (oRollover o) ro') && f > 0 && 3 * ctx > 4 * f) (writeIORef rollDue ctx)
+            let grown = f > 0 && 3 * ctx > 4 * f
+                lim = limitOf (oRollover o) ro'
+                auto = oRollover o < 0
+            when (grown && maybe False (\l -> rollAt auto l ctx False) lim) (writeIORef rollDue ctx)
+            writeIORef rollSoft (if grown && auto && maybe False (\l -> rollAt auto l ctx True) lim then ctx else 0)
         Just "message_delta" | Just outN <- lookupNum "output_tokens" (ev .: "usage") -> do
           c <- readIORef callR
           forM_ c $ \(inN, cached, t0) -> do
