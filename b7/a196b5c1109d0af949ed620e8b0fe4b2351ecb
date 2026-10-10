@@ -1,0 +1,18 @@
+PERF.md
+  h_fd5809635b36a3 109-138
+app/GhciSession/Cli.hs
+  h_fd5809635b36a3 92
+app/GhciSession/Import.hs
+  h_fd5809635b36a3 29-31,69-73,78-79,82-85,92-93,95-120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b7a196b5c1109d0af949ed620e8b0fe4b2351ecb",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
