@@ -136,9 +136,12 @@ def render(facts, project, budget, tiers, cut, scope, drop):
 def gold(facts, questions):
     """Which facts answer each question, and which mislead: asked once, kept beside the store."""
     cur = [f for f in facts if not f["by"] and not iscall(f)]
-    key = hashlib.sha1(json.dumps([questions, sorted(f["id"] for f in cur)]).encode()).hexdigest()[:16]
+    key = hashlib.sha1(json.dumps([questions, sorted((f["id"], f["fact"]) for f in cur)]).encode()).hexdigest()[:16]
     path = os.path.join(KDIR, "lab-gold.json")
-    kept = json.load(open(path)) if os.path.exists(path) else {}
+    try:
+        kept = json.load(open(path))
+    except Exception:
+        kept = {}
     if kept.get("key") == key:
         return kept["gold"]
     tok = lambda s: set(re.findall(r"[a-z0-9_]{3,}", s.lower()))
@@ -156,7 +159,9 @@ def gold(facts, questions):
         return dict(q, answers=pick("answers"), misleads=pick("misleads"))
     with ThreadPoolExecutor(6) as ex:
         g = list(ex.map(one, questions))
-    json.dump(dict(key=key, gold=g), open(path, "w"), indent=1)
+    with open(path + ".new", "w") as h:               # (whole or not at all: a lab stopped here must not leave half a file)
+        json.dump(dict(key=key, gold=g), h, indent=1)
+    os.replace(path + ".new", path)
     return g
 
 
@@ -180,6 +185,8 @@ def main():
     cmd, project = a.pop(0), opt("--project", "dxf")
     qfile, pdir = opt("--questions", os.path.join(HERE, "tools", "know-lab", "dxf-questions.json")), opt("--dir", None)
     specs = a or ["now", "scope:scope=1"]
+    if not os.path.exists(os.path.join(KDIR, "facts.jsonl")):
+        sys.exit("know-lab: no facts in " + KDIR + " (\"knowledge\": true in a project's ghci-session.json keeps them)")
     facts = load()
     if cmd == "block":
         print(render(facts, project, **policy(specs[0])[1])[0], end="")
@@ -221,7 +228,7 @@ def main():
     print("%-34s current outdated mixed unknown split   of %d%s" % ("policy", 3 * len(questions), " (with the view of " + pdir + ")" if pdir else " (the block alone)"))
     for n, rs in by.items():
         c = Counter(r["label"] for r in rs)
-        print("%-34s %7d %8d %5d %7d %5d" % (n, c["current"], c["outdated"], c["mixed"], c["unknown"], c["split"]))
+        print("%-34s %7d %8d %5d %7d %5d%s" % (n, c["current"], c["outdated"], c["mixed"], c["unknown"], c["split"], "   (%d not graded: the grader's answer could not be read)" % c["?"] if c["?"] else ""))
 
 
 if __name__ == "__main__":

@@ -494,8 +494,11 @@ run = do
          , ("dxf", "tool/usage", "The bench tool accepts a runs argument N.")
          , ("ghci-session", "tool/config", "The ghci-session daemon reads summarize_cmd once when it starts.")
          , ("dxf", "user/rules", "The user wants work done in one loop, without spawn.")
-         , ("dxf", "dxf/performance", "Parsing f001 on this project takes 138 ms.") ] ]
-     ["ghci-session/rules", "ghci-session/rules", "dxf/rules", "dxf/rules", "tool/usage", "tool/config", "user/rules", "dxf/performance"]
+         , ("dxf", "dxf/performance", "Parsing f001 on this project takes 138 ms.")
+         , ("dxf", "user/rules", "Never push on this repo")
+         , ("bench", "tool/usage", "The bench tool accepts a runs argument N.")
+         , ("dxf", "tool/usage", "A file named dxfile is not this.") ] ]
+     ["ghci-session/rules", "ghci-session/rules", "dxf/rules", "dxf/rules", "tool/usage", "tool/config", "user/rules", "dxf/performance", "dxf/rules", "tool/usage", "tool/usage"]
   eq "know: extraction files such a fact under the project at once"
      [ T.unpack (K.nSubject n) | n <- K.parseNew "dxf" 1000 "s" (T.pack "{\"facts\": [{\"scope\": \"user\", \"subject\": \"user/rules\", \"topic\": \"t\", \"fact\": \"On this project nothing is pushed.\"}]}") ]
      ["dxf/rules"]

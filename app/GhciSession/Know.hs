@@ -235,8 +235,13 @@ refile project subject text
   | otherwise = subject
   where
     low = T.toLower text
-    speaks = any ((`T.isInfixOf` low) . T.pack) ["this repository", "this repo ", "this repo.", "this repo,", "this project", "this codebase"]
-          || (map toLower project /= "ghci-session" && not (null project) && T.pack (map toLower project) `elem` T.split (\c -> not (isAlphaNum c || c == '-' || c == '_')) low)
+    ws = T.split (\c -> not (isAlphaNum c || c == '-' || c == '_')) low
+    speaks = or [ a == T.pack "this" && b `elem` map T.pack ["repository", "repo", "project", "codebase"] | (a, b) <- zip ws (drop 1 ws) ]
+          || (named && T.pack name `elem` ws)
+    name = map toLower project
+    -- (a project's directory can be an ordinary word, and one that is a tool's name or a word of the tool's own
+    -- talk does not mark a fact as that project's)
+    named = length name >= 3 && name `notElem` (["ghci-session"] ++ words "test tests bench build cache status tool tools app src lib core main api server client web docs eval read edit grep reload restart census view chat top session daemon")
 
 -- | A tool call as the chat logs it -- @name {arguments}@: the tool and the arguments it was given.
 callArgs :: T.Text -> Maybe (String, [String])

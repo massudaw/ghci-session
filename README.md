@@ -474,6 +474,16 @@ it was learned in, is filed under that project's rules instead -- at extraction,
 what is stored: three such facts of 245 ("do not retry bench with opt: 2 on this repository") were read by
 another project's agent as its own.
 
+`tools/extract-lab.py` does the same for EXTRACTION: pieces of real logs with the facts each should give, must not
+give, and how many at most, put to the compactor's model through the daemon's own prompt and parser, and counted.
+As it stands: 27 of 27 expected facts and none forbidden over three runs of eight cases -- and three facts from
+every stretch of tool traffic where two would be many, eight from an assistant's reply full of estimates.
+
+`tools/review-diff.py BASE` is a round's diff read by a model with no tools and no history, for what a
+maintainer would stop a merge for: run before a round is pushed, its findings given back to be proven or
+dismissed. (An agent checks a change with what it believed while making it: a day of rounds that passed every
+suite held nine real faults.)
+
 `tools/know-lab.py` is where a change to the block is tried before it is built: `score` says, with no model and
 in a second, which of a set of what-holds-now questions have an answering fact in the block a policy gives (its
 size, its shares, a cut, a filter); `ask` puts the questions to a small model reading that block and the

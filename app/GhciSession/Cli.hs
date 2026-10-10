@@ -401,14 +401,32 @@ cmdKnowledge a = do
     -- facts filed under the tool or the user that speak of one project: filed again under that project
     -- ('K.refile': what extraction does to new ones), the old ones kept, marked
     (Just "refile", _) -> do
-      -- (not what a tool is called with: its example call names a project's files, and is no rule of it)
-      let moves = [ (f, s') | f <- K.current facts, K.isCall (K.fTopic f) == Nothing, let s' = K.refile (takeWhile (/= '/') (K.fSrc f)) (K.fSubject f) (K.fText f), s' /= K.fSubject f ]
-      forM_ moves $ \(f, s') -> do
-        TIO.putStrLn (K.fSubject f <> T.pack " -> " <> s' <> T.pack ": " <> T.take 110 (K.fText f))
-        unless (flag a ["-n", "--dry-run"]) $ do
+      let dry = flag a ["-n", "--dry-run"] || "-n" `elem` aPos a
+          -- (not what a tool is called with: its example call names a project's files, and is no rule of it)
+          movesOf fs = [ (f, s') | f <- K.current fs, K.isCall (K.fTopic f) == Nothing, let s' = K.refile (takeWhile (/= '/') (K.fSrc f)) (K.fSubject f) (K.fText f), s' /= K.fSubject f ]
+          say (f, s') = TIO.putStrLn (K.fSubject f <> T.pack " -> " <> s' <> T.pack ": " <> T.take 110 (K.fText f))
+      -- (read again under the lock, and the mark first: a daemon may have replaced a fact meanwhile, and a run that
+      -- dies between the two writes must not leave both the old fact and the new one holding)
+      n <- if dry then mapM_ say (movesOf facts) >> pure (length (movesOf facts)) else K.withLock dir $ do
+        moves <- movesOf <$> K.loadFacts dir
+        forM_ moves $ \(f, s') -> do
+          say (f, s')
           i <- K.newId
-          K.withLock dir (K.addFact dir f { K.fId = i, K.fSubject = s', K.fReplaces = [K.fId f], K.fBy = Nothing } >> K.markBy dir (K.fId f) i)
-      putStrLn (show (length moves) ++ " fact(s)" ++ (if flag a ["-n", "--dry-run"] then " would be filed again (-n: nothing written)" else " filed again"))
+          K.markBy dir (K.fId f) i
+          K.addFact dir f { K.fId = i, K.fSubject = s', K.fReplaces = [K.fId f], K.fBy = Nothing }
+        pure (length moves)
+      putStrLn (show n ++ " fact(s)" ++ (if dry then " would be filed again (-n: nothing written)" else " filed again"))
+      pure 0
+    (Just w, Nothing) | w `elem` ["extract-prompt", "extract-parse"] -> hPutStrLn stderr ("knowledge " ++ w ++ " PROJECT: the project is needed") >> pure 2
+    -- for tools/extract-lab.py: the prompt a piece of a log is asked for its facts with (the piece on standard
+    -- input), and the facts an answer gives (the answer on standard input), a line each: subject, topic, fact
+    (Just "extract-prompt", Just project) -> do
+      body <- TIO.getContents
+      t <- now
+      TIO.putStr (K.extractPrompt (map Mcp.toolBrief agentTools) project t body) >> pure 0
+    (Just "extract-parse", Just project) -> do
+      out <- TIO.getContents
+      forM_ (K.parseNew project 0 "lab" out) $ \n -> TIO.putStrLn (T.intercalate (T.pack "\t") [K.nSubject n, K.nTopic n, K.nText n])
       pure 0
     (Just "forget", Just i)
       | any ((== i) . K.fId) facts -> K.withLock dir (K.forget dir i) >> putStrLn ("forgotten: " ++ i) >> pure 0
