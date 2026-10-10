@@ -138,6 +138,8 @@ run = do
   eq "replay: a fresh call is the median of the contexts that began under 70% of the one before" (freshSize [Call 100000 0 0, Call 40000 0 0, Call 90000 0 0, Call 50000 0 0], freshSize [Call 10 0 0]) (50000, 50000)
   eq "replay: a policy that never resets has none, and a low fixed limit resets" (let cs = [ Call (50000 + 1000 * i) 0 10 | i <- [0 .. 99] ] in (length (smResets (simulate 12.5 50000 7700 (Fixed 0) cs)), length (smResets (simulate 12.5 50000 7700 (Fixed 80000) cs)) > 0, smCalls (simulate 12.5 50000 7700 Auto cs))) (0, True, 100)
   eq "replay: too short a log is said so" (take 1 (lines (replayReport 12.5 [("x", [Call 1 1 1])]))) ["x: 1 calls: too few to replay"]
+  rcReplay <- replayMain ["/nonexistent-ghs-review/chat.out"]
+  eq "replay: a log that cannot be read is an error (exit 1, said on stderr), not a short log (0)" rcReplay 1
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
 

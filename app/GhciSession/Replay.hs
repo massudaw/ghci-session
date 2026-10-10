@@ -10,6 +10,8 @@ module GhciSession.Replay
   ) where
 
 import Control.Exception (IOException, try)
+import Control.Monad (forM_)
+import System.IO (hPutStrLn, stderr)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as B8
 import Data.List (isPrefixOf, sort, stripPrefix)
@@ -123,6 +125,8 @@ replayMain args = do
         _ -> (defaultRatio, args)
   logs <- mapM (\f -> do
                   r <- try (B.readFile f) :: IO (Either IOException B.ByteString)
-                  pure (f, either (const []) (parseCalls . B8.unpack) r)) files
-  putStr (replayReport ratio logs)
-  pure (if null files then 2 else 0)
+                  pure (f, either (Left . show) (Right . parseCalls . B8.unpack) r)) files
+  -- (a log that cannot be read is said so, and is not taken for a short one)
+  forM_ [ (f, why) | (f, Left why) <- logs ] $ \(f, why) -> hPutStrLn stderr ("replay: " ++ f ++ ": cannot be read: " ++ why)
+  putStr (replayReport ratio [ (f, cs) | (f, Right cs) <- logs ])
+  pure (if null files then 2 else if any (either (const True) (const False) . snd) logs then 1 else 0)
