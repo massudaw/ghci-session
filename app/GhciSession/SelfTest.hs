@@ -46,6 +46,7 @@ import GhciSession.Json
 import GhciSession.Carry
 import GhciSession.Roll
 import GhciSession.Replay
+import qualified GhciSession.SelfRound as Round
 import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
@@ -137,6 +138,9 @@ run = do
   eq "replay: too short a log is said so" (take 1 (lines (replayReport 12.5 [("x", [Call 1 1 1])]))) ["x: 1 calls: too few to replay"]
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
+
+  -- the plan's metering (GhciSession.SelfRound)
+  forM_ Round.checks (uncurry check)
 
   -- the rollover's controller
   let ro0 = emptyRoll 12.5

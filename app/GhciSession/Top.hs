@@ -50,6 +50,7 @@ import GhciSession.Md (mdLines, outputLines)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now, readFileMaybe)
 import GhciSession.Usage (usageRows, usageTable)
+import GhciSession.Quota (windowLines)
 
 -- | A run of text with its style.
 type Span = (Style, String)
@@ -337,7 +338,8 @@ refresh env st = do
   (usage, usageAt) <- if sTab st == TUsage && t - sUsageAt st >= 5
     then do
       rows <- usageRows (eConf env) [eName env] 0
-      pure (if null rows then ["  no model calls recorded (the chat and the compactor write usage.jsonl)"] else usageTable (eConf env) rows, t)
+      wins <- windowLines (map snd rows)
+      pure (if null rows then ["  no model calls recorded (the chat and the compactor write usage.jsonl)"] else usageTable (eConf env) rows ++ [""] ++ wins, t)
     else pure (sUsage st, sUsageAt st)
   (know, knowAt) <- if sTab st == TKnow && t - sKnowAt st >= 3
     then do

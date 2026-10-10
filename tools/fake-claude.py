@@ -53,6 +53,8 @@ def main():
     calls = 0
     base, grow = (int(x) for x in os.environ.get("FAKE_CLAUDE_CTX", "1000,0").split(","))
     limit = [int(x) for x in os.environ["FAKE_CLAUDE_LIMIT"].split(",")] if os.environ.get("FAKE_CLAUDE_LIMIT") else None
+    wr5, wr1 = (int(x) for x in os.environ.get("FAKE_CLAUDE_WRITE", "0,0").split(","))      # what each call writes to the cache, for five minutes and for an hour
+    r5, r7 = int(time.time()) + 5 * 3600, int(time.time()) + 7 * 86400
     for raw in sys.stdin:
         try:
             m = json.loads(raw)
@@ -77,7 +79,10 @@ def main():
                 out({"type": "result", "subtype": "error_during_execution", "is_error": True, "result": "the usage limit is reached", "num_turns": calls, "usage": {}})
                 return
             ctx = base + grow * calls
-            out({"type": "stream_event", "event": {"type": "message_start", "message": {"usage": {"input_tokens": ctx - ctx * 9 // 10, "cache_read_input_tokens": ctx * 9 // 10, "cache_creation_input_tokens": 0}}}})
+            out({"type": "rate_limit_event", "rate_limit_info": {"status": "allowed", "rateLimitType": "five_hour", "resetsAt": r5, "isUsingOverage": False,
+                 "unifiedWindows": {"five_hour": {"utilization": 0.10 + 0.01 * calls, "resetsAt": r5}, "seven_day": {"utilization": 0.30, "resetsAt": r7}}}})
+            out({"type": "stream_event", "event": {"type": "message_start", "message": {"usage": {"input_tokens": ctx - ctx * 9 // 10 - wr5 - wr1, "cache_read_input_tokens": ctx * 9 // 10, "cache_creation_input_tokens": wr5 + wr1,
+                 "cache_creation": {"ephemeral_5m_input_tokens": wr5, "ephemeral_1h_input_tokens": wr1}}}}})
             mt = re.match(r"tool\s+(\w+)\s*(\{.*\})?$", step)
             if mt and tools:
                 out({"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t%d" % calls, "name": "mcp__ghs__" + mt.group(1), "input": json.loads(mt.group(2) or "{}")}]}})

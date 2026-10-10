@@ -70,6 +70,9 @@ def main():
         ledger = [json.loads(l) for l in open(os.path.join(proj, ".ghci-session", session, "usage.jsonl"))]
         check("each model call is in the ledger as it ends, with what it read from the cache",
               len(ledger) == 2 and all(r["who"] == "chat" and r["in"] == 1000 and r["cached"] == 900 and r["out"] == 20 for r in ledger), ledger)
+        check("each ledger line keeps the plan's windows as last seen (name, used, reset), whether the call was on usage credits, and what it wrote to the cache",
+              all(r.get("windows", {}).get("five_hour", {}).get("u", 0) >= 0.11 and r["windows"]["seven_day"]["u"] == 0.3 and r["windows"]["five_hour"].get("reset", 0) > 1e9
+                  and r.get("credits") is False and r.get("new") == 100 and r.get("wr") == 0 for r in ledger), ledger)
         # a restart while a tool call runs, and one while the model thinks
         send('tool sh {"cmd":"sleep 3; echo first-done"} ;; pause 4 ;; tool sh {"cmd":"echo second-done"} ;; say all of it is done')
         wait_for(out, "sleep 3; echo first-done", 20)

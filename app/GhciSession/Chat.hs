@@ -80,6 +80,7 @@ import qualified GhciSession.Wire as Wire
 import GhciSession.Inbox (chatPidFile)
 import GhciSession.Carry
 import GhciSession.Roll
+import GhciSession.Quota
 import GhciSession.Replay (replayMain)
 import qualified GhciSession.Inbox as Inbox
 import System.IO.Unsafe (unsafePerformIO)
@@ -1824,6 +1825,8 @@ runCli ch e o pending run = do
   refusedR <- newIORef (Nothing :: Maybe Double)      -- the subscription's limit was reached: when it resets
   callR <- newIORef (Nothing :: Maybe (Int, Int, Double))      -- the model call under way: its prompt's tokens, of them read from the cache, when it began
   callsR <- newIORef (0 :: Int)                                -- the calls written to the ledger since the last result
+  rateR <- newIORef ([] :: [Window], Nothing :: Maybe Bool)    -- the plan's windows as last seen, and whether the last event said the calls are on usage credits
+  writeR <- newIORef (0 :: Int, 0 :: Int, 0 :: Int, 0 :: Int)  -- the call under way: tokens neither read nor written, written, of them for five minutes, for an hour
   let -- each model call is in the ledger as it ends (its prompt's tokens and how many of them were read from the
       -- cache are in the stream's first event, what it wrote in its last): a turn of hours was one line, at its end
       usage ev = case lookupStr "type" ev of
@@ -1833,6 +1836,8 @@ runCli ch e o pending run = do
           t <- now
           let ctx = k "input_tokens" + k "cache_read_input_tokens" + k "cache_creation_input_tokens"
           writeIORef callR (Just (ctx, k "cache_read_input_tokens", t))
+          let (wr, w5, w1) = writesOf u
+          writeIORef writeR (k "input_tokens", wr, w5, w1)
           -- (the rollover: the chat's own turn, its context past the tokens -- and grown by a third since this run
           -- began, so that a run that starts over them does not end at its first call)
           f <- readIORef firstIn
@@ -1869,7 +1874,11 @@ runCli ch e o pending run = do
             writeIORef lastEnd t
             -- (and in the turn's count: a run that is ended before its result -- a rollover -- gave none)
             modifyIORef' spent (\sp -> sp { sCalls = sCalls sp + 1, sIn = sIn sp + inN, sCached = sCached sp + cached, sOut = sOut sp + round outN })
-            recordUsage (usageFile ch) (maybe "chat" (const "agent") (cSub ch)) e (Usage inN (round outN) (Just cached)) (t - t0)
+            (nw, wr, w5, w1) <- readIORef writeR
+            (wins, credits) <- readIORef rateR
+            let extra = [ ("new", JNum (fromIntegral nw)), ("wr", JNum (fromIntegral wr)), ("wr5m", JNum (fromIntegral w5)), ("wr1h", JNum (fromIntegral w1)) ]
+                        ++ [ ("windows", windowsJson wins) | not (null wins) ] ++ [ ("credits", JBool b) | Just b <- [credits] ]
+            recordUsageWith extra (usageFile ch) (maybe "chat" (const "agent") (cSub ch)) e (Usage inN (round outN) (Just cached)) (t - t0)
             when (oUsage o) (uiNote (cUi ch) (printf "[usage: in %d, out %d, cached %d (%d%%), %.1fs]" inN (round outN :: Int) cached (if inN == 0 then 0 else 100 * cached `div` inN) (t - t0)))
         _ -> pure ()
       live ev = usage ev >> case snd (A.streamEvent ev A.emptyStream) of
@@ -1913,6 +1922,7 @@ runCli ch e o pending run = do
             C.EvStream ev -> live ev >> loop t0
             C.EvAssistant blocks -> mapM_ said blocks >> loop t0
             C.EvRate info -> do
+              modifyIORef' rateR (\(ws, cr) -> (mergeWindows ws (windowsOf info), maybe cr Just (creditsOf info)))
               writeIORef refusedR (if lookupStr "status" info == Just "rejected" then lookupNum "resetsAt" info else Nothing)
               note <- C.limitNote info
               was <- readIORef limitR

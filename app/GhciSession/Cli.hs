@@ -34,6 +34,7 @@ import GhciSession.Json
 import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Top (topMain)
 import GhciSession.Usage (usageRows, usageTable)
+import GhciSession.Quota (windowLines)
 import GhciSession.Mcp (mcpMain, relayMain, toolArgs)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys
@@ -431,7 +432,7 @@ cmdUsage conf a = do
   rows <- usageRows conf names since
   if null rows then putStrLn "no model calls recorded (the chat and the compactor write <state>/<session>/usage.jsonl)" >> pure 0
   else if flag a ["--json"] then putStrLn (encode (JArr (map snd rows))) >> pure 0
-  else mapM_ putStrLn (usageTable conf rows) >> pure 0
+  else mapM_ putStrLn (usageTable conf rows) >> windowLines (map snd rows) >>= mapM_ putStrLn >> pure 0
 
 -- | __The session's own scenario, timed__: the steps a target lists under @"profile"@, run in order against
 -- the running session, each against its budget and against the last run.

@@ -16,7 +16,7 @@ module GhciSession.Llm
   , Request (..), request, requestWith, Reply (..), Usage (..), ToolCall (..)
   , httpsPost, cancelRequests
   , Chunks (..), emptyChunks, chunkEvent, chunksMessage
-  , usageFileEnv, recordUsage, human
+  , usageFileEnv, recordUsage, recordUsageWith, human
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
@@ -148,12 +148,16 @@ usageFileEnv = "GHS_USAGE_FILE"
 -- summarize), the model, the tokens in (and how many of them the provider had cached), the tokens out,
 -- the seconds. Best effort: accounting never fails a call.
 recordUsage :: FilePath -> String -> Endpoint -> Usage -> Double -> IO ()
-recordUsage file who e u secs = do
+recordUsage file who e u secs = recordUsageWith [] file who e u secs
+
+-- | The same, with more to say of the call (the cache it wrote, the plan's windows as last seen): fields added to the line.
+recordUsageWith :: [(String, Json)] -> FilePath -> String -> Endpoint -> Usage -> Double -> IO ()
+recordUsageWith extra file who e u secs = do
   t <- realToFrac <$> getPOSIXTime :: IO Double
   stamp <- formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S" <$> getCurrentTime
-  let line = encode (JObj [ ("t", JNum t), ("date", JStr stamp), ("who", JStr who), ("model", JStr (eModel e))
+  let line = encode (JObj $ [ ("t", JNum t), ("date", JStr stamp), ("who", JStr who), ("model", JStr (eModel e))
                           , ("in", JNum (fromIntegral (uIn u))), ("cached", JNum (fromIntegral (fromMaybe 0 (uCached u))))
-                          , ("out", JNum (fromIntegral (uOut u))), ("secs", JNum (fromIntegral (round (secs * 10) :: Int) / 10)) ])
+                          , ("out", JNum (fromIntegral (uOut u))), ("secs", JNum (fromIntegral (round (secs * 10) :: Int) / 10)) ] ++ extra)
   void (try (do { h <- openFile file AppendMode; hPutStrLn h line; hClose h }) :: IO (Either SomeException ()))
   where void = fmap (const ())
 

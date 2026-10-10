@@ -569,7 +569,12 @@ and half a minute; off it is under two hundred tokens and three seconds. The lar
 off and are asked for the lightest effort.
 
 **What the model calls cost** is kept: each call of the chat and the compactor appends a line to
-`<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds).
+`<state>/<session>/usage.jsonl` (when, who asked, model, tokens in and cached, tokens out, seconds). A call of the
+chat through the `claude` command also keeps what a subscription meters: `new` (tokens neither read from the cache
+nor written to it), `wr` (written to it; `wr5m` of them for five minutes, `wr1h` for an hour, as the provider says),
+`windows` (every window of the plan the command's `rate_limit_event` names, by name, as last seen: `u` the share
+used, `reset` when it resets) and `credits` (whether the event says the call was on usage credits, not within the plan).
+`usage` and the monitor's `5` tab end with the windows of the latest call that has them.
 `ghci-session usage [SESSION] [--since DAYS] [--json]` sums the ledger by who asked and by day, in money too when
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
