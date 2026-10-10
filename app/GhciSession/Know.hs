@@ -378,7 +378,7 @@ render bytes project facts0
       let fs = by M.! s
           ls = map snd (sortBy (comparing (Down . fst)) (plain fs ++ calls fs))
           (kept, more) = fit share ls
-      in T.pack "## " <> s <> T.pack (" (" ++ show (length fs) ++ " facts)\n") <> T.unlines kept <> (if more then T.pack "  (more: recall, or ghci-session knowledge --subject " <> s <> T.pack ")\n" else T.empty)
+      in T.pack "## " <> s <> T.pack (" (" ++ show (length fs) ++ (if length fs == 1 then " fact)" else " facts)") ++ "\n") <> T.unlines kept <> (if more then T.pack "  (more: recall, or ghci-session knowledge --subject " <> s <> T.pack ")\n" else T.empty)
     plain fs = [ (fLast f, T.pack ("- [" ++ day (fFirst f) ++ (if day (fLast f) /= day (fFirst f) then ", confirmed " ++ day (fLast f) else "") ++ "] ") <> fText f)
                | f <- fs, isCall (fTopic f) == Nothing ]
     -- (what a tool was called with, a tool a line: the arguments, the newest first, and the newest's call)

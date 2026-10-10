@@ -369,6 +369,9 @@ run = do
      (T.pack (replicate 100 'x' ++ "60") `T.isInfixOf` cutBlock, T.pack (replicate 100 'x' ++ "1\n") `T.isInfixOf` cutBlock, T.pack "(more: recall, or ghci-session knowledge --subject tool/usage)" `T.isInfixOf` cutBlock, T.length cutBlock < 1400)
      (True, False, True, True)
   eq "know: nothing known, no block" (K.render 4000 "dxf" []) T.empty
+  eq "know: a subject's heading counts its facts, '1 fact' for one"
+     [ T.unpack (T.drop 3 l) | l <- T.lines (K.render 4000 "dxf" (take 1 many ++ [ kFact "z" "dxf/status" "t" "Two." 1 1, kFact "y" "dxf/status" "u" "Facts." 2 2 ])), T.pack "## " `T.isPrefixOf` l ]
+     ["tool/usage (1 fact)", "dxf/status (2 facts)"]
   let status = [ kFact (show k) "dxf/status" "last commit" ("The last commit is c" ++ show k ++ ".") (fromIntegral k) (fromIntegral k) | k <- [1 .. 8 :: Int] ]
   eq "know: a new fact is also set against its subject's latest five, whatever words they share"
      (map K.fId (K.candidates (held ++ status) (kNew "dxf/status" "work pushed" "Everything was pushed today."))) ["8", "7", "6", "5", "4"]

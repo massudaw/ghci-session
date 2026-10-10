@@ -296,8 +296,8 @@ def check_top(check, rec):
     s = at["heap"]
     check("top: 6 is the memory over time", lit(s, "6 heap") and s.lines[3].strip().startswith("resident memory  repl ") and s.has("█"), s.lines[3:5])
     s = at["known"]
-    check("top: 9 is what is known by subject: the tool's and the user's first, then the project's", lit(s, "9 known") and "2 facts hold, 1 replaced" in s.lines[3] and s.has("## user/rules (1 facts)")
-          and s.has("Use the test tool for the routine check.") and s.has("## proj/rules (1 facts)") and not s.has("Run cabal test."), s.lines[3:10])
+    check("top: 9 is what is known by subject: the tool's and the user's first, then the project's", lit(s, "9 known") and "2 facts hold, 1 replaced" in s.lines[3] and s.has("## user/rules (1 fact)")
+          and s.has("Use the test tool for the routine check.") and s.has("## proj/rules (1 fact)") and not s.has("Run cabal test."), s.lines[3:10])
     s = at["first"]
     check("top: g goes to the history's start, and the tabs' line says it no longer follows", s.lines[3].startswith("#0 ") and "tool: start demo" in s.lines[3] and "scrolled" in tabs(s), (s.lines[3], tabs(s)))
     s = at["cursor"]
