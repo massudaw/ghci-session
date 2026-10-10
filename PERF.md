@@ -245,6 +245,14 @@ every call after it) hold `session` on thirty tools; dropping tools from the age
 can do, not waste. The subjects block (16 KB) is not given to a fresh call (the view before the log has none).
 The system prompt (6 KB) is the agent's rules.
 
+Item 5, the files: a fresh call is given `<files>` (`Carry.carryFiles`, under 900 bytes): what the turn has read and
+written, latest first, with the lines read last. On this chat's last three rollovers it is 363-686 bytes (6-11 files),
+about 100-170 tokens: under 0.5% of a call. Whether it helps is counted, not assumed: after each reset the next ten
+calls are counted for reads of a file read before the reset (`Carry.relearned`, from the log alone), logged as a harness
+echo, and fed to the controller as its relearn share (`Roll.seeRelearn`, a running estimate, once a reset). It starts at
+0.28 (measured by hand on this chat and dxf, before the list); comparing the logged shares from now on with that is how
+to see whether the list helped. Not yet seen live.
+
 ## Not done, and next
 
 - A file list kept by the daemon would save the 14 ms of `git ls-files` (see 6); not done, see there for why.

@@ -9,7 +9,7 @@
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
-  , seeGap, lifetime, coldDue, rollAt, boundaryTool
+  , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn
   ) where
 
 import Control.Exception (IOException, try)
@@ -28,6 +28,7 @@ data Roll = Roll
   , rSaid :: Int          -- ^ the threshold last said (a harness note when it moves)
   , rLo :: Double         -- ^ the provider's cache lasted at least this many seconds (a call after a pause this long came back cached)
   , rHi :: Double         -- ^ and lasted at most this many (the same context, after a pause this long, was read uncached)
+  , rRelId :: Int         -- ^ the reset (its message's number) whose relearning was last counted
   } deriving (Eq, Show)
 
 -- | The ratio of the prices when the configuration says none.
@@ -36,7 +37,7 @@ defaultRatio = 12.5
 
 -- | Before anything is seen: the measured values of this chat and another (a restart 45k, growth 1590 a call, 28%).
 emptyRoll :: Double -> Roll
-emptyRoll r = Roll r 45000 1590 0.28 0 0 3300
+emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0
 
 -- | The context at which a turn rolls over: @S + sqrt(2 r S (1 + relearn) g)@, within 80k and 200k.
 threshold :: Roll -> Int
@@ -63,6 +64,14 @@ limitOf n ro | n == 0 = Nothing
 -- | Has a threshold moved enough, from the one last said, to say it again (5k)?
 moved :: Int -> Int -> Bool
 moved said now' = abs (now' - said) > 5000
+
+-- | What a reset was seen to make the agent learn again: @seeRelearn reset share@, the reset's message number and the
+-- share of the look-ups after it (0..1) that read again a file read before it. A running estimate (a third a reset),
+-- counted once a reset.
+seeRelearn :: Int -> Double -> Roll -> Roll
+seeRelearn reset share ro
+  | reset <= rRelId ro = ro
+  | otherwise = ro { rRelearn = max 0 (min 1 (0.7 * rRelearn ro + 0.3 * share)), rRelId = reset }
 
 -- the boundary -------------------------------------------------------------------------------
 
@@ -111,13 +120,13 @@ coldDue ro since ctx = since > lifetime ro && fromIntegral ctx * 10 > 13 * rS ro
 -- the file ------------------------------------------------------------------------------------
 
 rollJson :: Roll -> Json
-rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro))]
+rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro)))]
 
 -- | A state from its file's JSON: what it does not have, or has not well, is what the start has.
 rollFrom :: Double -> Json -> Roll
 rollFrom ratio j = ro0 { rS = pick "S" (\x -> x >= 5000 && x <= 400000) (rS ro0), rG = pick "g" (\x -> x >= 50 && x <= 20000) (rG ro0)
                        , rRelearn = pick "relearn" (\x -> x >= 0 && x <= 2) (rRelearn ro0), rSaid = round (pick "said" (>= 0) 0)
-                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (rHi ro0) }
+                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (rHi ro0), rRelId = round (pick "relid" (>= 0) 0) }
   where ro0 = emptyRoll ratio
         pick k ok d = case lookupNum k j of { Just x | ok x -> x; _ -> d }
 

@@ -6,12 +6,19 @@
 module GhciSession.Carry
   ( Msg, formatMsg, resumeLog, capMsg, capOld, Split (..), carrySplit, carryRecent, carryFirst, carryNote
   , Part (..), carryParts, subjectsBytes, partsTable, taskBefore, rollEchoes
+  , Touch (..), touches, carryFiles, relearned
   ) where
+
+import Data.List (intercalate, partition)
+import Data.Maybe (listToMaybe, maybeToList)
+import Text.Read (readMaybe)
 
 import qualified Data.ByteString as B
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Text.Printf (printf)
+
+import GhciSession.Json
 
 -- | A message of the history: its number, kind and text.
 type Msg = (Int, T.Text, T.Text)
@@ -62,14 +69,77 @@ carryRecent sp = T.pack "<recent>\n" <> formatMsg (spTask sp) <> T.concat (map f
   where gap = if spLeft sp > 0 then T.pack (printf "(%d messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n" (spLeft sp)) else T.empty
 
 -- | The call's first message: the view, the log, the note.
-carryFirst :: T.Text -> Split -> T.Text -> T.Text
-carryFirst v sp note = v <> T.pack "\n\n" <> carryRecent sp <> note
+carryFirst :: T.Text -> Split -> T.Text -> T.Text -> T.Text
+carryFirst v sp files note = v <> T.pack "\n\n" <> carryRecent sp <> files <> note
 
 -- | The note that ends the message: why the turn goes on here.
 carryNote :: String -> T.Text
 carryNote why = T.pack $ "[harness: this turn did not end -- " ++ why ++ ". <recent> holds the turn's message, what the user said during it, and what you did in it last, word for word"
   ++ " (your tool calls and their answers, your replies; not what you had in mind between them). Go on from where it stops: look at what the last steps were doing, check the state of the"
-  ++ " files and the session if you need to, and do what is left. Do not start over, and do not do again what <recent> shows done.]"
+  ++ " files and the session if you need to, and do what is left. Do not start over, and do not do again what <recent> shows done."
+  ++ " <files>, if there, lists the files the turn has read and written, with the lines read last: what you read is no longer in front of you, so read again only the part you need.]"
+
+-- the files ---------------------------------------------------------------------------------------
+
+-- | A file the turn has touched: the lines of it last read (the latest first, three at most), whether it was read
+-- at all (a read around a text has no lines) and whether it was written.
+data Touch = Touch { tPath :: String, tReads :: [(Int, Int)], tSawRead :: Bool, tEdited :: Bool }
+  deriving (Eq, Show)
+
+data Ev = EvRead String (Maybe (Int, Int)) | EvEdit String
+
+evPath :: Ev -> String
+evPath (EvRead p _) = p
+evPath (EvEdit p) = p
+
+-- | What a tool message of the log did to a file.
+eventsOf :: Msg -> [Ev]
+eventsOf (_, k, t)
+  | k /= T.pack "tool" = []
+  | otherwise = case T.breakOn (T.pack " ") t of
+      (n, rest) | n `elem` map T.pack ["read", "write", "edit", "edits"], Right j <- parseJsonBS (TE.encodeUtf8 (T.drop 1 rest)) -> go (T.unpack n) j
+      _ -> []
+  where
+    go "read" j = [ EvRead p (range j) | p <- maybeToList (lookupStr "path" j) ]
+    go "edits" j = map EvEdit (maybeToList (lookupStr "path" j) ++ [ q | e <- lookupArr "edits" j, q <- maybeToList (lookupStr "path" e) ])
+    go _ j = map EvEdit (maybeToList (lookupStr "path" j))
+    num j key = case lookupNum key j of
+      Just x -> Just (round x :: Int)
+      Nothing -> lookupStr key j >>= readMaybe
+    range j
+      | Just _ <- lookupStr "around" j = Nothing
+      | otherwise = let s = maybe 1 id (num j "start"); n = maybe 200 id (num j "lines") in Just (s, s + max 1 n - 1)
+
+-- | The files the messages touched, the latest first.
+touches :: [Msg] -> [Touch]
+touches = foldl step [] . concatMap eventsOf
+  where
+    step acc ev = let (old, rest) = partition ((== evPath ev) . tPath) acc
+                      t0 = maybe (Touch (evPath ev) [] False False) id (listToMaybe old)
+                  in apply ev t0 : rest
+    apply (EvRead _ r) t = t { tSawRead = True, tReads = maybe id (\x -> take 3 . (x :) . filter (/= x)) r (tReads t) }
+    apply (EvEdit _) t = t { tEdited = True }
+
+-- | The turn's files as a fresh call is given them, in under a kilobyte: where it was, what it read, what it wrote.
+carryFiles :: [Msg] -> T.Text
+carryFiles ms = case fit 0 (map line (touches ms)) of
+  [] -> T.empty
+  ls -> T.pack ("<files>\n(what this turn has read and written, the latest first, and the lines it read last)\n" ++ unlines ls ++ "</files>\n\n")
+  where
+    line t = tPath t ++ ": " ++ intercalate "; " ([ "read " ++ (if null (tReads t) then "around a text" else intercalate ", " [ show a ++ "-" ++ show b | (a, b) <- tReads t ]) | tSawRead t ] ++ [ "written" | tEdited t ])
+    fit _ [] = []
+    fit used (l : r) = let n = used + length l + 1 in if n > 900 then [] else l : fit n r
+
+-- | What a reset made the agent learn again: @relearned n before after@ -- the messages of the turn before the reset,
+-- those after it -- is how many of the next @n@ tool calls read again a file read before, and of how many calls
+-- (none if fewer than five followed: too little to say).
+relearned :: Int -> [Msg] -> [Msg] -> Maybe (Int, Int)
+relearned n before after
+  | total < 5 = Nothing
+  | otherwise = Just (length [ () | m <- calls, EvRead p _ <- eventsOf m, p `elem` seen ], total)
+  where seen = [ tPath t | t <- touches before, tSawRead t ]
+        calls = take n [ m | m@(_, k, _) <- after, k == T.pack "tool" ]
+        total = length calls
 
 -- measuring ---------------------------------------------------------------------------------------
 

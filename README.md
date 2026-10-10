@@ -637,6 +637,11 @@ not: at most G; 3300 s to begin with, kept in `roll.json`), and when a tool call
 model call past that, and the context is over 1.3 times a fresh call's, the run ends after the tool's answer instead
 of paying for the whole context uncached (a bench of fifteen minutes can do this).
 
+A fresh call is also given `<files>`, under a kilobyte: the files the turn has read and written, the latest first, with
+the lines it read last (`chat --carry N` shows its bytes). And after each reset the chat counts how many of the next ten
+calls read again a file read before it; that share (logged as a harness echo, kept in `roll.json`) is the controller's
+relearn share, which makes a reset dearer and the threshold higher when the agent has to read much again.
+
 With `auto` the run does not end in the middle of an edit: from 0.85 of the threshold it ends after a `git commit` that
 went through or a green `test` / `reload`; at 1.15 of it, after whatever tool call comes next. (A fixed number ends the
 run at the first call past it.)

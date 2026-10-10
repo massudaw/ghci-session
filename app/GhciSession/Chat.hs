@@ -2023,11 +2023,22 @@ continueTurn ch e o system pending rolled = do
       -- rollover's tokens was over them again in thirty calls, each time for a cold first call)
       let Just sp = carrySplit (if isJust rolled then max 12000 (oTail o `div` 3) else max 20000 (oTail o)) (task : after)
           why = maybe "the chat that was in it stopped, and this is a new one" (\(w, _, _) -> w ++ ", so it goes on here in a fresh call") rolled
+      -- (what the reset before this one made the agent read again: counted once, logged, and learned -- the controller's relearn share)
+      when (isJust rolled) $ case reverse (rollEchoes ms) of
+        (r : _) | Just t0 <- taskBefore r ms
+                , Just (h, n) <- relearned 10 [ m | m@(i, _, _) <- ms, i >= t0, i < r ] [ m | m@(i, _, _) <- ms, i > r ] -> do
+          ro <- readIORef (cRoll ch)
+          when (rRelId ro < r) $ do
+            let ro' = seeRelearn r (fromIntegral h / fromIntegral n) ro
+            writeIORef (cRoll ch) ro'
+            saveRoll (rollFile (cConf ch) (cName ch)) ro'
+            logH ch "echo" (T.pack (printf "harness: after the reset at message %d, %d of the next %d calls read again a file read before it (the controller counts %.0f%% of a fresh call as learned again)" r h n (100 * rRelearn ro' :: Double)))
+        _ -> pure ()
       v <- viewBefore ch (spFrom sp) (oSettle o)
       logH ch "echo" (T.pack ("harness: this turn goes on in a fresh call, from its log (" ++ why ++ ")"))
       uiNote (cUi ch) (printf "[going on with the turn of message %d: %d message(s) of it given whole, %d as summaries]" taskId (1 + length (spTold sp) + length (spKept sp)) (spLeft sp))
       tNow <- now
-      let first = carryFirst v sp (carryNote why)
+      let first = carryFirst v sp (carryFiles (task : after)) (carryNote why)
           sys = system ++ (if "<recent> -- the turn's own messages" `isInfixOf` system then "" else continueDoc)
           (spent0, tStart) = maybe (Spent 0 0 0 0 0 False False, tNow) (\(_, sp, t) -> (sp, t)) rolled
       if eProvider e == ClaudeCli then turnCliFrom ch e o sys first pending spent0 tStart
@@ -2491,8 +2502,10 @@ carryReport ch system o = do
             (tid, _, _) = spTask sp
         -- (GHS_CARRY_DUMP=DIR: the message too, as the call is given it, to DIR/rNNN.txt -- to be counted by the model's own tokenizer)
         dump <- lookupEnv "GHS_CARRY_DUMP"
-        forM_ dump $ \d -> TIO.writeFile (d </> ("r" ++ show r ++ ".txt")) (carryFirst v sp note)
-        pure (Just ("#" ++ show r ++ " (turn " ++ show tid ++ ")", carryParts sysB toolsB full v sp note, Nothing))
+        let files = carryFiles turn
+            parts = carryParts sysB toolsB full v sp note
+        forM_ dump $ \d -> TIO.writeFile (d </> ("r" ++ show r ++ ".txt")) (carryFirst v sp files note)
+        pure (Just ("#" ++ show r ++ " (turn " ++ show tid ++ ")", init parts ++ [Part "files" (B.length (TE.encodeUtf8 files)) (length (touches turn)), last parts], Nothing))
   putStr (partsTable (catMaybes cols))
   pure 0
 
