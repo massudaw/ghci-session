@@ -186,8 +186,10 @@ rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (
 -- | What the file says, for a screen: the threshold and what it comes from, the cache bounds, the rot.
 rollLines :: Maybe Double -> Json -> [String]
 rollLines ratio j =
-  [ printf "rollover: at %dk tokens (a fresh call %dk, %dk of it cached, %d tokens a call, a write %.1f reads, %.0f%% learned again)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rP ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro) (100 * rRelearn ro)
-  , printf "  the cache lasts at least %d and at most %d minutes (%s); %s" (mins (rLo ro)) (mins (rHi ro)) writes rot ]
+  -- (three lines, each short enough for a screen of a hundred columns: the last words of one were cut off it)
+  [ printf "rollover: at %dk tokens (a fresh call %dk, %dk of it cached; %d tokens a call)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rP ro) `div` 1000 :: Int) (round (rG ro) :: Int)
+  , printf "  a write %.1f reads (%s); %.0f%% learned again after a reset" (rRatio ro) writes (100 * rRelearn ro)
+  , printf "  the cache lasts at least %d and at most %d minutes; %s" (mins (rLo ro)) (mins (rHi ro)) rot ]
   where
     ro = rollFrom ratio j
     rotS = fromMaybe (-1) (lookupNum "rot" j)

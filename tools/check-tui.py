@@ -336,7 +336,7 @@ def check_top(check, rec):
     s = at["chatstate"]
     check("top: 5 shows the running chat at rest, its last turn's tool calls and its last words, and the rollover controller's state",
           lit(s, "5 usage") and s.has("chat: at rest; the last turn: ") and s.has("said: fake: you said 'from the monitor'") and s.has("rollover: at ") and s.has("40k") and s.has("1500 tokens a call") and s.has("20% learned again")
-          and s.has("the cache lasts at least 15 and at most 55 minutes") and s.has("rot: 10% of the last 20 reads were repeats"), s.lines[3:9])
+          and s.has("the cache lasts at least 15 and at most 55 minutes") and s.has("rot: 10% of the last 20 reads were repeats"), s.lines[3:10])
     s = at["left"]
     check("top: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
 
