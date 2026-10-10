@@ -1,0 +1,16 @@
+app/GhciSession/Gc.hs
+  h_fd5809635b36a3 13,100-107,109,112,119-128
+app/GhciSession/SelfRound.hs
+  h_fd5809635b36a3 9,14-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e10bb9af68a8ae9311daccaf7af435a9e3712b7f",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
