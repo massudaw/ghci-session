@@ -1,0 +1,26 @@
+README.md
+  h_fd5809635b36a3 190,581-593
+app/GhciSession/Chat.hs
+  h_fd5809635b36a3 32,54,105-106,115-117,139,159,165,230,767-776,779-811,829-830,1945,2121,2453
+app/GhciSession/Config.hs
+  h_fd5809635b36a3 10,95,154-159
+app/GhciSession/Inbox.hs
+  h_fd5809635b36a3 5-8,11,17-19,22,24,31,50-54,68,83-168
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 22-23,978-988
+tools/check-cli.py
+  h_fd5809635b36a3 46-47,142-165,169
+tools/tuicheck.py
+  h_fd5809635b36a3 144,146-147,159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d7a86c482019ce9f7f11eaf0641178d1673cf946",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
