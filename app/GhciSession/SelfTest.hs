@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -932,7 +932,11 @@ run = do
   check "chat: the edits tool takes an array of replacements" ("edits" `elem` map tName chatTools && maybe False ((== "array") . fst) (lookup "edits" (tProps (toolNamed "edits"))))
   check "chat: test takes an expression" ("expr" `elem` map fst (tProps (toolNamed "test")))
   -- the reads a turn's context holds: numbered, aliased when unchanged, superseded by a read of their lines
-  eq "chat: a read's lines, from its answer" (readRange (T.pack "    7  a\n    8  b\n    9  c")) (Just (7, 9))
+  eq "chat: a read's lines, from its answer" (readRange (T.pack "[f: lines 7-9 of 20]\n    7\x2502\&a\n    8\x2502\&  b\n    9\x2502\&c")) (Just (7, 9))
+  eq "chat: a line is its number, the bar, the line as it is -- its indent is all after the bar" (map (uncurry (numbered ' ')) [(7, T.pack "    x = 1"), (12, T.pack "  | guard"), (8, T.pack "\tTab"), (9, T.empty)]) (map T.pack ["     7\x2502    x = 1", "    12\x2502  | guard", "     8\x2502\tTab", "     9\x2502"])
+  eq "chat: ... a match of grep has > before the number" (numbered '>' 41 (T.pack "a")) (T.pack ">   41\x2502\&a")
+  check "chat: ... taking off up to the first bar gives every line back as it was" (and [ T.drop 1 (T.dropWhile (/= numberBar) (numbered m i l)) == l | m <- " >", i <- [1, 99999], l <- map T.pack ["", "  x", "a\x2502\&b", "\x2502", " 5  "] ])
+  eq "chat: ... a read's lines are found in its numbered lines, matches and context" (readRange (T.pack "[f: 3 line(s) hold]\n>   41\x2502\&a\n   42\x2502\&b\n  100\x2502\&c")) (Just (41, 100))
   eq "chat: ... none in an answer that shows none" (readRange (T.pack "(empty)")) Nothing
   let r1 = ReadRec 1 4 "src/A.hs" 1 200 (T.pack "text of A") Nothing False
       r2 = ReadRec 2 6 "src/A.hs" 50 80 (T.pack "a part of A") Nothing False

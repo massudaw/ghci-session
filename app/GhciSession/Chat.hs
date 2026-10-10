@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , numbered, numberBar, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -441,8 +441,8 @@ chatTools :: [Tool]
 chatTools =
   [ t { tProps = [ if k == "timeout" then (k, ("number", timeoutDesc)) else p | p@(k, _) <- tProps t, k /= "session" ] ++ [ ("wait", ("number", "seconds to wait for a verdict, while the session is starting or its check is running (default: none, the state as it is now)")) | tName t == "status" ]
       , tDesc = if tName t == "eval" then evalDesc else tDesc t } | t <- tools, tName t `elem` sessionToolNames ]
-  ++ [ Tool "read" "A file of the project, with line numbers: from a line (start), or from the first line that holds a text (around) -- which is how to read a definition, a section of a reference or of a data file, without knowing its line. An image (png, jpeg, gif, webp) is shown to you as an image." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("around", ("string", "a text: reading starts a few lines before the first line that holds it, and the other lines that hold it are named")), ("before", ("number", "with around: lines shown before the match (default 3)")), ("lines", ("number", "how many (default 200; 60 with around)"))] ["path"]
-     , Tool "grep" "Search file contents: across the project for an identifier, function, or pattern (the high-speed FFF engine; line numbers, content, git status) -- or, with path, in ONE file of any kind or size, each match with the lines after it (context). Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for (with path: a text, as it is)")), ("path", ("string", "one file to search, relative to the project")), ("context", ("number", "with path: lines shown after each match (default 0)")), ("lines", ("number", "max matches (default 30)"))] ["query"]
+  ++ [ Tool "read" "A file of the project, each line as its number, the bar │, then the line exactly as the file has it (the indentation is every space after the bar; the number and the bar are not part of the line): from a line (start), or from the first line that holds a text (around) -- which is how to read a definition, a section of a reference or of a data file, without knowing its line. An image (png, jpeg, gif, webp) is shown to you as an image." [("path", ("string", "relative to the project")), ("start", ("number", "first line (default 1)")), ("around", ("string", "a text: reading starts a few lines before the first line that holds it, and the other lines that hold it are named")), ("before", ("number", "with around: lines shown before the match (default 3)")), ("lines", ("number", "how many (default 200; 60 with around)"))] ["path"]
+     , Tool "grep" "Search file contents: across the project for an identifier, function, or pattern (the high-speed FFF engine; line numbers, content, git status) -- or, with path, in ONE file of any kind or size, each match with the lines after it (context), as read shows lines: >number│text for a match, number│text for a context line, the text exactly as the file has it. Always use this instead of running grep via sh." [("query", ("string", "the identifier or pattern to search for (with path: a text, as it is)")), ("path", ("string", "one file to search, relative to the project")), ("context", ("number", "with path: lines shown after each match (default 0)")), ("lines", ("number", "max matches (default 30)"))] ["query"]
      , Tool "find" "Fuzzy search file names across the project using FFF frecency and git status ranking. Always use this to locate files instead of find via sh." [("query", ("string", "filename or partial path")), ("n", ("number", "max results (default 20)"))] ["query"]
      , Tool "write" "Write a file of the project whole. A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the write changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("content", ("string", "the whole content"))] ["path", "content"]
      , Tool "edit" "Change a file of the project, in one of four ways: old and new (one exact, unique occurrence of a text replaced); append: true and new (put at the file's end; the file is made if it is not there); first, until and new (the lines from the one that holds the text `first` up to, not including, the next that holds the text `until` are replaced -- a whole definition, without writing the old one out); start, end and new (those lines, by number). A watched source (or a .cabal) is reloaded by the session itself and the answer carries the verdict of that reload, and a diff of what the edit changed: NO status call is needed after it." [("path", ("string", "relative to the project")), ("old", ("string", "the text as it is, unique in the file")), ("new", ("string", "the replacement, or what is appended")), ("append", ("boolean", "put new at the end of the file")), ("first", ("string", "a text only the first line to replace holds")), ("until", ("string", "a text of the first line after them: it is kept")), ("start", ("number", "the first line to replace")), ("end", ("number", "the last (default: start)"))] ["path", "new"]
@@ -965,6 +965,19 @@ applyEdit t e
     -- (lines a .. b-1 are the new text's)
     between a b = T.intercalate (T.pack "\n") (take (a - 1) ls ++ [ fromMaybe new (T.stripSuffix (T.pack "\n") new) | not (T.null new) ] ++ drop (b - 1) ls)
 
+-- | A line of a file as @read@ and @grep@ show it: its number, the bar 'numberBar', then the line EXACTLY as the
+-- file has it -- its indentation is every space after the bar, and none before it. A line the search matched
+-- has @>@ before its number, a line shown for context a space. (Two spaces after the number, as before, read
+-- as part of the line's indentation: in 15 of 60 edits of an agent's rounds the new text was indented one or
+-- two spaces too far. The bar is no whitespace, so it cannot be counted among the spaces; it is not an ASCII
+-- @|@, which a guard or a table cell starts a line with, and a tab would be one more run of whitespace.)
+numbered :: Char -> Int -> T.Text -> T.Text
+numbered mark i l = T.pack (printf "%c%5d%c" mark i numberBar) <> l
+
+-- | What stands between a line's number and its text in 'numbered'.
+numberBar :: Char
+numberBar = '\x2502'
+
 -- | The agent's hands on the files, inside the project only.
 fileTool :: Chat -> String -> Json -> IO (Bool, T.Text)
 fileTool ch name a = case name of
@@ -989,7 +1002,7 @@ fileTool ch name a = case name of
               _ -> T.empty
             totalLines = length allLines
             ls = zip [1 :: Int ..] allLines
-            shown = [ T.pack (printf "%5d  " i) <> l | (i, l) <- ls, i >= start, i < start + n ]
+            shown = [ numbered ' ' i l | (i, l) <- ls, i >= start, i < start + n ]
             endLine = if null shown then 0 else start + length shown - 1
             budgetStr = Vfs.formatLineBudget totalLines 250
             remaining = 250 - totalLines
@@ -1083,7 +1096,7 @@ fileTool ch name a = case name of
               hits = [ i | (i, l) <- ls, q `T.isInfixOf` l ]
               shownHits = take maxN hits
               wanted = concat [ [i .. i + ctx] | i <- shownHits ]
-              out = [ T.pack (printf "%6d%s " i (if i `elem` shownHits then ":" else " " :: String)) <> T.take 400 (T.filter (/= '\r') l) | (i, l) <- ls, i `elem` wanted ]
+              out = [ numbered (if i `elem` shownHits then '>' else ' ') i (T.take 400 (T.filter (/= '\r') l)) | (i, l) <- ls, i `elem` wanted ]
           pure (if T.null q then (False, T.pack "grep: no query") else
                 (True, T.pack (printf "[%s: %d line(s) hold %s%s]\n" rp (length hits) (show (T.unpack q)) (if length hits > maxN then printf "; the first %d shown" maxN else "" :: String)) <> T.intercalate (T.pack "\n") out))
   "grep" -> do
@@ -2254,9 +2267,9 @@ trimAt = 40000
 trimAtNow :: IO Int
 trimAtNow = (\v -> case v >>= \x -> case reads x of { [(n, "")] -> Just n; _ -> Nothing } of { Just n -> n; Nothing -> trimAt }) <$> lookupEnv "GHS_CHAT_TRIM_AT"
 
--- | The first and last line a read's answer shows ("   12  text" lines).
+-- | The first and last line a read's answer shows ("   12│text" lines, 'numbered').
 readRange :: T.Text -> Maybe (Int, Int)
-readRange out = case [ n | l <- T.lines out, [(n, "")] <- [reads (T.unpack (T.takeWhile (/= ' ') (T.stripStart l))) :: [(Int, String)]] ] of
+readRange out = case [ n | l <- T.lines out, (pre, rest) <- [T.break (== numberBar) l], not (T.null rest), [(n, "")] <- [reads (T.unpack (T.strip (T.dropWhile (== '>') (T.stripStart pre)))) :: [(Int, String)]] ] of
   [] -> Nothing
   ns -> Just (head ns, last ns)
 

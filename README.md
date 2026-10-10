@@ -473,6 +473,12 @@ is interrupted, not abandoned; a check that hangs is interrupted at five times t
 on the next tool result; `typecheck` answers at once when nothing changed; a read of lines the context already holds
 answers with a pointer instead of the text; a session that is down is waited for (`GHS_CHAT_DOWN_WAIT`).
 
+The agent's `read` (and `grep` with a `path`) shows a line as its number, the bar `│` and then the line exactly as
+the file has it (`grep` puts `>` before the number of a match): the indentation is all the spaces after the bar. The
+bar is no whitespace and not an ASCII `|` (a guard starts a line with that), so it cannot be counted among the
+spaces; two spaces after the number, as it was, were: 15 of 60 edits of an agent's rounds were parse errors from
+a new text indented one or two spaces too far.
+
 **Anthropic's API** is spoken too (`GhciSession.Anthropic`: the Messages API, natively, not through a compatible
 endpoint). With `ANTHROPIC_API_KEY` (or `ANTHROPIC_AUTH_TOKEN`, sent as a bearer token) and no key for the other
 protocol -- or `GHS_PROVIDER=anthropic` with both -- the chat and `ghci-session summarize` use it:
