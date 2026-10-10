@@ -50,6 +50,7 @@ import GhciSession.Json
 import GhciSession.Repl
 import GhciSession.Sys
 import GhciSession.Watch
+import GhciSession.Declared (builtinNames)
 import qualified GhciSession.History as H
 import qualified GhciSession.Know as K
 import qualified GhciSession.Mcp as Mcp
@@ -2325,7 +2326,9 @@ knowLoop s m cmd = do
           -- (ai: what another agent said, brought in by `import`)
           (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note", "ai"], T.length (H.mText x) > 80 ->
                       piece recent (H.mDate x) (src i 1) (H.mKind x <> T.pack ": " <> T.take 6000 (H.mText x))
-                  | H.mKind x == T.pack "tool", Just (tool, keys) <- K.callArgs (H.mText x) -> do
+                  -- (the tools every project has: what a project declares for itself is its own, and its calls --
+                  -- one with a wrong argument among them -- are not how the tool is used)
+                  | H.mKind x == T.pack "tool", Just (tool, keys) <- K.callArgs (H.mText x), tool `elem` builtinNames -> do
                       known <- rd seenArgs
                       let fresh = [ k | k <- keys, (tool, k) `notElem` known ]
                       seenArgs =: (map ((,) tool) fresh ++ known)

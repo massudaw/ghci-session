@@ -140,5 +140,77 @@
   "expect": [],
   "forbid": [],
   "max": 0
+ },
+ {
+  "name": "progress: a step done and pushed is a moment",
+  "project": "sprinkler-solver",
+  "piece": "ai: Step 1 is done and pushed: there is now one room finder in the modelling package, and House MM, Colchester and the intake all call it.\n\n## What changed\n\n- **New shared module `Examples.PlanRooms`** holds both existing ways of finding rooms, moved verbatim:\n  - House MM's flood fill, for walls and openings that already close the rooms;\n  - Colchester's version, which closes doorways by growing the barrier 0.55 m before filling, then grows each room back to the lines.\n- **House MM and Colchester now import it** in place of their own copies.\n- **The intake's plan tree uses it too.** The raster room code I wrote earlier today is deleted.\n\n## Checks\n\n- House MM: 22 of 22 goldens match, plus the rooms golden.\n- Colchester: still 58 rooms, 50 named, and its snapshot still has 1,151 elements and 607 constraints. Colchester has no rooms golden, so this is a count check, not a byte comparison.\n- Intake: the plan tree gives the same findings as before (a door spans a wall gap 70% of the time, furniture touches no wall 63%) and runs in 4.7 seconds, down from 28.\n\n## Remaining steps\n\n2. Generalise Colchester's context path into the shared engine, so a place can be a room as well as a grid cell, with wall-standing as a fact of the place.\n3. Move the multi-source vote down, and add shape, size and wall-standing as sources.\n4. Use Colchester's identified solids as the library's second office, labelled as things.\n\nI'll carry on with step 2 unless you want a different order.",
+  "expect": [],
+  "forbid": [
+   {
+    "text": "is pushed|pushed|step \\d|\\bnext\\b|planned|still lacks|not yet|commit [0-9a-f]{7}|so far|remaining"
+   }
+  ],
+  "max": 1
+ },
+ {
+  "name": "progress: a breakdown measured along the way",
+  "project": "sprinkler-solver",
+  "piece": "ai: Yes, the gaps can be fixed, but each needs a real reader, and the biggest one \u2014 the roof \u2014 is the most work. I measured where the elevations' missing lines actually are, tried the cheapest fix, and it did not help, so here is the evidence and a ranked plan.\n\n## Where the elevations' \"not built\" is\n\nOf about 1,800 m not built across the four elevations, by height:\n\n| Height band | Not built | What is there |\n|---|---|---|\n| 9 m and above | about 720 m | roofs, parapets, tank housing |\n| around 7 m | 264 m | probably balcony rails on the upper floor |\n| around 1 m | 272 m | basement level: probably garden walls and the ramp |\n| \u22121 to 0 m | about 190 m | ground and site |\n\nBy layer, 255 m of it is window and door linework (frames and mullions).\n\n## What I tried just now\n\nParapets from the roof plan's low walls, standing on the roof slab. It found only 5 on House MM, 4 of them with no height readable, and the divergence rose by 7.5 m. I left them out of the model; the code is kept but switched off.\n\nThe reason it found so few is a classification gap: House MM's roof plan has 533 m of line on layer `0`, which nobody gave a role, so the intake ignores it. The same layer holds 1,350 m in the sections and elevations.\n\n## The fixes, ranked\n\n1. **Roofs (about 720 m).** Pitched roofs need the roof plan's ridge, hip and eave lines plus heights from the sections. House MM already has a reader for this; per your consolidation rule I'd move it down into the shared engine and drive it by layer role. This is the largest gain and the largest job.\n2. **Window and door detail on facades (255 m).** House MM has a reader for mullions, transoms and frames from elevations. Same approach: move it down.\n3. **Rails and garden walls (the 7 m and 1 m bands, about 530 m).** These are low walls and rails whose heights the side views show; an extension of what I built today.\n4. **Layer `0`.** Decide what it is on the intake page, or let me look at what it draws. If it is real building linework, classifying it feeds items 1 and 3 directly.\n5. **Ground (about 190 m).** Needs a site model; I'd leave it for last.\n\n## Realistic expectation\n\nHouse MM's hand-built model reached about 1,540 m after weeks of project-specific work. The intake is at 6,651 m. A generic pass through items 1 to 3 should bring that down substantially, but I would not expect it to reach House MM's figure without project-specific decisions.\n\nThe cheapest next step is item 4: I'll look at what layer `0` draws on the roof plan and elevations, which takes minutes and tells us whether the roof reader has enough to work with. Shall I start there?",
+  "expect": [],
+  "forbid": [
+   {
+    "text": "is pushed|pushed|step \\d|\\bnext\\b|planned|still lacks|not yet|commit [0-9a-f]{7}|so far|remaining"
+   }
+  ],
+  "max": 1
+ },
+ {
+  "name": "progress: a change with its before/after",
+  "project": "sprinkler-solver",
+  "piece": "ai: The intake is now wired into the quick workflow and pushed, and I used it for a first real improvement: adding low walls brought House MM's divergence from 7,349 m to 7,189 m.\n\n## The edit loop\n\nIn the `intake` session, point it at a project and use the same commands as House MM and Colchester:\n\n- `quickBase` holds the baseline: 1,791 elements, 10 views and 3,862 divergences in 7.4 seconds.\n- Edit how the model is built, reload, then `quickEdit` re-projects the ten views in 7.7 seconds and lists what is gone, new or moved.\n- `quickViews`, `quickTotals`, `quickDivergences`, `quickRender`, `quickLines`, `quickAt` and `quickElement` come from the same engine but I have only run `quickViews` so far.\n\nOne difference from House MM: what you edit is a rule for building the model, not a single element, because the model-building code is shared by every intake project.\n\n## First use: low walls\n\nI summed the divergences by layer and kind to find what to build first. The largest \"drawn but not built\" items were:\n- elevation lines: 1,117 m;\n- things the plans draw above their cut: 676 m;\n- the plans' low walls: 627 m, plus 258 m in elevations and 189 m in sections.\n\nLow walls were the most direct to build: the same line-pairing as full walls, applied to the low-wall layer, at an assumed height of 1.10 m (flagged as assumed in each element).\n\n| | Before | After |\n|---|---|---|\n| Total divergence | 7,349 m | 7,189 m |\n| Plans | 2,105 m | 1,898 m |\n| Side views | 5,244 m | 5,291 m |\n| Drawn line within 5 cm of the model | 38% | 40% |\n\nThe plans improved by 207 m. The side views got 47 m worse, because 1.10 m is a guess and the drawings show these walls at other heights. Reading that height from the side views, the way window sills are read, is the natural fix.\n\n## Practical note\n\nA session started before this change needs a stop and start to pick up the new module; I did that for `intake`.\n\n## Next candidates, by size of what's missing\n\n1. Low-wall heights from the side views.\n2. Slabs from the sections, replacing the assumed 12 cm under each room.\n3. What plans draw above their cut (roof edges, overhangs), which needs the roof plan brought into the frame.",
+  "expect": [],
+  "forbid": [
+   {
+    "text": "is pushed|pushed|step \\d|\\bnext\\b|planned|still lacks|not yet|commit [0-9a-f]{7}|so far|remaining"
+   }
+  ],
+  "max": 2
+ },
+ {
+  "name": "a finding that stands: licensing",
+  "project": "sprinkler-solver",
+  "piece": "ai: I downloaded a catalog and it gave the first cross-office result that beats guessing: with it in the library, House MM's windows are named correctly 85% of the time and its doors about 45%, where both were 0% before.\n\n## What I downloaded\n\n**FloorPlanCAD** is a research dataset of over 10,000 real CAD floor plans, cut into 10 \u00d7 10 m tiles as vector SVG. Every line is labelled with what it is and which instance it belongs to. The drawings come from many offices: the test set alone has 3,424 different layer names.\n\n- I took the test set: 5,502 tiles, now in `data/catalogs/floorplancad/svg` (562 MB).\n- `tools/intake/floorplancad.py` converts a sample into an intake project. I used every ninth tile: 612 tiles and 4,684 labelled things (894 single doors, 653 windows, 465 double doors, 452 chairs, 360 sinks, 178 toilets, 167 stairs, and more), each with the walls around it.\n\nI also downloaded LibreCAD's small open symbol library (31 furniture and bathroom symbols plus 4 doors), but have not used it yet.\n\n## Licence\n\nFloorPlanCAD's annotations are Creative Commons non-commercial, and the authors state they do not own the copyright of the drawings. It is fine for research and for testing our method, but it cannot ship inside a product. LibreCAD's library is GPL-2.\n\n## Results with the catalog in the library\n\nHouse MM, named only from other offices' drawings:\n\n| Kind | Before the catalog | With the catalog |\n|---|---|---|\n| Windows | 0% | 85% |\n| Doors | 0% | 41\u201345% |\n| Furniture | 40\u201385% | 50% |\n| Fixtures | 22\u201326% | 0% |\n| All features | 23% | 47% |\n\nAlways guessing House MM's commonest kind would score 42%. Context and length alone, without the shape tree, scored 56%.\n\nTwo things did not improve:\n- **House MM's fixtures** went to 0%. I have not looked into why.\n- **The SketchUp plans** stay below guessing (17\u201319%), consistent with their unclean walls and labels.\n\n## What else it showed\n\n- **The class numbers in the files are not the ones in the paper.** Read by the paper's list, \"single door\" came out as 322,869 lines and \"window\" as 124. I took the correct mapping from the dataset authors' own code and checked it against the layer names in the files (class 1 sits on WALL layers, class 30 on STAIR layers).\n- **Scale checks out.** One unit is 0.1 m: a single door comes out at 0.88 m, a toilet at 0.70 \u00d7 0.48 m, a bed at 2.00 \u00d7 1.38 m.\n- **Offices draw doors differently.** In this catalog doors touch no wall 41% of the time, because the swing is drawn out in the room. So the \"both ends at walls, under 30 cm\" rule is right 84% of the times it fires there, but finds only 28% of openings, against 82% on House MM. Windows span a gap 59% of the time.\n\n## Practical notes\n\n- The Mac's disk had only 2.5 GB free, so I deleted the 1.8 GB archive after extracting the SVGs. The download command is in the script's header.\n- The three-project run takes about 2 minutes.\n\n## Next\n\nThe obvious follow-ups are to use the full 5,502 tiles and the fine classes (toilet, sink, bed, stair), and to add a door rule for swings drawn in the room. Shall I go on with those?\n\nSources:\n- [FloorPlanCAD dataset site](https://floorplancad.github.io/)\n- [FloorPlanCAD paper (arXiv)](https://arxiv.org/pdf/2105.07147)\n- [CADTransformer class mapping](https://raw.githubusercontent.com/VITA-Group/CADTransformer/main/config/anno_config.py)\n- [LibreCAD part library](https://github.com/LibreCAD/LibreCAD)\n- [CubiCasa5K (considered, not used)](https://github.com/cubicasa/cubicasa5k)\n- [Voxel51 FloorPlanCAD mirror (raster only, not used)](https://docs.voxel51.com/dataset_zoo/datasets_hf/floorplancad.html)",
+  "expect": [
+   {
+    "text": "non-commercial|cannot ship|research"
+   }
+  ],
+  "forbid": [],
+  "max": 3
+ },
+ {
+  "name": "a finding that stands: why a score is circular",
+  "project": "sprinkler-solver",
+  "piece": "ai: Tagging Colchester's plan copy did not help much, but it exposed something more important: House MM's scores for the fusion are partly circular. Committed and pushed.\n\n**The tagging**\n- The SketchUp plan copy has no layers, but each line belongs to a block, so I tagged by block name: furniture, fixtures, grid, boundary, roof, screens, doors.\n- 6,021 of the 8,717 lines are in no block at all. That is where the walls are, mixed with everything else drawn loose.\n- So the wall count stayed at 1,514 line pairs. I added a filter that drops lines that are part of a regular rhythm (stair treads, deck boards, screen slats); that took it to 1,058.\n- Neither change moved the result: faces on a \"wall\" are on the model 54% of the time, faces on none 48%.\n\n**What that led me to check**\n\nAre the walls the intake reads from the plans actually in each model?\n\n| | Walls from plans | Stand in the model's material | Both faces on model faces |\n|---|---|---|---|\n| 3 Colchester Drive | 1,058 | 72% | 35% |\n| House MM | 137 | 100% | 100% |\n\nMM's 100% is because MM's model walls were built from the same pairing of the same plan lines. So the headline \"a face on a wall the plans cut is 94% on the model\" mostly says that a face on a plan wall is on a plan wall. The same applies, less completely, to slabs (MM's come from its sections) and to corners (MM's boxes are built from these drawings).\n\n**What this means for the numbers I've reported**\n- Every \"on MM's model\" figure from the fusion steps is optimistic, and the wall and slab tiers most of all.\n- The only independent test is Colchester: corners 29%, edges 17%, faces about half, and no gain from walls.\n- Colchester has its own handicaps: plans with no layers, and a model of SketchUp solids that is coarser than the drawings.\n- The one result that holds on both projects is that about half the faces land on the model.\n\nThe mechanisms are all built and run. That they find the building better is not yet shown beyond that.\n\n**A clean test needs both** plans with real layers and a model not built from them. Candidates: House 16FA or Schependomlaan (each has an IFC model and its own drawings), or Colchester if the floor-plan DWG that the tender set references can be obtained. Do you have that DWG, or should I look at what drawings exist for the other two?",
+  "expect": [
+   {
+    "text": "circular"
+   }
+  ],
+  "forbid": [],
+  "max": 3
+ },
+ {
+  "name": "the source's own nouns: no 'pipe' it never said",
+  "project": "sprinkler-solver",
+  "piece": "talk: The tool answered: worklist: 2 of 560 groups, 577.8 of 6651.3 m\n 1.   315.8 m  not built fachada-lateral-2  layer ElevationLine  (22 regions)\n    look fachada-lateral-2 -2.31 6.54 19.84 11.50\n 2.   262.0 m  not built fachada-frontal  layer ElevationLine  (9 regions)\n    look fachada-frontal -2.01 2.10 13.59 13.00\n558",
+  "expect": [],
+  "forbid": [
+   {
+    "text": "\\bpipes?\\b|sprinkler"
+   }
+  ],
+  "max": 3
  }
 ]

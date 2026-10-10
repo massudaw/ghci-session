@@ -190,6 +190,8 @@ extractPrompt toolLines project date body = T.pack (unlines (
   , "Extract the DURABLE knowledge in it: what would change how someone acts weeks later. A decision, a standing rule from the user, how a tool or setting is to be used, a result figure, a cause found. NOT the steps taken, transient errors, what was merely tried, or a state that the next hour changes. Most pieces hold nothing: then the list is empty. At most 3 facts a piece, the most consequential."
   , "WHO says it matters. What the USER says is taken as said. What the AGENT (talk, ai) says is a fact only where it reports something done and measured, found, or settled with the user -- NOT its proposals, plans, estimates, what a model or a calculation predicts, what would or could be done, or its opinion of the work: of those extract nothing, however specific the numbers. An agent's statement of how the system is set up or what a provider does, which it did not just change or measure itself, is its belief and not a fact. A reply that ANALYSES or ADVISES -- answers a question with reasoning, options and a recommendation -- usually holds no fact at all."
   , "A piece that is a run of one-line summaries of tool traffic (lines like 123+8|...) is mostly steps. Take from it at most ONE fact, and only a result that stands at its END -- a figure after the work, a cause found, what a commit settled -- never what was in progress, uncommitted, unverified, failing or still to do at that moment."
+  , "A report of PROGRESS -- a step done, pushed or committed, a count or a measurement taken along the way, what is still missing, what comes next -- is a moment, and a moment is not a fact. From such a piece take only what will still be true and worth knowing when the work has moved on: a decision and its reason, how a thing now works, the settled result of a comparison. Usually that is one fact or none; never a commit's check result or the next item of a list. A figure belongs to a fact only as the settled result of a comparison (this method against that one), not as where a number stood on the day. Do not fill the list: three facts from one piece is rare, and an empty list is a good answer."
+  , "Use the piece's own words for what is counted or measured: do not supply a noun it does not use (what the metres or the items are OF)."
   , "Each fact has a SCOPE, decided strictly:"
   , "  \"tool\"    true of ghci-session itself for ANY project: what a tool call or a ghci-session.json setting does (tool scope even when this project is where it was learned), a limit, a behaviour. It must not depend on this project's files or modules; if it names them, it is not tool scope."
   , "  \"user\"    how this user wants work done on ANY project (process, what never to do). A rule that names this project's branch, files, formats or targets is project scope; when in doubt, project."
@@ -250,7 +252,8 @@ callArgs :: T.Text -> Maybe (String, [String])
 callArgs t = case T.break (== ' ') t of
   (name, rest) | not (T.null name), T.all (\c -> isAlphaNum c || c == '_') name, Just ('{', _) <- T.uncons (T.stripStart rest) ->
     case parseJson (T.unpack (T.stripStart rest)) of
-      Right (JObj kvs) -> Just (T.unpack name, map fst kvs)
+      -- (not the harness's own marks on a call: which declared tool an eval was, who asked)
+      Right (JObj kvs) -> Just (T.unpack name, [ k | (k, _) <- kvs, k `notElem` ["tool", "from", "quiet", "session"] ])
       _ -> Nothing
   _ -> Nothing
 

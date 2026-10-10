@@ -510,6 +510,8 @@ run = do
   eq "know: a tool call as the chat logs it gives the tool and its arguments; a command line does not"
      (K.callArgs (T.pack "bench {\"expr\": \"f x\", \"opt\": 2}"), K.callArgs (T.pack "bench --top 5 f x"), K.callArgs (T.pack "save: src/A.hs"))
      (Just ("bench", ["expr", "opt"]), Nothing, Nothing)
+  eq "know: the harness's own marks on a call are not arguments of the tool"
+     (K.callArgs (T.pack "eval {\"expr\": \"M.measure\", \"tool\": \"measure\", \"from\": \"chat\"}")) (Just ("eval", ["expr"]))
   eq "know: the fact of a call's argument is known again by its topic"
      (K.isCall (K.nTopic (K.callFact "census" "sites" 1 "s" (T.pack "census {\"sites\": true}"))), K.isCall (T.pack "routine check command")) (Just ("census", "sites"), Nothing)
   let held = [ kFact "a" "user/rules" "routine check command" "The routine check is run with cabal test through sh." 1 1

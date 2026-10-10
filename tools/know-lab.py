@@ -17,7 +17,8 @@ and lost the answers: 41 of 48 against 45).
 
 A POLICY is `name` or `name:key=value,...` with: budget=BYTES (16000), tiers=A/B/C (45/40/15: the tool's and
 the user's subjects, the project's, the others'), cut=CHARS (a fact cut to so many), scope=1 (general facts
-that speak of one project left out: what `ghci-session knowledge refile` does to the store), drop=SUBJECT.
+that speak of one project left out: what `ghci-session knowledge refile` does to the store), drop=SUBJECT,
+status=N (each project's status subject keeps its N latest facts; 0: none).
 With none: `now` and `scope:scope=1`.
 
 The questions (--questions, default tools/know-lab/dxf-questions.json): [{"q", "current", "outdated"}], what
@@ -90,7 +91,7 @@ SPEAKS = re.compile(r"this repository|this repo\b|this project|this codebase", r
 
 def policy(spec):
     name, _, args = spec.partition(":")
-    kw = dict(budget=16000, tiers=(.45, .40, .15), cut=0, scope=False, drop=["tool/operator"])
+    kw = dict(budget=16000, tiers=(.45, .40, .15), cut=0, scope=False, drop=["tool/operator"], status=-1)
     for a in filter(None, args.split(",")):
         k, _, v = a.partition("=")
         if k == "tiers":
@@ -104,7 +105,7 @@ def policy(spec):
     return name, kw
 
 
-def render(facts, project, budget, tiers, cut, scope, drop):
+def render(facts, project, budget, tiers, cut, scope, drop, status=-1):
     def keep(f):
         general = f["subject"].split("/")[0] in ("tool", "user")
         return not (scope and general and SPEAKS.search(f["fact"]))
@@ -113,6 +114,11 @@ def render(facts, project, budget, tiers, cut, scope, drop):
     for f in facts:
         if not f["by"] and not iscall(f) and f["subject"] not in drop and keep(f):
             by[f["subject"]].append(f)
+    if status >= 0:                                   # status=N: a */status subject keeps its N latest facts (0: none)
+        for s in [s for s in by if s.endswith("/status")]:
+            by[s] = sorted(by[s], key=lambda f: -f["last"])[:status]
+            if not by[s]:
+                del by[s]
     subs = sorted(by, key=lambda s: -max(x["last"] for x in by[s]))
     t1 = [s for s in subs if s.split("/")[0] in ("tool", "user")]
     t2 = [s for s in subs if s.startswith(project + "/")]

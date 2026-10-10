@@ -490,7 +490,12 @@ Its first use: a stretch of tool traffic gave three facts every time (what was u
 progress) and an assistant's reply full of estimates gave eight ("a proposed controller would..."); with the
 prompt saying whose word is a fact -- the user's as said, an agent's only where it reports what was done and
 measured, a run of summaries only what stands at its end -- nine cases over four runs give 39 of 40 expected
-facts, none forbidden, one case over its maximum (before: 29 of 30, five forbidden, six over).
+facts, none forbidden, one case over its maximum (before: 29 of 30, five forbidden, six over). Then an audit of
+the facts a real project's conversation had given (half worth keeping, a third true of one moment only) added
+six cases from it: with a report of progress said to be a moment, the facts of three such messages went from
+all moments to about six in ten worth keeping -- but still three facts a message, where one would do: the prompt
+alone does not get further, and what is left is for the store to handle (a status that keeps its latest, a fact
+marked as a moment when it is taken).
 
 `tools/review-diff.py BASE` is a round's diff read by a model with no tools and no history, for what a
 maintainer would stop a merge for: run before a round is pushed, its findings given back to be proven or
