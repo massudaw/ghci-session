@@ -89,7 +89,7 @@ cmdImport conf a = do
     Nothing -> pure 0
     Just d -> maybe (die' ("--since " ++ d ++ ": a date is YYYY-MM-DD")) pure (I.isoSeconds (d ++ "T00:00:00Z"))
   files <- (++) <$> I.sessionFiles claude <*> (concat <$> mapM I.sessionFiles codex)
-  sessions <- catMaybes <$> mapM I.readSession files
+  sessions <- catMaybes <$> mapM (I.readSession (flag a ["--tools"])) files
   done0 <- (\b -> either (const M.empty) (\j -> M.fromList [ (k, d) | (k, JNum d) <- fromMaybe [] (obj j) ]) (parseJsonBS b))
              . either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile doneFile)
   let want s = I.Want (flag a ["--tools"]) (flag a ["--all"]) since (if I.sApp s == "Codex" then root else "")      -- (Codex keeps every project's sessions together)

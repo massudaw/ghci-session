@@ -106,3 +106,33 @@ same set).
 
 Self-tests: 357 pass.
 
+### 3. `import` (the Claude Code Stop hook, every turn): no tool entries unless asked, timestamps by hand (`Import.readSession`, `isoSeconds`)
+
+Reading the 37 session files (26 MB, 9,892 lines) made the entries of every tool call and result, the largest texts
+of a file, to drop them in `wanted` unless `--tools` was asked for, built the file's entries with a lazy fold, and
+parsed each line's timestamp with `parseTimeM` (10 us a line, 0.1 s of the import). Now `readSession` takes whether
+tools are wanted and makes no entry for them otherwise, the fold is strict, and `isoSeconds` reads the one shape the
+programs write by hand (anything else still goes to `parseTimeM`: 5,600 timestamps over leap years, month ends and
+fraction lengths compared with it, all equal). One difference: a session with nothing but tool entries is not counted
+among the files "with messages" when `--tools` is not given.
+
+| call | before | after |
+|---|---|---|
+| `.bin/ghci-session import` (5 runs, built at -O1, nothing new to import) | 530.6 ms median | 275.0 ms median |
+| `mapM readSession files` in the session (bench x5; its GC is the session's own heap) | 685 ms, 732 MB | 553 ms, 834 MB |
+
+Self-tests: 357 pass.
+
+## Not done, and next
+
+- The rest of an `import` is the JSON parse of every line of 26 MB (147 ms of it in the session at 70 MB/s): a file
+  whose size and modification time have not changed since its last import could be passed over without being read
+  (it would need the sizes written beside `imported.json`), which makes the hook near zero.
+- `Json.parseJsonBS` at 70 MB/s is the one hot path under everything (facts, history, import, replies): 12 ms for an
+  862 KB reply. A faster number reader and string unescaper there would help each of them.
+- The fallback `grep` still reads every file's bytes (29 ms for a tree of 2,262 files); a build with libfff
+  (`GHS_FFF`) does not. An index of the file list kept by the daemon would be the next step.
+- `Top`'s layout of a whole history (416 ms, 2 GB) is paid only for the last 400 messages, once; if the history
+  opens whole, it is the cost to look at.
+- Boots and restarts (12-16 s, up to 47) are cabal and GHC; the watchdog's and the compactor's costs are in model
+  calls, not CPU.

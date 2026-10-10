@@ -26,8 +26,9 @@ import Control.Exception (IOException, try)
 import Control.Monad (forM)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-import Data.Char (isAlphaNum, isAsciiLower)
-import Data.List (isInfixOf, isPrefixOf, isSuffixOf, sortOn)
+import Data.Char (digitToInt, isAlphaNum, isAsciiLower, isDigit)
+import Data.Ratio ((%))
+import Data.List (foldl', isInfixOf, isPrefixOf, isSuffixOf, sortOn)
 import qualified Data.Map.Strict as M
 import Data.Maybe (fromMaybe, mapMaybe)
 import qualified Data.Text as T
@@ -65,27 +66,58 @@ sessionFiles dir = do
       if isDir then (if n == "subagents" then pure [] else sessionFiles p)
         else pure [ p | ".jsonl" `isSuffixOf` n ]
 
--- | A session file read. 'Nothing': no message in it.
-readSession :: FilePath -> IO (Maybe Session)
-readSession file = do
+-- | A session file read, with the tool calls and their results only if asked for (@tools@: they are most of a
+-- file, and a result a page long; made and kept for nothing, they were most of the time of an import). 'Nothing':
+-- no message in it.
+readSession :: Bool -> FilePath -> IO (Maybe Session)
+readSession tools file = do
   ok <- doesFileExist file
   b <- if ok then either (\(_ :: IOException) -> B.empty) id <$> try (B.readFile file) else pure B.empty
   let js = [ j | l <- BC.lines b, not (B.null l), Right j <- [parseJsonBS l] ]
       codex = any (\j -> lookupStr "type" j == Just "session_meta") (take 5 js)
+      -- (a strict fold, each entry's text made as it goes: a lazy one kept every line of the file, parsed, alive
+      -- until the end -- 26 MB of sessions held for the collector to copy again and again, most of the time)
       step (s, lastT, acc) j =
         let t = fromMaybe lastT (stamp j)
-            (s', es) = if codex then codexLine s j t else claudeLine s j t
-        in (s', t, reverse es ++ acc)
-      (s1, _, es) = foldl step (Session (if codex then "Codex" else "Claude Code") "" "" file [], 0, []) js
+            (s', es0) = if codex then codexLine s j t else claudeLine s j t
+            es = [ e | e <- es0, tools || eKind e `elem` ["user", "ai"] ]
+        in sWhere s' `seq` sEntry s' `seq` t `seq` foldr (\e r -> eKind e `seq` T.length (eText e) `seq` r) () es `seq` (s', t, reverse es ++ acc)
+      (s1, _, es) = foldl' step (Session (if codex then "Codex" else "Claude Code") "" "" file [], 0, []) js
   pure (if null es then Nothing else Just s1 { sEntries = reverse es })
   where stamp j = case j .: "timestamp" of
           JNum n -> Just n
           JText t -> isoSeconds (T.unpack t)
           _ -> Nothing
 
--- | @2026-10-08T09:08:23.523Z@ as seconds.
+-- | @2026-10-08T09:08:23.523Z@ as seconds. The one shape the programs write is read here by hand (a line of a
+-- session has one, and 'parseTimeM' took 10 microseconds of it: a tenth of an import); any other goes to it.
 isoSeconds :: String -> Maybe Double
-isoSeconds t = realToFrac . utcTimeToPOSIXSeconds <$> (parseTimeM True defaultTimeLocale "%Y-%m-%dT%H:%M:%S%QZ" t :: Maybe UTCTime)
+isoSeconds t = case t of
+  (y1 : y2 : y3 : y4 : '-' : m1 : m2 : '-' : d1 : d2 : 'T' : h1 : h2 : ':' : n1 : n2 : ':' : s1 : s2 : rest)
+    | all isDigit [y1, y2, y3, y4, m1, m2, d1, d2, h1, h2, n1, n2, s1, s2]
+    , Just fracs <- zone rest
+    , let [y, m, d, h, n, s] = map num [[y1, y2, y3, y4], [m1, m2], [d1, d2], [h1, h2], [n1, n2], [s1, s2]]
+    , m >= 1, m <= 12, d >= 1, d <= monthDays y m, h < 24, n < 60, s < 60 ->
+        Just (fromRational ((days y m d * 86400 + h * 3600 + n * 60 + s) % 1 + fracs))
+  _ -> slow
+  where
+    slow = realToFrac . utcTimeToPOSIXSeconds <$> (parseTimeM True defaultTimeLocale "%Y-%m-%dT%H:%M:%S%QZ" t :: Maybe UTCTime)
+    num = foldl' (\a c -> a * 10 + toInteger (digitToInt c)) 0
+    -- (what follows the seconds: the fraction, then the Z)
+    zone r = case r of
+      "Z" -> Just 0
+      ('.' : ds) | (f@(_ : _), "Z") <- span isDigit ds -> Just (num f % (10 ^ length f))
+      _ -> Nothing
+    monthDays y m | m == 2 = if (y `mod` 4 == 0 && y `mod` 100 /= 0) || y `mod` 400 == 0 then 29 else 28
+                  | m `elem` [4, 6, 9, 11] = 30
+                  | otherwise = 31
+    -- (days from 1970-01-01 to a date of the proleptic Gregorian calendar)
+    days y m d = let y' = if m <= 2 then y - 1 else y
+                     era = y' `div` 400
+                     yoe = y' - era * 400
+                     doy = (153 * (if m > 2 then m - 3 else m + 9) + 2) `div` 5 + d - 1
+                     doe = yoe * 365 + yoe `div` 4 - yoe `div` 100 + doy
+                 in era * 146097 + doe - 719468
 
 -- | A line of a Claude Code session: the session with what the line says of it, and the line's messages. Only
 -- what the user and the agent said in the session itself: not a line the program put there (@isMeta@), a
