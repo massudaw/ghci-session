@@ -1643,7 +1643,10 @@ turnCliFrom ch e o system first pending spent0 tStart = do
           fo <- PIO.handleToFd out
           fe <- PIO.handleToFd err
           blocks <- cliBlocks ch (A.viewBlocks first) first
-          void (try (Wire.fdPut fi (C.userLine blocks)) :: IO (Either IOException ()))
+          -- (written aside: a message past the pipe's 64KB blocks until the program reads, and a program that reads its
+          -- input only once its tools are connected would wait for this run's accept loop, which starts in 'runCli':
+          -- a whole chat's view in a long chat is that big)
+          void (forkIO (void (try (Wire.fdPut fi (C.userLine blocks)) :: IO (Either IOException ()))))
           runCli ch e o pending (CliRun (fromIntegral cpid) fi fo fe lfd sock B.empty [] spent0 tStart)
     (_, Left why) -> gaveUp why
     (Nothing, _) -> gaveUp ("cannot listen on " ++ sock)

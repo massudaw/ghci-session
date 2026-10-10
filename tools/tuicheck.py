@@ -141,10 +141,10 @@ def fake_llm(port):
     return p, {"GHS_PROVIDER": "anthropic", "ANTHROPIC_API_KEY": "fake", "ANTHROPIC_BASE_URL": "http://127.0.0.1:%d" % port}, ["ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL", "GHS_IMAGES", "GHS_CLAUDE_MODEL"]
 
 
-def project(d, session, extra=None):
+def project(d, session, extra=None, more=None):
     """A project made for a check: with `session`, a package of one module and its session `demo` started (a
-    few seconds: cabal builds it; `extra`: more keys for its target); without, only the directory a chat needs
-    (session `x`, never started)."""
+    few seconds: cabal builds it; `extra`: more keys for its target; `more`: files to write besides, or instead
+    of, its own, by name); without, only the directory a chat needs (session `x`, never started)."""
     proj = os.path.join(d, "proj")
     if not session:
         os.makedirs(os.path.join(proj, ".ghci-session", "x"))
@@ -159,6 +159,7 @@ def project(d, session, extra=None):
         "ghci-session.json": json.dumps({"default": "demo", "hygiene": False, "targets": {"demo": {"units": ["lib:demo"], "watch": ["src"], "modules": ["Demo"], **(extra or {}),
                                                                                          "test": {"expr": "Demo.selfTest", "pass": "\\[PASS\\] greeting", "fail": "\\[FAIL\\]"}}}}),
     }
+    files.update(more or {})
     for name, text in files.items():
         with open(os.path.join(proj, name), "w") as f:
             f.write(text)
