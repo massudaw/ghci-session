@@ -485,6 +485,20 @@ run = do
      [ (T.unpack (K.nSubject n), T.unpack (K.nText n)) | n <- K.parseNew "dxf" 1000 "s" answer ]
      [("tool/usage", "A."), ("user/rules", "B."), ("dxf/status", "C.")]
   eq "know: an answer that is not JSON holds no fact" (K.parseNew "dxf" 1000 "s" (T.pack "nothing durable here")) []
+  eq "know: a fact under the tool or the user that speaks of this repository, this project, or names the project it was learned in, is that project's rule; one that is general stays; a project's own subject stays"
+     [ T.unpack (K.refile p (T.pack s) (T.pack t)) | (p, s, t) <-
+         [ ("ghci-session", "user/rules", "Do not retry bench with opt: 2 on this repository; measure with plain bench.")
+         , ("ghci-session", "tool/usage", "The bench tool's opt mode is unusable on this repository because a full build takes 15 minutes.")
+         , ("dxf", "user/rules", "For performance work on this project, each change is measured on the big samples.")
+         , ("dxf", "tool/config", "The dxf ghci-session.json sets optimize to true.")
+         , ("dxf", "tool/usage", "The bench tool accepts a runs argument N.")
+         , ("ghci-session", "tool/config", "The ghci-session daemon reads summarize_cmd once when it starts.")
+         , ("dxf", "user/rules", "The user wants work done in one loop, without spawn.")
+         , ("dxf", "dxf/performance", "Parsing f001 on this project takes 138 ms.") ] ]
+     ["ghci-session/rules", "ghci-session/rules", "dxf/rules", "dxf/rules", "tool/usage", "tool/config", "user/rules", "dxf/performance"]
+  eq "know: extraction files such a fact under the project at once"
+     [ T.unpack (K.nSubject n) | n <- K.parseNew "dxf" 1000 "s" (T.pack "{\"facts\": [{\"scope\": \"user\", \"subject\": \"user/rules\", \"topic\": \"t\", \"fact\": \"On this project nothing is pushed.\"}]}") ]
+     ["dxf/rules"]
   eq "know: a tool call as the chat logs it gives the tool and its arguments; a command line does not"
      (K.callArgs (T.pack "bench {\"expr\": \"f x\", \"opt\": 2}"), K.callArgs (T.pack "bench --top 5 f x"), K.callArgs (T.pack "save: src/A.hs"))
      (Just ("bench", ["expr", "opt"]), Nothing, Nothing)

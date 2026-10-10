@@ -398,6 +398,18 @@ cmdKnowledge a = do
       forM_ found $ \f -> TIO.putStrLn (T.pack (K.fId f ++ "  [" ++ K.day (K.fFirst f) ++ "] (") <> K.fSubject f <> T.pack ") " <> K.fText f <> T.pack (maybe "" ("  -- replaced by " ++) (K.fBy f)))
       when (null found) (putStrLn "no fact holds those words")
       pure 0
+    -- facts filed under the tool or the user that speak of one project: filed again under that project
+    -- ('K.refile': what extraction does to new ones), the old ones kept, marked
+    (Just "refile", _) -> do
+      -- (not what a tool is called with: its example call names a project's files, and is no rule of it)
+      let moves = [ (f, s') | f <- K.current facts, K.isCall (K.fTopic f) == Nothing, let s' = K.refile (takeWhile (/= '/') (K.fSrc f)) (K.fSubject f) (K.fText f), s' /= K.fSubject f ]
+      forM_ moves $ \(f, s') -> do
+        TIO.putStrLn (K.fSubject f <> T.pack " -> " <> s' <> T.pack ": " <> T.take 110 (K.fText f))
+        unless (flag a ["-n", "--dry-run"]) $ do
+          i <- K.newId
+          K.withLock dir (K.addFact dir f { K.fId = i, K.fSubject = s', K.fReplaces = [K.fId f], K.fBy = Nothing } >> K.markBy dir (K.fId f) i)
+      putStrLn (show (length moves) ++ " fact(s)" ++ (if flag a ["-n", "--dry-run"] then " would be filed again (-n: nothing written)" else " filed again"))
+      pure 0
     (Just "forget", Just i)
       | any ((== i) . K.fId) facts -> K.withLock dir (K.forget dir i) >> putStrLn ("forgotten: " ++ i) >> pure 0
       | otherwise -> hPutStrLn stderr ("knowledge: no fact " ++ i) >> pure 1
@@ -640,7 +652,7 @@ usage = unlines
   , "  top [SESSION]                      watch the session: its verdict, memory and servers, the history as it is written, the view, the daemon's log, the model calls' cost"
   , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
   , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
-  , "  knowledge [--subject S] [--all] [--block PROJECT] [--candidates] | knowledge search WORDS | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
+  , "  knowledge [--subject S] [--all] [--block PROJECT] [--candidates] | knowledge search WORDS | knowledge refile [-n] | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
   , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"

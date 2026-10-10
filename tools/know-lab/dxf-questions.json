@@ -1,0 +1,82 @@
+[
+ {
+  "q": "Can ghci-session load a project's code compiled and optimised, so that eval and bench timings in the session reflect the code's real speed -- or is the session's code always interpreted?",
+  "current": "Yes: it can load the code compiled and optimised (object code with -O); timings then reflect real speed.",
+  "outdated": "The session's code is interpreted; real numbers need a compiled build outside the session."
+ },
+ {
+  "q": "Which setting in ghci-session.json makes the session load the code optimised?",
+  "current": "\"optimize\": true",
+  "outdated": "cabal_args with -fobject-code -O1, or no such setting"
+ },
+ {
+  "q": "For the routine check after an edit in the dxf project, should I build and run the test executable through sh (cabal build / cabal test), or something else?",
+  "current": "Use the session's test tool (the suite is wired to the session, already compiled); not cabal through sh.",
+  "outdated": "Build and run the test executable with cabal through sh."
+ },
+ {
+  "q": "Should I split the work among subagents with spawn and tell?",
+  "current": "No: work in one loop, do not use spawn or tell.",
+  "outdated": "Yes, spawn subagents for groups of work."
+ },
+ {
+  "q": "After ghci-session.json is changed, does the session have to be stopped and started for the change to take effect?",
+  "current": "No: the file is read live; on a save the repl restarts on it by itself.",
+  "outdated": "Yes, the session must be stopped and started / restarted by hand."
+ },
+ {
+  "q": "I want to time a function at -O2. What is the right tool call?",
+  "current": "The bench tool with opt: 2 (unit: exe:dxf-bench for the bench target's code).",
+  "outdated": "cabal bench or cabal run of the bench executable through sh; or plain bench with no optimisation level."
+ },
+ {
+  "q": "Which tool call shows the source locations where the values a structure holds were allocated, without building a profiled executable?",
+  "current": "census with sites: true.",
+  "outdated": "None: only a profiled or ticky build of the executable can; census gives types only."
+ },
+ {
+  "q": "How long does parsing samples/f001.dxf (19 MB) to typed entities take now?",
+  "current": "About 130-150 ms (around 138-147 ms).",
+  "outdated": "468 ms, 257 ms, 200 ms or another earlier figure; or seconds/minutes."
+ },
+ {
+  "q": "For the dxf project, how should I run the routine test check?",
+  "current": "Use the session's `test` tool (with expr, e.g. the full Check.runWith \"\", which has five minutes), not `cabal build dxf-test` through sh.",
+  "outdated": "I was building and running dxf-test with cabal through sh, which recompiled everything (about 20 s a run)."
+ },
+ {
+  "q": "For the dxf project, how do I take routine before/after timings of the library?",
+  "current": "Use bench in the session with \"opt\":2 (and \"unit\":\"exe:dxf-bench\" to run its main), and \"runs\":N for small files; keep the built executable only for +RTS -s residency and profiles.",
+  "outdated": "Building exe:dxf-bench with cabal and running it through the shell for each measurement."
+ },
+ {
+  "q": "For the dxf project, how do I see what a parsed document holds in memory?",
+  "current": "Use census with expr in the session (by constructor, mode \"dups\" for duplicated values) instead of a profiled executable with -hT; use the cost-centre profile only for what allocates.",
+  "outdated": "Taking heap profiles with -hT on a profiled executable to see what holds memory."
+ },
+ {
+  "q": "For the dxf project, how do I make a change to ghci-session.json take effect?",
+  "current": "Just save it: it is taken live and the repl restarts on it about a second later; optimised loading is the setting \"optimize\": true.",
+  "outdated": "Run `ghci-session stop dxf && ghci-session start dxf` through sh; the restart tool keeps the old configuration; and cabal_args with -fobject-code -O1 was used for optimisation."
+ },
+ {
+  "q": "In the dxf project, is spawn/tell allowed for work, and how should I work?",
+  "current": "Work in one loop yourself; do not use spawn or tell.",
+  "outdated": "none"
+ },
+ {
+  "q": "For the dxf project, what is the performance target for the small samples after the allocation turn?",
+  "current": "Under 10 bytes allocated per input byte on the two small samples (CPQ-SPS-ZZ-ZZ-DR-A-0005, condo_A-301_arch-elevation), both parsing at over 100 MB/s cold, with f001 kept at or better.",
+  "outdated": "Earlier target: every sample over 1 MB parses at over 100 MB/s and the small ones within twice f001's cost per megabyte; the first turn aimed at typed parse well over 100 MB/s on f001 and a parsed document in a small multiple of file size."
+ },
+ {
+  "q": "For the dxf project, how should I handle committed files and fixtures?",
+  "current": "Data and compiled files are not committed (.gitignore); the r12/r2007/r2018 fixtures get a generator in tools/ so tools/gen_all.sh writes every fixture; commit each step that holds on the branch, do not push.",
+  "outdated": "none"
+ },
+ {
+  "q": "In the dxf project, how should strings like layer names be handled while parsing?",
+  "current": "Intern them through one mechanism per parse (hash map or pointer/length cache), used by general codecs and fast decoders alike, for fields worth it (not unique handles), so entities share one ByteString and no slice keeps the input alive.",
+  "outdated": "Interning was done only in the fast LINE decoder for layer, owner and linetype strings."
+ }
+]

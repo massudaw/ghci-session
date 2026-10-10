@@ -451,6 +451,7 @@ ghci-session knowledge --subject S --all      # the replaced ones too
 ghci-session knowledge --block PROJECT        # the block a session of that project would read
 ghci-session knowledge --candidates           # tool/ and user/ facts confirmed on 3+ days or from 2+ projects, most confirmed first (for the system prompt; lists only)
 ghci-session knowledge search WORDS            # the facts that hold the words, the best first
+ghci-session knowledge refile [-n]            # general facts that speak of one project, filed under it
 ghci-session knowledge forget ID
 ghci-session history --search WORDS            # the messages of a session's log that hold them
 ```
@@ -467,6 +468,18 @@ with this in place (40 KB of view and the block): 30 of 42 answers current and n
 the sessions came in; about one model call more in 26 messages. Not there yet: two facts worded with no word in
 common, in different subjects, are not seen as the same (the search is by words, not by meaning).
 `tools/check-knowledge.py` runs it end to end with a stand-in for the model.
+
+A fact filed under the tool or the user that speaks of "this repository" or "this project", or names the project
+it was learned in, is filed under that project's rules instead -- at extraction, and by `knowledge refile` for
+what is stored: three such facts of 245 ("do not retry bench with opt: 2 on this repository") were read by
+another project's agent as its own.
+
+`tools/know-lab.py` is where a change to the block is tried before it is built: `score` says, with no model and
+in a second, which of a set of what-holds-now questions have an answering fact in the block a policy gives (its
+size, its shares, a cut, a filter); `ask` puts the questions to a small model reading that block and the
+session's view. On dxf's sixteen questions the block as it is answers 48 of 48 since the three facts were filed
+again (42 to 46 before); cutting facts to 140 characters to fit more of them scored better without a model and
+worse with one.
 
 ### Two ways in for an agent
 

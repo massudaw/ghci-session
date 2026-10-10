@@ -34,7 +34,7 @@
 module GhciSession.Know
   ( Fact (..), New (..), Decision (..)
   , knowDir, loadFacts, current, addFact, markBy, markSeen, forget, withLock, newId
-  , extractPrompt, parseNew, callArgs, callFact, isCall
+  , extractPrompt, parseNew, refile, callArgs, callFact, isCall
   , candidates, reconPrompt, parseDecisions
   , foldLimit, foldDue, foldPrompt, parseFold
   , rank, search, snippet
@@ -213,7 +213,7 @@ jsonIn t = let a = T.dropWhile (/= '{') t
 -- | The facts of an answer to 'extractPrompt', at most three, each under the subject its scope allows.
 parseNew :: String -> Double -> String -> T.Text -> [New]
 parseNew project date src out = take 3
-  [ New (T.pack (subject (fromMaybe "" (lookupStr "scope" f)) (map toLower (fromMaybe "" (lookupStr "subject" f))))) (fromMaybe T.empty (lookupText "topic" f)) (T.strip t) date src
+  [ New (refile project (T.pack (subject (fromMaybe "" (lookupStr "scope" f)) (map toLower (fromMaybe "" (lookupStr "subject" f))))) (T.strip t)) (fromMaybe T.empty (lookupText "topic" f)) (T.strip t) date src
   | Just j <- [jsonIn out], f <- lookupArr "facts" j, Just t <- [lookupText "fact" f], not (T.null (T.strip t)) ]
   where
     lastPart s = reverse (takeWhile (/= '/') (reverse s))
@@ -222,6 +222,21 @@ parseNew project date src out = take 3
       | scope == "operator" = T.unpack operatorSubject
       | scope == "user" = "user/rules"
       | otherwise = project ++ "/" ++ (let p = lastPart s in if p `elem` ["architecture", "performance", "testing", "status", "rules"] then p else "status")
+
+-- | Where a fact belongs whatever scope a model gave it: one filed under the tool or the user that speaks of
+-- "this repository" or "this project", or names the project it was learned in, is that project's rule, not
+-- a thing true anywhere. (Three such facts in a store of 245 -- "do not retry bench with opt: 2 on this
+-- repository", a user's rule for one project -- were read by another project's agent as its own: with them
+-- out of its block it gave the current answer to 48 of 48 questions, with them in to 42.) A project that has
+-- the tool's own name is not told from the tool by its name.
+refile :: String -> T.Text -> T.Text -> T.Text
+refile project subject text
+  | T.takeWhile (/= '/') subject `elem` map T.pack ["tool", "user"], speaks = T.pack (project ++ "/rules")
+  | otherwise = subject
+  where
+    low = T.toLower text
+    speaks = any ((`T.isInfixOf` low) . T.pack) ["this repository", "this repo ", "this repo.", "this repo,", "this project", "this codebase"]
+          || (map toLower project /= "ghci-session" && not (null project) && T.pack (map toLower project) `elem` T.split (\c -> not (isAlphaNum c || c == '-' || c == '_')) low)
 
 -- | A tool call as the chat logs it -- @name {arguments}@: the tool and the arguments it was given.
 callArgs :: T.Text -> Maybe (String, [String])
