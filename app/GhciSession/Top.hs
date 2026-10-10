@@ -519,7 +519,7 @@ kindStyle :: String -> Style
 kindStyle k = case k of { "user" -> stCyan; "talk" -> stGreen; "ai" -> stGreen; "tool" -> stBlue; "echo" -> plain; "work" -> stYellow; "note" -> stMagenta; "known" -> stMagenta; _ -> stBold }
 
 viewLines :: Int -> St -> [[Span]]
-viewLines w st = [ [ (stBold, " memory  "), (plain, stats) ], [] ] ++ concatMap (wrapSpans w 6 . viewLine) (sView st)
+viewLines w st = [ [ (stBold, " memory  "), (plain, stats) ] ] ++ [ [ (withFg (Ansi 1) stBold, " compactor failing  "), (plain, why) ] | Just why <- [lookupStr "compactor_error" m] ] ++ [ [] ] ++ concatMap (wrapSpans w 6 . viewLine) (sView st)
   where
     m = sMem st
     n k = maybe "?" (\d -> show (round d :: Int)) (lookupNum k m)

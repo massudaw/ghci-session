@@ -7,6 +7,7 @@ import Control.Exception (IOException, try)
 import Data.IORef (atomicModifyIORef', newIORef)
 import Data.List (isInfixOf, nub, sort)
 import Data.Either (isLeft)
+import qualified Data.Text as T
 import System.Directory (createDirectoryIfMissing, createDirectoryLink, getTemporaryDirectory, removeDirectoryRecursive)
 import System.FilePath ((</>))
 import System.Posix.Process (getProcessID)
@@ -16,6 +17,7 @@ import GhciSession.Config
 import GhciSession.Declared
 import GhciSession.Fence (writeAllowed)
 import GhciSession.Json
+import qualified GhciSession.Know as K
 import GhciSession.Mcp (Tool (..), tools)
 
 -- | A declaration, parsed (it is a test's own: it parses).
@@ -74,6 +76,11 @@ checks =
     , isLeft (validWritePaths (JArr [JStr "../x"])) && isLeft (validWritePaths (JArr [JStr "/etc"])) && isLeft (validWritePaths (JStr "src"))
       && validWritePaths (JArr [JStr "src", JStr "notes.md"]) == Right ["src", "notes.md"]
       && isLeft (validBuiltin (JArr [JStr "frobnicate"])) && validBuiltin (JArr [JStr "read", JStr "grep"]) == Right ["read", "grep"])
+  , (("subjects: none is every subject; an entry is a subject or the start of some (not a prefix of a word), $project the session's own")
+    , let t = T.pack; ok = K.subjectAllowed "sprk" (Just ["$project", "user", "tool/usage"])
+      in K.subjectAllowed "sprk" Nothing (t "dxf/status")
+         && all (ok . t) ["sprk/status", "sprk", "user/rules", "tool/usage"]
+         && not (any (ok . t) ["ghci-session/rules", "tool/config", "dxf/performance", "sprkler/x", "users/x", "tool/usages"]))
   ]
 
 -- | What is on disk: the boundary against real paths and symlinks, and the configuration as it is loaded.
@@ -111,6 +118,12 @@ checksIO = do
   r3 <- refusedBy "type \"float\"" ",\"tools\":[{\"name\":\"t\",\"params\":{\"c\":{\"type\":\"float\"}},\"expr\":\"f {c}\"}]"
   r4 <- refusedBy "not a built-in tool" ",\"builtin_tools\":[\"nope\"]"
   r5 <- refusedBy "write_paths" ",\"write_paths\":[\"../x\"]"
+  r6 <- refusedBy "\"subjects\"" ",\"subjects\":\"user\""
+  r7 <- refusedBy "\"subjects\"" ",\"subjects\":[1]"
+  withSubj <- conf (target ",\"subjects\":[\"$project\",\"user\"]")
+  subj <- case withSubj of
+    Right c -> mapM (fmap (either (const (Just ["error"])) gSubjects) . resolve c) ["a", "b", "ab", "ba"]
+    Left e -> error e
   good <- conf (target ",\"tools\":[{\"name\":\"t\",\"expr\":\"1\"}],\"builtin_tools\":[\"read\"],\"instructions\":\"a.md\"")
   let keys = case good of
         Right c -> ( map dName (declaredOf c "a"), declaredOf c "b" == [], builtinToolsOf c "a", builtinToolsOf c "b", writePathsOf c "ab", writePathsOf c "ba", writePathsOf c "a"
@@ -127,6 +140,8 @@ checksIO = do
       , not (or leak) && not linkIn && free && not none)
     , ("config: a target is refused at load for a declared tool taking a built-in's name, an undeclared {param}, a type of none of the four, an unknown built-in, a write path outside the project"
       , and [r1, r2, r3, r4, r5])
+    , ("config: subjects is a list of names (refused otherwise), the first member's that sets it, and none where no member does"
+      , r6 && r7 && subj == [Just ["$project", "user"], Nothing, Just ["$project", "user"], Just ["$project", "user"]])
     , ("config: tools, builtin_tools, write_paths and instructions are the first member of a composed session that sets them"
       , keys == (["t"], True, Just ["read"], Nothing, Just ["b"], Just ["b"], Nothing, Just "a.md", Just "b.md", Just "b.md"))
     ]

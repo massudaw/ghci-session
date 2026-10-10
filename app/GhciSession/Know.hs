@@ -38,7 +38,7 @@ module GhciSession.Know
   , candidates, reconPrompt, parseDecisions
   , foldLimit, foldDue, foldPrompt, parseFold
   , rank, search, snippet
-  , factScore, isRuleSubject, render, renderFor, operatorSubject, knownLine, day, budget
+  , factScore, isRuleSubject, subjectAllowed, render, renderFor, operatorSubject, knownLine, day, budget
   , markSeenFrom, Seen (..), confirmations, confirmationsOf, promotable, srcProject
   ) where
 
@@ -441,6 +441,15 @@ render bytes project facts0
       where go _ [] = ([], False)
             go used (l : r) = let n = B.length (TE.encodeUtf8 l) + 1
                               in if used + n > share then ([], True) else let (a, b) = go (used + n) r in (l : a, b)
+
+-- | Is a subject one a session is given, by its @"subjects"@ (none: every one)? An entry is a subject or the
+-- start of some (@"user"@ is @user/rules@, @user/style@, ...; @"tool/usage"@ that one alone); @"$project"@ is the
+-- session's own project, its directory's name, and all its subjects.
+subjectAllowed :: String -> Maybe [String] -> T.Text -> Bool
+subjectAllowed _ Nothing _ = True
+subjectAllowed project (Just entries) s = any ok entries
+  where ok e = let p = if e == "$project" then project else e
+               in s == T.pack p || T.pack (p ++ "/") `T.isPrefixOf` s
 
 -- | What a fact is worth in a subject's block, the biggest first: @(1 + times said again) * 2^(-age / half-life)@,
 -- the age in days from the newest fact stored (@now@) to its last confirmation. A rule -- a fact under @user/@ or

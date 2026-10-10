@@ -76,6 +76,7 @@ data Cfg = Cfg
   , gSummarizeCmd :: Maybe String   -- ^ the command that compresses a message, or merges two lines, into one line (the compactor)
   , gSummarizeJobs :: Int, gAgent :: String
   , gKnowledge :: Bool           -- ^ keep what the sessions establish, by subject, for the person ("GhciSession.Know")
+  , gSubjects :: Maybe [String]  -- ^ @"subjects"@: the subjects its agent is given (a subject, the start of some, or @$project@); none: every one
   , gSharedPrompt :: Bool        -- ^ @"compact_prompt": "shared"@: one system prompt (and the turns' tools) for turns and compactions; else each its own
   }
 
@@ -94,7 +95,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNull)
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("subjects", JNull), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNull)
   , ("tools", JNull), ("builtin_tools", JNull), ("write_paths", JNull), ("instructions", JNull)
   ]
 
@@ -151,11 +152,18 @@ fence t = do
   _ <- parseDeclared (t .: "tools")
   _ <- validBuiltin (t .: "builtin_tools")
   _ <- validWritePaths (t .: "write_paths")
+  case t .: "subjects" of
+    JNull -> Right ()
+    j@(JArr es) | all isStrJ es, all (not . null) (strs j) -> Right ()
+    _ -> Left "\"subjects\" is a list of subjects (\"user\", \"tool/usage\", \"$project\": each also takes those under it), or null for every one"
   case t .: "instructions" of
     JNull -> Right ()
     -- (inside the project: a path that is absolute or climbs out of it would put any file of the machine in the prompt)
     JStr f | not (null f), not (isAbsolute f), ".." `notElem` splitDirectories f -> Right ()
     _ -> Left "\"instructions\" is a file inside the project, given relative to its root (not absolute, no ..)"
+
+isStrJ :: Json -> Bool
+isStrJ j = case j of { JStr _ -> True; _ -> False }
 
 -- | The value of a key the first member of the session that sets it (not null) gives.
 firstSet :: String -> Conf -> String -> Maybe Json
@@ -382,6 +390,7 @@ resolve conf session = do
         , gProfile = [ exJ st | t <- ts, st <- lookupArr "profile" t ]
         , gHistory = all (jBool "history") ts, gSummarizeCmd = ex <$> jMaybeStr "summarize_cmd" t0
         , gSummarizeJobs = max 1 (round (maxOf "summarize_jobs" ts)), gAgent = jStr "agent" t0, gKnowledge = jBool "knowledge" t0
+        , gSubjects = case [ strs v | t <- ts, let v = t .: "subjects", v /= JNull ] of { (l : _) -> Just l; [] -> Nothing }
         , gSharedPrompt = jStr "compact_prompt" t0 == "shared"
         }
     exJ j = case j of { JObj kvs -> JObj [ (k, case v of { JStr x -> JStr (expand vals0 x); _ -> v }) | (k, v) <- kvs ]; _ -> j }

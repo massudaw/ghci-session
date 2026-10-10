@@ -414,6 +414,15 @@ never rewritten. The subjects are `tool/usage` and `tool/config` (true of this t
 (how the user wants work done anywhere) and the project's own: `P/architecture`, `P/performance`, `P/testing`,
 `P/status`, `P/rules`, where P is the project directory's name.
 
+`"knowledge"` is a key of a target, so one target of a project can keep facts and another not. A target's agent is given
+every subject unless the target says `"subjects"`: a list whose entry is a subject or the start of some (`"user"` is
+`user/rules` and the rest; `"tool/usage"` that one) or `"$project"` (this project's own, all of them). An agent of
+someone's project then reads `["$project", "user"]` and not this tool's internals. The first member of a composed
+session that sets it wins; changing it writes the block again.
+
+When the compactor's command fails (a model it refuses, a command not found) the first failure is in `daemon.log`, and
+the `memory` tab says `compactor failing` (the daemon's memory answer carries `compactor_error`) with the command's own words until it answers again.
+
 - **Extracted** by the daemon as the log grows: a message of the user's, the agent's or a note is asked for its
   facts (three at most, usually none); the tools' traffic is asked 128 messages at a time, as the lines the
   compactor made of it. An argument a tool is called with for the first time is a fact with no model asked: a

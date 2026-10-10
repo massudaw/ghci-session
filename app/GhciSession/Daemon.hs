@@ -2172,11 +2172,12 @@ histOp s op req = case sHist s of
       sn <- H.snapshot m
       busy <- H.busyCount m
       fails <- H.failedCount m
-      pure (Right (T.pack (encode (JObj [ ("messages", JNum (fromIntegral (H.sCount sn))), ("parts", JNum (fromIntegral (length (H.sView sn))))
+      cerr <- rd compactErrV
+      pure (Right (T.pack (encode (JObj ([ ("compactor_error", JStr e) | Just e <- [cerr], isJust (gSummarizeCmd (sCfg s)) ] ++ [ ("messages", JNum (fromIntegral (H.sCount sn))), ("parts", JNum (fromIntegral (length (H.sView sn))))
                                         , ("settled", JBool (H.settled sn)), ("built", JNum (fromIntegral (M.size (H.sSizes sn))))
                                         , ("unbuilt", JNum (fromIntegral (length [ () | p <- H.sView sn, not (M.member p (H.sSizes sn)) ])))
                                         , ("busy", JNum (fromIntegral busy)), ("failed", JNum (fromIntegral fails))
-                                        , ("compactor", JBool (isJust (gSummarizeCmd (sCfg s)))) ]))))
+                                        , ("compactor", JBool (isJust (gSummarizeCmd (sCfg s)))) ])))))
     -- for a compactor outside the daemon: the nodes ready to build, with their prompts; and one built
     "pending" -> do
       js <- H.pending m
@@ -2200,10 +2201,16 @@ subjectsFor s sn = do
   let file = sDir s </> "history" </> "subjects.txt"
       partsFile = sDir s </> "history" </> "subjects-view.json"
       atFile = sDir s </> "history" </> "subjects-at"
+      forFile = sDir s </> "history" </> "subjects-for"
       parts = H.sView sn
+      allowed = K.subjectAllowed (projectOf s) (gSubjects (sCfg s))
+      for = show (gSubjects (sCfg s)) ++ " " ++ projectOf s
+  -- (a block written for other subjects is written again: "subjects" was changed; one written before the key was is for every one)
+  forWhom <- readFileMaybe forFile
+  let sameFor = forWhom == Just for || (isNothing (gSubjects (sCfg s)) && isNothing forWhom)
   was <- readFileMaybe partsFile
   let before = [ (round l, round i) | Just t <- [was], Right (JArr ps) <- [parseJson t], JArr [JNum l, JNum i] <- ps ] :: [(Int, Int)]
-  old <- if isJust was && before `isPrefixOf` parts then fmap T.pack <$> readFileMaybe file else pure Nothing
+  old <- if isJust was && sameFor && before `isPrefixOf` parts then fmap T.pack <$> readFileMaybe file else pure Nothing
   case old of
     -- (one written when nothing was known is not kept: the first facts are worth a prompt read again)
     -- (the id the block was written at: a block of an older version has none, and no line is left out for it)
@@ -2213,8 +2220,8 @@ subjectsFor s sn = do
     _ -> do
       dir <- K.knowDir
       facts <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
-      let t = K.renderFor (Mcp.toolArgs agentTools) K.budget (projectOf s) facts
-      void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ])) >> writeFileUtf8 atFile (show (H.sCount sn))) :: IO (Either IOException ()))
+      let t = K.renderFor (Mcp.toolArgs agentTools) K.budget (projectOf s) (filter (allowed . K.fSubject) facts)
+      void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 forFile for >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ])) >> writeFileUtf8 atFile (show (H.sCount sn))) :: IO (Either IOException ()))
       pure (t, if T.null t then 0 else H.sCount sn)
 
 -- | The tools an agent has: the chat's own, then the others the MCP server has (a name once).
@@ -2275,7 +2282,9 @@ knowLoop s m cmd = do
                 K.withLock dir $ do
                   K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing 0)
                   forM_ replaced (\f -> K.markBy dir (K.fId f) i)
-                if recent then histAdd s "known" (K.knownLine n replaced) else behind =: True
+                -- (a subject the session is not given is not told of as news either)
+                if not (K.subjectAllowed project (gSubjects (sCfg s)) (K.nSubject n)) then pure ()
+                  else if recent then histAdd s "known" (K.knownLine n replaced) else behind =: True
             fold
             logS s (printf "knowledge: %d fact(s): %s" (length news) (unwords [ case d of { K.Add -> "new"; K.Same _ -> "said-again"; K.Replace _ -> "replaces"; K.Drop -> "dropped" } | d <- decs ]))
             pure True
@@ -2410,7 +2419,9 @@ compactorLoop s m cmd = do
                   (_, k) <- rd pauseV
                   let wait = min 300 (5 * 2 ^ min 8 k) :: Double
                   pauseV =: (t1 + wait, k + 1)
-                  when (k == 0 || wait >= 300) (logS s ("summarize: the command failed: no call for " ++ showG wait ++ " s"))
+                  when (k == 0 || wait >= 300) (do
+                    why <- rd compactErrV
+                    logS s ("summarize: the command failed: no call for " ++ showG wait ++ " s" ++ maybe "" (" -- " ++) why))
                 Left e -> H.release m (H.jL j, H.jI j) >> logS s ("summarize: " ++ displayException e)
           tv <- registerDelay (if lead || t < until then 1000000 else 10000000)
           atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
@@ -2427,6 +2438,12 @@ compactorLoop s m cmd = do
 {-# NOINLINE askSeenV #-}
 askSeenV :: IORef (M.Map Bool H.Ask)
 askSeenV = unsafePerformIO (newIORef M.empty)
+
+-- | Why the compactor's command last failed (none: it last answered): what a session says of it, so that a
+-- compactor that is refused -- a model it does not have -- is not mistaken for a view that is merely long.
+{-# NOINLINE compactErrV #-}
+compactErrV :: IORef (Maybe String)
+compactErrV = unsafePerformIO (newIORef Nothing)
 
 runJob :: S -> H.Mem -> String -> H.Job -> IO Bool
 runJob s m cmd j = go0
@@ -2471,6 +2488,7 @@ runJob s m cmd j = go0
                 r <- runShell ((Llm.usageFileEnv, sDir s </> "usage.jsonl") : [ ("SUMMARIZE_TOOLS", "0") | not shared ]) cmd (base <> extra) 300
                 case r of
                   Just (ExitSuccess, out, _) | not (T.null (T.strip out)) -> do
+                    compactErrV =: Nothing
                     let line = T.strip (H.stripHead (T.takeWhile (/= '\n') (T.strip out)))
                     when (n == 0 && not (H.junkLine line)) (note line)
                     if H.junkLine line then pure tries        -- (no line: not asked again -- the tries so far, or the input cut)
@@ -2479,11 +2497,13 @@ runJob s m cmd j = go0
                   Just (ExitSuccess, _, _) -> pure tries     -- (it ran and said nothing: the same)
                   Just (code, _, err) -> do
                     bad =: True
+                    compactErrV =: Just ("the command failed (" ++ show code ++ "): " ++ take 200 (T.unpack (T.strip err)))
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command failed (" ++ show code ++ "): " ++ take 300 (T.unpack (T.strip err))))
                     pure tries
                   Nothing -> do
                     bad =: True
+                    compactErrV =: Just "the command timed out"
                     first <- H.failed m p 10
                     when first (logS s ("summarize " ++ show p ++ ": the command timed out"))
                     pure tries
