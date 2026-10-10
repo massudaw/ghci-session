@@ -1,0 +1,14 @@
+app/GhciSession/Know.hs
+  h_fd5809635b36a3 25-26,388-389
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e3e23f9c701441abec0066713bae2c0bdbbad741",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
