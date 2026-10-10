@@ -6,11 +6,17 @@ import GhciSession.Json
 import GhciSession.Quota
 import GhciSession.QuotaFit
 import GhciSession.Roll
+import GhciSession.Gc (orphanBuilds, isPidFile)
 import Data.List (isInfixOf)
 
 checks :: [(String, Bool)]
 checks =
-  [ ("price ratio: one-hour writes make it 20 and the cache's upper bound 3600 s, five-minute ones 12.5 and 300 s, none seen 12.5 and 3300"
+  [ ("gc: a live chat's command line holds ghc and the build directory, yet it is no orphaned build once its chat.pid owns it"
+    , let chat = (79661, 1, "/r/dist-newstyle/build/ghci-session/ghci-session chat -s tool"); ghc = (500, 1, "ghc --interactive -i/r/dist-newstyle/x")
+          other = (600, 1, "vim /r/dist-newstyle/x")
+      in (map fst (orphanBuilds [chat, ghc, other] [] ["/r/dist-newstyle"]), map fst (orphanBuilds [chat, ghc, other] [79661] ["/r/dist-newstyle"]))
+         == ([79661, 500], [500]) && all isPidFile ["pid", "chat.pid", "server-O2.pid"] && not (any isPidFile ["status", "pidx", "history"]))
+  , ("price ratio: one-hour writes make it 20 and the cache's upper bound 3600 s, five-minute ones 12.5 and 300 s, none seen 12.5 and 3300"
     , let k w5 w1 = seeWrites w5 w1 (emptyRollWith Nothing)
           f r = (rKind r, rRatio r, rHi r, lifetime r)
       in (f (k 0 300), f (k 100 0), f (k 0 0), f (k 100 300)) == ((2, 20, 3600, 3300), (1, 12.5, 300, 300), (0, 12.5, 3300, 3300), (2, 20, 3600, 3300)))

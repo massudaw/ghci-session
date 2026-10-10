@@ -10,7 +10,7 @@
 -- Attribution is by ABSOLUTE PATH, never by name: several checkouts of one project are routinely live at
 -- once. A daemon carries @--root <abs>@ on its command line; a build process this project's dist-newstyle
 -- or state directory.
-module GhciSession.Gc (Leftovers (..), findLeftovers, runGc, daemonPid, listProcesses, neverLoaded, deadSessions) where
+module GhciSession.Gc (Leftovers (..), orphanBuilds, isPidFile, findLeftovers, runGc, daemonPid, listProcesses, neverLoaded, deadSessions) where
 
 import Control.Concurrent (threadDelay)
 import Control.Exception (IOException, try)
@@ -97,17 +97,34 @@ findLeftovers conf = do
       mp <- readInt (cStateDir conf </> n </> f)
       alive <- maybe (pure False) pidAlive mp
       pure (case mp of { Just pid | alive -> Just (n, drop 7 (take (length f - 4) f), pid, isJust (fromMaybe Nothing (lookup n live))); _ -> Nothing })
+  -- a live chat (its pid is in the session's chat.pid) is no leftover, whatever its command line says (a path with
+  -- "ghci-session" holds "ghc"): nor what it started; nor any process a session's state names
+  named <- fmap concat $ forM dirs $ \n -> do
+    fs <- either (\(_ :: IOException) -> []) id <$> try (getDirectoryContents (cStateDir conf </> n))
+    fmap catMaybes $ forM [ f | f <- fs, isPidFile f ] $ \f -> do
+      mp <- readInt (cStateDir conf </> n </> f)
+      alive <- maybe (pure False) pidAlive mp
+      pure (if alive then mp else Nothing)
   let tracked = [ pid | (_, _, pid, _) <- servers ]
-      owned = tracked ++ concat [ p : descendants procs p | p <- catMaybes (map snd live) ++ map snd daemons ]
+      owned = tracked ++ concat [ p : descendants procs p | p <- catMaybes (map snd live) ++ map snd daemons ++ named ]
   sd <- either (\(_ :: IOException) -> cStateDir conf) id <$> try (canonicalizePath (cStateDir conf))
   let needles = [root </> "dist-newstyle", sd]
-      isBuild cmd = any (`isInfixOf` cmd) ["ghc", "cabal"]
-      builds = [ (pid, cmd) | (pid, pp, cmd) <- procs, pp == 1, pid `notElem` owned, any (`isInfixOf` cmd) needles, isBuild cmd ]
+      builds = orphanBuilds procs owned needles
   pure (Leftovers daemons [ (n, m, pid) | (n, m, pid, sessionUp) <- servers, not sessionUp ] builds)
   where
     daemonOf ws = case dropWhile (/= "--root") ws of
       (_ : r : "_daemon" : name : _) | any ("ghci-session" `isInfixOf`) ws || any ("ghci_session" `isInfixOf`) ws -> Just (r, name)
       _ -> Nothing
+
+-- | The orphaned build processes (parent init, a command line with ghc or cabal and one of the needles) that no
+-- session owns. A chat's own command line holds "ghc" (in "ghci-session") and the build directory: it is in @owned@.
+orphanBuilds :: [(Int, Int, String)] -> [Int] -> [String] -> [(Int, String)]
+orphanBuilds procs owned needles =
+  [ (pid, cmd) | (pid, pp, cmd) <- procs, pp == 1, pid `notElem` owned, any (`isInfixOf` cmd) needles, any (`isInfixOf` cmd) ["ghc", "cabal"] ]
+
+-- | A file of a session's state that names a process: @pid@, @chat.pid@, @server-X.pid@.
+isPidFile :: FilePath -> Bool
+isPidFile f = f == "pid" || ".pid" `isSuffixOf` f
 
 -- | Does a session's state say it never loaded? Its status says @loaded=-@, and it holds no history, no record of
 -- sources loaded, no turn: what a boot that failed or timed out leaves.
