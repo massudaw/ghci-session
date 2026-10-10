@@ -120,6 +120,7 @@ data St = St
   , sHeap :: Maybe Heap               -- ^ the last report of the heap
   , sHeapBusy :: Maybe String         -- ^ a report being taken: which
   , sWake :: IO ()                    -- ^ what a pane calls when it has something to show
+  , sLaid :: M.Map Int (Int, Bool, [[Span]])  -- ^ the history's messages laid out: for which width, open or cut, the lines
   }
 
 -- | A report of the heap: which, when it was taken and how long it took, its lines.
@@ -137,7 +138,7 @@ topMain conf mname = do
   let dir = cStateDir conf </> name
   heapBox <- newIORef Nothing
   let env = Env conf name dir heapBox
-      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ())
+      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) M.empty
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -154,14 +155,14 @@ loadVt = do
 -- | An event: a key, or a look at the session.
 event :: Env -> Event -> St -> IO (Maybe St)
 event env e st = case e of
-  EvTick -> Just <$> (refresh env st >>= panes env)
-  EvResize -> Just <$> (refresh env st >>= panes env)
-  EvWake -> Just <$> (takeHeap env st >>= panes env)
+  EvTick -> Just . laid <$> (refresh env st >>= panes env)
+  EvResize -> Just . laid <$> (refresh env st >>= panes env)
+  EvWake -> Just . laid <$> (takeHeap env st >>= panes env)
   EvKey kp -> do
     r <- key env kp st
     case r of
       Nothing -> pure Nothing
-      Just (st', again) -> Just <$> ((if again then refresh env st' else pure st') >>= panes env)
+      Just (st', again) -> Just . laid <$> ((if again then refresh env st' else pure st') >>= panes env)
 
 -- | A key's effect, and whether a fresh look follows; 'Nothing' to quit.
 key :: Env -> KeyPress -> St -> IO (Maybe (St, Bool))
@@ -428,7 +429,36 @@ cutAt = 6
 -- | A message's lines: its number, time and kind, then its text -- whole when it is open (or all are),
 -- else its first 'cutAt' lines and how many more there are. The current message's number is marked.
 historyLines :: Int -> St -> Msg -> [[Span]]
-historyLines w st m = concatMap (wrapSpans w 4) (first : rest ++ more)
+historyLines w st m = case M.lookup (mId m) (sLaid st) of
+  Just (w', o, ls) | w' == w, o == open -> mark ls
+  _ -> mark (layMsg w open m)
+  where
+    open = isOpen st m
+    current = case sCur st of { Just i -> i == mId m; Nothing -> sLast st == Just (mId m) }
+    -- (the current message's number is lit: the one thing of a message's lines that is not the message's own)
+    mark ls = case ls of
+      (((_, n) : l) : more) | current -> ((stHi, n) : l) : more
+      _ -> ls
+
+isOpen :: St -> Msg -> Bool
+isOpen st m = sAllOpen st /= S.member (mId m) (sOpen st)
+
+-- | The last message's number.
+sLast :: St -> Maybe Int
+sLast st = fst <$> M.lookupMax (sLaid st)
+
+-- | The history's messages laid out once each, and again only when the width or what is open changed: a
+-- screen drawn is then the lines it shows, not two thousand messages parsed and wrapped for every key.
+laid :: St -> St
+laid st = st { sLaid = M.fromList [ (mId m, entry m) | m <- sHist st ] }
+  where
+    w = fst (sSize st)
+    entry m = let open = isOpen st m in case M.lookup (mId m) (sLaid st) of
+      Just e@(w', o, _) | w' == w, o == open -> e
+      _ -> (w, open, layMsg w open m)
+
+layMsg :: Int -> Bool -> Msg -> [[Span]]
+layMsg w open m = concatMap (wrapSpans w 4) (first : rest ++ more)
   where
     -- (the agent's words as the markdown they are, a tool's answer with its diff in colors: "GhciSession.Md")
     ls = case mKind m of
@@ -437,10 +467,8 @@ historyLines w st m = concatMap (wrapSpans w 4) (first : rest ++ more)
       -- (a save is logged with what it changed)
       "tool" | "save: " `isPrefixOf` mText m -> outputLines (mText m)
       _ -> [ [(plain, l)] | l <- lines (mText m) ]
-    open = sAllOpen st /= S.member (mId m) (sOpen st)
     shown = if open then ls else take cutAt ls
-    current = case sCur st of { Just i -> i == mId m; Nothing -> case sHist st of { [] -> False; ms -> mId (last ms) == mId m } }
-    first = [ (if current then stHi else stDim, "#" ++ show (mId m)), (stDim, " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " ") ] ++ head' shown
+    first = [ (stDim, "#" ++ show (mId m)), (stDim, " " ++ mTime m ++ " "), (kindStyle (mKind m), mKind m ++ ":"), (plain, " ") ] ++ head' shown
     rest = [ (plain, "    ") : l | l <- drop 1 shown ]
     more = [ [(stDim, "    (" ++ show (length ls - cutAt) ++ " more lines; Enter opens)")] | not open, length ls > cutAt ]
     head' xs = case xs of { (x : _) -> x; [] -> [] }
