@@ -1,0 +1,32 @@
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_65618eed897c7c 488-501
+tools/know-lab.py
+  s_ee2f22f51d8bdb::t_e65c0456b389db 174-179
+  s_ee2f22f51d8bdb::t_4f5647cff56ae0 1-173,180-228
+app/GhciSession/Cli.hs
+  s_ee2f22f51d8bdb::t_307977c32133b7 404-405
+  s_ee2f22f51d8bdb::t_65618eed897c7c 401-403,406-412,655
+app/GhciSession/Know.hs
+  s_ee2f22f51d8bdb::t_65618eed897c7c 37,216,226-239
+  s_ee2f22f51d8bdb::t_efa80d44660b72 240
+tools/know-lab/dxf-questions.json
+  s_ee2f22f51d8bdb::t_4f5647cff56ae0 1-82
+README.md
+  s_ee2f22f51d8bdb::t_e0d026ad6066d6 454,472-483
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4f5169213d86552a6f386f3023720d1dc3633428",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
