@@ -1,0 +1,14 @@
+app/GhciSession/Mcp.hs
+  h_fd5809635b36a3 11,231-237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b76b22c36ca5aa3792e5c84f370aff4ca56ea562",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
