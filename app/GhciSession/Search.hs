@@ -25,6 +25,7 @@ import Foreign.Marshal.Alloc (allocaBytes)
 import System.FilePath ((</>))
 import System.Directory (doesFileExist, doesDirectoryExist, listDirectory)
 import Data.Maybe (fromMaybe)
+import System.IO (IOMode (ReadMode), withBinaryFile)
 import Text.Printf (printf)
 
 import GhciSession.Json
@@ -163,13 +164,20 @@ fallbackGrep dir query maxResults = do
     , ("files_searched", JNum (fromIntegral searchedN))
     , ("items", JArr res) ]
   where
+    qB = TE.encodeUtf8 (T.pack query)
     fileHits qT f = do
-      t <- try (B.readFile (dir </> f)) :: IO (Either SomeException B.ByteString)
+      -- (the first 8000 bytes first: a binary file, the largest of a tree, is not read whole to be passed over)
+      t <- try (withBinaryFile (dir </> f) ReadMode $ \h -> do
+                  hd <- B.hGet h 8000
+                  if B.elem 0 hd then pure B.empty else (hd <>) <$> B.hGetContents h) :: IO (Either SomeException B.ByteString)
       case t of
         Left _ -> pure []
         -- a binary file is not searched as text (a NUL in its first 8000 bytes, as git and grep tell): decoding
         -- one leniently is a byte-at-a-time repair, and an 11 MB library in the tree took over a minute
-        Right bs | B.elem 0 (B.take 8000 bs) -> pure []
+        Right bs | B.null bs -> pure []
+        -- a file that has not the query's bytes has not its text (decoding replaces only what is not UTF-8): most
+        -- files of a tree, and decoding each to Text was most of a search's time and of its 223 MB
+        Right bs | not (qB `B.isInfixOf` bs) -> pure []
         Right bs ->
           let txt = TE.decodeUtf8With (\_ _ -> Just ' ') bs
           in pure [ JObj [ ("path", JStr f)
