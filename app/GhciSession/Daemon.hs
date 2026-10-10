@@ -294,7 +294,7 @@ replCommandLine s exe v = case gRepl cfg of
          -- ("optimize": the loaded code is what the built library is -- object code at -O1 -- so an evaluation
          -- of it, and what `bench` measures, run at its real speed. Interpreted, a scan of a 19 MB file that
          -- takes 0.3 s ran for minutes. A reload compiles more slowly for it.)
-      ++ [ "--repl-options=-O1" | gOptimize cfg ]
+      ++ [ "--repl-options=-O" ++ show (max 1 (gOptLevel cfg)) | gOptimize cfg ]
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
         objects = gHygiene cfg || gOptimize cfg || not (null (gServers cfg))
@@ -1218,7 +1218,16 @@ boot s how = do
   -- keeps unchanged modules linked only with it -- so `mem_return: false` turns off the memory half alone)
   haveMem <- if os == "darwin" then doesFileExist memLib else pure False
   let memEnv = [ ("DYLD_INSERT_LIBRARIES", memLib) | haveMem ] ++ [ ("GHS_MEM_RETURN", "0") | haveMem, not (gMemReturn cfg) ]
-  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools) launch (memEnv ++ toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
+  -- The optimisation's flags for the SESSION, not only for its units. The build tool starts a repl of several
+  -- units with each unit's flags in the unit's own file, and nothing of them on the command line: the session
+  -- itself is then an interpreter's, at no optimisation, and what it decides -- how the interfaces of the
+  -- packages are read, their unfoldings with them -- is decided so for every unit. The units' code was compiled
+  -- at -O2 and ran as if it were not: printing a 19 MB drawing took 2.0 s and 6.4 GB of allocation in a session
+  -- of two units, 0.10 s and 140 MB in a session of one, or as a built executable (measured with the compiler
+  -- alone, on the same arguments, with and without these three).
+  let objects = gHygiene cfg || gOptimize cfg || not (null (gServers cfg))
+      top = if not objects || isJust (gRepl cfg) then [] else ["-fobject-code", "-fno-ignore-interface-pragmas"] ++ [ "-O" ++ show (max 1 (gOptLevel cfg)) | gOptimize cfg ]
+  r <- try (phase s "load" (startRepl exe (("-B" ++ libdir) : rts ++ tools ++ top) launch (memEnv ++ toolEnv ++ env') outF (gLoadTimeout cfg) (gEvalTimeout cfg) (logS s)))
   case r of
     Left (e :: ReplError) -> dead (takeWhile (/= '\n') (show e)) (lastN 12 (lines (show e))) e
     Right (repl, Reply facts out) -> do
@@ -2568,7 +2577,7 @@ seedObjects s l = void (try go :: IO (Either SomeException ()))
       took <- forM wds $ \(wd, dirs) -> do
         let mine = wd </> sObjRel s
         names <- either (\(_ :: IOException) -> []) id <$> try (listDirectory (wd </> stateRel))
-        sibs <- filterM doesDirectoryExist [ wd </> stateRel </> n </> "obj" | n <- names, n /= sName s ]
+        sibs <- filterM doesDirectoryExist [ wd </> stateRel </> n </> "objs" | n <- names, n /= sName s ]
         his <- concat <$> forM sibs (\d -> map ((,) d) <$> hiFiles d "")
         -- the newest interface of each module among the siblings, if newer than ours
         best <- foldM (\m (d, rel) -> do
@@ -2741,7 +2750,11 @@ runDaemon conf name bootCheck fastStart = do
       Left e -> do
         void (try (appendFileUtf8 (dir </> "daemon.log") ("history: cannot open: " ++ displayException e ++ "\n")) :: IO (Either IOException ()))
         pure Nothing
-  s <- S conf name cfgV root dir (cStateRel conf </> name </> "obj") bootCheck fastStart hist
+  -- (the objects' directory was `obj`: what is there was compiled by sessions whose own flags were an
+  -- interpreter's -- see the load -- and the compiler takes such an object as good for as long as its unit's
+  -- flags are the same. So the objects are kept under another name, and the old ones are removed.)
+  void (try (removeDirectoryRecursive (dir </> "obj")) :: IO (Either IOException ()))
+  s <- S conf name cfgV root dir (cStateRel conf </> name </> "objs") bootCheck fastStart hist
          <$> newIORef Nothing <*> newIORef "starting" <*> newIORef (JObj []) <*> newIORef ""
          <*> newIORef M.empty <*> newIORef M.empty <*> newIORef 0 <*> newIORef 0
          <*> newIORef False <*> newIORef False <*> newIORef "stopped" <*> newIORef []

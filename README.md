@@ -178,6 +178,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `test` / `tests` | the expression to run after a good load, with a `pass` pattern, a `fail` pattern and a `log` file |
 | `watch_check` | run the check on every save (default off: a save compiles) |
 | `optimize` | load the session's code compiled and optimised (`-fobject-code -O1`) instead of interpreted: an evaluation of it, and what `bench` measures, run at the speed of the built code (default off: a reload compiles faster) |
+| `optimize` level | `"optimize": 2` loads at `-O2` (`true` is 1) |
 | `restart_stuck` | an evaluation that ran out of time and cannot be interrupted (a loop that does not allocate) is ended by restarting the repl, and its answer says so (default on; off: the session runs it to its end before answering anything) |
 | `watch_typecheck`, `watch_refork` | typecheck a save before reloading it (on); re-fork servers on a save (on) |
 | `reload_on_commit` | a new git HEAD is a full reload, with checks and re-fork |
@@ -195,6 +196,19 @@ State lives in `.ghci-session/<session>/`: `status`, `status.json`, `load.log`, 
 `daemon.log`, `server-<member>.log`, the history, and `loaded_sources.tsv`, the signature the loaded code was built from.
 A failing check in a state directory where none has ever passed is marked `[NEVER-PASSED]`: suspect the target as
 much as the edit.
+
+**Measuring at an optimisation level: `bench --opt N [--unit COMPONENT]`.** `bench` times an IO action in the
+session; with `--opt 2` (the tool's `opt`) it is timed in a session of its own that has the same code at that level
+-- `NAME-O2`, beside the session, started on the first call, reloaded with what changed on each, stopped after half
+an hour unused -- and with `--unit exe:NAME` (or `bench:`, `test:`) a component of the build is loaded with it, so
+its own code can be run (`System.Environment.withArgs [..] Main.main`). What a built executable at `-O2` measures,
+without building one: the first call compiles (half a minute for a small library), the next takes as long as the
+action.
+
+A session of SEVERAL units is given its optimisation's flags for the session itself, not only for each unit: the
+build tool puts a unit's flags in the unit's file and none on the command line, and the code then ran as if it had
+not been optimised (a 19 MB drawing printed in 2.0 s and 6.4 GB of allocation; 0.10 s and 140 MB with the flags, or
+as a built executable). The objects of sessions from before are compiled again once.
 
 `ghci-session.json` is read again while the session runs: a second after it is saved the session restarts its repl on
 it (a check set, a unit or a watched directory added, an option changed), and so does `restart`. What only a new

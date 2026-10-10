@@ -6,6 +6,7 @@
 module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
+  , benchSession, benchOf, knownSession
   , targetJson, stateOf
   ) where
 
@@ -62,6 +63,7 @@ data Cfg = Cfg
   , gPruneGc :: String   -- ^ "compact" (the RTS's own choice) or "copying": the collection after a reload's unlink
   , gHygiene :: Bool
   , gOptimize :: Bool                -- ^ the session's code compiled and optimised (not interpreted): what it measures is what the built code does
+  , gOptLevel :: Int                 -- ^ ... at this level (@"optimize": true@ is 1; a number is the level)
   , gRestartStuck :: Bool            -- ^ an evaluation that ran out of time and cannot be interrupted is ended by a restart
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
   , gAutoReload :: Bool, gWatchCheck :: Bool, gWatchRefork :: Bool, gReloadOnCommit :: Bool
@@ -214,9 +216,43 @@ serverOf member t = case t .: "server" of
 mergeEnv :: [(String, String)] -> [(String, String)] -> [(String, String)]
 mergeEnv a b = [ kv | kv@(k, _) <- a, k `notElem` map fst b ] ++ b
 
+-- | @"optimize"@ as a level: true is 1, a number is itself, anything else none.
+optLevel :: Json -> Int
+optLevel t = case t .: "optimize" of { JBool True -> 1; JNum n -> max 0 (min 2 (round n)); _ -> 0 }
+
+-- | The session a base session's code is measured in at an optimisation level, with other components of the
+-- build beside it (@exe:NAME@, @bench:NAME@ -- a benchmark's own code): @BASE-O2@, @BASE-O2+exe.NAME@. A
+-- session of its own, so the level is its compiler's and the base session is as it was.
+benchSession :: String -> Int -> [String] -> String
+benchSession base level units = base ++ "-O" ++ show (max 0 (min 2 level)) ++ concatMap (\u -> '+' : map (\c -> if c == ':' then '.' else c) u) units
+
+-- | A name 'benchSession' makes, taken apart: the base (a session of the configuration), the level, the components.
+benchOf :: Conf -> String -> Maybe (String, Int, [String])
+benchOf conf name
+  | name `elem` sessionNames conf = Nothing
+  | otherwise = case break (== '+') name of
+      (h, rest) | (l : 'O' : '-' : esab) <- reverse h, l `elem` "012", reverse esab `elem` sessionNames conf ->
+        Just (reverse esab, fromEnum l - fromEnum '0', [ unit u | u <- parts rest, not (null u) ])
+      _ -> Nothing
+  where parts s = case break (== '+') (drop 1 s) of { (a, []) -> [a]; (a, r) -> a : parts r }
+        unit u = case break (== '.') u of { (k, '.' : n) -> k ++ ":" ++ n; _ -> u }
+
+-- | Is this a session there can be: one of the configuration, or one to measure one of them in?
+knownSession :: Conf -> String -> Bool
+knownSession conf name = name `elem` sessionNames conf || isJust (benchOf conf name)
+
 -- | A session's configuration. Checks and servers stay PER MEMBER: each carries its own log, patterns and
 -- port, and merging those would lose exactly what a verdict is made of.
 resolve :: Conf -> String -> IO (Either String Cfg)
+resolve conf session
+  -- a session to measure in ('benchSession'): its base's code and nothing else of it -- no check, no server, no
+  -- history -- at the level asked, with the components asked for beside it. It does not reload on a save (every
+  -- save would be compiled twice, the second time slowly): it is reloaded when it is asked something. And it
+  -- stops by itself when it has not been asked for half an hour.
+  | Just (base, level, units) <- benchOf conf session = fmap (\c -> c
+      { gOptimize = level > 0, gOptLevel = level, gUnits = gUnits c ++ [ u | u <- units, u `notElem` gUnits c ]
+      , gChecks = [], gServers = [], gHistory = False, gSummarizeCmd = Nothing, gAutoReload = False, gWatchTypecheck = False
+      , gIdleStopMins = 30, gHygiene = False }) <$> resolve conf base
 resolve conf session = do
   let composed = isJust (lookup session (cSessions conf))
   members <- if composed then readMembers conf session else pure [session]
@@ -250,7 +286,7 @@ resolve conf session = do
         , gLoadTimeout = maxOf "load_timeout" ts, gEvalTimeout = maxOf "eval_timeout" ts, gBudgetMb = maxOf "repl_budget_mb" ts
         , gRtsFlags = jStr "rts_flags" t0, gPruneGc = jStr "prune_gc" t0, gHeapAuto = jBool "heap_auto" t0, gMemReturn = jBool "mem_return" t0, gGhcJobs = round (maxOf "ghc_jobs" ts), gCapabilities = round (maxOf "capabilities" ts)
         , gHygiene = any (jBool "hygiene") ts
-        , gOptimize = any (jBool "optimize") ts, gRestartStuck = all (jBool "restart_stuck") ts
+        , gOptimize = any ((> 0) . optLevel) ts, gOptLevel = maximum (0 : map optLevel ts), gRestartStuck = all (jBool "restart_stuck") ts
         , gHandoverEnv = hand, gUnlinkAfter = jStr "unlink_after" t0, gPruneGcIdle = jNum "prune_gc_idle_s" t0
         , gAutoReload = null ts || any (jBool "auto_reload") ts
         , gWatchCheck = all (jBool "watch_check") ts, gWatchRefork = all (jBool "watch_refork") ts

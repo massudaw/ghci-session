@@ -17,6 +17,9 @@ import qualified Data.ByteString.Char8 as BC
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Text as T
 import System.Directory (doesFileExist)
+import System.Environment (getExecutablePath)
+import System.Exit (ExitCode (..))
+import System.Process (readProcessWithExitCode)
 import System.FilePath ((</>))
 import System.IO
 import System.Posix.IO (fdToHandle)
@@ -149,7 +152,7 @@ tools =
   , Tool "test" "Run the project's tests on the loaded code -- the whole check, which sets the session's verdict; or, with expr, ONE expression run as a test (a group of the tests, say), scored by the check's own fail and pass patterns, the verdict left as it is: seconds instead of the whole suite." [("expr", ("string", "an expression to run as a test instead of the whole check, e.g. a test group")), ("member", ("string", "one member of a composed session")), ("timeout", ("number", "seconds, with expr (default 30)")), sessionArg] []
   , Tool "doc" "Find a definition: by name (a typo, a prefix or initials are fine), qualified, or by words of its type or comment. Answers the signature, the comment above it and file:line." [("query", ("string", "the name or words")), ("n", ("number", "how many answers (default 5)")), sessionArg] ["query"]
   , Tool "census" "What the heap holds: every CAF by what it retains (default), the Strings among it (mode strings), what a reload cannot drop (kept), sharing that is missed (dups), or one value alone (expr)." [("mode", ("string", "cafs | strings | kept | dups | mem")), ("expr", ("string", "one value: its bytes, closures and constructors")), ("top", ("number", "how many entries")), sessionArg] []
-  , Tool "bench" "Time an IO action in the session: wall, GC, allocation (live: and the live heap before and after, two major collections). A top-level value is computed once per load, so time a function applied to its input." [("expr", ("string", "the action")), ("live", ("boolean", "also the live heap before and after")), ("timeout", ("number", "seconds; a hung action is interrupted (default 30)")), sessionArg] ["expr"]
+  , Tool "bench" "Time an IO action in the session, or (opt, unit) in one that has the code at an optimisation level: wall, GC, allocation (live: and the live heap before and after, two major collections). A top-level value is computed once per load, so time a function applied to its input." [("expr", ("string", "the action")), ("live", ("boolean", "also the live heap before and after")), ("timeout", ("number", "seconds; a hung action is interrupted (default 30)")), ("opt", ("number", "the optimisation level to measure at (0, 1 or 2): the code is loaded at that level in a session of its own beside this one, kept warm and reloaded with what changed -- what a built executable at -O2 would measure, without building one")), ("unit", ("string", "a component of the build to load beside the code, whose own code the action uses: exe:NAME, bench:NAME, test:NAME (its modules are in scope; `:main ARGS` runs its main)")), sessionArg] ["expr"]
   , Tool "mem" "The repl's memory and its servers'." [sessionArg] []
   , Tool "view" "The whole history of this session as one-line summaries, oldest first: `id+n|text`, the n messages from id on. Recent lines cover one message; the older, the more. Read it before starting a task." [("wait", ("number", "seconds to wait for every line to be a summary (default 10)")), sessionArg] []
   , Tool "zoom" "Open the line id+n of the view into the two lines of n/2 under it; n = 1 gives the message whole." [("id", ("number", "the line's first message")), ("n", ("number", "how many messages it covers")), sessionArg] ["id", "n"]
@@ -166,6 +169,44 @@ toolJson t = JObj
   , ("inputSchema", JObj [ ("type", JStr "object")
                          , ("properties", JObj [ (k, JObj (if ty == "strings" then [("type", JStr "array"), ("items", JObj [("type", JStr "string")]), ("description", JStr d)] else [("type", JStr ty), ("description", JStr d)])) | (k, (ty, d)) <- tProps t ])
                          , ("required", JArr (map JStr (tReq t))) ]) ]
+
+-- | An action timed in the session that has the base session's code at an optimisation level, and a component
+-- of the build beside it ('benchSession') -- started here if it is not up, reloaded (the sources may have
+-- changed since it last was asked: it does not reload on a save), then asked. So a measurement at the level a
+-- built executable has is a call, not a build of that executable and a process: the code is compiled once,
+-- then only what changed, and stays loaded.
+benchAt :: Conf -> String -> Json -> IO (Bool, T.Text, Reach)
+benchAt conf base args = do
+  let level = maybe 2 round (lookupNum "opt" args) :: Int
+      units = maybe [] (\u -> [u]) (lookupStr "unit" args)
+      name = benchSession base level units
+      ask op extra = request conf name (JObj (("op", JStr op) : ("quiet", JBool True) : extra))
+      text r = fromMaybe T.empty (lookupText "out" r)
+  t0 <- now
+  up <- isJust <$> running conf name
+  started <- if up then pure (Right ()) else do
+    exe <- getExecutablePath
+    r <- try (readProcessWithExitCode exe ["--root", cRoot conf, "start", name, "--no-check"] "") :: IO (Either IOException (ExitCode, String, String))
+    pure (case r of
+      Right (ExitSuccess, _, _) -> Right ()
+      Right (_, out, err) -> Left (T.pack (unlines (lastN 14 (lines (out ++ err)))))
+      Left e -> Left (T.pack (show e)))
+  case started of
+    Left why -> pure (False, T.pack ("bench: the session to measure in (" ++ name ++ ") did not start:\n") <> why, Reached)
+    Right () -> do
+      rl <- ask "reload" [("check", JBool False), ("refork", JBool False)]
+      t1 <- now
+      -- (what it loaded to: the verdict the reload left, which is in its answer's status)
+      let kind = fromMaybe "" (lookupStr "kind" (rl .: "status"))
+          bad = kind `elem` ["COMPILE-ERROR", "DEAD", "CONFIG-ERROR", "PREBUILD-ERROR"] || lookupBool "ok" rl == Just False
+          hd = T.pack ("[in " ++ name ++ ": the code at -O" ++ show level ++ concatMap (", with " ++) units ++ (if up then "" else "; started")
+                       ++ (if t1 - t0 >= 1 then "; " ++ show (round (t1 - t0) :: Int) ++ " s to have it loaded as it is now" else "") ++ "]\n")
+      if bad then pure (False, hd <> T.pack "the code as it is now does not load there, so nothing was measured (what is loaded is from before):\n" <> T.unlines (lastN 14 (T.lines (text rl))), Reached) else do
+        r <- ask "bench" ([ ("expr", JStr e) | Just e <- [lookupStr "expr" args] ] ++ [ ("timeout", JNum v) | Just v <- [lookupNum "timeout" args] ]
+                           ++ [ ("live", JBool True) | lookupBool "live" args == Just True ])
+        pure (lookupBool "ok" r == Just True, hd <> text r, Reached)
+  where lastN :: Int -> [a] -> [a]
+        lastN k xs = drop (length xs - k) xs
 
 -- | A tool, as a request to the daemon: ok, and the text.
 call :: Conf -> String -> Json -> IO (Bool, T.Text)
@@ -200,6 +241,8 @@ callReach conf name args = do
                | otherwise -> go "check" (str "member" "member") >>= say
         "doc" -> go "doc" ([("words", JArr (map JStr (words (fromMaybe "" (s "query")))))] ++ num "n") >>= say
         "census" -> go "census" ([("mode", JStr (if isJust (s "expr") then "value" else fromMaybe "cafs" (s "mode")))] ++ str "expr" "expr" ++ num "top") >>= say
+        -- at a level, or with a component of the build beside the code: in the session that has it so ('benchAt')
+        "bench" | isJust (n "opt") || isJust (s "unit") -> benchAt conf session args
         "bench" -> go "bench" (str "expr" "expr" ++ num "timeout" ++ [ ("live", JBool True) | lookupBool "live" args == Just True ]) >>= say
         "mem" -> go "mem" [] >>= say
         "view" -> go "view" [("wait", JNum (fromMaybe 10 (n "wait")))] >>= say
@@ -225,7 +268,7 @@ pick :: Conf -> Maybe String -> IO (Either String String)
 pick conf mname = do
   up <- filterMIO (\n -> isJust <$> running conf n) (sessionNames conf)
   let name = fromMaybe (case up of { [one] -> one; _ -> cDefault conf }) mname
-  pure (if name `elem` sessionNames conf then Right name else Left ("unknown session " ++ show name ++ "; have " ++ unwords (sessionNames conf)))
+  pure (if knownSession conf name then Right name else Left ("unknown session " ++ show name ++ "; have " ++ unwords (sessionNames conf)))
   where filterMIO p = fmap concat . mapM (\x -> (\b -> [x | b]) <$> p x)
 
 running :: Conf -> String -> IO (Maybe Int)
