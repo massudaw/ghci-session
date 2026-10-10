@@ -22,8 +22,8 @@
 -- the calls ('callArgs'), not asked of a model: a way of working that changed without anyone saying so.
 --
 -- A session reads them as a block before its view ('render'): the subjects every session uses first, then
--- the project's, then the others' by last use; in a subject the facts most recently confirmed first, cut
--- where its share ends. The block is written when the view is rewritten and not between: what is learned
+-- the project's, then the others' by last use; in a subject the facts by 'factScore' (said again, and how
+-- lately), the biggest first, cut where its share ends. The block is written when the view is rewritten and not between: what is learned
 -- meanwhile is a @known@ line appended to the session's history ('knownLine'), so the prompt a provider has
 -- cached stays the prefix it was.
 --
@@ -385,8 +385,8 @@ renderFor known bytes project facts = render bytes project (filter keep facts)
 
 -- | The block a session of this project reads before its view, in so many bytes: the subjects every session
 -- uses (45% of them), the project's (40%), the others' (15%), each tier's share split among its subjects, most
--- recently confirmed first; in a subject the facts most recently confirmed first, cut at its share. Empty
--- when nothing is known.
+-- recently confirmed first; in a subject the facts by 'factScore' (the more often and the more lately said, the
+-- first), cut at its share. Empty when nothing is known.
 render :: Int -> String -> [Fact] -> T.Text
 render bytes project facts0
   | null facts = T.empty
