@@ -12,7 +12,7 @@
 -- that changes nothing the build tool decides can skip the build tool.
 module GhciSession.Repl
   ( Repl, ReplError (..), Launch (..), Reply (..)
-  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replRun, replCommand, replQuery, replQueryOut, replAlive, replPid, replInterrupt
+  , captureLaunch, readLaunch, startRepl, stopRepl, replBusy, replOwed, replRun, replCommand, replQuery, replQueryOut, replAlive, replPid, replInterrupt
   , decode
   ) where
 
@@ -216,6 +216,11 @@ await r out secs = do
 -- | Is a request running right now? (Whoever asks must not then queue behind it: a stop, say.)
 replBusy :: Repl -> IO Bool
 replBusy r = isEmptyMVar (rIO r)
+
+-- | How many earlier commands that did not stop when interrupted have not answered yet: a request now is behind them
+-- (their replies are discarded when they come).
+replOwed :: Repl -> IO Int
+replOwed r = readIORef (rOwed r)
 
 replAlive :: Repl -> IO Bool
 replAlive r = (== Nothing) <$> getProcessExitCode (rProc r)

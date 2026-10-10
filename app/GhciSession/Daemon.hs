@@ -6,7 +6,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords, cabalField) where
+module GhciSession.Daemon (runDaemon, scopedSummary, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords, cabalField) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)
@@ -234,6 +234,17 @@ compiled s = (\st -> not (any (`isPrefixOf` st) ["COMPILE-ERROR", "DEAD", "PREBU
 
 theRepl :: S -> IO Repl
 theRepl s = rd (vRepl s) >>= maybe (throwIO (ReplDied "")) pure
+
+-- | What a scoped test says of itself, from its output and the lines that matched its patterns. An output of nothing,
+-- or one in which neither pattern matched anywhere, is no result: "none failing, 0 passing" read as one (a call that
+-- answered at once with it, after a hung one, was taken for a pass).
+scopedSummary :: Maybe Check -> T.Text -> Int -> Int -> String
+scopedSummary mc out nFails nPasses = case mc of
+  _ | T.null (T.strip out) -> "NO RESULT: the expression printed nothing, so nothing was checked (0 passing is not a pass)"
+  Nothing -> "no check configured: read the output"
+  Just c | isNothing (ckFail c) -> printf "%d line(s) match the pass pattern; no fail pattern is configured, so read the output for failures" nPasses
+  Just c | nFails == 0, nPasses == 0, isJust (ckPass c) -> "NO RESULT: no line matched the pass or the fail pattern (0 passing is not a pass): the expression may not have run to its end -- read the output"
+  _ -> printf "%s, %d passing" (if nFails == 0 then "none failing" else show nFails ++ " failing") nPasses
 
 -- | A command's output as text: a load log or an evaluation can be megabytes.
 cmd :: S -> Maybe Double -> String -> IO T.Text
@@ -2690,6 +2701,8 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
         -- (a test is not a probe: where no time is given it has five minutes, not an evaluation's thirty seconds)
         tmo = Just (case lookupNum "timeout" req of { Just t | t > 0 -> t; _ -> max 300 (gEvalTimeout (sCfg s)) })
     t0 <- now
+    -- (a command that did not stop when interrupted is still running: this one waits behind it, and says so)
+    owed <- either (\(_ :: ReplError) -> 0) id <$> try (theRepl s >>= replOwed)
     r0 <- try (cmd s tmo expr)
     -- (out of time and not stopped by the interrupt: ended by a restart, as an evaluation is -- the session ran it
     -- to its end, with whatever was asked next waiting behind it)
@@ -2703,16 +2716,17 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
     vEvaluated s =: True
     warmAsync s
     case r of
-      Left (e :: ReplError) -> pure (Just (T.pack (printf "SCOPED-TEST: %s (the session's verdict is not changed)" (show e))))
+      Left (e :: ReplError) -> pure (Just (T.pack (printf "SCOPED-TEST: %s (the session's verdict is not changed)%s" (show e)
+        (case e of
+           ReplTimeout _ False _ -> "\n[it is still running in the session and did not stop when interrupted: the next command waits behind it until it ends -- `restart` ends it]" :: String
+           _ -> ""))))
       Right out -> do
         let ls = T.lines out
         fails <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckFail)
         passes <- maybe (pure []) (`linesMatching` ls) (listToMaybe es >>= ckPass)
-        let summary = case listToMaybe es of
-              Nothing -> "no check configured: read the output"
-              Just e | isNothing (ckFail e) -> printf "%d line(s) match the pass pattern; no fail pattern is configured, so read the output for failures" (length passes)
-              _ -> printf "%s, %d passing" (if null fails then "none failing" else show (length fails) ++ " failing") (length passes)
-        pure (Just (out <> T.pack (printf "\n[scoped test, %.1fs: %s -- the session's verdict is not changed]" (t1 - t0) (summary :: String))
+        let summary = scopedSummary (listToMaybe es) out (length fails) (length passes)
+            waited = if owed > 0 then printf "[the session was still running %d earlier command(s) that did not stop when interrupted: this one waited behind them]\n" owed else "" :: String
+        pure (Just (T.pack waited <> out <> T.pack (printf "\n[scoped test, %.1fs: %s -- the session's verdict is not changed]" (t1 - t0) (summary :: String))
                          -- (the failing lines again only when the output is too long to read them in)
                          <> (if length ls > 40 then T.concat [ T.pack "\n  " <> f | f <- take 30 fails ] else T.empty)))
   "check" -> do

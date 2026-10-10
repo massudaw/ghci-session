@@ -20,7 +20,7 @@ import System.Posix.Process (getProcessID)
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Chat (ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
-import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
+import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
 import qualified GhciSession.History as H
@@ -125,6 +125,12 @@ run = do
   eq "build file: a new dependency is not a module" (moduleDelta ["-package-id", "base-4", "A"] ["-package-id", "base-4", "-package-id", "text-2", "A", "D"]) Nothing
   eq "build file: a flag's value that looks like a module" (moduleDelta ["A"] ["-framework", "Accelerate", "A"]) Nothing
   eq "countSub" (countSub ": warning:" "a: warning: x\nb: warning: y") 2
+  -- a scoped test that printed nothing, or whose patterns matched nowhere, is no result (not "0 passing")
+  let ck = Check "m" "e" (Just "PASS") (Just "FAIL") Nothing Nothing
+  eq "scoped: empty output is no result" ("NO RESULT" `isPrefixOf` scopedSummary (Just ck) (T.pack "\n") 0 0) True
+  eq "scoped: nothing matched is no result" ("NO RESULT" `isPrefixOf` scopedSummary (Just ck) (T.pack "hi") 0 0) True
+  eq "scoped: passes" (scopedSummary (Just ck) (T.pack "PASS a") 0 1) "none failing, 1 passing"
+  eq "scoped: fails" (scopedSummary (Just ck) (T.pack "FAIL a") 1 0) "1 failing, 0 passing"
   eq "replace" (replace "  [pending]" "" "OK  [pending]  [more]") "OK  [more]"
 
   -- doc: the index of declarations, and finding one
