@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -307,7 +307,7 @@ pendingNote ch = do
       case v of
         Just r | not (vRunning r), vStart r >= written - 0.05 -> do
           writeIORef (cPending ch) Nothing
-          pure (T.pack ("\n[the check of your earlier save has finished: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r) ++ "]"))
+          pure (T.pack ("\n[the reload (and check) of your earlier save has finished: " ++ vLine r ++ concatMap ("\n" ++) (vBehind r) ++ "]"))
         _ -> pure T.empty
 
 -- | Wait for the check a save left running (at the end of a turn, before its verdict is judged).
@@ -331,6 +331,30 @@ awaitPending ch = do
                 | otherwise -> go
       go
 
+-- | Is the answer of a typecheck a clean one? (@OK -- TYPECHECK@, with warnings or not.)
+tcClean :: T.Text -> Bool
+tcClean = T.isPrefixOf (T.pack "OK")
+
+-- | Has the session typechecked the sources of a save, and found them clean, while its reload has no verdict yet?
+-- The typecheck is in within a fraction of a second; the reload may take half a minute. An error is left to the
+-- verdict (it comes at once); so is a session that does not typecheck first, or an old daemon that does not know
+-- the question: this waits ten seconds at most, and says no.
+typecheckEarly :: Chat -> Double -> IO Bool
+typecheckEarly ch written = do
+  t0 <- now
+  let go = do
+        threadDelay 50000
+        t <- now
+        r <- try (ask ch "typecheck_cached" []) :: IO (Either SomeException Json)
+        v <- verdictAt ch
+        case (v, r) of
+          (Just rv, _) | vStart rv >= written - 0.05 -> pure False
+          (_, Right j) | lookupBool "ok" j == Just True, tcClean (fromMaybe T.empty (lookupText "out" j)) -> pure True
+          (_, Right j) | lookupBool "ok" j /= Just True -> pure False
+          _ | t - t0 >= 10 -> pure False
+            | otherwise -> go
+  go
+
 -- | A save's answer: what was written, and the verdict of the reload it caused, when the file is one the
 -- session watches. A verdict that is not there within the wait is said to be pending (a long compile):
 -- status has it later. The save itself is good either way.
@@ -351,8 +375,14 @@ savedNow _ what Nothing = pure (True, T.pack what)
 savedNow ch what (Just written) = do
   longest <- readIORef (cLongest ch)
   let wait = saveWait longest
-  v <- verdictAfter ch written wait
+  early <- typecheckEarly ch written
+  v <- if early then pure Nothing else verdictAfter ch written wait
   case v of
+    _ | early -> do
+      -- (the reload goes on under the session's work lock, which the watcher took before it typechecked: an eval or
+      -- a test asked now queues behind it, so none runs on the old code; its verdict comes with a later tool result)
+      writeIORef (cPending ch) (Just written)
+      pure (True, T.pack (what ++ "\ntypecheck: OK -- the reload is under way, its verdict comes with a later tool result (status with wait gives it); an eval or test now waits for it"))
     Nothing -> pure (True, T.pack (what ++ printf "\n[the session has not finished reloading this save after %.0fs (the longest verdict so far took %.0fs): status will have its verdict; do not reload by hand]" wait longest))
     Just r | vRunning r -> do
       writeIORef (cPending ch) (Just written)

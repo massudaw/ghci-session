@@ -2600,6 +2600,10 @@ handle s h = do
           replyS True "stopping"
         -- (the answer there was, when no source changed since: without waiting for the repl, which a
         --  running check holds -- four typechecks of an agent's waited 226 s each behind one)
+        -- (the typecheck of the sources as they are, if it has been made -- the watcher makes it first, under the
+        --  work lock, which it keeps for the reload: a save's answer can come with it, and a later eval queues behind
+        --  the reload. Empty when it has not been made. No lock, no repl.)
+        "typecheck_cached" -> typecheckCached s >>= reply True . fromMaybe T.empty
         "typecheck" -> typecheckCached s >>= \c -> case c of
           Just out -> logged req (histAdd s "tool" (describeReq op req) >> histEcho s [] out) >> reply True out
           Nothing -> viaWork op req

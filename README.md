@@ -471,7 +471,10 @@ common, in different subjects, are not seen as the same (the search is by words,
 What the harness does for an agent that works on a session: every reply carries `stale`; a command past its timeout
 is interrupted, not abandoned; a check that hangs is interrupted at five times the median of its last passing runs
 (`CHECK-HANG`, with the last line it printed); a save answers once the code compiles, and the check's verdict rides
-on the next tool result; `typecheck` answers at once when nothing changed; a read of lines the context already holds
+on the next tool result -- or, sooner, once the sources typecheck clean (a fraction of a second; the daemon's
+`typecheck_cached`): the answer says the reload is under way, and an `eval` or `test` asked then queues behind it
+(the watcher holds the work lock from before the typecheck to the end of the reload), so none runs on the old code; a
+type error is answered at once, as before; `typecheck` answers at once when nothing changed; a read of lines the context already holds
 answers with a pointer instead of the text; a session that is down is waited for (`GHS_CHAT_DOWN_WAIT`).
 
 The agent's `read` (and `grep` with a `path`) shows a line as its number, the bar `│` and then the line exactly as
