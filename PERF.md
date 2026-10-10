@@ -86,6 +86,10 @@ a space in it no longer matches across a byte that was not UTF-8 and was replace
 | `S.grep root "recall" 30` (hits come early) | 64.6 ms, 223 MB | 35.5 ms, 45 MB |
 | `S.grep root "zzqxnomatch" 30` (the whole tree) | 61.9 ms, 252 MB | 29.2 ms, 34 MB |
 
+As a process (`.bin/ghci-session grep recall`, built at -O1, 10 runs): 134.0 ms median before, 76.3 ms after. (`find Know`,
+whose code did not change, read 115.5 ms then and 68.5 ms now: the machine was busier at the first run, so the
+census numbers of (c) are +-40% and only the code-path ratios above are to be trusted.)
+
 Self-tests: 357 pass.
 
 ### 2. `recall` / `history --search`: read the messages in runs, count words where they stand (`History.messages`, `Know.rank`)
@@ -104,7 +108,9 @@ same set).
 | the recall op: messages + documents + rank | 92.9 ms, 227 MB | 31.6 ms, 119 MB |
 | `H.messages mm 1000 1` (one message) | 0.02 ms | 0.02 ms |
 
-Self-tests: 357 pass.
+Not measured as a process: `ghci-session history --search` asks the running daemon, which still runs the code of
+before (it is not restarted here); it read 84 ms at the census and 106 ms now, on a history that has grown, and
+that is the number the daemon's restart will move. `tools/check-knowledge.py`: all 14 hold. Self-tests: 357 pass.
 
 ### 3. `import` (the Claude Code Stop hook, every turn): no tool entries unless asked, timestamps by hand (`Import.readSession`, `isoSeconds`)
 
