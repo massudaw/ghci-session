@@ -2229,7 +2229,9 @@ knowLoop s m cmd = do
             pure Nothing
       -- new facts into the store; True when it was done (False: the model could not be asked -- again later)
       -- (@recent@: the facts are of the log's last messages, so the session is told of them as they are learned.
-      -- Facts of long ago -- a history read from its start -- are not news at its end: they go to the block)
+      -- Facts of long ago -- a history read from its start -- are not news at its end: they go to the block.
+      -- A message is recent by its place (among the last 256) and by its date (within the last hour): an import
+      -- brings days-old messages in at the log's end, and by place alone their facts were appended as known lines)
       settle :: Bool -> [K.New] -> IO Bool
       settle _ [] = pure True
       settle recent news = do
@@ -2285,7 +2287,8 @@ knowLoop s m cmd = do
       step i = do
         ms <- H.messages m i 1
         count <- H.count m
-        let recent = i >= count - 256
+        t <- now
+        let recent = i >= count - 256 && any (\x -> t - H.mDate x <= 3600) (take 1 ms)
         ok1 <- case ms of
           -- (ai: what another agent said, brought in by `import`)
           (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note", "ai"], T.length (H.mText x) > 80 ->
