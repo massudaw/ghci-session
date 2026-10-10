@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , unchangedNote, tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -1317,11 +1317,16 @@ inside ch p =
 withDiff :: T.Text -> (Bool, T.Text) -> (Bool, T.Text)
 withDiff d (ok, out) = (ok, out <> d)
 
+-- | What a save says when the file after it is the file before it. It follows "lines 3-5 replaced", and
+-- "[nothing changed]" read as the edit not applied: it was -- with a new text equal to the one it replaced.
+unchangedNote :: T.Text
+unchangedNote = T.pack "\n[the edit was applied, and the file is byte for byte what it was: the new text is the text it replaced]"
+
 -- | What a write changed in a file, as a unified diff (the system's @diff@), at most 'diffMax' lines of it: for
 -- the answer of the tool that wrote. Nothing when nothing changed, or there is no @diff@ to ask.
 changeOf :: FilePath -> T.Text -> T.Text -> IO T.Text
 changeOf rel old new
-  | old == new = pure (T.pack "\n[nothing changed]")
+  | old == new = pure unchangedNote
   | otherwise = do
       tmp <- getTemporaryDirectory
       pid <- getProcessID
