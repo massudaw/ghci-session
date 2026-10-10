@@ -73,6 +73,18 @@ run = do
   check "json: garbage is an error" (either (const True) (const False) (parseJson "{\"a\": }"))
   eq "json: set replaces in place" (set "a" (JNum 2) (JObj [("a", JNum 1), ("b", JNum 3)])) (JObj [("a", JNum 2), ("b", JNum 3)])
   eq "json: integers print as integers" (encode (JNum 42)) "42"
+  let numsOf s = [ (c, parseJson c) | c <- s ]
+      isNeg j = case j of { JNum d -> isNegativeZero d; _ -> False }
+      readNum c = case reads c :: [(Double, String)] of { [(d, "")] -> Right (JNum d); _ -> Left "" }
+      shapes = [ sg ++ m ++ f ++ e | sg <- ["", "-"], m <- ["0", "7", "123456789012345", "1790123456", "9007199254740993", "12345678901234567890"], f <- ["", ".5", ".000001", ".790123456789"], e <- ["", "e9", "E+3", "e-5", "e22", "e-23", "e300"] ]
+  eq "json: a number is what `read` makes of it (the exact fast path and the long one), -0 too"
+     [ c | (c, r) <- numsOf shapes, fmap isNeg r /= fmap isNeg (readNum c) || r /= readNum c ] []
+  eq "json: the odd numbers are as they were" (map (either (const Nothing) Just . parseJson) ["1.", "1.e5", "-", "+1", "1e", "0.1e1", "--1"]) [Just (JNum 1), Just (JNum 100000), Nothing, Nothing, Nothing, Just (JNum 1), Nothing]
+  eq "json: a string's escapes -- a pair of surrogates is one character, a lone one is the replacement, any others are kept"
+     (map parseJson ["\"a\\n\\t\\\\\\/\\\"b\"", "\"\\ud83d\\ude00!\"", "\"\\ud83dx\"", "\"\\u00e9\\u0041\"", "\"é\\nü\""])
+     (map Right [JStr "a\n\t\\/\"b", JStr "\128512!", JStr "\65533x", JStr "\233A", JStr "\233\n\252"])
+  eq "json: a string that does not end, or ends on a backslash, is an error"
+     (map (either (const True) (const False) . parseJson) ["\"abc", "\"ab\\", "\"a\\\"", "\"\\u12\"", "{\"a\\nb\": 1"]) [True, True, True, True, True]
 
   -- verdicts
   let st m l = JObj [("modules", JNum m), ("loaded", JNum l)]

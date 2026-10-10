@@ -170,7 +170,7 @@ at :: B.ByteString -> Int -> Word8
 at b i = if i < B.length b then BU.unsafeIndex b i else 0
 
 skip :: B.ByteString -> Int -> Int
-skip b i = if i < B.length b && isSpace (w2c (BU.unsafeIndex b i)) then skip b (i + 1) else i
+skip b i = if i < B.length b && (let w = BU.unsafeIndex b i in w == 32 || (w >= 9 && w <= 13)) then skip b (i + 1) else i
 
 w2c :: Word8 -> Char
 w2c = chr . fromIntegral
@@ -202,36 +202,40 @@ members :: B.ByteString -> Int -> [(String, Json)] -> Either String (Json, Int)
 members b i acc = do
   let i' = skip b i
   if w2c (at b i') /= '"' then Left ("expected a key at byte " ++ show i') else do
-    (k, j) <- string b (i' + 1)
+    (k, j) <- key b (i' + 1)
     let j' = skip b j
     if w2c (at b j') /= ':' then Left ("expected : after a key at byte " ++ show j') else do
       (v, n) <- value b (skip b (j' + 1))
       let n' = skip b n
       case w2c (at b n') of
-        ',' -> members b (n' + 1) ((T.unpack k, v) : acc)
-        '}' -> Right (JObj (reverse ((T.unpack k, v) : acc)), n' + 1)
+        ',' -> members b (n' + 1) ((k, v) : acc)
+        '}' -> Right (JObj (reverse ((k, v) : acc)), n' + 1)
         _ -> Left ("in an object, expected , or } at byte " ++ show n')
 
--- | From just after the opening quote: the string and the index just after the closing one.
-string :: B.ByteString -> Int -> Either String (T.Text, Int)
-string b i0 = go i0 i0 []
+-- | From just after the opening quote: the string's bytes, escapes undone, and the index just after the closing
+-- quote. With no escape (nearly always) the bytes are a slice of the input, found by two scans of the machine's
+-- (@memchr@); with some, the pieces between them are joined once, not a 'T.Text' to each piece and each escape.
+rawString :: B.ByteString -> Int -> Either String (B.ByteString, Int)
+rawString b i0 = case B.elemIndex 34 (B.drop i0 b) of
+  Nothing -> Left "unterminated string"
+  Just q | not (B.elem 92 (B.take q (B.drop i0 b))) -> Right (B.take q (B.drop i0 b), i0 + q + 1)
+         | otherwise -> go i0 i0 []
   where
-    dec = TE.decodeUtf8With TE.lenientDecode
-    piece a z = dec (B.take (z - a) (B.drop a b))
-    go a i acc
-      | i >= B.length b = Left "unterminated string"
-      | otherwise = case BU.unsafeIndex b i of
-          34 -> Right (if null acc then piece a i else T.concat (reverse (piece a i : acc)), i + 1)
-          92 -> case w2c (at b (i + 1)) of
-            'u' -> case hex4 (i + 2) of
-              Nothing -> Left "bad \\u escape"
-              Just hi
-                | hi >= 0xD800 && hi < 0xDC00, w2c (at b (i + 6)) == '\\', w2c (at b (i + 7)) == 'u', Just lo <- hex4 (i + 8), lo >= 0xDC00, lo < 0xE000 ->
-                    let c = chr (0x10000 + ((hi - 0xD800) `shiftL` 10 .|. (lo - 0xDC00))) in go (i + 12) (i + 12) (T.singleton c : piece a i : acc)
-                | otherwise -> go (i + 6) (i + 6) (T.singleton (chr hi) : piece a i : acc)
-            c -> let r = case c of { 'n' -> '\n'; 't' -> '\t'; 'r' -> '\r'; 'b' -> '\b'; 'f' -> '\f'; x -> x }
-                 in go (i + 2) (i + 2) (T.singleton r : piece a i : acc)
-          _ -> go a (i + 1) acc
+    slice a z = B.take (z - a) (B.drop a b)
+    go a i acc = case B.findIndex (\w -> w == 34 || w == 92) (B.drop i b) of
+      Nothing -> Left "unterminated string"
+      Just k -> let j = i + k in case BU.unsafeIndex b j of
+        34 -> Right (B.concat (reverse (slice a j : acc)), j + 1)
+        _ -> case w2c (at b (j + 1)) of
+          'u' -> case hex4 (j + 2) of
+            Nothing -> Left "bad \\u escape"
+            Just hi
+              | hi >= 0xD800 && hi < 0xDC00, w2c (at b (j + 6)) == '\\', w2c (at b (j + 7)) == 'u', Just lo <- hex4 (j + 8), lo >= 0xDC00, lo < 0xE000 ->
+                  let c = chr (0x10000 + ((hi - 0xD800) `shiftL` 10 .|. (lo - 0xDC00))) in go (j + 12) (j + 12) (utf8 c : slice a j : acc)
+              | otherwise -> go (j + 6) (j + 6) (utf8 (chr hi) : slice a j : acc)
+          c -> let r = case c of { 'n' -> '\n'; 't' -> '\t'; 'r' -> '\r'; 'b' -> '\b'; 'f' -> '\f'; x -> x }
+               in go (j + 2) (j + 2) (utf8 r : slice a j : acc)
+    utf8 = TE.encodeUtf8 . T.singleton       -- (a lone surrogate comes out as the replacement character, as it did)
     hex4 j | j + 4 > B.length b = Nothing
            | otherwise = foldl (\m w -> (\x d -> (x `shiftL` 4) .|. d) <$> m <*> hexDigit w) (Just 0) (B.unpack (B.take 4 (B.drop j b)))
     hexDigit w | w >= 48 && w <= 57 = Just (fromIntegral w - 48)
@@ -239,8 +243,43 @@ string b i0 = go i0 i0 []
                | w >= 65 && w <= 70 = Just (fromIntegral w - 55)
                | otherwise = Nothing :: Maybe Int
 
+string :: B.ByteString -> Int -> Either String (T.Text, Int)
+string b i = (\(s, j) -> (TE.decodeUtf8With TE.lenientDecode s, j)) <$> rawString b i
+
+-- | A key as a 'String': straight from the bytes when they are ASCII (they are), without a 'T.Text' between.
+key :: B.ByteString -> Int -> Either String (String, Int)
+key b i = (\(s, j) -> (if B.all (< 128) s then BC.unpack s else T.unpack (TE.decodeUtf8With TE.lenientDecode s), j)) <$> rawString b i
+
 number :: B.ByteString -> Int -> Either String (Json, Int)
-number b i =
+number b i = case plain of
+  Just d -> Right (JNum d, i + B.length tok)
+  Nothing -> numberSlow b i
+  where
+    tok = B.takeWhile (\w -> (w >= 48 && w <= 57) || w == 45 || w == 43 || w == 46 || w == 101 || w == 69) (B.drop i b)
+    -- (digits, a point and digits, an exponent: when the mantissa is a whole number a double holds (up to 2^53) and
+    -- the power of ten is one too (up to 10^22), the one multiplication or division rounds as 'read' does -- and that
+    -- is the shape of every number the programs write; any other goes the long way)
+    plain =
+      let (neg, d0) = case B.uncons tok of { Just (45, r) -> (True, r); _ -> (False, tok) }
+          (ip, r) = B.span isDig d0
+          (fp, r1) = case B.uncons r of { Just (46, f) -> B.span isDig f; _ -> (B.empty, r) }
+          expo = case B.uncons r1 of
+            Just (c, q) | c == 101 || c == 69 ->
+              let (sg, q1) = case B.uncons q of { Just (45, x) -> (-1, x); Just (43, x) -> (1, x); _ -> (1, q) }
+                  (es, q2) = B.span isDig q1
+              in if B.null es || B.length es > 3 then Nothing else Just (sg * B.foldl' (\a w -> a * 10 + fromIntegral (w - 48)) 0 es, q2)
+            _ -> Just (0 :: Int, r1)
+          m = B.foldl' (\a w -> a * 10 + fromIntegral (w - 48)) (0 :: Int) (B.append ip fp)
+      in case expo of
+           Just (ex, rest) | not (B.null ip), B.null rest, B.length r == B.length r1 || not (B.null fp), B.length ip + B.length fp <= 18, m <= 9007199254740992
+                           , let e10 = ex - B.length fp, abs e10 <= 22 ->
+             let d = if e10 >= 0 then fromIntegral m * 10 ^ e10 else fromIntegral m / 10 ^ negate e10 :: Double
+             in Just (if neg then negate d else d)
+           _ -> Nothing
+    isDig w = w >= 48 && w <= 57
+
+numberSlow :: B.ByteString -> Int -> Either String (Json, Int)
+numberSlow b i =
   let s = BC.unpack (B.takeWhile (\w -> let c = w2c w in (c >= '0' && c <= '9') || c `elem` ("-+.eE" :: String)) (B.drop i b))
       fix x = case break (== '.') x of      -- `read` wants a digit on both sides of the point, and no leading +
         (ip, '.' : r) | null (takeWhile (`elem` ['0' .. '9']) r) -> ip ++ ".0" ++ r

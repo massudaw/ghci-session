@@ -148,10 +148,30 @@ round and costs what it did (about 0.2 s) in the hook of that turn; reading only
 offset, with the session's state kept) would make it free too, and is not done. Self-tests: 359 pass (two new:
 the stamps' decision, and their file written and read back, a grown file, a missing one).
 
+### 5. `Json.parseJsonBS`: strings joined once, numbers without `read`, keys without a `Text`
+
+Three things in the parser were slow: a string with escapes made a `Text` of each piece and each escape and joined
+them (a reply of 8,000 lines is 8,000 `\n`); a number went through `String` and `reads` (a fact's `first` and `last`
+are `1.791556110883025e9`); a key was decoded to `Text` and unpacked; and `skip` asked `isSpace` of each byte. Now
+`rawString` finds the closing quote with `memchr` (a string with no backslash is a slice of the input), joins the
+pieces of one with escapes as bytes and decodes once; a key of ASCII bytes is unpacked straight from them; a number
+whose mantissa is a whole number up to 2^53 and whose power of ten is up to 10^22 (the Clinger case: one exact
+multiplication or division, rounded as `read` rounds) is made without `String`, any other goes the old way; `skip`
+tests the six bytes. Same results: 300,000 generated numbers against `reads` (sign, digits, point, exponent, -0),
+and all 1,575 lines of the facts and of a day of the history parse and print back to themselves.
+
+| bench (`pure () >>= \_ -> evaluate (size of parsed)`, x30) | before | after |
+|---|---|---|
+| 862 KB reply (8,000 escaped lines) | 11.4 ms, 13.5 MB | 7.5 ms, 11.0 MB |
+| facts file, 985 lines (274 KB) | 9.5 ms, 20.8 MB | 5.9 ms, 8.3 MB |
+| a day of history, 590 lines (410 KB) | 7.6 ms, 20.8 MB | 4.0 ms, 4.4 MB |
+
+The reply's 7.5 ms is mostly the copy of 800 KB into a `Text` and the collector's pass over it (3.8 ms GC); a parser
+that makes no `Either` of each value would take the facts and history further. Self-tests: 363 pass (four new,
+of numbers, string escapes, and strings that do not end).
+
 ## Not done, and next
 
-- `Json.parseJsonBS` at 70 MB/s is the one hot path under everything (facts, history, import, replies): 12 ms for an
-  862 KB reply. A faster number reader and string unescaper there would help each of them.
 - The fallback `grep` still reads every file's bytes (29 ms for a tree of 2,262 files); a build with libfff
   (`GHS_FFF`) does not. An index of the file list kept by the daemon would be the next step.
 - `Top`'s layout of a whole history (416 ms, 2 GB) is paid only for the last 400 messages, once; if the history
