@@ -3023,7 +3023,10 @@ runDaemon conf name bootCheck fastStart = do
       let self c = let (sets, rest) = span isSetting (words c)
                        isSetting w = case break (== '=') w of { (k@(_ : _), '=' : _) -> all (\x -> isAlphaNum x || x == '_') k; _ -> False }
                    in case rest of { ("ghci-session" : more) -> unwords (sets ++ show exe : more); _ -> c }
-      forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
+      -- (GHS_KNOWLEDGE_ONLY=1: no summaries are made -- a history brought in only to be read for its facts, as
+      -- tools/know-trial.sh does, is not paid for twice)
+      factsOnly <- (== Just "1") <$> lookupEnv "GHS_KNOWLEDGE_ONLY"
+      unless factsOnly $ forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (compactorLoop s m (self c)) :: IO (Either SomeException ())))
       when (gKnowledge cfg) $ forM_ (sHist s) $ \m -> forM_ (gSummarizeCmd cfg) $ \c -> forkIO (void (try (knowLoop s m (self c)) :: IO (Either SomeException ())))
       void (forkIO (seedLoaded s))
       vMem s =: Nothing
