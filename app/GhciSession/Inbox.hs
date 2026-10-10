@@ -8,7 +8,7 @@
 -- calls so far, its last words, its summary line, and @done@ when it ended); 'waitMain' reads that.
 module GhciSession.Inbox
   ( send, watch, chatPidFile
-  , Mark (..), markOf, advance, settled, turnReport, stillRunning, readTurn, waitMain
+  , Mark (..), markOf, advance, settled, turnReport, stillRunning, readTurn, waitMain, running, turnLines
   ) where
 
 import Control.Concurrent (forkIO, threadDelay)
@@ -16,7 +16,7 @@ import Control.Exception (IOException, try)
 import Control.Monad (forM_, forever, unless, void, when)
 import qualified Data.ByteString as B
 import Data.List (intercalate, isPrefixOf, sort)
-import Data.Maybe (fromMaybe, isNothing)
+import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import System.Directory (createDirectoryIfMissing, doesFileExist, listDirectory, removeFile, renameFile)
@@ -122,6 +122,21 @@ turnReport j = intercalate "\n" (filter (not . null)
 stillRunning :: Json -> Double -> String
 stillRunning j secs = printf "[still running after %.0fs: %d tool call%s so far]" secs n (if n == 1 then "" else "s" :: String)
   where n = maybe 0 round (lookupNum "tools" j) :: Int
+
+-- | What a screen shows of the chat's turn: whether the chat runs, the turn under way (tool calls so far, its last words)
+-- or the last one's. @turnLines chatRuns turnJson@.
+turnLines :: Bool -> Json -> [String]
+turnLines up j
+  | not up = ["chat: not running" ++ (if started then " (the last turn: " ++ calls ++ ")" else "")]
+  | not started = ["chat: running, no turn yet"]
+  | markDone = ["chat: at rest; the last turn: " ++ calls, "  said: " ++ lastWords]
+  | otherwise = ["chat: a turn is running, " ++ calls ++ " so far", "  last words: " ++ lastWords]
+  where
+    started = isJust (lookupNum "start" j)
+    markDone = mDone (markOf j)
+    n = maybe 0 round (lookupNum "tools" j) :: Int
+    calls = printf "%d tool call%s" n (if n == 1 then "" else "s" :: String)
+    lastWords = case lines (maybe "" T.unpack (lookupText "last" j)) of { [] -> "-"; (l : _) -> take 160 l }
 
 -- | The file as it is: Nothing when it cannot be read whole (it is written under another name and moved, so
 -- that is a file that is not there yet or not any more); no file at all is the empty object.

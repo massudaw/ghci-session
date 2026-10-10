@@ -9,13 +9,15 @@
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
-  , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn, rotLimit, rotOver
+  , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn, rotLimit, rotOver, rollLines
   ) where
 
 import Control.Exception (IOException, try)
 import Data.List (isInfixOf)
+import Data.Maybe (fromMaybe)
 import qualified Data.ByteString as B
 import System.Directory (renameFile)
+import Text.Printf (printf)
 
 import GhciSession.Json
 
@@ -29,6 +31,7 @@ data Roll = Roll
   , rLo :: Double         -- ^ the provider's cache lasted at least this many seconds (a call after a pause this long came back cached)
   , rHi :: Double         -- ^ and lasted at most this many (the same context, after a pause this long, was read uncached)
   , rRelId :: Int         -- ^ the reset (its message's number) whose relearning was last counted
+  , rRot :: Double        -- ^ the share of repeats among the last twenty reads, at the last call (-1: none seen); for the screen
   } deriving (Eq, Show)
 
 -- | The ratio of the prices when the configuration says none.
@@ -37,7 +40,7 @@ defaultRatio = 12.5
 
 -- | Before anything is seen: the measured values of this chat and another (a restart 45k, growth 1590 a call, 28%).
 emptyRoll :: Double -> Roll
-emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0
+emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0 (-1)
 
 -- | The context at which a turn rolls over: @S + sqrt(2 r S (1 + relearn) g)@, within 80k and 200k.
 threshold :: Roll -> Int
@@ -130,7 +133,20 @@ coldDue ro since ctx = since > lifetime ro && fromIntegral ctx * 10 > 13 * rS ro
 -- the file ------------------------------------------------------------------------------------
 
 rollJson :: Roll -> Json
-rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro)))]
+rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro))), ("rot", JNum (rRot ro))]
+
+-- | What the file says, for a screen: the threshold and what it comes from, the cache bounds, the rot.
+rollLines :: Double -> Json -> [String]
+rollLines ratio j =
+  [ printf "rollover: at %dk tokens (a fresh call %dk, %d tokens a call, a write %.1f reads, %.0f%% learned again)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro) (100 * rRelearn ro)
+  , printf "  the cache lasts at least %d and at most %d minutes; %s" (mins (rLo ro)) (mins (rHi ro)) rot ]
+  where
+    ro = rollFrom ratio j
+    rotS = fromMaybe (-1) (lookupNum "rot" j)
+    mins s = round (s / 60) :: Int
+    rot | rotS < 0 = "no rot seen"
+        | rotOver (Just rotS) = printf "rot: %.0f%% of the last 20 reads were repeats (the threshold a tenth lower)" (100 * rotS)
+        | otherwise = printf "rot: %.0f%% of the last 20 reads were repeats" (100 * rotS)
 
 -- | A state from its file's JSON: what it does not have, or has not well, is what the start has.
 rollFrom :: Double -> Json -> Roll

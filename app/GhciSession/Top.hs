@@ -29,6 +29,7 @@ import qualified Data.Map.Strict as M
 import qualified Data.Set as S
 import qualified GhciSession.Inbox as Inbox
 import qualified GhciSession.Know as K
+import qualified GhciSession.Roll as Roll
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -125,6 +126,7 @@ data St = St
   , sInput :: Maybe String            -- ^ a line being written for the session's chat
   , sKnow :: [String], sKnowAt :: Double   -- ^ what is known by subject ("GhciSession.Know"), and when it was read
   , sLaid :: M.Map Int (Int, Bool, [[Span]])  -- ^ the history's messages laid out: for which width, open or cut, the lines
+  , sChat :: [String]                  -- ^ the chat's turn (turn.json) and the rollover controller's state (history/roll.json)
   }
 
 -- | A report of the heap: which, when it was taken and how long it took, its lines.
@@ -142,7 +144,7 @@ topMain conf mname = do
   let dir = cStateDir conf </> name
   heapBox <- newIORef Nothing
   let env = Env conf name dir heapBox
-      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap && t /= TKnow) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) Nothing [] 0 M.empty
+      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap && t /= TKnow) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) Nothing [] 0 M.empty []
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -302,6 +304,14 @@ panes env st
             Left e -> st { sNote = e }
   where shq x = "'" ++ concatMap (\c -> if c == '\'' then "'\\''" else [c]) x ++ "'"
 
+-- | The chat's turn and the rollover controller, as the usage tab shows them: from @turn.json@ and @history/roll.json@.
+chatLines :: Env -> IO [String]
+chatLines env = do
+  up <- isJust <$> Inbox.running (eConf env) (eName env)
+  tj <- fromMaybe (JObj []) <$> Inbox.readTurn (eConf env) (eName env)
+  rj <- readFileMaybe (eDir env </> "history" </> "roll.json")
+  pure (Inbox.turnLines up tj ++ maybe ["rollover: no state yet (the chat keeps it in history/roll.json)"] (either (const []) (Roll.rollLines (rolloverRatioOf (eConf env) (eName env))) . parseJson) rj)
+
 -- | A look at everything the screen shows: the status file, the daemon's info and its log, the history's
 -- new messages; the view and the ledger only on their tabs, and not every time.
 refresh :: Env -> St -> IO St
@@ -309,6 +319,7 @@ refresh env st = do
   size <- fromMaybe (80, 24) <$> termSize
   status <- maybe (JObj []) (either (const (JObj [])) id . parseJson) <$> readFileMaybe (eDir env </> "status.json")
   info <- answer "info" []
+  chatInfo <- chatLines env
   let lastId = case sHist st of { [] -> -1; ms -> mId (last ms) }
   hj <- answer "history" ([("json", JBool True), ("n", JNum 400)] ++ [ ("since", JNum (fromIntegral (lastId + 1))) | lastId >= 0 ])
   newMsgs <- forM (maybe [] (\j -> case j of { JArr xs -> xs; _ -> [] }) hj) $ \j -> do
@@ -339,7 +350,7 @@ refresh env st = do
         Just i | Just r <- lookupNum "repl_mb" i -> take 2400 ((t, round r, maybe 0 round (lookupNum "servers_mb" i)) : sMemHist st)
         _ -> sMemHist st
   takeHeap env st { sSize = size, sStatus = status, sInfo = info, sHist = hist, sLog = logLines, sLogSize = logSize
-                  , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt, sMemHist = memHist, sKnow = know, sKnowAt = knowAt }
+                  , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt, sMemHist = memHist, sKnow = know, sKnowAt = knowAt, sChat = chatInfo }
   where
     answer op args = do
       r <- try (Mcp.request (eConf env) (eName env) (JObj (("op", JStr op) : args))) :: IO (Either SomeException Json)
@@ -441,7 +452,7 @@ panelLines w st = drop off ls
       TView -> viewLines w st
       TLog -> [ wrapped (logLine l) | l <- sLog st ] >>= id
       TVerdict -> verdictLines w (sStatus st)
-      TUsage -> [ [(plain, l)] | l <- sUsage st ]
+      TUsage -> [ [(stCyan, l)] | l <- sChat st ] ++ [[]] ++ [ [(plain, l)] | l <- sUsage st ]
       THeap -> heapLines w st
       TKnow -> concat [ wrapSpans w 4 [(if "## " `isPrefixOf` l then stBold else plain, l)] | l <- sKnow st ]
       _ -> [ [(stRed, "no panes: " ++ fromMaybe "?" (sVtErr st))], [], [(plain, "libghostty-vt is Ghostty's terminal emulation as a C library: tools/libghostty-vt.sh builds it into .bin/,")], [(plain, "or put a libghostty-vt.so of your own beside ghci-session, or name one in GHS_LIBGHOSTTY.")] ]

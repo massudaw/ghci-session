@@ -1846,12 +1846,12 @@ runCli ch e o pending run = do
             let thr = threshold ro
                 mv = oRollover o < 0 && moved (rSaid ro) thr
             when (mv && oUsage o) (uiNote (cUi ch) (printf "[rollover: at %dk tokens (a fresh call %dk, %d tokens a call, a write %.1f reads)]" (thr `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro)))
-            let ro' = if mv then ro { rSaid = thr } else ro
+            share <- rotShare <$> readIORef rotR
+            let ro' = (if mv then ro { rSaid = thr } else ro) { rRot = fromMaybe (-1) share }
             writeIORef (cRoll ch) ro'
             saveRoll (rollFile (cConf ch) (cName ch)) ro'
             let grown = f > 0 && 3 * ctx > 4 * f
                 auto = oRollover o < 0
-            share <- rotShare <$> readIORef rotR
             said <- readIORef rotSaid
             let rot = auto && rotOver share
                 lim = (if rot then fmap (rotLimit True) else id) (limitOf (oRollover o) ro')

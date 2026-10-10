@@ -186,6 +186,9 @@ mark writing
 type \r
 until fake: you said 'from the monitor'
 mark written
+type 5
+until chat: at rest
+mark chatstate
 key ctrl-c
 wait 1
 mark left
@@ -328,6 +331,12 @@ def check_top(check, rec):
     s, t = at["writing"], at["written"]
     check("top: i writes a line for the session's chat on the bottom line; Enter sends it to the chat that is running, which answers it",
           s.lines[s.rows - 1].startswith(" to the chat> from the monitor") and t.has(" user: from the monitor") and t.has(" talk: fake: you said 'from the monitor'"), (s.lines[-1], t.lines[-4:]))
+    s = at["usage"]
+    check("top: 5 says whether a chat runs (none, here: it was left) and its last turn's tool calls", s.has("chat: not running (the last turn: ") and s.has("tool call"), s.lines[3:6])
+    s = at["chatstate"]
+    check("top: 5 shows the running chat at rest, its last turn's tool calls and its last words, and the rollover controller's state",
+          lit(s, "5 usage") and s.has("chat: at rest; the last turn: ") and s.has("said: fake: you said 'from the monitor'") and s.has("rollover: at ") and s.has("40k") and s.has("1500 tokens a call") and s.has("20% learned again")
+          and s.has("the cache lasts at least 15 and at most 55 minutes") and s.has("rot: 10% of the last 20 reads were repeats"), s.lines[3:9])
     s = at["left"]
     check("top: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
 
@@ -357,6 +366,11 @@ def main():
             seen += screens("chat", rec)
             check_chat(checks.check, rec)
         if "top" in which:
+            # (the model here is the fake one, which the controller learns nothing from: its state is given, as the chat keeps it)
+            hist = os.path.join(proj, ".ghci-session", session, "history")
+            os.makedirs(hist, exist_ok=True)
+            with open(os.path.join(hist, "roll.json"), "w") as f:
+                json.dump({"S": 40000, "g": 1500, "relearn": 0.2, "said": 100000, "lo": 900, "hi": 3300, "relid": 0, "rot": 0.1}, f)
             rec = tuicheck.run([tuicheck.CLI, "top", session], TOP, proj, env, unset)
             seen += screens("top", rec)
             check_top(checks.check, rec)

@@ -690,7 +690,7 @@ and stale and warning counts, half a second behind. Below, a tab at a time:
 | `2` view | the view the model reads, with the memory's numbers: lines, built nodes, settled or not, the compactor's jobs |
 | `3` log | the daemon's log |
 | `4` verdict | the verdict with what is behind it: the compiler's diagnostics, the failing lines, the members and the servers |
-| `5` usage | what the model calls cost |
+| `5` usage | the chat's turn (whether it runs, its tool calls so far or in the last turn, its last words; from `turn.json`), the rollover controller's state (`history/roll.json`: threshold, fresh call, growth, write price, share learned again, the cache's bounds, rot), and what the model calls cost |
 | `6` heap | the repl's resident memory graphed, a column each half second (the axis starts near the lowest value so a change of a few per cent shows; the servers' below it), and a report of the heap taken on a key, since each is a major collection with the session paused: `M` figures, `C` CAFs and the heap by constructor, `S` strings, `K` kept values, `D` missed sharing |
 | `7` chat | `ghci-session chat --tui` on this session |
 | `8` shell | a shell in the project |
