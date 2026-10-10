@@ -1,0 +1,20 @@
+app/GhciSession/Know.hs
+  h_fd5809635b36a3 381
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 372-374
+tools/check-knowledge.py
+  h_fd5809635b36a3 79
+tools/check-tui.py
+  h_fd5809635b36a3 299-300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c52438b94cb44ad483dcca6084fbb169ef6d39a4",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
