@@ -1,0 +1,16 @@
+app/GhciSession/Carry.hs
+  h_fd5809635b36a3 33
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "88ee058a6255a806c862a965606ccf317ec44fc3",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
