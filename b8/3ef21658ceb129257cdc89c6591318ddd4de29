@@ -1,0 +1,20 @@
+README.md
+  h_fd5809635b36a3 288-290
+app/GhciSession/Gc.hs
+  h_fd5809635b36a3 13,134-146,148,158,162
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 22-23,326-343
+tools/check-cli.py
+  h_fd5809635b36a3 196-197,201-202,206-209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b83ef21658ceb129257cdc89c6591318ddd4de29",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
