@@ -5,11 +5,24 @@ module GhciSession.SelfRound (checks) where
 import GhciSession.Json
 import GhciSession.Quota
 import GhciSession.QuotaFit
+import GhciSession.Roll
 import Data.List (isInfixOf)
 
 checks :: [(String, Bool)]
 checks =
-  [ ("quota: the windows of an event are its unifiedWindows, by name, each with its use and reset"
+  [ ("price ratio: one-hour writes make it 20 and the cache's upper bound 3600 s, five-minute ones 12.5 and 300 s, none seen 12.5 and 3300"
+    , let k w5 w1 = seeWrites w5 w1 (emptyRollWith Nothing)
+          f r = (rKind r, rRatio r, rHi r, lifetime r)
+      in (f (k 0 300), f (k 100 0), f (k 0 0), f (k 100 300)) == ((2, 20, 3600, 3300), (1, 12.5, 300, 300), (0, 12.5, 3300, 3300), (2, 20, 3600, 3300)))
+  , ("price ratio: rollover_ratio fixes the ratio whatever the writes say, but the cache's bounds follow the writes"
+    , let r = seeWrites 0 5 (emptyRollWith (Just 15)) in (rRatio r, rKind r, rHi r) == (15, 2, 3600))
+  , ("price ratio: a change of kind starts the bounds over; the same kind keeps what was learned"
+    , let learned = (seeWrites 0 5 (emptyRollWith Nothing)) { rLo = 1800, rHi = 3000 }
+      in ((rLo (seeWrites 0 9 learned), rHi (seeWrites 0 9 learned)), (rLo (seeWrites 9 0 learned), rHi (seeWrites 9 0 learned))) == ((1800, 3000), (0, 300)))
+  , ("price ratio: it is kept in the state's file, the kind too, and the dearer write rolls over later"
+    , let r = seeWrites 0 5 (emptyRollWith Nothing); b = seeWrites 5 0 (emptyRollWith Nothing)
+      in rollFrom Nothing (rollJson r) == r && rollFrom (Just 15) (rollJson r) == (seeWrites 0 5 (emptyRollWith (Just 15))) && threshold r > threshold b)
+  , ("quota: the windows of an event are its unifiedWindows, by name, each with its use and reset"
     , windowsOf ev == [Window "five_hour" 0.34 (Just 1760000000), Window "seven_day" 0.8 (Just 1760500000)])
   , ("quota: an event with no windows but a utilization says the one window it is about; with neither, none"
     , (windowsOf (JObj [("rateLimitType", JStr "five_hour"), ("utilization", JNum 0.5), ("resetsAt", JNum 7)]), windowsOf (JObj [("status", JStr "allowed")]))

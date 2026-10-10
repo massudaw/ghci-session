@@ -647,6 +647,13 @@ adds, both running estimates from the calls' usage and kept in `history/roll.jso
 reset makes the agent read again), within 80,000 and 200,000. With `--usage` a move of more than 5,000 is said. A
 number is a fixed threshold, `0` never.
 
+The ratio is not guessed when the calls say what they wrote: the `claude` program reports its cache writes as
+`ephemeral_5m` and `ephemeral_1h` tokens. One-hour writes (a subscription within the plan's usage) cost twice the
+input price against a read's tenth, so the ratio is 20 and the cache's upper bound starts at 3600 s; five-minute writes
+(usage credits, an API key) 1.25 and a tenth, 12.5 and 300 s; none seen, 12.5 and 3300 s. A change of kind starts the
+cache's bounds over. `rollover_ratio` in the configuration still fixes the ratio whatever the writes say. `usage
+--quota` says, beside the ratio in use, the one its fit implies when the fit is worth trusting (it never switches to it).
+
 A cold cache is the other reason to roll over: the controller keeps bounds on how long the provider keeps its cache
 (a call after a pause of G seconds that came back mostly cached: it lasts at least G; the same context after G, mostly
 not: at most G; 3300 s to begin with, kept in `roll.json`), and when a tool call has taken the time since the last

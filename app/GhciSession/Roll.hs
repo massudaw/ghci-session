@@ -10,11 +10,12 @@
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
   , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn, rotLimit, rotOver, rollLines
+  , emptyRollWith, seeWrites, ratioFor, startHi
   ) where
 
 import Control.Exception (IOException, try)
 import Data.List (isInfixOf)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
 import qualified Data.ByteString as B
 import System.Directory (renameFile)
 import Text.Printf (printf)
@@ -32,6 +33,8 @@ data Roll = Roll
   , rHi :: Double         -- ^ and lasted at most this many (the same context, after a pause this long, was read uncached)
   , rRelId :: Int         -- ^ the reset (its message's number) whose relearning was last counted
   , rRot :: Double        -- ^ the share of repeats among the last twenty reads, at the last call (-1: none seen); for the screen
+  , rFixed :: Bool        -- ^ the ratio is the configuration's ("rollover_ratio"): what the writes say does not change it
+  , rKind :: Int          -- ^ what the calls' cache writes were: 0 not seen, 1 five-minute ones, 2 one-hour ones (a subscription's)
   } deriving (Eq, Show)
 
 -- | The ratio of the prices when the configuration says none.
@@ -40,7 +43,35 @@ defaultRatio = 12.5
 
 -- | Before anything is seen: the measured values of this chat and another (a restart 45k, growth 1590 a call, 28%).
 emptyRoll :: Double -> Roll
-emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0 (-1)
+emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0 (-1) False 0
+
+-- | The start where the configuration may fix the ratio (@Just@) or leave it to what the writes say.
+emptyRollWith :: Maybe Double -> Roll
+emptyRollWith m = (emptyRoll (fromMaybe defaultRatio m)) { rFixed = isJust m }
+
+-- | The write price over the read price by the kind of cache write seen: a subscription's one-hour writes cost twice
+-- the input price and a read a tenth, 20; five-minute writes 1.25 and a tenth, 12.5 (as does an unknown one).
+ratioFor :: Int -> Double
+ratioFor 2 = 20
+ratioFor _ = defaultRatio
+
+-- | How long the cache is first taken to last at most, seconds, by the kind of write: an hour, five minutes, or (not
+-- seen) what an earlier chat found of the claude command's cache.
+startHi :: Int -> Double
+startHi 2 = 3600
+startHi 1 = 300
+startHi _ = 3300
+
+-- | A call's cache writes, @seeWrites five-minute one-hour@: tokens written for an hour mean one-hour writes, else
+-- tokens written mean five-minute ones; none, nothing. A change of kind starts the cache's bounds and the ratio over
+-- (the ratio only where the configuration has not fixed it).
+seeWrites :: Int -> Int -> Roll -> Roll
+seeWrites w5 w1 ro
+  | k == 0 || k == rKind ro = ro
+  | otherwise = ro { rKind = k, rLo = 0, rHi = startHi k, rRatio = if rFixed ro then rRatio ro else ratioFor k }
+  where k | w1 > 0 = 2
+          | w5 > 0 = 1
+          | otherwise = 0
 
 -- | The context at which a turn rolls over: @S + sqrt(2 r S (1 + relearn) g)@, within 80k and 200k.
 threshold :: Roll -> Int
@@ -133,34 +164,40 @@ coldDue ro since ctx = since > lifetime ro && fromIntegral ctx * 10 > 13 * rS ro
 -- the file ------------------------------------------------------------------------------------
 
 rollJson :: Roll -> Json
-rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro))), ("rot", JNum (rRot ro))]
+rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro))), ("rot", JNum (rRot ro)), ("kind", JNum (fromIntegral (rKind ro)))]
 
 -- | What the file says, for a screen: the threshold and what it comes from, the cache bounds, the rot.
-rollLines :: Double -> Json -> [String]
+rollLines :: Maybe Double -> Json -> [String]
 rollLines ratio j =
   [ printf "rollover: at %dk tokens (a fresh call %dk, %d tokens a call, a write %.1f reads, %.0f%% learned again)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro) (100 * rRelearn ro)
-  , printf "  the cache lasts at least %d and at most %d minutes; %s" (mins (rLo ro)) (mins (rHi ro)) rot ]
+  , printf "  the cache lasts at least %d and at most %d minutes (%s); %s" (mins (rLo ro)) (mins (rHi ro)) writes rot ]
   where
     ro = rollFrom ratio j
     rotS = fromMaybe (-1) (lookupNum "rot" j)
     mins s = round (s / 60) :: Int
+    writes = case (rKind ro, rFixed ro) of
+      (2, False) -> "one-hour writes: ratio 20" :: String
+      (1, False) -> "five-minute writes"
+      (_, True) -> "ratio fixed by rollover_ratio"
+      _ -> "writes not seen"
     rot | rotS < 0 = "no rot seen"
         | rotOver (Just rotS) = printf "rot: %.0f%% of the last 20 reads were repeats (the threshold a tenth lower)" (100 * rotS)
         | otherwise = printf "rot: %.0f%% of the last 20 reads were repeats" (100 * rotS)
 
 -- | A state from its file's JSON: what it does not have, or has not well, is what the start has.
-rollFrom :: Double -> Json -> Roll
-rollFrom ratio j = ro0 { rS = pick "S" (\x -> x >= 5000 && x <= 400000) (rS ro0), rG = pick "g" (\x -> x >= 50 && x <= 20000) (rG ro0)
+rollFrom :: Maybe Double -> Json -> Roll
+rollFrom ratio j = ro0 { rKind = kind, rRatio = if rFixed ro0 then rRatio ro0 else ratioFor kind, rS = pick "S" (\x -> x >= 5000 && x <= 400000) (rS ro0), rG = pick "g" (\x -> x >= 50 && x <= 20000) (rG ro0)
                        , rRelearn = pick "relearn" (\x -> x >= 0 && x <= 2) (rRelearn ro0), rSaid = round (pick "said" (>= 0) 0)
-                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (rHi ro0), rRelId = round (pick "relid" (>= 0) 0) }
-  where ro0 = emptyRoll ratio
+                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (startHi kind), rRelId = round (pick "relid" (>= 0) 0) }
+  where ro0 = emptyRollWith ratio
+        kind = round (pick "kind" (\x -> x >= 0 && x <= 2) 0) :: Int
         pick k ok d = case lookupNum k j of { Just x | ok x -> x; _ -> d }
 
 -- | The state kept in a file (the start where there is none).
-loadRoll :: FilePath -> Double -> IO Roll
+loadRoll :: FilePath -> Maybe Double -> IO Roll
 loadRoll f ratio = do
   b <- try (B.readFile f) :: IO (Either IOException B.ByteString)
-  pure (either (const (emptyRoll ratio)) (either (const (emptyRoll ratio)) (rollFrom ratio) . parseJsonBS) b)
+  pure (either (const (emptyRollWith ratio)) (either (const (emptyRollWith ratio)) (rollFrom ratio) . parseJsonBS) b)
 
 -- | Keep the state (written beside, then renamed: a chat killed in the middle leaves the old one).
 saveRoll :: FilePath -> Roll -> IO ()

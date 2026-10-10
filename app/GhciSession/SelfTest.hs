@@ -153,7 +153,7 @@ run = do
   eq "roll: one jump is cut at 20k" (rG (seeCall False 10000 90000 ro0 { rG = 0 })) 1000
   eq "roll: --rollover 0 never, N fixed, auto the threshold" (map (\n -> limitOf n ro0) [0, 123456, -1]) [Nothing, Just 123456, Just (threshold ro0)]
   eq "roll: said again when moved by more than 5k" (map (moved 100000) [104000, 106000, 94000]) [False, True, True]
-  eq "roll: its file round-trips" (rollFrom 12.5 (rollJson ro0 { rS = 51234, rG = 1700, rSaid = 99000 })) ro0 { rS = 51234, rG = 1700, rSaid = 99000 }
+  eq "roll: its file round-trips" (rollFrom Nothing (rollJson ro0 { rS = 51234, rG = 1700, rSaid = 99000 })) ro0 { rS = 51234, rG = 1700, rSaid = 99000 }
   eq "roll: the cache is taken to last 3300 s at the start" (lifetime ro0) 3300
   eq "roll: a call after a pause that came back cached: it lasted at least that" (let r = seeGap 5000 60000 62000 58000 ro0 in (rLo r, rHi r, lifetime r)) (5000, 5000, 5000)
   eq "roll: the same context after a pause, uncached: it lasted at most that" (let r = seeGap 1800 60000 62000 8000 ro0 in (rLo r, rHi r, lifetime r)) (0, 1800, 1800)
@@ -163,7 +163,7 @@ run = do
   eq "roll: a fixed limit is passed or not; the controller's ends a run at 1.15, or from 0.85 at a boundary" (map (\(a, l, c, b) -> rollAt a l c b) [(False, 100000, 100001, False), (False, 100000, 100000, True), (True, 100000, 114999, False), (True, 100000, 115000, False), (True, 100000, 85000, True), (True, 100000, 84999, True)]) [True, False, False, True, True, False]
   eq "roll: a commit that went through is a boundary, a failed one, an empty one, or a plain command is not" (map (\(n, c, ok, o) -> boundaryTool n (JObj [("cmd", JStr c)]) ok o) [("sh", "git add -A && git commit -q -m x", True, "[exit 0 in 0.1 s]"), ("sh", "git commit -q -m x", True, "nothing to commit\n[exit 1 in 0.1 s]"), ("sh", "git commit -q -m x", True, "[exit 1 in 0.1 s]"), ("sh", "ls", True, "[exit 0 in 0.1 s]"), ("edit", "", True, "edited")]) [True, False, False, False, False]
   eq "roll: a green test is a boundary, a red one is not" (map (\o -> boundaryTool "test" JNull True o) ["selftest: all 438 passed", "OK -- CHECK-PASS (0.6s)", "selftest: 1 of 438 FAILED", "STALE(1) COMPILE-ERROR", "OK -- CHECK SKIPPED"]) [True, True, False, False, False]
-  eq "roll: a file with nonsense in it is the start" (rollFrom 12.5 (JObj [("S", JNum (-3)), ("g", JStr "x")])) ro0
+  eq "roll: a file with nonsense in it is the start" (rollFrom Nothing (JObj [("S", JNum (-3)), ("g", JStr "x")])) ro0
 
   -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")
   let bconf = Conf { cRoot = "/p", cStateDir = "/p/.s", cStateRel = ".s", cDefault = "tool", cTargets = [("tool", JNull), ("engine", JNull)], cSessions = [], cPrices = [] }

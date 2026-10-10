@@ -311,7 +311,7 @@ chatLines env = do
   up <- isJust <$> Inbox.running (eConf env) (eName env)
   tj <- fromMaybe (JObj []) <$> Inbox.readTurn (eConf env) (eName env)
   rj <- readFileMaybe (eDir env </> "history" </> "roll.json")
-  pure (Inbox.turnLines up tj ++ maybe ["rollover: no state yet (the chat keeps it in history/roll.json)"] (either (const []) (Roll.rollLines (rolloverRatioOf (eConf env) (eName env))) . parseJson) rj)
+  pure (Inbox.turnLines up tj ++ maybe ["rollover: no state yet (the chat keeps it in history/roll.json)"] (either (const []) (Roll.rollLines (rolloverRatioSet (eConf env) (eName env))) . parseJson) rj)
 
 -- | A look at everything the screen shows: the status file, the daemon's info and its log, the history's
 -- new messages; the view and the ledger only on their tabs, and not every time.

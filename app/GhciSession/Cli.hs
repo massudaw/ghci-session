@@ -35,6 +35,7 @@ import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Top (topMain)
 import GhciSession.Usage (usageRows, usageTable)
 import GhciSession.Quota (windowLines)
+import GhciSession.Roll (Roll (..), rollFrom, defaultRatio)
 import GhciSession.QuotaFit (quotaLines)
 import GhciSession.Mcp (mcpMain, relayMain, toolArgs)
 import qualified GhciSession.Mcp as Mcp
@@ -431,9 +432,15 @@ cmdUsage conf a = do
     Just d | [(k, "")] <- reads d -> (\t -> t - k * 86400) <$> now
     _ -> pure 0
   rows <- usageRows conf names since
+  -- (the ratio the controller uses: the configuration's, else what the cache writes seen say)
+  inUse <- case listToMaybe names of
+    Nothing -> pure defaultRatio
+    Just n -> do
+      t <- readFileMaybe (stateOf conf n </> "history" </> "roll.json")
+      pure (either (const (rolloverRatioOf conf n)) (rRatio . rollFrom (rolloverRatioSet conf n)) (parseJson (fromMaybe "" t)))
   if null rows then putStrLn "no model calls recorded (the chat and the compactor write <state>/<session>/usage.jsonl)" >> pure 0
   else if flag a ["--json"] then putStrLn (encode (JArr (map snd rows))) >> pure 0
-  else if flag a ["--quota"] then mapM_ putStrLn (quotaLines (rolloverRatioOf conf (fromMaybe "" (listToMaybe names))) rows) >> pure 0
+  else if flag a ["--quota"] then mapM_ putStrLn (quotaLines inUse rows) >> pure 0
   else mapM_ putStrLn (usageTable conf rows) >> windowLines (map snd rows) >>= mapM_ putStrLn >> pure 0
 
 -- | __The session's own scenario, timed__: the steps a target lists under @"profile"@, run in order against

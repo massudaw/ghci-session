@@ -7,7 +7,7 @@ module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
   , benchSession, benchOf, benchSites, sameFlags, knownSession
-  , targetJson, stateOf, lineBudgetOf, onTurnEndOf, rolloverRatioOf
+  , targetJson, stateOf, lineBudgetOf, onTurnEndOf, rolloverRatioOf, rolloverRatioSet
   ) where
 
 import Control.Exception (IOException, try)
@@ -160,9 +160,13 @@ onTurnEndOf conf name = case [ c | m <- fromMaybe [name] (lookup name (cSessions
 -- | What a token written to the provider's cache costs over one read from it ("rollover_ratio", 12.5): what a
 -- rollover weighs a cold call against by, the first member of the session that sets one.
 rolloverRatioOf :: Conf -> String -> Double
-rolloverRatioOf conf name = case [ r | m <- fromMaybe [name] (lookup name (cSessions conf)), Just r <- [lookupNum "rollover_ratio" (targetJson conf m)], r > 0 ] of
-  r : _ -> r
-  [] -> 12.5
+rolloverRatioOf conf name = fromMaybe 12.5 (rolloverRatioSet conf name)
+
+-- | The ratio the configuration fixes, if it does (it then wins over what the cache writes say).
+rolloverRatioSet :: Conf -> String -> Maybe Double
+rolloverRatioSet conf name = case [ r | m <- fromMaybe [name] (lookup name (cSessions conf)), Just r <- [lookupNum "rollover_ratio" (targetJson conf m)], r > 0 ] of
+  r : _ -> Just r
+  [] -> Nothing
 
 sessionNames :: Conf -> [String]
 sessionNames conf = map fst (cTargets conf) ++ map fst (cSessions conf)
