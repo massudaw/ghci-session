@@ -651,9 +651,13 @@ N fresh calls was given, part by part (no model call).
 
 The default, `--rollover auto`, is a controller: a fresh call reads its whole context uncached, at `rollover_ratio`
 times (12.5) the price of a read from the cache, and the context then grows a few thousand tokens a call; the cost of
-a call is least at `S + sqrt(2 * r * S * (1 + relearn) * g)` (S: the context of a run's first call, g: what a call
+a call is least at `S + sqrt(2 * (R + relearn * r * S) * g)` (S: the context of a run's first call, g: what a call
 adds, both running estimates from the calls' usage and kept in `history/roll.json`; relearn: the share of what a
-reset makes the agent read again), within 80,000 and 200,000. With `--usage` a move of more than 5,000 is said. A
+reset makes the agent read again; R: what the reset writes, `r * (S - P) + P`, where P, some 4-8k tokens, is the
+system prompt and tools a fresh call still reads from the cache, learned from the first call of each run), within
+80,000 and 200,000. S is the whole context the run restarts at (26-39k of conversation plus P, and what the model
+reads again); only R is the reset's price. On the logs of this repository and dxf the replay puts this 0.8% under
+pricing a reset at the whole S, and 9.1% / 0.3% under a fixed 150,000. With `--usage` a move of more than 5,000 is said. A
 number is a fixed threshold, `0` never.
 
 The ratio is not guessed when the calls say what they wrote: the `claude` program reports its cache writes as

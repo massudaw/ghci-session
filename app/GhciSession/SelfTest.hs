@@ -134,7 +134,7 @@ run = do
   eq "replay: usage lines are the calls, the rest of a log is not" (parseCalls "hello\n[usage: in 1200, out 30, cached 1000 (83%), 2.1s]\n[usage: in 5, out x]\n[usage: in 1300, out 20, cached 1200 (92%), 1s]\n") [Call 1200 1000 30, Call 1300 1200 20]
   eq "replay: growth is the log's where it grew by under 20k, the median where a reset came" (growths [Call 100000 0 0, Call 101000 0 0, Call 40000 0 0, Call 42000 0 0]) [0, 1000, 2000, 2000]
   eq "replay: a fresh call is the median of the contexts that began under 70% of the one before" (freshSize [Call 100000 0 0, Call 40000 0 0, Call 90000 0 0, Call 50000 0 0], freshSize [Call 10 0 0]) (50000, 50000)
-  eq "replay: a policy that never resets has none, and a low fixed limit resets" (let cs = [ Call (50000 + 1000 * i) 0 10 | i <- [0 .. 99] ] in (length (smResets (simulate 12.5 50000 (Fixed 0) cs)), length (smResets (simulate 12.5 50000 (Fixed 80000) cs)) > 0, smCalls (simulate 12.5 50000 Auto cs))) (0, True, 100)
+  eq "replay: a policy that never resets has none, and a low fixed limit resets" (let cs = [ Call (50000 + 1000 * i) 0 10 | i <- [0 .. 99] ] in (length (smResets (simulate 12.5 50000 7700 (Fixed 0) cs)), length (smResets (simulate 12.5 50000 7700 (Fixed 80000) cs)) > 0, smCalls (simulate 12.5 50000 7700 Auto cs))) (0, True, 100)
   eq "replay: too short a log is said so" (take 1 (lines (replayReport 12.5 [("x", [Call 1 1 1])]))) ["x: 1 calls: too few to replay"]
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
@@ -144,7 +144,7 @@ run = do
 
   -- the rollover's controller
   let ro0 = emptyRoll 12.5
-  eq "roll: the threshold is S + sqrt(2 r S (1+relearn) g)" (threshold ro0 { rRelearn = 0, rS = 50000, rG = 2000, rRatio = 12.5 }) (round (50000 + sqrt (2 * 12.5 * 50000 * 2000 :: Double)))
+  eq "roll: with nothing of a fresh call cached the threshold is S + sqrt(2 r S (1+relearn) g)" (threshold ro0 { rRelearn = 0, rS = 50000, rG = 2000, rRatio = 12.5, rP = 0 }) (round (50000 + sqrt (2 * 12.5 * 50000 * 2000 :: Double)))
   eq "roll: it is kept within 80k and 200k" (map threshold [ro0 { rS = 5000, rG = 50 }, ro0 { rS = 190000, rG = 20000 }]) [80000, 200000]
   eq "roll: a dearer write is later, a faster growth is sooner" (let t r g = threshold ro0 { rRatio = r, rG = g } in (t 20 1590 > t 12.5 1590, t 12.5 3000 < t 12.5 1590)) (True, False)
   eq "roll: a run's first call moves the restart's size halfway" (rS (seeCall True 0 65000 ro0 { rS = 45000 })) 55000

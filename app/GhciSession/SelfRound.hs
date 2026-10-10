@@ -10,6 +10,7 @@ import GhciSession.Gc (orphanBuilds, isPidFile)
 import qualified GhciSession.Know as K
 import qualified Data.Text as T
 import Data.List (isInfixOf)
+import GhciSession.Replay (Call (..), Policy (..), Sim (..), simulate, freshCached)
 
 -- (a fact: subject, text, days since the newest, times said again)
 kf :: String -> String -> Double -> Int -> K.Fact
@@ -29,6 +30,19 @@ checks =
     , let facts = [ (kf "dxf/status" "KEPT-OFTEN" 40 3) ] ++ [ kf "dxf/status" ("TRIVIA-" ++ show k ++ replicate 60 'x') (fromIntegral k) 0 | k <- [0 .. 30 :: Int] ]
           block = T.unpack (K.render 700 "dxf" facts)
       in "KEPT-OFTEN" `isInfixOf` block && not ("TRIVIA-30" `isInfixOf` block))
+  , ("roll: a reset is priced at what it writes, r (S - P) + P, and the context restarts at the whole S: the threshold is S + sqrt(2 (R + relearn r S) g)"
+    , let ro = (emptyRoll 12.5) { rS = 47500, rP = 7700, rG = 1740, rRelearn = 0.12 }
+          whole = ro { rP = 0 }
+      in round (resetCost ro) == (505200 :: Int) && round (resetCost whole) == (593750 :: Int) && threshold ro < threshold whole && threshold ro > 80000
+         && threshold ro == round (47500 + sqrt (2 * (resetCost ro + 0.12 * 12.5 * 47500) * 1740 :: Double)))
+  , ("roll: a run's first call moves what a fresh call has cached a third of the way, a later call does not; the file keeps it"
+    , let ro = (emptyRoll 12.5) { rP = 7700 }
+      in (round (rP (seeCached True 0 ro)) :: Int, rP (seeCached False 50000 ro)) == (5390, 7700)
+         && rP (rollFrom Nothing (rollJson (seeCached True 0 ro))) == rP (seeCached True 0 ro))
+  , ("replay: the log's fresh calls give the cached part, and a reset priced at what it writes comes no later than one priced whole"
+    , let cs = concat [ [ Call (45000 + 1500 * i) (if i == 0 then 7700 else 44000 + 1500 * i) 10 | i <- [0 .. 40] ] | _ <- [1 .. 3 :: Int] ]
+          firstReset p = take 1 (smResets (simulate 12.5 45000 (freshCached cs) p cs))
+      in freshCached cs == 7700 && firstReset Auto /= [] && firstReset Auto <= firstReset AutoWhole)
   , ("gc: a live chat's command line holds ghc and the build directory, yet it is no orphaned build once its chat.pid owns it"
     , let chat = (79661, 1, "/r/dist-newstyle/build/ghci-session/ghci-session chat -s tool"); ghc = (500, 1, "ghc --interactive -i/r/dist-newstyle/x")
           other = (600, 1, "vim /r/dist-newstyle/x")

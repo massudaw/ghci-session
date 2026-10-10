@@ -4,11 +4,13 @@
 -- grows by @g@ tokens a call. A cycle from @S@ to @T@ is @(T-S)/g@ calls; a call costs, in reads, the mean
 -- context @(S+T)/2@, and the reset @r*S@ over the cycle: @r*S*g/(T-S) + (S+T)/2 + r*g@ a call, which is least at
 -- @T = S + sqrt(2 r S g)@. That is 'threshold', with the share of what the reset makes the agent learn again
--- counted in the restart's price (@S@ times @1 + relearn@). This module is pure, but
+-- counted in the restart's price (@1 + relearn@ times). What a reset writes is not the whole of @S@: a fresh call reads the
+-- system prompt and the tools (@P@, some 7.7k tokens) from the cache as the call before it did, so its price is
+-- @r (S - P) + P@ -- while the context starts again at the whole of @S@ and grows from there. This module is pure, but
 -- for the file its state is kept in, beside the session's history: what the controller has learned (the
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
-  ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
+  ( Roll (..), emptyRoll, threshold, resetCost, seeCall, seeCached, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
   , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn, rotLimit, rotOver, rollLines
   , emptyRollWith, seeWrites, ratioFor, startHi
   ) where
@@ -34,6 +36,7 @@ data Roll = Roll
   , rRelId :: Int         -- ^ the reset (its message's number) whose relearning was last counted
   , rRot :: Double        -- ^ the share of repeats among the last twenty reads, at the last call (-1: none seen); for the screen
   , rFixed :: Bool        -- ^ the ratio is the configuration's ("rollover_ratio"): what the writes say does not change it
+  , rP :: Double          -- ^ tokens of a fresh call that are read from the cache (the system prompt's and the tools': the reset does not write them)
   , rKind :: Int          -- ^ what the calls' cache writes were: 0 not seen, 1 five-minute ones, 2 one-hour ones (a subscription's)
   } deriving (Eq, Show)
 
@@ -43,7 +46,7 @@ defaultRatio = 12.5
 
 -- | Before anything is seen: the measured values of this chat and another (a restart 45k, growth 1590 a call, 28%).
 emptyRoll :: Double -> Roll
-emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0 (-1) False 0
+emptyRoll r = Roll r 45000 1590 0.28 0 0 3300 0 (-1) False 7700 0
 
 -- | The start where the configuration may fix the ratio (@Just@) or leave it to what the writes say.
 emptyRollWith :: Maybe Double -> Roll
@@ -73,9 +76,16 @@ seeWrites w5 w1 ro
           | w5 > 0 = 1
           | otherwise = 0
 
--- | The context at which a turn rolls over: @S + sqrt(2 r S (1 + relearn) g)@, within 80k and 200k.
+-- | What a reset costs, in reads: a fresh call writes its context but the part that comes from the cache anyway (the
+-- system prompt and the tools, 'rP': the same prefix as the call before it) -- @r (S - P) + P@.
+resetCost :: Roll -> Double
+resetCost ro = rRatio ro * (rS ro - p) + p where p = max 0 (min (rS ro) (rP ro))
+
+-- | The context at which a turn rolls over: @S + sqrt(2 (R + relearn r S) g)@ with @R@ the 'resetCost' (that is
+-- @r S@ if nothing of a fresh call is cached; what is learned again is written, whole), within 80k and 200k. The restart is where the context starts again,
+-- the whole of @S@; only what the reset writes is its price.
 threshold :: Roll -> Int
-threshold ro = max 80000 (min 200000 (round (rS ro + sqrt (2 * rRatio ro * rS ro * (1 + rRelearn ro) * rG ro))))
+threshold ro = max 80000 (min 200000 (round (rS ro + sqrt (2 * (resetCost ro + rRelearn ro * rRatio ro * rS ro) * rG ro))))
 
 -- | A call's usage: @seeCall first prev ctx@, the first of a run or not, the context of the call before it (0:
 -- none) and this one's. A run's first call is a restart's size; one after it is a growth (a call that shrank the
@@ -87,6 +97,13 @@ seeCall first prev ctx ro
   | prev > 0 && ctx > prev = ro { rG = mix 0.05 (rG ro) (fromIntegral (min 20000 (ctx - prev))) }
   | otherwise = ro
   where mix a old new = (1 - a) * old + a * new
+
+-- | A run's first call's cache read, @seeCached first cached@: what a fresh call has cached already (a third of the
+-- way a call, as a reset after a pause that lost the cache reads none).
+seeCached :: Bool -> Int -> Roll -> Roll
+seeCached first cached ro
+  | first && cached >= 0 = ro { rP = 0.7 * rP ro + 0.3 * fromIntegral cached }
+  | otherwise = ro
 
 -- | The context past which a run rolls over, by the setting of @--rollover@: a number is that many tokens
 -- (0: never), a negative one is the controller's.
@@ -164,12 +181,12 @@ coldDue ro since ctx = since > lifetime ro && fromIntegral ctx * 10 > 13 * rS ro
 -- the file ------------------------------------------------------------------------------------
 
 rollJson :: Roll -> Json
-rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro))), ("rot", JNum (rRot ro)), ("kind", JNum (fromIntegral (rKind ro)))]
+rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro)), ("relid", JNum (fromIntegral (rRelId ro))), ("rot", JNum (rRot ro)), ("kind", JNum (fromIntegral (rKind ro))), ("P", JNum (rP ro))]
 
 -- | What the file says, for a screen: the threshold and what it comes from, the cache bounds, the rot.
 rollLines :: Maybe Double -> Json -> [String]
 rollLines ratio j =
-  [ printf "rollover: at %dk tokens (a fresh call %dk, %d tokens a call, a write %.1f reads, %.0f%% learned again)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro) (100 * rRelearn ro)
+  [ printf "rollover: at %dk tokens (a fresh call %dk, %dk of it cached, %d tokens a call, a write %.1f reads, %.0f%% learned again)" (threshold ro `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rP ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro) (100 * rRelearn ro)
   , printf "  the cache lasts at least %d and at most %d minutes (%s); %s" (mins (rLo ro)) (mins (rHi ro)) writes rot ]
   where
     ro = rollFrom ratio j
@@ -188,7 +205,7 @@ rollLines ratio j =
 rollFrom :: Maybe Double -> Json -> Roll
 rollFrom ratio j = ro0 { rKind = kind, rRatio = if rFixed ro0 then rRatio ro0 else ratioFor kind, rS = pick "S" (\x -> x >= 5000 && x <= 400000) (rS ro0), rG = pick "g" (\x -> x >= 50 && x <= 20000) (rG ro0)
                        , rRelearn = pick "relearn" (\x -> x >= 0 && x <= 2) (rRelearn ro0), rSaid = round (pick "said" (>= 0) 0)
-                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (startHi kind), rRelId = round (pick "relid" (>= 0) 0) }
+                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (startHi kind), rRelId = round (pick "relid" (>= 0) 0), rP = pick "P" (\x -> x >= 0 && x <= 100000) (rP ro0) }
   where ro0 = emptyRollWith ratio
         kind = round (pick "kind" (\x -> x >= 0 && x <= 2) 0) :: Int
         pick k ok d = case lookupNum k j of { Just x | ok x -> x; _ -> d }

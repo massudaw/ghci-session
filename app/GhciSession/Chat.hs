@@ -1846,7 +1846,7 @@ runCli ch e o pending run = do
           writeIORef prevCtx ctx
           when (isNothing (cSub ch)) $ do
             ended <- readIORef lastEnd
-            ro <- seeGap (if ended > 0 then t - ended else 0) prev ctx (k "cache_read_input_tokens") . seeCall (f == 0) prev ctx . seeWrites w5 w1 <$> readIORef (cRoll ch)
+            ro <- seeGap (if ended > 0 then t - ended else 0) prev ctx (k "cache_read_input_tokens") . seeCached (f == 0) (k "cache_read_input_tokens") . seeCall (f == 0) prev ctx . seeWrites w5 w1 <$> readIORef (cRoll ch)
             -- (the controller: what a restart and a call's growth are, as seen; its threshold said when it has moved)
             let thr = threshold ro
                 mv = oRollover o < 0 && moved (rSaid ro) thr
