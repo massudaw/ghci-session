@@ -285,8 +285,9 @@ their total is under a limit). Three things can outlive a session with nothing r
 directory no longer names, a server whose daemon died, and the `ghc --interactive` that a `cabal repl` exec'd, which
 keeps the lock on `dist-newstyle`. `status` warns when it sees any, and `gc` reaps them. Attribution is by absolute
 path, never by name, so a sibling checkout's healthy session is not touched. `gc` also removes the state directory of
-a session that never loaded (a sibling such as `tool-O2` whose boot failed or timed out: no daemon, status `loaded=-`,
-no history, idle over ten minutes); `gc -n` lists what it would do.
+a session that never loaded (a sibling whose boot failed: no daemon, status `loaded=-`, no history, no compiled module,
+idle over ten minutes); `gc -n` lists what it would do. A sibling that timed out in the middle of a first `-O2` compile
+(`tool-O2`) holds what it compiled, and is kept: the next boot resumes from it.
 
 ## History and agents
 

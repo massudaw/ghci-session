@@ -10,7 +10,7 @@
 -- Attribution is by ABSOLUTE PATH, never by name: several checkouts of one project are routinely live at
 -- once. A daemon carries @--root <abs>@ on its command line; a build process this project's dist-newstyle
 -- or state directory.
-module GhciSession.Gc (Leftovers (..), orphanBuilds, isPidFile, findLeftovers, runGc, daemonPid, listProcesses, neverLoaded, deadSessions) where
+module GhciSession.Gc (Leftovers (..), orphanBuilds, isPidFile, findLeftovers, runGc, daemonPid, listProcesses, neverLoaded, holdsObjects, deadSessions) where
 
 import Control.Concurrent (threadDelay)
 import Control.Exception (IOException, try)
@@ -131,8 +131,21 @@ isPidFile f = f == "pid" || ".pid" `isSuffixOf` f
 neverLoaded :: String -> Bool
 neverLoaded status = "loaded=-" `isInfixOf` status
 
+-- | Does a directory hold, at any depth, a compiled module (@.o@ or @.hi@)? A session that timed out in the middle of
+-- a first -O2 build never loaded, but keeps what it compiled -- over fifteen minutes of work the next boot resumes from.
+holdsObjects :: FilePath -> IO Bool
+holdsObjects dir = do
+  es <- either (\(_ :: IOException) -> []) id <$> try (listDirectory dir)
+  let go [] = pure False
+      go (n : r) | any (`isSuffixOf` n) [".o", ".hi"] = pure True
+                 | otherwise = do
+                     isD <- doesDirectoryExist (dir </> n)
+                     hit <- if isD then holdsObjects (dir </> n) else pure False
+                     if hit then pure True else go r
+  go es
+
 -- | Sessions whose daemon is not running (no live pid, no daemon process of that name) and that never loaded, idle
--- longer than ten minutes (a boot may still be under way): (name, idle days, MB).
+-- longer than ten minutes (a boot may still be under way), and hold no compiled module: (name, idle days, MB).
 deadSessions :: Conf -> [(Int, Int, String)] -> IO [(String, Double, Double)]
 deadSessions conf procs = do
   dirs <- sessionDirs conf
@@ -142,10 +155,11 @@ deadSessions conf procs = do
     up <- daemonPid conf name
     st <- fromMaybe "" <$> readFileMaybe (d </> "status")
     used <- or <$> mapM (\f -> doesPathExist (d </> f)) ["history", "loaded_sources.tsv", "turn.json", "usage.jsonl", "chat.pid"]
+    compiled <- if used then pure True else holdsObjects (d </> "objs")
     mt <- modTime (d </> "status") >>= maybe (modTime d) (pure . Just)
     let booting = any (\(_, _, c) -> let ws = words c in "_daemon" `elem` ws && name `elem` ws) procs
     case mt of
-      Just m | up == Nothing, not booting, not used, neverLoaded st, m < t - 600 -> do
+      Just m | up == Nothing, not booting, not used, not compiled, neverLoaded st, m < t - 600 -> do
         size <- duMb d
         pure (Just (name, (t - m) / 86400, size))
       _ -> pure Nothing

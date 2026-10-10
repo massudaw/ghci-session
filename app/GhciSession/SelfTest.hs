@@ -19,6 +19,8 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
+import GhciSession.Gc (deadSessions, holdsObjects)
+import Data.Time.Clock (addUTCTime, getCurrentTime)
 import GhciSession.Inbox (Mark (..), markOf, advance, settled, turnReport, stillRunning)
 import GhciSession.Chat (shownCut, parseOpts, Opts (..), hookEnv, unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
@@ -321,6 +323,24 @@ run = do
   loadConf tmp >>= \r -> check "config: an unknown key is refused" (either ("unknown key" `isInfixOf`) (const False) r)
   writeConf "{\"targets\": {\"a\": {}}, \"sessions\": {\"dev\": [\"nope\"]}}"
   loadConf tmp >>= \r -> check "config: an unknown member is refused" (either (const True) (const False) r)
+  -- gc: a session that never loaded is reaped, unless it is young or holds the modules it compiled (a timed-out -O2 build)
+  writeConf "{\"targets\": {\"a\": {}}}"
+  loadConf tmp >>= \r -> case r of
+    Right c -> do
+      t0 <- getCurrentTime
+      let sd = cStateDir c
+          ghost n = do
+            createDirectoryIfMissing True (sd </> n)
+            writeFile (sd </> n </> "status") "STALE(3) DEAD: timed out after 900s\nsession=x gen=0 loaded=- checked=-\n"
+            setModificationTime (sd </> n </> "status") (addUTCTime (-3600) t0)
+      mapM_ ghost ["ghost-O2", "built-O2", "fresh-O2"]
+      createDirectoryIfMissing True (sd </> "built-O2" </> "objs" </> "A")
+      writeFile (sd </> "built-O2" </> "objs" </> "A" </> "M.o") "x"
+      setModificationTime (sd </> "fresh-O2" </> "status") t0
+      dead <- deadSessions c []
+      held <- mapM (holdsObjects . (sd </>)) ["built-O2" </> "objs", "ghost-O2"]
+      eq "gc: a dead session that never loaded is reaped; one idle under ten minutes, or holding compiled modules, is not" (map (\(n, _, _) -> n) dead, held) (["ghost-O2"], [True, False])
+    Left e -> check ("gc: the fixture's config: " ++ e) False
 
   -- the scan and the waiter
   writeFile (tmp </> "src" </> "M.hs") "module M where\n"

@@ -193,16 +193,20 @@ def main():
               and not os.path.exists(os.path.join(proj, ".ghci-session", session, "history", "imported.json")), (r.returncode, r.stdout, r.stderr, time.time() - t0))
         # a sibling whose boot failed leaves its state dir (status "loaded=-", no history): gc -n lists it, gc removes it
         ghost = os.path.join(proj, ".ghci-session", "ghost-O2"); fresh = os.path.join(proj, ".ghci-session", "booting-O2")
-        for g, age in ((ghost, 3600), (fresh, 0)):
+        built = os.path.join(proj, ".ghci-session", "built-O2")      # (timed out in the middle of a first compile: it holds what it compiled)
+        for g, age in ((ghost, 3600), (fresh, 0), (built, 3600)):
             os.makedirs(g, exist_ok=True); sf = os.path.join(g, "status")
             open(sf, "w").write("STALE(3) DEAD: timed out after 900s\nsession=x gen=0 loaded=- checked=-\n")
             os.utime(sf, (time.time() - age, time.time() - age))
+        os.makedirs(os.path.join(built, "objs", "Demo"), exist_ok=True)
+        open(os.path.join(built, "objs", "Demo", "A.o"), "w").write("x")
         gc = lambda *a: subprocess.run([tuicheck.CLI, "gc", *a], cwd=proj, env=env, capture_output=True, text=True, timeout=60)
         r1 = gc("-n"); there1 = os.path.isdir(ghost)
         r2 = gc(); there2 = os.path.isdir(ghost)
-        check("gc -n lists a dead session that never loaded and keeps it; gc removes it; one still young is left",
-              "would reap session ghost-O2" in r1.stdout and "booting-O2" not in r1.stdout and there1
-              and "reaping session ghost-O2" in r2.stdout and not there2 and os.path.isdir(fresh), (r1.stdout, r2.stdout, there1, there2))
+        check("gc -n lists a dead session that never loaded and keeps it; gc removes it; one still young, or holding compiled modules, is left",
+              "would reap session ghost-O2" in r1.stdout and "booting-O2" not in r1.stdout and "built-O2" not in r1.stdout and there1
+              and "reaping session ghost-O2" in r2.stdout and not there2 and os.path.isdir(fresh)
+              and os.path.isfile(os.path.join(built, "objs", "Demo", "A.o")), (r1.stdout, r2.stdout, there1, there2))
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:
