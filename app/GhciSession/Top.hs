@@ -27,6 +27,7 @@ import Data.IORef
 import Data.List (intercalate, isInfixOf, isPrefixOf)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
+import qualified GhciSession.Inbox as Inbox
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -120,6 +121,7 @@ data St = St
   , sHeap :: Maybe Heap               -- ^ the last report of the heap
   , sHeapBusy :: Maybe String         -- ^ a report being taken: which
   , sWake :: IO ()                    -- ^ what a pane calls when it has something to show
+  , sInput :: Maybe String            -- ^ a line being written for the session's chat
   , sLaid :: M.Map Int (Int, Bool, [[Span]])  -- ^ the history's messages laid out: for which width, open or cut, the lines
   }
 
@@ -138,7 +140,7 @@ topMain conf mname = do
   let dir = cStateDir conf </> name
   heapBox <- newIORef Nothing
   let env = Env conf name dir heapBox
-      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) M.empty
+      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) Nothing M.empty
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -167,7 +169,23 @@ event env e st = case e of
 -- | A key's effect, and whether a fresh look follows; 'Nothing' to quit.
 key :: Env -> KeyPress -> St -> IO (Maybe (St, Bool))
 key env kp@(KeyPress k _ bytes) st
+  -- a line for the session's chat: Enter leaves it in the chat's inbox ("GhciSession.Inbox"), Esc drops it
+  | Just t <- sInput st, not (isPane (sTab st)) = case k of
+      KEsc -> pure (Just (st { sInput = Nothing, sNote = "" }, False))
+      KChar 'c' | Ctrl `elem` kMods kp -> pure (Just (st { sInput = Nothing, sNote = "" }, False))
+      KChar 'u' | Ctrl `elem` kMods kp -> pure (Just (st { sInput = Just "" }, False))
+      KBackspace -> pure (Just (st { sInput = Just (take (length t - 1) t) }, False))
+      KEnter | null (words t) -> pure (Just (st { sInput = Nothing }, False))
+             | otherwise -> do
+                 r <- Inbox.send (eConf env) (eName env) t
+                 pure (Just (case r of
+                   Left why -> st { sNote = "not sent: " ++ why }
+                   Right _ -> st { sInput = Nothing, sNote = "sent to the chat", sFollow = M.insert THistory True (sFollow st) }, True))
+      -- (what is typed, and what is pasted: the printable characters of the bytes)
+      _ | not (Ctrl `elem` kMods kp), s@(_ : _) <- [ c | KChar c <- [k], c >= ' ', c /= '\DEL' ] -> pure (Just (st { sInput = Just (t ++ s) }, False))
+      _ -> pure (Just (st, False))
   | sPrefix st || not (isPane (sTab st)) = case k of
+      KChar 'i' | not (isPane (sTab st)) -> pure (Just (st' { sInput = Just "", sNote = "" }, False))
       _ | sPrefix st && ctrlA -> withPane (\p -> paneInput p (BC.pack "\SOH")) >> pure (Just (st', False))
       KChar 'q' -> pure Nothing
       -- (Ctrl-C comes as the letter with the modifier: as the character it never matched, and did nothing)
@@ -399,8 +417,9 @@ verdictStyle v
 
 bottom :: St -> [Span]
 bottom st
+  | Just t <- sInput st, not (isPane (sTab st)) = [ (stYellow, " to the chat> "), (plain, t), (stHi, " "), (stDim, "   Enter sends  Esc drops it  "), (stYellow, sNote st) ]
   | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-8 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
-  | sTab st == THistory = [ (stDim, " q quit  1-8 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | sTab st == THistory = [ (stDim, " q quit  1-8 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  i write to the chat  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
   | sTab st == THeap = [ (stDim, " q quit  1-8 tabs  j/k scroll  M the heap's figures  C CAFs  S strings  K kept  D dups  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
   | otherwise = [ (stDim, " q quit  1-8 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
 

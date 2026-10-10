@@ -77,6 +77,8 @@ import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now)
 import qualified GhciSession.Sys as Sys
 import qualified GhciSession.Wire as Wire
+import GhciSession.Inbox (chatPidFile)
+import qualified GhciSession.Inbox as Inbox
 import System.IO.Unsafe (unsafePerformIO)
 import qualified GhciSession.Anthropic as A
 import qualified GhciSession.ClaudeCli as C
@@ -99,7 +101,7 @@ saveWait longest = min 600 (max 45 (3 * longest + 15))
 data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
-  , oRestart :: Bool, oResume :: Maybe FilePath
+  , oRestart :: Bool, oSend :: Maybe String, oResume :: Maybe FilePath
   , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int }
 
 chatUsage :: String
@@ -108,6 +110,7 @@ chatUsage = unlines
   , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES] [--effort none|low|high|max] [--plan BYTES] [--continue] [--rollover TOKENS]"
   , "ghci-session chat --tui [-s SESSION] ...   the same, on a screen of its own"
   , "ghci-session chat --restart [-s SESSION]"
+  , "ghci-session chat --send MESSAGE [-s SESSION]   a line for the session's running chat, as if typed at it"
   , "  the endless chat with an agent on the session (DEEPSEEK_API_KEY or OPENAI_API_KEY); --once: one message, then exit;"
   , "  --instructions: a file of the user's own instructions (an AGENTS.md), appended to the system prompt;"
   , "  --max-steps: tool calls per turn (60); --settle: seconds to wait for the view's last lines to be summarized (120);"
@@ -128,7 +131,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing False tailMax Nothing planMax False Nothing False 150000)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -140,6 +143,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--max-steps", [(n, "")] <- reads v = go o { oMaxSteps = n } r
                      | k == "--settle", [(n, "")] <- reads v = go o { oSettle = n } r
                      | k == "--resume" = go o { oResume = Just v } r
+                     | k == "--send" = go o { oSend = Just v } r
                      | k == "--context", v `elem` ["turn", "view"] = go o { oView = v == "view" } r
                      | k == "--tail", [(n, "")] <- reads v = go o { oTail = n } r
                      | k == "--effort", v `elem` ["none", "low", "high", "max"] = go o { oEffort = Just v } r
@@ -1890,9 +1894,6 @@ turnFrom j = do
 resumeFile :: Chat -> FilePath
 resumeFile ch = cStateDir (cConf ch) </> cName ch </> "chat-resume.json"
 
-chatPidFile :: Conf -> String -> FilePath
-chatPidFile conf name = cStateDir conf </> name </> "chat.pid"
-
 -- | Run again as the executable on disk now -- a harness upgraded, the flow kept: the turn where it is (if
 -- one is running), the lines typed and not yet taken, the waits learned, written out for --resume. The
 -- process stays the same (its pid, its output, its standard input). If it cannot, it goes on as it was.
@@ -2276,6 +2277,9 @@ chatMain conf args = case parseOpts args of
     case picked of
       Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 2
       Right name | oRestart o -> askRestart conf name
+      Right name | Just m <- oSend o -> Inbox.send conf name m >>= \r -> case r of
+        Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 1
+        Right pid -> putStrLn ("left for the chat on " ++ name ++ " (pid " ++ show pid ++ "): it reads it between two tool calls, or as its next turn") >> pure 0
       Right name -> do
         cfg <- resolve conf name
         members <- readMembers conf name
@@ -2314,6 +2318,8 @@ chatMain conf args = case parseOpts args of
                     writeIORef startR (Just (subRunner ch e o instr pending))
                     -- kill -HUP (chat --restart): in a turn, at its next model call; between turns, at once
                     getProcessID >>= writeFile (chatPidFile conf name) . show
+                    -- (a line left for it from elsewhere -- the monitor, chat --send -- is a line typed)
+                    Inbox.watch conf name (\l -> uiNote ui ("[sent to this chat: " ++ T.unpack l ++ "]") >> atomically (writeTQueue pending (Just l)))
                     void $ installHandler sigHUP (Catch $ do
                       writeIORef restartR True
                       busy <- readIORef inTurn

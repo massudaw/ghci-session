@@ -490,6 +490,13 @@ off and are asked for the lightest effort.
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
 
+### A line for a chat started somewhere else
+
+`ghci-session chat --send 'a line' [-s SESSION]` leaves a line for the session's running chat, as if it had been
+typed at it: read between two tool calls when a turn is running, the next turn when none is. `top` does the same
+with `i`. The chat that takes it is the last one started on the session (`chat.pid`), whatever its standard input
+is -- a terminal, a pipe, a screen of its own; the lines wait in `<state>/<session>/chat-inbox`, a file each.
+
 ### A chat restarted, and a turn gone on with
 
 `ghci-session chat --restart` makes the session's running chat the executable now on disk (build it first), in the
@@ -549,7 +556,7 @@ and stale and warning counts, half a second behind. Below, a tab at a time:
 
 | tab | shows |
 |---|---|
-| `1` history | every request and its answer, a save with its diff, the chat's words. `f` follows the end; `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has; `n`/`p` move the cursor, `Enter` opens or closes the message under it, `a` all of them |
+| `1` history | every request and its answer, a save with its diff, the chat's words. `f` follows the end; `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has; `n`/`p` move the cursor, `Enter` opens or closes the message under it, `a` all of them; `i` writes a line for the session's running chat (Enter sends it, Esc drops it) |
 | `2` view | the view the model reads, with the memory's numbers: lines, built nodes, settled or not, the compactor's jobs |
 | `3` log | the daemon's log |
 | `4` verdict | the verdict with what is behind it: the compiler's diagnostics, the failing lines, the members and the servers |

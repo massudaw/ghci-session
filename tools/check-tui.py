@@ -176,6 +176,13 @@ type 1
 type G
 until  user: pane line
 mark history
+type i
+type from the monitor
+until to the chat> from the monitor
+mark writing
+type \r
+until fake: you said 'from the monitor'
+mark written
 key ctrl-c
 wait 1
 mark left
@@ -312,6 +319,9 @@ def check_top(check, rec):
     check("top: Ctrl-a then 8 is a shell in a pane: a command typed is run", lit(s, "8 shell") and any(l.strip() == "tui-42" for l in s.lines), s.lines[3:7])
     s = at["history"]
     check("top: Ctrl-a then 1 is the history again, with what the chat in the pane did", lit(s, "1 history") and s.has(" user: pane line") and s.has(" talk: fake: you said 'pane line'"), s.lines[-4:])
+    s, t = at["writing"], at["written"]
+    check("top: i writes a line for the session's chat on the bottom line; Enter sends it to the chat that is running, which answers it",
+          s.lines[s.rows - 1].startswith(" to the chat> from the monitor") and t.has(" user: from the monitor") and t.has(" talk: fake: you said 'from the monitor'"), (s.lines[-1], t.lines[-4:]))
     s = at["left"]
     check("top: Ctrl-C leaves, with the terminal as it was found", rec.status == "0" and not s.alternate and s.state["cursor_visible"], (rec.status, s.alternate))
 
