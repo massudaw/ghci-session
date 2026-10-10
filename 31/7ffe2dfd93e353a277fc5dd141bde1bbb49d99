@@ -1,0 +1,31 @@
+app/GhciSession/Chat.hs
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 516-518
+app/GhciSession/Cli.hs
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 593,665,669
+app/GhciSession/Mcp.hs
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 155,213,255
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 2242,2244-2251,2265-2269,2504-2505,2522-2530
+engine/GhsEngine.hs
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 99,565-567
+hygiene/src/GHC/Hygiene/Census.hs
+  s_ee2f22f51d8bdb::t_2a07a0660d76de 384
+  s_ee2f22f51d8bdb::t_8058bbedacaca0 12,370-383
+  s_ee2f22f51d8bdb::t_4a098f1ee554af 385
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "317ffe2dfd93e353a277fc5dd141bde1bbb49d99",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
