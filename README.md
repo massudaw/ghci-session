@@ -479,6 +479,12 @@ bar is no whitespace and not an ASCII `|` (a guard starts a line with that), so 
 spaces; two spaces after the number, as it was, were: 15 of 60 edits of an agent's rounds were parse errors from
 a new text indented one or two spaces too far.
 
+An `edit` whose old text matches only with its spacing squeezed is applied when the indentation of its lines differs
+from the file's by one constant (the new text's lines after the first are shifted by it, and the answer says so); when
+the lines differ by more than that, or in their number, or a new line has no spaces to give, it is not applied and
+the answer shows the file's lines as they are, to copy from. (All six squeezed matches of three rounds, applied as
+written, were compile errors.)
+
 **Anthropic's API** is spoken too (`GhciSession.Anthropic`: the Messages API, natively, not through a compatible
 endpoint). With `ANTHROPIC_API_KEY` (or `ANTHROPIC_AUTH_TOKEN`, sent as a bearer token) and no key for the other
 protocol -- or `GHS_PROVIDER=anthropic` with both -- the chat and `ghci-session summarize` use it:

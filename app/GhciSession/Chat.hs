@@ -1156,8 +1156,11 @@ fileTool ch name a = case name of
 replaceOnce :: T.Text -> T.Text -> T.Text -> Either T.Text (T.Text, String)
 replaceOnce t old new
   | k == 1 = let (pre, post) = T.breakOn old t in Right (pre <> new <> T.drop (T.length old) post, "")
-  | k == 0, Just (t', l0, l1) <- fuzzyReplace t old new = Right (t', printf " (the text matched lines %d-%d only with its spacing squeezed: applied there)" l0 l1)
   | k == 0, Just (t', l0, l1) <- lineTrimReplace t old new = Right (t', printf " (the text matched lines %d-%d with trailing whitespace trimmed: applied there)" l0 l1)
+  | k == 0, Just r <- fuzzyReplace t old new = case r of
+      Left why -> Left why
+      Right (t', l0, l1, d) -> Right (t', printf " (the text matched lines %d-%d only with its spacing squeezed: applied there%s)" l0 l1
+                                                 (if d == 0 then "" else printf "; its indentation differed from the file's by %d, so the new text's lines after the first are shifted by that" d :: String))
   | otherwise = Left (T.pack (printf "the text occurs %d times; it must occur exactly once" k) <> (if k == 0 then nearest t old else T.empty))
   where k = if T.null old then 0 else T.count old t
 
@@ -1173,15 +1176,21 @@ wordSpans = go 0
                   in (w, i1, i2) : go i2 r'
 
 -- | An edit whose text occurs nowhere as written but EXACTLY ONCE as the same words with any spacing
--- between them: the file with that run replaced, and its first and last line. The run starts at its first
--- word and ends at its last, so the whitespace the old text had around its words (an indent, a newline) is
--- taken off the new text too when the new text has the same. Eight of 94 edits in one round of an agent's
--- work failed on spacing alone.
-fuzzyReplace :: T.Text -> T.Text -> T.Text -> Maybe (T.Text, Int, Int)
+-- between them: the file with that run replaced, its first and last line, and by how many spaces the new text
+-- was shifted. The run starts at its first word and ends at its last, so the whitespace the old text had
+-- around its words (an indent, a newline) is taken off the new text too when the new text has the same.
+-- Eight of 94 edits in one round of an agent's work failed on spacing alone, and all six of the next round
+-- that were applied so were compile errors: the old text's indentation was off from the file's by one or two
+-- spaces, and the new text, written the same way, put that into the file. So when the lines of the old text
+-- and of the matched block differ in indentation by one constant, the new text's lines (after the first,
+-- which stands where the match starts) are shifted by it; when they differ by more than that -- or in the
+-- number of lines, or a new line has no room to be shifted left -- it is NOT applied: 'Left' says so, with the
+-- lines as they are. 'Nothing': no single match.
+fuzzyReplace :: T.Text -> T.Text -> T.Text -> Maybe (Either T.Text (T.Text, Int, Int, Int))
 fuzzyReplace file old new
   | null ows = Nothing
   | otherwise = case matches of
-      [(s, e)] -> Just (T.take s file <> new' <> T.drop e file, lineAt s, lineAt e)
+      [(s, e)] -> Just (result s e)
       _ -> Nothing
   where
     ows = T.words old
@@ -1192,6 +1201,34 @@ fuzzyReplace file old new
     trail = T.takeWhileEnd isSpace old
     new' = let a = fromMaybe new (T.stripPrefix lead new) in fromMaybe a (T.stripSuffix trail a)
     lineAt i = 1 + T.count (T.pack "\n") (T.take i file)
+    nl = T.pack "\n"
+    blank = T.null . T.strip
+    ind = T.length . T.takeWhile isSpace
+    result s e =
+      let (l0, l1) = (lineAt s, lineAt e)
+          block = take (l1 - l0 + 1) (drop (l0 - 1) (T.splitOn nl file))
+          oldLs = reverse (dropWhile blank (reverse (dropWhile blank (T.splitOn nl old))))
+          -- (the first line stands where the match starts: it is compared only when the old text begins with an
+          -- indent of its own and the file has nothing but spaces before the match)
+          firstIn = case oldLs of { (o : _) -> ind o > 0 && blank (T.takeWhileEnd (/= '\n') (T.take s file)); _ -> False }
+          pairs = zip [0 :: Int ..] (zip block oldLs)
+          deltas = [ ind f - ind o | (i, (f, o)) <- pairs, not (blank f), not (blank o), i > 0 || firstIn ]
+          sameShape = length block == length oldLs && and [ blank f == blank o | (f, o) <- zip block oldLs ]
+          d = case deltas of { (x : _) -> x; [] -> 0 }
+          shiftLine x l | blank l || x == 0 = Just l
+                        | x > 0 = Just (T.replicate x (T.pack " ") <> l)
+                        | T.length (T.takeWhile (== ' ') l) >= negate x = Just (T.drop (negate x) l)
+                        | otherwise = Nothing
+          shifted = case T.splitOn nl new' of
+            (h : rest) -> (\r -> T.intercalate nl (h : r)) <$> mapM (shiftLine d) rest
+            [] -> Just new'
+          refusal why = Left (T.pack (printf "the text matches lines %d-%d only with its spacing squeezed, and %s: not applied. Those lines as they are -- copy old from them:\n" l0 l1 (why :: String))
+                               <> T.intercalate nl [ numbered ' ' i l | (i, l) <- zip [l0 ..] block ])
+      in if not sameShape then refusal "its lines are not those lines (their number, or which are blank)"
+         else if any (/= d) deltas then refusal "its indentation differs from theirs by more than one constant"
+         else case shifted of
+           Nothing -> refusal (printf "its indentation differs from theirs by %d, and a line of the new text has fewer spaces to give" (negate d))
+           Just nt -> Right (T.take s file <> nt <> T.drop e file, l0, l1, d)
 
 -- | An edit where exact and fuzzy matching failed, but every line of 'old' matches consecutive lines in 'file'
 -- when line-trailing whitespace is stripped from both.

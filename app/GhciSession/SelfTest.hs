@@ -883,9 +883,16 @@ run = do
   eq "chat: semicolon imports are split" (splitImports ["import A; import B"]) (["import A", "import B"], [])
   eq "chat: semicolon import followed by expr is split" (splitImports ["import A; f 1"]) (["import A"], ["f 1"])
   let file = T.pack "x = 1\n  foo   bar\ny = 2\n"
-  eq "chat: an edit that differs only in spacing is applied where its words are" (fuzzyReplace file (T.pack "foo bar") (T.pack "baz")) (Just (T.pack "x = 1\n  baz\ny = 2\n", 2, 2))
-  eq "chat: ... the indent and newline the old text had come off the new text" (fuzzyReplace file (T.pack "  foo bar\n") (T.pack "  qux\n")) (Just (T.pack "x = 1\n  qux\ny = 2\n", 2, 2))
-  eq "chat: ... across lines" (fuzzyReplace file (T.pack "foo bar y = 2") (T.pack "z")) (Just (T.pack "x = 1\n  z\n", 2, 3))
+  eq "chat: an edit that differs only in spacing is applied where its words are" (fuzzyReplace file (T.pack "foo bar") (T.pack "baz")) (Just (Right (T.pack "x = 1\n  baz\ny = 2\n", 2, 2, 0)))
+  eq "chat: ... the indent and newline the old text had come off the new text" (fuzzyReplace file (T.pack "  foo bar\n") (T.pack "  qux\n")) (Just (Right (T.pack "x = 1\n  qux\ny = 2\n", 2, 2, 0)))
+  check "chat: ... but not across lines it has not (the lines are not those lines): the lines are answered" (case fuzzyReplace file (T.pack "foo bar y = 2") (T.pack "z") of { Just (Left w) -> T.isInfixOf (T.pack "not applied") w && T.isInfixOf (T.pack "foo   bar") w && T.isInfixOf (T.pack "y = 2") w; _ -> False })
+  let ind2 = T.pack "a\n  f x\n    g y\nb\n"
+      ind4 = T.pack "a\n    f x\n      g y\nb\n"
+  eq "chat: an old text indented two too far, its new text the same: the new text's lines are shifted back" (fuzzyReplace ind2 (T.pack "    f x\n      g y") (T.pack "    h x\n      k y\n      z")) (Just (Right (T.pack "a\n  h x\n    k y\n    z\nb\n", 2, 3, -2)))
+  eq "chat: ... one too little: shifted forward" (fuzzyReplace ind4 (T.pack "  f x\n    g y") (T.pack "  h x\n    k")) (Just (Right (T.pack "a\n    h x\n      k\nb\n", 2, 3, 2)))
+  check "chat: ... not applied when the lines differ by no one constant, the lines as they are answered" (case fuzzyReplace ind2 (T.pack "  f x\n  g y") (T.pack "h") of { Just (Left w) -> T.isInfixOf (T.pack "more than one constant") w && T.isInfixOf (T.pack "3\x2502\&    g y") w; _ -> False })
+  check "chat: ... nor when a line of the new text has no spaces to give" (case fuzzyReplace ind2 (T.pack "      f x\n        g y") (T.pack "h\n  k") of { Just (Left w) -> T.isInfixOf (T.pack "fewer spaces") w; _ -> False })
+  check "chat: an edit of it says by how much it shifted, or refuses" (case (applyEdit ind2 (JObj [("old", JStr "    f x\n      g y"), ("new", JStr "    h\n      k")]), applyEdit ind2 (JObj [("old", JStr "  f x\n  g y"), ("new", JStr "h")])) of { (Right (t, how), Left w) -> t == T.pack "a\n  h\n    k\nb\n" && "shifted" `isInfixOf` how && T.isInfixOf (T.pack "not applied") w; _ -> False })
   eq "chat: ... but not when a word differs" (fuzzyReplace file (T.pack "foo baz") (T.pack "q")) Nothing
   eq "chat: ... nor when the words occur twice" (fuzzyReplace (T.pack "a b\na  b\n") (T.pack "a b") (T.pack "c")) Nothing
   check "chat: a text that occurs nowhere points at the line its first line matches" (T.isInfixOf (T.pack "line 2") (nearest file (T.pack "foo bar\nnope")))
