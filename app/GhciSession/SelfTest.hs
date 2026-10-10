@@ -113,6 +113,7 @@ run = do
   eq "carry: older messages are cut, so more of them fit the tail's bytes" (length (spKept sp0) > 60000 `div` 4000 + 6) True
   eq "carry: the last six are whole" (all (\x -> txtLen x == 4000) (drop (length (spKept sp0) - 6) (spKept sp0))) True
   eq "carry: the split adds up" (length (spKept sp0) + spLeft sp0 + length (spTold sp0) + 1) (length turnLog)
+  eq "carry: the tail's budget is bytes: a thousand two-byte characters are not a thousand bytes" (let (kept, left) = resumeLog 1500 [(1, T.pack "echo", T.replicate 1000 (T.pack "\233")), (2, T.pack "echo", T.pack "x")] in (map (\(i, _, _) -> i) kept, left)) ([2], 1)
   eq "carry: nothing to split" (fmap spFrom (carrySplit 100 [])) Nothing
   eq "carry: a lone message" (fmap spFrom (carrySplit 100 [m 7 "user"])) (Just 8)
   eq "carry: <recent> holds the message, the gap and the tail" (T.unpack (carryRecent (Split (m 1 "user") [] 3 [m 5 "tool"] 5))) "<recent>\n1|user: x\n(3 messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n5|tool: x\n</recent>\n\n"

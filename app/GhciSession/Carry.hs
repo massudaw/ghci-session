@@ -30,7 +30,7 @@ formatMsg (i, k, t) = T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack 
 resumeLog :: Int -> [Msg] -> ([Msg], Int)
 resumeLog budget ms = let kept = go 0 (reverse ms) in (reverse kept, length ms - length kept)
   where go _ [] = []
-        go used (m@(_, _, t) : r) = let n = used + T.length t + 16 in if n > budget && used > 0 then [] else m : go n r
+        go used (m@(_, _, t) : r) = let n = used + bytesOf t + 16 in if n > budget && used > 0 then [] else m : go n r
 
 -- | A message cut to @n@ characters, with the note of what is left and where to read it (the message's number is
 -- the one to zoom): a read of two hundred lines, answered and acted on, is not what the fresh call needs word for word.
