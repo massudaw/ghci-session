@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -203,7 +203,7 @@ run = do
   let writeConf t = writeFile (tmp </> configName) t
       targets = "\"a\": {\"units\": \"lib:a\", \"watch\": [\"a/src\"], \"modules\": [\"A\"], \"env\": {\"A_PORT\": 1, \"WHO\": \"{session}\"},"
              ++ " \"check\": {\"expr\": \"A.t\"}, \"warm\": \"A.x `seq` ()\", \"server\": {\"action\": \"A.serve\", \"port\": 1, \"env\": {\"X\": \"{root}/l\"}}},"
-             ++ "\"b\": {\"units\": [\"lib:b\"], \"watch\": [\"b/src\"], \"modules\": [\"B\", \"A\"], \"hygiene\": true, \"load_timeout\": 2000, \"idle_stop_mins\": 30,"
+             ++ "\"b\": {\"units\": [\"lib:b\"], \"watch\": [\"b/src\"], \"modules\": [\"B\", \"A\"], \"hygiene\": true, \"line_budget\": 300, \"load_timeout\": 2000, \"idle_stop_mins\": 30,"
              ++ " \"checks\": [{\"expr\": \"B.t\"}, {\"expr\": \"B.u\", \"name\": \"slow\", \"fail\": \"BAD\"}]}"
   writeConf ("{\"rts_flags\": \"-c -A64m\", \"targets\": {" ++ targets ++ "}, \"sessions\": {\"dev\": [\"a\", \"b\"]}}")
   findRoot (Just (tmp </> "a" </> "b")) >>= \r -> do { t <- canonicalizePath tmp; eq "config: found from below" r (Right t) }
@@ -220,6 +220,7 @@ run = do
       eq "plain: server env is the target's plus its own, {root} expanded" (map svEnv (gServers plain)) [[("A_PORT", "1"), ("WHO", "a"), ("X", cRoot conf ++ "/l")]]
       eq "plain: a warm expression is one expression, not words" (gWarm plain) ["A.x `seq` ()"]
       eq "plain: idle stop off by default" (gIdleStopMins plain) 0
+      eq "config: line_budget absent is none, a target's is its own, a composed session takes its members'" (map (lineBudgetOf conf) ["a", "b", "dev"]) [Nothing, Just 300, Just 300]
       Right dev <- resolve conf "dev"
       eq "composed: units" (gUnits dev) ["lib:a", "lib:b"]
       eq "composed: modules, no duplicates" (gModules dev) ["A", "B"]
@@ -941,6 +942,9 @@ run = do
   -- the reads a turn's context holds: numbered, aliased when unchanged, superseded by a read of their lines
   eq "chat: a read's lines, from its answer" (readRange (T.pack "[f: lines 7-9 of 20]\n    7\x2502\&a\n    8\x2502\&  b\n    9\x2502\&c")) (Just (7, 9))
   eq "chat: a line is its number, the bar, the line as it is -- its indent is all after the bar" (map (uncurry (numbered ' ')) [(7, T.pack "    x = 1"), (12, T.pack "  | guard"), (8, T.pack "\tTab"), (9, T.empty)]) (map T.pack ["     7\x2502    x = 1", "    12\x2502  | guard", "     8\x2502\tTab", "     9\x2502"])
+  eq "chat: with no line budget a read's head says nothing of one" (readHeader Nothing "f.hs" 1 3 9) "[f.hs: lines 1-3 of 9]\n"
+  eq "chat: with a budget the head says the count against it" (readHeader (Just 250) "f.hs" 1 3 260) "[f.hs: lines 1-3 of 260 | 260 lines [OVER BUDGET: 260/250 lines!] (10 lines OVER BUDGET!)]\n"
+  eq "chat: an edit's budget is said only when there is one" (map (budgetSaid Nothing) [10, 999], budgetSaid (Just 5) 10) ([Nothing, Nothing], Just "10 lines [OVER BUDGET: 10/5 lines!]")
   eq "chat: ... a match of grep has > before the number" (numbered '>' 41 (T.pack "a")) (T.pack ">   41\x2502\&a")
   check "chat: ... taking off up to the first bar gives every line back as it was" (and [ T.drop 1 (T.dropWhile (/= numberBar) (numbered m i l)) == l | m <- " >", i <- [1, 99999], l <- map T.pack ["", "  x", "a\x2502\&b", "\x2502", " 5  "] ])
   eq "chat: ... a read's lines are found in its numbered lines, matches and context" (readRange (T.pack "[f: 3 line(s) hold]\n>   41\x2502\&a\n   42\x2502\&b\n  100\x2502\&c")) (Just (41, 100))

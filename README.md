@@ -186,6 +186,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `server` | `action`, optional `port`, `prefork`, `env`, `serve_on_load`, `verify_timeout` |
 | `hygiene` | unlink superseded CAFs after each reload and report memory |
 | `repl_budget_mb` | past this, a reload is a restart (default 6144; `0` disables) |
+| `line_budget` | a project's rule for the lines of a file: the chat's `read`, `write` and `edit` then say a file's count against it (`[OVER BUDGET: 260/250 lines!]`). Absent: nothing is said of lines. The `vfs` tool keeps its own `budget` argument (default 250) |
 | `rts_flags` | the repl's RTS flags (default `-c -Fd0.5`) |
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
 | `load_timeout`, `eval_timeout` | seconds; a command past its timeout is interrupted, not abandoned |

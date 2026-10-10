@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , numbered, numberBar, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -974,6 +974,21 @@ applyEdit t e
 numbered :: Char -> Int -> T.Text -> T.Text
 numbered mark i l = T.pack (printf "%c%5d%c" mark i numberBar) <> l
 
+-- | The line budget of the project's session ("line_budget": N in its target), if it has one.
+lineBudget :: Chat -> Maybe Int
+lineBudget ch = lineBudgetOf (cConf ch) (cName ch)
+
+-- | A file's line count said against the budget, when there is one (a rule of the project, not of the tool:
+-- with none, nothing is said -- it was said on every read and edit, 'OVER BUDGET' on some 120 calls of a
+-- project that has no such rule).
+budgetSaid :: Maybe Int -> Int -> Maybe String
+budgetSaid mb n = Vfs.formatLineBudget n <$> mb
+
+-- | The head of a read's answer: the file, the lines shown and how many it has (and the budget, if there is one).
+readHeader :: Maybe Int -> FilePath -> Int -> Int -> Int -> String
+readHeader mb rel from to total = printf "[%s: lines %d-%d of %d%s]\n" rel from to total (maybe "" said mb)
+  where said b = " | " ++ Vfs.formatLineBudget total b ++ " " ++ (if b >= total then printf "(%d lines remaining)" (b - total) else printf "(%d lines OVER BUDGET!)" (total - b) :: String)
+
 -- | What stands between a line's number and its text in 'numbered'.
 numberBar :: Char
 numberBar = '\x2502'
@@ -1004,10 +1019,7 @@ fileTool ch name a = case name of
             ls = zip [1 :: Int ..] allLines
             shown = [ numbered ' ' i l | (i, l) <- ls, i >= start, i < start + n ]
             endLine = if null shown then 0 else start + length shown - 1
-            budgetStr = Vfs.formatLineBudget totalLines 250
-            remaining = 250 - totalLines
-            remStr = (if remaining >= 0 then printf "(%d lines remaining)" remaining else printf "(%d lines OVER BUDGET!)" (abs remaining)) :: String
-            header = T.pack (printf "[%s: lines %d-%d of %d | %s %s]\n" rel (if null shown then 0 else start) endLine totalLines budgetStr remStr)
+            header = T.pack (readHeader (lineBudget ch) rel (if null shown then 0 else start) endLine totalLines)
         if isJust around && null hits then pure (False, T.pack (printf "%s: no line holds %s (%d lines; the text is looked for as it is, in one line)" rel (show (maybe "" T.unpack around)) totalLines))
           else pure (True, header <> (if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown) <> more)
   "write" -> withPath $ \p -> do
@@ -1017,10 +1029,10 @@ fileTool ch name a = case name of
     createDirectoryIfMissing True (takeDirectory p)
     B.writeFile p (TE.encodeUtf8 content)
     let nLines = if T.null content then 0 else T.count (T.pack "\n") content + (if T.last content == '\n' then 0 else 1)
-        budget = Vfs.formatLineBudget nLines 250
+        budget = maybe "" (", " ++) (budgetSaid (lineBudget ch) nLines)
     -- (a file written over is answered with what changed in it: a whole file sent again loses lines unseen)
     d <- maybe (pure (T.pack "\n[a new file]")) (\old -> changeOf rel old content) was
-    withDiff d <$> saved ch (printf "wrote %s (%d characters, %s)" rel (T.length content) budget) written
+    withDiff d <$> saved ch (printf "wrote %s (%d characters%s)" rel (T.length content) budget) written
   "edit" -> withPath $ \p -> do
     -- (appending makes the file if it is not there)
     t <- if lookupBool "append" a == Just True then either (\(_ :: IOException) -> T.empty) decode <$> try (B.readFile p) else decode <$> B.readFile p
@@ -1029,9 +1041,9 @@ fileTool ch name a = case name of
         written <- writtenAt ch rel
         B.writeFile p (TE.encodeUtf8 t')
         let nLines = if T.null t' then 0 else T.count (T.pack "\n") t' + (if T.last t' == '\n' then 0 else 1)
-            budget = Vfs.formatLineBudget nLines 250
+            budget = maybe "" (\b -> " (" ++ b ++ ")") (budgetSaid (lineBudget ch) nLines)
         d <- changeOf rel t t'
-        withDiff d <$> saved ch (printf "edited %s%s (%s)" rel how budget) written
+        withDiff d <$> saved ch (printf "edited %s%s%s" rel how budget) written
       Left why -> pure (False, T.pack (rel ++ ": ") <> why)
   -- several replacements, in one or more files: all checked against the files (as the ones before them
   -- leave them) before any is written, then written together -- one reload, one verdict
@@ -1062,10 +1074,9 @@ fileTool ch name a = case name of
           olds <- forM files (\(f, _) -> decode <$> B.readFile f)
           forM_ files (\(f, t) -> B.writeFile f (TE.encodeUtf8 t))
           ds <- forM (reverse (zip files olds)) (\((f, t), old) -> changeOf (makeRelative (cDir ch) f) old t)
-          let summaries = [ let n = if T.null t then 0 else T.count (T.pack "\n") t + (if T.last t == '\n' then 0 else 1)
-                            in printf "%s (%s)" (makeRelative (cDir ch) f) (Vfs.formatLineBudget n 250)
-                          | (f, t) <- files ]
-          withDiff (T.concat ds) <$> saved ch (printf "edited %s (%d replacement(s))\n[line budgets: %s]" (intercalate ", " (reverse rels)) (length items) (intercalate "; " summaries)) written
+          let summaries = [ printf "%s (%s)" (makeRelative (cDir ch) f) s
+                            | (f, t) <- files, Just s <- [budgetSaid (lineBudget ch) (if T.null t then 0 else T.count (T.pack "\n") t + (if T.last t == '\n' then 0 else 1))] ] :: [String]
+          withDiff (T.concat ds) <$> saved ch (printf "edited %s (%d replacement(s))%s" (intercalate ", " (reverse rels)) (length items) (if null summaries then "" else "\n[line budgets: " ++ intercalate "; " summaries ++ "]")) written
   "vfs" -> do
     let mPath = lookupStr "path" a
         budget = maybe 250 round (lookupNum "budget" a) :: Int
