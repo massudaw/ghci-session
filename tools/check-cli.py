@@ -182,6 +182,12 @@ def main():
         check("chat --wait when the chat died in a turn (turn.json still says it runs): exit 1 at once", r.returncode == 1 and time.time() - t0 < 5, (r.returncode, r.stdout, r.stderr, time.time() - t0))
         r = cli("--wait", "5")
         check("chat --wait when no chat is running: exit 1", r.returncode == 1, (r.returncode, r.stdout, r.stderr))
+        # the hook at a Claude Code turn's end: with the session's daemon not running, `import --go` leaves at once
+        subprocess.run([tuicheck.CLI, "stop", session], cwd=proj, env=env, capture_output=True, text=True, timeout=60)   # (the check's own throwaway session)
+        t0 = time.time(); r = subprocess.run([tuicheck.CLI, "import", "--go", "-s", session], cwd=proj, env=env, capture_output=True, text=True, timeout=60)
+        check("import --go with no daemon running: exit 0 at once, one line saying so, no build started, nothing written",
+              r.returncode == 0 and time.time() - t0 < 5 and len(r.stdout.strip().splitlines()) == 1 and "no session running" in r.stdout
+              and not os.path.exists(os.path.join(proj, ".ghci-session", session, "history", "imported.json")), (r.returncode, r.stdout, r.stderr, time.time() - t0))
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:

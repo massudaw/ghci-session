@@ -313,7 +313,7 @@ date 2187                     # when it was written
 
 ```
 ghci-session import                       # the plan: what would be imported, and what its summaries cost
-ghci-session import --go                  # do it
+ghci-session import --go                  # do it (with the session's daemon not running: one line, exit 0, nothing read or built)
 ghci-session import --tools --since 2026-09-01 --go
 ```
 

@@ -82,6 +82,21 @@ die' msg = hPutStrLn stderr msg >> exitWith (ExitFailure 2)
 cmdImport :: Conf -> Args -> IO Int
 cmdImport conf a = do
   name <- pick conf (opt a ["-s", "-t", "--session"] <|> pos a 0)
+  up <- if flag a ["--go"] then sessionUp conf name else pure True
+  if up then cmdImportUp conf a name else
+    -- (the hook at a Claude Code turn's end runs this: with no daemon it neither starts a build nor reads the files)
+    putStrLn ("import: no session running on " ++ name ++ " -- nothing imported (ghci-session start " ++ name ++ ")") >> pure 0
+
+-- | Does the session's daemon answer on its socket?
+sessionUp :: Conf -> String -> IO Bool
+sessionUp conf name = do
+  mfd <- sockPath (stateOf conf name) >>= unixConnect
+  case mfd of
+    Nothing -> pure False
+    Just fd -> fdToHandle fd >>= hClose >> pure True
+
+cmdImportUp :: Conf -> Args -> String -> IO Int
+cmdImportUp conf a name = do
   home <- getHomeDirectory
   let root = cRoot conf
       claude = fromMaybe (I.claudeDir home root) (opt a ["--claude"])
