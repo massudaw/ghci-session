@@ -16,7 +16,10 @@ In a project made for it, with a session of its own:
   a rollover    a turn whose context grows past `--rollover` tokens ends its run after a tool call and goes on in a
                 fresh one, from its log.
 
-Exit status 0 when all hold. About a minute.
+  a limit       the subscription's limit reached in the middle of a turn: the chat waits for it to reset, and the
+                turn goes on from its log.
+
+Exit status 0 when all hold. About a minute and a half.
 """
 import json, os, shutil, signal, subprocess, sys, tempfile, time
 
@@ -122,11 +125,24 @@ def main():
         check("the turn's message is still the one it began with (what was typed first), and its cost is the whole turn's",
               "first of all" in t4.split("the turn's context is at")[0] and ("%d tool call" % len(rolled_at)) in t4.split("[turn: ")[-1]
               and ("%d model calls" % (len(rolled_at) + 1)) in t4.split("[turn: ")[-1], t4.split("[turn: ")[-1][:200])
-        p4.send_signal(signal.SIGTERM)
+        p4.send_signal(signal.SIGTERM); p4.wait()
+        # the subscription's limit reached in the middle of a turn: waited out, and the turn goes on
+        out5 = os.path.join(d, "chat5.out")
+        started = open(log).read().count("pid ")
+        p5 = subprocess.Popen(chat(), cwd=proj, env=dict(env, FAKE_CLAUDE_LIMIT="2,3"), stdin=keep, stdout=open(out5, "w"), stderr=subprocess.STDOUT)
+        send('tool sh {"cmd":"echo before-the-limit"} ;; tool sh {"cmd":"echo never-run"} ;; say never said')
+        waits = wait_for(out5, "the turn waits for the limit to reset", 30)
+        ok = wait_for(out5, "[turn: ", 60)       # (the wait is the seconds to the reset and twenty more)
+        t5 = open(out5, errors="replace").read()
+        ok = ok and "resumed from the log: 1 tool call(s)" in t5.split("the turn waits")[-1]
+        check("the subscription's limit reached in a turn: the turn waits for it to reset and then goes on from its log, by itself",
+              waits and ok and "before-the-limit" in t5 and "echo never-run" not in t5.split("the turn waits")[0].split("tool sh")[-1] and "1 tool call(s)" in t5
+              and open(log).read().count("pid ") == started + 2 and t5.count("[turn: ") == 1, t5[-700:])
+        p5.send_signal(signal.SIGTERM)
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:
-        for q in ("p", "p2", "p3", "p4"):
+        for q in ("p", "p2", "p3", "p4", "p5"):
             if q in locals() and locals()[q].poll() is None:
                 locals()[q].kill()
         tuicheck.stop(proj, session)

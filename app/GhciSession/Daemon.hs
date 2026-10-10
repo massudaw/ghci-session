@@ -470,12 +470,14 @@ data CheckResult = CheckResult { crMember :: String, crKind :: String, crFailing
 
 -- | A check that runs far longer than it has been taking is HUNG (an evaluation that never ends, a loop
 -- in the code under test), and is interrupted at five times the median of its last passing runs -- at
--- least 15 s, never past its own timeout -- with a verdict that says so and says where it hung (the last
+-- least a minute, never past its own timeout -- with a verdict that says so and says where it hung (the last
 -- line it printed). The fixed timeout alone (ten minutes by default) cost an agent's loop ten minutes a
--- save, four times in one hour, while the check it was guarding takes three seconds.
+-- save, four times in one hour, while the check it was guarding takes three seconds. (The least was fifteen
+-- seconds: a suite that had been a stub, passing in no time, was "hung" at fifteen the day it became a real
+-- one of forty -- and its agent made the quick half of it the check, to live with that.)
 hangLimit :: [Double] -> Maybe Double
 hangLimit [] = Nothing
-hangLimit ds = Just (max 15 (5 * medianOf ds))
+hangLimit ds = Just (max 60 (5 * medianOf ds))
 
 medianOf :: [Double] -> Double
 medianOf [] = 0
@@ -2498,7 +2500,8 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
   "check_expr" -> do
     let es = [ e | e <- gChecks (sCfg s), maybe True (\m -> m == ckMember e || m == takeWhile (/= ':') (ckMember e)) (lookupStr "member" req) ]
         expr = fromMaybe "" (lookupStr "expr" req)
-        tmo = lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing
+        -- (a test is not a probe: where no time is given it has five minutes, not an evaluation's thirty seconds)
+        tmo = Just (case lookupNum "timeout" req of { Just t | t > 0 -> t; _ -> max 300 (gEvalTimeout (sCfg s)) })
     t0 <- now
     r <- try (cmd s tmo expr)
     t1 <- now

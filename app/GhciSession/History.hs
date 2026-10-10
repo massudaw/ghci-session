@@ -855,12 +855,14 @@ jobPrompt ps j = T.unlines $ [ T.pack "<chat>" ] ++ jContext j ++ [ T.pack "</ch
 
 -- | What has been seen of one kind of line: the ratio of an answer's length to what was asked (mean, spread),
 -- the share of answers over the limit, and how many were seen.
-data Ask = Ask { aMean :: !Double, aSpread :: !Double, aMiss :: !Double, aSeen :: !Int }
+data Ask = Ask { aMean :: !Double, aSpread :: !Double, aMiss :: !Double, aSeen :: !Int
+               , aUrge :: !Int }      -- ^ how strongly it is asked now: raised when more miss, and lowered only when clearly fewer do
+
   deriving (Eq, Show)
 
 -- | Before any answer: the ratio the first size asked for supposes.
 askStart :: Params -> Ask
-askStart ps = Ask (fromIntegral (pNode ps) / fromIntegral (max 1 (asked ps))) 0 0 0
+askStart ps = Ask (fromIntegral (pNode ps) / fromIntegral (max 1 (asked ps))) 0 0 0 0
 
 -- | An answer seen: asked for so many bytes, it came back so long.
 askSeen :: Params -> Int -> Int -> Ask -> Ask
@@ -871,7 +873,13 @@ askSeen ps wanted got a =
       mean = aMean a + k * (x - aMean a)
       spread = aSpread a + k * (abs (x - mean) - aSpread a)
       miss = aMiss a + k * ((if got > pNode ps then 1 else 0) - aMiss a)
-  in Ask mean spread miss (aSeen a + 1)
+      -- (up at a tenth and at three tenths over; down again only at half of those: a share that sits at the
+      -- line does not move the wording with every answer)
+      urge = let u = aUrge a
+                 up = if miss > 0.3 then 2 else if miss > 0.1 then 1 else 0
+                 down = if miss < 0.05 then 0 else if miss < 0.15 then 1 else 2
+             in max up (min u down)
+  in Ask mean spread miss (aSeen a + 1) urge
 
 -- | What to ask for now: the bytes (a multiple of twenty: it does not move for every answer), and how strongly.
 askFor :: Params -> Ask -> (Int, Int)
@@ -879,7 +887,7 @@ askFor ps a =
   let limit = fromIntegral (pNode ps) :: Double
       want = limit / max 0.5 (aMean a + 2 * aSpread a)
       bytes = max (pNode ps `div` 3) (min (pNode ps) (20 * (round want `div` 20)))
-  in (bytes, if aMiss a > 0.3 then 2 else if aMiss a > 0.1 then 1 else 0)
+  in (bytes, aUrge a)
 
 -- | What a line that is too long is told, with the line cut where the limit falls.
 retryNote :: Params -> T.Text -> T.Text

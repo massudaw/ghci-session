@@ -43,8 +43,8 @@ import Control.Monad (forM, forM_, unless, void, when)
 import qualified Data.ByteString as B
 import Data.Char (isAlphaNum, isSpace)
 import Data.List (group, groupBy, intercalate, isInfixOf, isPrefixOf, isSuffixOf, partition, sort, tails)
-import Data.Time (UTCTime)
-import Data.Time.Clock.POSIX (utcTimeToPOSIXSeconds)
+import Data.Time (UTCTime, defaultTimeLocale, formatTime, utcToLocalZonedTime)
+import Data.Time.Clock.POSIX (posixSecondsToUTCTime, utcTimeToPOSIXSeconds)
 import Data.Maybe (catMaybes, listToMaybe, fromMaybe, isJust, isNothing)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
@@ -1612,6 +1612,7 @@ runCli ch e o pending run = do
   _ <- forkIO ((void (try accept :: IO (Either SomeException ()))) `finally` atomically (modifyTVar' readers (subtract 1)))
   seenR <- newIORef (0 :: Int, 0 :: Double)
   limitR <- newIORef ""
+  refusedR <- newIORef (Nothing :: Maybe Double)      -- the subscription's limit was reached: when it resets
   callR <- newIORef (Nothing :: Maybe (Int, Int, Double))      -- the model call under way: its prompt's tokens, of them read from the cache, when it began
   callsR <- newIORef (0 :: Int)                                -- the calls written to the ledger since the last result
   let -- each model call is in the ledger as it ends (its prompt's tokens and how many of them were read from the
@@ -1680,6 +1681,7 @@ runCli ch e o pending run = do
             C.EvStream ev -> live ev >> loop t0
             C.EvAssistant blocks -> mapM_ said blocks >> loop t0
             C.EvRate info -> do
+              writeIORef refusedR (if lookupStr "status" info == Just "rejected" then lookupNum "resetsAt" info else Nothing)
               note <- C.limitNote info
               was <- readIORef limitR
               forM_ note $ \n -> when (n /= was) (writeIORef limitR n >> uiNote (cUi ch) ("[" ++ n ++ "]"))
@@ -1743,17 +1745,38 @@ runCli ch e o pending run = do
       system <- readIORef mainSystem
       continueTurn ch e o system pending (Just (printf "its context had grown to %s tokens" (human due), sp, crStart run))
     else do
-      case r of
+     refused <- readIORef refusedR
+     tNow <- now
+     case (r, refused) of
+      -- The subscription's limit, reached in the middle of the turn: the turn is not over, it is waiting. When the
+      -- limit has reset it goes on from its log, by itself -- a run of hours left alone ended at its first limit.
+      (Right (Just why), Just at) | isNothing (cSub ch), at > tNow - 60, at - tNow < 8 * 3600 -> do
+        sp <- readIORef spent
+        whenS <- formatTime defaultTimeLocale "%H:%M" <$> utcToLocalZonedTime (posixSecondsToUTCTime (realToFrac at))
+        uiNote (cUi ch) ("[" ++ why ++ " -- the turn waits for the limit to reset, at " ++ whenS ++ ", and then goes on from its log (Esc, or Ctrl-C, ends it instead)]")
+        logH ch "echo" (T.pack ("harness: the subscription's limit was reached; the turn waits until " ++ whenS))
+        let wait = do
+              t <- now
+              when (t < at + 20) $ do
+                uiBusy (cUi ch) (Just (printf "waiting for the subscription's limit to reset at %s (%d min)" whenS (max 0 (round ((at - t) / 60)) :: Int)))
+                threadDelay (round (1e6 * min 30 (at + 20 - t)))
+                checkStop ch
+                wait
+        wait
+        system <- readIORef mainSystem
+        continueTurn ch e o system pending (Just ("the subscription's limit was reached, and has now reset", sp, crStart run))
+      _ -> do
+       case r of
         Left x -> uiNote (cUi ch) ("chat: the claude command: " ++ show x ++ "; the turn ends")
         Right (Just why) -> uiNote (cUi ch) ("chat: " ++ why ++ "; the turn ends")
         Right Nothing -> do
           sp <- readIORef spent
           -- (it ended and said nothing at all: what it wrote of itself is why)
           when (sCalls sp == 0 && not (null errText)) (uiNote (cUi ch) ("chat: the claude command ended: " ++ unwords (take 40 (words errText))))
-      writeIORef (cInTurn ch) False
-      tEnd <- now
-      s <- readIORef spent
-      uiSpent (cUi ch) s (tEnd - crStart run)
+       writeIORef (cInTurn ch) False
+       tEnd <- now
+       s <- readIORef spent
+       uiSpent (cUi ch) s (tEnd - crStart run)
 
 -- a turn taken up from its log ---------------------------------------------------------------------
 --
@@ -1783,7 +1806,9 @@ continueTurn ch e o system pending rolled = do
   case turnMs of
     _ | isNothing rolled, lookupBool "done" tj == Just True -> uiNote (cUi ch) "[nothing to go on with: the last turn ended]"
     (task : after) -> do
-      let (kept, left) = resumeLog (max 20000 (oTail o)) after
+      -- (a rollover carries a third of what a restart does: a fresh run that began at two thirds of the
+      -- rollover's tokens was over them again in thirty calls, each time for a cold first call)
+      let (kept, left) = resumeLog (if isJust rolled then max 12000 (oTail o `div` 3) else max 20000 (oTail o)) after
           from = case kept of { ((i, _, _) : _) -> i; [] -> (\(i, _, _) -> i + 1) task }
           -- (what the user said in the middle of the turn stays whole, however long ago: it is what to do)
           told = [ m | m@(i, k, _) <- after, k == user, i < from ]
@@ -2374,7 +2399,7 @@ askRestart conf name = do
         Left _ -> hPutStrLn stderr ("chat: no chat running on " ++ name ++ " (pid " ++ show pid ++ " is gone)") >> pure 1
         Right () -> do
           signalProcess sigHUP pid
-          putStrLn ("asked the chat on " ++ name ++ " (pid " ++ show pid ++ ") to restart: in a turn, before its next model call; between turns, at once")
+          putStrLn ("asked the chat on " ++ name ++ " (pid " ++ show pid ++ ") to restart: in a turn, before its next model call (through the claude command: once the tool call under way is answered); between turns, at once")
           pure 0
     _ -> hPutStrLn stderr ("chat: no chat running on " ++ name) >> pure 1
 

@@ -257,8 +257,14 @@ run = do
         (fst (H.askFor dp longA) < 280 && fitShare (drop 10 longFits) >= 85)
   eq "ask: and one that writes short is given the room back, and not urged" (H.askFor dp shortA) (H.pNode dp, 0)
   eq "ask: before any answer, what is asked is the size set; it is never over what is taken, nor under a third of it"
-     (H.askFor dp (H.askStart dp), fst (H.askFor dp (H.Ask 9 1 1 50)), fst (H.askFor dp (H.Ask 0.1 0 0 50))) ((360, 0), H.pNode dp `div` 3, H.pNode dp)
-  eq "ask: it is asked the more strongly the more answers are over" (map (snd . H.askFor dp) [H.Ask 1.4 0.1 0.05 20, H.Ask 1.4 0.1 0.2 20, H.Ask 1.4 0.1 0.6 20]) [0, 1, 2]
+     (H.askFor dp (H.askStart dp), fst (H.askFor dp (H.Ask 9 1 1 50 2)), fst (H.askFor dp (H.Ask 0.1 0 0 50 0))) ((360, 0), H.pNode dp `div` 3, H.pNode dp)
+  -- (how strongly: by the share that are over -- fed answers that all fit, then all too long, then all fitting again)
+  let feed fits a = foldl (\x _ -> H.askSeen dp 300 (if fits then 300 else 900) x) a [1 .. 40 :: Int]
+      a1 = feed True (H.askStart dp); a2 = feed False a1; a3 = feed True a2
+      edge = foldl (\x k -> H.askSeen dp 300 (if k `mod` 9 == 0 then 900 else 300) x) a1 [1 .. 200 :: Int]      -- (one in nine over: at the line)
+  eq "ask: it is asked the more strongly the more answers are over, and as written again when they fit" (map H.aUrge [a1, a2, a3]) [0, 2, 0]
+  check "ask: a share that sits at the line does not move the wording with every answer"
+        (let us = map H.aUrge (scanl (\x k -> H.askSeen dp 300 (if k `mod` 9 == 0 then 900 else 300) x) edge [1 .. 90 :: Int]) in length (filter id (zipWith (/=) us (drop 1 us))) <= 1)
   check "ask: the task says it more strongly then, and as written otherwise"
         (let j = H.Job 0 3 [] (H.Compress (T.pack "user: x")); pr u = H.jobPrompt dp { H.pUrge = u } j
          in not (T.pack "count them" `T.isInfixOf` pr 0) && T.pack "better than one that reaches it" `T.isInfixOf` pr 1 && T.pack "count them" `T.isInfixOf` pr 2)
@@ -827,7 +833,7 @@ run = do
 
   -- the hang detector: five times the median of the last passing checks, at least 15 s
   eq "hang: no history, no limit (the check's own timeout)" (hangLimit []) Nothing
-  eq "hang: a fast check is given 15 s" (hangLimit [3, 3.2, 2.9]) (Just 15)
+  eq "hang: a fast check is given a minute (a suite that was a stub and is now a real one is not hung at fifteen seconds)" (hangLimit [3, 3.2, 2.9]) (Just 60)
   eq "hang: five times the median" (hangLimit [10, 30, 20]) (Just 100)
 
   -- the TUI library's frame (ghostty-tui): cells from puts, the difference between two frames, keys

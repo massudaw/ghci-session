@@ -14,6 +14,7 @@ and then it ends the turn, saying what the last step gave. A message that holds 
 on with from its log) is answered with what it found there. FAKE_CLAUDE_LOG: a file it notes its process id and
 each message in. FAKE_CLAUDE_CTX=BASE,STEP: the context it says each model call has -- BASE tokens and STEP more
 with every call (default 1000,0), 90% of it read from the cache: a context that grows, to see a turn roll over.
+FAKE_CLAUDE_LIMIT=N,SECONDS: its Nth model call is refused -- the subscription's limit, which resets in SECONDS.
 """
 import json, os, re, subprocess, sys, time
 
@@ -51,6 +52,7 @@ def main():
     out({"type": "system", "subtype": "init", "model": arg("--model"), "tools": tools.names if tools else []})
     calls = 0
     base, grow = (int(x) for x in os.environ.get("FAKE_CLAUDE_CTX", "1000,0").split(","))
+    limit = [int(x) for x in os.environ["FAKE_CLAUDE_LIMIT"].split(",")] if os.environ.get("FAKE_CLAUDE_LIMIT") else None
     for raw in sys.stdin:
         try:
             m = json.loads(raw)
@@ -70,6 +72,10 @@ def main():
         last = ""
         for step in steps:
             calls += 1
+            if limit and calls == limit[0]:      # the subscription's limit: said, and the turn ends as an error
+                out({"type": "rate_limit_event", "rate_limit_info": {"status": "rejected", "rateLimitType": "five_hour", "resetsAt": time.time() + limit[1]}})
+                out({"type": "result", "subtype": "error_during_execution", "is_error": True, "result": "the usage limit is reached", "num_turns": calls, "usage": {}})
+                return
             ctx = base + grow * calls
             out({"type": "stream_event", "event": {"type": "message_start", "message": {"usage": {"input_tokens": ctx - ctx * 9 // 10, "cache_read_input_tokens": ctx * 9 // 10, "cache_creation_input_tokens": 0}}}})
             mt = re.match(r"tool\s+(\w+)\s*(\{.*\})?$", step)

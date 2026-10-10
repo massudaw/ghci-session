@@ -357,9 +357,16 @@ timedAct act = do
   pure (r, t1 - t0, s1)
 
 benchLine :: Double -> RTSStats -> RTSStats -> String
-benchLine t s0 s1 = printf "%.2f s wall, %.2f s GC (%d major, %d minor), %.0f MB allocated" t
+benchLine t s0 s1 = printf "%.2f s wall, %.2f s GC (%d major, %d minor), %.0f MB allocated%s" t
   (fromIntegral (gc_elapsed_ns s1 - gc_elapsed_ns s0) / 1e9 :: Double) (major_gcs s1 - major_gcs s0) (gcs s1 - gcs s0 - (major_gcs s1 - major_gcs s0))
-  (mb (allocated_bytes s1 - allocated_bytes s0))
+  (mb (allocated_bytes s1 - allocated_bytes s0)) peak
+  where
+    -- The most that was live at a major collection (what `+RTS -s` calls the maximum residency): the process's
+    -- own, since it began -- so it is the action's when the action raised it, and otherwise only a bound.
+    peak :: String
+    peak | major_gcs s1 == major_gcs s0 = ""
+         | max_live_bytes s1 > max_live_bytes s0 = printf ", %.0f MB live at most (a new most for this process)" (mb (max_live_bytes s1))
+         | otherwise = printf ", under %.0f MB live (the most this process has had)" (mb (max_live_bytes s1))
 
 mb :: Integral a => a -> Double
 mb x = fromIntegral x / 1e6
