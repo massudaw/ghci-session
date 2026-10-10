@@ -1,0 +1,18 @@
+PERF.md
+  h_fd5809635b36a3 91-108
+app/GhciSession/History.hs
+  h_fd5809635b36a3 438-461
+app/GhciSession/Know.hs
+  h_fd5809635b36a3 334-340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17e6da888c4388f30ccf5b8eb68f90474a2bf1ba",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
