@@ -28,16 +28,17 @@ import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import Text.Printf (printf)
 
 import GhciSession.Config
-import GhciSession.Daemon (runDaemon)
+import GhciSession.Daemon (agentTools, runDaemon)
 import GhciSession.Gc
 import GhciSession.Json
 import GhciSession.Chat (chatMain, summarizeMain)
 import GhciSession.Top (topMain)
 import GhciSession.Usage (usageRows, usageTable)
-import GhciSession.Mcp (mcpMain, relayMain)
+import GhciSession.Mcp (mcpMain, relayMain, toolArgs)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys
 import qualified Data.Text.IO as TIO
+import qualified Data.Set as S
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import qualified GhciSession.Import as I
@@ -382,7 +383,14 @@ cmdKnowledge a = do
     (Just "forget", Just i)
       | any ((== i) . K.fId) facts -> K.withLock dir (K.forget dir i) >> putStrLn ("forgotten: " ++ i) >> pure 0
       | otherwise -> hPutStrLn stderr ("knowledge: no fact " ++ i) >> pure 1
-    _ | Just p <- opt a ["--block"] -> TIO.putStr (K.render K.budget p facts) >> pure 0
+    _ | Just p <- opt a ["--block"] -> TIO.putStr (K.renderFor (toolArgs agentTools) K.budget p facts) >> pure 0
+      | flag a ["--candidates"] -> do
+          seen <- K.confirmations dir facts
+          let cs = K.promotable seen facts
+          forM_ cs $ \(f, s) ->
+            TIO.putStrLn (T.pack (printf "%2d days %d project(s)  %-12s %s  " (S.size (K.seenDays s)) (S.size (K.seenProjects s)) (T.unpack (K.fSubject f)) (K.fId f)) <> K.fText f)
+          when (null cs) (putStrLn "no tool/ or user/ fact is confirmed on three days or from two projects yet")
+          pure 0
       | Just sub <- opt a ["--subject"] -> do
           let shown = [ f | f <- (if flag a ["--all"] then id else K.current) facts, K.fSubject f == T.pack sub ]
           forM_ (sortOn (negate . K.fLast) shown) $ \f ->
@@ -607,7 +615,7 @@ usage = unlines
   , "  top [SESSION]                      watch the session: its verdict, memory and servers, the history as it is written, the view, the daemon's log, the model calls' cost"
   , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
   , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
-  , "  knowledge [--subject S] [--all] [--block PROJECT] | knowledge search WORDS | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
+  , "  knowledge [--subject S] [--all] [--block PROJECT] [--candidates] | knowledge search WORDS | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
   , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"

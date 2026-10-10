@@ -38,7 +38,8 @@ module GhciSession.Know
   , candidates, reconPrompt, parseDecisions
   , foldLimit, foldDue, foldPrompt, parseFold
   , rank, search, snippet
-  , render, knownLine, day, budget
+  , render, renderFor, operatorSubject, knownLine, day, budget
+  , markSeenFrom, Seen (..), confirmations, confirmationsOf, promotable, srcProject
   ) where
 
 import Control.Concurrent (threadDelay)
@@ -144,6 +145,10 @@ markBy dir i by = appendJson dir (JObj [("mark", JStr "by"), ("id", JStr i), ("b
 markSeen :: FilePath -> String -> Double -> IO ()
 markSeen dir i at = appendJson dir (JObj [("mark", JStr "seen"), ("id", JStr i), ("at", JNum at)])
 
+-- | This fact was said again, then, in the log that has this source (@project/session:from+n@).
+markSeenFrom :: FilePath -> String -> Double -> String -> IO ()
+markSeenFrom dir i at src = appendJson dir (JObj [("mark", JStr "seen"), ("id", JStr i), ("at", JNum at), ("src", JStr src)])
+
 forget :: FilePath -> String -> IO ()
 forget dir i = appendJson dir (JObj [("mark", JStr "forget"), ("id", JStr i)])
 
@@ -178,22 +183,25 @@ day = formatTime defaultTimeLocale "%Y-%m-%d" . posixSecondsToUTCTime . realToFr
 
 -- | The prompt that asks a piece of a session's log for its durable facts. Everything before the @\<chat\>@ line
 -- is the same for every piece (the system prompt of @ghci-session summarize@, cached by a provider).
-extractPrompt :: String -> Double -> T.Text -> T.Text
-extractPrompt project date body = T.pack (unlines
+extractPrompt :: [String] -> String -> Double -> T.Text -> T.Text
+extractPrompt toolLines project date body = T.pack (unlines (
   [ "You maintain a knowledge base built from the log of an engineer's sessions with a coding agent that works through a tool called ghci-session. You are given a piece of the log of one project (messages, or one-line summaries of runs of messages), with its date."
   , "Extract the DURABLE knowledge in it: what would change how someone acts weeks later. A decision, a standing rule from the user, how a tool or setting is to be used, a result figure, a cause found. NOT the steps taken, transient errors, what was merely tried, or a state that the next hour changes. Most pieces hold nothing: then the list is empty. At most 3 facts a piece, the most consequential."
   , "Each fact has a SCOPE, decided strictly:"
   , "  \"tool\"    true of ghci-session itself for ANY project: what a tool call or a ghci-session.json setting does (tool scope even when this project is where it was learned), a limit, a behaviour. It must not depend on this project's files or modules; if it names them, it is not tool scope."
   , "  \"user\"    how this user wants work done on ANY project (process, what never to do). A rule that names this project's branch, files, formats or targets is project scope; when in doubt, project."
   , "  \"project\" everything else: this project's design, figures, tests, status, and the user's rules for this project only."
-  , "a SUBJECT: tool/usage or tool/config for tool scope; user/rules for user scope; for project scope one of architecture, performance, testing, status, rules."
+  , "  \"operator\" what only a PERSON at the command line does with ghci-session, never the agent's tool calls: import --go, chat --send, the i key in top, knowledge search."
+  , "a SUBJECT: tool/usage or tool/config for tool scope; tool/operator for operator scope; user/rules for user scope; for project scope one of architecture, performance, testing, status, rules."
   , "and a TOPIC: three to six words naming WHAT the fact is about, the same words whenever the same thing is spoken of (\"optimised loading setting\", \"routine check command\")."
   , "Write the fact as ONE self-contained present-tense sentence with exact names, settings and figures."
-  , "Reply with JSON only, on ONE line, no code fence: {\"facts\": [{\"scope\": \"...\", \"subject\": \"...\", \"topic\": \"...\", \"fact\": \"...\"}]}"
-  , "<chat>"
-  , "project: " ++ project
-  , "date: " ++ day date
-  , "" ]) <> body <> T.pack "\n</chat>\nThe JSON, on one line:\n"
+  , "Reply with JSON only, on ONE line, no code fence: {\"facts\": [{\"scope\": \"...\", \"subject\": \"...\", \"topic\": \"...\", \"fact\": \"...\"}]}" ]
+  ++ (if null toolLines then [] else
+      [ "The agent already has these tools, each described to it as below (name(arguments): what it does). Do NOT extract what such a description already says -- that a tool exists, takes an argument, or what an argument is for; extract only what it does not say." ] ++ toolLines)
+  ++ [ "<chat>"
+     , "project: " ++ project
+     , "date: " ++ day date
+     , "" ])) <> body <> T.pack "\n</chat>\nThe JSON, on one line:\n"
 
 -- | The JSON object in an answer: from its first brace to its last (a model may put a fence around it).
 jsonIn :: T.Text -> Maybe Json
@@ -210,6 +218,7 @@ parseNew project date src out = take 3
     lastPart s = reverse (takeWhile (/= '/') (reverse s))
     subject scope s
       | scope == "tool" = if s == "tool/config" then s else "tool/usage"
+      | scope == "operator" = T.unpack operatorSubject
       | scope == "user" = "user/rules"
       | otherwise = project ++ "/" ++ (let p = lastPart s in if p `elem` ["architecture", "performance", "testing", "status", "rules"] then p else "status")
 
@@ -361,6 +370,18 @@ knownLine :: New -> [Fact] -> T.Text
 knownLine n replaced = nSubject n <> T.pack ": " <> nText n
   <> (if null replaced then T.empty else T.pack " (THIS REPLACES: " <> T.intercalate (T.pack "; ") [ T.take 160 (fText f) | f <- replaced ] <> T.pack ")")
 
+-- | The subject of what only a person at the command line does (@import --go@, @chat --send@, the @i@ key in
+-- top, @knowledge search@): no agent's block holds it; @knowledge --subject@ and top's tab do.
+operatorSubject :: T.Text
+operatorSubject = T.pack "tool/operator"
+
+-- | The block an AGENT reads ('render' without what it has no use for): the operator's subject left out, and
+-- a fact that a tool is called with an argument left out when the tool's schema already describes that
+-- argument (the known @(tool, argument)@ pairs are passed in). All of them stay in the store.
+renderFor :: [(String, String)] -> Int -> String -> [Fact] -> T.Text
+renderFor known bytes project facts = render bytes project (filter keep facts)
+  where keep f = fSubject f /= operatorSubject && maybe True (`notElem` known) (isCall (fTopic f))
+
 -- | The block a session of this project reads before its view, in so many bytes: the subjects every session
 -- uses (45% of them), the project's (40%), the others' (15%), each tier's share split among its subjects, most
 -- recently confirmed first; in a subject the facts most recently confirmed first, cut at its share. Empty
@@ -396,3 +417,39 @@ render bytes project facts0
       where go _ [] = ([], False)
             go used (l : r) = let n = B.length (TE.encodeUtf8 l) + 1
                               in if used + n > share then ([], True) else let (a, b) = go (used + n) r in (l : a, b)
+
+-- candidates for the system prompt --------------------------------------------------------------
+
+-- | Where a fact was learned and said again: the days, and the projects whose logs it came from.
+data Seen = Seen { seenDays :: S.Set String, seenProjects :: S.Set String }
+  deriving (Eq, Show)
+
+-- | The project of a source (@project/session:from+n@); none for one without (a fold's).
+srcProject :: String -> Maybe String
+srcProject s = case break (== '/') s of
+  (p, '/' : _) | not (null p) -> Just p
+  _ -> Nothing
+
+-- | Each fact's days and projects, from the store in this directory.
+confirmations :: FilePath -> [Fact] -> IO (M.Map String Seen)
+confirmations dir facts = do
+  there <- doesFileExist (factsFile dir)
+  file <- if there then B.readFile (factsFile dir) else pure B.empty
+  pure (confirmationsOf file facts)
+
+-- | Each fact's days and projects: when it was first learned and from which log, and each time it was said
+-- again (the file's @seen@ marks, which carry the day and, since they were told, the log).
+confirmationsOf :: B.ByteString -> [Fact] -> M.Map String Seen
+confirmationsOf file facts = foldl' mark base [ j | l <- B.split 10 file, not (B.null l), Right j <- [parseJsonBS l], lookupStr "mark" j == Just "seen" ]
+  where
+    base = M.fromList [ (fId f, Seen (S.singleton (day (fFirst f))) (S.fromList (maybe [] (: []) (srcProject (fSrc f))))) | f <- facts ]
+    mark m j = case lookupStr "id" j of
+      Just i -> M.adjust (\(Seen d p) -> Seen (maybe d (\a -> S.insert (day a) d) (lookupNum "at" j)) (maybe p (\pr -> S.insert pr p) (lookupStr "src" j >>= srcProject))) i m
+      Nothing -> m
+
+-- | The facts that hold under @tool/@ and @user/@ (not the operator's), confirmed on three or more days or from
+-- two or more projects, the most confirmed first: what might belong in the system prompt.
+promotable :: M.Map String Seen -> [Fact] -> [(Fact, Seen)]
+promotable m facts = sortBy (comparing (\(f, s) -> (Down (S.size (seenDays s)), Down (S.size (seenProjects s)), Down (fLast f))))
+  [ (f, s) | f <- current facts, T.takeWhile (/= '/') (fSubject f) `elem` map T.pack ["tool", "user"], fSubject f /= operatorSubject
+           , let s = M.findWithDefault (Seen S.empty S.empty) (fId f) m, S.size (seenDays s) >= 3 || S.size (seenProjects s) >= 2 ]

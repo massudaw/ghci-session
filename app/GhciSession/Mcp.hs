@@ -6,7 +6,7 @@
 -- are the memory. Nothing here touches the repl.
 --
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
-module GhciSession.Mcp (mcpMain, Tool (..), tools, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
+module GhciSession.Mcp (mcpMain, Tool (..), tools, toolArgs, toolBrief, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
 
 import Control.Concurrent (forkIO)
 import Control.Concurrent.MVar (newEmptyMVar, putMVar, takeMVar)
@@ -14,6 +14,7 @@ import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
+import Data.List (intercalate)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Text as T
 import System.Directory (doesFileExist)
@@ -165,6 +166,18 @@ tools =
   , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path." [("path", ("string", "optional path or pattern filter (e.g. 'src', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)")), sessionArg] []
   , Tool "restart" "Restart the GHCi session daemon cold. Re-runs cabal repl and reloads the project from scratch. Use this if the session is wedged, crashed, or after fundamental build-configuration changes." [("fast", ("boolean", "skip build tool check and restart immediately (default false)")), sessionArg] []
   ]
+
+-- | The (tool, argument) pairs the schemas of these tools describe.
+toolArgs :: [Tool] -> [(String, String)]
+toolArgs ts = [ (tName t, k) | t <- ts, (k, _) <- tProps t ]
+
+-- | A tool in one line, for a prompt: @name(arguments): the first sentence of what it does@ (at most 140 characters).
+toolBrief :: Tool -> String
+toolBrief t = tName t ++ "(" ++ intercalate ", " [ k | (k, _) <- tProps t, k /= "session" ] ++ "): " ++ cut (sentence (tDesc t))
+  where sentence (c : '.' : ' ' : _) = [c, '.']
+        sentence (c : r) = c : sentence r
+        sentence [] = []
+        cut s = if length s > 140 then take 137 s ++ "..." else s
 
 toolJson :: Tool -> Json
 toolJson t = JObj

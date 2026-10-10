@@ -75,9 +75,9 @@ def main():
 
         view1 = run("view").stdout
         block1 = view1.split("</subjects>")[0]
-        checks.check("the view begins with the subjects: what holds, not what was replaced; the tool's arguments on a line",
+        checks.check("the view begins with the subjects: what holds, not what was replaced; not the arguments the tool's schema describes",
                      view1.startswith("<subjects>") and "## user/rules (1 fact)" in block1 and "session's test tool" in block1 and "cabal test through sh" not in block1
-                     and 'bench is called with: ' in block1 and "<chat>" in view1.split("</subjects>")[1], block1)
+                     and 'bench is called with: ' not in block1 and "<chat>" in view1.split("</subjects>")[1], block1)
 
         run("history", "--kind", "user", "RULE-C: do not commit data files in this project" + pad)
         ok = until(lambda: "No data files" in facts("--subject", "proj/rules"))

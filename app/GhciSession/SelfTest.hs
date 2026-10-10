@@ -21,7 +21,7 @@ import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Chat (shownCut, parseOpts, Opts (..), unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
-import GhciSession.Mcp (Tool (..))
+import GhciSession.Mcp (Tool (..), toolArgs, toolBrief)
 import GhciSession.Doc
 import qualified GhciSession.History as H
 import qualified GhciSession.Know as K
@@ -405,6 +405,35 @@ run = do
      (T.pack (replicate 100 'x' ++ "60") `T.isInfixOf` cutBlock, T.pack (replicate 100 'x' ++ "1\n") `T.isInfixOf` cutBlock, T.pack "(more: recall, or ghci-session knowledge --subject tool/usage)" `T.isInfixOf` cutBlock, T.length cutBlock < 1400)
      (True, False, True, True)
   eq "know: nothing known, no block" (K.render 4000 "dxf" []) T.empty
+  let schemaTool = Tool "bench" "Time an IO action. More." [("expr", ("string", "the action")), ("session", ("string", "which"))] ["expr"]
+      agentFacts = [ kFact "f" "tool/usage" "bench call argument expr" "The bench tool is called with the argument \"expr\", e.g. bench {\"expr\": \"1\"}" 1 1
+                   , kFact "g" "tool/usage" "bench call argument opt" "The bench tool is called with the argument \"opt\", e.g. bench {\"opt\": 2}" 2 2
+                   , kFact "o" "tool/operator" "import go" "Only a person runs import --go." 3 3
+                   , kFact "p" "tool/usage" "edit retry" "A refused edit is sent again with the lines as they are." 4 4 ]
+      forAgent = K.renderFor (toolArgs [schemaTool]) 4000 "dxf" agentFacts
+  eq "know: an agent's block leaves out a call argument its tool's schema describes and the operator's subject; the store's block keeps them"
+      ( map (\w -> T.pack w `T.isInfixOf` forAgent) ["\"expr\"", "\"opt\"", "import --go", "A refused edit"]
+      , map (\w -> T.pack w `T.isInfixOf` K.render 4000 "dxf" agentFacts) ["\"expr\"", "import --go"] )
+      ([False, True, False, True], [True, True])
+  eq "know: a tool is one line for a prompt: its arguments (not the session's), the first sentence of what it does" (toolBrief schemaTool) "bench(expr): Time an IO action."
+  let promptWith ls = K.extractPrompt ls "dxf" 1000 (T.pack "BODY")
+  eq "know: the extraction prompt holds the tools' lines before the chat, and says not to extract what they say; with none, it says nothing of them"
+      ( [ T.pack "bench(expr): Time." `T.isInfixOf` fst (T.breakOn (T.pack "<chat>") (promptWith ["bench(expr): Time."])), T.pack "Do NOT extract what such" `T.isInfixOf` promptWith ["x"], T.pack "Do NOT extract what such" `T.isInfixOf` promptWith [] ]
+      , T.pack "operator" `T.isInfixOf` promptWith [] )
+      ([True, True, False], True)
+  eq "know: an operator-scope fact is filed under tool/operator"
+      [ T.unpack (K.nSubject n) | n <- K.parseNew "dxf" 1000 "s" (T.pack "{\"facts\": [{\"scope\": \"operator\", \"subject\": \"x\", \"topic\": \"t\", \"fact\": \"Only a person.\"}]}") ] ["tool/operator"]
+  let dayAt k = 86400 * k + 5 :: Double
+      cf i sub src first = (kFact i sub "t" ("Fact " ++ i ++ ".") first first) { K.fSrc = src }
+      seenLine i k src = "{\"mark\": \"seen\", \"id\": \"" ++ i ++ "\", \"at\": " ++ show (dayAt k) ++ (if null src then "" else ", \"src\": \"" ++ src ++ "\"") ++ "}"
+      cfacts = [ cf "a" "user/rules" "p/s:1+1" (dayAt 0), cf "b" "tool/usage" "p/s:1+1" (dayAt 0), cf "c" "tool/config" "p/s:1+1" (dayAt 0), cf "d" "dxf/rules" "p/s:1+1" (dayAt 0), cf "e" "tool/operator" "p/s:1+1" (dayAt 0), cf "g" "user/rules" "p/s:1+1" (dayAt 0) ]
+      cfile = BC.pack (unlines ([ seenLine i k "" | i <- ["a", "d", "e"], k <- [1, 2] ] ++ [ seenLine "a" 2 "", seenLine "b" 1 "q/s:9+1", seenLine "g" 1 "", seenLine "c" 1 "p/t:2+1", "not json" ]))
+      seen = K.confirmationsOf cfile cfacts
+  eq "know: a fact's days and projects are its first learning and each said-again mark; a fold's source has no project"
+      ( [ (Set.size (K.seenDays s), Set.size (K.seenProjects s)) | i <- ["a", "b", "c"], Just s <- [M.lookup i seen] ], map K.srcProject ["p/s:1+1", "s:fold"] )
+      ([(3, 1), (2, 2), (2, 1)], [Just "p", Nothing])
+  eq "know: candidates for the system prompt: tool/ and user/ facts confirmed on three days or from two projects, the most confirmed first; not the project's, not the operator's"
+      (map (K.fId . fst) (K.promotable seen cfacts)) ["a", "b"]
   eq "know: a subject's heading counts its facts, '1 fact' for one"
      [ T.unpack (T.drop 3 l) | l <- T.lines (K.render 4000 "dxf" (take 1 many ++ [ kFact "z" "dxf/status" "t" "Two." 1 1, kFact "y" "dxf/status" "u" "Facts." 2 2 ])), T.pack "## " `T.isPrefixOf` l ]
      ["tool/usage (1 fact)", "dxf/status (2 facts)"]

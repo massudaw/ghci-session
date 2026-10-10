@@ -6,7 +6,7 @@
 
 -- | The per-session daemon: owns one repl, serves reload/eval/check/status on a unix socket, watches the
 -- sources, forks the session's servers.
-module GhciSession.Daemon (runDaemon, scopedSummary, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords, cabalField) where
+module GhciSession.Daemon (runDaemon, agentTools, scopedSummary, verdictOf, warningsIn, countSub, replace, packageSources, moduleDelta, unitsBelow, hangLimit, ccWords, cabalField) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import System.IO.Unsafe (unsafePerformIO)
@@ -51,6 +51,8 @@ import GhciSession.Sys
 import GhciSession.Watch
 import qualified GhciSession.History as H
 import qualified GhciSession.Know as K
+import qualified GhciSession.Mcp as Mcp
+import qualified GhciSession.Chat as Chat
 import qualified GhciSession.Llm as Llm
 
 data S = S
@@ -2205,9 +2207,13 @@ subjectsFor s sn = do
     _ -> do
       dir <- K.knowDir
       facts <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
-      let t = K.render K.budget (projectOf s) facts
+      let t = K.renderFor (Mcp.toolArgs agentTools) K.budget (projectOf s) facts
       void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ]))) :: IO (Either IOException ()))
       pure t
+
+-- | The tools an agent has: the chat's own, then the others the MCP server has (a name once).
+agentTools :: [Mcp.Tool]
+agentTools = Chat.chatTools ++ [ t | t <- Mcp.tools, Mcp.tName t `notElem` map Mcp.tName Chat.chatTools ]
 
 -- | What the session establishes, kept by subject ("GhciSession.Know"), through the compactor's command. The
 -- log is read once, in order, from where it was left (@history\/know.json@): a message of the user's, an
@@ -2256,7 +2262,7 @@ knowLoop s m cmd = do
                 at ks = [ cands !! (k - 1) | k <- ks ]
             forM_ (zip news decs) $ \(n, d) -> case d of
               K.Drop -> pure ()
-              K.Same ks -> K.withLock dir (forM_ (at ks) (\f -> K.markSeen dir (K.fId f) (K.nDate n)))
+              K.Same ks -> K.withLock dir (forM_ (at ks) (\f -> K.markSeenFrom dir (K.fId f) (K.nDate n) (K.nSrc n)))
               _ -> do
                 let replaced = case d of { K.Replace ks -> at ks; _ -> [] }
                 i <- K.newId
@@ -2284,7 +2290,7 @@ knowLoop s m cmd = do
                 forM_ old (\f -> K.markBy dir (K.fId f) (head ids ++ "-f0"))
               logS s (printf "knowledge: %s: %d older fact(s) folded into %d" (T.unpack subject) (length old) (length texts))
       piece recent date sr body = do
-        out <- ask (K.extractPrompt project date body)
+        out <- ask (K.extractPrompt (map Mcp.toolBrief agentTools) project date body)
         case out of
           Nothing -> pure False
           Just o -> settle recent (K.parseNew project date sr o)

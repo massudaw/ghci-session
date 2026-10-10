@@ -420,7 +420,11 @@ never rewritten. The subjects are `tool/usage` and `tool/config` (true of this t
   as at most five; the folded ones are kept, marked as replaced.
 - **Read** as a block before the view (`<subjects>`, 16 KB, taken from the view's budget): the tool's and the
   user's subjects first (45%), the project's (40%), the others' by last use (15%); in a subject the facts most
-  recently confirmed first, cut where its share ends.
+  recently confirmed first, cut where its share ends. What the tools' own schemas already say is left out of it
+  (a call-argument fact whose argument a tool's schema describes) and so is `tool/operator`, what only a person at
+  the command line does (`import --go`, `chat --send`, the `i` key in `top`, `knowledge search`); both stay in the
+  store, in `knowledge --subject` and in `top`'s tab. The extraction prompt is given the tools' one-line
+  descriptions (before the log, so a provider caches it) and told not to extract what they say.
 - **Appended, not rewritten**: the block is written when the view is rewritten (a batch merged its lines, so the
   provider's cache of the prompt is lost from there anyway) and is the same text in between. What is learned
   meanwhile is a `known` line in the session's history -- `known: user/rules: ... (THIS REPLACES: ...)` -- which a
@@ -431,6 +435,7 @@ ghci-session knowledge                        # the subjects, and how many facts
 ghci-session knowledge --subject user/rules   # its facts, newest confirmed first, with their ids and sources
 ghci-session knowledge --subject S --all      # the replaced ones too
 ghci-session knowledge --block PROJECT        # the block a session of that project would read
+ghci-session knowledge --candidates           # tool/ and user/ facts confirmed on 3+ days or from 2+ projects, most confirmed first (for the system prompt; lists only)
 ghci-session knowledge search WORDS            # the facts that hold the words, the best first
 ghci-session knowledge forget ID
 ghci-session history --search WORDS            # the messages of a session's log that hold them
