@@ -1,0 +1,21 @@
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_12140594b1458d 20,2163-2164,2197,2201,2208-2211,2216-2217
+tools/check-knowledge.py
+  s_ee2f22f51d8bdb::t_7969d22c5fe2f7 82-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1e3b2985505e8f90d0a4b1d8a5c8541c54f5df11",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "unknown"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
