@@ -2775,7 +2775,7 @@ seedObjects s l = void (try go :: IO (Either SomeException ()))
       took <- forM wds $ \(wd, dirs) -> do
         let mine = wd </> sObjRel s
         names <- either (\(_ :: IOException) -> []) id <$> try (listDirectory (wd </> stateRel))
-        sibs <- filterM doesDirectoryExist [ wd </> stateRel </> n </> "objs" | n <- names, n /= sName s ]
+        sibs <- filterM doesDirectoryExist [ wd </> stateRel </> n </> "objs" | n <- names, n /= sName s, sameFlags (sConf s) (sName s) n ]
         his <- concat <$> forM sibs (\d -> map ((,) d) <$> hiFiles d "")
         -- the newest interface of each module among the siblings, if newer than ours
         best <- foldM (\m (d, rel) -> do

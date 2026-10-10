@@ -86,6 +86,13 @@ run = do
   eq "json: a string that does not end, or ends on a backslash, is an error"
      (map (either (const True) (const False) . parseJson) ["\"abc", "\"ab\\", "\"a\\\"", "\"\\u12\"", "{\"a\\nb\": 1"]) [True, True, True, True, True]
 
+  -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")
+  let bconf = Conf { cRoot = "/p", cStateDir = "/p/.s", cStateRel = ".s", cDefault = "tool", cTargets = [("tool", JNull), ("engine", JNull)], cSessions = [], cPrices = [] }
+  check "flags: a measuring session takes from the same level, not from another or from the configuration's"
+    (sameFlags bconf "tool-O2" "engine-O2" && sameFlags bconf "tool-O2" "tool-O2+exe.x" && not (sameFlags bconf "tool-O2" "tool-O1")
+     && not (sameFlags bconf "tool-O2" "tool") && not (sameFlags bconf "tool-O2s" "tool-O2"))
+  check "flags: a session of the configuration takes from those of the configuration" (sameFlags bconf "tool" "engine" && not (sameFlags bconf "tool" "tool-O1"))
+
   -- verdicts
   let st m l = JObj [("modules", JNum m), ("loaded", JNum l)]
       diag sev = JObj [("severity", JStr sev), ("file", JStr "src/M.hs"), ("line", JNum 3), ("col", JNum 1), ("code", JStr "GHC-1"), ("message", JStr "oops\n  more")]

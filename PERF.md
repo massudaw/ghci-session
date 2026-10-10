@@ -188,6 +188,23 @@ does, so the 2,000 files of ignored build trees (gba/nes runners, libfff) are no
 A small gain in time (the process spawn costs what the walk did, so `find` is as it was) and a half of the memory;
 the change of meaning (ignored files are not searched) is the point as much as the time. Self-tests: 363 pass.
 
+### 7. `bench` with `opt`/`unit` (harness): the timeout bounds the wait; no objects across flags
+
+No number: a first `-O2` compile of this repository takes over 15 minutes and was not run to test this. The call's
+`timeout` (default 30 s) now bounds the wait for the sibling session to be started and reloaded (`System.Timeout`
+around the start and the reload request; the `start` process and the daemon are detached, so they go on). When it
+runs out the answer's first line says `[in tool-O2: the FIRST compile of the code at -O2 is under way, N s so far ...]`
+(or `reloading`), that nothing was measured, that asking again later picks it up, and the status line and the last
+line of the sibling's log. A daemon that is up but not listening yet is the same wait, not an error. A boot that
+fails says its status line and why. Tested by the types and a self-test of the flags rule, not by a run.
+
+The log line `objects: 45 module(s) taken from tool`: a sibling's objects were copied into the -O2 session whatever
+their flags. Not right: the interface carries the optimisation flags and GHC compiles a module again when they differ
+(`ghc -O1 -c M.hs` then `--make -O2`: `[Flags changed]`), so the copy cost its time and saved nothing. `seedObjects`
+now takes only from sessions with the same flags (`Config.sameFlags`: the same level and info-table mapping among the
+measuring sessions; configuration sessions among themselves). A base session that is itself `-O1` could feed a `-O1`
+measuring one; not done, since the base's real level is not known from its name. Self-tests: 365 pass.
+
 ## Not done, and next
 
 - A file list kept by the daemon would save the 14 ms of `git ls-files` (see 6); not done, see there for why.

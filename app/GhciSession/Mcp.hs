@@ -20,6 +20,7 @@ import System.Directory (doesFileExist)
 import System.Environment (getExecutablePath)
 import System.Exit (ExitCode (..))
 import System.Process (readProcessWithExitCode)
+import System.Timeout (timeout)
 import System.FilePath ((</>))
 import System.IO
 import System.Posix.IO (fdToHandle)
@@ -190,18 +191,47 @@ benchAt conf base args = do
       text r = fromMaybe T.empty (lookupText "out" r)
   t0 <- now
   up <- isJust <$> running conf name
-  started <- if up then pure (Right ()) else do
-    exe <- getExecutablePath
-    r <- try (readProcessWithExitCode exe ["--root", cRoot conf, "start", name, "--no-check"] "") :: IO (Either IOException (ExitCode, String, String))
-    pure (case r of
-      Right (ExitSuccess, _, _) -> Right ()
-      Right (_, out, err) -> Left (T.pack (unlines (lastN 14 (lines (out ++ err)))))
-      Left e -> Left (T.pack (show e)))
-  case started of
-    Left why -> pure (False, T.pack ("bench: the session to measure in (" ++ name ++ ") did not start:\n") <> why, Reached)
-    Right () -> do
-      rl <- ask "reload" [("check", JBool False), ("refork", JBool False)]
-      t1 <- now
+  let tmoUs = round ((fromMaybe 30 (lookupNum "timeout" args) :: Double) * 1000000) :: Int
+      sdir = stateOf conf name
+      -- (what the session's log last said, and its verdict line: where a wait that ran out, or a boot that failed, is looked at)
+      logTail = do
+        r <- try (withBinaryFile (sdir </> "daemon.log") ReadMode (\h -> do
+                    sz <- hFileSize h
+                    hSeek h AbsoluteSeek (max 0 (sz - 4000))
+                    BC.hGetContents h)) :: IO (Either IOException B.ByteString)
+        pure (either (const "(no log)") (\b -> case filter (not . B.null) (BC.lines b) of { [] -> "(empty log)"; ls -> BC.unpack (last ls) }) r)
+      verdictLine = maybe "" (takeWhile (/= '\n')) <$> readFileMaybe (sdir </> "status")
+      -- the call's timeout bounds the WAIT for the session to be there and loaded as it is now, not the compile: the
+      -- session goes on in its own process, and the next call finds it further (or done)
+      load = do
+        started <- if up then pure (Right ()) else do
+          exe <- getExecutablePath
+          r <- try (readProcessWithExitCode exe ["--root", cRoot conf, "start", name, "--no-check"] "") :: IO (Either IOException (ExitCode, String, String))
+          case r of
+            Right (ExitSuccess, _, _) -> pure (Right ())
+            Right (_, out, err) -> do
+              v <- verdictLine
+              pure (Left (T.pack (unlines ((if null v then [] else ["its status: " ++ v]) ++ lastN 14 (lines (out ++ err))))))
+            Left e -> pure (Left (T.pack (show e)))
+        case started of
+          Left why -> pure (Left why)
+          Right () -> Right <$> ask "reload" [("check", JBool False), ("refork", JBool False)]
+  let stillCompiling = do
+        lg <- logTail
+        v <- verdictLine
+        tn <- now
+        pure (False, T.pack ("[in " ++ name ++ ": " ++ (if up then "reloading the code at -O" ++ show level else "the FIRST compile of the code at -O" ++ show level ++ " is under way")
+                             ++ ", " ++ show (round (tn - t0) :: Int) ++ " s so far -- not finished at the call's timeout]\n"
+                             ++ "Nothing was measured. The session goes on in the background: ask the same again later and it picks up where it is (a first -O2 compile of a large project takes many minutes).\n"
+                             ++ (if null v then "" else "its status: " ++ v ++ "\n") ++ "its log last said: " ++ lg ++ "\n"), Reached)
+  loaded <- timeout tmoUs load
+  t1 <- now
+  case loaded of
+    Nothing -> stillCompiling
+    -- (booted, but not listening yet: its daemon is there, its socket not -- the same wait)
+    Just (Right rl) | lookupStr "down" rl == Just "before", up -> stillCompiling
+    Just (Left why) -> pure (False, T.pack ("bench: the session to measure in (" ++ name ++ ") did not start:\n") <> why, Reached)
+    Just (Right rl) -> do
       -- (what it loaded to: the verdict the reload left, which is in its answer's status)
       let kind = fromMaybe "" (lookupStr "kind" (rl .: "status"))
           bad = kind `elem` ["COMPILE-ERROR", "DEAD", "CONFIG-ERROR", "PREBUILD-ERROR"] || lookupBool "ok" rl == Just False
@@ -214,8 +244,9 @@ benchAt conf base args = do
           else ask "bench" ([ ("expr", JStr e) | Just e <- [lookupStr "expr" args] ] ++ [ ("timeout", JNum v) | Just v <- [lookupNum "timeout" args] ]
                            ++ [ ("live", JBool True) | lookupBool "live" args == Just True ] ++ [ ("runs", JNum v) | Just v <- [lookupNum "runs" args] ])
         pure (lookupBool "ok" r == Just True, hd <> text r, Reached)
-  where lastN :: Int -> [a] -> [a]
-        lastN k xs = drop (length xs - k) xs
+  where
+    lastN :: Int -> [a] -> [a]
+    lastN k xs = drop (length xs - k) xs
 
 -- | A tool, as a request to the daemon: ok, and the text.
 call :: Conf -> String -> Json -> IO (Bool, T.Text)

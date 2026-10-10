@@ -6,7 +6,7 @@
 module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
-  , benchSession, benchOf, benchSites, knownSession
+  , benchSession, benchOf, benchSites, sameFlags, knownSession
   , targetJson, stateOf
   ) where
 
@@ -243,6 +243,15 @@ benchOf conf name
 -- the level.)
 benchSites :: String -> Bool
 benchSites name = case reverse (takeWhile (/= '+') name) of { ('s' : l : 'O' : '-' : _) -> l `elem` "012"; _ -> False }
+
+-- | Can the objects of one session be of use to another? An interface carries the optimisation flags it was
+-- compiled with, and the compiler compiles again a module whose flags are not its own ("[Flags changed]", seen with
+-- -O1 then -O2 on one file): a copy across levels costs the copy and saves nothing. So a session to measure in
+-- takes from those of the same level (and the same info-table mapping), and a session of the configuration from
+-- the sessions of the configuration -- not from a measuring one, whose level is not known to be its own.
+sameFlags :: Conf -> String -> String -> Bool
+sameFlags conf a b = key a == key b
+  where key n = fmap (\(_, lv, _) -> (lv, benchSites n)) (benchOf conf n)
 
 -- | Is this a session there can be: one of the configuration, or one to measure one of them in?
 knownSession :: Conf -> String -> Bool
