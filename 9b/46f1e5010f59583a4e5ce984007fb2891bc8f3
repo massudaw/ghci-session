@@ -1,0 +1,36 @@
+app/GhciSession/Config.hs
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 9,66,89,235,241-245,259,295
+hygiene/src/GHC/Hygiene/Census.hs
+  s_ee2f22f51d8bdb::t_d6c0f7923ba29f 331-341
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 12,65,312-318,330,342-343,390-391
+  s_ee2f22f51d8bdb::t_3a362153eec5e5 392
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 298-299,302
+hygiene/c/heap_census.c
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 51,70-90,113,263
+app/GhciSession/Cli.hs
+  s_ee2f22f51d8bdb::t_0603be017ce3f0 627-632
+app/GhciSession/Mcp.hs
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 154,182-186,206,209-212,250-251
+  s_ee2f22f51d8bdb::t_0603be017ce3f0 180
+engine/GhsEngine.hs
+  s_ee2f22f51d8bdb::t_9a50d774d4ed66 99,557
+README.md
+  s_ee2f22f51d8bdb::t_ba44dd47d75b52 208-216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9b46f1e5010f59583a4e5ce984007fb2891bc8f3",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
