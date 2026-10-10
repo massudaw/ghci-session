@@ -1,0 +1,37 @@
+tools/extract-lab.py
+  s_ee2f22f51d8bdb::t_04873760c2b8d7 28-29,31-33,45,47
+  s_ee2f22f51d8bdb::t_c299321757769f 1-27,30,34-44,46,48-69
+app/GhciSession/SelfTest.hs
+  s_ee2f22f51d8bdb::t_e84d368a11de94 497-501
+tools/review-diff.py
+  s_ee2f22f51d8bdb::t_dd0561268521d6 1-42,47-52,61-85
+  s_ee2f22f51d8bdb::t_04873760c2b8d7 43-46,53-60
+app/GhciSession/Know.hs
+  s_ee2f22f51d8bdb::t_e84d368a11de94 238-244
+app/GhciSession/Cli.hs
+  s_ee2f22f51d8bdb::t_04873760c2b8d7 404-413,415-420
+  s_ee2f22f51d8bdb::t_da5d70f0be6317 421-429
+tools/extract-lab/cases.json
+  s_ee2f22f51d8bdb::t_99d6475e154a83 1-86,105-125
+  s_ee2f22f51d8bdb::t_c299321757769f 87-104
+tools/know-lab.py
+  s_ee2f22f51d8bdb::t_04873760c2b8d7 139,141-144,162-164,188-189,231
+README.md
+  s_ee2f22f51d8bdb::t_e001545170cdcd 477-486
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a5eec902e9a7140f96768dd4b625919debd6c02f",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
