@@ -80,6 +80,7 @@ import qualified GhciSession.Wire as Wire
 import GhciSession.Inbox (chatPidFile)
 import GhciSession.Carry
 import GhciSession.Roll
+import GhciSession.Replay (replayMain)
 import qualified GhciSession.Inbox as Inbox
 import System.IO.Unsafe (unsafePerformIO)
 import qualified GhciSession.Anthropic as A
@@ -132,6 +133,8 @@ chatUsage = unlines
   , "  --rollover: a turn through the claude command whose context has grown past this many tokens goes on in a"
   , "  fresh call, from its log (auto: the controller's threshold, from what a fresh call and a call's growth cost; 0: never);"
   , "  --carry N: what the fresh calls after the last N rollovers were given, part by part, in bytes (no model call is made);"
+  , "  --replay-rollover [--ratio R] FILE...: the controller over recorded chat logs (their [usage:] lines): the resets it would have made and"
+  , "  what they cost against a fixed 150000 and 110000 tokens (no session, no model call; --usage logs are what it reads);"
   , "  --continue: go on with the last turn of the history, from its log (a turn that did not end: the chat was"
   , "  stopped, or died, in the middle of it);"
   , "  --tui: the chat on a screen of its own (the transcript, the turn's state, a line to type on; Ctrl-C leaves);"
@@ -2520,6 +2523,7 @@ carryReport ch system o = do
 
 -- | @ghci-session chat ARGS@.
 chatMain :: Conf -> [String] -> IO Int
+chatMain _ ("--replay-rollover" : files) = replayMain files
 chatMain conf args = case parseOpts args of
   Left why -> hPutStrLn stderr why >> pure 2
   Right o -> do

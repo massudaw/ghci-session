@@ -253,6 +253,36 @@ echo, and fed to the controller as its relearn share (`Roll.seeRelearn`, a runni
 0.28 (measured by hand on this chat and dxf, before the list); comparing the logged shares from now on with that is how
 to see whether the list helped. Not yet seen live.
 
+## The replay of the controller (item 7)
+
+`chat --replay-rollover [--ratio R] FILE...` (`Replay.hs`) runs the controller over the `[usage: ...]` lines of recorded
+chat logs, no session, no model call. It is a model, not a run: the growth of a call is what the log had (not what an
+agent that had been reset would have done), a reset's next call costs the log's median fresh call (written) plus the
+relearn share (0.28) of it, and boundaries, the cold cache and the rot signal are not replayed (they need the tool
+calls). List prices: read 0.30, write R x read, output 15 dollars a million tokens. Logs of 2026-10-10:
+
+| log (calls) | R | policy | resets | dollars | mean context |
+|---|---|---|---|---|---|
+| this chat (654, fresh 56k) | 12.5 | fixed 150k | 11 | 33.78 | 103k |
+| | | fixed 110k | 18 | 31.59 | 81k |
+| | | auto | 19 | 32.08 | 83k |
+| | 20 | fixed 150k | 11 | 37.88 | 103k |
+| | | fixed 110k | 18 | 36.93 | 81k |
+| | | auto | 14 | 36.67 | 88k |
+| dxf (391, fresh 81k) | 12.5 | fixed 150k | 10 | 26.37 | 115k |
+| | | fixed 110k | 22 | 28.52 | 97k |
+| | | auto | 10 | 26.26 | 114k |
+| | 20 | fixed 150k | 10 | 30.53 | 115k |
+| | | fixed 110k | 22 | 35.40 | 97k |
+| | | auto | 8 | 30.41 | 124k |
+
+Auto against fixed 150k: -5.0% / -0.4% (R 12.5; this chat / dxf), -3.2% / -0.4% (R 20). Against 110k: +1.5% / -7.9%
+(R 12.5), -0.7% / -14.1% (R 20). So the threshold alone is worth little, as measured before (about 5%): auto is never
+worse than 150k here, and it avoids 110k's cost on dxf, where a fresh call is large (81k) and a reset dear. What I would
+not trust: the replay keeps the growth the log had after a reset, takes the fresh-call size as the log's median (so it
+knows what auto has to learn), and counts no benefit of a shorter context (fewer repeat reads, less rot) -- the one
+thing that would favour a lower threshold; the saving on the cold cache and on the carry (items 1, 3, 5) is not in it.
+
 ## Not done, and next
 
 - A file list kept by the daemon would save the 14 ms of `git ls-files` (see 6); not done, see there for why.

@@ -45,6 +45,7 @@ import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
 import GhciSession.Carry
 import GhciSession.Roll
+import GhciSession.Replay
 import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
@@ -129,6 +130,11 @@ run = do
   eq "rot: no share before ten reads; then the share of the last twenty" (map (rotShare . rotOf) [ [ rd "a" 1 10 | _ <- [1 .. 9 :: Int] ], replicate 10 (rd "a" 1 10) ++ [rd "b" 1 5, rd "c" 1 5] ]) [Nothing, Just (9 / 12)]
   eq "rot: only twenty reads count" (fmap (> 0.99) (rotShare (rotOf (rd "a" 1 10 : [ rd "b" 1 10 | _ <- [1 .. 40 :: Int] ])))) (Just True)
   eq "rot: over fifteen percent lowers the threshold by a tenth, not under 80k, nor a limit already under it" (map (\(r, l) -> rotLimit r l) [(True, 150000), (True, 85000), (True, 70000), (False, 150000)], map rotOver [Nothing, Just 0.15, Just 0.16]) ([135000, 80000, 70000, 150000], [False, False, True])
+  eq "replay: usage lines are the calls, the rest of a log is not" (parseCalls "hello\n[usage: in 1200, out 30, cached 1000 (83%), 2.1s]\n[usage: in 5, out x]\n[usage: in 1300, out 20, cached 1200 (92%), 1s]\n") [Call 1200 1000 30, Call 1300 1200 20]
+  eq "replay: growth is the log's where it grew by under 20k, the median where a reset came" (growths [Call 100000 0 0, Call 101000 0 0, Call 40000 0 0, Call 42000 0 0]) [0, 1000, 2000, 2000]
+  eq "replay: a fresh call is the median of the contexts that began under 70% of the one before" (freshSize [Call 100000 0 0, Call 40000 0 0, Call 90000 0 0, Call 50000 0 0], freshSize [Call 10 0 0]) (50000, 50000)
+  eq "replay: a policy that never resets has none, and a low fixed limit resets" (let cs = [ Call (50000 + 1000 * i) 0 10 | i <- [0 .. 99] ] in (length (smResets (simulate 12.5 50000 (Fixed 0) cs)), length (smResets (simulate 12.5 50000 (Fixed 80000) cs)) > 0, smCalls (simulate 12.5 50000 Auto cs))) (0, True, 100)
+  eq "replay: too short a log is said so" (take 1 (lines (replayReport 12.5 [("x", [Call 1 1 1])]))) ["x: 1 calls: too few to replay"]
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
 

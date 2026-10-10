@@ -621,7 +621,9 @@ once a call's context is past `--rollover` tokens the run is ended after the too
 way -- its answer in the log, not given to the program -- and a fresh one goes on with the turn from the view as it
 is now and the turn's log, as `--continue` does. The turn's first message and what the user said during it are kept
 whole, the last six messages of the log too, and the older ones cut to 1500 characters with their number to zoom
-(a third of `--tail` for a rollover); its cost is counted across the runs. `chat --carry N` says what each of the last
+(a third of `--tail` for a rollover); its cost is counted across the runs. `chat --replay-rollover [--ratio R] FILE...` runs the controller over the usage lines of recorded chat logs and
+says the resets it would have made and what they cost against a fixed 150,000 and 110,000 (PERF.md has its table).
+`chat --carry N` says what each of the last
 N fresh calls was given, part by part (no model call).
 
 The default, `--rollover auto`, is a controller: a fresh call reads its whole context uncached, at `rollover_ratio`
