@@ -7,7 +7,7 @@ module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
   , benchSession, benchOf, benchSites, sameFlags, knownSession
-  , targetJson, stateOf, lineBudgetOf
+  , targetJson, stateOf, lineBudgetOf, onTurnEndOf
   ) where
 
 import Control.Exception (IOException, try)
@@ -92,7 +92,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull)
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull)
   ]
 
 reserved :: [String]
@@ -150,6 +150,12 @@ lineBudgetOf conf name = case [ round b | m <- members, Just b <- [lookupNum "li
   b : _ -> Just b
   [] -> Nothing
   where members = fromMaybe [name] (lookup name (cSessions conf))
+
+-- | The command to run when a chat turn ends ("on_turn_end"): the first member of the session that sets one.
+onTurnEndOf :: Conf -> String -> Maybe String
+onTurnEndOf conf name = case [ c | m <- fromMaybe [name] (lookup name (cSessions conf)), Just c <- [lookupStr "on_turn_end" (targetJson conf m)], not (null c) ] of
+  c : _ -> Just c
+  [] -> Nothing
 
 sessionNames :: Conf -> [String]
 sessionNames conf = map fst (cTargets conf) ++ map fst (cSessions conf)

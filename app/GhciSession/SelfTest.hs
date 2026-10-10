@@ -19,7 +19,8 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (shownCut, parseOpts, Opts (..), unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Inbox (Mark (..), markOf, advance, settled, turnReport, stillRunning)
+import GhciSession.Chat (shownCut, parseOpts, Opts (..), hookEnv, unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..), toolArgs, toolBrief)
 import GhciSession.Doc
@@ -974,6 +975,17 @@ run = do
   eq "chat: a typecheck is clean when it says OK (warnings or not); an error, or nothing, is not" (map (tcClean . T.pack) ["OK -- TYPECHECK (0.2s, no source changed since)", "OK (3 warning(s)) -- TYPECHECK", "TYPE-ERROR: 1 error(s)", ""]) [True, True, False, False]
   check "chat: the note of an edit that changed nothing says it was applied, and not 'nothing changed'" (T.pack "applied" `T.isInfixOf` unchangedNote && not (T.pack "nothing changed" `T.isInfixOf` unchangedNote))
   eq "chat: a tool's answer is cut for showing at --show characters, with ...; 0 shows it whole" (map (\n -> shownCut n (T.pack "abcdef")) [3, 6, 9, 0]) (map T.pack ["abc...", "abcdef", "abcdef", "abcdef"])
+  eq "chat: --wait takes seconds when a number follows it, and waits as long as it takes when not" (map (fmap oWait . parseOpts) [[], ["--send", "hi", "--wait", "30", "-s", "x"], ["--wait", "-s", "x"], ["--wait"]]) [Right Nothing, Right (Just (Just 30)), Right (Just Nothing), Right (Just Nothing)]
+  eq "wait: what turn.json says of a turn -- no file or no start is over, a start without done is running, stopped is over" (map markOf [JObj [], JObj [("start", JNum 5)], JObj [("start", JNum 5), ("done", JBool True)], JObj [("start", JNum 5), ("stopped", JBool True)]]) [Mark Nothing True, Mark (Just 5) False, Mark (Just 5) True, Mark (Just 5) True]
+  let m5 = Mark (Just 5) False; m5d = Mark (Just 5) True; m6 = Mark (Just 6) False; m6d = Mark (Just 6) True
+  eq "wait: a line left at a chat at rest waits for the turn that begins after the one in the file, once the line is taken" [ settled m5d n t | (n, t) <- [(m5d, True), (m6, True), (m6d, True), (m6d, False)] ] [False, False, True, False]
+  eq "wait: a line taken in the middle of a turn waits for that turn" [ settled m5 n t | (n, t) <- [(m5, True), (m5d, True), (m5d, False)] ] [False, True, False]
+  eq "wait: a turn that ended while the line was still not taken leaves the wait to the next one" (let b = advance m5 m5d in (b, settled b m5d True, settled b m6d True)) (m5d, False, True)
+  eq "wait: a turn running does not move what is waited for" (advance m5 m5, advance m5 m6, advance m5d m6d) (m5, m5, m5d)
+  eq "wait: what is printed of an ended turn: its last words whole, then its summary" (turnReport (JObj [("last", JText (T.pack "All six done.\nSee the log.")), ("summary", JStr "[turn: 3 model calls]")])) "All six done.\nSee the log.\n[turn: 3 model calls]"
+  eq "wait: a turn that was stopped says so; one that said nothing says that" (turnReport (JObj [("stopped", JBool True)])) "(the turn said nothing)\n[the turn was stopped]"
+  eq "wait: a turn still running says how far it got" (stillRunning (JObj [("tools", JNum 7)]) 30.4) "[still running after 30s: 7 tool calls so far]"
+  eq "on_turn_end: the command is told the session, the seconds and the tool calls of the turn" (hookEnv "main" (JObj [("secs", JNum 41.6), ("tools", JNum 12)])) [("GHS_SESSION", "main"), ("GHS_TURN_SECONDS", "42"), ("GHS_TURN_TOOL_CALLS", "12")]
   eq "chat: --show is 600 unless given" (map (fmap oShow . parseOpts) [[], ["--show", "0"], ["--show", "5000"]]) [Right 600, Right 0, Right 5000]
   eq "chat: with no line budget a read's head says nothing of one" (readHeader Nothing "f.hs" 1 3 9) "[f.hs: lines 1-3 of 9]\n"
   eq "chat: with a budget the head says the count against it" (readHeader (Just 250) "f.hs" 1 3 260) "[f.hs: lines 1-3 of 260 | 260 lines [OVER BUDGET: 260/250 lines!] (10 lines OVER BUDGET!)]\n"

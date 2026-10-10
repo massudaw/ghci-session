@@ -187,6 +187,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `hygiene` | unlink superseded CAFs after each reload and report memory |
 | `repl_budget_mb` | past this, a reload is a restart (default 6144; `0` disables) |
 | `line_budget` | a project's rule for the lines of a file: the chat's `read`, `write` and `edit` then say a file's count against it (`[OVER BUDGET: 260/250 lines!]`). Absent: nothing is said of lines. The `vfs` tool keeps its own `budget` argument (default 250) |
+| `on_turn_end` | a shell command the chat runs when a turn ends (told `GHS_SESSION`, `GHS_TURN_SECONDS`, `GHS_TURN_TOOL_CALLS`, and the last words on stdin); see "A line for a chat started somewhere else" (default none) |
 | `rts_flags` | the repl's RTS flags (default `-c -Fd0.5`) |
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
 | `load_timeout`, `eval_timeout` | seconds; a command past its timeout is interrupted, not abandoned |
@@ -576,6 +577,19 @@ off and are asked for the lightest effort.
 typed at it: read between two tool calls when a turn is running, the next turn when none is. `top` does the same
 with `i`. The chat that takes it is the last one started on the session (`chat.pid`), whatever its standard input
 is -- a terminal, a pipe, a screen of its own; the lines wait in `<state>/<session>/chat-inbox`, a file each.
+
+**Sending a task and waiting for it.** `chat --send 'a task' --wait [SECS] [-s SESSION]` leaves the line, waits until
+the chat has taken it and the turn that took it has ended (a line taken in the middle of a running turn is that
+turn's: it is the one waited for), and prints that turn's last words, whole, and its summary line. Exit status 0
+when it ended; 3 when SECS passed first (it says the turn is still running and how many tool calls it has made);
+1 when no chat is running, or it died meanwhile. `chat --wait [SECS]` alone is the same for the turn under way, and
+at once, with the last turn's last words, when the chat is at rest. What it reads is `<state>/<session>/turn.json`
+(where the turn began, `tools` so far, `last` words, `summary`, `done`).
+
+`"on_turn_end": "COMMAND"` in `ghci-session.json` (a target's key, or common to all) runs COMMAND, through the shell
+in the project's directory, whenever a turn of the chat ends or is stopped -- for a notification. It is told
+`GHS_SESSION`, `GHS_TURN_SECONDS` and `GHS_TURN_TOOL_CALLS` in its environment and the turn's last words on its
+standard input; it runs apart from the turn (60 s at most), and its failure is a note in the chat, never the turn's.
 
 ### A chat restarted, and a turn gone on with
 

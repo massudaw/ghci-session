@@ -43,7 +43,8 @@ def main():
     verbose = "-v" in sys.argv
     tuicheck.build()
     d = tempfile.mkdtemp(prefix="ghs-cli-")
-    proj, session = tuicheck.project(d, session=True)
+    hook = os.path.join(d, "hook.txt")       # (what the on_turn_end command is told of a turn ends up here)
+    proj, session = tuicheck.project(d, session=True, extra={"on_turn_end": "printf '%s|%s|' \"$GHS_SESSION\" \"$GHS_TURN_TOOL_CALLS\" > " + hook + "; cat >> " + hook})
     fakebin = os.path.join(d, "bin")
     os.makedirs(fakebin)
     os.symlink(os.path.join(tuicheck.HERE, "tools", "fake-claude.py"), os.path.join(fakebin, "claude"))
@@ -138,11 +139,34 @@ def main():
         check("the subscription's limit reached in a turn: the turn waits for it to reset and then goes on from its log, by itself",
               waits and ok and "before-the-limit" in t5 and "echo never-run" not in t5.split("the turn waits")[0].split("tool sh")[-1] and "1 tool call(s)" in t5
               and open(log).read().count("pid ") == started + 2 and t5.count("[turn: ") == 1, t5[-700:])
-        p5.send_signal(signal.SIGTERM)
+        p5.send_signal(signal.SIGTERM); p5.wait()
+        # a task sent and waited for: its last words and summary, the exit status, the command of on_turn_end
+        out6 = os.path.join(d, "chat6.out")
+        p6 = subprocess.Popen(chat(), cwd=proj, env=env, stdin=keep, stdout=open(out6, "w"), stderr=subprocess.STDOUT)
+        cli = lambda *a: subprocess.run([tuicheck.CLI, "chat", "-s", session, *a], cwd=proj, env=env, capture_output=True, text=True, timeout=90)
+        for _ in range(40):                    # (until the chat is there to be sent to)
+            r = cli("--send", 'tool sh {"cmd":"echo wait-one"} ;; say the waited task is done', "--wait", "60")
+            if r.returncode != 1:
+                break
+            time.sleep(0.5)
+        time.sleep(1.0)                        # (the command of on_turn_end runs just after the turn's end)
+        told = open(hook).read() if os.path.exists(hook) else ""
+        check("chat --send MSG --wait: waits for the turn that took the line, prints its last words whole and its summary, exits 0; on_turn_end is told the session, the tool calls and the last words",
+              r.returncode == 0 and "the waited task is done" in r.stdout and "[turn: " in r.stdout and "1 tool call" in r.stdout
+              and told.startswith(session + "|1|") and "the waited task is done" in told, (r.returncode, r.stdout, r.stderr, told))
+        r = cli("--send", 'pause 8 ;; tool sh {"cmd":"echo x"} ;; say the late words', "--wait", "2")
+        check("chat --send --wait SECS: when SECS pass first it says the turn is still running, and exits 3", r.returncode == 3 and "still running" in r.stdout, (r.returncode, r.stdout, r.stderr))
+        r = cli("--wait", "60")
+        check("chat --wait alone: waits for the turn under way, and prints its last words", r.returncode == 0 and "the late words" in r.stdout and "[turn: " in r.stdout, (r.returncode, r.stdout, r.stderr))
+        t0 = time.time(); r = cli("--wait")
+        check("chat --wait with the chat at rest: at once, the last turn's last words", r.returncode == 0 and "the late words" in r.stdout and time.time() - t0 < 5, (r.returncode, r.stdout, r.stderr))
+        p6.send_signal(signal.SIGKILL); p6.wait()
+        r = cli("--wait", "5")
+        check("chat --wait when no chat is running (it died): exit 1", r.returncode == 1, (r.returncode, r.stdout, r.stderr))
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:
-        for q in ("p", "p2", "p3", "p4", "p5"):
+        for q in ("p", "p2", "p3", "p4", "p5", "p6"):
             if q in locals() and locals()[q].poll() is None:
                 locals()[q].kill()
         tuicheck.stop(proj, session)

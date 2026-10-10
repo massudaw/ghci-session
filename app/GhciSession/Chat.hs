@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , shownCut, parseOpts, Opts (..), unchangedNote, tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , shownCut, parseOpts, Opts (..), hookEnv, unchangedNote, tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -51,7 +51,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
-import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getFileSize, getModificationTime, getTemporaryDirectory, listDirectory, removeFile)
+import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getFileSize, getModificationTime, getTemporaryDirectory, listDirectory, removeFile, renameFile)
 import System.Environment (getArgs, getEnvironment, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (ProcessStatus, executeFile, getProcessID, getProcessStatus)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, sigKILL, sigTERM, signalProcess, signalProcessGroup)
@@ -102,7 +102,8 @@ data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oSend :: Maybe String, oResume :: Maybe FilePath
-  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int, oShow :: Int }
+  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int, oShow :: Int
+  , oWait :: Maybe (Maybe Double) }     -- ^ --wait [SECS]: Just Nothing waits as long as it takes
 
 chatUsage :: String
 chatUsage = unlines
@@ -111,6 +112,9 @@ chatUsage = unlines
   , "ghci-session chat --tui [-s SESSION] ...   the same, on a screen of its own"
   , "ghci-session chat --restart [-s SESSION]"
   , "ghci-session chat --send MESSAGE [-s SESSION]   a line for the session's running chat, as if typed at it"
+  , "ghci-session chat [--send MESSAGE] --wait [SECS] [-s SESSION]   and wait until the turn that took it has ended: its last words and summary"
+  , "  are printed; exit 0 ended, 3 SECS passed first (still running, with its tool calls so far), 1 no chat running or it died; alone, the turn"
+  , "  under way (at once if the chat is at rest: the last turn's last words); \"on_turn_end\": COMMAND in ghci-session.json runs when a turn ends"
   , "  the endless chat with an agent on the session (DEEPSEEK_API_KEY or OPENAI_API_KEY); --once: one message, then exit;"
   , "  --instructions: a file of the user's own instructions (an AGENTS.md), appended to the system prompt;"
   , "  --max-steps: tool calls per turn (60); --settle: seconds to wait for the view's last lines to be summarized (120);"
@@ -132,7 +136,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax Nothing)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -152,11 +156,13 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--web", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oWeb = Just n } r
                      | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
                      | k == "--show", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oShow = n } r
+                     | k == "--wait", [(n, "")] <- reads v, n >= 0 = go o { oWait = Just (Just n) } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
                  | k == "--restart" = go o { oRestart = True } r
                  | k == "--tui" = go o { oTui = True } r
                  | k == "--continue" = go o { oContinue = True } r
+                 | k == "--wait" = go o { oWait = Just Nothing } r
     go _ (k : _) = Left ("chat: unexpected argument " ++ show k ++ "\n" ++ chatUsage)
 
 -- the session ------------------------------------------------------------------------------
@@ -221,6 +227,7 @@ logH ch kind text = void (logId ch kind text)
 logId :: Chat -> String -> T.Text -> IO (Maybe Int)
 logId ch kind text | Just (_, file) <- cSub ch = agentAppend file kind text >> pure Nothing
 logId ch kind text = do
+  noteLogged ch kind text
   r <- try (ask ch "log" [("kind", JStr kind), ("text", JText text)]) :: IO (Either SomeException Json)
   pure $ case r of
     Right j | Just ('#' : n) <- lookupStr "out" j, [(i, "")] <- reads n -> Just i
@@ -757,10 +764,51 @@ turnBegan :: Chat -> Int -> IO ()
 turnBegan ch i = void (try (B.writeFile (turnFile ch) (encodeBS (JObj [("start", JNum (fromIntegral i))]))) :: IO (Either IOException ()))
 
 turnEnded :: Chat -> IO ()
-turnEnded ch = do
+turnEnded ch = turnNote ch (set "stopped" (JBool False) . set "done" (JBool True)) >> turnHook ch
+
+{-# NOINLINE turnLock #-}
+turnLock :: MVar ()
+turnLock = unsafePerformIO (newMVar ())
+
+-- | Change what turn.json says of the turn under way -- a waiter reads it ("GhciSession.Inbox"): written whole
+-- under another name and moved, so that a reader never sees half of it. A subagent's turn is not the chat's.
+turnNote :: Chat -> (Json -> Json) -> IO ()
+turnNote ch f = when (isNothing (cSub ch)) $ withMVar turnLock $ \_ -> do
   r <- try (B.readFile (turnFile ch)) :: IO (Either IOException B.ByteString)
   forM_ (either (const Nothing) (either (const Nothing) Just . parseJsonBS) r) $ \j ->
-    void (try (B.writeFile (turnFile ch) (encodeBS (set "done" (JBool True) j))) :: IO (Either IOException ()))
+    void (try (B.writeFile (turnFile ch ++ ".tmp") (encodeBS (f j)) >> renameFile (turnFile ch ++ ".tmp") (turnFile ch)) :: IO (Either IOException ()))
+
+-- | What the chat logs that a waiter wants: a talk message is the last words so far, a tool call is one more.
+noteLogged :: Chat -> String -> T.Text -> IO ()
+noteLogged ch kind text
+  | kind == "talk" = turnNote ch (set "last" (JText text))
+  | kind == "tool" = turnNote ch (\j -> set "tools" (JNum (1 + fromMaybe 0 (lookupNum "tools" j))) j)
+  | otherwise = pure ()
+
+-- | A turn's end, as turn.json has it: its summary line and the tool calls and seconds in it.
+noteSpent :: Chat -> Spent -> Double -> IO ()
+noteSpent ch s secs = turnNote ch (set "tools" (JNum (fromIntegral (sTools s))) . set "secs" (JNum secs) . set "summary" (JStr (spentLine s secs)))
+
+-- | What the command of "on_turn_end" is told of a turn: the session, its seconds and tool calls (the last words go
+-- on its standard input).
+hookEnv :: String -> Json -> [(String, String)]
+hookEnv name j = [ ("GHS_SESSION", name), ("GHS_TURN_SECONDS", printf "%.0f" (fromMaybe 0 (lookupNum "secs" j)))
+                 , ("GHS_TURN_TOOL_CALLS", show (round (fromMaybe 0 (lookupNum "tools" j)) :: Int)) ]
+
+-- | Run the project's "on_turn_end" command, apart from the turn: its failure is a note, never the turn's.
+turnHook :: Chat -> IO ()
+turnHook ch = when (isNothing (cSub ch)) $ forM_ (onTurnEndOf (cConf ch) (cName ch)) $ \cmd -> void $ forkIO $ do
+  r <- try (B.readFile (turnFile ch)) :: IO (Either IOException B.ByteString)
+  let j = either (const (JObj [])) (either (const (JObj [])) id . parseJsonBS) r
+  base <- getEnvironment
+  let p = (shell cmd) { env = Just (base ++ hookEnv (cName ch) j), cwd = Just (cRoot (cConf ch)) }
+  res <- try (timeout 60000000 (readCreateProcessWithExitCode p (maybe "" T.unpack (lookupText "last" j)))) :: IO (Either SomeException (Maybe (ExitCode, String, String)))
+  let note why = uiNote (cUi ch) ("[on_turn_end: " ++ why ++ "]")
+  case res of
+    Right (Just (ExitSuccess, _, _)) -> pure ()
+    Right (Just (ExitFailure n, _, err)) -> note ("the command ended with " ++ show n ++ (if null (words err) then "" else ": " ++ unwords (take 30 (words err))))
+    Right Nothing -> note "the command took over 60s and was stopped"
+    Left x -> note ("the command could not be run: " ++ show x)
 
 -- | The system prompt of the chat's own turns, for a turn that is begun again from inside one (a rollover).
 {-# NOINLINE mainSystem #-}
@@ -778,6 +826,8 @@ stoppable ch act = do
     Right () -> when (isNothing (cSub ch)) (turnEnded ch)
     Left StopTurn -> do
       writeIORef (cInTurn ch) False
+      turnNote ch (set "stopped" (JBool True))
+      turnHook ch
       writeIORef (cBatch ch) Nothing
       logH ch "echo" (T.pack "harness: the turn was stopped by the user before it ended")
       uiNote (cUi ch) "[the turn was stopped; what it did so far is in the history]"
@@ -1892,6 +1942,7 @@ runCli ch e o pending run = do
        tEnd <- now
        s <- readIORef spent
        uiSpent (cUi ch) s (tEnd - crStart run)
+       noteSpent ch s (tEnd - crStart run)
 
 -- a turn taken up from its log ---------------------------------------------------------------------
 --
@@ -2067,6 +2118,7 @@ goOn ch e o pending ts = do
   tEnd <- now
   s <- readIORef spent
   uiSpent (cUi ch) s (tEnd - tsStart ts)
+  noteSpent ch s (tEnd - tsStart ts)
   where
     byName = [ (tName t, t) | t <- toolsFor ch ]
     toolsJson = map toolJson (toolsFor ch)
@@ -2398,6 +2450,7 @@ chatMain conf args = case parseOpts args of
     case picked of
       Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 2
       Right name | oRestart o -> askRestart conf name
+      Right name | Just w <- oWait o -> Inbox.waitMain conf name (oSend o) w
       Right name | Just m <- oSend o -> Inbox.send conf name m >>= \r -> case r of
         Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 1
         Right pid -> putStrLn ("left for the chat on " ++ name ++ " (pid " ++ show pid ++ "): it reads it between two tool calls, or as its next turn") >> pure 0
