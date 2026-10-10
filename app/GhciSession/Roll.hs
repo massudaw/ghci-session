@@ -9,6 +9,7 @@
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
+  , seeGap, lifetime, coldDue
   ) where
 
 import Control.Exception (IOException, try)
@@ -24,6 +25,8 @@ data Roll = Roll
   , rG :: Double          -- ^ tokens a call adds to the context
   , rRelearn :: Double    -- ^ the share of what a reset makes the agent learn again (counted against a reset)
   , rSaid :: Int          -- ^ the threshold last said (a harness note when it moves)
+  , rLo :: Double         -- ^ the provider's cache lasted at least this many seconds (a call after a pause this long came back cached)
+  , rHi :: Double         -- ^ and lasted at most this many (the same context, after a pause this long, was read uncached)
   } deriving (Eq, Show)
 
 -- | The ratio of the prices when the configuration says none.
@@ -32,7 +35,7 @@ defaultRatio = 12.5
 
 -- | Before anything is seen: the measured values of this chat and another (a restart 45k, growth 1590 a call, 28%).
 emptyRoll :: Double -> Roll
-emptyRoll r = Roll r 45000 1590 0.28 0
+emptyRoll r = Roll r 45000 1590 0.28 0 0 3300
 
 -- | The context at which a turn rolls over: @S + sqrt(2 r S (1 + relearn) g)@, within 80k and 200k.
 threshold :: Roll -> Int
@@ -60,15 +63,39 @@ limitOf n ro | n == 0 = Nothing
 moved :: Int -> Int -> Bool
 moved said now' = abs (now' - said) > 5000
 
+-- the cache ----------------------------------------------------------------------------------
+
+-- | What a call after a pause says of how long the provider keeps its cache: @seeGap pause prev ctx cached@, the seconds
+-- since the call before it ended, that call's context, this one's, and how much of this one was read from the cache.
+-- Mostly cached (7 tenths of what the call before had): it lasted at least the pause. The same context, grown by
+-- under 3 tenths, mostly not (under 3 tenths cached): it lasted at most the pause. Pauses under two minutes say
+-- nothing, and the bounds do not cross (the later word wins).
+seeGap :: Double -> Int -> Int -> Int -> Roll -> Roll
+seeGap gap prev ctx cached ro
+  | gap < 120 || prev <= 0 || ctx <= 0 = ro
+  | cached * 10 >= prev * 7 = let lo = max (rLo ro) gap in ro { rLo = lo, rHi = max (rHi ro) lo }
+  | cached * 10 < ctx * 3 && ctx * 10 <= prev * 13 = let hi = min (rHi ro) gap in ro { rHi = hi, rLo = min (rLo ro) hi }
+  | otherwise = ro
+
+-- | How long the cache is taken to last, seconds: 3300 where what is seen allows it, else the bound it breaks.
+lifetime :: Roll -> Double
+lifetime ro = min (rHi ro) (max (rLo ro) 3300)
+
+-- | Is the next call's context, so long after the last call ended, to be read uncached whole? Then it is over 1.3 times
+-- a restart's: a fresh call costs less than the old context cold.
+coldDue :: Roll -> Double -> Int -> Bool
+coldDue ro since ctx = since > lifetime ro && fromIntegral ctx * 10 > 13 * rS ro
+
 -- the file ------------------------------------------------------------------------------------
 
 rollJson :: Roll -> Json
-rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro)))]
+rollJson ro = JObj [("S", JNum (rS ro)), ("g", JNum (rG ro)), ("relearn", JNum (rRelearn ro)), ("said", JNum (fromIntegral (rSaid ro))), ("lo", JNum (rLo ro)), ("hi", JNum (rHi ro))]
 
 -- | A state from its file's JSON: what it does not have, or has not well, is what the start has.
 rollFrom :: Double -> Json -> Roll
 rollFrom ratio j = ro0 { rS = pick "S" (\x -> x >= 5000 && x <= 400000) (rS ro0), rG = pick "g" (\x -> x >= 50 && x <= 20000) (rG ro0)
-                       , rRelearn = pick "relearn" (\x -> x >= 0 && x <= 2) (rRelearn ro0), rSaid = round (pick "said" (>= 0) 0) }
+                       , rRelearn = pick "relearn" (\x -> x >= 0 && x <= 2) (rRelearn ro0), rSaid = round (pick "said" (>= 0) 0)
+                       , rLo = pick "lo" (>= 0) 0, rHi = pick "hi" (>= 0) (rHi ro0) }
   where ro0 = emptyRoll ratio
         pick k ok d = case lookupNum k j of { Just x | ok x -> x; _ -> d }
 

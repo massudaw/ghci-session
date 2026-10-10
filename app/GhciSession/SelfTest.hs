@@ -113,6 +113,7 @@ run = do
   eq "carry: a lone message" (fmap spFrom (carrySplit 100 [m 7 "user"])) (Just 8)
   eq "carry: <recent> holds the message, the gap and the tail" (T.unpack (carryRecent (Split (m 1 "user") [] 3 [m 5 "tool"] 5))) "<recent>\n1|user: x\n(3 messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n5|tool: x\n</recent>\n\n"
   eq "carry: a rollover's echoes" (rollEchoes [m 1 "user", (4, T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (its context had grown to 150k)"), m 5 "echo"]) [4]
+  eq "carry: a cold-cache rollover's echo is one too, a restart's is not" (rollEchoes [(4, T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (70 minutes passed since its last call, past what the provider keeps its cache for (55), with 90k tokens of context)"), (6, T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (the chat that was in it stopped, and this is a new one)")]) [4]
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
 
@@ -128,6 +129,12 @@ run = do
   eq "roll: --rollover 0 never, N fixed, auto the threshold" (map (\n -> limitOf n ro0) [0, 123456, -1]) [Nothing, Just 123456, Just (threshold ro0)]
   eq "roll: said again when moved by more than 5k" (map (moved 100000) [104000, 106000, 94000]) [False, True, True]
   eq "roll: its file round-trips" (rollFrom 12.5 (rollJson ro0 { rS = 51234, rG = 1700, rSaid = 99000 })) ro0 { rS = 51234, rG = 1700, rSaid = 99000 }
+  eq "roll: the cache is taken to last 3300 s at the start" (lifetime ro0) 3300
+  eq "roll: a call after a pause that came back cached: it lasted at least that" (let r = seeGap 5000 60000 62000 58000 ro0 in (rLo r, rHi r, lifetime r)) (5000, 5000, 5000)
+  eq "roll: the same context after a pause, uncached: it lasted at most that" (let r = seeGap 1800 60000 62000 8000 ro0 in (rLo r, rHi r, lifetime r)) (0, 1800, 1800)
+  eq "roll: a short pause says nothing, nor does a context that grew a lot, nor one half cached" (map (\r -> (rLo r, rHi r)) [seeGap 60 60000 62000 8000 ro0, seeGap 1800 60000 90000 8000 ro0, seeGap 1800 60000 62000 30000 ro0]) (replicate 3 (0, 3300))
+  eq "roll: the bounds do not cross" (let r = seeGap 900 60000 62000 8000 (seeGap 1800 60000 62000 58000 ro0) in (rLo r <= rHi r, rHi r)) (True, 900)
+  eq "roll: a cold cache with a big context rolls over; a small one, or a warm one, does not" (map (\(s, c) -> coldDue ro0 s c) [(4000, 80000), (4000, 50000), (600, 80000)]) [True, False, False]
   eq "roll: a file with nonsense in it is the start" (rollFrom 12.5 (JObj [("S", JNum (-3)), ("g", JStr "x")])) ro0
 
   -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")

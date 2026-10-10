@@ -631,6 +631,12 @@ adds, both running estimates from the calls' usage and kept in `history/roll.jso
 reset makes the agent read again), within 80,000 and 200,000. With `--usage` a move of more than 5,000 is said. A
 number is a fixed threshold, `0` never.
 
+A cold cache is the other reason to roll over: the controller keeps bounds on how long the provider keeps its cache
+(a call after a pause of G seconds that came back mostly cached: it lasts at least G; the same context after G, mostly
+not: at most G; 3300 s to begin with, kept in `roll.json`), and when a tool call has taken the time since the last
+model call past that, and the context is over 1.3 times a fresh call's, the run ends after the tool's answer instead
+of paying for the whole context uncached (a bench of fifteen minutes can do this).
+
 `tools/check-cli.py` checks these without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
 same arguments and stream, the chat's tools called through its tool server, no model). On the subscription path
 each model call is now in the usage ledger as it ends, with what it read from the cache -- a turn of hours was one

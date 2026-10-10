@@ -1713,6 +1713,8 @@ runCli ch e o pending run = do
   firstIn <- newIORef (if null (crConns run) && sCalls (crSpent run) == 0 then 0 else 1 :: Int)       -- the context of this run's first model call
   rollDue <- newIORef (0 :: Int)       -- the context that is over the rollover's tokens (0: it is not)
   prevCtx <- newIORef (0 :: Int)        -- the context of this run's last call
+  lastEnd <- newIORef (0 :: Double)     -- when this run's last model call ended (0: none yet)
+  rollWhy <- newIORef ""                -- why the run rolls over, where it is not for the context's size
   rollNow <- newIORef False            -- a tool call has been answered into the log and not to the program: the run ends here
   let byName = [ (tName t, t) | t <- toolsFor ch ]
       textBlock t = JObj [("type", JStr "text"), ("text", JText t)]
@@ -1740,6 +1742,16 @@ runCli ch e o pending run = do
         when (oUsage o) (uiNote (cUi ch) (printf "[tool: %s %.1fs]" name (t3 - t2)))
         unless (name == "remember") (logH ch "echo" ((if ok then T.empty else T.pack "ERROR: ") <> said))
         uiAnswer (cUi ch) (shownCut (cShow ch) said)
+        -- (the cache's lifetime has run out under this context: the next call would read it all uncached -- a fresh call is less)
+        when (isNothing (cSub ch) && oRollover o < 0) $ do
+          ended <- readIORef lastEnd
+          ctxNow <- readIORef prevCtx
+          ro <- readIORef (cRoll ch)
+          f <- readIORef firstIn
+          already <- readIORef rollDue
+          when (already == 0 && f > 0 && ended > 0 && coldDue ro (t3 - ended) ctxNow) $ do
+            writeIORef rollWhy (printf "%d minutes passed since its last call, past what the provider keeps its cache for (%d), with %s tokens of context" (round ((t3 - ended) / 60) :: Int) (round (lifetime ro / 60) :: Int) (human ctxNow))
+            writeIORef rollDue ctxNow
         due <- readIORef rollDue
         if due > 0
           then do
@@ -1809,7 +1821,8 @@ runCli ch e o pending run = do
           prev <- readIORef prevCtx
           writeIORef prevCtx ctx
           when (isNothing (cSub ch)) $ do
-            ro <- seeCall (f == 0) prev ctx <$> readIORef (cRoll ch)
+            ended <- readIORef lastEnd
+            ro <- seeGap (if ended > 0 then t - ended else 0) prev ctx (k "cache_read_input_tokens") . seeCall (f == 0) prev ctx <$> readIORef (cRoll ch)
             -- (the controller: what a restart and a call's growth are, as seen; its threshold said when it has moved)
             let thr = threshold ro
                 mv = oRollover o < 0 && moved (rSaid ro) thr
@@ -1824,6 +1837,7 @@ runCli ch e o pending run = do
             t <- now
             writeIORef callR Nothing
             modifyIORef' callsR (+ 1)
+            writeIORef lastEnd t
             -- (and in the turn's count: a run that is ended before its result -- a rollover -- gave none)
             modifyIORef' spent (\sp -> sp { sCalls = sCalls sp + 1, sIn = sIn sp + inN, sCached = sCached sp + cached, sOut = sOut sp + round outN })
             recordUsage (usageFile ch) (maybe "chat" (const "agent") (cSub ch)) e (Usage inN (round outN) (Just cached)) (t - t0)
@@ -1932,7 +1946,8 @@ runCli ch e o pending run = do
       sp <- readIORef spent
       uiNote (cUi ch) (printf "[the turn's context is at %s tokens: it goes on in a fresh call, from its log]" (human due))
       system <- readIORef mainSystem
-      continueTurn ch e o system pending (Just (printf "its context had grown to %s tokens" (human due), sp, crStart run))
+      why <- readIORef rollWhy
+      continueTurn ch e o system pending (Just (if null why then printf "its context had grown to %s tokens" (human due) else why, sp, crStart run))
     else do
      refused <- readIORef refusedR
      tNow <- now

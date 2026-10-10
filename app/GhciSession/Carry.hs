@@ -137,4 +137,5 @@ taskBefore r ms = go (reverse [ m | m@(i, _, _) <- ms, i < r ])
 -- | The messages that are a rollover's: the harness's echo that a turn went on in a fresh call because its context
 -- had grown.
 rollEchoes :: [Msg] -> [Int]
-rollEchoes ms = [ i | (i, k, t) <- ms, k == T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (its context had grown" `T.isPrefixOf` t ]
+rollEchoes ms = [ i | (i, k, t) <- ms, k == T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (" `T.isPrefixOf` t
+                                    , any (`T.isInfixOf` t) (map T.pack ["its context had grown", "minutes passed since its last call"]) ]
