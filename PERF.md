@@ -88,3 +88,21 @@ a space in it no longer matches across a byte that was not UTF-8 and was replace
 
 Self-tests: 357 pass.
 
+### 2. `recall` / `history --search`: read the messages in runs, count words where they stand (`History.messages`, `Know.rank`)
+
+Two costs under one call. `H.messages` opened, seeked and read the file once for each of the messages (1,465 of
+them: 72 ms); now the messages that follow one another in a file are read with one read of the span (the same
+messages: tested equal to reading them one at a time, whole and in a part). `Know.rank` split every text into words
+to count the few that are a query's; now it finds each query word in the lowered text and checks the characters next
+to it (the same scores: compared with the old function on six queries over the 1,264 documents, scores to 1e-9 and the
+same set).
+
+| call (bench, same expression before and after) | before | after |
+|---|---|---|
+| `H.messages mm 0 n` (all of them) | 72.4 ms, 72 MB | 12.6 ms, 43 MB |
+| `K.rank "daemon knowledge fold"` over prepared documents | 34.3 ms, 155 MB | 16.2 ms, 75 MB |
+| the recall op: messages + documents + rank | 92.9 ms, 227 MB | 31.6 ms, 119 MB |
+| `H.messages mm 1000 1` (one message) | 0.02 ms | 0.02 ms |
+
+Self-tests: 357 pass.
+

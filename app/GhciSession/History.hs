@@ -435,7 +435,30 @@ count mem = Seq.length <$> readIORef (mRoot mem)
 messages :: Mem -> Int -> Int -> IO [Msg]
 messages mem from n = do
   root <- readIORef (mRoot mem)
-  catMaybes <$> mapM (readMsg root) [max 0 from .. min (Seq.length root) (max 0 from + n) - 1]
+  let refs = [ (i, r) | i <- [max 0 from .. min (Seq.length root) (max 0 from + n) - 1], Just r <- [Seq.lookup i root] ]
+  catMaybes . concat <$> mapM readRun (runs refs)
+  where
+    -- (messages that follow one another in a file are read with ONE read of the span they cover, not an open, a
+    -- seek and a read each: 1,465 messages took 72 ms of mostly that)
+    runs :: [(Int, Ref)] -> [[(Int, Ref)]]
+    runs [] = []
+    runs (x : xs) = let (a, b) = go x xs in (x : a) : runs b
+      where go p ys = case ys of
+              (y : rest) | lPath (rLoc (snd y)) == lPath (rLoc (snd p)) && lOff (rLoc (snd y)) >= lOff (rLoc (snd p)) + lLen (rLoc (snd p))
+                           -> let (a, b) = go y rest in (y : a, b)
+              _ -> ([], ys)
+    readRun :: [(Int, Ref)] -> IO [Maybe Msg]
+    readRun [] = pure []
+    readRun rs@((_, r0) : _) = do
+      let Loc path lo _ = rLoc r0
+          hi = maximum [ off + len | (_, r) <- rs, let Loc _ off len = rLoc r ]
+      e <- try (withBinaryFile path ReadMode (\h -> hSeek h AbsoluteSeek (fromIntegral lo) >> B.hGet h (hi - lo))) :: IO (Either IOException B.ByteString)
+      pure [ case e of
+               Left _ -> Nothing
+               Right bs -> case parseJsonBS (B.take len (B.drop (off - lo) bs)) of
+                 Right j -> Just (Msg i (rKind r) (fromMaybe T.empty (lookupText "text" j)) (rDate r))
+                 Left _ -> Nothing
+           | (i, r) <- rs, let Loc _ off len = rLoc r ]
 
 dateOf :: Mem -> Int -> IO (Maybe Double)
 dateOf mem i = (\r -> rDate <$> Seq.lookup i r) <$> readIORef (mRoot mem)

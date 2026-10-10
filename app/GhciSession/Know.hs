@@ -331,11 +331,16 @@ rank :: T.Text -> [(a, T.Text)] -> [(Double, a)]
 rank q docs = sortBy (comparing (Down . fst)) [ (s, a) | ((a, _), c) <- zip docs counts, let s = score c, s > 0 ]
   where
     qs = S.toList (toks q)
-    counts = [ M.fromListWith (+) [ (w, 1 :: Int) | w <- wordsOf t, w `elem` qs ] | (_, t) <- docs ]
+    -- (the words are counted where they stand, a query word at a time, not by splitting each text into words: that
+    -- was nearly all the time and the allocation of a search over a history. A word is where the text has it
+    -- with no letter, digit or underscore next to it -- and an overlapping find cannot hide one: the word's own
+    -- letters are such characters)
+    counts = [ M.fromList [ (w, k) | w <- qs, let k = occurrences w low, k > 0 ] | (_, t) <- docs, let low = T.toLower t ]
+    occurrences w low = length [ () | (a, b) <- T.breakOnAll w low, edge (T.takeEnd 1 a), edge (T.take 1 (T.drop (T.length w) b)) ]
+    edge e = T.all (\c -> not (isAlphaNum c || c == '_')) e
     n = fromIntegral (length docs) :: Double
     df = M.fromListWith (+) [ (w, 1 :: Double) | c <- counts, w <- M.keys c ]
     score c = sum [ log (1 + (n - d + 0.5) / (d + 0.5)) * (k * 2.2 / (k + 1.2)) | (w, k0) <- M.toList c, let k = fromIntegral k0, Just d <- [M.lookup w df] ]
-    wordsOf = filter (not . T.null) . T.split (\c -> not (isAlphaNum c || c == '_')) . T.toLower
 
 -- | The facts that hold a query's words, the best first.
 search :: T.Text -> [Fact] -> [Fact]
