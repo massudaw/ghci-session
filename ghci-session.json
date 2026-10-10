@@ -41,5 +41,6 @@
         "hygiene/src"
       ]
     }
-  }
+  },
+  "knowledge": true
 }

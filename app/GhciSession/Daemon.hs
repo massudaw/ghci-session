@@ -2199,7 +2199,7 @@ subjectsFor s sn = do
       pure t
 
 -- | What the session establishes, kept by subject ("GhciSession.Know"), through the compactor's command. The
--- log is read once, in order, from where it was left (@history\/know.json@): a message of the user's, the
+-- log is read once, in order, from where it was left (@history\/know.json@): a message of the user's, an
 -- agent's or a note is asked for its facts as it is; the tools' traffic is asked a hundred and twenty-eight
 -- messages at a time, as the lines the compactor made of them (thirty-two messages late, so that they are
 -- made); and an argument a tool is called with for the first time is a fact with no model asked. New facts
@@ -2287,7 +2287,8 @@ knowLoop s m cmd = do
         count <- H.count m
         let recent = i >= count - 256
         ok1 <- case ms of
-          (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note"], T.length (H.mText x) > 80 ->
+          -- (ai: what another agent said, brought in by `import`)
+          (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note", "ai"], T.length (H.mText x) > 80 ->
                       piece recent (H.mDate x) (src i 1) (H.mKind x <> T.pack ": " <> T.take 6000 (H.mText x))
                   | H.mKind x == T.pack "tool", Just (tool, keys) <- K.callArgs (H.mText x) -> do
                       known <- rd seenArgs
