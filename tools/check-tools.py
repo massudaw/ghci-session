@@ -106,7 +106,7 @@ def main():
         listed = {t["name"]: t for t in ask("tools/list", {}).get("tools", [])}
         check("mcp: the default session's declared tools are listed with their parameters, beside only the built-in tools its target names",
               set(listed) == {"look", "pic", "status", "doc"}
-              and set(listed["look"]["inputSchema"]["properties"]) == {"view", "box", "flag"} and listed["look"]["inputSchema"]["required"] == ["view", "box"]
+              and set(listed["look"]["inputSchema"]["properties"]) == {"view", "box", "flag", "session"} and listed["look"]["inputSchema"]["required"] == ["view", "box"]
               and listed["look"]["inputSchema"]["properties"]["box"]["type"] == "integer", sorted(listed))
         r = ask("tools/call", {"name": "look", "arguments": {"view": 'a"b\\c\n}', "box": -3}})
         txt = "".join(c.get("text", "") for c in r.get("content", []))

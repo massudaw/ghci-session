@@ -14,20 +14,22 @@ import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Text as T
-import System.Directory (doesFileExist)
+import qualified Data.Text.Encoding as TE
+import System.Directory (doesFileExist, getFileSize)
 import System.Environment (getExecutablePath)
 import System.Exit (ExitCode (..))
 import System.Process (readProcessWithExitCode)
 import System.Timeout (timeout)
-import System.FilePath ((</>))
+import System.FilePath (addTrailingPathSeparator, isAbsolute, normalise, (</>))
 import System.IO
 import System.Posix.IO (fdToHandle)
 
 import GhciSession.Config
 import GhciSession.Declared (Declared (..), Param (..), builtinNames, substitute)
+import qualified GhciSession.Image as Img
 import qualified GhciSession.Know as K
 import GhciSession.Json
 import GhciSession.Sys
@@ -100,15 +102,42 @@ errorReply rid code msg = JObj [("jsonrpc", JStr "2.0"), ("id", rid), ("error", 
 
 -- | One message: a reply for a request, none for a notification.
 handle :: Conf -> Json -> IO (Maybe Json)
-handle conf = handleWith offered run (\_ -> pure [])
+handle conf = handleWith offered run (picture (cRoot conf))
   where
-    -- (tools/list is for the whole project and not a session: the default session's tools are what is served)
-    session = cDefault conf
-    offered = limited (builtinToolsOf conf session) tools
-              ++ [ (declaredTool d) { tDesc = dDesc d ++ " [declared by the project's session " ++ session ++ ", where it runs]" } | d <- declaredOf conf session ]
+    -- (tools/list is for the whole project and not a session: the built-in tools as the default session has
+    -- them, and every session's declared tools -- each said with the sessions that declare it, and called with
+    -- `session` when that is not the default: a project's session's tools were not to be had through here)
+    def = cDefault conf
+    declaring name = [ s | s <- sessionNames conf, name `elem` map dName (declaredOf conf s) ]
+    declared = foldr (\d r -> d : filter ((/= dName d) . dName) r) [] (concatMap (declaredOf conf) (def : sessionNames conf))
+    offered = limited (builtinToolsOf conf def) tools
+              ++ [ t { tDesc = dDesc d ++ " [declared by the session(s) " ++ unwords (declaring (dName d)) ++ ": it runs there -- give `session`" ++ (if def `elem` declaring (dName d) then " for another than " ++ def else "") ++ "]"
+                     , tProps = tProps t ++ [ sessionArg | "session" `notElem` map fst (tProps t) ] }
+                 | d <- declared, let t = declaredTool d ]
     run name args
-      | name `notElem` map tName offered = pure (False, T.pack ("tool " ++ show name ++ " is not offered by this project (\"builtin_tools\" of its target)"))
-      | otherwise = call conf name args
+      | name `elem` builtinNames = if name `elem` map tName (limited (builtinToolsOf conf sess) tools) then call conf name args
+                                   else pure (False, T.pack ("tool " ++ show name ++ " is not offered on " ++ sess ++ " (\"builtin_tools\" of its target)"))
+      | name `elem` map dName (declaredOf conf sess) = call conf name args
+      | otherwise = pure (False, T.pack (case declaring name of
+          [] -> "no tool " ++ show name ++ " in this project"
+          ss -> "tool " ++ show name ++ " is not declared by the session " ++ sess ++ "; it is by " ++ unwords ss ++ ": give \"session\""))
+      where sess = fromMaybe def (lookupStr "session" args)
+
+-- | The picture an answer's last line names -- the path of an image file inside the project, as a declared
+-- tool gives its result -- as a tool server answers with one (the chat shows it by its own means). Not one
+-- over five megabytes, nor a path that leaves the project.
+picture :: FilePath -> T.Text -> IO [Json]
+picture root out = case reverse (filter (not . T.null) (map T.strip (T.lines out))) of
+  (l : _) | T.length l < 1000 -> do
+    let p = T.unpack l
+        full = normalise (if isAbsolute p then p else root </> p)
+    there <- doesFileExist full
+    if not there || not ((addTrailingPathSeparator (normalise root)) `isPrefixOf` full) then pure [] else do
+      size <- getFileSize full
+      if size > 5000000 then pure [] else do
+        b <- B.readFile full
+        pure [ JObj [("type", JStr "image"), ("data", JText (TE.decodeUtf8 (Img.base64 b))), ("mimeType", JStr k)] | Just k <- [Img.kindOf b] ]
+  _ -> pure []
 
 -- | A declared tool as the tool list has it.
 declaredTool :: Declared -> Tool
@@ -296,11 +325,11 @@ data Reach = Reached | Unreached | Lost deriving (Eq, Show)
 -- | A tool, and whether it reached its session: a caller may wait out a session that is restarting.
 callReach :: Conf -> String -> Json -> IO (Bool, T.Text, Reach)
 callReach conf name args
-  -- (a declared tool of the default session: its expression with the arguments in it, an eval)
-  | name `notElem` builtinNames, Just d <- lookup name [ (dName x, x) | x <- declaredOf conf (cDefault conf) ] =
-      case substitute d args of
+  -- (a declared tool of the session asked, or the default: its expression with the arguments in it, an eval)
+  | name `notElem` builtinNames, let sess = fromMaybe (cDefault conf) (lookupStr "session" args), Just d <- lookup name [ (dName x, x) | x <- declaredOf conf sess ] =
+      case substitute d (JObj [ kv | kv@(k, _) <- fromMaybe [] (obj args), k `notElem` ["session", "quiet", "from"] ]) of
         Left why -> pure (False, T.pack (name ++ ": " ++ why), Reached)
-        Right expr -> callReach conf "eval" (JObj ([("expr", JStr expr), ("tool", JStr name), ("session", JStr (cDefault conf))] ++ [ ("timeout", JNum t) | Just t <- [dTimeout d] ]
+        Right expr -> callReach conf "eval" (JObj ([("expr", JStr expr), ("tool", JStr name), ("session", JStr sess)] ++ [ ("timeout", JNum t) | Just t <- [dTimeout d] ]
                                               ++ [ (k, v) | k <- ["quiet", "from"], Just v <- [lookup k (fromMaybe [] (obj args))] ]))
   | otherwise = do
   let s k = lookupStr k args
