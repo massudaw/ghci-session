@@ -2239,7 +2239,16 @@ runJob s m cmd j = go0
   where
     ps0 = H.params m
     merge = H.jL j > 0
+    askFile = sDir s </> "history" </> "ask.json"
     go0 = do
+      -- (what was learnt of the answers is kept with the history: a session started again asked as if it had
+      -- seen none, and learnt it over again from a hundred lines that came back too long)
+      known <- rd askSeenV
+      when (M.null known) $ do
+        t <- readFileMaybe askFile
+        forM_ (t >>= either (const Nothing) Just . parseJson) $ \j ->
+          askSeenV =: M.fromList [ (k == "merge", H.Ask m sp ms (round n) (round u))
+                                 | (k, v) <- lookupObj "seen" (JObj [("seen", j)]), Just [m, sp, ms, n, u] <- [mapM num (lookupArr "a" (JObj [("a", v)]))] ]
       seen <- M.findWithDefault (H.askStart ps0) merge <$> rd askSeenV
       let p = (H.jL j, H.jI j)
           shared = gSharedPrompt (sCfg s)
@@ -2253,7 +2262,11 @@ runJob s m cmd j = go0
               let { a0 = M.findWithDefault (H.askStart ps0) merge mp; a1 = H.askSeen ps0 bytes (H.byteLength line) a0 } in (M.insert merge a1 mp, (a0, a1)))
             let (b0, u0) = H.askFor ps0 was
                 (b1, u1) = H.askFor ps0 new
-            when (b0 /= b1 || u0 /= u1) $
+            when (H.aSeen new `mod` 10 == 0) $ do
+              mp <- rd askSeenV
+              void (try (writeAtomic askFile (encode (JObj [ (if k then "merge" else "message", JArr (map JNum [H.aMean a, H.aSpread a, H.aMiss a, fromIntegral (H.aSeen a), fromIntegral (H.aUrge a)])) | (k, a) <- M.toList mp ]))) :: IO (Either SomeException ()))
+            -- (said when the wording changes, or the size by more than a step or two: not for every twenty bytes)
+            when (u0 /= u1 || abs (b0 - b1) >= 60 || (b0 /= b1 && H.aSeen new `mod` 50 == 0)) $
               logS s (printf "compactor: a %s is now asked for in %d bytes%s (answers come at %.2f of what is asked, give or take %.2f; %d%% over the %d taken; %d seen)"
                         (if merge then "merge" else "message's line" :: String) b1 (case u1 of { 0 -> ""; 1 -> ", more strongly"; _ -> ", most strongly" } :: String)
                         (H.aMean new) (H.aSpread new) (round (100 * H.aMiss new) :: Int) (H.pNode ps0) (H.aSeen new))
@@ -2488,7 +2501,8 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
   _ | op `elem` ["census", "bench"] -> do
     Reply j out <- theRepl s >>= \rp -> replQueryOut rp (lookupNum "timeout" req >>= \t -> if t > 0 then Just t else Nothing) op
                      ([ ("mode", JStr (fromMaybe "cafs" (lookupStr "mode" req))), ("expr", JStr (fromMaybe "" (lookupStr "expr" req))) ]
-                      ++ maybe [] (\n -> [("top", JNum n)]) (lookupNum "top" req) ++ [ ("live", JBool True) | lookupBool "live" req == Just True ])
+                      ++ maybe [] (\n -> [("top", JNum n)]) (lookupNum "top" req) ++ [ ("live", JBool True) | lookupBool "live" req == Just True ]
+                      ++ maybe [] (\n -> [("runs", JNum n)]) (lookupNum "runs" req))
     vEvaluated s =: True
     warmAsync s
     -- a bench that did no work timed a value already evaluated (a top-level value is computed once per
@@ -2505,7 +2519,15 @@ dispatch s op req = withMVar (vWork s) $ \_ -> case op of    -- eval is inside t
         -- (a test is not a probe: where no time is given it has five minutes, not an evaluation's thirty seconds)
         tmo = Just (case lookupNum "timeout" req of { Just t | t > 0 -> t; _ -> max 300 (gEvalTimeout (sCfg s)) })
     t0 <- now
-    r <- try (cmd s tmo expr)
+    r0 <- try (cmd s tmo expr)
+    -- (out of time and not stopped by the interrupt: ended by a restart, as an evaluation is -- the session ran it
+    -- to its end, with whatever was asked next waiting behind it)
+    r <- case r0 of
+      Left (ReplTimeout t False _) | gRestartStuck (sCfg s) -> do
+        logS s "test: it ran out of time and did not stop when interrupted: the repl is restarted to end it"
+        v <- restart s (Just True)
+        pure (Left (ReplDied (printf "timed out after %ds, and it did not stop when interrupted. The session was restarted to end it and is ready again: %s\n[give it more time with timeout: N if it is only long]" (round t :: Int) (takeWhile (/= '\n') v))))
+      other -> pure other
     t1 <- now
     vEvaluated s =: True
     warmAsync s

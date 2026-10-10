@@ -9,7 +9,7 @@
 -- The C is part of the session's engine; in any other GHCi every entry point says so and does nothing.
 module GHC.Hygiene.Census
   ( cafReport, cafStrings, keptReport, keptStrings, keep
-  , censusOf, censusTop, benchOf, benchQuick, memNow, censusBench
+  , censusOf, censusTop, benchOf, benchQuick, benchRuns, memNow, censusBench
   , dupsCafs, dupsKept, dupsOf
   , readSymbol, zdecode
   ) where
@@ -366,6 +366,22 @@ benchQuick label act = do
   (r, t, s1) <- timedAct act
   printf "[bench] %s: %s\n" label (benchLine t s0 s1)
   pure r
+
+-- | The action run so many times, and what a run costs: the best and the middle one's wall time, the middle
+-- one's GC, what a run allocates. One run says little of an action of milliseconds (the first pays for what
+-- the others find warm, and a collection falls in one run and not the next); and running a built executable
+-- ten times from the shell to have this was what an agent did.
+benchRuns :: Int -> String -> IO a -> IO ()
+benchRuns n label act = do
+  rs <- forM [1 .. max 1 n] $ \_ -> do
+    s0 <- getRTSStats
+    (_, t, s1) <- timedAct act
+    pure (t, fromIntegral (gc_elapsed_ns s1 - gc_elapsed_ns s0) / 1e9 :: Double, mb (allocated_bytes s1 - allocated_bytes s0))
+  let ts = sortOn id [ t | (t, _, _) <- rs ]
+      mid xs = sortOn id xs !! (length xs `div` 2)
+      ms x = x * 1000 :: Double
+  printf "[bench] %s: %d runs -- wall best %.2f ms, median %.2f ms, worst %.2f ms (the first %.2f ms); GC median %.2f ms; %.1f MB allocated a run\n"
+    label (length rs) (ms (minimum ts)) (ms (mid ts)) (ms (maximum ts)) (ms (case rs of { ((t, _, _) : _) -> t; [] -> 0 })) (ms (mid [ g | (_, g, _) <- rs ])) (mid [ a | (_, _, a) <- rs ])
 
 timedAct :: IO a -> IO (a, Double, RTSStats)
 timedAct act = do

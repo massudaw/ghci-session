@@ -513,6 +513,9 @@ runTool ch t a0
       pure (ok, out <> (if waited >= 1 then T.pack (printf "\n[waited %.0fs for it]" waited) else T.empty))
   | tName t == "spawn" = spawnTool ch a
   | tName t == "tell" = tellTool ch a
+  -- (a test has the time the session gives one -- five minutes for an expression, the check's own for the whole --
+  -- and not an evaluation's thirty seconds: the full suite, asked for without a time, was "timed out after 30s")
+  | tName t == "test" = sessionCall ch "test" (set "session" (JStr (cName ch)) a)
   | tName t `elem` sessionToolNames = sessionCall ch (tName t) (withTimeout (set "session" (JStr (cName ch)) a))
   | otherwise = do
       r <- try (fileTool ch (tName t) a) :: IO (Either IOException (Bool, T.Text))

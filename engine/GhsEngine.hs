@@ -96,7 +96,7 @@ import GhsAddUnits (addTargets, addUnits)
 import GhsCompat (homeObject, homeUnits, mapUnitFlags, promptUnit, withModuleGraph)
 import GhsFastLoad (loadAll, setChanged)
 import GHC.Hygiene.Store (storeDrop, storeNames)
-import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusTop, keptReport, keptStrings, memNow)
+import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, benchRuns, cafReport, cafStrings, censusTop, keptReport, keptStrings, memNow)
 import GHC.Hygiene.Zygote (ZygoteChild (..), ZygoteSpec (..), zygoteFork)
 import GhciSession.Json
 
@@ -562,7 +562,9 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
     -- that as an IO action took the process down)
     hv <- GHC.compileExpr ("((" ++ arg "expr" ++ ") Prelude.>> Prelude.return ()) :: Prelude.IO ()")
     -- (--live: with a collection before and after, for the live heap's change; 0.2 s each)
-    liftIO ((if lookupBool "live" q == Just True then benchOf else benchQuick) (arg "expr") (unsafeCoerce hv :: IO ()))
+    liftIO (case lookupNum "runs" q of
+      Just n | n > 1 -> benchRuns (round n) (arg "expr") (unsafeCoerce hv :: IO ())
+      _ -> (if lookupBool "live" q == Just True then benchOf else benchQuick) (arg "expr") (unsafeCoerce hv :: IO ()))
     pure (JObj [])
   "heap_auto" -> liftIO (heapAuto (if lookupBool "on" q == Just True then 1 else 0)) >> pure (JObj [])
   -- C objects compiled again, taken by the running engine in place of the ones it has ('loadObjects')

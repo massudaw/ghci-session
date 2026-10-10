@@ -590,7 +590,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--claude", "--codex", "--opt", "--unit"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--claude", "--codex", "--opt", "--unit", "--runs"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -662,15 +662,12 @@ cliMain = do
         "bench" -> case pos a 0 of
           Nothing -> die' "bench: an IO action is needed"
           -- (--opt N, --unit COMPONENT: in the session that has the code at that level, and the component beside it)
-          Just e | isJust (opt a ["--opt"]) || isJust (opt a ["--unit"]) -> do
+          Just e -> do
             name <- pick conf (opt a ["-s", "-t", "--session"])
             (ok, out, _) <- Mcp.callReach conf "bench" (JObj ([ ("session", JStr name), ("expr", JStr e) ] ++ [ ("live", JBool True) | flag a ["--live"] ]
                               ++ maybe [] (\t -> [("timeout", JNum (read t))]) (opt a ["--timeout"]) ++ maybe [] (\n -> [("opt", JNum (read n))]) (opt a ["--opt"])
-                              ++ maybe [] (\u -> [("unit", JStr u)]) (opt a ["--unit"])))
+                              ++ maybe [] (\u -> [("unit", JStr u)]) (opt a ["--unit"]) ++ maybe [] (\n -> [("runs", JNum (read n))]) (opt a ["--runs"])))
             TIO.putStrLn out >> pure (if ok then 0 else 1)
-          Just e -> do
-            name <- pick conf (opt a ["-s", "-t", "--session"])
-            request conf name (JObj ([ ("op", JStr "bench"), ("expr", JStr e) ] ++ [ ("live", JBool True) | flag a ["--live"] ] ++ maybe [] (\t -> [("timeout", JNum (read t))]) (opt a ["--timeout"]))) >>= say
         "server" -> cmdServer conf a
         "compose" -> cmdCompose conf a
         "log" -> cmdLog conf a
