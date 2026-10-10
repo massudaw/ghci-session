@@ -575,6 +575,13 @@ nor written to it), `wr` (written to it; `wr5m` of them for five minutes, `wr1h`
 `windows` (every window of the plan the command's `rate_limit_event` names, by name, as last seen: `u` the share
 used, `reset` when it resets) and `credits` (whether the event says the call was on usage credits, not within the plan).
 `usage` and the monitor's `5` tab end with the windows of the latest call that has them.
+`ghci-session usage --quota` fits, per window, by least squares, how much its use rose between two calls of a session
+against the call's uncached input, cache-read, cache-written and output tokens, and says the weights relative to an
+uncached input token, with the number of pairs and R². Pairs are two neighbouring calls of one session that saw the
+window with the same reset, the use not falling, and no call of another session's ledger ending between them (a call
+of another machine or of Claude Code itself shows in no ledger here, and only adds noise, which R² shows). It says
+plainly when there are too few pairs, and what write/read ratio a trusted fit implies beside the one in use; it
+never switches to it by itself.
 `ghci-session usage [SESSION] [--since DAYS] [--json]` sums the ledger by who asked and by day, in money too when
 `"prices"` gives the model's rates per million tokens
 (`{"deepseek-v4-flash": {"input": .., "input_cached": .., "output": ..}}`).
