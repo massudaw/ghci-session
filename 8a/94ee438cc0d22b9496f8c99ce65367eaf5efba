@@ -1,0 +1,19 @@
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_964da734d4540a 2210,2221-2225,2243,2246,2250,2260-2261,2264,2280,2293-2296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8a94ee438cc0d22b9496f8c99ce65367eaf5efba",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
