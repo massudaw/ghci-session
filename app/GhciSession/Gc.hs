@@ -10,7 +10,7 @@
 -- Attribution is by ABSOLUTE PATH, never by name: several checkouts of one project are routinely live at
 -- once. A daemon carries @--root <abs>@ on its command line; a build process this project's dist-newstyle
 -- or state directory.
-module GhciSession.Gc (Leftovers (..), findLeftovers, runGc, daemonPid, listProcesses) where
+module GhciSession.Gc (Leftovers (..), findLeftovers, runGc, daemonPid, listProcesses, neverLoaded, deadSessions) where
 
 import Control.Concurrent (threadDelay)
 import Control.Exception (IOException, try)
@@ -109,6 +109,30 @@ findLeftovers conf = do
       (_ : r : "_daemon" : name : _) | any ("ghci-session" `isInfixOf`) ws || any ("ghci_session" `isInfixOf`) ws -> Just (r, name)
       _ -> Nothing
 
+-- | Does a session's state say it never loaded? Its status says @loaded=-@, and it holds no history, no record of
+-- sources loaded, no turn: what a boot that failed or timed out leaves.
+neverLoaded :: String -> Bool
+neverLoaded status = "loaded=-" `isInfixOf` status
+
+-- | Sessions whose daemon is not running (no live pid, no daemon process of that name) and that never loaded, idle
+-- longer than ten minutes (a boot may still be under way): (name, idle days, MB).
+deadSessions :: Conf -> [(Int, Int, String)] -> IO [(String, Double, Double)]
+deadSessions conf procs = do
+  dirs <- sessionDirs conf
+  t <- now
+  fmap catMaybes $ forM dirs $ \name -> do
+    let d = cStateDir conf </> name
+    up <- daemonPid conf name
+    st <- fromMaybe "" <$> readFileMaybe (d </> "status")
+    used <- or <$> mapM (\f -> doesPathExist (d </> f)) ["history", "loaded_sources.tsv", "turn.json", "usage.jsonl", "chat.pid"]
+    mt <- modTime (d </> "status") >>= maybe (modTime d) (pure . Just)
+    let booting = any (\(_, _, c) -> let ws = words c in "_daemon" `elem` ws && name `elem` ws) procs
+    case mt of
+      Just m | up == Nothing, not booting, not used, neverLoaded st, m < t - 600 -> do
+        size <- duMb d
+        pure (Just (name, (t - m) / 86400, size))
+      _ -> pure Nothing
+
 describeBuild :: String -> String
 describeBuild cmd = case words cmd of { (w : _) -> reverse (takeWhile (/= '/') (reverse w)); [] -> "?" }
 
@@ -154,6 +178,10 @@ runGc conf dry days = do
               void (try (removeDirectoryRecursive d) :: IO (Either IOException ()))
               putStrLn (printf "gc: pruned %s (idle %.1fd, freed %.0f MB)" name ((t - m) / 86400) size)
         _ -> pure ()
-  let n = length (lDaemons found) + length (lServers found) + length (lBuilds found2)
+  dead <- deadSessions conf procs
+  forM_ dead $ \(name, idle, size) -> do
+    putStrLn (printf "gc: %s session %s: its daemon is not running and it never loaded (idle %.1fd, %.1f MB)" verb name idle size)
+    unless dry (void (try (removeDirectoryRecursive (cStateDir conf </> name)) :: IO (Either IOException ())))
+  let n = length (lDaemons found) + length (lServers found) + length (lBuilds found2) + length dead
   when (n == 0) (putStrLn "gc: no orphaned daemons, servers or build processes")
   pure n

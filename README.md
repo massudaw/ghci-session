@@ -284,7 +284,9 @@ has been unused that long, and `autostop` stops the idle sessions of a project (
 their total is under a limit). Three things can outlive a session with nothing recording them: a daemon its state
 directory no longer names, a server whose daemon died, and the `ghc --interactive` that a `cabal repl` exec'd, which
 keeps the lock on `dist-newstyle`. `status` warns when it sees any, and `gc` reaps them. Attribution is by absolute
-path, never by name, so a sibling checkout's healthy session is not touched.
+path, never by name, so a sibling checkout's healthy session is not touched. `gc` also removes the state directory of
+a session that never loaded (a sibling such as `tool-O2` whose boot failed or timed out: no daemon, status `loaded=-`,
+no history, idle over ten minutes); `gc -n` lists what it would do.
 
 ## History and agents
 
