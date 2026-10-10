@@ -1,0 +1,18 @@
+README.md
+  h_fd5809635b36a3 590-597
+app/GhciSession/QuotaFit.hs
+  h_fd5809635b36a3 6-14,16,38-40,43-62,65-100,151-153,160,165,168-169,171
+app/GhciSession/SelfRound.hs
+  h_fd5809635b36a3 87,91,93,96-104,136-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1ec21d3522ea8f5cfddf04eda7c575e2317b2a9a",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
