@@ -43,6 +43,7 @@ import Data.Maybe (fromMaybe)
 import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
+import GhciSession.Carry
 import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
@@ -95,6 +96,24 @@ run = do
   eq "continue: a user message nothing follows is not (not known whose it is)" (ownTurnStart [m 1 "user", m 2 "talk", m 3 "user"]) Nothing
   eq "continue: notes between do not matter, an ai message that follows later does not either" (ownTurnStart [m 1 "user", m 2 "known", m 3 "tool", m 4 "ai"]) (Just 1)
   eq "continue: no user message, no turn" (ownTurnStart [m 1 "talk", m 2 "ai"]) Nothing
+
+  -- what a fresh call carries
+  let big i k n = (i, T.pack k, T.pack (replicate n 'y'))
+      txtLen (_, _, t) = T.length t
+  eq "carry: a short message is not cut" (capMsg 100 (big 5 "echo" 250)) (big 5 "echo" 250)
+  eq "carry: a long one is cut, its number named" (let (i, k, t) = capMsg 100 (big 5 "echo" 5000) in (i, k, T.take 100 t == T.replicate 100 (T.pack "y"), "4900 more characters of message 5" `isInfixOf` T.unpack t)) (5, T.pack "echo", True, True)
+  eq "carry: capOld cuts all but the last ones and the user's" (map ((> 1000) . txtLen) (capOld 2 100 [big 1 "echo" 5000, big 2 "user" 5000, big 3 "echo" 5000, big 4 "echo" 5000, big 5 "echo" 5000])) [False, True, False, True, True]
+  let turnLog = (1, T.pack "user", T.pack "do it") : [ big i (if even i then "tool" else "echo") 4000 | i <- [2 .. 41] ]
+      Just sp0 = carrySplit 60000 turnLog
+  eq "carry: older messages are cut, so more of them fit the tail's bytes" (length (spKept sp0) > 60000 `div` 4000 + 6) True
+  eq "carry: the last six are whole" (all (\x -> txtLen x == 4000) (drop (length (spKept sp0) - 6) (spKept sp0))) True
+  eq "carry: the split adds up" (length (spKept sp0) + spLeft sp0 + length (spTold sp0) + 1) (length turnLog)
+  eq "carry: nothing to split" (fmap spFrom (carrySplit 100 [])) Nothing
+  eq "carry: a lone message" (fmap spFrom (carrySplit 100 [m 7 "user"])) (Just 8)
+  eq "carry: <recent> holds the message, the gap and the tail" (T.unpack (carryRecent (Split (m 1 "user") [] 3 [m 5 "tool"] 5))) "<recent>\n1|user: x\n(3 messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n5|tool: x\n</recent>\n\n"
+  eq "carry: a rollover's echoes" (rollEchoes [m 1 "user", (4, T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (its context had grown to 150k)"), m 5 "echo"]) [4]
+  eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
+  eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
 
   -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")
   let bconf = Conf { cRoot = "/p", cStateDir = "/p/.s", cStateRel = ".s", cDefault = "tool", cTargets = [("tool", JNull), ("engine", JNull)], cSessions = [], cPrices = [] }

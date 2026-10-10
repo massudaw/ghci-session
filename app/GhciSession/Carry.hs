@@ -1,0 +1,140 @@
+-- | __What a fresh call carries__: a turn that goes on in a fresh call -- after a rollover, a restart that could
+-- not hand the turn over, a limit that has reset -- is given the view up to where its log begins, then the log
+-- ('Split': the turn's message, what the user said in it, its last messages as far as the tail's bytes go), then
+-- a note. The parts are pure here, so that what a rollover carries can be measured ('carryParts', @chat --carry@)
+-- with the same code that builds it.
+module GhciSession.Carry
+  ( Msg, formatMsg, resumeLog, capMsg, capOld, Split (..), carrySplit, carryRecent, carryFirst, carryNote
+  , Part (..), carryParts, subjectsBytes, partsTable, taskBefore, rollEchoes
+  ) where
+
+import qualified Data.ByteString as B
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
+import Text.Printf (printf)
+
+-- | A message of the history: its number, kind and text.
+type Msg = (Int, T.Text, T.Text)
+
+formatMsg :: Msg -> T.Text
+formatMsg (i, k, t) = T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack "\n"
+
+-- | The last messages of a turn's log that fit the bytes, oldest first, and how many before them do not.
+resumeLog :: Int -> [Msg] -> ([Msg], Int)
+resumeLog budget ms = let kept = go 0 (reverse ms) in (reverse kept, length ms - length kept)
+  where go _ [] = []
+        go used (m@(_, _, t) : r) = let n = used + T.length t + 16 in if n > budget && used > 0 then [] else m : go n r
+
+-- | A message cut to @n@ characters, with the note of what is left and where to read it (the message's number is
+-- the one to zoom): a read of two hundred lines, answered and acted on, is not what the fresh call needs word for word.
+capMsg :: Int -> Msg -> Msg
+capMsg n m@(i, k, t)
+  | T.length t <= n + 200 = m
+  | otherwise = (i, k, T.take n t <> T.pack ("\n[... " ++ show (T.length t - n) ++ " more characters of message " ++ show i ++ ": zoom it to read the whole]"))
+
+-- | The log with every message but its last @keep@ cut to @n@ characters ('capMsg'): the last steps are what the
+-- fresh call goes on from, whole; the older ones' answers are for the summaries and the zoom. What the user said
+-- is never cut.
+capOld :: Int -> Int -> [Msg] -> [Msg]
+capOld keep n ms = [ if j >= len - keep || k == T.pack "user" then m else capMsg n m | (j, m@(_, k, _)) <- zip [0 ..] ms ]
+  where len = length ms
+
+-- | What of a turn's log a fresh call is given: the turn's message, what the user said in it before the kept
+-- messages (what the user said stays whole, however long ago: it is what to do), how many messages between are
+-- left to the view as summaries, the kept messages, and the number of the first of them.
+data Split = Split { spTask :: Msg, spTold :: [Msg], spLeft :: Int, spKept :: [Msg], spFrom :: Int }
+  deriving (Eq, Show)
+
+-- | The split of a turn's log (its message first) at a tail of so many bytes.
+carrySplit :: Int -> [Msg] -> Maybe Split
+carrySplit _ [] = Nothing
+carrySplit budget (task@(ti, _, _) : after0) =
+  let after = capOld 6 1500 after0
+      (kept, left) = resumeLog budget after
+      from = case kept of { ((i, _, _) : _) -> i; [] -> ti + 1 }
+      told = [ m | m@(i, k, _) <- after, k == T.pack "user", i < from ]
+  in Just (Split task told (left - length told) kept from)
+
+-- | The log as the call is given it: @\<recent\>@.
+carryRecent :: Split -> T.Text
+carryRecent sp = T.pack "<recent>\n" <> formatMsg (spTask sp) <> T.concat (map formatMsg (spTold sp)) <> gap
+                 <> T.concat (map formatMsg (spKept sp)) <> T.pack "</recent>\n\n"
+  where gap = if spLeft sp > 0 then T.pack (printf "(%d messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n" (spLeft sp)) else T.empty
+
+-- | The call's first message: the view, the log, the note.
+carryFirst :: T.Text -> Split -> T.Text -> T.Text
+carryFirst v sp note = v <> T.pack "\n\n" <> carryRecent sp <> note
+
+-- | The note that ends the message: why the turn goes on here.
+carryNote :: String -> T.Text
+carryNote why = T.pack $ "[harness: this turn did not end -- " ++ why ++ ". <recent> holds the turn's message, what the user said during it, and what you did in it last, word for word"
+  ++ " (your tool calls and their answers, your replies; not what you had in mind between them). Go on from where it stops: look at what the last steps were doing, check the state of the"
+  ++ " files and the session if you need to, and do what is left. Do not start over, and do not do again what <recent> shows done.]"
+
+-- measuring ---------------------------------------------------------------------------------------
+
+-- | A part of what a fresh call is given: its name, bytes, and how many things (lines, messages) it is.
+data Part = Part { pName :: String, pBytes :: Int, pCount :: Int }
+  deriving (Eq, Show)
+
+bytesOf :: T.Text -> Int
+bytesOf = B.length . TE.encodeUtf8
+
+-- | The bytes of the view's @\<subjects\>@ block (the lines of it, the tags too).
+subjectsBytes :: T.Text -> Int
+subjectsBytes v = sum [ bytesOf l + 1 | l <- inside (T.lines v) ]
+  where inside ls = case break (== T.pack "<subjects>") ls of
+          (_, _ : r) -> let (b, e) = break (== T.pack "</subjects>") r in T.pack "<subjects>" : b ++ take 1 e
+          _ -> []
+
+-- | The parts of a fresh call: the system prompt (with what is added to it), the tools' definitions, the subjects
+-- block of the whole view (said apart: the call is not given it), the view's lines before the log, the log's
+-- parts, the note.
+carryParts :: Int -> Int -> T.Text -> T.Text -> Split -> T.Text -> [Part]
+carryParts sysB toolsB fullView keptView sp note =
+  [ Part "system prompt" sysB 0
+  , Part "tools" toolsB 0
+  , Part "view: summary lines" (bytesOf keptView) (length (T.lines keptView) - 2)
+  , Part "log: the turn's message" (bytesOf (formatMsg (spTask sp))) 1
+  , Part "log: what the user said" (sum (map (bytesOf . formatMsg) (spTold sp))) (length (spTold sp))
+  , Part "log: the tail, whole" (sum (map (bytesOf . formatMsg) (spKept sp))) (length (spKept sp))
+  , Part "log: gap line" (bytesOf (carryRecent sp { spTold = [], spKept = [] }) - bytesOf (formatMsg (spTask sp)) - bytesOf (T.pack "<recent>\n</recent>\n\n")) (if spLeft sp > 0 then 1 else 0)
+  , Part "note" (bytesOf note) 0
+  , Part "(not given) subjects block" (subjectsBytes fullView) 0 ]
+
+-- | Parts of several fresh calls as a table: a row a part, a column a call, bytes (and, where the first call's
+-- tokens are known, the tokens a byte is: the table's last rows).
+partsTable :: [(String, [Part], Maybe Int)] -> String
+partsTable cols = unlines [ "| " ++ concatMap (\(w, c) -> c ++ replicate (w - length c) ' ' ++ " | ") (zip widths r) | r <- rows ]
+  where
+    widths = [ maximum (map length col) | col <- columns rows ]
+    columns rs = [ [ r !! k | r <- rs ] | k <- [0 .. length (head rs) - 1] ]
+    names = [ pName p | p <- case cols of { ((_, ps, _) : _) -> ps; [] -> [] } ]
+    head' = "part" : [ h | (h, _, _) <- cols ]
+    cell ps n = case [ p | p <- ps, pName p == n ] of
+      (p : _) -> show (pBytes p) ++ (if pCount p > 0 then " (" ++ show (pCount p) ++ ")" else "")
+      [] -> "-"
+    given ps = sum [ pBytes p | p <- ps, take 5 (pName p) /= "(not " ]
+    tok (_, ps, Just t) | g > 0 = printf "%d tok, %.2f B/tok" t (fromIntegral g / fromIntegral t :: Double)
+      where g = given ps
+    tok _ = "-"
+    rows = [head'] ++ [ n : [ cell ps n | (_, ps, _) <- cols ] | n <- names ]
+           ++ [ "given (bytes)" : [ show (given ps) | (_, ps, _) <- cols ], "first call" : [ tok c | c <- cols ] ]
+
+-- | The user message a turn began with, before message @r@: the nearest user message that is not a line typed in
+-- the middle of a turn (one that follows a tool call or its answer).
+taskBefore :: Int -> [Msg] -> Maybe Int
+taskBefore r ms = go (reverse [ m | m@(i, _, _) <- ms, i < r ])
+  where
+    go [] = Nothing
+    go ((i, k, _) : rest)
+      | k == T.pack "user", not (afterWork rest) = Just i
+      | otherwise = go rest
+    afterWork rest = case [ k | (_, k, _) <- rest, k `notElem` map T.pack ["note", "known"] ] of
+      (k : _) -> k `elem` map T.pack ["tool", "echo"]
+      [] -> False
+
+-- | The messages that are a rollover's: the harness's echo that a turn went on in a fresh call because its context
+-- had grown.
+rollEchoes :: [Msg] -> [Int]
+rollEchoes ms = [ i | (i, k, t) <- ms, k == T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (its context had grown" `T.isPrefixOf` t ]

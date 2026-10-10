@@ -78,6 +78,7 @@ import GhciSession.Sys (now)
 import qualified GhciSession.Sys as Sys
 import qualified GhciSession.Wire as Wire
 import GhciSession.Inbox (chatPidFile)
+import GhciSession.Carry
 import qualified GhciSession.Inbox as Inbox
 import System.IO.Unsafe (unsafePerformIO)
 import qualified GhciSession.Anthropic as A
@@ -103,7 +104,8 @@ data Opts = Opts
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oSend :: Maybe String, oResume :: Maybe FilePath
   , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int, oShow :: Int
-  , oWait :: Maybe (Maybe Double) }     -- ^ --wait [SECS]: Just Nothing waits as long as it takes
+  , oWait :: Maybe (Maybe Double)       -- ^ --wait [SECS]: Just Nothing waits as long as it takes
+  , oCarry :: Int }                     -- ^ --carry N: what the last N rollovers' fresh calls carried, part by part (0: not asked)
 
 chatUsage :: String
 chatUsage = unlines
@@ -128,6 +130,7 @@ chatUsage = unlines
   , "  --plan: bytes of the turn's plan and directives kept in <plan> when the boundary moves (32000);"
   , "  --rollover: a turn through the claude command whose context has grown past this many tokens goes on in a"
   , "  fresh call, from its log (150000; 0: never);"
+  , "  --carry N: what the fresh calls after the last N rollovers were given, part by part, in bytes (no model call is made);"
   , "  --continue: go on with the last turn of the history, from its log (a turn that did not end: the chat was"
   , "  stopped, or died, in the middle of it);"
   , "  --tui: the chat on a screen of its own (the transcript, the turn's state, a line to type on; Ctrl-C leaves);"
@@ -136,7 +139,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax Nothing)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax Nothing 0)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -156,6 +159,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--web", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oWeb = Just n } r
                      | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
                      | k == "--show", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oShow = n } r
+                     | k == "--carry", [(n, "")] <- reads v, (n :: Int) > 0 = go o { oCarry = n } r
                      | k == "--wait", [(n, "")] <- reads v, n >= 0 = go o { oWait = Just (Just n) } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
@@ -1971,23 +1975,16 @@ continueTurn ch e o system pending rolled = do
       turnMs = maybe [] (\b -> dropWhile (\(i, _, _) -> i < b) ms) began
   case turnMs of
     _ | isNothing rolled, lookupBool "done" tj == Just True -> uiNote (cUi ch) "[nothing to go on with: the last turn ended]"
-    (task : after) -> do
+    (task@(taskId, _, _) : after) -> do
       -- (a rollover carries a third of what a restart does: a fresh run that began at two thirds of the
       -- rollover's tokens was over them again in thirty calls, each time for a cold first call)
-      let (kept, left) = resumeLog (if isJust rolled then max 12000 (oTail o `div` 3) else max 20000 (oTail o)) after
-          from = case kept of { ((i, _, _) : _) -> i; [] -> (\(i, _, _) -> i + 1) task }
-          -- (what the user said in the middle of the turn stays whole, however long ago: it is what to do)
-          told = [ m | m@(i, k, _) <- after, k == user, i < from ]
-          gap = [ T.pack (printf "(%d messages of the turn are not here in full: they are the view's last lines, as summaries -- zoom them)\n" (left - length told)) | left - length told > 0 ]
+      let Just sp = carrySplit (if isJust rolled then max 12000 (oTail o `div` 3) else max 20000 (oTail o)) (task : after)
           why = maybe "the chat that was in it stopped, and this is a new one" (\(w, _, _) -> w ++ ", so it goes on here in a fresh call") rolled
-          note = T.pack $ "[harness: this turn did not end -- " ++ why ++ ". <recent> holds the turn's message, what the user said during it, and what you did in it last, word for word"
-                       ++ " (your tool calls and their answers, your replies; not what you had in mind between them). Go on from where it stops: look at what the last steps were doing, check the state of the"
-                       ++ " files and the session if you need to, and do what is left. Do not start over, and do not do again what <recent> shows done.]"
-      v <- viewBefore ch from (oSettle o)
+      v <- viewBefore ch (spFrom sp) (oSettle o)
       logH ch "echo" (T.pack ("harness: this turn goes on in a fresh call, from its log (" ++ why ++ ")"))
-      uiNote (cUi ch) (printf "[going on with the turn of message %d: %d message(s) of it given whole, %d as summaries]" ((\(i, _, _) -> i) task) (1 + length told + length kept) (left - length told))
+      uiNote (cUi ch) (printf "[going on with the turn of message %d: %d message(s) of it given whole, %d as summaries]" taskId (1 + length (spTold sp) + length (spKept sp)) (spLeft sp))
       tNow <- now
-      let first = v <> T.pack "\n\n<recent>\n" <> formatMsg task <> T.concat (map formatMsg told) <> T.concat gap <> T.concat (map formatMsg kept) <> T.pack "</recent>\n\n" <> note
+      let first = carryFirst v sp (carryNote why)
           sys = system ++ (if "<recent> -- the turn's own messages" `isInfixOf` system then "" else continueDoc)
           (spent0, tStart) = maybe (Spent 0 0 0 0 0 False False, tNow) (\(_, sp, t) -> (sp, t)) rolled
       if eProvider e == ClaudeCli then turnCliFrom ch e o sys first pending spent0 tStart
@@ -2006,12 +2003,6 @@ ownTurnStart ms = case break (\(_, k, _) -> k == T.pack "user") (reverse ms) of
   (afterRev, (i, _, _) : _) -> case [ k | (_, k, _) <- reverse afterRev, k `notElem` map T.pack ["note", "known"] ] of
     (k : _) | k `elem` map T.pack ["tool", "echo", "talk"] -> Just i
     _ -> Nothing
-
--- | The last messages of a turn's log that fit the bytes, oldest first, and how many before them do not.
-resumeLog :: Int -> [(Int, T.Text, T.Text)] -> ([(Int, T.Text, T.Text)], Int)
-resumeLog budget ms = let kept = go 0 (reverse ms) in (reverse kept, length ms - length kept)
-  where go _ [] = []
-        go used (m@(_, _, t) : r) = let n = used + T.length t + 16 in if n > budget && used > 0 then [] else m : go n r
 
 continueDoc :: String
 continueDoc = unlines
@@ -2278,9 +2269,6 @@ cutBytes :: Int -> T.Text -> T.Text
 cutBytes n = T.dropWhileEnd (== '\xFFFD') . TE.decodeUtf8With TE.lenientDecode . B.take n . TE.encodeUtf8
 
 -- | Format a log message as `id|kind: text\n`.
-formatMsg :: (Int, T.Text, T.Text) -> T.Text
-formatMsg (i, k, t) = T.pack (show i ++ "|") <> k <> T.pack ": " <> t <> T.pack "\n"
-
 -- | The turn's plan and directives before the boundary: talk and user messages up to the byte budget.
 -- If they exceed the budget, the initial message (the plan) is kept and subsequent messages are kept
 -- from the tail (the most recent updates).
@@ -2441,6 +2429,30 @@ drain q = atomically go
             Just Nothing -> unGetTQueue q Nothing >> pure []
             Nothing -> pure []
 
+-- | @chat --carry N@: what the fresh calls after the last N rollovers were given, part by part, in bytes -- the view as
+-- it is now, cut at where each log began (the summaries it was then differ a little), the log as it was.
+carryReport :: Chat -> String -> Opts -> IO Int
+carryReport ch system o = do
+  ms <- logFrom ch 0
+  (full, _, _, _) <- view ch 0
+  let echoes = reverse (take (oCarry o) (reverse (rollEchoes ms)))
+      toolsB = B.length (encodeBS (JArr (map toolJson (toolsFor ch))))
+      sysB = B.length (TE.encodeUtf8 (T.pack (system ++ continueDoc)))
+  cols <- forM echoes $ \r -> do
+    let turn = maybe [] (\t -> [ m | m@(i, _, _) <- ms, i >= t, i < r ]) (taskBefore r ms)
+    case carrySplit (max 12000 (oTail o `div` 3)) turn of
+      Nothing -> pure Nothing
+      Just sp -> do
+        v <- viewBefore ch (spFrom sp) 0
+        let note = carryNote "its context had grown to 150k tokens, so it goes on here in a fresh call"
+            (tid, _, _) = spTask sp
+        -- (GHS_CARRY_DUMP=DIR: the message too, as the call is given it, to DIR/rNNN.txt -- to be counted by the model's own tokenizer)
+        dump <- lookupEnv "GHS_CARRY_DUMP"
+        forM_ dump $ \d -> TIO.writeFile (d </> ("r" ++ show r ++ ".txt")) (carryFirst v sp note)
+        pure (Just ("#" ++ show r ++ " (turn " ++ show tid ++ ")", carryParts sysB toolsB full v sp note, Nothing))
+  putStr (partsTable (catMaybes cols))
+  pure 0
+
 -- | @ghci-session chat ARGS@.
 chatMain :: Conf -> [String] -> IO Int
 chatMain conf args = case parseOpts args of
@@ -2539,7 +2551,7 @@ chatMain conf args = case parseOpts args of
                                     unless (null texts) (writeIORef inTurn True >> stoppable ch (turn ch e o system texts pending) >> writeIORef inTurn False)
                                     loop
                           loop
-              if oTui o
+              if oCarry o > 0 then carryReport (chatWith stdoutUi) system o else if oTui o
                 then chatTui name (eModel e) (cStateDir conf </> name) run `finally` dropPid
                 else do
                   pending <- newTQueueIO

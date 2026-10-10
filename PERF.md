@@ -205,6 +205,46 @@ now takes only from sessions with the same flags (`Config.sameFlags`: the same l
 measuring sessions; configuration sessions among themselves). A base session that is itself `-O1` could feed a `-O1`
 measuring one; not done, since the base's real level is not known from its name. Self-tests: 365 pass.
 
+## The fresh call after a rollover (what a reset carries, in the model's tokens)
+
+`chat --carry N` (no model call) builds, for each of the last N rollovers of this chat, the first message of the call
+that went on from it, with the code the chat builds it with (`Carry.carrySplit` and friends), and says what each part
+is in bytes (messages or lines in brackets). `GHS_CARRY_DUMP=DIR` writes the messages too; the tokens below are the
+model's own count (sonnet, the claude command with no tools and a one-line system prompt: 2 tokens of its own, 532 for
+`say ok`), so tokens/byte is measured, not assumed: 2.1 bytes a token on this view/log format (124 KB of `--print-view`
+is 57.7k tokens). The view column is today's view cut where each log began; the summaries were not the same then.
+
+| part (bytes)               | #2800, old rule | #2968, old rule | #3303, old rule | #2800, now | #2968, now | #3303, now |
+|----------------------------|----------------:|----------------:|----------------:|-----------:|-----------:|-----------:|
+| system prompt              |            6347 |            6347 |            6347 |       6347 |       6347 |       6347 |
+| tools (16 KB of schemas)   |           16083 |           16083 |           16083 |      16083 |      16083 |      16083 |
+| view: summary lines        |      17041 (44) |      20586 (54) |     36835 (105) |  17793 (46) |  21138 (56) | 46063 (141) |
+| log: the turn's message    |              67 |              67 |            3973 |         67 |         67 |       3973 |
+| log: what the user said    |            5356 |            5356 |              55 |       5356 |       5356 |         90 |
+| log: the tail, whole       |      94276 (97) |      93431 (98) |      88730 (81) |  31686 (50) |  30954 (60) |  31247 (35) |
+| gap line, note             |             628 |             628 |             627 |        628 |        628 |        628 |
+| (not given) subjects block |           16173 |           16173 |           16173 |      16173 |      16173 |      16173 |
+| given, bytes               |          139798 |          142498 |          152650 |      77960 |      80573 |     104431 |
+| message + system, tokens   |           53166 |           55491 |           59294 |      26226 |      26414 |      38554 |
+
+The tools (about 5-6k tokens) come on top in the real call. The first call's tokens in the log for the old rule, as
+the usage lines have them: 66.1k (#2612), 43.7k (#2800: the view then was smaller), the sixth 56.4k with 98% cached
+(the same view and system as the call before it, still in the provider's cache).
+
+What was waste, and what is done: **the tail given whole** was 93 KB, 60% of the call (old rule: the whole `--tail`,
+96000 characters, for a rollover as for a restart). A rollover now carries a third of it (12000 characters minimum),
+and the messages older than the last six are cut to 1500 characters with their number to zoom (`Carry.capOld`): a
+read of two hundred lines that was answered and acted on is for the summaries, and the same bytes now hold 50-60
+messages instead of 80-100 whole ones. A call is 26-39k tokens, not 53-59k: about half. What the user said stays
+whole, however old.
+
+What is left, and why: the view (18-46 KB, a quarter to a half of the call) is the memory of the whole chat (for a long turn,
+the lines before the cut include summaries of the turn's own earlier messages: not measured how many); it is not cut, because it is what stops a fresh call from starting over -- the controller's relearn
+share (item 5) is what says if it must be. The tools' schemas (16 KB, 20% of a cold call, a tenth of that price on
+every call after it) hold `session` on thirty tools; dropping tools from the agent's reach is a change of what it
+can do, not waste. The subjects block (16 KB) is not given to a fresh call (the view before the log has none).
+The system prompt (6 KB) is the agent's rules.
+
 ## Not done, and next
 
 - A file list kept by the daemon would save the 14 ms of `git ls-files` (see 6); not done, see there for why.
