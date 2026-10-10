@@ -101,15 +101,18 @@ type say after the stop\r
 until 8 turns;
 mark after
 type tool spawn {"tasks":["say the first is done","wait 33"]}\r
-until 10 turns;
+until you said 'the first is done'
+until waiting for a line
 mark spawned
 key esc
 until subagent(s) stopped
 mark substopped
 type tool edit {"path":"notes.txt","old":"one","new":"1"}\r
-until 11 turns;
+until -one
+until waiting for a line
 type say the end\\n2\\n3\\n4\\n5\\n6\\n7\\nlast of it\r
-until 12 turns;
+until talk:  the end
+until waiting for a line
 resize 80x24
 wait 1
 mark resized
