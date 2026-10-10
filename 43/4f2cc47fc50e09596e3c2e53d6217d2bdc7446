@@ -1,0 +1,34 @@
+README.md
+  h_fd5809635b36a3 572-577
+app/GhciSession/Chat.hs
+  h_fd5809635b36a3 83,1828-1829,1839-1840,1877-1881,1925
+app/GhciSession/Cli.hs
+  h_fd5809635b36a3 37,435
+app/GhciSession/Llm.hs
+  h_fd5809635b36a3 19,151-155,158,160
+app/GhciSession/Quota.hs
+  h_fd5809635b36a3 1-78
+app/GhciSession/SelfRound.hs
+  h_fd5809635b36a3 1-31
+app/GhciSession/SelfTest.hs
+  h_fd5809635b36a3 49,142-144
+app/GhciSession/Top.hs
+  h_fd5809635b36a3 53,341-342
+ghci-session.cabal
+  h_fd5809635b36a3 40
+tools/check-cli.py
+  h_fd5809635b36a3 73-75
+tools/fake-claude.py
+  h_fd5809635b36a3 56-57,82-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "434f2cc47fc50e09596e3c2e53d6217d2bdc7446",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
