@@ -26,6 +26,8 @@ import System.FilePath ((</>))
 import System.Directory (doesFileExist, doesDirectoryExist, listDirectory)
 import Data.Maybe (fromMaybe)
 import System.IO (IOMode (ReadMode), withBinaryFile)
+import System.Exit (ExitCode (ExitSuccess))
+import System.Process (readCreateProcessWithExitCode, proc, CreateProcess (cwd))
 import Text.Printf (printf)
 
 import GhciSession.Json
@@ -206,8 +208,24 @@ fallbackSearchFiles dir query maxResults = do
     toLower c = if c >= 'A' && c <= 'Z' then toEnum (fromEnum c + 32) else c
     isInfixOf' needle haystack = needle `elem` [ take (length needle) (drop i haystack) | i <- [0 .. length haystack - length needle] ]
 
+-- | The files of a tree: in a git work tree, what git lists (its index is the cache, and its validity check is git's
+-- own: the files that are tracked or not ignored, in 14 ms for a tree whose walk of 2,262 files is 13 ms and whose
+-- ignored build trees were most of them); elsewhere, a walk of the directories.
 findFiles :: FilePath -> IO [FilePath]
-findFiles root = go ""
+findFiles root = do
+  r <- try (readCreateProcessWithExitCode ((proc "git" ["ls-files", "-z", "--cached", "--others", "--exclude-standard"]) { cwd = Just root }) "")
+  case r of
+    Right (ExitSuccess, out, _) | not (null out) ->
+      pure [ f | f <- splitNul out, not (null f), not (any hidden (splitDirs f)) ]
+    Right _ -> walkFiles root
+    Left (_ :: SomeException) -> walkFiles root
+  where
+    splitNul s = case break (== '\0') s of { (a, []) -> [a]; (a, _ : rest) -> a : splitNul rest }
+    splitDirs s = case break (== '/') s of { (a, []) -> [a]; (a, _ : rest) -> a : splitDirs rest }
+    hidden n = take 1 n == "." || n == "dist-newstyle"
+
+walkFiles :: FilePath -> IO [FilePath]
+walkFiles root = go ""
   where
     go rel = do
       let full = if null rel then root else root </> rel

@@ -170,10 +170,27 @@ The reply's 7.5 ms is mostly the copy of 800 KB into a `Text` and the collector'
 that makes no `Either` of each value would take the facts and history further. Self-tests: 363 pass (four new,
 of numbers, string escapes, and strings that do not end).
 
+### 6. `grep` and `find`: the file list is git's, not a walk
+
+Chosen over a list kept by the daemon: `grep` and `find` run in the CLI's own process and in the chat as well as
+the daemon, so a daemon's list needs a call to it (and fails when it is down), and a list cached in a file needs a
+validity check that is itself a walk of the directories. A git work tree has the cache already, with the check: `git
+ls-files --cached --others --exclude-standard` (14 ms, 193 files) lists what is tracked or not ignored, as libfff
+does, so the 2,000 files of ignored build trees (gba/nes runners, libfff) are not read either. Not a work tree, or no
+`git`: the walk, as before. Dot names and `dist-newstyle` stay out.
+
+| bench (-O1 in-session, x10) | before | after |
+|---|---|---|
+| grep, no match | 29.2 ms, 34 MB | 25.5 ms, 17 MB |
+| grep "recall" | 35.5 ms, 45 MB | 26.5 ms, 25 MB |
+| find "Know" | 13.2 ms, 25 MB | 13.8 ms, 4 MB |
+
+A small gain in time (the process spawn costs what the walk did, so `find` is as it was) and a half of the memory;
+the change of meaning (ignored files are not searched) is the point as much as the time. Self-tests: 363 pass.
+
 ## Not done, and next
 
-- The fallback `grep` still reads every file's bytes (29 ms for a tree of 2,262 files); a build with libfff
-  (`GHS_FFF`) does not. An index of the file list kept by the daemon would be the next step.
+- A file list kept by the daemon would save the 14 ms of `git ls-files` (see 6); not done, see there for why.
 - `Top`'s layout of a whole history (416 ms, 2 GB) is paid only for the last 400 messages, once; if the history
   opens whole, it is the cost to look at.
 - Boots and restarts (12-16 s, up to 47) are cabal and GHC; the watchdog's and the compactor's costs are in model
