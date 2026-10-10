@@ -8,7 +8,7 @@
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
 module GhciSession.Mcp (mcpMain, Tool (..), tools, toolArgs, toolBrief, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
 
-import Control.Concurrent (forkIO)
+import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar (newEmptyMVar, putMVar, takeMVar)
 import Control.Exception (IOException, SomeException, try)
 import Control.Monad (forM_, unless)
@@ -228,7 +228,13 @@ benchAt conf base args = do
             Left e -> pure (Left (T.pack (show e)))
         case started of
           Left why -> pure (Left why)
-          Right () -> Right <$> ask "reload" [("check", JBool False), ("refork", JBool False)]
+          -- (a session that was started by an earlier call and is still compiling has its process but not its socket:
+          -- the wait is for it, up to the call's timeout, not an answer at once that it is not there)
+          Right () -> let again = do
+                            r <- ask "reload" [("check", JBool False), ("refork", JBool False)]
+                            alive <- isJust <$> running conf name
+                            if lookupStr "down" r == Just "before" && alive then threadDelay 500000 >> again else pure r
+                      in Right <$> again
   let stillCompiling = do
         lg <- logTail
         v <- verdictLine
