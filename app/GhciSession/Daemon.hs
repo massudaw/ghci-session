@@ -2207,6 +2207,7 @@ knowLoop s m cmd = do
     fs <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
     newIORef [ a | f <- fs, Just a <- [K.isCall (K.fTopic f)] ]
   failing <- newIORef False
+  behind <- newIORef False            -- facts were stored that the session was not told of: its block is to be written again
   let ask prompt = do
         r <- runShell [(Llm.usageFileEnv, sDir s </> "usage.jsonl"), ("SUMMARIZE_TOOLS", "0")] cmd prompt 300
         case r of
@@ -2217,9 +2218,11 @@ knowLoop s m cmd = do
             failing =: True
             pure Nothing
       -- new facts into the store; True when it was done (False: the model could not be asked -- again later)
-      settle :: [K.New] -> IO Bool
-      settle [] = pure True
-      settle news = do
+      -- (@recent@: the facts are of the log's last messages, so the session is told of them as they are learned.
+      -- Facts of long ago -- a history read from its start -- are not news at its end: they go to the block)
+      settle :: Bool -> [K.New] -> IO Bool
+      settle _ [] = pure True
+      settle recent news = do
         held <- K.current <$> K.loadFacts dir
         let cands = nubBy (\a b -> K.fId a == K.fId b) (concatMap (K.candidates held) news)
         answer <- if null cands then pure (Just T.empty) else ask (K.reconPrompt cands news)
@@ -2237,14 +2240,14 @@ knowLoop s m cmd = do
                 K.withLock dir $ do
                   K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing)
                   forM_ replaced (\f -> K.markBy dir (K.fId f) i)
-                histAdd s "known" (K.knownLine n replaced)
+                if recent then histAdd s "known" (K.knownLine n replaced) else behind =: True
             logS s (printf "knowledge: %d fact(s): %s" (length news) (unwords [ case d of { K.Add -> "new"; K.Same _ -> "said-again"; K.Replace _ -> "replaces"; K.Drop -> "dropped" } | d <- decs ]))
             pure True
-      piece date sr body = do
+      piece recent date sr body = do
         out <- ask (K.extractPrompt project date body)
         case out of
           Nothing -> pure False
-          Just o -> settle (K.parseNew project date sr o)
+          Just o -> settle recent (K.parseNew project date sr o)
       -- the lines the compactor made of a stretch of messages, from level four down to what is built
       stretch from to = do
         texts <- H.treeTexts m
@@ -2254,9 +2257,11 @@ knowLoop s m cmd = do
         pure (T.unlines (concat [ line 4 i | i <- [from `div` 16 .. (to - 1) `div` 16] ]))
       step i = do
         ms <- H.messages m i 1
+        count <- H.count m
+        let recent = i >= count - 256
         ok1 <- case ms of
           (x : _) | H.mKind x `elem` map T.pack ["user", "talk", "note"], T.length (H.mText x) > 80 ->
-                      piece (H.mDate x) (src i 1) (H.mKind x <> T.pack ": " <> T.take 6000 (H.mText x))
+                      piece recent (H.mDate x) (src i 1) (H.mKind x <> T.pack ": " <> T.take 6000 (H.mText x))
                   | H.mKind x == T.pack "tool", Just (tool, keys) <- K.callArgs (H.mText x) -> do
                       known <- rd seenArgs
                       let fresh = [ k | k <- keys, (tool, k) `notElem` known ]
@@ -2272,7 +2277,7 @@ knowLoop s m cmd = do
         ok2 <- if not ok1 || end <= 0 || end `mod` 128 /= 0 then pure ok1 else do
           body <- stretch (end - 128) end
           d <- H.dateOf m (end - 1)
-          if T.null (T.strip body) then pure True else piece (fromMaybe 0 d) (src (end - 128) 128) body
+          if T.null (T.strip body) then pure True else piece recent (fromMaybe 0 d) (src (end - 128) 128) body
         pure ok2
       loop upto = do
         stopping <- rd (vStopping s)
@@ -2285,6 +2290,10 @@ knowLoop s m cmd = do
               if ok then void (try (writeFileUtf8 stateFile (encode (JObj [("upto", JNum (fromIntegral (upto + 1)))]))) :: IO (Either IOException ())) >> loop (upto + 1)
                     else threadDelay 60000000 >> loop upto
             else do
+              was <- rd behind
+              when was $ do
+                behind =: False
+                void (try (removeFile (sDir s </> "history" </> "subjects-view.json")) :: IO (Either IOException ()))
               tv <- registerDelay 10000000
               atomically (H.waitChange m n `orElse` (readTVar tv >>= check))
               loop upto
