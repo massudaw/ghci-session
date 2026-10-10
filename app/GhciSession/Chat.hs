@@ -793,6 +793,11 @@ turnNote ch f = when (isNothing (cSub ch)) $ withMVar turnLock $ \_ -> do
   forM_ (either (const Nothing) (either (const Nothing) Just . parseJsonBS) r) $ \j ->
     void (try (B.writeFile (turnFile ch ++ ".tmp") (encodeBS (f j)) >> renameFile (turnFile ch ++ ".tmp") (turnFile ch)) :: IO (Either IOException ()))
 
+-- | Lines of the user's given to the turn under way between two of its calls: counted in turn.json, so that a
+-- waiter whose line was taken while that turn ran can tell the turn took it (and did not leave it for the next).
+fedNote :: Chat -> [a] -> IO ()
+fedNote ch xs = unless (null xs) (turnNote ch (\j -> set "fed" (JNum (fromIntegral (length xs) + fromMaybe 0 (lookupNum "fed" j))) j))
+
 -- | What the chat logs that a waiter wants: a talk message is the last words so far, a tool call is one more.
 noteLogged :: Chat -> String -> T.Text -> IO ()
 noteLogged ch kind text
@@ -1778,6 +1783,7 @@ runCli ch e o pending run = do
             -- (a line typed while it works reaches it here, between two calls)
             mid <- drain pending >>= typedLines ch
             forM_ mid (logTyped ch)
+            fedNote ch mid
             unless (null mid) (cliBlocks ch [textBlock (T.intercalate (T.pack "\n\n") mid)] (T.unlines mid) >>= put)
             uiBusy (cUi ch) (Just "the model is working")
             pure (ok, said)
@@ -2301,6 +2307,7 @@ goOn ch e o pending ts = do
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending >>= typedLines ch
                   forM_ mid (logTyped ch)
+                  fedNote ch mid
                   let next = if viewMode then msgs' else msgs' ++ replies ++ [ msg "user" (T.intercalate (T.pack "\n\n") mid) | not (null mid) ]
                   -- the superseded reads, rewritten as stubs once there is enough of them
                   recs <- readIORef readsR

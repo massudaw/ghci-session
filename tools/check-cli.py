@@ -160,9 +160,28 @@ def main():
         check("chat --wait alone: waits for the turn under way, and prints its last words", r.returncode == 0 and "the late words" in r.stdout and "[turn: " in r.stdout, (r.returncode, r.stdout, r.stderr))
         t0 = time.time(); r = cli("--wait")
         check("chat --wait with the chat at rest: at once, the last turn's last words", r.returncode == 0 and "the late words" in r.stdout and time.time() - t0 < 5, (r.returncode, r.stdout, r.stderr))
-        p6.send_signal(signal.SIGKILL); p6.wait()
+        # a line sent while a turn runs, and left for the turn after it (the first one has no call to feed it between)
+        r0 = cli("--send", "pause 4 ;; say first of two")
+        time.sleep(1.0)
+        r = cli("--send", "say second of two", "--wait", "60")
+        check("chat --send --wait while a turn runs that does not take the line: it waits for the turn the line began, and not the one that ended meanwhile",
+              r0.returncode == 0 and r.returncode == 0 and "second of two" in r.stdout and "first of two" not in r.stdout, (r0.returncode, r.returncode, r.stdout, r.stderr))
+        # the chat dies in the middle of a turn: turn.json says running for good; a waiter leaves at once
+        cli("--send", "pause 30 ;; say never")
+        time.sleep(1.5)
+        waiter = subprocess.Popen([tuicheck.CLI, "chat", "-s", session, "--wait", "60"], cwd=proj, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        time.sleep(1.0)
+        t0 = time.time(); p6.send_signal(signal.SIGKILL); p6.wait()
+        try:
+            waiter.wait(timeout=15)
+        except subprocess.TimeoutExpired:
+            waiter.kill(); waiter.wait()
+        check("chat --wait: the chat dies in the turn waited for: exit 1 within seconds (not SECS)",
+              waiter.returncode == 1 and time.time() - t0 < 10, (waiter.returncode, time.time() - t0))
+        t0 = time.time(); r = cli("--wait", "60")
+        check("chat --wait when the chat died in a turn (turn.json still says it runs): exit 1 at once", r.returncode == 1 and time.time() - t0 < 5, (r.returncode, r.stdout, r.stderr, time.time() - t0))
         r = cli("--wait", "5")
-        check("chat --wait when no chat is running (it died): exit 1", r.returncode == 1, (r.returncode, r.stdout, r.stderr))
+        check("chat --wait when no chat is running: exit 1", r.returncode == 1, (r.returncode, r.stdout, r.stderr))
         if verbose:
             print(read()); print(open(out2, errors="replace").read())
     finally:

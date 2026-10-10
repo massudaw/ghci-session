@@ -85,10 +85,11 @@ watch conf name take' = void $ forkIO $ forever $ do
 
 -- | What @turn.json@ says of a turn: the id of the message it began at, and whether it is over (ended, or
 -- stopped). No file -- no turn yet -- is a turn that is over.
-data Mark = Mark { mStart :: Maybe Int, mDone :: Bool } deriving (Eq, Show)
+-- @mFed@ counts the lines the turn was given while it ran.
+data Mark = Mark { mStart :: Maybe Int, mDone :: Bool, mFed :: Int } deriving (Eq, Show)
 
 markOf :: Json -> Mark
-markOf j = Mark s (isNothing s || lookupBool "done" j == Just True || lookupBool "stopped" j == Just True)
+markOf j = Mark s (isNothing s || lookupBool "done" j == Just True || lookupBool "stopped" j == Just True) (maybe 0 round (lookupNum "fed" j))
   where s = round <$> lookupNum "start" j
 
 -- | When the turn that stood in the file at the send ends with the line still not taken, the line will be a
@@ -105,6 +106,9 @@ settled :: Mark -> Mark -> Bool -> Bool
 settled before now' taken
   | not taken = False
   | mDone before = mStart now' /= mStart before && mDone now'
+  -- (a turn that was running at the send and has ended: it took the line only if it fed it to itself; otherwise the line
+  -- is the next turn's, which may not have begun yet -- the file still says the old turn is over)
+  | mStart now' == mStart before = mDone now' && mFed now' > mFed before
   | otherwise = mDone now'
 
 -- | What a waiter prints of a turn that ended: its last words, whole, and its summary line.
@@ -138,7 +142,9 @@ waitMain conf name msg limit = do
     Nothing -> hPutStrLn stderr ("chat: no chat running on " ++ name) >> pure 1
     Just _ -> do
       j0 <- fromMaybe (JObj []) <$> readTurn conf name
-      let before0 = markOf j0
+      -- (no line sent: the turn under way is the one waited for, whether or not it fed anything to itself -- a fed
+      -- count of -1 before it is one that any turn's count passes)
+      let before0 = (markOf j0) { mFed = if isNothing msg then -1 else mFed (markOf j0) }
       sent <- maybe (pure (Right Nothing)) (fmap (fmap (Just . snd)) . sendNamed conf name) msg
       case sent of
         Left why -> hPutStrLn stderr ("chat: " ++ why) >> pure 1
