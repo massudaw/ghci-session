@@ -273,7 +273,7 @@ run = do
   let writeConf t = writeFile (tmp </> configName) t
       targets = "\"a\": {\"units\": \"lib:a\", \"watch\": [\"a/src\"], \"modules\": [\"A\"], \"env\": {\"A_PORT\": 1, \"WHO\": \"{session}\"},"
              ++ " \"check\": {\"expr\": \"A.t\"}, \"warm\": \"A.x `seq` ()\", \"server\": {\"action\": \"A.serve\", \"port\": 1, \"env\": {\"X\": \"{root}/l\"}}},"
-             ++ "\"b\": {\"units\": [\"lib:b\"], \"watch\": [\"b/src\"], \"modules\": [\"B\", \"A\"], \"hygiene\": true, \"line_budget\": 300, \"load_timeout\": 2000, \"idle_stop_mins\": 30,"
+             ++ "\"b\": {\"units\": [\"lib:b\"], \"watch\": [\"b/src\"], \"modules\": [\"B\", \"A\"], \"hygiene\": true, \"line_budget\": 300, \"rollover_ratio\": 20, \"load_timeout\": 2000, \"idle_stop_mins\": 30,"
              ++ " \"checks\": [{\"expr\": \"B.t\"}, {\"expr\": \"B.u\", \"name\": \"slow\", \"fail\": \"BAD\"}]}"
   writeConf ("{\"rts_flags\": \"-c -A64m\", \"targets\": {" ++ targets ++ "}, \"sessions\": {\"dev\": [\"a\", \"b\"]}}")
   findRoot (Just (tmp </> "a" </> "b")) >>= \r -> do { t <- canonicalizePath tmp; eq "config: found from below" r (Right t) }
@@ -291,6 +291,9 @@ run = do
       eq "plain: a warm expression is one expression, not words" (gWarm plain) ["A.x `seq` ()"]
       eq "plain: idle stop off by default" (gIdleStopMins plain) 0
       eq "config: line_budget absent is none, a target's is its own, a composed session takes its members'" (map (lineBudgetOf conf) ["a", "b", "dev"]) [Nothing, Just 300, Just 300]
+      eq "config: rollover_ratio absent fixes nothing (the writes decide), a target's is its own, a composed session takes its members'" (map (rolloverRatioSet conf) ["a", "b", "dev"]) [Nothing, Just 20, Just 20]
+      eq "config: with no rollover_ratio set, one-hour writes seen make the controller's ratio 20; set, it stays" (map (\n -> rRatio (rollFrom (rolloverRatioSet conf n) (JObj [("kind", JNum 2)]))) ["a", "b"]) [20, 20]
+      eq "config: ... and a ratio of 15 is kept against one-hour writes" (rRatio (rollFrom (Just 15) (JObj [("kind", JNum 1)])), rRatio (rollFrom Nothing (JObj [("kind", JNum 1)])), rFixed (rollFrom (rolloverRatioSet conf "a") (JObj [])), rolloverRatioOf conf "a") (15, 12.5, False, 12.5)
       Right dev <- resolve conf "dev"
       eq "composed: units" (gUnits dev) ["lib:a", "lib:b"]
       eq "composed: modules, no duplicates" (gModules dev) ["A", "B"]

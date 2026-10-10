@@ -92,7 +92,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNum 12.5)
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNull)
   ]
 
 reserved :: [String]
@@ -157,8 +157,10 @@ onTurnEndOf conf name = case [ c | m <- fromMaybe [name] (lookup name (cSessions
   c : _ -> Just c
   [] -> Nothing
 
--- | What a token written to the provider's cache costs over one read from it ("rollover_ratio", 12.5): what a
--- rollover weighs a cold call against by, the first member of the session that sets one.
+-- | What a token written to the provider's cache costs over one read from it ("rollover_ratio", 12.5 where it is
+-- not set, and the writes the calls show do not say otherwise): what a rollover weighs a cold call against by, the
+-- first member of the session that sets one. (The key's default in 'defaults' is null: a number there would be
+-- "set" for every session, and 'rolloverRatioSet' would fix the ratio against what the writes say.)
 rolloverRatioOf :: Conf -> String -> Double
 rolloverRatioOf conf name = fromMaybe 12.5 (rolloverRatioSet conf name)
 

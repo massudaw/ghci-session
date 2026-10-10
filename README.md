@@ -187,7 +187,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `hygiene` | unlink superseded CAFs after each reload and report memory |
 | `repl_budget_mb` | past this, a reload is a restart (default 6144; `0` disables) |
 | `line_budget` | a project's rule for the lines of a file: the chat's `read`, `write` and `edit` then say a file's count against it (`[OVER BUDGET: 260/250 lines!]`). Absent: nothing is said of lines. The `vfs` tool keeps its own `budget` argument (default 250) |
-| `rollover_ratio` | what a token written to the provider's cache costs over one read from it (12.5): what `chat --rollover auto` weighs a cold call by (default 12.5) |
+| `rollover_ratio` | what a token written to the provider's cache costs over one read from it: what `chat --rollover auto` weighs a cold call by. Absent (the default): the calls' own cache writes say -- 20 for one-hour writes, 12.5 for five-minute ones or none seen; a number here fixes it whatever they say |
 | `on_turn_end` | a shell command the chat runs when a turn ends (told `GHS_SESSION`, `GHS_TURN_SECONDS`, `GHS_TURN_TOOL_CALLS`, and the last words on stdin); see "A line for a chat started somewhere else" (default none) |
 | `rts_flags` | the repl's RTS flags (default `-c -Fd0.5`) |
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
