@@ -389,7 +389,7 @@ renderFor known bytes project facts = render bytes project (filter keep facts)
 render :: Int -> String -> [Fact] -> T.Text
 render bytes project facts0
   | null facts = T.empty
-  | otherwise = T.pack "<subjects>\nWhat is known by subject, as it stood when this view was last rewritten; in each, the facts most recently confirmed first. A `known:` line in <chat> was learned after this was written, and holds over it.\n"
+  | otherwise = T.pack "<subjects>\nWhat is known by subject, as it stood when this view was last rewritten; in each, the facts most recently confirmed first. Only a `known:` line in <chat> that comes AFTER this block was learned later, and holds over it; the block holds what an older one said.\n"
       <> T.concat [ subject share s | (tier, frac) <- [(t1, 0.45), (t2, 0.40), (t3, 0.15 :: Double)], let share = max 200 (floor (fromIntegral bytes * frac / fromIntegral (max 1 (length tier)))), s <- tier ]
       <> T.pack "</subjects>\n"
   where

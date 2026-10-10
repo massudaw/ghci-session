@@ -79,6 +79,9 @@ def main():
                      view1.startswith("<subjects>") and "## user/rules (1 fact)" in block1 and "session's test tool" in block1 and "cabal test through sh" not in block1
                      and 'bench is called with: ' not in block1 and "<chat>" in view1.split("</subjects>")[1], block1)
 
+        checks.check("the known lines from before the block are not in the view: the block holds them, and its header says only a later one holds over it",
+                     "known:" not in view1.split("</subjects>")[1] and "AFTER this block" in block1, view1[-600:])
+
         run("history", "--kind", "user", "RULE-C: do not commit data files in this project" + pad)
         ok = until(lambda: "No data files" in facts("--subject", "proj/rules"))
         view2 = run("view").stdout

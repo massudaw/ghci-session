@@ -41,7 +41,7 @@ module GhciSession.History
   ( Params (..), defaultParams, Msg (..), Mem, Job (..), Step (..)
   , Loc (..), Src (..), treeTexts
   , openHistory, appendMsg, appendMsgAt, pageText, partTexts, putNode, zoom, dateOf, messages, count
-  , viewParts, renderView, settled, waitChange, changes
+  , viewParts, renderView, renderViewSince, settled, waitChange, changes
   , pending, claim, release, failed, busyCount, failedCount, params
   , capText, msgLine, cutBytes, cutNode, cutMark, byteLength, nodeFits, fitNode, ruler, stripHead, junkLine, systemPrompt, turnPrompt, viewPrompt, compactPrompt, jobPrompt, retryNote
   , Ask (..), askStart, askSeen, askFor
@@ -547,7 +547,13 @@ viewParts mem = readIORef (mView mem)
 
 -- | The view as the model sees it: @<chat>@, one line a part, @id+n|text@ with newlines as spaces, no dates.
 renderView :: Snap -> T.Text
-renderView sn = T.unlines (T.pack "<chat>" : [ partName p <> T.pack "|" <> oneLine (partText sn p) | p <- sView sn ] ++ [T.pack "</chat>"])
+renderView = renderViewSince 0
+
+-- | 'renderView' without the @known@ messages (level-0 lines only) before a message id: what they said is in the
+-- subjects' block written at that id. A summary that merged such lines stays as it is.
+renderViewSince :: Int -> Snap -> T.Text
+renderViewSince at sn = T.unlines (T.pack "<chat>" : [ partName p <> T.pack "|" <> oneLine (partText sn p) | p <- sView sn, not (stale p) ] ++ [T.pack "</chat>"])
+  where stale (l, i) = l == 0 && i < at && maybe False ((== T.pack "known") . mKind) (sMsg sn i)
 
 partName :: (Int, Int) -> T.Text
 partName (l, i) = T.pack (show (i * 2 ^ l) ++ "+" ++ show (2 ^ l :: Int))
@@ -819,6 +825,9 @@ compactionsPart who =
   , "3. Then findings, open questions and " ++ who ++ "'s replies."
   , ""
   , "4. Least of all, tool steps: what was done to what, and the outcome."
+  , ""
+  , "A line that begins with `known:` is a fact the knowledge store keeps by subject, in a block of its"
+  , "own that is rewritten with the view: leave `known:` lines out of what you write."
   , ""
   , "Avoid omissions. Name a minor item in a word or two rather than drop it: an"
   , "absent item can never be found. Copy names, numbers, ids, paths and errors"

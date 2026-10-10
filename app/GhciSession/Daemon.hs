@@ -17,6 +17,7 @@ import Control.Exception (IOException, SomeException, bracket_, displayException
 import Control.Applicative ((<|>))
 import Control.Monad (filterM, foldM, forM, forM_, unless, void, when)
 import Data.Char (isAlphaNum, isDigit, isSpace, isUpper, toLower)
+import Text.Read (readMaybe)
 import Data.IORef
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, nubBy, partition, sort, sortOn, (\\))
 import qualified Data.ByteString as B
@@ -2159,8 +2160,8 @@ histOp s op req = case sHist s of
               go
       sn <- go
       -- (what is known by subject goes before the view: "GhciSession.Know")
-      subjects <- if gKnowledge (sCfg s) then subjectsFor s sn else pure T.empty
-      let r = subjects <> H.renderView sn
+      (subjects, since) <- if gKnowledge (sCfg s) then subjectsFor s sn else pure (T.empty, 0)
+      let r = subjects <> H.renderViewSince since sn
       pure (Right (if lookupBool "json" req == Just True
         then T.pack (encode (JObj [ ("view", JText r), ("settled", JBool (H.settled sn)), ("parts", JNum (fromIntegral (length (H.sView sn)))), ("messages", JNum (fromIntegral (H.sCount sn))) ]))
         else r))
@@ -2193,23 +2194,27 @@ projectOf s = takeFileName (dropTrailing (sRoot s))
 -- | The subjects' block of a view ("GhciSession.Know"). It is written when the view is REWRITTEN -- a batch
 -- merged its lines, so the prompt a provider cached is lost from there anyway -- and read as it was written
 -- while the view only grows: what is learned meanwhile is in the view's own lines (@known@).
-subjectsFor :: S -> H.Snap -> IO T.Text
+subjectsFor :: S -> H.Snap -> IO (T.Text, Int)
 subjectsFor s sn = do
   let file = sDir s </> "history" </> "subjects.txt"
       partsFile = sDir s </> "history" </> "subjects-view.json"
+      atFile = sDir s </> "history" </> "subjects-at"
       parts = H.sView sn
   was <- readFileMaybe partsFile
   let before = [ (round l, round i) | Just t <- [was], Right (JArr ps) <- [parseJson t], JArr [JNum l, JNum i] <- ps ] :: [(Int, Int)]
   old <- if isJust was && before `isPrefixOf` parts then fmap T.pack <$> readFileMaybe file else pure Nothing
   case old of
     -- (one written when nothing was known is not kept: the first facts are worth a prompt read again)
-    Just t | not (T.null t) -> pure t
+    -- (the id the block was written at: a block of an older version has none, and no line is left out for it)
+    Just t | not (T.null t) -> do
+      at <- readFileMaybe atFile
+      pure (t, fromMaybe 0 (at >>= readMaybe . takeWhile isDigit))
     _ -> do
       dir <- K.knowDir
       facts <- either (const []) id <$> (try (K.loadFacts dir) :: IO (Either SomeException [K.Fact]))
       let t = K.renderFor (Mcp.toolArgs agentTools) K.budget (projectOf s) facts
-      void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ]))) :: IO (Either IOException ()))
-      pure t
+      void (try (writeFileUtf8 file (T.unpack t) >> writeFileUtf8 partsFile (encode (JArr [ JArr [JNum (fromIntegral l), JNum (fromIntegral i)] | (l, i) <- parts ])) >> writeFileUtf8 atFile (show (H.sCount sn))) :: IO (Either IOException ()))
+      pure (t, if T.null t then 0 else H.sCount sn)
 
 -- | The tools an agent has: the chat's own, then the others the MCP server has (a name once).
 agentTools :: [Mcp.Tool]

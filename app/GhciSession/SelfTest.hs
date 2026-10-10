@@ -551,6 +551,14 @@ run = do
   eq "history: the view tiles the log, one part a message while nothing can merge" (H.sView sn1) [(0, 0), (0, 1), (0, 2), (0, 3)]
   check "history: an unbuilt line shows the placeholder" (T.isInfixOf (T.pack "2+1|(not summarized yet: zoom it)") (H.renderView sn1))
   check "history: the view is not settled with one" (not (H.settled sn1))
+  (hk, _) <- H.openHistory hp (tmp </> "history-known")
+  forM_ [("tool", "eval 1 + 1"), ("known", "a: rule one"), ("user", "say this"), ("known", "a: rule two")] (\(k, t) -> H.appendMsg hk (T.pack k) (T.pack t))
+  snk <- H.snapshot hk
+  let shown at = [ T.takeWhile (/= '|') l | l <- T.lines (H.renderViewSince at snk), T.any (== '|') l ]
+  eq "history: a known line before the subjects' block's id is left out of the view, one after it and any other kind stays"
+     (H.sView snk, map shown [0, 2, 4]) ([(0, 0), (0, 1), (0, 2), (0, 3)], [map T.pack ["0+1", "1+1", "2+1", "3+1"], map T.pack ["0+1", "2+1", "3+1"], map T.pack ["0+1", "2+1"]])
+  check "history: ... and the plain view leaves nothing out" (H.renderView snk == H.renderViewSince 0 snk)
+  check "history: the compactor is told to leave known lines out" (T.isInfixOf (T.pack "leave `known:` lines out") (H.compactPrompt "Agent"))
   let jobs1 = H.pendingOf hp sn1 Set.empty M.empty 0
   eq "history: the pump compresses the unbuilt message, and merges the pair whose halves are built" (map (\j -> (H.jL j, H.jI j)) jobs1) [(0, 2), (1, 0)]
   check "history: a compress job carries the message whole, and the view's lines before it" (case jobs1 of { (j : _) -> H.jStep j == H.Compress (T.pack ("tool: " ++ T.unpack (T.replicate 40 (T.pack "long ")))) && H.jContext j == [T.pack "0+1|tool: eval 1 + 1", T.pack "1+1|tool: eval 2 * 3"]; _ -> False })

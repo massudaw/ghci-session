@@ -433,6 +433,12 @@ never rewritten. The subjects are `tool/usage` and `tool/config` (true of this t
   provider's cache of the prompt is lost from there anyway) and is the same text in between. What is learned
   meanwhile is a `known` line in the session's history -- `known: user/rules: ... (THIS REPLACES: ...)` -- which a
   turn reads at the view's end.
+- **Known lines expire**: the id the block was written at is kept beside it (`history/subjects-at`), and the view is
+  rendered without the `known` messages before it (level-0 lines only: what they said is in the block, and a replaced
+  rule left in the view next to the block that dropped it made a model answer with the old one). The block's header
+  says only a `known:` line AFTER it holds over it. A summary that already merged `known:` lines is left as it is;
+  the compactor's prompt now tells it to leave them out of what it writes. A block with no recorded id (written by an
+  older version) drops nothing.
 
 ```
 ghci-session knowledge                        # the subjects, and how many facts each holds
