@@ -13,6 +13,8 @@ the facts kept in a directory of the check's own ($GHS_KNOWLEDGE):
   the view             begins with the subjects' block -- what holds, not what was replaced -- and the block is
                        the same text after more is learned: the new fact is a line of the view, not a rewrite.
   forget               a fact is forgotten by its id.
+  folding              a subject past its size: its older facts folded into a few, kept and marked.
+  finding              the facts and the messages that hold given words; the agent's recall tool answers both.
 
 Exit status 0 when all hold. Half a minute.
 """
@@ -29,7 +31,7 @@ def main():
     tuicheck.build()
     d = tempfile.mkdtemp(prefix="ghs-know-")
     know, slog = os.path.join(d, "know"), os.path.join(d, "summarize.log")
-    os.environ.update(GHS_KNOWLEDGE=know, FAKE_SUMMARIZE_LOG=slog)
+    os.environ.update(GHS_KNOWLEDGE=know, FAKE_SUMMARIZE_LOG=slog, GHS_KNOWLEDGE_FOLD="200")
     proj, session = tuicheck.project(d, session=True)
     checks = tuicheck.Checks("check-knowledge")
     run = lambda *a: subprocess.run([CLI] + list(a), cwd=proj, capture_output=True, text=True)
@@ -89,6 +91,24 @@ def main():
         checks.check("a fact is forgotten by its id", r.returncode == 0 and "nothing under" in facts("--subject", "proj/rules") and run("knowledge", "forget", "nosuch").returncode == 1, facts())
         listing = facts()
         checks.check("the subjects and what each holds are listed", "user/rules" in listing and "tool/usage" in listing and "1 replaced" in listing, listing)
+
+        for k in "DEFG":
+            run("history", "--kind", "user", "RULE-%s: another rule of the project" % k + pad)
+            until(lambda: ("Rule %s of the project" % k) in facts("--subject", "proj/rules", "--all"))
+        ok = until(lambda: "Folded: 2 older facts" in facts("--subject", "proj/rules"))
+        cur, everything = facts("--subject", "proj/rules"), facts("--subject", "proj/rules", "--all")
+        checks.check("a subject grown past its size has the half of its facts least recently confirmed folded into a few: they are kept, marked",
+                     ok and "Rule D" not in cur and "Rule E" not in cur and "Rule F" in cur and "Rule G" in cur and "Rule D" in everything and everything.count("replaced by") == 2, (cur, everything))
+
+        found = run("knowledge", "search", "routine", "check").stdout
+        checks.check("the facts that hold given words are found, the one that holds and not the one replaced", "session's test tool" in found and "cabal test through sh" not in found
+                     and "cabal test through sh" in run("knowledge", "search", "routine", "check", "--all").stdout, found)
+        found = run("history", "--search", "commit data files").stdout
+        checks.check("and the messages of the log that hold them, the best first, with where the words are", found.startswith("#") and "user: " in found.splitlines()[0] and "RULE-C" in found.splitlines()[0]
+                     and "known:" not in found, found)
+        r = subprocess.run([CLI, "mcp"], cwd=proj, capture_output=True, text=True, input=json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "recall", "arguments": {"query": "routine check test tool"}}}) + "\n")
+        said = r.stdout
+        checks.check("the recall tool answers both: what is known, and the messages", "known:" in said and "(user/rules) The routine check is run with the session's test tool" in said and "messages:" in said and "RULE-B" in said, said[:600])
         if verbose:
             print(view2)
     finally:

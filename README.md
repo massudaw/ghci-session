@@ -413,7 +413,10 @@ never rewritten. The subjects are `tool/usage` and `tool/config` (true of this t
   way of working that changed without anyone saying so.
 - **Reconciled**: a new fact is set against the nearest that hold (by the words they share), and the model says
   only whether it is new, restates one (which is then confirmed), replaces one (which is kept, marked), or is
-  not worth keeping. With nothing near, it is stored unasked.
+  not worth keeping. Its subject's latest five are always among them (a new "last commit" and the old share no
+  word). With nothing to set it against, it is stored unasked.
+- **Folded**: a subject whose facts pass 6,000 characters has the half least recently confirmed written again
+  as at most five; the folded ones are kept, marked as replaced.
 - **Read** as a block before the view (`<subjects>`, 16 KB, taken from the view's budget): the tool's and the
   user's subjects first (45%), the project's (40%), the others' by last use (15%); in a subject the facts most
   recently confirmed first, cut where its share ends.
@@ -427,15 +430,22 @@ ghci-session knowledge                        # the subjects, and how many facts
 ghci-session knowledge --subject user/rules   # its facts, newest confirmed first, with their ids and sources
 ghci-session knowledge --subject S --all      # the replaced ones too
 ghci-session knowledge --block PROJECT        # the block a session of that project would read
+ghci-session knowledge search WORDS            # the facts that hold the words, the best first
 ghci-session knowledge forget ID
+ghci-session history --search WORDS            # the messages of a session's log that hold them
 ```
+
+An agent has both as one tool, `recall`: the facts known (from every project's sessions) and this session's
+messages that hold given words. Keyword search finds what the view's summaries have dropped: on forty questions
+about details of two real histories, the message that answers was among the ten found for 33, and a model
+reading the view picked the line that covers it for 14 -- and then had five zooms to go. In `top`, `9` is what
+is known, by subject.
 
 They are in `$GHS_KNOWLEDGE`, or `$XDG_STATE_HOME/ghci-session/knowledge` (`~/.local/state/...`): one
 `facts.jsonl`, only appended to, shared by every session of every project. Measured on the same two histories
 with this in place (40 KB of view and the block): 30 of 42 answers current and none outdated, whichever order
-the sessions came in; about one model call more in 26 messages. Not there yet: a subject that outgrows its share
-only cuts its oldest-confirmed facts (they are not folded into summaries), other projects' facts are found by
-`knowledge --subject`, not by a search, and two facts worded with no word in common are not seen as the same.
+the sessions came in; about one model call more in 26 messages. Not there yet: two facts worded with no word in
+common, in different subjects, are not seen as the same (the search is by words, not by meaning).
 `tools/check-knowledge.py` runs it end to end with a stand-in for the model.
 
 ### Two ways in for an agent
@@ -606,6 +616,7 @@ and stale and warning counts, half a second behind. Below, a tab at a time:
 | tab | shows |
 |---|---|
 | `1` history | every request and its answer, a save with its diff, the chat's words. `f` follows the end; `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has; `n`/`p` move the cursor, `Enter` opens or closes the message under it, `a` all of them; `i` writes a line for the session's running chat (Enter sends it, Esc drops it) |
+| `9` known | what is known by subject, across sessions: the tool's and the user's subjects, the project's, the others' |
 | `2` view | the view the model reads, with the memory's numbers: lines, built nodes, settled or not, the compactor's jobs |
 | `3` log | the daemon's log |
 | `4` verdict | the verdict with what is behind it: the compiler's diagnostics, the failing lines, the members and the servers |

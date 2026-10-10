@@ -745,6 +745,8 @@ viewPart who withTools =
   , "Tools:"
   , "- zoom(id, n) opens line id+n into the two lines it was made from;"
   , "- zoom(id, 1) gives message id whole"
+  , "- recall(query) finds the messages, and the known facts, that hold given words:"
+  , "  for a detail (a name, a figure, an error), ask it before walking the view down"
   , "- date(id) gives the date and time of message id" ])
 
 turnsPart :: [String]

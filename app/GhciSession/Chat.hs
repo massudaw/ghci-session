@@ -434,7 +434,7 @@ isRed l = any (`isInfixOf` l) ["ERROR", "FAIL", "HANG", "DEAD"]
 -- the tools ----------------------------------------------------------------------------------
 
 sessionToolNames :: [String]
-sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date", "remember", "restart"]
+sessionToolNames = ["eval", "status", "typecheck", "reload", "test", "doc", "census", "bench", "mem", "zoom", "date", "recall", "remember", "restart"]
 
 -- | The session's tools (as the MCP server defines them, the chat being one session) and the agent's hands on the files.
 chatTools :: [Tool]

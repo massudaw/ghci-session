@@ -36,6 +36,8 @@ module GhciSession.Know
   , knowDir, loadFacts, current, addFact, markBy, markSeen, forget, withLock, newId
   , extractPrompt, parseNew, callArgs, callFact, isCall
   , candidates, reconPrompt, parseDecisions
+  , foldLimit, foldDue, foldPrompt, parseFold
+  , rank, search, snippet
   , render, knownLine, day, budget
   ) where
 
@@ -181,8 +183,8 @@ extractPrompt project date body = T.pack (unlines
   [ "You maintain a knowledge base built from the log of an engineer's sessions with a coding agent that works through a tool called ghci-session. You are given a piece of the log of one project (messages, or one-line summaries of runs of messages), with its date."
   , "Extract the DURABLE knowledge in it: what would change how someone acts weeks later. A decision, a standing rule from the user, how a tool or setting is to be used, a result figure, a cause found. NOT the steps taken, transient errors, what was merely tried, or a state that the next hour changes. Most pieces hold nothing: then the list is empty. At most 3 facts a piece, the most consequential."
   , "Each fact has a SCOPE, decided strictly:"
-  , "  \"tool\"    true of ghci-session itself for ANY project: what a tool call or a setting does, a limit, a behaviour. It must not depend on this project's files or modules; if it names them, it is not tool scope."
-  , "  \"user\"    how this user wants work done on ANY project (process, what never to do)."
+  , "  \"tool\"    true of ghci-session itself for ANY project: what a tool call or a ghci-session.json setting does (tool scope even when this project is where it was learned), a limit, a behaviour. It must not depend on this project's files or modules; if it names them, it is not tool scope."
+  , "  \"user\"    how this user wants work done on ANY project (process, what never to do). A rule that names this project's branch, files, formats or targets is project scope; when in doubt, project."
   , "  \"project\" everything else: this project's design, figures, tests, status, and the user's rules for this project only."
   , "a SUBJECT: tool/usage or tool/config for tool scope; user/rules for user scope; for project scope one of architecture, performance, testing, status, rules."
   , "and a TOPIC: three to six words naming WHAT the fact is about, the same words whenever the same thing is spoken of (\"optimised loading setting\", \"routine check command\")."
@@ -242,8 +244,12 @@ toks = S.fromList . filter (\w -> T.length w >= 3 && w `S.notMember` stop) . T.s
 -- | The facts that hold nearest a new one, by the words they share (a topic's count twice): the ones a model
 -- is asked about. At most ten; none when nothing is near.
 candidates :: [Fact] -> New -> [Fact]
-candidates facts n = map snd (take 10 (sortBy (comparing (Down . fst)) [ (s, f) | f <- facts, let s = score f, s >= 3 ]))
+candidates facts n = nubBy' (near ++ recent)
   where
+    near = map snd (take 10 (sortBy (comparing (Down . fst)) [ (s, f) | f <- facts, let s = score f, s >= 3 ]))
+    -- (and its subject's latest: "the last commit is X" and "committed as Y" share no word, and one replaces the other)
+    recent = take 5 (sortBy (comparing (Down . fLast)) [ f | f <- facts, fSubject f == nSubject n, isCall (fTopic f) == Nothing ])
+    nubBy' = foldr (\f r -> f : filter ((/= fId f) . fId) r) []
     tn = toks (nTopic n <> T.pack " " <> nText n)
     tt = toks (nTopic n)
     score f = S.size (S.intersection tn (toks (fTopic f <> T.pack " " <> fText f))) + 2 * S.size (S.intersection tt (toks (fTopic f)))
@@ -258,6 +264,7 @@ reconPrompt existing news = T.pack (unlines
   , "  \"same\"     it restates the EXISTING fact(s) named in \"ids\" and adds nothing (the existing one is confirmed)"
   , "  \"replace\"  it updates or contradicts the EXISTING fact(s) named in \"ids\": the new one is what holds now (also the same fact with a newer figure)"
   , "  \"drop\"     it is not durable knowledge: a step, a moment's state, a detail nobody will need"
+  , "A newer statement of the same changing thing -- the last commit, what passes now, the current figure, what is left to do -- REPLACES the older one."
   , "Reply with JSON only, on ONE line, no code fence: {\"decisions\": [{\"n\": 1, \"action\": \"...\", \"ids\": [...]}]} with one decision for every NEW fact."
   , "<chat>"
   , "EXISTING:" ])
@@ -288,6 +295,60 @@ parseDecisions n existing out = [ M.findWithDefault Add k said | k <- [1 .. n] ]
       "drop" -> Drop
       _ -> Add
 
+-- folding --------------------------------------------------------------------------------------
+
+-- | The bytes of a subject's facts past which its older half is folded.
+foldLimit :: Int
+foldLimit = 6000
+
+-- | A subject that holds more than the limit, with the half of its facts least recently confirmed: these are
+-- to be folded into a few. (What a tool is called with is not counted or folded: it is a line a tool.)
+foldDue :: Int -> [Fact] -> Maybe (T.Text, [Fact])
+foldDue limit facts = case [ (s, fs) | (s, fs) <- M.toList by, sum (map (T.length . fText) fs) > limit, length fs >= 4 ] of
+  ((s, fs) : _) -> Just (s, take (length fs `div` 2) (sortBy (comparing fLast) fs))
+  [] -> Nothing
+  where by = M.fromListWith (flip (++)) [ (fSubject f, [f]) | f <- current facts, isCall (fTopic f) == Nothing ]
+
+-- | The prompt that asks for a subject's older facts as a few.
+foldPrompt :: T.Text -> [Fact] -> T.Text
+foldPrompt subject fs = T.pack (unlines
+  [ "You keep a knowledge base of facts. Below are the older facts of one subject, oldest first. They are to be FOLDED: written again as at most 5 facts that keep what someone would still act on -- rules, settings, decisions, final figures, causes -- and drop what later facts made moot (an earlier figure, a step, a state long past)."
+  , "Each is ONE self-contained present-tense sentence with exact names, settings and figures. Do not invent; do not merge unrelated things into one sentence."
+  , "Reply with JSON only, on ONE line, no code fence: {\"facts\": [\"...\", \"...\"]}"
+  , "<chat>"
+  , "subject: " ++ T.unpack subject ])
+  <> T.unlines [ T.pack ("[" ++ day (fFirst f) ++ "] ") <> fText f | f <- sortBy (comparing fFirst) fs ]
+  <> T.pack "</chat>\nThe JSON, on one line:\n"
+
+parseFold :: T.Text -> [T.Text]
+parseFold out = take 5 [ T.strip t | Just j <- [jsonIn out], JText t <- lookupArr "facts" j, not (T.null (T.strip t)) ]
+
+-- finding --------------------------------------------------------------------------------------
+
+-- | Texts by how well they hold a query's words -- a rare word counts for more, a word said again for a little
+-- more -- the best first; a text with none of them is left out.
+rank :: T.Text -> [(a, T.Text)] -> [(Double, a)]
+rank q docs = sortBy (comparing (Down . fst)) [ (s, a) | ((a, _), c) <- zip docs counts, let s = score c, s > 0 ]
+  where
+    qs = S.toList (toks q)
+    counts = [ M.fromListWith (+) [ (w, 1 :: Int) | w <- wordsOf t, w `elem` qs ] | (_, t) <- docs ]
+    n = fromIntegral (length docs) :: Double
+    df = M.fromListWith (+) [ (w, 1 :: Double) | c <- counts, w <- M.keys c ]
+    score c = sum [ log (1 + (n - d + 0.5) / (d + 0.5)) * (k * 2.2 / (k + 1.2)) | (w, k0) <- M.toList c, let k = fromIntegral k0, Just d <- [M.lookup w df] ]
+    wordsOf = filter (not . T.null) . T.split (\c -> not (isAlphaNum c || c == '_')) . T.toLower
+
+-- | The facts that hold a query's words, the best first.
+search :: T.Text -> [Fact] -> [Fact]
+search q fs = map snd (rank q [ (f, fSubject f <> T.pack " " <> fTopic f <> T.pack " " <> fText f) | f <- fs ])
+
+-- | A text around the first of a query's words in it, on one line.
+snippet :: Int -> T.Text -> T.Text -> T.Text
+snippet width q t =
+  let low = T.toLower t
+      at = minimum (T.length t : [ T.length a | w <- S.toList (toks q), let (a, b) = T.breakOn w low, not (T.null b) ])
+      from = max 0 (at - width `div` 4)
+  in (if from > 0 then T.pack "..." else T.empty) <> T.map (\c -> if c == '\n' || c == '\r' then ' ' else c) (T.take width (T.drop from t)) <> (if T.length t > from + width then T.pack "..." else T.empty)
+
 -- reading --------------------------------------------------------------------------------------
 
 -- | What a new fact is in the session's history: its subject and sentence, and what it replaces.
@@ -317,7 +378,7 @@ render bytes project facts0
       let fs = by M.! s
           ls = map snd (sortBy (comparing (Down . fst)) (plain fs ++ calls fs))
           (kept, more) = fit share ls
-      in T.pack "## " <> s <> T.pack (" (" ++ show (length fs) ++ " facts)\n") <> T.unlines kept <> (if more then T.pack "  (more: ghci-session knowledge --subject " <> s <> T.pack ")\n" else T.empty)
+      in T.pack "## " <> s <> T.pack (" (" ++ show (length fs) ++ " facts)\n") <> T.unlines kept <> (if more then T.pack "  (more: recall, or ghci-session knowledge --subject " <> s <> T.pack ")\n" else T.empty)
     plain fs = [ (fLast f, T.pack ("- [" ++ day (fFirst f) ++ (if day (fLast f) /= day (fFirst f) then ", confirmed " ++ day (fLast f) else "") ++ "] ") <> fText f)
                | f <- fs, isCall (fTopic f) == Nothing ]
     -- (what a tool was called with, a tool a line: the arguments, the newest first, and the newest's call)

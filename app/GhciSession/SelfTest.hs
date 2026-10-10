@@ -366,9 +366,21 @@ run = do
   let many = [ kFact (show k) "tool/usage" "t" (replicate 100 'x' ++ show k) (fromIntegral k) (fromIntegral k) | k <- [1 .. 60 :: Int] ]
       cutBlock = K.render 2000 "dxf" many
   eq "know: a subject is cut at its share, the most recently confirmed kept, and says there is more"
-     (T.pack (replicate 100 'x' ++ "60") `T.isInfixOf` cutBlock, T.pack (replicate 100 'x' ++ "1\n") `T.isInfixOf` cutBlock, T.pack "(more: ghci-session knowledge --subject tool/usage)" `T.isInfixOf` cutBlock, T.length cutBlock < 1400)
+     (T.pack (replicate 100 'x' ++ "60") `T.isInfixOf` cutBlock, T.pack (replicate 100 'x' ++ "1\n") `T.isInfixOf` cutBlock, T.pack "(more: recall, or ghci-session knowledge --subject tool/usage)" `T.isInfixOf` cutBlock, T.length cutBlock < 1400)
      (True, False, True, True)
   eq "know: nothing known, no block" (K.render 4000 "dxf" []) T.empty
+  let status = [ kFact (show k) "dxf/status" "last commit" ("The last commit is c" ++ show k ++ ".") (fromIntegral k) (fromIntegral k) | k <- [1 .. 8 :: Int] ]
+  eq "know: a new fact is also set against its subject's latest five, whatever words they share"
+     (map K.fId (K.candidates (held ++ status) (kNew "dxf/status" "work pushed" "Everything was pushed today."))) ["8", "7", "6", "5", "4"]
+  eq "know: a subject past its size gives up the half of its facts least recently confirmed; one under it, or of a tool's calls, gives none"
+     (fmap (\(s', fs) -> (T.unpack s', map K.fId fs)) (K.foldDue 100 (held ++ status)), K.foldDue 100000 (held ++ status), K.foldDue 10 [ kFact (show k) "tool/usage" "bench call argument x" "The bench tool is called ..." 1 1 | k <- [1 .. 9 :: Int] ])
+     (Just ("dxf/status", ["1", "2", "3", "4"]), Nothing, Nothing)
+  eq "know: the folded facts of an answer, five at most" (K.parseFold (T.pack "```\n{\"facts\": [\"A.\", \" B. \", \"\", \"C.\", \"D.\", \"E.\", \"F.\"]}")) (map T.pack ["A.", "B.", "C.", "D.", "E."])
+  eq "know: texts are ranked by a query's words, a rare word above a common one; a text with none is left out"
+     (map snd (K.rank (T.pack "polyline parse") [ (1 :: Int, T.pack "parse the header"), (2, T.pack "parse a POLYLINE in R12 order"), (3, T.pack "nothing of it"), (4, T.pack "parse the tables") ])) [2, 1, 4]
+  eq "know: the facts that hold given words" (map K.fId (K.search (T.pack "optimised loading") held)) ["c"]
+  eq "know: a snippet is the text around the first of the words, on one line"
+     (T.unpack (K.snippet 30 (T.pack "needle") (T.pack (replicate 50 'a' ++ "\nthe needle is here " ++ replicate 50 'b')))) "...aa the needle is here bbbbbbbb..."
   eq "know: a line of the history says what a new fact replaces"
      (T.unpack (K.knownLine (kNew "user/rules" "t" "Use the test tool.") [head held]))
      "user/rules: Use the test tool. (THIS REPLACES: The routine check is run with cabal test through sh.)"

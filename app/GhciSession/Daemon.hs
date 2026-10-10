@@ -2088,7 +2088,7 @@ histEvent s what act = do
   verdictLine s >>= histAdd s "echo"
 
 histOps :: [String]
-histOps = ["history", "zoom", "date", "view", "log", "pending", "tree_put", "memory"]
+histOps = ["history", "zoom", "date", "view", "log", "pending", "tree_put", "memory", "recall"]
 
 -- | The history's own operations: answered from the daemon's memory, with the repl untouched.
 histOp :: S -> String -> Json -> IO (Either String T.Text)
@@ -2115,6 +2115,16 @@ histOp s op req = case sHist s of
                 body = if full then H.mText x else let l1 = T.takeWhile (/= '\n') (H.mText x) in (if T.length l1 > 160 then T.take 160 l1 <> T.pack "..." else l1) <> (if T.any (== '\n') (H.mText x) then T.pack " ..." else T.empty)
             pure (T.pack ("#" ++ show (H.mId x) ++ " " ++ d ++ " " ++ T.unpack (H.mKind x) ++ ": ") <> body)
           pure (Right (T.intercalate (T.pack "\n") ls <> (if null ms then T.pack ("no messages" ++ (if n > 0 then " from #" ++ show from else "")) else T.empty)))
+    -- the messages that hold a query's words, the best first ("GhciSession.Know": 'K.rank')
+    "recall" -> do
+      n <- H.count m
+      ms <- H.messages m 0 n
+      let q = fromMaybe T.empty (lookupText "query" req)
+          hits = take (maybe 8 round (lookupNum "n" req)) (K.rank q [ (x, H.mKind x <> T.pack ": " <> H.mText x) | x <- ms, H.mKind x /= T.pack "known" ])
+      ls <- forM hits $ \(_, x) -> do
+        d <- stamp (H.mDate x)
+        pure (T.pack ("#" ++ show (H.mId x) ++ " " ++ d ++ " " ++ T.unpack (H.mKind x) ++ ": ") <> K.snippet 240 q (H.mText x))
+      pure (Right (if null ls then T.pack "no message holds those words" else T.intercalate (T.pack "\n") ls))
     "zoom" -> fmap T.stripEnd <$> H.zoom m (maybe (-1) round (lookupNum "id" req)) (maybe 0 round (lookupNum "n" req))
     "date" -> do
       d <- H.dateOf m (maybe (-1) round (lookupNum "id" req))
@@ -2241,8 +2251,25 @@ knowLoop s m cmd = do
                   K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing)
                   forM_ replaced (\f -> K.markBy dir (K.fId f) i)
                 if recent then histAdd s "known" (K.knownLine n replaced) else behind =: True
+            fold
             logS s (printf "knowledge: %d fact(s): %s" (length news) (unwords [ case d of { K.Add -> "new"; K.Same _ -> "said-again"; K.Replace _ -> "replaces"; K.Drop -> "dropped" } | d <- decs ]))
             pure True
+      -- a subject grown past its size: the half of its facts least recently confirmed, written again as a few
+      -- (the folded ones are kept, marked as replaced by the first of them)
+      fold = do
+        limit <- maybe K.foldLimit (\v -> case reads v of { [(k, "")] -> k; _ -> K.foldLimit }) <$> lookupEnv "GHS_KNOWLEDGE_FOLD"
+        facts <- K.loadFacts dir
+        forM_ (K.foldDue limit facts) $ \(subject, old) -> do
+          out <- ask (K.foldPrompt subject old)
+          forM_ out $ \o -> case K.parseFold o of
+            [] -> logS s ("knowledge: " ++ T.unpack subject ++ " was not folded (no facts in the answer)")
+            texts -> do
+              ids <- mapM (const K.newId) texts
+              K.withLock dir $ do
+                forM_ (zip3 [0 :: Int ..] ids texts) $ \(k, i, t) ->
+                  K.addFact dir (K.Fact (i ++ "-f" ++ show k) subject (T.pack "folded from older facts") t (minimum (map K.fFirst old)) (maximum (map K.fLast old)) (sName s ++ ":fold") (if k == 0 then map K.fId old else []) Nothing)
+                forM_ old (\f -> K.markBy dir (K.fId f) (head ids ++ "-f0"))
+              logS s (printf "knowledge: %s: %d older fact(s) folded into %d" (T.unpack subject) (length old) (length texts))
       piece recent date sr body = do
         out <- ask (K.extractPrompt project date body)
         case out of

@@ -358,6 +358,11 @@ cmdKnowledge a = do
   dir <- K.knowDir
   facts <- K.loadFacts dir
   case (pos a 0, pos a 1) of
+    (Just "search", Just _) -> do
+      let found = take (maybe 10 read (opt a ["-n"])) (K.search (T.pack (unwords (drop 1 (aPos a)))) ((if flag a ["--all"] then id else K.current) facts))
+      forM_ found $ \f -> TIO.putStrLn (T.pack (K.fId f ++ "  [" ++ K.day (K.fFirst f) ++ "] (") <> K.fSubject f <> T.pack ") " <> K.fText f <> T.pack (maybe "" ("  -- replaced by " ++) (K.fBy f)))
+      when (null found) (putStrLn "no fact holds those words")
+      pure 0
     (Just "forget", Just i)
       | any ((== i) . K.fId) facts -> K.withLock dir (K.forget dir i) >> putStrLn ("forgotten: " ++ i) >> pure 0
       | otherwise -> hPutStrLn stderr ("knowledge: no fact " ++ i) >> pure 1
@@ -579,13 +584,14 @@ usage = unlines
   , "  eval EXPR [-s SESSION] [--timeout SECS]"
   , "  search QUERY [-s SESSION] [--files] [-n N] [--json]   high-speed SIMD search across code or files (FFF engine), with session metadata"
   , "  history [-n N] [--since ID] [--full] [--json]   the session's log: every request and verdict, a save and what it compiled to"
+  , "  history --search WORDS [-n N]      the messages that hold the words, the best first"
   , "  history --kind user|talk|note TEXT  add to it (a harness logs the user's words and the agent's replies)"
   , "  view [--wait SECS] [--json]        the whole history as the one-line summaries a model reads; zoom ID N opens a line, date ID says when"
   , "  mcp                                serve the session's operations and its memory to an agent (MCP on stdin/stdout): claude mcp add ghci -- ghci-session mcp"
   , "  top [SESSION]                      watch the session: its verdict, memory and servers, the history as it is written, the view, the daemon's log, the model calls' cost"
   , "  chat [-s SESSION] [--once MSG] [--instructions FILE] [--usage]   the endless chat: an agent on the session, remembering through its history (DEEPSEEK_API_KEY)"
   , "  summarize                          the compactor for \"summarize_cmd\": one summary line from the prompt on stdin (\"summarize_cmd\": \"ghci-session summarize\")"
-  , "  knowledge [--subject S] [--all] [--block PROJECT] | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
+  , "  knowledge [--subject S] [--all] [--block PROJECT] | knowledge search WORDS | knowledge forget ID   what the sessions established, by subject (\"knowledge\": true in ghci-session.json keeps it)"
   , "  usage [SESSION] [--since DAYS] [--json]   what the model calls cost -- the chat's and the compactor's -- by who asked and by day; in money with \"prices\" in ghci-session.json"
   , "  census [EXPR | --strings | --kept] [--top N] [-s SESSION]   what the heap holds: every CAF by size, the Strings, the kept values, or one value alone"
   , "  census --dups [EXPR | --kept] [--top N]                      sharing that is missed: values built more than once, the bytes sharing would give back, who holds the copies"
@@ -618,7 +624,7 @@ cliMain = do
     (c : rest) -> do
       root <- maybe (findRoot Nothing) (pure . Right) rootOpt >>= either (\e -> die' ("ghci-session: " ++ e)) pure
       conf <- loadConf root >>= either (\e -> die' ("ghci-session: " ++ e)) pure
-      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--subject", "--block", "--claude", "--codex", "--opt", "--unit", "--runs"] rest
+      let a = parseArgs ["-s", "-t", "--session", "-m", "--member", "--timeout", "-n", "--days", "--max-mem-mb", "--idle-mins", "--add", "--remove", "--top", "--only", "--drop", "--since", "--wait", "--kind", "--subject", "--block", "--search", "--claude", "--codex", "--opt", "--unit", "--runs"] rest
           -- `gc -n` and `autostop -n` are flags, `log -n 40` takes a value
           aNoN = parseArgs ["--days", "--max-mem-mb", "--idle-mins"] rest
       case c of
@@ -711,6 +717,7 @@ cliMain = do
           case (opt a ["--kind"], aPos a) of
             (Just k, ws) | not (null ws) -> request conf name (JObj [("op", JStr "log"), ("kind", JStr k), ("text", JStr (unwords ws))]) >>= say
             (Just _, []) -> die' "history --kind KIND TEXT: the text is needed"
+            _ | Just q <- opt a ["--search"] -> request conf name (JObj ([ ("op", JStr "recall"), ("query", JStr (unwords (q : aPos a))) ] ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]))) >>= say
             _ -> request conf name (JObj ([ ("op", JStr "history"), ("json", JBool (flag a ["--json"])), ("full", JBool (flag a ["--full"])) ]
                                            ++ maybe [] (\k -> [("n", JNum (read k))]) (opt a ["-n"]) ++ maybe [] (\k -> [("since", JNum (read k))]) (opt a ["--since"]))) >>= say
         "view" -> do

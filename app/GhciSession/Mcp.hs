@@ -25,6 +25,7 @@ import System.IO
 import System.Posix.IO (fdToHandle)
 
 import GhciSession.Config
+import qualified GhciSession.Know as K
 import GhciSession.Json
 import GhciSession.Sys
 import qualified GhciSession.Vfs as Vfs
@@ -158,6 +159,7 @@ tools =
   , Tool "zoom" "Open the line id+n of the view into the two lines of n/2 under it; n = 1 gives the message whole." [("id", ("number", "the line's first message")), ("n", ("number", "how many messages it covers")), sessionArg] ["id", "n"]
   , Tool "date" "The date and time of message id." [("id", ("number", "the message")), sessionArg] ["id"]
   , Tool "history" "The last messages of the log, word for word: every request and verdict." [("n", ("number", "how many (default 40)")), ("since", ("number", "from this message id")), sessionArg] []
+  , Tool "recall" "Find by words: the facts known by subject (from every project's sessions) and the messages of this session's log that hold them, best first. For a detail -- a name, a figure, an error, what was decided -- ask this before walking the view down; zoom id 1 then gives a message found whole." [("query", ("string", "the words to look for")), ("n", ("number", "how many of each (default 8)")), sessionArg] ["query"]
   , Tool "remember" "Keep a finding in the session's memory for later turns, as your own words: what you learned, decided or left undone." [("text", ("string", "the finding")), sessionArg] ["text"]
   , Tool "vfs" "Virtual File System & Line Budget inspector. Inspect line counts, byte sizes, budget compliance (<250 lines), and git status for files loaded by the session or matching a path." [("path", ("string", "optional path or pattern filter (e.g. 'src', or empty for all loaded files)")), ("budget", ("number", "line budget threshold to check against (default 250)")), sessionArg] []
   , Tool "restart" "Restart the GHCi session daemon cold. Re-runs cabal repl and reloads the project from scratch. Use this if the session is wedged, crashed, or after fundamental build-configuration changes." [("fast", ("boolean", "skip build tool check and restart immediately (default false)")), sessionArg] []
@@ -258,6 +260,15 @@ callReach conf name args = do
         "zoom" -> go "zoom" (num "id" ++ num "n") >>= say
         "date" -> go "date" (num "id") >>= say
         "history" -> go "history" (num "n" ++ num "since" ++ [("full", JBool True)]) >>= say
+        "recall" -> do
+          let q = T.pack (fromMaybe "" (s "query"))
+              k = maybe 8 round (n "n") :: Int
+          facts <- either (const []) id <$> (try (K.knowDir >>= K.loadFacts) :: IO (Either SomeException [K.Fact]))
+          let found = take k (K.search q (K.current facts))
+              known = [ T.pack "known:" | not (null found) ] ++ [ T.pack ("- [" ++ K.day (K.fFirst f) ++ "] (") <> K.fSubject f <> T.pack ") " <> K.fText f | f <- found ]
+          r <- go "recall" ([("query", JText q)] ++ num "n")
+          (ok, out, reach) <- say r
+          pure (ok || not (null found), T.intercalate (T.pack "\n") (known ++ [ T.pack "messages:" | ok ] ++ [out]), reach)
         "remember" -> go "log" [("kind", JStr "talk"), ("text", JStr (fromMaybe "" (s "text")))] >>= say
         "vfs" -> do
           let mPath = s "path"

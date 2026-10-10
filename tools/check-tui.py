@@ -19,7 +19,7 @@ that terminal holds is checked at each step -- its text, where the cursor is, th
 About twenty seconds (the scripts wait for what a screen shows, not for a time). -v: every screen (they are kept in a file when a check fails); --keep: the project
 is left (its path is said). Exit status 0 when all hold. tools/check-images.py is the same for the pictures a chat draws.
 """
-import os, shutil, subprocess, sys, tempfile
+import json, os, shutil, subprocess, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tuicheck
@@ -138,6 +138,9 @@ mark usage
 type 6
 until resident memory
 mark heap
+type 9
+until facts hold
+mark known
 type 1
 type g
 until scrolled: f to follow
@@ -292,6 +295,9 @@ def check_top(check, rec):
     check("top: 5 is what the model calls cost", lit(s, "5 usage") and s.has("calls") and s.has("demo chat") and s.has("total"), s.lines[3:6])
     s = at["heap"]
     check("top: 6 is the memory over time", lit(s, "6 heap") and s.lines[3].strip().startswith("resident memory  repl ") and s.has("█"), s.lines[3:5])
+    s = at["known"]
+    check("top: 9 is what is known by subject: the tool's and the user's first, then the project's", lit(s, "9 known") and "2 facts hold, 1 replaced" in s.lines[3] and s.has("## user/rules (1 facts)")
+          and s.has("Use the test tool for the routine check.") and s.has("## proj/rules (1 facts)") and not s.has("Run cabal test."), s.lines[3:10])
     s = at["first"]
     check("top: g goes to the history's start, and the tabs' line says it no longer follows", s.lines[3].startswith("#0 ") and "tool: start demo" in s.lines[3] and "scrolled" in tabs(s), (s.lines[3], tabs(s)))
     s = at["cursor"]
@@ -334,7 +340,14 @@ def main():
     d = tempfile.mkdtemp(prefix="ghs-tui-")
     proj, session = tuicheck.project(d, session=True)
     fake, env, unset = tuicheck.fake_llm(PORT)
-    env = dict(env, TERM="xterm-256color", SHELL="/bin/sh", PS1="$ ")
+    # (what is known is read from a directory of the check's own, not the person's)
+    know = os.path.join(d, "know")
+    os.makedirs(know)
+    with open(os.path.join(know, "facts.jsonl"), "w") as f:
+        for i, sub, text in (("a", "user/rules", "Run cabal test."), ("b", "user/rules", "Use the test tool for the routine check."), ("c", "proj/rules", "No data files are committed.")):
+            f.write(json.dumps({"id": i, "subject": sub, "topic": "t", "fact": text, "first": 1e9, "last": 1e9, "src": "proj/demo:1+1", "replaces": []}) + "\n")
+        f.write(json.dumps({"mark": "by", "id": "a", "by": "b"}) + "\n")
+    env = dict(env, TERM="xterm-256color", SHELL="/bin/sh", PS1="$ ", GHS_KNOWLEDGE=know)
     checks = tuicheck.Checks("check-tui")
     seen = ""
     try:

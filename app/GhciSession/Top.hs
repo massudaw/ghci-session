@@ -24,10 +24,11 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.Char (isDigit)
 import Data.IORef
-import Data.List (intercalate, isInfixOf, isPrefixOf)
+import Data.List (dropWhileEnd, intercalate, isInfixOf, isPrefixOf)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
 import qualified GhciSession.Inbox as Inbox
+import qualified GhciSession.Know as K
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -36,7 +37,7 @@ import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import System.Directory (doesFileExist, getFileSize)
 import System.Environment (getExecutablePath, lookupEnv)
 import System.Exit (exitWith, ExitCode (..))
-import System.FilePath (takeDirectory, (</>))
+import System.FilePath (takeDirectory, takeFileName, (</>))
 import System.IO
 import Text.Printf (printf)
 
@@ -88,11 +89,11 @@ stHi = inverse plain
 
 -- the state ----------------------------------------------------------------------------
 
-data Tab = THistory | TView | TLog | TVerdict | TUsage | THeap | TChat | TShell
+data Tab = THistory | TView | TLog | TVerdict | TUsage | THeap | TChat | TShell | TKnow
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 tabName :: Tab -> String
-tabName t = case t of { THistory -> "1 history"; TView -> "2 view"; TLog -> "3 log"; TVerdict -> "4 verdict"; TUsage -> "5 usage"; THeap -> "6 heap"; TChat -> "7 chat"; TShell -> "8 shell" }
+tabName t = case t of { THistory -> "1 history"; TView -> "2 view"; TLog -> "3 log"; TVerdict -> "4 verdict"; TUsage -> "5 usage"; THeap -> "6 heap"; TChat -> "7 chat"; TShell -> "8 shell"; TKnow -> "9 known" }
 
 isPane :: Tab -> Bool
 isPane t = t == TChat || t == TShell
@@ -122,6 +123,7 @@ data St = St
   , sHeapBusy :: Maybe String         -- ^ a report being taken: which
   , sWake :: IO ()                    -- ^ what a pane calls when it has something to show
   , sInput :: Maybe String            -- ^ a line being written for the session's chat
+  , sKnow :: [String], sKnowAt :: Double   -- ^ what is known by subject ("GhciSession.Know"), and when it was read
   , sLaid :: M.Map Int (Int, Bool, [[Span]])  -- ^ the history's messages laid out: for which width, open or cut, the lines
   }
 
@@ -140,7 +142,7 @@ topMain conf mname = do
   let dir = cStateDir conf </> name
   heapBox <- newIORef Nothing
   let env = Env conf name dir heapBox
-      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) Nothing M.empty
+      st0 = St THistory M.empty (M.fromList [ (t, t /= THeap && t /= TKnow) | t <- [minBound ..] ]) (JObj []) Nothing [] [] 0 [] (JObj []) 0 [] 0 "" (80, 24) M.empty vtErr False S.empty False Nothing [] Nothing Nothing (pure ()) Nothing [] 0 M.empty
   stEnd <- runApp App { appTick = 0.5, appDraw = draw name, appEvent = event env } (\ev -> refresh env st0 { sWake = wake ev })
   mapM_ paneHangup (M.elems (sPanes stEnd))
 
@@ -227,7 +229,7 @@ key env kp@(KeyPress k _ bytes) st
   where
     ctrlA = bytes == BC.pack "\SOH"
     st' = st { sPrefix = False }
-    tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', THeap), ('m', THeap), ('7', TChat), ('c', TChat), ('8', TShell), ('s', TShell)]
+    tabKeys = [('1', THistory), ('h', THistory), ('2', TView), ('v', TView), ('3', TLog), ('l', TLog), ('4', TVerdict), ('d', TVerdict), ('5', TUsage), ('u', TUsage), ('6', THeap), ('m', THeap), ('7', TChat), ('c', TChat), ('8', TShell), ('s', TShell), ('9', TKnow)]
     heapKeys = [('M', "mem"), ('C', "cafs"), ('S', "strings"), ('K', "kept"), ('D', "dups")]
     -- a report of the heap, on a thread (a major collection and a walk of the heap: a second or more, the
     -- session paused); the screen is woken when it is in
@@ -326,11 +328,18 @@ refresh env st = do
       rows <- usageRows (eConf env) [eName env] 0
       pure (if null rows then ["  no model calls recorded (the chat and the compactor write usage.jsonl)"] else usageTable (eConf env) rows, t)
     else pure (sUsage st, sUsageAt st)
+  (know, knowAt) <- if sTab st == TKnow && t - sKnowAt st >= 3
+    then do
+      facts <- either (const []) id <$> (try (K.knowDir >>= K.loadFacts) :: IO (Either SomeException [K.Fact]))
+      let block = K.render maxBound (takeFileName (dropWhileEnd (== '/') (cRoot (eConf env)))) facts
+      pure (if null facts then ["  nothing is known yet (\"knowledge\": true in ghci-session.json keeps what the sessions establish, by subject)"]
+            else (" " ++ show (length (K.current facts)) ++ " facts hold, " ++ show (length facts - length (K.current facts)) ++ " replaced") : "" : [ l | l <- lines (T.unpack block), not ("<" `isPrefixOf` l), not ("What is known" `isPrefixOf` l) ], t)
+    else pure (sKnow st, sKnowAt st)
   let memHist = case info of
         Just i | Just r <- lookupNum "repl_mb" i -> take 2400 ((t, round r, maybe 0 round (lookupNum "servers_mb" i)) : sMemHist st)
         _ -> sMemHist st
   takeHeap env st { sSize = size, sStatus = status, sInfo = info, sHist = hist, sLog = logLines, sLogSize = logSize
-                  , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt, sMemHist = memHist }
+                  , sView = view, sMem = mem, sViewAt = viewAt, sUsage = usage, sUsageAt = usageAt, sMemHist = memHist, sKnow = know, sKnowAt = knowAt }
   where
     answer op args = do
       r <- try (Mcp.request (eConf env) (eName env) (JObj (("op", JStr op) : args))) :: IO (Either SomeException Json)
@@ -418,10 +427,10 @@ verdictStyle v
 bottom :: St -> [Span]
 bottom st
   | Just t <- sInput st, not (isPane (sTab st)) = [ (stYellow, " to the chat> "), (plain, t), (stHi, " "), (stDim, "   Enter sends  Esc drops it  "), (stYellow, sNote st) ]
-  | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-8 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
-  | sTab st == THistory = [ (stDim, " q quit  1-8 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  i write to the chat  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
-  | sTab st == THeap = [ (stDim, " q quit  1-8 tabs  j/k scroll  M the heap's figures  C CAFs  S strings  K kept  D dups  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
-  | otherwise = [ (stDim, " q quit  1-8 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | isPane (sTab st) = [ (stDim, " Ctrl-a then: 1-9 tabs  q quit  a sends Ctrl-a   "), (stYellow, sNote st) ]
+  | sTab st == THistory = [ (stDim, " q quit  1-9 tabs  j/k g/G scroll  f follow  n/p message  Enter open/close  a all  i write to the chat  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | sTab st == THeap = [ (stDim, " q quit  1-9 tabs  j/k scroll  M the heap's figures  C CAFs  S strings  K kept  D dups  R reload  T test  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
+  | otherwise = [ (stDim, " q quit  1-9 tabs  j/k PgUp/PgDn g/G scroll  f follow  R reload  T test  r look now  "), (stYellow, sNote st ++ maybe "" ("  panes: " ++) (sVtErr st)) ]
 
 -- | The current tab's lines, from where it is scrolled.
 panelLines :: Int -> St -> [[Span]]
@@ -434,6 +443,7 @@ panelLines w st = drop off ls
       TVerdict -> verdictLines w (sStatus st)
       TUsage -> [ [(plain, l)] | l <- sUsage st ]
       THeap -> heapLines w st
+      TKnow -> concat [ wrapSpans w 4 [(if "## " `isPrefixOf` l then stBold else plain, l)] | l <- sKnow st ]
       _ -> [ [(stRed, "no panes: " ++ fromMaybe "?" (sVtErr st))], [], [(plain, "libghostty-vt is Ghostty's terminal emulation as a C library: tools/libghostty-vt.sh builds it into .bin/,")], [(plain, "or put a libghostty-vt.so of your own beside ghci-session, or name one in GHS_LIBGHOSTTY.")] ]
     (_, h) = sSize st
     page = max 1 (h - 4)

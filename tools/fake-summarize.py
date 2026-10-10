@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A stand-in for `ghci-session summarize`, for tools/check-knowledge.py: it answers the three prompts a daemon
 sends -- a line to compress or merge, a piece of the log to extract facts from, new facts to set against the
-ones that hold -- by rule, from marks in the text (RULE-A, RULE-B, RULE-C), and notes each prompt's kind in
+ones that hold, a subject's older facts to fold -- by rule, from marks in the text (RULE-A, RULE-B, RULE-C), and notes each prompt's kind in
 $FAKE_SUMMARIZE_LOG."""
 import json, os, re, sys
 p = sys.stdin.read()
@@ -12,11 +12,13 @@ def note(kind):
 FACTS = {"RULE-A": ("user", "user/rules", "routine check command", "The routine check is run with cabal test through sh."),
          "RULE-B": ("user", "user/rules", "routine check command", "The routine check is run with the session's test tool, not with cabal through sh."),
          "RULE-C": ("project", "rules", "commit of data files", "No data files are committed in this project.")}
+for _k in "DEFG":
+    FACTS["RULE-" + _k] = ("project", "rules", "rule " + _k, "Rule %s of the project holds, as the user said it at some length." % _k)
 if "knowledge base built from the log" in p:
     note("extract")
     body = p.split("<chat>", 1)[1]
     print(json.dumps({"facts": [dict(scope=s, subject=sub, topic=t, fact=f) for k, (s, sub, t, f) in FACTS.items() if k in body]}))
-elif "You keep a knowledge base of facts" in p:
+elif "You keep a knowledge base of facts" in p and "They are to be FOLDED" not in p:
     note("reconcile")
     existing = dict(re.findall(r"^#(\d+) \[[^\]]*\] \([^)]*\) (.*)$", p, re.M))
     new = re.findall(r"^N(\d+) \[[^\]]*\] \([^)]*\) (.*)$", p, re.M)
@@ -27,6 +29,10 @@ elif "You keep a knowledge base of facts" in p:
         ds.append({"n": int(n), "action": "same" if same else "replace" if old else "add", "ids": same or old})
     print("```json")                      # (a fence, as a model sometimes puts: the daemon reads the object in it)
     print(json.dumps({"decisions": ds}))
+elif "They are to be FOLDED" in p:
+    note("fold")
+    old = re.findall(r"^\[[^\]]*\] (.*)$", p.split("<chat>", 1)[1], re.M)
+    print(json.dumps({"facts": ["Folded: %d older facts of the subject." % len(old)]}))
 else:
     note("summary")
     print("a summary line")
