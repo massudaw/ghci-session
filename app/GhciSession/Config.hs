@@ -7,7 +7,7 @@ module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
   , benchSession, benchOf, benchSites, sameFlags, knownSession
-  , targetJson, stateOf, lineBudgetOf, onTurnEndOf
+  , targetJson, stateOf, lineBudgetOf, onTurnEndOf, rolloverRatioOf
   ) where
 
 import Control.Exception (IOException, try)
@@ -92,7 +92,7 @@ defaults =
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
-  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull)
+  , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNum 12.5)
   ]
 
 reserved :: [String]
@@ -156,6 +156,13 @@ onTurnEndOf :: Conf -> String -> Maybe String
 onTurnEndOf conf name = case [ c | m <- fromMaybe [name] (lookup name (cSessions conf)), Just c <- [lookupStr "on_turn_end" (targetJson conf m)], not (null c) ] of
   c : _ -> Just c
   [] -> Nothing
+
+-- | What a token written to the provider's cache costs over one read from it ("rollover_ratio", 12.5): what a
+-- rollover weighs a cold call against by, the first member of the session that sets one.
+rolloverRatioOf :: Conf -> String -> Double
+rolloverRatioOf conf name = case [ r | m <- fromMaybe [name] (lookup name (cSessions conf)), Just r <- [lookupNum "rollover_ratio" (targetJson conf m)], r > 0 ] of
+  r : _ -> r
+  [] -> 12.5
 
 sessionNames :: Conf -> [String]
 sessionNames conf = map fst (cTargets conf) ++ map fst (cSessions conf)

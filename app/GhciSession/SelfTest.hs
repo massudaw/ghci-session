@@ -44,6 +44,7 @@ import qualified GhciSession.Search as Search
 import qualified GhciSession.Vfs as Vfs
 import GhciSession.Json
 import GhciSession.Carry
+import GhciSession.Roll
 import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
@@ -114,6 +115,20 @@ run = do
   eq "carry: a rollover's echoes" (rollEchoes [m 1 "user", (4, T.pack "echo", T.pack "harness: this turn goes on in a fresh call, from its log (its context had grown to 150k)"), m 5 "echo"]) [4]
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
+
+  -- the rollover's controller
+  let ro0 = emptyRoll 12.5
+  eq "roll: the threshold is S + sqrt(2 r S (1+relearn) g)" (threshold ro0 { rRelearn = 0, rS = 50000, rG = 2000, rRatio = 12.5 }) (round (50000 + sqrt (2 * 12.5 * 50000 * 2000 :: Double)))
+  eq "roll: it is kept within 80k and 200k" (map threshold [ro0 { rS = 5000, rG = 50 }, ro0 { rS = 190000, rG = 20000 }]) [80000, 200000]
+  eq "roll: a dearer write is later, a faster growth is sooner" (let t r g = threshold ro0 { rRatio = r, rG = g } in (t 20 1590 > t 12.5 1590, t 12.5 3000 < t 12.5 1590)) (True, False)
+  eq "roll: a run's first call moves the restart's size halfway" (rS (seeCall True 0 65000 ro0 { rS = 45000 })) 55000
+  eq "roll: a later call moves the growth a twentieth of the way" (rG (seeCall False 50000 52000 ro0 { rG = 1000 })) 1050
+  eq "roll: a call that shrank the context, or the first of a run with none before it, is not a rate" (map (rG . (\f -> f ro0)) [seeCall False 50000 40000, seeCall False 0 40000]) [rG ro0, rG ro0]
+  eq "roll: one jump is cut at 20k" (rG (seeCall False 10000 90000 ro0 { rG = 0 })) 1000
+  eq "roll: --rollover 0 never, N fixed, auto the threshold" (map (\n -> limitOf n ro0) [0, 123456, -1]) [Nothing, Just 123456, Just (threshold ro0)]
+  eq "roll: said again when moved by more than 5k" (map (moved 100000) [104000, 106000, 94000]) [False, True, True]
+  eq "roll: its file round-trips" (rollFrom 12.5 (rollJson ro0 { rS = 51234, rG = 1700, rSaid = 99000 })) ro0 { rS = 51234, rG = 1700, rSaid = 99000 }
+  eq "roll: a file with nonsense in it is the start" (rollFrom 12.5 (JObj [("S", JNum (-3)), ("g", JStr "x")])) ro0
 
   -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")
   let bconf = Conf { cRoot = "/p", cStateDir = "/p/.s", cStateRel = ".s", cDefault = "tool", cTargets = [("tool", JNull), ("engine", JNull)], cSessions = [], cPrices = [] }

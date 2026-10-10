@@ -79,6 +79,7 @@ import qualified GhciSession.Sys as Sys
 import qualified GhciSession.Wire as Wire
 import GhciSession.Inbox (chatPidFile)
 import GhciSession.Carry
+import GhciSession.Roll
 import qualified GhciSession.Inbox as Inbox
 import System.IO.Unsafe (unsafePerformIO)
 import qualified GhciSession.Anthropic as A
@@ -129,7 +130,7 @@ chatUsage = unlines
   , "  --show: characters of a tool's answer shown (and written to the screen log) before it is cut with ... (600; 0: whole);"
   , "  --plan: bytes of the turn's plan and directives kept in <plan> when the boundary moves (32000);"
   , "  --rollover: a turn through the claude command whose context has grown past this many tokens goes on in a"
-  , "  fresh call, from its log (150000; 0: never);"
+  , "  fresh call, from its log (auto: the controller's threshold, from what a fresh call and a call's growth cost; 0: never);"
   , "  --carry N: what the fresh calls after the last N rollovers were given, part by part, in bytes (no model call is made);"
   , "  --continue: go on with the last turn of the history, from its log (a turn that did not end: the chat was"
   , "  stopped, or died, in the middle of it);"
@@ -139,7 +140,8 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax Nothing 0)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False (-1) shownMax Nothing 0)
+  -- (--rollover's default, -1, is the controller's)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -156,6 +158,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--tail", [(n, "")] <- reads v = go o { oTail = n } r
                      | k == "--effort", v `elem` ["none", "low", "high", "max"] = go o { oEffort = Just v } r
                      | k == "--rollover", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oRollover = n } r
+                     | k == "--rollover", v == "auto" = go o { oRollover = -1 } r
                      | k == "--web", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oWeb = Just n } r
                      | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
                      | k == "--show", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oShow = n } r
@@ -186,6 +189,7 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cBatch :: IORef (Maybe [Double])      -- ^ file writes of one reply are being made together: when each was written (they are not waited on one by one)
                  , cUi :: Ui                             -- ^ where what happens is shown
                  , cShow :: Int                          -- ^ characters of a tool's answer shown (--show; 0: whole)
+                 , cRoll :: IORef Roll                   -- ^ what the rollover's controller has learned (kept in the history's directory)
                  }
 
 -- | What a tool's answer is cut to for showing, unless the chat is told (--show).
@@ -196,6 +200,10 @@ shownMax = 600
 shownCut :: Int -> T.Text -> T.Text
 shownCut n t | n <= 0 || T.length t <= n = t
              | otherwise = T.take n t <> T.pack "..."
+
+-- | Where the rollover's controller keeps what it has learned: beside the session's history.
+rollFile :: Conf -> String -> FilePath
+rollFile conf name = cStateDir conf </> name </> "history" </> "roll.json"
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -1704,6 +1712,7 @@ runCli ch e o pending run = do
   -- (a run taken up from a chat before this one began long ago: what it began with is not known, and is not what holds a rollover back)
   firstIn <- newIORef (if null (crConns run) && sCalls (crSpent run) == 0 then 0 else 1 :: Int)       -- the context of this run's first model call
   rollDue <- newIORef (0 :: Int)       -- the context that is over the rollover's tokens (0: it is not)
+  prevCtx <- newIORef (0 :: Int)        -- the context of this run's last call
   rollNow <- newIORef False            -- a tool call has been answered into the log and not to the program: the run ends here
   let byName = [ (tName t, t) | t <- toolsFor ch ]
       textBlock t = JObj [("type", JStr "text"), ("text", JText t)]
@@ -1797,7 +1806,18 @@ runCli ch e o pending run = do
           -- began, so that a run that starts over them does not end at its first call)
           f <- readIORef firstIn
           when (f == 0) (writeIORef firstIn ctx)
-          when (isNothing (cSub ch) && oRollover o > 0 && ctx > oRollover o && f > 0 && 3 * ctx > 4 * f) (writeIORef rollDue ctx)
+          prev <- readIORef prevCtx
+          writeIORef prevCtx ctx
+          when (isNothing (cSub ch)) $ do
+            ro <- seeCall (f == 0) prev ctx <$> readIORef (cRoll ch)
+            -- (the controller: what a restart and a call's growth are, as seen; its threshold said when it has moved)
+            let thr = threshold ro
+                mv = oRollover o < 0 && moved (rSaid ro) thr
+            when (mv && oUsage o) (uiNote (cUi ch) (printf "[rollover: at %dk tokens (a fresh call %dk, %d tokens a call, a write %.1f reads)]" (thr `div` 1000) (round (rS ro) `div` 1000 :: Int) (round (rG ro) :: Int) (rRatio ro)))
+            let ro' = if mv then ro { rSaid = thr } else ro
+            writeIORef (cRoll ch) ro'
+            saveRoll (rollFile (cConf ch) (cName ch)) ro'
+            when (maybe False (ctx >) (limitOf (oRollover o) ro') && f > 0 && 3 * ctx > 4 * f) (writeIORef rollDue ctx)
         Just "message_delta" | Just outN <- lookupNum "output_tokens" (ev .: "usage") -> do
           c <- readIORef callR
           forM_ c $ \(inN, cached, t0) -> do
@@ -2479,11 +2499,12 @@ chatMain conf args = case parseOpts args of
         stoppedR <- newIORef False
         inTurn <- newIORef False
         batchR <- newIORef Nothing
+        rollR <- loadRoll (rollFile conf name) (rolloverRatioOf conf name) >>= newIORef
         exe <- getExecutablePath
         argv <- getArgs
         let ms = if null members then [name] else members
             chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                               longest pendingCheck down restartR inTurn Nothing agentsR startR turnR stoppedR (stripDeleted exe) argv batchR ui (oShow o)
+                               longest pendingCheck down restartR inTurn Nothing agentsR startR turnR stoppedR (stripDeleted exe) argv batchR ui (oShow o) rollR
         if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           -- (--web N: the model may search the web, where the endpoint has it -- "GhciSession.Llm" reads this)
           forM_ (oWeb o) (setEnv "GHS_WEB_SEARCH" . show)

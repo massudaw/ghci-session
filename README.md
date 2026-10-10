@@ -187,6 +187,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `hygiene` | unlink superseded CAFs after each reload and report memory |
 | `repl_budget_mb` | past this, a reload is a restart (default 6144; `0` disables) |
 | `line_budget` | a project's rule for the lines of a file: the chat's `read`, `write` and `edit` then say a file's count against it (`[OVER BUDGET: 260/250 lines!]`). Absent: nothing is said of lines. The `vfs` tool keeps its own `budget` argument (default 250) |
+| `rollover_ratio` | what a token written to the provider's cache costs over one read from it (12.5): what `chat --rollover auto` weighs a cold call by (default 12.5) |
 | `on_turn_end` | a shell command the chat runs when a turn ends (told `GHS_SESSION`, `GHS_TURN_SECONDS`, `GHS_TURN_TOOL_CALLS`, and the last words on stdin); see "A line for a chat started somewhere else" (default none) |
 | `rts_flags` | the repl's RTS flags (default `-c -Fd0.5`) |
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
@@ -616,10 +617,19 @@ changes that (`0`: whole), so a log can be kept whole. The model always gets the
 
 A turn through the `claude` command also ROLLS OVER by itself: the conversation is the program's, it only grows, and
 every model call reads all of it -- a turn of a few hundred tool calls was at 210,000 tokens a call and rising. So
-once a call's context is past `--rollover` tokens (150,000; `0`: never) the run is ended after the tool call under
+once a call's context is past `--rollover` tokens the run is ended after the tool call under
 way -- its answer in the log, not given to the program -- and a fresh one goes on with the turn from the view as it
 is now and the turn's log, as `--continue` does. The turn's first message and what the user said during it are kept
-whole; its cost is counted across the runs.
+whole, the last six messages of the log too, and the older ones cut to 1500 characters with their number to zoom
+(a third of `--tail` for a rollover); its cost is counted across the runs. `chat --carry N` says what each of the last
+N fresh calls was given, part by part (no model call).
+
+The default, `--rollover auto`, is a controller: a fresh call reads its whole context uncached, at `rollover_ratio`
+times (12.5) the price of a read from the cache, and the context then grows a few thousand tokens a call; the cost of
+a call is least at `S + sqrt(2 * r * S * (1 + relearn) * g)` (S: the context of a run's first call, g: what a call
+adds, both running estimates from the calls' usage and kept in `history/roll.json`; relearn: the share of what a
+reset makes the agent read again), within 80,000 and 200,000. With `--usage` a move of more than 5,000 is said. A
+number is a fixed threshold, `0` never.
 
 `tools/check-cli.py` checks these without a subscription: `tools/fake-claude.py` stands for the `claude` command (the
 same arguments and stream, the chat's tools called through its tool server, no model). On the subscription path
