@@ -616,7 +616,6 @@ and stale and warning counts, half a second behind. Below, a tab at a time:
 | tab | shows |
 |---|---|
 | `1` history | every request and its answer, a save with its diff, the chat's words. `f` follows the end; `j`/`k`/`PgUp`/`PgDn`/`g`/`G` scroll; a message is cut at six lines and says how many more it has; `n`/`p` move the cursor, `Enter` opens or closes the message under it, `a` all of them; `i` writes a line for the session's running chat (Enter sends it, Esc drops it) |
-| `9` known | what is known by subject, across sessions: the tool's and the user's subjects, the project's, the others' |
 | `2` view | the view the model reads, with the memory's numbers: lines, built nodes, settled or not, the compactor's jobs |
 | `3` log | the daemon's log |
 | `4` verdict | the verdict with what is behind it: the compiler's diagnostics, the failing lines, the members and the servers |
@@ -624,6 +623,7 @@ and stale and warning counts, half a second behind. Below, a tab at a time:
 | `6` heap | the repl's resident memory graphed, a column each half second (the axis starts near the lowest value so a change of a few per cent shows; the servers' below it), and a report of the heap taken on a key, since each is a major collection with the session paused: `M` figures, `C` CAFs and the heap by constructor, `S` strings, `K` kept values, `D` missed sharing |
 | `7` chat | `ghci-session chat --tui` on this session |
 | `8` shell | a shell in the project |
+| `9` known | what is known by subject, across sessions: the tool's and the user's subjects, the project's, the others' |
 
 `R` sends a reload, `T` the tests, `q` quits. In a pane every key goes to the program; `Ctrl-a` first makes the next
 key the monitor's (`Ctrl-a 1`, `Ctrl-a q`; `Ctrl-a a` sends a `Ctrl-a`). A session that is not running shows as such
