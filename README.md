@@ -642,6 +642,10 @@ the lines it read last (`chat --carry N` shows its bytes). And after each reset 
 calls read again a file read before it; that share (logged as a harness echo, kept in `roll.json`) is the controller's
 relearn share, which makes a reset dearer and the threshold higher when the agent has to read much again.
 
+A rotting context is the third: when over 15% of the last twenty `read` calls of a run read lines that overlap lines
+the run had read already (and not written since), the agent is not holding what it has in front of it, and the
+threshold comes down by a tenth (never under 80,000; said once a run).
+
 With `auto` the run does not end in the middle of an edit: from 0.85 of the threshold it ends after a `git commit` that
 went through or a green `test` / `reload`; at 1.15 of it, after whatever tool call comes next. (A fixed number ends the
 run at the first call past it.)

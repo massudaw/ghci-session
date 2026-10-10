@@ -1712,6 +1712,8 @@ runCli ch e o pending run = do
   -- (a run taken up from a chat before this one began long ago: what it began with is not known, and is not what holds a rollover back)
   firstIn <- newIORef (if null (crConns run) && sCalls (crSpent run) == 0 then 0 else 1 :: Int)       -- the context of this run's first model call
   rollDue <- newIORef (0 :: Int)       -- the context that is over the rollover's tokens (0: it is not)
+  rotR <- newIORef emptyRot             -- the reads of this run's context: the share of repeats is the rot signal
+  rotSaid <- newIORef False             -- the rot has been said (once a run)
   rollSoft <- newIORef (0 :: Int)       -- the context that is near the controller's threshold: the run ends at the next natural boundary
   prevCtx <- newIORef (0 :: Int)        -- the context of this run's last call
   lastEnd <- newIORef (0 :: Double)     -- when this run's last model call ended (0: none yet)
@@ -1731,6 +1733,7 @@ runCli ch e o pending run = do
       tool name args = do
         modifyIORef' spent (\x -> x { sTools = sTools x + 1, sTouched = sTouched x || name `elem` ["write", "edit", "edits", "sh"] })
         uiCall (cUi ch) name (take 300 (encode args))
+        modifyIORef' rotR (seeRot name args)
         unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode args)))
         uiBusy (cUi ch) (Just ("running " ++ name))
         t2 <- now
@@ -1835,8 +1838,14 @@ runCli ch e o pending run = do
             writeIORef (cRoll ch) ro'
             saveRoll (rollFile (cConf ch) (cName ch)) ro'
             let grown = f > 0 && 3 * ctx > 4 * f
-                lim = limitOf (oRollover o) ro'
                 auto = oRollover o < 0
+            share <- rotShare <$> readIORef rotR
+            said <- readIORef rotSaid
+            let rot = auto && rotOver share
+                lim = (if rot then fmap (rotLimit True) else id) (limitOf (oRollover o) ro')
+            when (rot && not said) $ do
+              writeIORef rotSaid True
+              uiNote (cUi ch) (printf "[rollover: %.0f%% of the last 20 reads read again what this context had read: it is rotting, so the threshold is a tenth lower, %s tokens]" (100 * fromMaybe 0 share :: Double) (maybe "-" human lim))
             when (grown && maybe False (\l -> rollAt auto l ctx False) lim) (writeIORef rollDue ctx)
             writeIORef rollSoft (if grown && auto && maybe False (\l -> rollAt auto l ctx True) lim then ctx else 0)
         Just "message_delta" | Just outN <- lookupNum "output_tokens" (ev .: "usage") -> do

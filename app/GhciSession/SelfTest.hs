@@ -122,6 +122,13 @@ run = do
   eq "carry: after a reset, the next calls that read a file read before it again" (relearned 10 (take 2 calls1) [tl 8 "read {\"path\":\"a.hs\"}", tl 9 "grep {\"query\":\"x\"}", tl 10 "read {\"path\":\"q.hs\"}", tl 11 "read {\"path\":\"b.hs\",\"start\":1}", tl 12 "edit {\"path\":\"a.hs\"}", tl 13 "read {\"path\":\"a.hs\"}"]) (Just (3, 6))
   eq "carry: fewer than five calls after a reset say nothing; only the first ten count" (map (\n -> relearned 10 (take 2 calls1) [ tl i "read {\"path\":\"a.hs\"}" | i <- [10 .. 9 + n] ]) [4, 5, 30]) [Nothing, Just (5, 5), Just (10, 10)]
   eq "roll: the share of what a reset made it learn again is a running estimate, counted once a reset" (let r1 = seeRelearn 40 1 (emptyRoll 12.5) { rRelearn = 0 } in (rRelearn r1, rRelId r1, seeRelearn 40 0 r1 == r1, rRelearn (seeRelearn 41 0 r1) < rRelearn r1)) (0.3, 40, True, True)
+  let rd p s n = ("read", JObj [("path", JStr p), ("start", JNum s), ("lines", JNum n)])
+      rotOf cs = foldl (\r (n, a) -> seeRot n a r) emptyRot cs
+  eq "rot: a read of lines read before is a repeat, one of other lines, another file, or after a write is not" (rotFlags (rotOf [rd "a" 1 10, rd "a" 5 10, rd "a" 20 5, rd "b" 1 10, ("edit", JObj [("path", JStr "a")]), rd "a" 1 10])) [False, False, False, True, False]
+  eq "rot: a read around a text is not a repeat, nor is another tool" (rotFlags (rotOf [("read", JObj [("path", JStr "a"), ("around", JStr "x")]), ("read", JObj [("path", JStr "a"), ("around", JStr "x")]), ("sh", JObj [("path", JStr "a")])])) [False, False]
+  eq "rot: no share before ten reads; then the share of the last twenty" (map (rotShare . rotOf) [ [ rd "a" 1 10 | _ <- [1 .. 9 :: Int] ], replicate 10 (rd "a" 1 10) ++ [rd "b" 1 5, rd "c" 1 5] ]) [Nothing, Just (9 / 12)]
+  eq "rot: only twenty reads count" (fmap (> 0.99) (rotShare (rotOf (rd "a" 1 10 : [ rd "b" 1 10 | _ <- [1 .. 40 :: Int] ])))) (Just True)
+  eq "rot: over fifteen percent lowers the threshold by a tenth, not under 80k, nor a limit already under it" (map (\(r, l) -> rotLimit r l) [(True, 150000), (True, 85000), (True, 70000), (False, 150000)], map rotOver [Nothing, Just 0.15, Just 0.16]) ([135000, 80000, 70000, 150000], [False, False, True])
   eq "carry: the task before a rollover is the user's message, not a line typed mid-turn" (taskBefore 9 [m 1 "user", m 2 "tool", m 3 "echo", m 4 "user", m 5 "tool", m 6 "echo", m 8 "talk"]) (Just 1)
   eq "carry: partsTable has a row a part, and the given sum leaves out what is not given" [ l | l <- lines (partsTable [("c1", [Part "a" 10 2, Part "(not given) b" 99 0], Nothing)]), "given (bytes)" `isInfixOf` l ] ["| given (bytes) | 10     | "]
 

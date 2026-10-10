@@ -6,7 +6,7 @@
 module GhciSession.Carry
   ( Msg, formatMsg, resumeLog, capMsg, capOld, Split (..), carrySplit, carryRecent, carryFirst, carryNote
   , Part (..), carryParts, subjectsBytes, partsTable, taskBefore, rollEchoes
-  , Touch (..), touches, carryFiles, relearned
+  , Touch (..), touches, carryFiles, relearned, Rot (..), emptyRot, seeRot, rotShare
   ) where
 
 import Data.List (intercalate, partition)
@@ -97,8 +97,12 @@ eventsOf :: Msg -> [Ev]
 eventsOf (_, k, t)
   | k /= T.pack "tool" = []
   | otherwise = case T.breakOn (T.pack " ") t of
-      (n, rest) | n `elem` map T.pack ["read", "write", "edit", "edits"], Right j <- parseJsonBS (TE.encodeUtf8 (T.drop 1 rest)) -> go (T.unpack n) j
+      (n, rest) | n `elem` map T.pack ["read", "write", "edit", "edits"], Right j <- parseJsonBS (TE.encodeUtf8 (T.drop 1 rest)) -> callEvents (T.unpack n) j
       _ -> []
+
+-- | What a call of a tool, by its name and arguments, did to files.
+callEvents :: String -> Json -> [Ev]
+callEvents n j0 = if n `elem` ["read", "write", "edit", "edits"] then go n j0 else []
   where
     go "read" j = [ EvRead p (range j) | p <- maybeToList (lookupStr "path" j) ]
     go "edits" j = map EvEdit (maybeToList (lookupStr "path" j) ++ [ q | e <- lookupArr "edits" j, q <- maybeToList (lookupStr "path" e) ])
@@ -109,6 +113,32 @@ eventsOf (_, k, t)
     range j
       | Just _ <- lookupStr "around" j = Nothing
       | otherwise = let s = maybe 1 id (num j "start"); n = maybe 200 id (num j "lines") in Just (s, s + max 1 n - 1)
+
+-- | The reads of one context, to see if the agent reads what it has read: @rotSeen@ the lines of each file read since
+-- it was last written, @rotFlags@ whether each read was a repeat of one of them (the latest first, twenty).
+data Rot = Rot { rotSeen :: [(String, (Int, Int))], rotFlags :: [Bool] }
+  deriving (Eq, Show)
+
+emptyRot :: Rot
+emptyRot = Rot [] []
+
+-- | A tool call, as the context sees it: a read of lines that overlap lines read before (of the same file, not
+-- written since) is a repeat; a write forgets the file's reads. A read around a text has no lines, and is not one.
+seeRot :: String -> Json -> Rot -> Rot
+seeRot name args rot0 = foldl step rot0 (callEvents name args)
+  where
+    step rot (EvEdit p) = rot { rotSeen = [ s | s@(q, _) <- rotSeen rot, q /= p ] }
+    step rot (EvRead _ Nothing) = rot { rotFlags = take 20 (False : rotFlags rot) }
+    step rot (EvRead p (Just (a, b))) =
+      let again = or [ a <= d && c <= b | (q, (c, d)) <- rotSeen rot, q == p ]
+      in rot { rotSeen = take 300 ((p, (a, b)) : rotSeen rot), rotFlags = take 20 (again : rotFlags rot) }
+
+-- | The share of the last twenty reads that were repeats (none while fewer than ten have been seen).
+rotShare :: Rot -> Maybe Double
+rotShare rot
+  | length fs < 10 = Nothing
+  | otherwise = Just (fromIntegral (length (filter id fs)) / fromIntegral (length fs))
+  where fs = rotFlags rot
 
 -- | The files the messages touched, the latest first.
 touches :: [Msg] -> [Touch]

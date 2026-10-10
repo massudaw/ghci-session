@@ -9,7 +9,7 @@
 -- restart's size, the growth a call) survives the chat.
 module GhciSession.Roll
   ( Roll (..), emptyRoll, threshold, seeCall, limitOf, moved, rollJson, rollFrom, loadRoll, saveRoll, defaultRatio
-  , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn
+  , seeGap, lifetime, coldDue, rollAt, boundaryTool, seeRelearn, rotLimit, rotOver
   ) where
 
 import Control.Exception (IOException, try)
@@ -72,6 +72,16 @@ seeRelearn :: Int -> Double -> Roll -> Roll
 seeRelearn reset share ro
   | reset <= rRelId ro = ro
   | otherwise = ro { rRelearn = max 0 (min 1 (0.7 * rRelearn ro + 0.3 * share)), rRelId = reset }
+
+-- | Is the agent reading again what it has in front of it (the share of the last twenty reads that were repeats, over
+-- 15%)? Then its context is rotting: it is not holding what it has read.
+rotOver :: Maybe Double -> Bool
+rotOver = maybe False (> 0.15)
+
+-- | A threshold under a rotting context: a tenth lower, never under 80k (a limit already under it is left).
+rotLimit :: Bool -> Int -> Int
+rotLimit rot lim | rot = min lim (max 80000 (lim - lim `div` 10))
+                 | otherwise = lim
 
 -- the boundary -------------------------------------------------------------------------------
 
