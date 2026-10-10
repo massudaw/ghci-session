@@ -1,0 +1,14 @@
+app/GhciSession/Daemon.hs
+  h_fd5809635b36a3 2232-2234,2290-2291
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2fbd00d67ccfcd6cc6cc694e4fffd4e38ee55514",
+  "prompts": {},
+  "humans": {
+    "h_fd5809635b36a3": {
+      "author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
