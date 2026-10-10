@@ -1,0 +1,21 @@
+app/GhciSession/Daemon.hs
+  s_ee2f22f51d8bdb::t_053615e2859648 3026-3029
+tools/know-trial.sh
+  s_ee2f22f51d8bdb::t_071d4867e4a4bc 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab1c9131663f84406a308bfc671ecbb71d93d54f",
+  "prompts": {},
+  "sessions": {
+    "s_ee2f22f51d8bdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3863f128-df4e-5080-b64f-79e6e4bdb05e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Wesley Massuda <wesley.massuda@gmail.com>"
+    }
+  }
+}
