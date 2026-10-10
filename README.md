@@ -592,6 +592,9 @@ and its last messages word for word, as far as `--tail` bytes go (what is betwee
 is told to go on from where it stops. The agent has every call it made and what came of it; what it had in mind
 between the steps it has not. On any backend, and from one to another.
 
+What the chat shows of a tool's answer (the screen, and `chat.out`) is cut at 600 characters with `...`; `--show BYTES`
+changes that (`0`: whole), so a log can be kept whole. The model always gets the answer itself.
+
 A turn through the `claude` command also ROLLS OVER by itself: the conversation is the program's, it only grows, and
 every model call reads all of it -- a turn of a few hundred tool calls was at 210,000 tokens a call and rising. So
 once a call's context is past `--rollover` tokens (150,000; `0`: never) the run is ended after the tool call under

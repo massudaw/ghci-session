@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (shownCut, parseOpts, Opts (..), unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -944,6 +944,8 @@ run = do
   eq "chat: a line is its number, the bar, the line as it is -- its indent is all after the bar" (map (uncurry (numbered ' ')) [(7, T.pack "    x = 1"), (12, T.pack "  | guard"), (8, T.pack "\tTab"), (9, T.empty)]) (map T.pack ["     7\x2502    x = 1", "    12\x2502  | guard", "     8\x2502\tTab", "     9\x2502"])
   eq "chat: a typecheck is clean when it says OK (warnings or not); an error, or nothing, is not" (map (tcClean . T.pack) ["OK -- TYPECHECK (0.2s, no source changed since)", "OK (3 warning(s)) -- TYPECHECK", "TYPE-ERROR: 1 error(s)", ""]) [True, True, False, False]
   check "chat: the note of an edit that changed nothing says it was applied, and not 'nothing changed'" (T.pack "applied" `T.isInfixOf` unchangedNote && not (T.pack "nothing changed" `T.isInfixOf` unchangedNote))
+  eq "chat: a tool's answer is cut for showing at --show characters, with ...; 0 shows it whole" (map (\n -> shownCut n (T.pack "abcdef")) [3, 6, 9, 0]) (map T.pack ["abc...", "abcdef", "abcdef", "abcdef"])
+  eq "chat: --show is 600 unless given" (map (fmap oShow . parseOpts) [[], ["--show", "0"], ["--show", "5000"]]) [Right 600, Right 0, Right 5000]
   eq "chat: with no line budget a read's head says nothing of one" (readHeader Nothing "f.hs" 1 3 9) "[f.hs: lines 1-3 of 9]\n"
   eq "chat: with a budget the head says the count against it" (readHeader (Just 250) "f.hs" 1 3 260) "[f.hs: lines 1-3 of 260 | 260 lines [OVER BUDGET: 260/250 lines!] (10 lines OVER BUDGET!)]\n"
   eq "chat: an edit's budget is said only when there is one" (map (budgetSaid Nothing) [10, 999], budgetSaid (Just 5) 10) ([Nothing, Nothing], Just "10 lines [OVER BUDGET: 10/5 lines!]")

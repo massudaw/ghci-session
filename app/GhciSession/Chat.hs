@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , unchangedNote, tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , shownCut, parseOpts, Opts (..), unchangedNote, tcClean, numbered, numberBar, readHeader, budgetSaid, ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -102,12 +102,12 @@ data Opts = Opts
   { oSession :: Maybe String, oOnce :: Maybe String, oInstructions :: Maybe FilePath, oModel :: Maybe String, oBase :: Maybe String
   , oMaxTokens :: Int, oMaxSteps :: Int, oSettle :: Double, oUsage :: Bool, oPrintView :: Bool
   , oRestart :: Bool, oSend :: Maybe String, oResume :: Maybe FilePath
-  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int }
+  , oView :: Bool, oTail :: Int, oEffort :: Maybe String, oPlan :: Int, oTui :: Bool, oWeb :: Maybe Int, oContinue :: Bool, oRollover :: Int, oShow :: Int }
 
 chatUsage :: String
 chatUsage = unlines
   [ "ghci-session chat [-s SESSION] [--once MESSAGE] [--instructions FILE] [--model M] [--base-url URL]"
-  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES] [--effort none|low|high|max] [--plan BYTES] [--continue] [--rollover TOKENS]"
+  , "                  [--max-tokens N] [--max-steps N] [--settle SECS] [--usage] [--print-view] [--context turn|view] [--tail BYTES] [--effort none|low|high|max] [--plan BYTES] [--show BYTES] [--continue] [--rollover TOKENS]"
   , "ghci-session chat --tui [-s SESSION] ...   the same, on a screen of its own"
   , "ghci-session chat --restart [-s SESSION]"
   , "ghci-session chat --send MESSAGE [-s SESSION]   a line for the session's running chat, as if typed at it"
@@ -120,6 +120,7 @@ chatUsage = unlines
   , "  alone, every step waiting for the compactor); turn (the default): the view at the turn's start, then the turn's"
   , "  own conversation;"
   , "  --effort: reasoning effort (none, low, high, max); none disables thinking;"
+  , "  --show: characters of a tool's answer shown (and written to the screen log) before it is cut with ... (600; 0: whole);"
   , "  --plan: bytes of the turn's plan and directives kept in <plan> when the boundary moves (32000);"
   , "  --rollover: a turn through the claude command whose context has grown past this many tokens goes on in a"
   , "  fresh call, from its log (150000; 0: never);"
@@ -131,7 +132,7 @@ chatUsage = unlines
   , "  again with --resume FILE (the same as kill -HUP)" ]
 
 parseOpts :: [String] -> Either String Opts
-parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000)
+parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False False False Nothing Nothing False tailMax Nothing planMax False Nothing False 150000 shownMax)
   where
     go o [] = Right o
     go o (k : v : r) | k `elem` ["-s", "--session"] = go o { oSession = Just v } r
@@ -150,6 +151,7 @@ parseOpts = go (Opts Nothing Nothing Nothing Nothing Nothing 8000 60 120 False F
                      | k == "--rollover", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oRollover = n } r
                      | k == "--web", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oWeb = Just n } r
                      | k == "--plan", [(n, "")] <- reads v = go o { oPlan = n } r
+                     | k == "--show", [(n, "")] <- reads v, (n :: Int) >= 0 = go o { oShow = n } r
     go o (k : r) | k == "--usage" = go o { oUsage = True } r
                  | k == "--print-view" = go o { oPrintView = True } r
                  | k == "--restart" = go o { oRestart = True } r
@@ -173,7 +175,17 @@ data Chat = Chat { cConf :: Conf, cName :: String, cDir :: FilePath, cWatched ::
                  , cExe :: FilePath, cArgv :: [String]   -- ^ the executable and the arguments to run again as
                  , cBatch :: IORef (Maybe [Double])      -- ^ file writes of one reply are being made together: when each was written (they are not waited on one by one)
                  , cUi :: Ui                             -- ^ where what happens is shown
+                 , cShow :: Int                          -- ^ characters of a tool's answer shown (--show; 0: whole)
                  }
+
+-- | What a tool's answer is cut to for showing, unless the chat is told (--show).
+shownMax :: Int
+shownMax = 600
+
+-- | A tool's answer cut for showing: at the characters, with ... when it was longer; 0 or less: whole.
+shownCut :: Int -> T.Text -> T.Text
+shownCut n t | n <= 0 || T.length t <= n = t
+             | otherwise = T.take n t <> T.pack "..."
 
 -- | The session's usage ledger: one line per model call, the chat's and the compactor's.
 usageFile :: Chat -> FilePath
@@ -1664,7 +1676,7 @@ runCli ch e o pending run = do
         let said = cap out0 <> late
         when (oUsage o) (uiNote (cUi ch) (printf "[tool: %s %.1fs]" name (t3 - t2)))
         unless (name == "remember") (logH ch "echo" ((if ok then T.empty else T.pack "ERROR: ") <> said))
-        uiAnswer (cUi ch) (T.take 600 said <> (if T.length said > 600 then T.pack "..." else T.empty))
+        uiAnswer (cUi ch) (shownCut (cShow ch) said)
         due <- readIORef rollDue
         if due > 0
           then do
@@ -2104,7 +2116,7 @@ goOn ch e o pending ts = do
               unless (T.null (T.strip (pReasoning p))) (uiThought (cUi ch) (T.strip (pReasoning p)))
               -- (what the endpoint's own tools did -- a web search -- is shown and logged as a tool's doing is)
               forM_ (pServed p) $ \(kind, text) -> do
-                if kind == "tool" then uiCall (cUi ch) "(by the API)" (T.unpack text) else uiAnswer (cUi ch) (T.take 600 text)
+                if kind == "tool" then uiCall (cUi ch) "(by the API)" (T.unpack text) else uiAnswer (cUi ch) (shownCut (cShow ch) text)
                 logH ch kind text
               let content = T.strip (pContent p)
               unless (T.null content) (uiTalk (cUi ch) content >> logH ch "talk" content)
@@ -2173,7 +2185,7 @@ goOn ch e o pending ts = do
                         tagged = (if ok then T.empty else T.pack "ERROR: ") <> out
                     when (oUsage o) (uiNote (cUi ch) (printf "[tool: %s %.1fs]" name (t3 - t2)))
                     unless (name == "remember") (logH ch "echo" tagged)
-                    uiAnswer (cUi ch) (T.take 600 out <> (if T.length out > 600 then T.pack "..." else T.empty))
+                    uiAnswer (cUi ch) (shownCut (cShow ch) out)
                     pure (JObj [("role", JStr "tool"), ("tool_call_id", JStr (tcId tc)), ("content", JText tagged)])
                   mid <- drain pending >>= typedLines ch
                   forM_ mid (logTyped ch)
@@ -2406,7 +2418,7 @@ chatMain conf args = case parseOpts args of
         argv <- getArgs
         let ms = if null members then [name] else members
             chatWith ui = Chat conf name (cRoot conf) (map normalise (concat [ strs (targetJson conf m .: "watch") | m <- ms ])) (either (const "Agent") gAgent cfg)
-                               longest pendingCheck down restartR inTurn Nothing agentsR startR turnR stoppedR (stripDeleted exe) argv batchR ui
+                               longest pendingCheck down restartR inTurn Nothing agentsR startR turnR stoppedR (stripDeleted exe) argv batchR ui (oShow o)
         if oPrintView o then view (chatWith stdoutUi) 0 >>= \(v, _, _, _) -> TIO.putStrLn v >> pure 0 else do
           -- (--web N: the model may search the web, where the endpoint has it -- "GhciSession.Llm" reads this)
           forM_ (oWeb o) (setEnv "GHS_WEB_SEARCH" . show)
