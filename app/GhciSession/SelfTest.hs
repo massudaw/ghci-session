@@ -151,7 +151,7 @@ run = do
   let ro0 = emptyRoll 12.5
   eq "roll: with nothing of a fresh call cached the threshold is S + sqrt(2 r S (1+relearn) g)" (threshold ro0 { rRelearn = 0, rS = 50000, rG = 2000, rRatio = 12.5, rP = 0 }) (round (50000 + sqrt (2 * 12.5 * 50000 * 2000 :: Double)))
   eq "roll: it is kept within 80k and 200k" (map threshold [ro0 { rS = 5000, rG = 50 }, ro0 { rS = 190000, rG = 20000 }]) [80000, 200000]
-  eq "roll: a dearer write is later, a faster growth is sooner" (let t r g = threshold ro0 { rRatio = r, rG = g } in (t 20 1590 > t 12.5 1590, t 12.5 3000 < t 12.5 1590)) (True, False)
+  eq "roll: a dearer write is later; a faster growth is not sooner (the threshold is in tokens, S + sqrt(2 R g): a faster growth makes it later in tokens, sooner only in calls)" (let t r g = threshold ro0 { rRatio = r, rG = g } in (t 20 1590 > t 12.5 1590, t 12.5 3000 < t 12.5 1590)) (True, False)
   eq "roll: a run's first call moves the restart's size halfway" (rS (seeCall True 0 65000 ro0 { rS = 45000 })) 55000
   eq "roll: a later call moves the growth a twentieth of the way" (rG (seeCall False 50000 52000 ro0 { rG = 1000 })) 1050
   eq "roll: a call that shrank the context, or the first of a run with none before it, is not a rate" (map (rG . (\f -> f ro0)) [seeCall False 50000 40000, seeCall False 0 40000]) [rG ro0, rG ro0]
