@@ -476,8 +476,11 @@ another project's agent as its own.
 
 `tools/extract-lab.py` does the same for EXTRACTION: pieces of real logs with the facts each should give, must not
 give, and how many at most, put to the compactor's model through the daemon's own prompt and parser, and counted.
-As it stands: 27 of 27 expected facts and none forbidden over three runs of eight cases -- and three facts from
-every stretch of tool traffic where two would be many, eight from an assistant's reply full of estimates.
+Its first use: a stretch of tool traffic gave three facts every time (what was uncommitted, unverified, in
+progress) and an assistant's reply full of estimates gave eight ("a proposed controller would..."); with the
+prompt saying whose word is a fact -- the user's as said, an agent's only where it reports what was done and
+measured, a run of summaries only what stands at its end -- nine cases over four runs give 39 of 40 expected
+facts, none forbidden, one case over its maximum (before: 29 of 30, five forbidden, six over).
 
 `tools/review-diff.py BASE` is a round's diff read by a model with no tools and no history, for what a
 maintainer would stop a merge for: run before a round is pushed, its findings given back to be proven or

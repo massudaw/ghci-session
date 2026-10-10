@@ -71,7 +71,7 @@
   "max": 3
  },
  {
-  "name": "an assistant's unverified claim is not a fact of the tool",
+  "name": "an assistant's estimates and proposals are not facts",
   "project": "ghci-session",
   "piece": "ai: No, 1M context is not enabled, and the numbers say it would cost about four times more per call. The chat runs Sonnet with the standard window and rolls a turn over to a fresh call at 150k tokens (`--rollover`, default 150000).\n\n**What the optimal context is**\n\nI fitted a cost model to the agent's last seven context segments. From the logs:\n- a fresh call after a rollover starts at about 58k tokens;\n- context then grows about 1,590 tokens per model call;\n- a cached token costs a tenth of an uncached one to read, and a rollover re-reads its starting context uncached, with cache writes at up to twice the base price.\n\nCost per model call at different rollover thresholds, at list prices:\n\n| roll over at | cost per call |\n|---|---|\n| 80k | $0.031 |\n| 95k | $0.025 |\n| 120k | $0.024 |\n| 150k (now) | $0.025 |\n| 200k | $0.028 |\n| 400k | $0.047 |\n| 1M | $0.106 |\n\n- **The optimum is about 105\u2013120k**, depending on which cache lifetime the provider bills.\n- **The curve is flat there.** Today's 150k is only about 5% above the best, so tuning the threshold alone gains little.\n- **Large contexts lose.** Every call re-reads the whole context, so cost climbs steadily past 200k.\n- **Limits of the model.** It counts money only. It ignores that a rollover loses working detail (the agent may re-read files afterwards) and that responses get slower as context grows.\n\nThe bigger levers are the two inputs, not the threshold: the 58k a fresh call starts with, and the 1,590 tokens each call adds. Halving the restart size would lower the whole curve by more than any threshold change.\n\n**Feedback control for when to compact**\n\nYes, and the chat already sees everything it needs in the per-call usage it records. I'd build it like the controller that tunes the compactor's line length:\n\n1. **Estimate continuously** the restart size and the growth per call from the turn's own calls.\n2. **Compute the threshold** from them: restart size plus the square root of (2 \u00d7 write-to-read price ratio \u00d7 restart size \u00d7 growth), clamped to a sane range such as 80k\u2013200k. When the agent is doing small reads it rolls later; when it is pulling in large outputs it rolls sooner.\n3. **Roll when the cache has gone cold.** After a long tool call or a pause past the cache lifetime, the next call pays full price for the whole context anyway, so rolling over at that moment is nearly free. This would have applied after the 15-minute `bench` stall.\n4. **Prefer natural boundaries.** Inside a window around the threshold, roll right after a commit or a green test rather than mid-edit, so less working detail is lost.\n5. **Charge rollovers their real cost.** Count the calls spent re-reading files just after each rollover and add that to the rollover's price, so the controller backs off if rollovers turn out to hurt.\n\nItems 3 and 4 are where I'd expect the real gain, since the pure threshold is already near its optimum.\n\nI can queue this for the agent once its current round ends, along with a breakdown of what makes up the 58k restart. Do you want that?",
   "expect": [],
@@ -79,9 +79,12 @@
    {
     "text": "not enabled|standard window",
     "subject": "^(tool|user)/"
+   },
+   {
+    "text": "propos|would |could |modell|estimate|optimum|levers?"
    }
   ],
-  "max": 3
+  "max": 1
  },
  {
   "name": "what only a person at the command line does is the operator's",
@@ -102,6 +105,19 @@
   "max": 3
  },
  {
+  "name": "an agent's report of work done and measured gives its results",
+  "project": "dxf",
+  "piece": "talk: Both optimisation targets are met on f001.dxf, the largest sample (19.3 MB, 112,322 LINEs). The full check, `Check.runWith \"\"`, passes 37 of 37 checks. They compare all the samples with ezdxf and cover the round trip and the text/binary tag layer. Everything is committed on `full-parser` and nothing is pushed.\n\nThe aim for parse speed is met only on LINE-heavy files. The two small POLYLINE/TEXT samples parse at about 34 MB/s, below the 100 MB/s aim.\n\n| f001 | before (54a1d27) | now | ezdxf |\n|---|---|---|---|\n| parse to typed document | 468 ms (47 MB/s) | 138 ms (140 MB/s) | 3.35 s |\n| print | 704 ms | 85 ms (228 MB/s) | 3.65 s |\n| max residency | 100 MB | 43 MB (2.2\u00d7 the file) | n/a |\n| peak RSS | 227 MB | 83 MB | 263 MB |\n\nPrinting is now faster than parsing. The two small samples show the same pattern as the table:\n\n| sample | size | parse | print |\n|---|---|---|---|\n| CPQ-SPS-ZZ-ZZ-DR-A-0005 | 509 KB | 15 ms | 19 ms |\n| condo_A-301_arch-elevation | 470 KB | 14 ms | 18 ms |\n\nBoth go through the slower general codecs for POLYLINE, VERTEX and TEXT.\n\nWhat changed, in the order of the commits:\n- **LINE decoder (078bcc4):** LINE is read straight from the source bytes, layer, owner and linetype strings are shared between neighbouring entities, and points are unpacked.\n- **Double formatter (e9bc1cb):** doubles are written with a Grisu2 shortest-digits printer (`Tag/Double.hs`) straight into the output buffer.\n- **Number reading and tag scanning (1e59861):** `readDouble` uses the Eisel-Lemire algorithm for long decimals, the group-code line is read in one pass, and `readDouble` no longer goes through Integer arithmetic.\n- **Printing (e327ed2, 3ce585d, b61b6b7):** each text tag is written by one buffer primitive (`Tag/Prim.hs`), and the entity head is one primitive. A whole LINE, head plus six numbers, is one primitive (`Entity/FastOut.hs`).\n- **Tests:** new checks cover `readDouble` rounding over 300,000 random decimals, `doubleText` read-back and shortest digits, fast decoder against general decoder, and the one-primitive LINE against the codecs in all eight layouts.\n- **Fixture generator:** `tools/gen_binary.py` now writes the r12/r2007/r2018 text and binary fixtures, and `tools/gen_all.sh` runs it with the others. I deleted `r12.bin.dxf` and reran the script to confirm it comes back.\n- **`PERF.md`:** it has a before/after table for each step, the profile findings, the ezdxf comparison and what is left.\n\nWhat is left, also listed in `PERF.md`:\n- **Other entity types:** VERTEX, LWPOLYLINE, TEXT, INSERT, CIRCLE and ARC still use the field-table codecs, which allocate a closure per field. The small samples parse and print below the aim because of this.\n- **Source bytes for unchanged doubles:** I did not write doubles back from their source bytes. The printer produces shortest digits, which matches CAD output on the samples, and keeping the bytes would cost memory per number.\n- **Slower re-parse:** the printed f001 parses in about 172 ms against about 140 ms for the original. I did not investigate why.",
+  "expect": [
+   {
+    "text": "1[34]\\d(\\.\\d)? ?ms|13\\d MB/s|14\\d MB/s|parse",
+    "subject": "^dxf/(performance|status)"
+   }
+  ],
+  "forbid": [],
+  "max": 3
+ },
+ {
   "name": "tool traffic, summarized: little that lasts",
   "project": "dxf",
   "piece": "1720+8|1720-1727 echo: commit 0ca0652 \"PERF.md: current table, 10 largest samples, cold/loop, ezdxf\" on full-parser, no push; f001 cold parse 146.9ms (132MB/s), print 109.8ms; ezdxf 3279/3538ms; smalls 42-98MB/s. 1721-22: PERF.md ratios edited, grep unechoed. 1724-27: read FastKit.hs, Fast.hs 1-200; read-only; profiling build in /tmp/dxf-prof started, result not echoed.\n1728+8|1728-1735: tool: profiled dxf-bench built at /tmp/dxf-prof (-fprof-auto-top), 23.6s OK; CPQ-0005 profile loop: 16.8GB alloc, MUT 9.9s, GC 2.1s; top >>= FastKit 14.9% time/19.6% alloc, commonR 7.6%, mint 7.1%, mdbl 6.2%, scanFrom 4.8%/10.9%, decodeWith 13.4%, splitTags 2.8%; fastEntity 55%; read Parse.hs 40-131, Tag/Text.hs; no fix yet; uncommitted; last commit 0ca0652.\n1736+8|1736-1743 tool/echo: read Text.hs (nextTag/codeLine scanner, throws DxfError) and Intern.hs (1024-slot cache over Map); grep fastEntity: Fast.hs:33 takes Interner, ByteString, type, start offset; Parse.hs:100 fast path. Patched Fast.hs (afterType, POLYLINE flags via mint 70), Parse.hs entityLoop; unbuilt, uncommitted. STALE(2) COMPILE-ERROR Fast.hs:217:47 `<|>` not in scope\n1744+8|1744-1751 tool/echo: Fast.hs:217 COMPILE-ERROR \"(<|>) not in scope\" on Maybe Int (STALE(2)); fixed by adding Control.Applicative import. Parse.hs entityLoop patched: fast path chains LINE-style entities via nextTag, falls back to decodeEntity; fastEntity takes offset nx, returns entity+next offset; Fast.hs exports afterType. Unbuilt, uncommitted; last commit 0ca0652; user 1455 interning, user 953 Stage 3 pending.\n1752+8|tool/echo 1752-1759: Fast.hs fixed (<|> import at 217), COMPILE OK, check skipped, unverified. meas.sh: CPQ-0005 19.44MB alloc/parse, cold parse 10.8ms (46 MB/s), print 6.3ms; condo_A-301 parse 10.4ms; f001 parse 139 MB/s, print ~96ms. prof: 16.29GB alloc, MUT 9.76s, FastKit >>= 20% alloc, commonR 8%, mint 7%, scanFrom 6%. Uncommitted; last 0ca0652; user 1455, 953 pending.\n1760+4|tool: eval on CPQ-0005 found fastEntity rejects 1654 POLYLINE, 18 BLOCK/ENDBLK, 11 LAYER, 1 LTYPE, 2 TABLE, 4 SECTION, 1 EOF (first rejects SECTION@10, ENDSEC@254, SECTION@264); GHC ambiguous `take` error, then rerun ok. Read-only; uncommitted Fast/Parse fast-path unverified; last commit 0ca0652; user 1455 interning, 953 Stage 3 pending.\n1764+4|tool: census --value DXF.parseDXF on \"0\\nEOF\\n\": 0.00 MB, 10 closures, trivial. tool: eval listing POLYLINE tag runs of CPQ-0005 (first 3, distinct tag sets) failed twice: Data.ByteString.length and Prelude.take ambiguous; no result, no edits.\n1768+4|tool/eval 1768-1771: probed CPQ-0005 POLYLINE tag sequences via Data.List.tails; first tries hit ByteString vs String pattern type error (GHC-83865), then VERTEX records show tags 8,66,70,10,20,30 and 0 \"VERTEX\"; prefix count 1 distinct shape; no result on the prior probe; read-only, no edits. Uncommitted; last commit 0ca0652; user 1455 interning and user 953 Stage 3 pending.",
@@ -110,9 +126,12 @@
    {
     "text": ".",
     "subject": "^user/"
+   },
+   {
+    "text": "uncommitted|unverified|not yet|still (to|fail)|in progress|pending|remain"
    }
   ],
-  "max": 2
+  "max": 1
  },
  {
   "name": "a word in passing",
