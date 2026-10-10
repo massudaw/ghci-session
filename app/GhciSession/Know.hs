@@ -38,7 +38,7 @@ module GhciSession.Know
   , candidates, reconPrompt, parseDecisions
   , foldLimit, foldDue, foldPrompt, parseFold
   , rank, search, snippet
-  , render, renderFor, operatorSubject, knownLine, day, budget
+  , factScore, isRuleSubject, render, renderFor, operatorSubject, knownLine, day, budget
   , markSeenFrom, Seen (..), confirmations, confirmationsOf, promotable, srcProject
   ) where
 
@@ -69,7 +69,8 @@ import GhciSession.Sys (now)
 -- | A fact that is stored. @fBy@: the fact that replaced it (then it no longer holds).
 data Fact = Fact
   { fId :: String, fSubject :: T.Text, fTopic :: T.Text, fText :: T.Text
-  , fFirst :: Double, fLast :: Double, fSrc :: String, fReplaces :: [String], fBy :: Maybe String }
+  , fFirst :: Double, fLast :: Double, fSrc :: String, fReplaces :: [String], fBy :: Maybe String
+  , fSeen :: Int }   -- ^ how many times it was said again (a mark @seen@)
   deriving (Eq, Show)
 
 -- | A fact just extracted, not yet stored.
@@ -107,10 +108,10 @@ loadFacts dir = do
         step (order, mp) j = case lookupStr "mark" j of
           Nothing -> case lookupStr "id" j of
             Just i | not (M.member i mp) ->
-              (i : order, M.insert i (Fact i (tx "subject" j) (tx "topic" j) (tx "fact" j) (nm "first" j) (nm "last" j) (fromMaybe "" (lookupStr "src" j)) [ r | JStr r <- lookupArr "replaces" j ] Nothing) mp)
+              (i : order, M.insert i (Fact i (tx "subject" j) (tx "topic" j) (tx "fact" j) (nm "first" j) (nm "last" j) (fromMaybe "" (lookupStr "src" j)) [ r | JStr r <- lookupArr "replaces" j ] Nothing 0) mp)
             _ -> (order, mp)
           Just "by" -> (order, upd j (\f -> f { fBy = lookupStr "by" j }) mp)
-          Just "seen" -> (order, upd j (\f -> f { fLast = max (fLast f) (nm "at" j) }) mp)
+          Just "seen" -> (order, upd j (\f -> f { fLast = max (fLast f) (nm "at" j), fSeen = fSeen f + 1 }) mp)
           Just "forget" -> (order, maybe mp (`M.delete` mp) (lookupStr "id" j))
           _ -> (order, mp)
         (order, mp) = foldl' step ([], M.empty) js
@@ -389,7 +390,7 @@ renderFor known bytes project facts = render bytes project (filter keep facts)
 render :: Int -> String -> [Fact] -> T.Text
 render bytes project facts0
   | null facts = T.empty
-  | otherwise = T.pack "<subjects>\nWhat is known by subject, as it stood when this view was last rewritten; in each, the facts most recently confirmed first. Only a `known:` line in <chat> that comes AFTER this block was learned later, and holds over it; the block holds what an older one said.\n"
+  | otherwise = T.pack "<subjects>\nWhat is known by subject, as it stood when this view was last rewritten; in each, the facts confirmed most and most recently first. Only a `known:` line in <chat> that comes AFTER this block was learned later, and holds over it; the block holds what an older one said.\n"
       <> T.concat [ subject share s | (tier, frac) <- [(t1, 0.45), (t2, 0.40), (t3, 0.15 :: Double)], let share = max 200 (floor (fromIntegral bytes * frac / fromIntegral (max 1 (length tier)))), s <- tier ]
       <> T.pack "</subjects>\n"
   where
@@ -397,6 +398,7 @@ render bytes project facts0
     by = M.fromListWith (flip (++)) [ (fSubject f, [f]) | f <- facts ]
     subjects = sortBy (comparing (\s -> Down (maximum (map fLast (by M.! s))))) (M.keys by)
     top s = T.takeWhile (/= '/') s
+    now = maximum (map fLast facts)
     t1 = [ s | s <- subjects, top s `elem` map T.pack ["tool", "user"] ]
     t2 = [ s | s <- subjects, top s == T.pack project, s `notElem` t1 ]
     t3 = [ s | s <- subjects, s `notElem` t1, s `notElem` t2 ]
@@ -405,18 +407,32 @@ render bytes project facts0
           ls = map snd (sortBy (comparing (Down . fst)) (plain fs ++ calls fs))
           (kept, more) = fit share ls
       in T.pack "## " <> s <> T.pack (" (" ++ show (length fs) ++ (if length fs == 1 then " fact)" else " facts)") ++ "\n") <> T.unlines kept <> (if more then T.pack "  (more: recall, or ghci-session knowledge --subject " <> s <> T.pack ")\n" else T.empty)
-    plain fs = [ (fLast f, T.pack ("- [" ++ day (fFirst f) ++ (if day (fLast f) /= day (fFirst f) then ", confirmed " ++ day (fLast f) else "") ++ "] ") <> fText f)
+    plain fs = [ (factScore now f, T.pack ("- [" ++ day (fFirst f) ++ (if day (fLast f) /= day (fFirst f) then ", confirmed " ++ day (fLast f) else "") ++ "] ") <> fText f)
                | f <- fs, isCall (fTopic f) == Nothing ]
     -- (what a tool was called with, a tool a line: the arguments, the newest first, and the newest's call)
     calls fs =
       let m = M.fromListWith (flip (++)) [ (tool, [(fFirst f, key, f)]) | f <- fs, Just (tool, key) <- [isCall (fTopic f)] ]
-      in [ (d0, T.pack ("- [" ++ day d0 ++ "] " ++ tool ++ " is called with: ") <> T.intercalate (T.pack ", ") [ T.pack ("\"" ++ k ++ "\" (since " ++ day d ++ ")") | (d, k, _) <- as ]
+      in [ (factScore now f0, T.pack ("- [" ++ day d0 ++ "] " ++ tool ++ " is called with: ") <> T.intercalate (T.pack ", ") [ T.pack ("\"" ++ k ++ "\" (since " ++ day d ++ ")") | (d, k, _) <- as ]
                  <> T.pack ". Newest, " <> snd (T.breakOn (T.pack "e.g. ") (fText f0)))
          | (tool, as0) <- M.toList m, let as = sortBy (comparing (\(d, _, _) -> Down d)) as0, ((d0, _, f0) : _) <- [as] ]
     fit share = go 0
       where go _ [] = ([], False)
             go used (l : r) = let n = B.length (TE.encodeUtf8 l) + 1
                               in if used + n > share then ([], True) else let (a, b) = go (used + n) r in (l : a, b)
+
+-- | What a fact is worth in a subject's block, the biggest first: @(1 + times said again) * 2^(-age / half-life)@,
+-- the age in days from the newest fact stored (@now@) to its last confirmation. A rule -- a fact under @user/@ or
+-- @.../rules@ -- ages six times slower (half-life 180 days, others 30): said once 90 days ago it is worth 0.71, a
+-- fact of another kind of that age 0.125. Ordered by the last confirmation alone, a rule said once sank under
+-- every newer fact and was cut. Of two facts of one kind the one confirmed at least as often and at least as
+-- lately is never worth less, so a rule is never below a rule confirmed once and older than it.
+factScore :: Double -> Fact -> Double
+factScore now f = (1 + fromIntegral (fSeen f)) * 2 ** negate (max 0 (now - fLast f) / 86400 / halfLife)
+  where halfLife = if isRuleSubject (fSubject f) then 180 else 30
+
+-- | A subject that holds rules the user gave, or the project's.
+isRuleSubject :: T.Text -> Bool
+isRuleSubject s = T.pack "user/" `T.isPrefixOf` s || T.pack "/rules" `T.isSuffixOf` s
 
 -- candidates for the system prompt --------------------------------------------------------------
 

@@ -423,8 +423,11 @@ never rewritten. The subjects are `tool/usage` and `tool/config` (true of this t
 - **Folded**: a subject whose facts pass 6,000 characters has the half least recently confirmed written again
   as at most five; the folded ones are kept, marked as replaced.
 - **Read** as a block before the view (`<subjects>`, 16 KB, taken from the view's budget): the tool's and the
-  user's subjects first (45%), the project's (40%), the others' by last use (15%); in a subject the facts most
-  recently confirmed first, cut where its share ends. What the tools' own schemas already say is left out of it
+  user's subjects first (45%), the project's (40%), the others' by last use (15%); in a subject the facts by a
+  score, the biggest first, cut where its share ends: `(1 + times said again) * 2^(-age/half-life)`, the age in days from the
+  newest fact stored to the fact's last confirmation, the half-life 30 days -- 180 for a rule (a subject under `user/` or
+  ending `/rules`), so a rule said once 90 days ago is worth 0.71 where other facts are worth 0.125 (by last confirmation
+  alone a rule said once sank under newer trivia and was cut). A fact said as often and as lately is never worth less. What the tools' own schemas already say is left out of it
   (a call-argument fact whose argument a tool's schema describes) and so is `tool/operator`, what only a person at
   the command line does (`import --go`, `chat --send`, the `i` key in `top`, `knowledge search`); both stay in the
   store, in `knowledge --subject` and in `top`'s tab. The extraction prompt is given the tools' one-line

@@ -2272,7 +2272,7 @@ knowLoop s m cmd = do
                 let replaced = case d of { K.Replace ks -> at ks; _ -> [] }
                 i <- K.newId
                 K.withLock dir $ do
-                  K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing)
+                  K.addFact dir (K.Fact i (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) (map K.fId replaced) Nothing 0)
                   forM_ replaced (\f -> K.markBy dir (K.fId f) i)
                 if recent then histAdd s "known" (K.knownLine n replaced) else behind =: True
             fold
@@ -2291,7 +2291,7 @@ knowLoop s m cmd = do
               ids <- mapM (const K.newId) texts
               K.withLock dir $ do
                 forM_ (zip3 [0 :: Int ..] ids texts) $ \(k, i, t) ->
-                  K.addFact dir (K.Fact (i ++ "-f" ++ show k) subject (T.pack "folded from older facts") t (minimum (map K.fFirst old)) (maximum (map K.fLast old)) (sName s ++ ":fold") (if k == 0 then map K.fId old else []) Nothing)
+                  K.addFact dir (K.Fact (i ++ "-f" ++ show k) subject (T.pack "folded from older facts") t (minimum (map K.fFirst old)) (maximum (map K.fLast old)) (sName s ++ ":fold") (if k == 0 then map K.fId old else []) Nothing (sum (map K.fSeen old)))
                 forM_ old (\f -> K.markBy dir (K.fId f) (head ids ++ "-f0"))
               logS s (printf "knowledge: %s: %d older fact(s) folded into %d" (T.unpack subject) (length old) (length texts))
       piece recent date sr body = do
@@ -2322,7 +2322,7 @@ knowLoop s m cmd = do
                       forM_ fresh $ \k -> do
                         let n = K.callFact tool k (H.mDate x) (src i 1) (H.mText x)
                         fid <- K.newId
-                        K.withLock dir (K.addFact dir (K.Fact (fid ++ "-" ++ k) (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) [] Nothing))
+                        K.withLock dir (K.addFact dir (K.Fact (fid ++ "-" ++ k) (K.nSubject n) (K.nTopic n) (K.nText n) (K.nDate n) (K.nDate n) (K.nSrc n) [] Nothing 0))
                       pure True
           _ -> pure True
         -- a stretch of 128 messages that ended 32 ago

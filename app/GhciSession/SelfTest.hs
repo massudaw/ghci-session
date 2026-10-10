@@ -439,7 +439,7 @@ run = do
 
   -- what is known by subject ("GhciSession.Know")
   let kNew sub topic text = K.New (T.pack sub) (T.pack topic) (T.pack text) 1000 "p/s:1+1"
-      kFact i sub topic text first lst = K.Fact i (T.pack sub) (T.pack topic) (T.pack text) first lst "p/s:1+1" [] Nothing
+      kFact i sub topic text first lst = K.Fact i (T.pack sub) (T.pack topic) (T.pack text) first lst "p/s:1+1" [] Nothing 0
       answer = T.pack "```json\n{\"facts\": [{\"scope\": \"tool\", \"subject\": \"dxf/architecture\", \"topic\": \"t\", \"fact\": \"A.\"}, {\"scope\": \"user\", \"subject\": \"x\", \"topic\": \"t\", \"fact\": \"B.\"}, {\"scope\": \"project\", \"subject\": \"tool/usage\", \"topic\": \"t\", \"fact\": \"C.\"}, {\"scope\": \"project\", \"subject\": \"PROJECT/performance\", \"topic\": \"t\", \"fact\": \"D.\"}]}\n```"
   eq "know: an answer's facts are filed where their scope allows, whatever subject it gave; three at most; a fence around the JSON is passed over"
      [ (T.unpack (K.nSubject n), T.unpack (K.nText n)) | n <- K.parseNew "dxf" 1000 "s" answer ]

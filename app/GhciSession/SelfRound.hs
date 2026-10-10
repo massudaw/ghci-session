@@ -7,11 +7,29 @@ import GhciSession.Quota
 import GhciSession.QuotaFit
 import GhciSession.Roll
 import GhciSession.Gc (orphanBuilds, isPidFile)
+import qualified GhciSession.Know as K
+import qualified Data.Text as T
 import Data.List (isInfixOf)
+
+-- (a fact: subject, text, days since the newest, times said again)
+kf :: String -> String -> Double -> Int -> K.Fact
+kf sub txt ago seen = K.Fact txt (T.pack sub) (T.pack "t") (T.pack txt) (1e9 - ago * 86400) (1e9 - ago * 86400) "p/s:1+1" [] Nothing seen
 
 checks :: [(String, Bool)]
 checks =
-  [ ("gc: a live chat's command line holds ghc and the build directory, yet it is no orphaned build once its chat.pid owns it"
+  [ ("know: a rule said once 90 days ago is worth 0.71, a fact of another kind 0.125, one said three times 40 days ago beats one said today"
+    , let sc = K.factScore 1e9; near x y = abs (x - y) < 0.01
+      in near (sc (kf "user/rules" "R" 90 0)) 0.707 && near (sc (kf "dxf/status" "R" 90 0)) 0.125
+         && sc (kf "dxf/status" "R" 40 3) > sc (kf "dxf/status" "T" 0 0) && sc (kf "dxf/status" "R" 90 3) < sc (kf "dxf/status" "T" 0 0))
+  , ("know: a fact confirmed as often and as lately is never worth less, rules included"
+    , let sc = K.factScore 1e9
+      in and [ sc (kf s "a" a n) >= sc (kf s "b" b 0) | s <- ["user/rules", "dxf/rules", "dxf/status"], a <- [0, 30, 400], b <- [a, a + 1, a + 200], n <- [0, 2] ]
+         && K.isRuleSubject (T.pack "user/style") && K.isRuleSubject (T.pack "nes/rules") && not (K.isRuleSubject (T.pack "nes/status")))
+  , ("know: the block lists a fact said often before newer said-once ones, where the last-confirmation order cut it"
+    , let facts = [ (kf "dxf/status" "KEPT-OFTEN" 40 3) ] ++ [ kf "dxf/status" ("TRIVIA-" ++ show k ++ replicate 60 'x') (fromIntegral k) 0 | k <- [0 .. 30 :: Int] ]
+          block = T.unpack (K.render 700 "dxf" facts)
+      in "KEPT-OFTEN" `isInfixOf` block && not ("TRIVIA-30" `isInfixOf` block))
+  , ("gc: a live chat's command line holds ghc and the build directory, yet it is no orphaned build once its chat.pid owns it"
     , let chat = (79661, 1, "/r/dist-newstyle/build/ghci-session/ghci-session chat -s tool"); ghc = (500, 1, "ghc --interactive -i/r/dist-newstyle/x")
           other = (600, 1, "vim /r/dist-newstyle/x")
       in (map fst (orphanBuilds [chat, ghc, other] [] ["/r/dist-newstyle"]), map fst (orphanBuilds [chat, ghc, other] [79661] ["/r/dist-newstyle"]))
