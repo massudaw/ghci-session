@@ -19,7 +19,7 @@ import System.Posix.Process (getProcessID)
 
 import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
-import GhciSession.Chat (toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
+import GhciSession.Chat (ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..))
 import GhciSession.Doc
@@ -85,6 +85,15 @@ run = do
      (map Right [JStr "a\n\t\\/\"b", JStr "\128512!", JStr "\65533x", JStr "\233A", JStr "\233\n\252"])
   eq "json: a string that does not end, or ends on a backslash, is an error"
      (map (either (const True) (const False) . parseJson) ["\"abc", "\"ab\\", "\"a\\\"", "\"\\u12\"", "{\"a\\nb\": 1"]) [True, True, True, True, True]
+
+  -- chat --continue without a turn.json: only this chat's own turn is gone on with, not an imported conversation's
+  let m i k = (i, T.pack k, T.pack "x")
+  eq "continue: a user message followed by this chat's work is a turn" (ownTurnStart [m 1 "user", m 2 "tool", m 3 "echo"]) (Just 1)
+  eq "continue: the last of several is the turn" (ownTurnStart [m 1 "user", m 2 "talk", m 3 "user", m 4 "echo"]) (Just 3)
+  eq "continue: an imported user message, answered by ai, is not" (ownTurnStart [m 1 "user", m 2 "tool", m 3 "note", m 4 "user", m 5 "ai", m 6 "ai"]) Nothing
+  eq "continue: a user message nothing follows is not (not known whose it is)" (ownTurnStart [m 1 "user", m 2 "talk", m 3 "user"]) Nothing
+  eq "continue: notes between do not matter, an ai message that follows later does not either" (ownTurnStart [m 1 "user", m 2 "known", m 3 "tool", m 4 "ai"]) (Just 1)
+  eq "continue: no user message, no turn" (ownTurnStart [m 1 "talk", m 2 "ai"]) Nothing
 
   -- objects are taken only from a session compiled with the same flags (-O1 then -O2 on a module: "[Flags changed]")
   let bconf = Conf { cRoot = "/p", cStateDir = "/p/.s", cStateRel = ".s", cDefault = "tool", cTargets = [("tool", JNull), ("engine", JNull)], cSessions = [], cPrices = [] }

@@ -29,7 +29,7 @@ module GhciSession.Chat
   ( chatMain, summarizeMain
   -- (the pure parts, for the self-tests)
   , arguments, chatTools, toolJson, applyEdit, agentShow, isWork, splitImports, writeRuns, groupByPaths, nearest, fuzzyReplace, replaceOnce, editPaths, saveWait, isRed, ownGhci, capWith, shCap
-  , TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
+  , ownTurnStart, TurnState (..), ViewCtx (..), Spent (..), turnJson, turnFrom, renderTail, newBound, viewLines, tailMax, planMax, renderPlan
   , ReadRec (..), readRange, readAgainst, trimAt
   ) where
 
@@ -1808,7 +1808,7 @@ continueTurn ch e o system pending rolled = do
       -- message of the user's
       began = case round <$> lookupNum "start" tj :: Maybe Int of
         Just b | any (\(i, _, _) -> i == b) ms -> Just b
-        _ -> listToMaybe [ i | (i, k, _) <- reverse ms, k == user ]
+        _ -> ownTurnStart ms
       turnMs = maybe [] (\b -> dropWhile (\(i, _, _) -> i < b) ms) began
   case turnMs of
     _ | isNothing rolled, lookupBool "done" tj == Just True -> uiNote (cUi ch) "[nothing to go on with: the last turn ended]"
@@ -1833,7 +1833,20 @@ continueTurn ch e o system pending rolled = do
           (spent0, tStart) = maybe (Spent 0 0 0 0 0 False False, tNow) (\(_, sp, t) -> (sp, t)) rolled
       if eProvider e == ClaudeCli then turnCliFrom ch e o sys first pending spent0 tStart
         else goOn ch e o pending (TurnState [ msg "system" (T.pack sys), msg "user" first ] 0 0 [] spent0 tStart Nothing)
-    [] -> uiNote (cUi ch) "[nothing to go on with: the history has no message of the user's]"
+    [] -> uiNote (cUi ch) "[nothing to go on with: no turn of this chat's own -- no turn.json, and the last message of the user's is not followed by work of this chat (an imported conversation's is answered by ai messages)]"
+
+-- | Where a turn began, when the chat noted nothing (no turn.json, or one that names a message not in the log): the
+-- last message of the user's -- if it is THIS chat's. The log holds other agents' conversations as well (what
+-- @import@ brings: the user's message of another session, answered by an @ai@ message), and going on with one of
+-- those is answering a question nobody asked this chat. This chat's own turn is a user message whose next message
+-- is its own work: a tool call, an echo, a reply. One followed by an @ai@ message, or by nothing at all (it is
+-- not known whose it was), is not gone on with: turn.json is what says that a turn was begun and not ended.
+ownTurnStart :: [(Int, T.Text, T.Text)] -> Maybe Int
+ownTurnStart ms = case break (\(_, k, _) -> k == T.pack "user") (reverse ms) of
+  (_, []) -> Nothing
+  (afterRev, (i, _, _) : _) -> case [ k | (_, k, _) <- reverse afterRev, k `notElem` map T.pack ["note", "known"] ] of
+    (k : _) | k `elem` map T.pack ["tool", "echo", "talk"] -> Just i
+    _ -> Nothing
 
 -- | The last messages of a turn's log that fit the bytes, oldest first, and how many before them do not.
 resumeLog :: Int -> [(Int, T.Text, T.Text)] -> ([(Int, T.Text, T.Text)], Int)
