@@ -21,7 +21,7 @@ import GhciSession.Cli (Args (..), autostopPlan, parseArgs)
 import GhciSession.Config
 import GhciSession.Gc (deadSessions, holdsObjects)
 import Data.Time.Clock (addUTCTime, getCurrentTime)
-import GhciSession.Inbox (Mark (..), markOf, advance, settled, turnReport, stillRunning)
+import GhciSession.Inbox (Mark (..), markOf, advance, settled, turnReport, stillRunning, sendNamed, drainInbox)
 import GhciSession.Chat (shownCut, parseOpts, Opts (..), hookEnv, unchangedNote, tcClean, readHeader, budgetSaid, numbered, numberBar, ownTurnStart, toolJson, applyEdit, ReadRec (..), agentShow, arguments, chatTools, isWork, Spent (..), TurnState (..), ViewCtx (..), capWith, newBound, renderTail, renderPlan, planMax, viewLines, editPaths, fuzzyReplace, isRed, ownGhci, shCap, turnFrom, turnJson, nearest, readAgainst, readRange, replaceOnce, saveWait, splitImports, writeRuns, groupByPaths)
 import GhciSession.Daemon (scopedSummary, cabalField, ccWords, countSub, hangLimit, moduleDelta, replace, unitsBelow, verdictOf, warningsIn)
 import GhciSession.Mcp (Tool (..), toolArgs, toolBrief)
@@ -343,6 +343,20 @@ run = do
       dead <- deadSessions c []
       held <- mapM (holdsObjects . (sd </>)) ["built-O2" </> "objs", "ghost-O2"]
       eq "gc: a dead session that never loaded is reaped; one idle under ten minutes, or holding compiled modules, is not" (map (\(n, _, _) -> n) dead, held) (["ghost-O2"], [True, False])
+      -- the inbox: a message is UTF-8 bytes whatever the locale, one that is not valid UTF-8 is taken, not lost
+      me <- getProcessID
+      let ibx = sd </> "a" </> "chat-inbox"
+      createDirectoryIfMissing True ibx
+      writeFile (sd </> "a" </> "chat.pid") (show me)
+      sent <- sendNamed c "a" "caf\233 ok"
+      sentBytes <- either (const (pure B.empty)) (B.readFile . snd) sent
+      B.writeFile (ibx </> "0000") (B.pack [0x68, 0x69, 0xFF, 0x21])
+      got <- newIORef []
+      drainInbox c "a" (\x -> modifyIORef got (++ [x]))
+      taken <- readIORef got
+      left <- listDirectory ibx
+      eq "inbox: a message is written as UTF-8 bytes; one that is not valid UTF-8 is taken with the replacement character; the inbox is empty after"
+         (sentBytes, taken, left) (B.pack [0x63, 0x61, 0x66, 0xC3, 0xA9, 0x20, 0x6F, 0x6B], map T.pack ["hi\65533!", "caf\233 ok"], [])
     Left e -> check ("gc: the fixture's config: " ++ e) False
 
   -- the scan and the waiter

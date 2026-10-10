@@ -7,7 +7,7 @@
 -- @chat --wait@): the chat keeps what it knows of the turn under way in @turn.json@ (where it began, the tool
 -- calls so far, its last words, its summary line, and @done@ when it ended); 'waitMain' reads that.
 module GhciSession.Inbox
-  ( send, watch, chatPidFile
+  ( send, sendNamed, watch, drainInbox, chatPidFile
   , Mark (..), markOf, advance, settled, turnReport, stillRunning, readTurn, waitMain, running, turnLines
   ) where
 
@@ -18,7 +18,8 @@ import qualified Data.ByteString as B
 import Data.List (intercalate, isPrefixOf, sort)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Encoding.Error as TE
 import System.Directory (createDirectoryIfMissing, doesFileExist, listDirectory, removeFile, renameFile)
 import System.FilePath ((</>))
 import System.IO (hPutStrLn, stderr)
@@ -64,7 +65,7 @@ sendNamed conf name text
           me <- getProcessID
           -- (written whole under another name first: the chat never reads half a message)
           let file = printf "%017.0f-%d" (t * 1e6) (fromIntegral me :: Int) :: String
-          w <- try (TIO.writeFile (dir </> ('.' : file)) (T.pack text) >> renameFile (dir </> ('.' : file)) (dir </> file)) :: IO (Either IOException ())
+          w <- try (B.writeFile (dir </> ('.' : file)) (TE.encodeUtf8 (T.pack text)) >> renameFile (dir </> ('.' : file)) (dir </> file)) :: IO (Either IOException ())
           pure (either (Left . show) (const (Right (fromIntegral pid, dir </> file))) w)
 
 -- | The chat's side: what is left for it is taken, oldest first, three times a second -- while it is the
@@ -74,12 +75,23 @@ watch conf name take' = void $ forkIO $ forever $ do
   threadDelay 300000
   me <- getProcessID
   r <- try (readFile (chatPidFile conf name)) :: IO (Either IOException String)
-  when (either (const False) (\s -> [ p | (p, _) <- reads s ] == [me]) r) $ do
-    fs <- either (const []) id <$> (try (listDirectory (inboxDir conf name)) :: IO (Either IOException [FilePath]))
-    forM_ (sort [ f | f <- fs, not ("." `isPrefixOf` f) ]) $ \f -> do
-      t <- try (TIO.readFile (inboxDir conf name </> f)) :: IO (Either IOException T.Text)
-      void (try (removeFile (inboxDir conf name </> f)) :: IO (Either IOException ()))
-      forM_ t $ \x -> unless (T.null (T.strip x)) (take' (T.strip x))
+  when (either (const False) (\s -> [ p | (p, _) <- reads s ] == [me]) r) (drainInbox conf name take')
+
+-- | One pass over the inbox: what is left in it is taken, oldest first. A message is bytes, read as UTF-8 whatever the
+-- locale the chat runs in is (a message that is not valid UTF-8 is taken with the replacement character, not dropped);
+-- one that cannot be read at all is set aside as @.unread-NAME@ (it is not retried, and not lost without a word).
+drainInbox :: Conf -> String -> (T.Text -> IO ()) -> IO ()
+drainInbox conf name take' = do
+  let dir = inboxDir conf name
+  fs <- either (const []) id <$> (try (listDirectory dir) :: IO (Either IOException [FilePath]))
+  forM_ (sort [ f | f <- fs, not ("." `isPrefixOf` f) ]) $ \f -> do
+    t <- try (B.readFile (dir </> f)) :: IO (Either IOException B.ByteString)
+    case t of
+      Left _ -> void (try (renameFile (dir </> f) (dir </> (".unread-" ++ f))) :: IO (Either IOException ()))
+      Right b -> do
+        void (try (removeFile (dir </> f)) :: IO (Either IOException ()))
+        let x = T.strip (TE.decodeUtf8With TE.lenientDecode b)
+        unless (T.null x) (take' x)
 
 -- waiting for a turn ------------------------------------------------------------------------------
 
