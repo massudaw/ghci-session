@@ -6,7 +6,7 @@
 -- are the memory. Nothing here touches the repl.
 --
 -- > claude mcp add ghci -- ghci-session mcp            # from the project's directory
-module GhciSession.Mcp (mcpMain, Tool (..), tools, toolArgs, toolBrief, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
+module GhciSession.Mcp (mcpMain, Tool (..), tools, declaredTool, limited, toolArgs, toolBrief, call, callReach, Reach (..), pick, request, handleWith, serveOn, relayMain) where
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Concurrent.MVar (newEmptyMVar, putMVar, takeMVar)
@@ -27,6 +27,7 @@ import System.IO
 import System.Posix.IO (fdToHandle)
 
 import GhciSession.Config
+import GhciSession.Declared (Declared (..), Param (..), builtinNames, substitute)
 import qualified GhciSession.Know as K
 import GhciSession.Json
 import GhciSession.Sys
@@ -99,7 +100,24 @@ errorReply rid code msg = JObj [("jsonrpc", JStr "2.0"), ("id", rid), ("error", 
 
 -- | One message: a reply for a request, none for a notification.
 handle :: Conf -> Json -> IO (Maybe Json)
-handle conf = handleWith tools (call conf) (\_ -> pure [])
+handle conf = handleWith offered run (\_ -> pure [])
+  where
+    -- (tools/list is for the whole project and not a session: the default session's tools are what is served)
+    session = cDefault conf
+    offered = limited (builtinToolsOf conf session) tools
+              ++ [ (declaredTool d) { tDesc = dDesc d ++ " [declared by the project's session " ++ session ++ ", where it runs]" } | d <- declaredOf conf session ]
+    run name args
+      | name `notElem` map tName offered = pure (False, T.pack ("tool " ++ show name ++ " is not offered by this project (\"builtin_tools\" of its target)"))
+      | otherwise = call conf name args
+
+-- | A declared tool as the tool list has it.
+declaredTool :: Declared -> Tool
+declaredTool d = Tool (dName d) (dDesc d) [ (pName p, (pType p, pDesc p)) | p <- dParams d ] (dRequired d)
+
+-- | The built-in tools a project offers: all, or those its "builtin_tools" names.
+limited :: Maybe [String] -> [Tool] -> [Tool]
+limited Nothing ts = ts
+limited (Just ns) ts = [ t | t <- ts, tName t `elem` ns ]
 
 -- | The same server over other tools: the ones given, each run by the function given. The last argument: blocks to
 -- send after an answer's text. (The chat serves its own
@@ -277,7 +295,14 @@ data Reach = Reached | Unreached | Lost deriving (Eq, Show)
 
 -- | A tool, and whether it reached its session: a caller may wait out a session that is restarting.
 callReach :: Conf -> String -> Json -> IO (Bool, T.Text, Reach)
-callReach conf name args = do
+callReach conf name args
+  -- (a declared tool of the default session: its expression with the arguments in it, an eval)
+  | name `notElem` builtinNames, Just d <- lookup name [ (dName x, x) | x <- declaredOf conf (cDefault conf) ] =
+      case substitute d args of
+        Left why -> pure (False, T.pack (name ++ ": " ++ why), Reached)
+        Right expr -> callReach conf "eval" (JObj ([("expr", JStr expr), ("tool", JStr name), ("session", JStr (cDefault conf))] ++ [ ("timeout", JNum t) | Just t <- [dTimeout d] ]
+                                              ++ [ (k, v) | k <- ["quiet", "from"], Just v <- [lookup k (fromMaybe [] (obj args))] ]))
+  | otherwise = do
   let s k = lookupStr k args
       n k = lookupNum k args
       num k = maybe [] (\v -> [(k, JNum v)]) (n k)
@@ -290,7 +315,7 @@ callReach conf name args = do
           say r = pure (lookupBool "ok" r == Just True, staleNote r <> fromMaybe T.empty (lookupText "out" r)
                        , case lookupStr "down" r of { Just "before" -> Unreached; Just _ -> Lost; Nothing -> Reached })
       case name of
-        "eval" -> go "eval" (str "expr" "expr" ++ num "timeout") >>= say
+        "eval" -> go "eval" (str "expr" "expr" ++ str "tool" "tool" ++ num "timeout") >>= say
         "status" -> go "status" [] >>= say
         "typecheck" -> go "typecheck" [] >>= say
         "reload" -> go "reload" [("check", JBool (lookupBool "test" args /= Just False))] >>= say

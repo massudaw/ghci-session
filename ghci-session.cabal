@@ -37,7 +37,7 @@ library
   exposed-modules:  GhciSession.Json, GhciSession.Config, GhciSession.Sys, GhciSession.Repl, GhciSession.Watch,
                     GhciSession.Daemon, GhciSession.Gc, GhciSession.Cli, GhciSession.SelfTest, GhciSession.SelfBench,
                     GhciSession.Doc, GhciSession.History, GhciSession.Mcp, GhciSession.Llm, GhciSession.Anthropic, GhciSession.ClaudeCli, GhciSession.Import, GhciSession.ImportStamp, GhciSession.Chat, GhciSession.ChatUi, GhciSession.ChatProfile, GhciSession.ChatTui,
-                    GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Image, GhciSession.Wire, GhciSession.Inbox, GhciSession.Carry, GhciSession.Roll, GhciSession.Quota, GhciSession.QuotaFit, GhciSession.SelfRound, GhciSession.Replay, GhciSession.Know, GhciSession.Md, GhciSession.Top
+                    GhciSession.Search, GhciSession.Vfs, GhciSession.Usage, GhciSession.Image, GhciSession.Wire, GhciSession.Inbox, GhciSession.Carry, GhciSession.Declared, GhciSession.Fence, GhciSession.Roll, GhciSession.Quota, GhciSession.QuotaFit, GhciSession.SelfRound, GhciSession.SelfTools, GhciSession.Replay, GhciSession.Know, GhciSession.Md, GhciSession.Top
   c-sources:        cbits/ghs_sys.c, cbits/ghs_http.c
   if flag(fff)
     c-sources:      cbits/ghs_fff.c

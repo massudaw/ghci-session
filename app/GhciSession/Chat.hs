@@ -51,7 +51,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TE
 import qualified Data.Text.IO as TIO
-import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getFileSize, getModificationTime, getTemporaryDirectory, listDirectory, removeFile, renameFile)
+import System.Directory (canonicalizePath, createDirectoryIfMissing, doesDirectoryExist, doesFileExist, getFileSize, getModificationTime, getTemporaryDirectory, listDirectory, removeFile, renameFile)
 import System.Environment (getArgs, getEnvironment, getExecutablePath, lookupEnv, setEnv)
 import System.Posix.Process (ProcessStatus, executeFile, getProcessID, getProcessStatus)
 import System.Posix.Signals (installHandler, Handler (..), nullSignal, sigHUP, sigKILL, sigTERM, signalProcess, signalProcessGroup)
@@ -72,7 +72,9 @@ import GhciSession.Config
 import GhciSession.Json
 import GhciSession.Llm
 import qualified GhciSession.History as H
-import GhciSession.Mcp (Tool (..), pick, tools)
+import GhciSession.Declared (Declared (..), substitute)
+import GhciSession.Fence (realPath, within, writeAllowed)
+import GhciSession.Mcp (Tool (..), declaredTool, limited, pick, tools)
 import qualified GhciSession.Mcp as Mcp
 import GhciSession.Sys (now)
 import qualified GhciSession.Sys as Sys
@@ -457,7 +459,7 @@ runBatch ch byName calls run = do
   forM_ run $ \i -> do
     let tc = calls !! i
     uiCall (cUi ch) (tcName tc) (take 300 (encode (tcArgs tc)))
-    logH ch "tool" (T.pack (tcName tc ++ " " ++ encode (tcArgs tc)))
+    logH ch "tool" (callText ch (tcName tc) (tcArgs tc))
   let paths i = maybe [] (\t -> callPaths ch t (calls !! i)) (lookup (tcName (calls !! i)) byName)
       groups = groupByPaths [ (i, paths i) | i <- run ]
       watched = any (watches ch) (concatMap paths run)
@@ -566,6 +568,7 @@ runTool ch t a0
   | not (null missing) =
       let emptyHint = if null (obj a0) then " [hint: tool arguments were empty {}; if this was near the 8k token limit, output likely ran out of tokens before writing arguments -- please call the tool directly with less reasoning]" else ""
       in pure (False, T.pack (tName t ++ ": missing argument(s) " ++ intercalate ", " missing ++ "; it takes " ++ intercalate ", " (tReq t) ++ emptyHint))
+  | Just d <- lookup (tName t) [ (dName x, x) | x <- declaredOf (cConf ch) (cName ch) ] = runDeclared ch d a
   | tName t == "eval" = evalTool ch a
   -- (status with a wait: until the session has a verdict -- not starting, no check running -- or the seconds are
   -- up; a `sleep 14; tail daemon.log` through the shell was how that was waited for)
@@ -590,6 +593,39 @@ runTool ch t a0
       r <- try (fileTool ch (tName t) a) :: IO (Either IOException (Bool, T.Text))
       pure (either (\e -> (False, T.pack ("IOError: " ++ show e))) id r)
   where (a, missing) = arguments t a0
+
+-- | A declared tool: its expression with the call's arguments in it as literals, evaluated in the session; and when
+-- the answer ends with the path of a picture inside the project, the picture shown after it.
+runDeclared :: Chat -> Declared -> Json -> IO (Bool, T.Text)
+runDeclared ch d a = case substitute d a of
+  Left why -> pure (False, T.pack (dName d ++ ": " ++ why))
+  Right expr -> do
+    (ok, out) <- sessionCall ch "eval" (JObj [("expr", JStr expr), ("tool", JStr (dName d)), ("session", JStr (cName ch)), ("timeout", JNum (fromMaybe evalTimeout (dTimeout d)))])
+    if ok then (,) True <$> pictureAfter ch out else pure (ok, out)
+
+-- | An answer, and after it the picture its last line names: the path (as printed, quotes and all) of an image file
+-- inside the project, kept as a read of it keeps one, with the path said.
+pictureAfter :: Chat -> T.Text -> IO T.Text
+pictureAfter ch out = case reverse (filter (not . T.null) (map T.strip (T.lines out))) of
+  l : _ -> do
+    let p = unquote (T.unpack l)
+    found <- if null p then pure Nothing else either (\(_ :: IOException) -> Nothing) id <$> try (look p)
+    case found of
+      Nothing -> pure out
+      Just (rel, bytes) -> either (\why -> out <> T.pack ("\n[" ++ rel ++ ": " ++ why ++ "]")) (\(n, said) -> out <> T.pack (printf "\n[%s: %s]\n" rel said) <> Img.marker n) <$> Img.keep (imagesDir ch) bytes
+  [] -> pure out
+  where
+    unquote s = case s of { '"' : r | not (null r), last r == '"' -> init r; _ -> s }
+    look p = case inside ch p of
+      Left _ -> pure Nothing
+      Right full -> do
+        there <- doesFileExist full
+        size <- if there then getFileSize full else pure 0
+        real <- realPath full
+        root <- canonicalizePath (cDir ch)
+        if not there || size > 64000000 || not (within [root] real) then pure Nothing else do
+          bytes <- B.readFile full
+          pure (if isJust (Img.kindOf bytes) then Just (makeRelative (cDir ch) full, bytes) else Nothing)
 
 -- | Seconds an eval or a bench may run before it is interrupted, when the call does not say: the session's
 -- own default is ten minutes, and an agent's expression that hangs (a loop that never ends) is a dead ten
@@ -870,7 +906,15 @@ data Sub = Sub { suName :: String, suFile :: FilePath, suQueue :: TQueue (Maybe 
 
 -- | The tools of whoever asks: a subagent has all but the two that make and tell subagents.
 toolsFor :: Chat -> [Tool]
-toolsFor ch = [ t | t <- chatTools, isNothing (cSub ch) || tName t `notElem` ["spawn", "tell"] ]
+toolsFor ch = [ t | t <- limited (builtinToolsOf (cConf ch) (cName ch)) chatTools, isNothing (cSub ch) || tName t `notElem` ["spawn", "tell"] ]
+              ++ map declaredTool (declaredOf (cConf ch) (cName ch))      -- (the project's own tools are always offered)
+
+-- | A tool call as the history has it: a declared tool's as the eval it is (the tool named, the expression with
+-- its arguments in it), any other as it was called. (So the history is the audit of what a declared tool ran.)
+callText :: Chat -> String -> Json -> T.Text
+callText ch name args = case lookup name [ (dName d, d) | d <- declaredOf (cConf ch) (cName ch) ] of
+  Just d | Right e <- substitute d args -> T.pack ("eval " ++ encode (JObj [("tool", JStr name), ("expr", JStr e)]))
+  _ -> T.pack (name ++ " " ++ encode args)
 
 agentsDir :: Chat -> FilePath
 agentsDir ch = cStateDir (cConf ch) </> cName ch </> "agents"
@@ -1135,7 +1179,7 @@ fileTool ch name a = case name of
             header = T.pack (readHeader (lineBudget ch) rel (if null shown then 0 else start) endLine totalLines)
         if isJust around && null hits then pure (False, T.pack (printf "%s: no line holds %s (%d lines; the text is looked for as it is, in one line)" rel (show (maybe "" T.unpack around)) totalLines))
           else pure (True, header <> (if null shown then T.pack "(empty)" else T.intercalate (T.pack "\n") shown) <> more)
-  "write" -> withPath $ \p -> do
+  "write" -> withWritePath $ \p -> do
     let content = fromMaybe T.empty (lookupText "content" a)
     written <- writtenAt ch rel
     was <- either (\(_ :: IOException) -> Nothing) (Just . decode) <$> try (B.readFile p)
@@ -1146,7 +1190,7 @@ fileTool ch name a = case name of
     -- (a file written over is answered with what changed in it: a whole file sent again loses lines unseen)
     d <- maybe (pure (T.pack "\n[a new file]")) (\old -> changeOf rel old content) was
     withDiff d <$> saved ch (printf "wrote %s (%d characters%s)" rel (T.length content) budget) written
-  "edit" -> withPath $ \p -> do
+  "edit" -> withWritePath $ \p -> do
     -- (appending makes the file if it is not there)
     t <- if lookupBool "append" a == Just True then either (\(_ :: IOException) -> T.empty) decode <$> try (B.readFile p) else decode <$> B.readFile p
     case applyEdit t a of
@@ -1171,7 +1215,9 @@ fileTool ch name a = case name of
           pure (Left (T.pack (printf "replacement %d: no path (each replacement is {path, old, new}; one without a path is in the file of the one before it)" (i :: Int))))
         apply files ((i, (Just rp, e)) : rest) = case inside ch rp of
           Left why -> pure (Left (T.pack (printf "replacement %d: %s" i why)))
-          Right p -> do
+          Right p -> writeAllowed (cDir ch) (writePathsOf (cConf ch) (cName ch)) p >>= \fenced -> case fenced of
+           Left why -> pure (Left (T.pack (printf "replacement %d: %s" i why)))
+           Right () -> do
             t <- maybe (decode <$> B.readFile p) pure (lookup p files)
             case applyEdit t e of
               Left why -> pure (Left (T.pack (printf "replacement %d, %s: " i rp) <> why))
@@ -1274,6 +1320,8 @@ fileTool ch name a = case name of
     withPath k = case inside ch rel of
       Left why -> pure (False, T.pack why)
       Right p -> k p
+    -- (a file to write: inside the project, and where the target's "write_paths" allow, if it has any)
+    withWritePath k = withPath $ \p -> writeAllowed (cDir ch) (writePathsOf (cConf ch) (cName ch)) p >>= either (\why -> pure (False, T.pack why)) (const (k p))
 
 -- | One replacement in a text: exactly once as written, or (nowhere as written) once with its spacing
 -- squeezed; the new text and what was done, or why not.
@@ -1746,7 +1794,7 @@ runCli ch e o pending run = do
         modifyIORef' spent (\x -> x { sTools = sTools x + 1, sTouched = sTouched x || name `elem` ["write", "edit", "edits", "sh"] })
         uiCall (cUi ch) name (take 300 (encode args))
         modifyIORef' rotR (seeRot name args)
-        unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode args)))
+        unless (name == "remember") (logH ch "tool" (callText ch name args))
         uiBusy (cUi ch) (Just ("running " ++ name))
         t2 <- now
         (ok, out0) <- case lookup name byName of
@@ -2283,7 +2331,7 @@ goOn ch e o pending ts = do
                     -- session's own tools are asked quietly); remember writes the log itself
                     unless (M.member i pre) $ do      -- (a batched call was shown and logged when the batch began)
                       uiCall (cUi ch) name shownArgs
-                      unless (name == "remember") (logH ch "tool" (T.pack (name ++ " " ++ encode (tcArgs tc))))
+                      unless (name == "remember") (logH ch "tool" (callText ch name (tcArgs tc)))
                     checkStop ch
                     uiBusy (cUi ch) (Just ("running " ++ name ++ (if length (pToolCalls p) > 1 then printf " (%d of %d)" (i + 1) (length (pToolCalls p)) else "")))
                     t2 <- now
@@ -2583,7 +2631,11 @@ chatMain conf args = case parseOpts args of
             Right e0 -> do
               let e = e0 { eModel = fromMaybe (eModel e0) (oModel o), eBase = maybe (eBase e0) (reverse . dropWhile (== '/') . reverse) (oBase o) }
                   agent = cAgent (chatWith stdoutUi)
-              instr <- maybe (pure "") (\f -> trim <$> readFile f) (oInstructions o)
+              -- (the flag wins; else the target's "instructions", a file of the project -- and a restart, which runs the chat again, finds it again)
+              instr <- case (oInstructions o, instructionsOf conf name) of
+                (Just f, _) -> trim . T.unpack . decode <$> B.readFile f
+                (_, Just f) -> either (\(e :: IOException) -> ioError (userError ("the instructions file of the target, " ++ f ++ ", cannot be read: " ++ show e))) (pure . trim . T.unpack . decode) =<< try (B.readFile (cRoot conf </> f))
+                _ -> pure ""
               let system = T.unpack ((if either (const False) gSharedPrompt cfg then H.systemPrompt else H.turnPrompt) agent) ++ "\n" ++ master ++ (if oView o then recentDoc agent else "") ++ (if null instr then "" else "\n" ++ instr)
                   dropPid = void (try (removeFile (chatPidFile conf name)) :: IO (Either IOException ()))
                   -- the chat on a Ui: the lines to take come on the queue (standard input's, or the screen's)

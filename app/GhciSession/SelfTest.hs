@@ -49,6 +49,7 @@ import GhciSession.Carry
 import GhciSession.Roll
 import GhciSession.Replay
 import qualified GhciSession.SelfRound as Round
+import qualified GhciSession.SelfTools as Tools
 import GhciSession.Llm (Chunks (..), chunkEvent, chunksMessage, emptyChunks)
 import GhciSession.Sys
 import GhciSession.Watch
@@ -146,6 +147,10 @@ run = do
 
   -- the plan's metering (GhciSession.SelfRound)
   forM_ Round.checks (uncurry check)
+
+  -- a project's own tools, the write boundary (GhciSession.SelfTools)
+  forM_ Tools.checks (uncurry check)
+  Tools.checksIO >>= mapM_ (uncurry check)
 
   -- the rollover's controller
   let ro0 = emptyRoll 12.5

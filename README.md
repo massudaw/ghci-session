@@ -189,6 +189,7 @@ and `state_dir` are shared by every target and can be overridden per target.
 | `line_budget` | a project's rule for the lines of a file: the chat's `read`, `write` and `edit` then say a file's count against it (`[OVER BUDGET: 260/250 lines!]`). Absent: nothing is said of lines. The `vfs` tool keeps its own `budget` argument (default 250) |
 | `rollover_ratio` | what a token written to the provider's cache costs over one read from it: what `chat --rollover auto` weighs a cold call by. Absent (the default): the calls' own cache writes say -- 20 for one-hour writes, 12.5 for five-minute ones or none seen; a number here fixes it whatever they say |
 | `on_turn_end` | a shell command the chat runs when a turn ends (told `GHS_SESSION`, `GHS_TURN_SECONDS`, `GHS_TURN_TOOL_CALLS`, and the last words on stdin); see "A line for a chat started somewhere else" (default none) |
+| `tools`, `builtin_tools`, `write_paths`, `instructions` | what a project gives its agent: tools of its own, which built-in tools it may use, where it may write, its standing instructions; see "A project's own tools" (all four default to none: nothing declared, every tool, anywhere in the project, no file) |
 | `rts_flags` | the repl's RTS flags (default `-c -Fd0.5`) |
 | `idle_stop_mins` | stop the session after this long unused; never while it serves |
 | `load_timeout`, `eval_timeout` | seconds; a command past its timeout is interrupted, not abandoned |
@@ -736,6 +737,48 @@ for it -- and not its doings, which the chat shows as notes while they happen (`
 turn stops its subagents; with the agent waiting, Esc (Ctrl-C on the streams) stops the ones still at work. They
 are threads of the chat: one that is restarted or left takes them with it, and their files stay for `tell`. On every
 backend, the subscription's too.
+
+### A project's own tools
+
+A target can give its agent tools of its own -- the functions its modelling code is made of -- and fence what the
+agent may do besides. All four keys are per target (for a composed session, the first member that sets each is the
+one taken):
+
+```json
+"tools": [{"name": "look", "description": "Look at a view.", "expr": "Demo.look {view} {box} {flag}",
+           "params": {"view": {"type": "string", "description": "which view"}, "box": {"type": "integer"},
+                      "flag": {"type": "boolean"}},
+           "required": ["view", "box"], "timeout": 60}],
+"builtin_tools": ["read", "edit", "write", "edits", "ls", "grep", "find", "status"],
+"write_paths": ["notes", "plan.md"],
+"instructions": "AGENT.md"
+```
+
+- **`tools`.** The chat offers them beside its own, to its subagents too, and `ghci-session mcp` serves them (tools/list
+  is per project, so it serves the *default* session's). A call puts each `{param}` into `expr` as a Haskell literal of
+  its declared type (`string`, `number`, `integer`, `boolean`) -- a string as `show` writes it, so nothing a model
+  writes can leave the quotes; a number checked, in parentheses when negative; a boolean as `True`/`False`; an
+  optional parameter (one not in `required`) as `Nothing`, or `(Just literal)` when given -- and is then an eval in
+  the session. The history holds that eval, as the model's call to the tool (`eval {"tool":"look","expr":...}`), so it
+  is the audit of what ran. A parameter the tool does not declare, or a required one missing, is refused. Refused when
+  the configuration is loaded, with the reason: a name that is a built-in tool's, a `{param}` of `expr` not declared,
+  a type of none of the four, a name used twice.
+- **A picture as a result.** When the eval's answer ends with the path of an image file inside the project (a PNG, a
+  JPEG, ... what `read` of an image takes; the path as the program printed it, quotes and all), the model is shown the
+  image after the answer, as `read` shows one, with the path said. A path outside the project, or a symlink out of
+  it, shows nothing.
+- **`builtin_tools`.** When set, only the built-in tools it names are offered (the chat's, and the server's); a call of
+  another is refused. A project may leave out `sh` and `eval`, so that every action the agent has is a declared tool.
+  Declared tools are always offered.
+- **`write_paths`.** When set (directories or files, relative to the project), `write`, `edit` and `edits` refuse a
+  path outside them -- after normalising (a `..` that gets out, a symlink out) -- with a message that says where
+  writing is allowed; `edits` writes nothing if any of its files is refused. **`eval` and `sh` are not fenced by
+  it**: they run code and commands that can write anywhere the user can. A project that wants the fence to hold
+  leaves them out with `builtin_tools`.
+- **`instructions`.** A file relative to the project root, put in the system prompt when the chat is started without
+  `--instructions` (the flag wins). A restarted chat reads it again.
+
+`tools/check-tools.py` proves each live, with `tools/fake-claude.py` in place of the program.
 
 ## Watching a session, and working in it: `top`
 

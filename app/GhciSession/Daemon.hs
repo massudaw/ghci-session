@@ -2038,6 +2038,7 @@ describeReq op req = T.pack (unwords (op' : args))
         ++ [ "--no-test" | lookupBool "check" req == Just False ] ++ [ "--no-refork" | lookupBool "refork" req == Just False ]
         ++ [ "--fast" | lookupBool "fast" req == Just True ] ++ [ "--resume" | lookupBool "resume" req == Just True ] ++ [ "--live" | lookupBool "live" req == Just True ]
         ++ [ unwords [ w | JStr w <- lookupArr "words" req ] | op == "doc" ]
+        ++ [ "[tool " ++ n ++ "]" | Just n <- [lookupStr "tool" req], not (null n) ]     -- (an eval a project's declared tool made: the history says whose)
         ++ [ e | Just e <- [lookupStr "expr" req], not (null e) ]
         ++ [ f | JStr f <- lookupArr "files" req ]
 

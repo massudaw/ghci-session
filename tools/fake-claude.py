@@ -49,6 +49,8 @@ def main():
     arg = lambda k: argv[argv.index(k) + 1] if k in argv else None
     tools = Tools(arg("--mcp-config")) if arg("--mcp-config") else None
     note("pid %d" % os.getpid())
+    note("system prompt ends: " + json.dumps((arg("--system-prompt") or "")[-300:]))      # (where a project's instructions are)
+    note("tools offered: " + " ".join(tools.names if tools else []))
     out({"type": "system", "subtype": "init", "model": arg("--model"), "tools": tools.names if tools else []})
     calls = 0
     base, grow = (int(x) for x in os.environ.get("FAKE_CLAUDE_CTX", "1000,0").split(","))

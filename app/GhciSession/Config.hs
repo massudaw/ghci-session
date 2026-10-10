@@ -8,6 +8,7 @@ module GhciSession.Config
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
   , benchSession, benchOf, benchSites, sameFlags, knownSession
   , targetJson, stateOf, lineBudgetOf, onTurnEndOf, rolloverRatioOf, rolloverRatioSet
+  , declaredOf, builtinToolsOf, writePathsOf, instructionsOf
   ) where
 
 import Control.Exception (IOException, try)
@@ -18,6 +19,7 @@ import System.Directory (canonicalizePath, createDirectoryIfMissing, doesFileExi
 import System.FilePath (takeDirectory, (</>))
 import System.Info (os)
 
+import GhciSession.Declared (Declared, parseDeclared, validBuiltin, validWritePaths)
 import GhciSession.Json
 
 configName :: FilePath
@@ -93,6 +95,7 @@ defaults =
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
   , ("status_url", JNull), ("idle_stop_mins", JNum 0), ("async_refork", JBool False), ("fingerprint_files", JArr []), ("fast_start", JBool False), ("watch_typecheck", JBool True), ("profile", JArr [])
   , ("history", JBool True), ("summarize_cmd", JNull), ("summarize_jobs", JNum 64), ("agent", JStr "Agent"), ("compact_prompt", JStr "own"), ("knowledge", JBool False), ("line_budget", JNull), ("on_turn_end", JNull), ("rollover_ratio", JNull)
+  , ("tools", JNull), ("builtin_tools", JNull), ("write_paths", JNull), ("instructions", JNull)
   ]
 
 reserved :: [String]
@@ -132,6 +135,7 @@ loadConf root0 = do
         let gone = [ k | k <- unknown, k `elem` ["engine", "hygiene_build", "hygiene_module", "zygote_module"] ]
         unless (null gone) (Left ("target " ++ show name ++ ": " ++ show gone ++ " no longer exist(s): the session's GHCi is always the engine, and it prunes and forks itself -- remove the key(s)"))
         unless (null unknown) (Left ("target " ++ show name ++ ": unknown key(s) " ++ show unknown))
+        either (\why -> Left ("target " ++ show name ++ ": " ++ why)) pure (fence merged)
         Right (name, merged)
       let sessions = [ (s, strs m) | (s, m) <- lookupObj "sessions" raw ]
       mapM_ (\(s, ms) -> do
@@ -140,6 +144,39 @@ loadConf root0 = do
       Right Conf { cRoot = root, cStateDir = root </> rel, cStateRel = rel
                  , cDefault = fromMaybe (fst (head ts)) (lookupStr "default" raw)
                  , cTargets = ts, cSessions = sessions, cPrices = lookupObj "prices" raw }
+
+-- | What a target says of its agent's tools and where it may write is fit (else why not).
+fence :: Json -> Either String ()
+fence t = do
+  _ <- parseDeclared (t .: "tools")
+  _ <- validBuiltin (t .: "builtin_tools")
+  _ <- validWritePaths (t .: "write_paths")
+  case t .: "instructions" of
+    JNull -> Right ()
+    JStr f | not (null f) -> Right ()
+    _ -> Left "\"instructions\" is a file, relative to the project"
+
+-- | The value of a key the first member of the session that sets it (not null) gives.
+firstSet :: String -> Conf -> String -> Maybe Json
+firstSet k conf name = case [ v | m <- fromMaybe [name] (lookup name (cSessions conf)), let v = targetJson conf m .: k, v /= JNull ] of
+  v : _ -> Just v
+  [] -> Nothing
+
+-- | The tools the project declares for its agent ("tools"): the first member of the session that sets them.
+declaredOf :: Conf -> String -> [Declared]
+declaredOf conf name = either (const []) id (maybe (Right []) parseDeclared (firstSet "tools" conf name))
+
+-- | The built-in tools the agent is offered, when the project limits them ("builtin_tools"); none given, all.
+builtinToolsOf :: Conf -> String -> Maybe [String]
+builtinToolsOf conf name = strs <$> firstSet "builtin_tools" conf name
+
+-- | Where the agent's write, edit and edits may put a file ("write_paths", relative to the project); none given, anywhere in it.
+writePathsOf :: Conf -> String -> Maybe [FilePath]
+writePathsOf conf name = strs <$> firstSet "write_paths" conf name
+
+-- | The file (relative to the project) the chat's instructions are read from when it is not given one ("instructions").
+instructionsOf :: Conf -> String -> Maybe FilePath
+instructionsOf conf name = firstSet "instructions" conf name >>= str
 
 targetJson :: Conf -> String -> Json
 targetJson conf name = fromMaybe JNull (lookup name (cTargets conf))
