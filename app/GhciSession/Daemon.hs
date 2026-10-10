@@ -295,9 +295,11 @@ replCommandLine s exe v = case gRepl cfg of
          -- of it, and what `bench` measures, run at its real speed. Interpreted, a scan of a 19 MB file that
          -- takes 0.3 s ran for minutes. A reload compiles more slowly for it.)
       ++ [ "--repl-options=-O" ++ show (max 1 (gOptLevel cfg)) | gOptimize cfg ]
+         -- ("sites": the info tables mapped to the source, and a constructor's own table at each place it is built)
+      ++ concat [ [ "--repl-options=-finfo-table-map", "--repl-options=-fdistinct-constructor-tables" ] | gSites cfg ]
       ++ [ gCabalArgs cfg, unwords (gUnits cfg) ]
   where cfg = sCfg s
-        objects = gHygiene cfg || gOptimize cfg || not (null (gServers cfg))
+        objects = gHygiene cfg || gOptimize cfg || gSites cfg || not (null (gServers cfg))
 
 -- | The engine for this session -- our GHCi, beside this executable -- its compiler's version, and that
 -- compiler's library directory. It must have been built for exactly the compiler on PATH: it is that

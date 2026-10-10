@@ -6,7 +6,7 @@
 module GhciSession.Config
   ( Conf (..), Cfg (..), Check (..), Server (..)
   , configName, findRoot, loadConf, resolve, sessionNames, readMembers, writeMembers
-  , benchSession, benchOf, knownSession
+  , benchSession, benchOf, benchSites, knownSession
   , targetJson, stateOf
   ) where
 
@@ -63,6 +63,7 @@ data Cfg = Cfg
   , gPruneGc :: String   -- ^ "compact" (the RTS's own choice) or "copying": the collection after a reload's unlink
   , gHygiene :: Bool
   , gOptimize :: Bool                -- ^ the session's code compiled and optimised (not interpreted): what it measures is what the built code does
+  , gSites :: Bool                   -- ^ its code's info tables mapped to the source, a constructor's apart for each place it is built at: what `census` tells where a value was allocated by
   , gOptLevel :: Int                 -- ^ ... at this level (@"optimize": true@ is 1; a number is the level)
   , gRestartStuck :: Bool            -- ^ an evaluation that ran out of time and cannot be interrupted is ended by a restart
   , gHandoverEnv :: (String, String), gUnlinkAfter :: String, gPruneGcIdle :: Double
@@ -85,7 +86,7 @@ defaults =
   , ("load_timeout", JNum 900), ("eval_timeout", JNum 30), ("repl_budget_mb", JNum 6144)
   , ("rts_flags", JStr "-c -Fd0.5"), ("ghc_jobs", JNum (-1)), ("capabilities", JNum 0), ("prune_gc", JStr "copying"), ("heap_auto", JBool False), ("mem_return", JBool True)
   , ("handover_env", JArr [JStr "GHS_HANDOVER_OUT", JStr "GHS_HANDOVER_IN"])
-  , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False), ("optimize", JBool False), ("restart_stuck", JBool True)
+  , ("unlink_after", JStr "eval"), ("prune_gc_idle_s", JNum 0), ("hygiene", JBool False), ("optimize", JBool False), ("sites", JBool False), ("restart_stuck", JBool True)
   , ("auto_reload", JBool True), ("watch_check", JBool False), ("watch_refork", JBool True)
   , ("reload_on_commit", JBool False), ("watch_ext", JArr (map JStr [".hs", ".hs-boot", ".c", ".h", ".cabal"]))
   , ("watcher", JStr "auto"), ("poll_interval", JNum 0.2), ("debounce", JNum 0.2)
@@ -231,11 +232,16 @@ benchOf :: Conf -> String -> Maybe (String, Int, [String])
 benchOf conf name
   | name `elem` sessionNames conf = Nothing
   | otherwise = case break (== '+') name of
-      (h, rest) | (l : 'O' : '-' : esab) <- reverse h, l `elem` "012", reverse esab `elem` sessionNames conf ->
+      (h0, rest) | h <- (if benchSites name then init h0 else h0), (l : 'O' : '-' : esab) <- reverse h, l `elem` "012", reverse esab `elem` sessionNames conf ->
         Just (reverse esab, fromEnum l - fromEnum '0', [ unit u | u <- parts rest, not (null u) ])
       _ -> Nothing
   where parts s = case break (== '+') (drop 1 s) of { (a, []) -> [a]; (a, r) -> a : parts r }
         unit u = case break (== '.') u of { (k, '.' : n) -> k ++ ":" ++ n; _ -> u }
+
+-- | Is this the session of its kind that has its info tables mapped to the source? (@BASE-O2s@: an @s@ after
+-- the level.)
+benchSites :: String -> Bool
+benchSites name = case reverse (takeWhile (/= '+') name) of { ('s' : l : 'O' : '-' : _) -> l `elem` "012"; _ -> False }
 
 -- | Is this a session there can be: one of the configuration, or one to measure one of them in?
 knownSession :: Conf -> String -> Bool
@@ -250,7 +256,7 @@ resolve conf session
   -- save would be compiled twice, the second time slowly): it is reloaded when it is asked something. And it
   -- stops by itself when it has not been asked for half an hour.
   | Just (base, level, units) <- benchOf conf session = fmap (\c -> c
-      { gOptimize = level > 0, gOptLevel = level, gUnits = gUnits c ++ [ u | u <- units, u `notElem` gUnits c ]
+      { gOptimize = level > 0, gOptLevel = level, gSites = benchSites session, gUnits = gUnits c ++ [ u | u <- units, u `notElem` gUnits c ]
       , gChecks = [], gServers = [], gHistory = False, gSummarizeCmd = Nothing, gAutoReload = False, gWatchTypecheck = False
       , gIdleStopMins = 30, gHygiene = False }) <$> resolve conf base
 resolve conf session = do
@@ -286,7 +292,7 @@ resolve conf session = do
         , gLoadTimeout = maxOf "load_timeout" ts, gEvalTimeout = maxOf "eval_timeout" ts, gBudgetMb = maxOf "repl_budget_mb" ts
         , gRtsFlags = jStr "rts_flags" t0, gPruneGc = jStr "prune_gc" t0, gHeapAuto = jBool "heap_auto" t0, gMemReturn = jBool "mem_return" t0, gGhcJobs = round (maxOf "ghc_jobs" ts), gCapabilities = round (maxOf "capabilities" ts)
         , gHygiene = any (jBool "hygiene") ts
-        , gOptimize = any ((> 0) . optLevel) ts, gOptLevel = maximum (0 : map optLevel ts), gRestartStuck = all (jBool "restart_stuck") ts
+        , gOptimize = any ((> 0) . optLevel) ts, gOptLevel = maximum (0 : map optLevel ts), gSites = any (jBool "sites") ts, gRestartStuck = all (jBool "restart_stuck") ts
         , gHandoverEnv = hand, gUnlinkAfter = jStr "unlink_after" t0, gPruneGcIdle = jNum "prune_gc_idle_s" t0
         , gAutoReload = null ts || any (jBool "auto_reload") ts
         , gWatchCheck = all (jBool "watch_check") ts, gWatchRefork = all (jBool "watch_refork") ts

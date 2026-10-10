@@ -48,7 +48,7 @@ static int vs_add(uintptr_t k) {
 }
 
 /* ---- per info table: bytes and count ---- */
-typedef struct { uintptr_t info; uint64_t bytes, count; char label[96]; int kind; } Info;   /* kind: 0 other, 1 cons, 2 Char */
+typedef struct { uintptr_t info; uint64_t bytes, count; char label[224]; int kind; } Info;   /* kind: 0 other, 1 cons, 2 Char */
 #define MAX_INFO 8192
 static Info infos[MAX_INFO]; static int n_info;
 static const char *type_name(int t) {
@@ -67,6 +67,27 @@ static const char *type_name(int t) {
     default: return NULL;
   }
 }
+/* Where a closure is from, when the code it belongs to was compiled with its info tables mapped to the source
+ * (-finfo-table-map: every info table then has an entry saying its module, its place in the file and the
+ * binding it is of; with -fdistinct-constructor-tables a constructor has a table for each place it is built
+ * at, so a value is told apart by WHERE it was allocated, not only by what it is). The label becomes
+ * "what @ file:span (binding)". The RTS's lookup, found at run time: its shape is this compiler's. */
+static void site_of(StgClosure *p, Info *e) {
+#if __GLASGOW_HASKELL__ >= 914
+  static int looked; static bool (*lookup)(const StgInfoTable *, InfoProvEnt *);
+  if (!looked) { looked = 1; lookup = (bool (*)(const StgInfoTable *, InfoProvEnt *))dlsym(RTLD_DEFAULT, "lookupIPE"); }
+  InfoProvEnt ent;
+  if (!lookup || !lookup(p->header.info, &ent)) return;
+  const char *file = ent.prov.src_file, *span = ent.prov.src_span, *lb = ent.prov.label, *mod = ent.prov.module;
+  if (!(file && *file) && !(mod && *mod)) return;
+  char what[96]; snprintf(what, sizeof what, "%s", e->label);
+  snprintf(e->label, sizeof e->label, "%s @ %s%s%s%s%s%s", what, (file && *file) ? file : mod, (span && *span) ? ":" : "", (span && *span) ? span : "",
+           (lb && *lb) ? " (" : "", (lb && *lb) ? lb : "", (lb && *lb) ? ")" : "");
+#else
+  (void)p; (void)e;
+#endif
+}
+
 static Info *info_of(StgClosure *p) {
   const StgInfoTable *it = get_itbl(p);
   uintptr_t key = (uintptr_t)p->header.info;
@@ -89,6 +110,7 @@ static Info *info_of(StgClosure *p) {
         const char *tn = type_name(t);
         if (tn) snprintf(e->label, sizeof e->label, "%s", tn); else snprintf(e->label, sizeof e->label, "TYPE_%d", t);
       }
+      site_of(p, e);
       return e;
     }
   }
@@ -238,7 +260,7 @@ int ghs_cen_root_row(int i, char *label, int64_t *out) {
 int ghs_cen_ninfo(void) { return MAX_INFO; }
 int ghs_cen_info_row(int i, char *label, int64_t *out) {   /* i over 0..MAX_INFO: 0 for an empty slot */
   if (i < 0 || i >= MAX_INFO || !infos[i].info) return 0;
-  snprintf(label, 96, "%s", infos[i].label); out[0] = infos[i].bytes; out[1] = infos[i].count;
+  snprintf(label, 224, "%s", infos[i].label); out[0] = infos[i].bytes; out[1] = infos[i].count;
   return 1;
 }
 int ghs_cen_nstr(void) { return MAX_STR + 1; }

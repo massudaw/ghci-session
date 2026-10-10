@@ -96,7 +96,7 @@ import GhsAddUnits (addTargets, addUnits)
 import GhsCompat (homeObject, homeUnits, mapUnitFlags, promptUnit, withModuleGraph)
 import GhsFastLoad (loadAll, setChanged)
 import GHC.Hygiene.Store (storeDrop, storeNames)
-import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusOf, keptReport, keptStrings, memNow)
+import GHC.Hygiene.Census (dupsCafs, dupsKept, dupsOf, benchQuick, benchOf, cafReport, cafStrings, censusTop, keptReport, keptStrings, memNow)
 import GHC.Hygiene.Zygote (ZygoteChild (..), ZygoteSpec (..), zygoteFork)
 import GhciSession.Json
 
@@ -554,7 +554,7 @@ query e q = case fromMaybe "" (lookupStr "q" q) of
       "store-drop" -> liftIO (storeDrop (arg "expr") >>= \ok -> putStrLn (if ok then "dropped " ++ arg "expr" ++ ": its owner starts again when it is next linked" else "no slot " ++ arg "expr"))
       "value" -> do
         hv <- GHC.compileExpr ("(" ++ arg "expr" ++ ")")
-        liftIO (censusOf (arg "expr") (unsafeCoerce hv :: Any))
+        liftIO (censusTop (maybe 12 round (lookupNum "top" q)) (arg "expr") (unsafeCoerce hv :: Any))
       _ -> liftIO (cafReport top cap)
     pure (JObj [])
   "bench" -> do

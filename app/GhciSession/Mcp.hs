@@ -151,7 +151,7 @@ tools =
   , Tool "release" "End a hold: reload what was saved since it, once, and answer with that verdict." [sessionArg] []
   , Tool "test" "Run the project's tests on the loaded code -- the whole check, which sets the session's verdict; or, with expr, ONE expression run as a test (a group of the tests, say), scored by the check's own fail and pass patterns, the verdict left as it is: seconds instead of the whole suite." [("expr", ("string", "an expression to run as a test instead of the whole check, e.g. a test group")), ("member", ("string", "one member of a composed session")), ("timeout", ("number", "seconds, with expr (default 30)")), sessionArg] []
   , Tool "doc" "Find a definition: by name (a typo, a prefix or initials are fine), qualified, or by words of its type or comment. Answers the signature, the comment above it and file:line." [("query", ("string", "the name or words")), ("n", ("number", "how many answers (default 5)")), sessionArg] ["query"]
-  , Tool "census" "What the heap holds: every CAF by what it retains (default), the Strings among it (mode strings), what a reload cannot drop (kept), sharing that is missed (dups), or one value alone (expr)." [("mode", ("string", "cafs | strings | kept | dups | mem")), ("expr", ("string", "one value: its bytes, closures and constructors")), ("top", ("number", "how many entries")), sessionArg] []
+  , Tool "census" "What the heap holds: every CAF by what it retains (default), the Strings among it (mode strings), what a reload cannot drop (kept), sharing that is missed (dups), or one value alone (expr)." [("mode", ("string", "cafs | strings | kept | dups | mem")), ("expr", ("string", "one value: its bytes, closures, and what it is made of by constructor -- how to see what a data structure holds, in a fraction of a second")), ("top", ("number", "how many entries")), ("sites", ("boolean", "with expr: by WHERE each part was allocated -- constructor @ file:line (binding) -- in a session of its own that has the code compiled so (the first call compiles it); a thunk or a function is named by where it is defined")), ("opt", ("number", "with sites: the optimisation level of that session (default 1)")), sessionArg] []
   , Tool "bench" "Time an IO action in the session, or (opt, unit) in one that has the code at an optimisation level: wall, GC, allocation (live: and the live heap before and after, two major collections). A top-level value is computed once per load, so time a function applied to its input." [("expr", ("string", "the action")), ("live", ("boolean", "also the live heap before and after")), ("timeout", ("number", "seconds; a hung action is interrupted (default 30)")), ("opt", ("number", "the optimisation level to measure at (0, 1 or 2): the code is loaded at that level in a session of its own beside this one, kept warm and reloaded with what changed -- what a built executable at -O2 would measure, without building one")), ("unit", ("string", "a component of the build to load beside the code, whose own code the action uses: exe:NAME, bench:NAME, test:NAME (its modules are in scope; `:main ARGS` runs its main)")), sessionArg] ["expr"]
   , Tool "mem" "The repl's memory and its servers'." [sessionArg] []
   , Tool "view" "The whole history of this session as one-line summaries, oldest first: `id+n|text`, the n messages from id on. Recent lines cover one message; the older, the more. Read it before starting a task." [("wait", ("number", "seconds to wait for every line to be a summary (default 10)")), sessionArg] []
@@ -177,9 +177,13 @@ toolJson t = JObj
 -- then only what changed, and stays loaded.
 benchAt :: Conf -> String -> Json -> IO (Bool, T.Text, Reach)
 benchAt conf base args = do
-  let level = maybe 2 round (lookupNum "opt" args) :: Int
+  let level = maybe (if lookupStr "__op" args == Just "census" then 1 else 2) round (lookupNum "opt" args) :: Int
       units = maybe [] (\u -> [u]) (lookupStr "unit" args)
-      name = benchSession base level units
+      sites = lookupBool "sites" args == Just True
+      census = lookupStr "__op" args == Just "census"
+      name0 = benchSession base level units
+      -- (BASE-O2s: the same, its info tables mapped to the source)
+      name = if sites then (\(h, r) -> h ++ "s" ++ r) (break (== '+') name0) else name0
       ask op extra = request conf name (JObj (("op", JStr op) : ("quiet", JBool True) : extra))
       text r = fromMaybe T.empty (lookupText "out" r)
   t0 <- now
@@ -199,10 +203,13 @@ benchAt conf base args = do
       -- (what it loaded to: the verdict the reload left, which is in its answer's status)
       let kind = fromMaybe "" (lookupStr "kind" (rl .: "status"))
           bad = kind `elem` ["COMPILE-ERROR", "DEAD", "CONFIG-ERROR", "PREBUILD-ERROR"] || lookupBool "ok" rl == Just False
-          hd = T.pack ("[in " ++ name ++ ": the code at -O" ++ show level ++ concatMap (", with " ++) units ++ (if up then "" else "; started")
+          hd = T.pack ("[in " ++ name ++ ": the code at -O" ++ show level ++ (if sites then ", its info tables mapped to the source" else "") ++ concatMap (", with " ++) units ++ (if up then "" else "; started")
                        ++ (if t1 - t0 >= 1 then "; " ++ show (round (t1 - t0) :: Int) ++ " s to have it loaded as it is now" else "") ++ "]\n")
       if bad then pure (False, hd <> T.pack "the code as it is now does not load there, so nothing was measured (what is loaded is from before):\n" <> T.unlines (lastN 14 (T.lines (text rl))), Reached) else do
-        r <- ask "bench" ([ ("expr", JStr e) | Just e <- [lookupStr "expr" args] ] ++ [ ("timeout", JNum v) | Just v <- [lookupNum "timeout" args] ]
+        r <- if census
+          then ask "census" ([ ("mode", JStr (if isJust (lookupStr "expr" args) then "value" else fromMaybe "cafs" (lookupStr "mode" args))) ]
+                             ++ [ ("expr", JStr e) | Just e <- [lookupStr "expr" args] ] ++ [ ("top", JNum v) | Just v <- [lookupNum "top" args] ])
+          else ask "bench" ([ ("expr", JStr e) | Just e <- [lookupStr "expr" args] ] ++ [ ("timeout", JNum v) | Just v <- [lookupNum "timeout" args] ]
                            ++ [ ("live", JBool True) | lookupBool "live" args == Just True ])
         pure (lookupBool "ok" r == Just True, hd <> text r, Reached)
   where lastN :: Int -> [a] -> [a]
@@ -240,6 +247,8 @@ callReach conf name args = do
         "test" | Just _ <- s "expr" -> go "check_expr" (str "expr" "expr" ++ str "member" "member" ++ num "timeout") >>= say
                | otherwise -> go "check" (str "member" "member") >>= say
         "doc" -> go "doc" ([("words", JArr (map JStr (words (fromMaybe "" (s "query")))))] ++ num "n") >>= say
+        -- by where it was allocated: in the session that has the code so compiled ('benchAt')
+        "census" | lookupBool "sites" args == Just True -> benchAt conf session (set "__op" (JStr "census") args)
         "census" -> go "census" ([("mode", JStr (if isJust (s "expr") then "value" else fromMaybe "cafs" (s "mode")))] ++ str "expr" "expr" ++ num "top") >>= say
         -- at a level, or with a component of the build beside the code: in the session that has it so ('benchAt')
         "bench" | isJust (n "opt") || isJust (s "unit") -> benchAt conf session args

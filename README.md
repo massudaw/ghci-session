@@ -205,6 +205,15 @@ its own code can be run (`System.Environment.withArgs [..] Main.main`). What a b
 without building one: the first call compiles (half a minute for a small library), the next takes as long as the
 action.
 
+**What a value holds, by where it was allocated: `census EXPR --sites`.** `census EXPR` says what a value is made
+of, by constructor, in a fraction of a second. With `--sites` (the tool's `sites`) each line is a constructor AT A
+PLACE -- `DXF.Entity.Poly.Vertex @ src/DXF/Entity/Fast.hs:63:28-29 (ent)`: the file, the span, the binding -- and a
+thunk or a function is named by where it is defined. It is asked in a session of its own beside the session
+(`NAME-O1s`; `--opt N` for another level), whose code is compiled with its info tables mapped to the source and a
+constructor's table apart for each place it is built at (`-finfo-table-map -fdistinct-constructor-tables`; `"sites":
+true` in the configuration has the session itself so). No profiling build: the first call compiles, the next takes
+as long as the walk. It tells what is LIVE; what was allocated and is garbage already it does not see. (GHC 9.14.)
+
 A session of SEVERAL units is given its optimisation's flags for the session itself, not only for each unit: the
 build tool puts a unit's flags in the unit's file and none on the command line, and the code then ran as if it had
 not been optimised (a 19 MB drawing printed in 2.0 s and 6.4 GB of allocation; 0.10 s and 140 MB with the flags, or

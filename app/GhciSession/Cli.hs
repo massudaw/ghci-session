@@ -624,6 +624,12 @@ cliMain = do
           name <- pick conf (pos a 0)
           request conf name (JObj [("op", JStr "census"), ("mode", JStr "mem")]) >>= say
         "mem" -> cmdSimple "mem" conf a
+        -- (--sites: a value by where its parts were allocated, in the session that has the code compiled for it)
+        "census" | flag a ["--sites"], Just e <- pos a 0 -> do
+          name <- pick conf (opt a ["-s", "-t", "--session"])
+          (ok, out, _) <- Mcp.callReach conf "census" (JObj ([ ("session", JStr name), ("expr", JStr e), ("sites", JBool True) ]
+                            ++ maybe [] (\k -> [("top", JNum (read k))]) (opt a ["--top"]) ++ maybe [] (\n -> [("opt", JNum (read n))]) (opt a ["--opt"])))
+          TIO.putStrLn out >> pure (if ok then 0 else 1)
         "census" -> do
           name <- pick conf (opt a ["-s", "-t", "--session"])
           let mode = case (pos a 0, flag a ["--strings"], flag a ["--kept"]) of

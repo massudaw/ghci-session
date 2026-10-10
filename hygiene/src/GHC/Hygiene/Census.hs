@@ -9,7 +9,7 @@
 -- The C is part of the session's engine; in any other GHCi every entry point says so and does nothing.
 module GHC.Hygiene.Census
   ( cafReport, cafStrings, keptReport, keptStrings, keep
-  , censusOf, benchOf, benchQuick, memNow, censusBench
+  , censusOf, censusTop, benchOf, benchQuick, memNow, censusBench
   , dupsCafs, dupsKept, dupsOf
   , readSymbol, zdecode
   ) where
@@ -62,7 +62,7 @@ withCensus k = do
         reset = at 0; root = at 1; stable = at 2; nroots = at 3; rootRow = at 4; ninfo = at 5; infoRow = at 6; nstr = at 7; strRow = at 8
     let rows nI getRow = do
           n <- fromIntegral <$> cenN nI
-          fmap concat $ forM [0 .. n - 1] $ \i -> allocaBytes 256 $ \lab -> allocaBytes (8 * 8) $ \out -> do
+          fmap concat $ forM [0 .. n - 1] $ \i -> allocaBytes 512 $ \lab -> allocaBytes (8 * 8) $ \out -> do
             ok <- getRow (fromIntegral i) lab out
             if ok == 0 then pure [] else do
               l <- peekCAString (castPtr lab)
@@ -309,7 +309,13 @@ memNow = do
 -- | What ONE value retains (already evaluated or not), alone: bytes, closures and its constructors.
 -- @GHC.Hygiene.Census.censusOf "idx" (My.Module.index v)@
 censusOf :: String -> a -> IO ()
-censusOf label x = withCensus $ \c -> do
+censusOf = censusTop 5
+
+-- | The same, with so many of its lines. A line is a constructor, or a kind of closure; where the code was
+-- compiled with its info tables mapped to the source it is a constructor AT A PLACE -- "Vertex @
+-- src/DXF/Entity/Poly.hs:120:15-48 (decodeVertex)" -- so what is held is told by where it was allocated.
+censusTop :: Int -> String -> a -> IO ()
+censusTop top label x = withCensus $ \c -> do
   _ <- evaluate x
   performMinorGC   -- (see 'keptRoots')
   sp <- newStablePtr x
@@ -321,7 +327,20 @@ censusOf label x = withCensus $ \c -> do
   case rs of
     ((_, r) : _) -> do
       printf "%s: %.2f MB in %d closures\n" label (fromIntegral (r !! 0) / 1e6 :: Double) (r !! 1)
-      forM_ (take 5 (sortOn (Down . (!! 0) . snd) is)) $ \(l, v) -> printf "    %7.2f MB %9d  %s\n" (fromIntegral (v !! 0) / 1e6 :: Double) (v !! 1) (reverse (take 44 (reverse l)))
+      let sited = any ((" @ " `isInfixOfS`) . fst) is
+          -- (with places: the constructor without its package, the file from the project's root)
+          cut l | not sited = reverse (take 44 (reverse l))
+                | otherwise = case breakOn " @ " l of
+                    (what, Just at) -> take 60 (short what) ++ " @ " ++ take 110 (rel at)
+                    (what, Nothing) -> short what
+          short w = case break (== ':') w of { (_, ':' : r@(_ : _)) | '.' `elem` r -> r; _ -> w }
+          rel a = case breakOn "/./" a of { (_, Just r) -> r; _ -> a }
+          breakOn pat str = go "" str
+            where go acc r | pat `isPrefixOf` r = (reverse acc, Just (drop (length pat) r))
+                  go acc (ch : r) = go (ch : acc) r
+                  go acc [] = (reverse acc, Nothing)
+      forM_ (take (max 1 top) (sortOn (Down . (!! 0) . snd) is)) $ \(l, v) -> printf "    %7.2f MB %9d  %s\n" (fromIntegral (v !! 0) / 1e6 :: Double) (v !! 1) (cut l)
+      when (length is > top) (printf "    (%d more kinds; top: N shows more)\n" (length is - top))
     _ -> pure ()
 
 -- | Time an action in the session: wall, GC and allocation, and the live heap before and after. The tool
@@ -367,6 +386,9 @@ benchLine t s0 s1 = printf "%.2f s wall, %.2f s GC (%d major, %d minor), %.0f MB
     peak | major_gcs s1 == major_gcs s0 = ""
          | max_live_bytes s1 > max_live_bytes s0 = printf ", %.0f MB live at most (a new most for this process)" (mb (max_live_bytes s1))
          | otherwise = printf ", under %.0f MB live (the most this process has had)" (mb (max_live_bytes s1))
+
+isInfixOfS :: String -> String -> Bool
+isInfixOfS needle hay = any (needle `isPrefixOf`) (takeWhile (not . null) (iterate (drop 1) hay))
 
 mb :: Integral a => a -> Double
 mb x = fromIntegral x / 1e6
